@@ -34,11 +34,7 @@ class QgsGeometryCheckRegistry;
 class ANALYSIS_EXPORT QgsAnalysis
 {
   public:
-
-    //! QgsAnalysis cannot be copied
     QgsAnalysis( const QgsAnalysis &other ) = delete;
-
-    //! QgsAnalysis cannot be copied
     QgsAnalysis &operator=( const QgsAnalysis &other ) = delete;
 
     /**
@@ -52,7 +48,6 @@ class ANALYSIS_EXPORT QgsAnalysis
     static QgsGeometryCheckRegistry *geometryCheckRegistry() SIP_KEEPREFERENCE;
 
   private:
-
     QgsAnalysis();
 
     std::unique_ptr<QgsGeometryCheckRegistry> mGeometryCheckRegistry;
@@ -60,7 +55,6 @@ class ANALYSIS_EXPORT QgsAnalysis
 #ifdef SIP_RUN
     QgsAnalysis( const QgsAnalysis &other );
 #endif
-
 };
 
 #endif // QGSANALYSIS_H

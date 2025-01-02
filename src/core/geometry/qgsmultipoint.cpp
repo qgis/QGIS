@@ -248,6 +248,39 @@ bool QgsMultiPoint::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
+bool QgsMultiPoint::addGeometries( const QVector<QgsAbstractGeometry *> &geometries )
+{
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( !qgsgeometry_cast<QgsPoint *>( g ) )
+    {
+      qDeleteAll( geometries );
+      return false;
+    }
+  }
+
+  if ( mGeometries.empty() && !geometries.empty() )
+  {
+    setZMTypeFromSubGeometry( geometries.at( 0 ), Qgis::WkbType::MultiPoint );
+  }
+  mGeometries.reserve( mGeometries.size() + geometries.size() );
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( is3D() && !g->is3D() )
+      g->addZValue();
+    else if ( !is3D() && g->is3D() )
+      g->dropZValue();
+    if ( isMeasure() && !g->isMeasure() )
+      g->addMValue();
+    else if ( !isMeasure() && g->isMeasure() )
+      g->dropMValue();
+    mGeometries.append( g );
+  }
+
+  clearCache();
+  return true;
+}
+
 bool QgsMultiPoint::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != Qgis::WkbType::Point )
@@ -280,6 +313,11 @@ double QgsMultiPoint::segmentLength( QgsVertexId ) const
 bool QgsMultiPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const
 {
   return true;
+}
+
+QgsMultiPoint *QgsMultiPoint::simplifyByDistance( double ) const
+{
+  return clone();
 }
 
 void QgsMultiPoint::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )

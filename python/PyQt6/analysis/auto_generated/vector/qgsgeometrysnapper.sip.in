@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/qgsgeometrysnapper.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ match the reference layer features within a specified snap tolerance.
 #include "qgsgeometrysnapper.h"
 %End
   public:
-
     enum SnapMode /BaseType=IntEnum/
     {
       PreferNodes,
@@ -77,10 +76,10 @@ class QgsInternalGeometrySnapper
 :py:class:`QgsInternalGeometrySnapper` allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
 
 To use :py:class:`QgsInternalGeometrySnapper`, first construct the snapper using the desired snap parameters. Then,
-features are fed to to the snapper one-by-one by calling :py:func:`~QgsGeometrySnapper.snapFeature`. Each feature passed by calling
-:py:func:`~QgsGeometrySnapper.snapFeature` will be snapped to any features which have already been processed by the snapper.
+features are fed to to the snapper one-by-one by calling :py:func:`~snapFeature`. Each feature passed by calling
+:py:func:`~snapFeature` will be snapped to any features which have already been processed by the snapper.
 
-After processing all desired features, the results can be fetched by calling :py:func:`~QgsGeometrySnapper.snappedGeometries`.
+After processing all desired features, the results can be fetched by calling :py:func:`~snappedGeometries`.
 The returned :py:class:`QgsGeometryMap` can be passed to :py:func:`QgsVectorDataProvider.changeGeometryValues()` to save
 the snapped geometries back to the source layer.
 %End
@@ -89,7 +88,6 @@ the snapped geometries back to the source layer.
 #include "qgsgeometrysnapper.h"
 %End
   public:
-
     QgsInternalGeometrySnapper( double snapTolerance, QgsGeometrySnapper::SnapMode mode = QgsGeometrySnapper::PreferNodes );
 %Docstring
 Constructor for QgsInternalGeometrySnapper. The ``snapTolerance`` and ``mode`` parameters dictate
@@ -115,5 +113,5 @@ Returns a :py:class:`QgsGeometryMap` of all feature geometries snapped by this o
  *                                                                      *
  * src/analysis/vector/qgsgeometrysnapper.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

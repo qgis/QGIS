@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgslabelingenginesettings.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,6 +30,9 @@ Stores global configuration for labeling engine
     };
 
     QgsLabelingEngineSettings();
+    ~QgsLabelingEngineSettings();
+
+    QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other );
 
     void clear();
 %Docstring
@@ -89,45 +92,102 @@ Sets the maximum number of polygon label ``candidates`` per centimeter squared.
 .. versionadded:: 3.12
 %End
 
- void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated/;
+ void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated="Since 3.12. Use maximumPolygonCandidatesPerCmSquared() and maximumLineCandidatesPerCm() instead."/;
 %Docstring
 Gets number of candidate positions that will be generated for each label feature.
 
-.. deprecated:: QGIS 3.12
-   use :py:func:`~QgsLabelingEngineSettings.maximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.maximumLineCandidatesPerCm` instead.
+.. deprecated:: 3.12
+
+   Use :py:func:`~QgsLabelingEngineSettings.maximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.maximumLineCandidatesPerCm` instead.
 %End
 
- void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated/;
+ void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated="Since 3.12. Use setMaximumPolygonCandidatesPerCmSquared() and setMaximumLineCandidatesPerCm() instead."/;
 %Docstring
 Sets the number of candidate positions that will be generated for each label feature.
 
-.. deprecated:: QGIS 3.12
-   use :py:func:`~QgsLabelingEngineSettings.setMaximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.setMaximumLineCandidatesPerCm` instead.
+.. deprecated:: 3.12
+
+   Use :py:func:`~QgsLabelingEngineSettings.setMaximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.setMaximumLineCandidatesPerCm` instead.
 %End
 
- void setSearchMethod( Search s ) /Deprecated/;
+ void setSearchMethod( Search s ) /Deprecated="Since 3.10. Chain is always used."/;
 %Docstring
 Used to set which search method to use for removal collisions between labels
 
-.. deprecated:: QGIS 3.10
-   - Chain is always used.
+.. deprecated:: 3.10
+
+   Chain is always used.
 %End
 
- Search searchMethod() const /Deprecated/;
+ Search searchMethod() const /Deprecated="Since 3.10. Chain is always used."/;
 %Docstring
 Which search method to use for removal collisions between labels
 
-.. deprecated:: QGIS 3.10
-   - Chain is always used.
+.. deprecated:: 3.10
+
+   Chain is always used.
 %End
+
 
     void readSettingsFromProject( QgsProject *project );
 %Docstring
 Read configuration of the labeling engine from a project
+
+.. note::
+
+   Both this method and :py:func:`~QgsLabelingEngineSettings.readXml` must be called to completely restore the object's state from a project.
 %End
+
     void writeSettingsToProject( QgsProject *project );
 %Docstring
-Write configuration of the labeling engine to a project
+Write configuration of the labeling engine to a project.
+
+.. note::
+
+   Both this method and :py:func:`~QgsLabelingEngineSettings.writeXml` must be called to completely store the object's state in a project.
+%End
+
+    void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes the label engine settings to an XML ``element``.
+
+.. note::
+
+   Both this method and :py:func:`~QgsLabelingEngineSettings.writeSettingsToProject` must be called to completely store the object's state in a project.
+
+.. seealso:: :py:func:`readXml`
+
+.. seealso:: :py:func:`writeSettingsToProject`
+
+.. versionadded:: 3.40
+%End
+
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the label engine settings from an XML ``element``.
+
+.. note::
+
+   Both this method and :py:func:`~QgsLabelingEngineSettings.readSettingsFromProject` must be called to completely restore the object's state from a project.
+
+.. note::
+
+   :py:func:`~QgsLabelingEngineSettings.resolveReferences` must be called following this method.
+
+.. seealso:: :py:func:`writeXml`
+
+.. seealso:: :py:func:`readSettingsFromProject`
+
+.. versionadded:: 3.40
+%End
+
+    void resolveReferences( const QgsProject *project );
+%Docstring
+Resolves reference to layers from stored layer ID.
+
+Should be called following a call :py:func:`~QgsLabelingEngineSettings.readXml`.
+
+.. versionadded:: 3.40
 %End
 
 
@@ -185,6 +245,47 @@ Sets the placement engine ``version``, which dictates how the label placement pr
 .. versionadded:: 3.10.2
 %End
 
+    QList< QgsAbstractLabelingEngineRule * > rules();
+%Docstring
+Returns a list of labeling engine rules which must be satisfied
+while placing labels.
+
+.. seealso:: :py:func:`addRule`
+
+.. seealso:: :py:func:`setRules`
+
+.. versionadded:: 3.40
+%End
+
+
+    void addRule( QgsAbstractLabelingEngineRule *rule /Transfer/ );
+%Docstring
+Adds a labeling engine ``rule`` which must be satisfied
+while placing labels.
+
+Ownership of the rule is transferred to the settings.
+
+.. seealso:: :py:func:`rules`
+
+.. seealso:: :py:func:`setRules`
+
+.. versionadded:: 3.40
+%End
+
+    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules /Transfer/ );
+%Docstring
+Sets the labeling engine ``rules`` which must be satisfied
+while placing labels.
+
+Ownership of the rules are transferred to the settings.
+
+.. seealso:: :py:func:`addRule`
+
+.. seealso:: :py:func:`rules`
+
+.. versionadded:: 3.40
+%End
+
 };
 
 /************************************************************************
@@ -192,5 +293,5 @@ Sets the placement engine ``version``, which dictates how the label placement pr
  *                                                                      *
  * src/core/labeling/qgslabelingenginesettings.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

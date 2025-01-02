@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/qgsprovidermetadata.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -49,7 +49,7 @@ Constructs default metadata without any capabilities
  QgsMeshDriverMetadata( const QString &name,
         const QString &description,
         const MeshDriverCapabilities &capabilities,
-        const QString &writeDatasetOnFileSuffix ) /Deprecated/;
+        const QString &writeDatasetOnFileSuffix ) /Deprecated="Since 3.22. "/;
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -58,8 +58,7 @@ Constructs driver metadata with selected capabilities
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
 
-.. deprecated::
-   QGIS 3.22
+.. deprecated:: 3.22
 %End
 
     QgsMeshDriverMetadata( const QString &name,
@@ -251,14 +250,15 @@ Returns a list of the map layer types supported by the provider.
     }
 %End
 
- QString library() const /Deprecated/;
+ QString library() const /Deprecated="Since 3.10. Providers may not need to be loaded from a library (empty string returned)."/;
 %Docstring
 This returns the library file name
 
 This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
 
-.. deprecated::
-   QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+.. deprecated:: 3.10
+
+   Providers may not need to be loaded from a library (empty string returned).
 %End
 
 
@@ -400,7 +400,7 @@ The default implementation returns an empty string.
 
     virtual QgsDataProvider *createProvider( const QString &uri,
         const QgsDataProvider::ProviderOptions &options,
-        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
+        Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) /Factory/;
 %Docstring
 Class factory to return a pointer to a newly created :py:class:`QgsDataProvider` object
 
@@ -439,13 +439,11 @@ metadata :py:func:`~QgsProviderMetadata.createDatabase` method can be used to cr
 :param uri: destination URI for newly created database.
 
 :return: - ``True`` if the database was successfully created
-         - errorMessage: will be set to a descriptive error message if the database could not be successfully created.
-
+         - errorMessage: a descriptive error message if the database could not be successfully created.
 
 .. note::
 
    This method is only supported by providers which return the QgsProviderMetadata.ProviderMetadataCapability.CreateDatabase capability.
-
 
 .. versionadded:: 3.28
 %End
@@ -470,9 +468,11 @@ Creates a new instance of the raster data provider.
       const QgsMesh &mesh,
       const QString &fileName,
       const QString &driverName,
-      const QgsCoordinateReferenceSystem &crs ) const;
+      const QgsCoordinateReferenceSystem &crs,
+      const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 %Docstring
 Creates mesh data source from a file name ``fileName`` and a driver ``driverName``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+Since QGIS 3.38 the optional ``metadata`` argument can be used to pass metadata to the provider.
 
 .. versionadded:: 3.16
 %End
@@ -480,9 +480,11 @@ Creates mesh data source from a file name ``fileName`` and a driver ``driverName
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString &uri,
-      const QgsCoordinateReferenceSystem &crs ) const;
+      const QgsCoordinateReferenceSystem &crs,
+      const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 %Docstring
 Creates mesh data source from an ``uri``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+Since QGIS 3.38 the optional ``metadata`` argument can be used to pass metadata to the provider.
 
 .. versionadded:: 3.22
 %End
@@ -604,7 +606,7 @@ Returns ``True`` if a layer style with the specified ``styleId`` exists in the p
 :param styleId: style ID to test for
 
 :return: - ``True`` if the layer style already exists
-         - errorCause: will be set to a descriptive error message, if an error occurs while checking if the style exists
+         - errorCause: a descriptive error message, if an error occurs while checking if the style exists
 
 .. seealso:: :py:func:`getStyleById`
 
@@ -664,7 +666,7 @@ Loads a layer style from the provider storage, reporting its name.
 .. versionadded:: 3.30
 %End
 
-    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ );
 %Docstring
 Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 
@@ -674,10 +676,8 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 :return: - ``True`` if the metadata was successfully saved.
          - errorMessage: descriptive string of error if encountered
 
-
 :raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
-
 
 .. versionadded:: 3.20
 %End
@@ -696,7 +696,7 @@ Returns new instance of transaction. Ownership is transferred to the caller
 .. versionadded:: 3.10
 %End
 
-    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) throw( QgsProviderConnectionException );
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true );
 %Docstring
 Returns a dictionary of stored provider connections,
 the dictionary key is the connection identifier.
@@ -710,7 +710,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 .. versionadded:: 3.10
 %End
 
-    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) throw( QgsProviderConnectionException );
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true );
 %Docstring
 Returns a dictionary of database provider connections,
 the dictionary key is the connection identifier.
@@ -724,9 +724,9 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 .. versionadded:: 3.10
 %End
 
-    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true ) throw( QgsProviderConnectionException );
+    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true );
 %Docstring
-Searches and returns a (possibly NULL) connection from the stored provider connections.
+Searches and returns a (possibly ``None``) connection from the stored provider connections.
 Ownership is not transferred.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
@@ -739,7 +739,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 %End
 
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) throw( QgsProviderConnectionException ) /Factory/;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration )  /Factory/;
 %Docstring
 Creates a new connection from ``uri`` and ``configuration``,
 the newly created connection is not automatically stored in the settings, call
@@ -753,7 +753,7 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.10
 %End
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name )  /Factory/;
 %Docstring
 Creates a new connection by loading the connection with the given ``name`` from the settings.
 Ownership is transferred to the caller.
@@ -763,7 +763,7 @@ Ownership is transferred to the caller.
 .. seealso:: :py:func:`findConnection`
 %End
 
-    virtual void deleteConnection( const QString &name ) throw( QgsProviderConnectionException );
+    virtual void deleteConnection( const QString &name );
 %Docstring
 Removes the connection with the given ``name`` from the settings.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
@@ -773,7 +773,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 .. versionadded:: 3.10
 %End
 
-    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) throw( QgsProviderConnectionException );
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
 %Docstring
 Stores the connection in the settings
 
@@ -842,5 +842,5 @@ QFlags<QgsProviderMetadata::ProviderCapability> operator|(QgsProviderMetadata::P
  *                                                                      *
  * src/core/providers/qgsprovidermetadata.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

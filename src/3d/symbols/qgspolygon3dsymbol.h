@@ -36,7 +36,6 @@ class QgsAbstractMaterialSettings;
 class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
 {
   public:
-    //! Constructor for QgsPolygon3DSymbol
     QgsPolygon3DSymbol();
     ~QgsPolygon3DSymbol() override;
 
@@ -45,7 +44,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-    QList< Qgis::GeometryType > compatibleGeometryTypes() const override;
+    QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
     void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer ) override;
 
     /**
@@ -68,14 +67,14 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     /**
      * Returns height (altitude) of the symbol (in map units)
      *
-     * \deprecated since QGIS 3.36. Use offset() instead.
+     * \deprecated QGIS 3.36. Use offset() instead.
      */
     Q_DECL_DEPRECATED float height() const SIP_DEPRECATED { return mOffset; }
 
     /**
      * Sets height (altitude) of the symbol (in map units)
      *
-     * \deprecated since QGIS 3.36. Use setOffset() instead.
+     * \deprecated QGIS 3.36. Use setOffset() instead.
      */
     Q_DECL_DEPRECATED void setHeight( float height ) SIP_DEPRECATED { mOffset = height; }
 
@@ -191,16 +190,16 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     //! how to handle clamping of vertices of individual features
     Qgis::AltitudeBinding mAltBinding = Qgis::AltitudeBinding::Centroid;
 
-    float mOffset = 0.0f;           //!< Vertical offset of polygons
-    float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
-    std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings; //!< Defines appearance of objects
-    Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode
+    float mOffset = 0.0f;                                           //!< Vertical offset of polygons
+    float mExtrusionHeight = 0.0f;                                  //!< How much to extrude (0 means no walls)
+    std::unique_ptr<QgsAbstractMaterialSettings> mMaterialSettings; //!< Defines appearance of objects
+    Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;   //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
     int mRenderedFacade = 3;
 
-    bool mEdgesEnabled = false;  //!< Whether to highlight edges
-    float mEdgeWidth = 1.f;  //!< Width of edges in pixels
+    bool mEdgesEnabled = false;    //!< Whether to highlight edges
+    float mEdgeWidth = 1.f;        //!< Width of edges in pixels
     QColor mEdgeColor = Qt::black; //!< Color of edge lines
 };
 

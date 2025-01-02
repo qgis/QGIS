@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgscircle.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -112,7 +112,7 @@ The azimuth always takes the default value.
 .. seealso:: :py:func:`from3TangentsMulti`
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -156,10 +156,9 @@ The azimuth always takes the default value.
 .. seealso:: :py:func:`from3Tangents`
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
-
 
       # [(0 0), (5 0)] and [(5 5), (10 5)] are parallels
       QgsCircle.from3TangentsMulti(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5))
@@ -221,11 +220,15 @@ Calculates the tangent points between this circle and the point ``p``.
 
 If found, the tangent points will be stored in ``pt1`` and ``pt2``.
 
-Note that this method is 2D only and does not consider the z-value of the circle.
+.. note::
+
+   This method is 2D only and does not consider the z-value of the circle.
 
 :return: ``True`` if tangent was found.
 
 .. seealso:: :py:func:`outerTangents`
+
+.. seealso:: :py:func:`innerTangents`
 
 .. versionadded:: 3.2
 %End
@@ -248,9 +251,13 @@ and ``line2P2``.
 
 Returns the number of tangents (either 0 or 2).
 
-Note that this method is 2D only and does not consider the z-value of the circle.
+.. note::
+
+   This method is 2D only and does not consider the z-value of the circle.
 
 .. seealso:: :py:func:`tangentToPoint`
+
+.. seealso:: :py:func:`innerTangents`
 
 .. versionadded:: 3.2
 %End
@@ -273,9 +280,13 @@ and ``line2P2``.
 
 Returns the number of tangents (either 0 or 2).
 
-Note that this method is 2D only and does not consider the z-value of the circle.
+.. note::
+
+   This method is 2D only and does not consider the z-value of the circle.
 
 .. seealso:: :py:func:`tangentToPoint`
+
+.. seealso:: :py:func:`outerTangents`
 
 .. versionadded:: 3.6
 %End
@@ -290,7 +301,7 @@ Note that this method is 2D only and does not consider the z-value of the circle
     virtual void setSemiMajorAxis( double semiMajorAxis ) /HoldGIL/;
 
 %Docstring
-Inherited method. Use setRadius instead.
+Inherited method. Use :py:func:`~QgsCircle.setRadius` instead.
 
 .. seealso:: :py:func:`radius`
 
@@ -300,7 +311,7 @@ Inherited method. Use setRadius instead.
     virtual void setSemiMinorAxis( double semiMinorAxis ) /HoldGIL/;
 
 %Docstring
-Inherited method. Use setRadius instead.
+Inherited method. Use :py:func:`~QgsCircle.setRadius` instead.
 
 .. seealso:: :py:func:`radius`
 
@@ -389,5 +400,5 @@ Coordinates are taken from quadrant North, East and South.
  *                                                                      *
  * src/core/geometry/qgscircle.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

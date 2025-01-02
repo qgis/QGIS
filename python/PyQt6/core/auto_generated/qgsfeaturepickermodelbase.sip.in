@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturepickermodelbase.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -211,9 +211,9 @@ still be available in the model.
 The index at which the extra identifier value is available within the model.
 %End
 
-    void extraValueDoesNotExistChanged();
+    void extraValueDoesNotExistChanged( bool found );
 %Docstring
-Flag indicating that the extraIdentifierValue does not exist in the data.
+Notification whether the model has ``found`` a feature tied to the extraIdentifierValue or not.
 %End
 
     void beginUpdate();
@@ -276,5 +276,5 @@ This will set the identifier value to be set in the model even if it doesn't exi
  *                                                                      *
  * src/core/qgsfeaturepickermodelbase.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

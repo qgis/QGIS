@@ -30,7 +30,7 @@
 QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
 
 typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
-Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
+Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResultsGM )
 
 
 QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QString &regionBias )
@@ -50,18 +50,18 @@ QgsGeocoderInterface::Flags QgsGoogleMapsGeocoder::flags() const
 QgsFields QgsGoogleMapsGeocoder::appendedFields() const
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "location_type" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "formatted_address" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "place_id" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "location_type" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "formatted_address" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "place_id" ), QMetaType::Type::QString ) );
 
   // add more?
-  fields.append( QgsField( QStringLiteral( "street_number" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "route" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "locality" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "administrative_area_level_2" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "administrative_area_level_1" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "country" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "postal_code" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "street_number" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "route" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "locality" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "administrative_area_level_2" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "administrative_area_level_1" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "country" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "postal_code" ), QMetaType::Type::QString ) );
   return fields;
 }
 
@@ -91,8 +91,8 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   const QUrl url = requestUrl( string, bounds );
 
   QgsReadWriteLocker locker( sMutex, QgsReadWriteLocker::Read );
-  const auto it = sCachedResults()->constFind( url );
-  if ( it != sCachedResults()->constEnd() )
+  const auto it = sCachedResultsGM()->constFind( url );
+  if ( it != sCachedResultsGM()->constEnd() )
   {
     return *it;
   }
@@ -142,7 +142,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   const QVariantList results = res.value( QStringLiteral( "results" ) ).toList();
   if ( results.empty() )
   {
-    sCachedResults()->insert( url, QList<QgsGeocoderResult>() );
+    sCachedResultsGM()->insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -152,7 +152,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   {
     matches << jsonToResult( result.toMap() );
   }
-  sCachedResults()->insert( url, matches );
+  sCachedResultsGM()->insert( url, matches );
 
   return matches;
 }

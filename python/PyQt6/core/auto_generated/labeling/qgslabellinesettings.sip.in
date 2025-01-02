@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgslabellinesettings.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -89,7 +89,7 @@ prior to generating label positions.
 
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
-Updates the thinning settings to respect any data defined properties
+Updates the line settings to respect any data defined properties
 set within the specified ``properties`` collection.
 %End
 
@@ -388,5 +388,5 @@ should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
  *                                                                      *
  * src/core/labeling/qgslabellinesettings.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingaggregatewidgets.h"
+#include "moc_qgsprocessingaggregatewidgets.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsfieldmappingwidget.h"
@@ -32,8 +33,7 @@
 // QgsAggregateMappingModel
 //
 
-QgsAggregateMappingModel::QgsAggregateMappingModel( const QgsFields &sourceFields,
-    QObject *parent )
+QgsAggregateMappingModel::QgsAggregateMappingModel( const QgsFields &sourceFields, QObject *parent )
   : QAbstractTableModel( parent )
   , mExpressionContextGenerator( new QgsFieldMappingModel::ExpressionContextGenerator( sourceFields ) )
 {
@@ -163,9 +163,7 @@ Qt::ItemFlags QgsAggregateMappingModel::flags( const QModelIndex &index ) const
 {
   if ( index.isValid() )
   {
-    return Qt::ItemFlags( Qt::ItemIsSelectable |
-                          Qt::ItemIsEditable |
-                          Qt::ItemIsEnabled );
+    return Qt::ItemFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
   }
   return Qt::ItemFlags();
 }
@@ -235,7 +233,7 @@ bool QgsAggregateMappingModel::setData( const QModelIndex &index, const QVariant
 
 bool QgsAggregateMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
 {
-  if ( ! index.isValid() && index.model() == this )
+  if ( !index.isValid() && index.model() == this )
     return false;
 
   // Always swap down
@@ -245,7 +243,7 @@ bool QgsAggregateMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
   {
     return false;
   }
-  beginMoveRows( QModelIndex( ), row, row, QModelIndex(), row + 2 );
+  beginMoveRows( QModelIndex(), row, row, QModelIndex(), row + 2 );
   mMapping.swapItemsAt( row, row + 1 );
   endMoveRows();
   return true;
@@ -269,7 +267,7 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
 
     if ( f.isNumeric() )
       aggregate.aggregate = QStringLiteral( "sum" );
-    else if ( f.type() == QVariant::String || ( f.type() == QVariant::List && f.subType() == QVariant::String ) )
+    else if ( f.type() == QMetaType::Type::QString || ( f.type() == QMetaType::Type::QVariantList && f.subType() == QMetaType::Type::QString ) )
       aggregate.aggregate = QStringLiteral( "concatenate" );
 
     aggregate.delimiter = ',';
@@ -307,7 +305,7 @@ void QgsAggregateMappingModel::setMapping( const QList<QgsAggregateMappingModel:
 
 void QgsAggregateMappingModel::appendField( const QgsField &field, const QString &source, const QString &aggregate )
 {
-  const int lastRow { rowCount( QModelIndex( ) ) };
+  const int lastRow { rowCount( QModelIndex() ) };
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Aggregate agg;
   agg.field = field;
@@ -316,7 +314,7 @@ void QgsAggregateMappingModel::appendField( const QgsField &field, const QString
   agg.aggregate = aggregate;
   agg.delimiter = ',';
   mMapping.push_back( agg );
-  endInsertRows( );
+  endInsertRows();
 }
 
 bool QgsAggregateMappingModel::removeField( const QModelIndex &index )
@@ -349,8 +347,7 @@ bool QgsAggregateMappingModel::moveDown( const QModelIndex &index )
 // QgsAggregateMappingWidget
 //
 
-QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent,
-    const QgsFields &sourceFields )
+QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent, const QgsFields &sourceFields )
   : QgsPanelWidget( parent )
 {
   QVBoxLayout *verticalLayout = new QVBoxLayout();
@@ -366,8 +363,8 @@ QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent,
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( mTableView ) );
   updateColumns();
   // Make sure columns are updated when rows are added
-  connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, [ = ] { updateColumns(); } );
-  connect( mModel, &QgsAggregateMappingModel::modelReset, this, [ = ] { updateColumns(); } );
+  connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, [=] { updateColumns(); } );
+  connect( mModel, &QgsAggregateMappingModel::modelReset, this, [=] { updateColumns(); } );
   connect( mModel, &QgsAggregateMappingModel::dataChanged, this, &QgsAggregateMappingWidget::changed );
   connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, &QgsAggregateMappingWidget::changed );
   connect( mModel, &QgsAggregateMappingModel::rowsRemoved, this, &QgsAggregateMappingWidget::changed );
@@ -426,14 +423,14 @@ void QgsAggregateMappingWidget::appendField( const QgsField &field, const QStrin
 
 bool QgsAggregateMappingWidget::removeSelectedFields()
 {
-  if ( ! mTableView->selectionModel()->hasSelection() )
+  if ( !mTableView->selectionModel()->hasSelection() )
     return false;
 
   std::list<int> rowsToRemove { selectedRows() };
   rowsToRemove.reverse();
   for ( const int row : rowsToRemove )
   {
-    if ( ! model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
+    if ( !model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
     {
       return false;
     }
@@ -443,13 +440,13 @@ bool QgsAggregateMappingWidget::removeSelectedFields()
 
 bool QgsAggregateMappingWidget::moveSelectedFieldsUp()
 {
-  if ( ! mTableView->selectionModel()->hasSelection() )
+  if ( !mTableView->selectionModel()->hasSelection() )
     return false;
 
   const std::list<int> rowsToMoveUp { selectedRows() };
   for ( const int row : rowsToMoveUp )
   {
-    if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
+    if ( !model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
     {
       return false;
     }
@@ -459,14 +456,14 @@ bool QgsAggregateMappingWidget::moveSelectedFieldsUp()
 
 bool QgsAggregateMappingWidget::moveSelectedFieldsDown()
 {
-  if ( ! mTableView->selectionModel()->hasSelection() )
+  if ( !mTableView->selectionModel()->hasSelection() )
     return false;
 
   std::list<int> rowsToMoveDown { selectedRows() };
   rowsToMoveDown.reverse();
   for ( const int row : rowsToMoveDown )
   {
-    if ( ! model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
+    if ( !model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
     {
       return false;
     }
@@ -531,13 +528,9 @@ QWidget *QgsAggregateMappingDelegate::createEditor( QWidget *parent, const QStyl
     ++i;
   }
 
-  connect( editor,
-           qOverload<int >( &QComboBox::currentIndexChanged ),
-           this,
-           [ = ]( int currentIndex )
-  {
+  connect( editor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int currentIndex ) {
     Q_UNUSED( currentIndex )
-    const_cast< QgsAggregateMappingDelegate *>( this )->emit commitData( editor );
+    const_cast<QgsAggregateMappingDelegate *>( this )->emit commitData( editor );
   } );
 
   return editor;
@@ -546,7 +539,7 @@ QWidget *QgsAggregateMappingDelegate::createEditor( QWidget *parent, const QStyl
 void QgsAggregateMappingDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
-  if ( ! editorWidget )
+  if ( !editorWidget )
     return;
 
   const QVariant value = index.model()->data( index, Qt::EditRole );
@@ -556,10 +549,10 @@ void QgsAggregateMappingDelegate::setEditorData( QWidget *editor, const QModelIn
 void QgsAggregateMappingDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
-  if ( ! editorWidget )
+  if ( !editorWidget )
     return;
 
-  const QVariant currentValue = editorWidget->currentData( );
+  const QVariant currentValue = editorWidget->currentData();
   model->setData( index, currentValue, Qt::EditRole );
 }
 
@@ -567,8 +560,7 @@ const QStringList QgsAggregateMappingDelegate::aggregates()
 {
   static QStringList sAggregates;
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
+  std::call_once( initialized, [=]() {
     sAggregates << QStringLiteral( "first_value" )
                 << QStringLiteral( "last_value" );
 

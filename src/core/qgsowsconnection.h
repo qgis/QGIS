@@ -149,7 +149,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     /**
      * Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri \a uri.
      * Connection settings are taken from the specified QSettings \a settingsKey.
-     * \deprecated since QGIS 3.26 use addWmsWcsConnectionSettings with service and connection name parameters
+     * \deprecated QGIS 3.26. Use addWmsWcsConnectionSettings with service and connection name parameters.
      */
     Q_DECL_DEPRECATED static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) SIP_DEPRECATED;
 
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     /**
      * Adds uri parameters relating to the settings for a WFS connection to a QgsDataSourceUri \a uri.
      * Connection settings are taken from the specified QSettings \a settingsKey.
-     * \deprecated since QGIS 3.26 use addWfsConnectionSettings with service and connection name parameters
+     * \deprecated QGIS 3.26. Use addWfsConnectionSettings with service and connection name parameters.
      */
     Q_DECL_DEPRECATED static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey ) SIP_DEPRECATED;
 

@@ -32,10 +32,10 @@ QString QgsClassificationQuantile::id() const
   return QStringLiteral( "Quantile" );
 }
 
-QgsClassificationMethod *QgsClassificationQuantile::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationQuantile::clone() const
 {
-  QgsClassificationQuantile *c = new QgsClassificationQuantile();
-  copyBase( c );
+  std::unique_ptr<QgsClassificationQuantile > c = std::make_unique< QgsClassificationQuantile >();
+  copyBase( c.get() );
   return c;
 }
 
@@ -46,10 +46,11 @@ QIcon QgsClassificationQuantile::icon() const
 
 
 QList<double> QgsClassificationQuantile::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses )
+    const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( minimum )
   Q_UNUSED( maximum )
+  Q_UNUSED( error )
 
   // q-th quantile of a data set:
   // value where q fraction of data is below and (1-q) fraction is above this value

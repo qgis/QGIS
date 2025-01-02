@@ -22,6 +22,30 @@ QgsNewsFeedModel.Link.__doc__ = "Optional entry URL link"
 QgsNewsFeedModel.Sticky = QgsNewsFeedModel.CustomRole.Sticky
 QgsNewsFeedModel.Sticky.is_monkey_patched = True
 QgsNewsFeedModel.Sticky.__doc__ = "Whether entry is sticky"
-QgsNewsFeedModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsNewsFeedModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``Key``: ' + QgsNewsFeedModel.CustomRole.Key.__doc__ + '\n' + '* ``Title``: ' + QgsNewsFeedModel.CustomRole.Title.__doc__ + '\n' + '* ``Content``: ' + QgsNewsFeedModel.CustomRole.Content.__doc__ + '\n' + '* ``ImageUrl``: ' + QgsNewsFeedModel.CustomRole.ImageUrl.__doc__ + '\n' + '* ``Image``: ' + QgsNewsFeedModel.CustomRole.Image.__doc__ + '\n' + '* ``Link``: ' + QgsNewsFeedModel.CustomRole.Link.__doc__ + '\n' + '* ``Sticky``: ' + QgsNewsFeedModel.CustomRole.Sticky.__doc__
+QgsNewsFeedModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsNewsFeedModel.Role
+
+.. versionadded:: 3.36
+
+* ``Key``: Entry unique key
+* ``Title``: Entry title
+* ``Content``: Entry content
+* ``ImageUrl``: Optional entry image URL
+* ``Image``: Optional entry image
+* ``Link``: Optional entry URL link
+* ``Sticky``: Whether entry is sticky
+
+"""
 # --
 QgsNewsFeedModel.CustomRole.baseClass = QgsNewsFeedModel
+try:
+    QgsNewsFeedModel.__group__ = ['network']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsNewsFeedProxyModel.__group__ = ['network']
+except (NameError, AttributeError):
+    pass

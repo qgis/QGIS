@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/core/qgseditorwidgetwrapper.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,6 @@ for their corresponding values and emit valuesChanged signal.
 #include "qgseditorwidgetwrapper.h"
 %End
   public:
-
     enum ConstraintResult /BaseType=IntEnum/
     {
       ConstraintResultPass,
@@ -235,8 +234,9 @@ Emit this signal, whenever the value changed.
 
 :param value: The new value
 
-.. deprecated:: QGIS 3.10
-   use valuesChanged signal instead
+.. deprecated:: 3.10
+
+   Use valuesChanged signal instead.
 %End
 
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues = QVariantList() );
@@ -279,15 +279,14 @@ Is forwarded to the slot :py:func:`~QgsEditorWidgetWrapper.setValues`
 %End
 
 
-    virtual void setValue( const QVariant &value ) /Deprecated/;
+    virtual void setValue( const QVariant &value ) /Deprecated="Since 3.10. "/;
 %Docstring
 Is called when the value of the widget needs to be changed. Updates the widget representation
 to reflect the new value.
 
 :param value: The new value of the attribute
 
-.. deprecated:: QGIS 3.10
-  
+.. deprecated:: 3.10
 %End
 
     void setValues( const QVariant &value, const QVariantList &additionalValues );
@@ -318,7 +317,6 @@ depend on the parent form scope.
 %End
 
   protected:
-
     virtual void updateConstraintWidgetStatus();
 %Docstring
 This should update the widget with a visual cue if a constraint status
@@ -366,5 +364,5 @@ attribute ``attributeName`` to ``attributeValue``
  *                                                                      *
  * src/gui/editorwidgets/core/qgseditorwidgetwrapper.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/elevation/qgsterrainprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -139,9 +139,6 @@ Returns the vertical ``offset`` value, used for adjusting the heights from the t
   protected:
 
     QgsAbstractTerrainProvider();
-%Docstring
-Constructor for QgsAbstractTerrainProvider.
-%End
 
 
     void writeCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
@@ -175,9 +172,6 @@ A terrain provider where the terrain is a simple flat surface.
   public:
 
     QgsFlatTerrainProvider();
-%Docstring
-Constructor for QgsFlatTerrainProvider.
-%End
 
     virtual QString type() const;
 
@@ -211,9 +205,6 @@ A terrain provider where the terrain source is a raster DEM layer.
   public:
 
     QgsRasterDemTerrainProvider();
-%Docstring
-Constructor for QgsRasterDemTerrainProvider.
-%End
 
 
     virtual QString type() const;
@@ -267,9 +258,6 @@ A terrain provider that uses the Z values of a mesh layer to build a terrain sur
   public:
 
     QgsMeshTerrainProvider();
-%Docstring
-Constructor for QgsMeshTerrainProvider.
-%End
 
 
     virtual QString type() const;
@@ -312,5 +300,5 @@ Returns the mesh layer to be used as the terrain source.
  *                                                                      *
  * src/core/elevation/qgsterrainprovider.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

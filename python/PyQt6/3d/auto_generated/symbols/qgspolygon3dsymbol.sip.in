@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/symbols/qgspolygon3dsymbol.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,9 +27,6 @@ class QgsPolygon3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 %End
   public:
     QgsPolygon3DSymbol();
-%Docstring
-Constructor for QgsPolygon3DSymbol
-%End
     ~QgsPolygon3DSymbol();
 
     virtual QString type() const;
@@ -40,7 +37,7 @@ Constructor for QgsPolygon3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
@@ -70,19 +67,21 @@ Returns method that determines how altitude is bound to individual vertices
 Sets method that determines how altitude is bound to individual vertices
 %End
 
- float height() const /Deprecated/;
+ float height() const /Deprecated="Since 3.36. Use offset() instead."/;
 %Docstring
 Returns height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
+.. deprecated:: 3.36
+
    Use :py:func:`~QgsPolygon3DSymbol.offset` instead.
 %End
 
- void setHeight( float height ) /Deprecated/;
+ void setHeight( float height ) /Deprecated="Since 3.36. Use setOffset() instead."/;
 %Docstring
 Sets height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
+.. deprecated:: 3.36
+
    Use :py:func:`~QgsPolygon3DSymbol.setOffset` instead.
 %End
 
@@ -218,5 +217,5 @@ Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 fo
  *                                                                      *
  * src/3d/symbols/qgspolygon3dsymbol.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

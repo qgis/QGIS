@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/georeferencing/qgsvectorwarper.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,9 +21,7 @@ Vector layer warper which warps vector layers based on a list of source and dest
 #include "qgsvectorwarper.h"
 %End
   public:
-
-    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
-                              const QgsCoordinateReferenceSystem &destinationCrs );
+    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs );
 %Docstring
 Constructor for QgsVectorWarper.
 
@@ -32,9 +30,7 @@ Constructor for QgsVectorWarper.
 :param destinationCrs: target CRS for transformed features
 %End
 
-    bool transformFeatures( QgsFeatureIterator &iterator, QgsFeatureSink *sink,
-                            const QgsCoordinateTransformContext &context,
-                            QgsFeedback *feedback = 0 ) const;
+    bool transformFeatures( QgsFeatureIterator &iterator, QgsFeatureSink *sink, const QgsCoordinateTransformContext &context, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Transforms the features from ``iterator`` and adds the results to the specified ``sink``.
 
@@ -63,11 +59,7 @@ A task for warping a vector layer in a background thread.
 #include "qgsvectorwarper.h"
 %End
   public:
-
-    QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
-                         const QgsCoordinateReferenceSystem &destinationCrs,
-                         QgsVectorLayer *layer,
-                         const QString &fileName );
+    QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs, QgsVectorLayer *layer, const QString &fileName );
 %Docstring
 Constructor for QgsVectorWarperTask.
 
@@ -99,7 +91,6 @@ Returns the descriptive error message, if an error occurred.
 %End
 
   protected:
-
     virtual bool run();
 
 
@@ -111,5 +102,5 @@ Returns the descriptive error message, if an error occurred.
  *                                                                      *
  * src/analysis/georeferencing/qgsvectorwarper.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

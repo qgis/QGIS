@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgsauthconfigeditor.h"
+#include "moc_qgsauthconfigeditor.cpp"
+#include "qgsauthconfigurationstoragedb.h"
 #include "ui_qgsauthconfigeditor.h"
 
 #include <QMenu>
@@ -48,8 +50,25 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     setShowUtilitiesButton( showUtilities );
 
-    mConfigModel = new QSqlTableModel( this, QgsApplication::authManager()->authDatabaseConnection() );
-    mConfigModel->setTable( QgsApplication::authManager()->authDatabaseConfigTable() );
+    Q_NOWARN_DEPRECATED_PUSH
+    const QSqlDatabase connection { QgsApplication::authManager()->authDatabaseConnection() };
+    Q_NOWARN_DEPRECATED_POP
+
+    mIsReadOnly = !QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly();
+    if ( mIsReadOnly )
+    {
+      mConfigModel = new QSqlTableModel( this, connection );
+      btnAddConfig->setEnabled( false );
+      btnEditConfig->setEnabled( false );
+      btnRemoveConfig->setEnabled( false );
+      tableViewConfigs->setEditTriggers( QAbstractItemView::EditTrigger::NoEditTriggers );
+    }
+    else
+    {
+      mConfigModel = new QSqlTableModel( this, connection );
+    }
+    mConfigModel->setTable( QgsApplication::authManager()->methodConfigTableName() );
+
     mConfigModel->select();
 
     mConfigModel->setHeaderData( 0, Qt::Horizontal, tr( "ID" ) );
@@ -61,10 +80,10 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     tableViewConfigs->setModel( mConfigModel );
     tableViewConfigs->resizeColumnsToContents();
-//    tableViewConfigs->resizeColumnToContents( 0 );
-//    tableViewConfigs->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-//    tableViewConfigs->horizontalHeader()->setResizeMode(2, QHeaderView::Interactive);
-//    tableViewConfigs->resizeColumnToContents( 3 );
+    //    tableViewConfigs->resizeColumnToContents( 0 );
+    //    tableViewConfigs->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+    //    tableViewConfigs->horizontalHeader()->setResizeMode(2, QHeaderView::Interactive);
+    //    tableViewConfigs->resizeColumnToContents( 3 );
     tableViewConfigs->hideColumn( 4 );
     tableViewConfigs->hideColumn( 5 );
 
@@ -72,20 +91,14 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     tableViewConfigs->sortByColumn( 1, Qt::AscendingOrder );
     tableViewConfigs->setSortingEnabled( true );
 
-    connect( tableViewConfigs->selectionModel(), &QItemSelectionModel::selectionChanged,
-             this, &QgsAuthConfigEditor::selectionChanged );
-
-    connect( tableViewConfigs, &QAbstractItemView::doubleClicked,
-             this, &QgsAuthConfigEditor::btnEditConfig_clicked );
+    connect( tableViewConfigs->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAuthConfigEditor::selectionChanged );
 
     if ( mRelayMessages )
     {
-      connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-               this, &QgsAuthConfigEditor::authMessageOut );
+      connect( QgsApplication::authManager(), &QgsAuthManager::messageLog, this, &QgsAuthConfigEditor::authMessageLog );
     }
 
-    connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
-             this, &QgsAuthConfigEditor::refreshTableView );
+    connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged, this, &QgsAuthConfigEditor::refreshTableView );
 
     checkSelection();
 
@@ -99,27 +112,56 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all Authentication Configurations…" ), this );
     mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase Authentication Database…" ), this );
 
-    connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::importAuthenticationConfigs );
     connect( mActionExportSelectedAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::exportSelectedAuthenticationConfigs );
     connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::setMasterPassword );
     connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedMasterPassword );
-    connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::resetMasterPassword );
     connect( mActionClearCachedAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedAuthenticationConfigs );
-    connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::removeAuthenticationConfigs );
-    connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthConfigEditor::eraseAuthenticationDatabase );
+
+    if ( !mIsReadOnly )
+    {
+      connect( tableViewConfigs, &QAbstractItemView::doubleClicked, this, &QgsAuthConfigEditor::btnEditConfig_clicked );
+
+      connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::importAuthenticationConfigs );
+      connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::resetMasterPassword );
+      connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::removeAuthenticationConfigs );
+      connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthConfigEditor::eraseAuthenticationDatabase );
+    }
+    else
+    {
+      mActionImportAuthenticationConfigs->setEnabled( false );
+      mActionSetMasterPassword->setEnabled( false );
+      mActionClearCachedMasterPassword->setEnabled( false );
+      mActionResetMasterPassword->setEnabled( false );
+      mActionClearCachedAuthConfigs->setEnabled( false );
+      mActionRemoveAuthConfigs->setEnabled( false );
+      mActionEraseAuthDatabase->setEnabled( false );
+    }
 
     mAuthUtilitiesMenu = new QMenu( this );
-    mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
-    mAuthUtilitiesMenu->addAction( mActionClearCachedMasterPassword );
-    mAuthUtilitiesMenu->addAction( mActionResetMasterPassword );
-    mAuthUtilitiesMenu->addSeparator();
+
+    if ( !mIsReadOnly )
+    {
+      mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
+      mAuthUtilitiesMenu->addAction( mActionClearCachedMasterPassword );
+      mAuthUtilitiesMenu->addAction( mActionResetMasterPassword );
+      mAuthUtilitiesMenu->addSeparator();
+    }
+
     mAuthUtilitiesMenu->addAction( mActionClearCachedAuthConfigs );
-    mAuthUtilitiesMenu->addAction( mActionRemoveAuthConfigs );
+
+    if ( !mIsReadOnly )
+      mAuthUtilitiesMenu->addAction( mActionRemoveAuthConfigs );
+
     mAuthUtilitiesMenu->addSeparator();
-    mAuthUtilitiesMenu->addAction( mActionImportAuthenticationConfigs );
+
+    if ( !mIsReadOnly )
+      mAuthUtilitiesMenu->addAction( mActionImportAuthenticationConfigs );
+
     mAuthUtilitiesMenu->addAction( mActionExportSelectedAuthenticationConfigs );
     mAuthUtilitiesMenu->addSeparator();
-    mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
+
+    if ( !mIsReadOnly )
+      mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
 
     btnAuthUtilities->setMenu( mAuthUtilitiesMenu );
     lblAuthConfigDb->setVisible( false );
@@ -166,10 +208,9 @@ void QgsAuthConfigEditor::eraseAuthenticationDatabase()
   QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), this );
 }
 
-void QgsAuthConfigEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthConfigEditor::authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level )
 {
-  const int levelint = static_cast<int>( level );
-  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
+  messageBar()->pushMessage( authtag, message, level );
 }
 
 void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
@@ -212,14 +253,12 @@ void QgsAuthConfigEditor::setRelayMessages( bool relay )
 
   if ( mRelayMessages )
   {
-    disconnect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-                this, &QgsAuthConfigEditor::authMessageOut );
+    disconnect( QgsApplication::authManager(), &QgsAuthManager::messageLog, this, &QgsAuthConfigEditor::authMessageLog );
     mRelayMessages = relay;
     return;
   }
 
-  connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
-           this, &QgsAuthConfigEditor::authMessageOut );
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageLog, this, &QgsAuthConfigEditor::authMessageLog );
   mRelayMessages = relay;
 }
 
@@ -238,9 +277,12 @@ void QgsAuthConfigEditor::selectionChanged( const QItemSelection &selected, cons
 
 void QgsAuthConfigEditor::checkSelection()
 {
-  const bool hasselection = tableViewConfigs->selectionModel()->selection().length() > 0;
-  btnEditConfig->setEnabled( hasselection );
-  btnRemoveConfig->setEnabled( hasselection );
+  if ( !mIsReadOnly )
+  {
+    const bool hasselection = tableViewConfigs->selectionModel()->selection().length() > 0;
+    btnEditConfig->setEnabled( hasselection );
+    btnRemoveConfig->setEnabled( hasselection );
+  }
 }
 
 void QgsAuthConfigEditor::btnAddConfig_clicked()
@@ -287,11 +329,11 @@ void QgsAuthConfigEditor::btnRemoveConfig_clicked()
   {
     const QString name = index.sibling( index.row(), 1 ).data().toString();
 
-    if ( QMessageBox::warning( this, tr( "Remove Configuration" ),
-                               tr( "Are you sure you want to remove '%1'?\n\n"
-                                   "Operation can NOT be undone!" ).arg( name ),
-                               QMessageBox::Ok | QMessageBox::Cancel,
-                               QMessageBox::Cancel ) == QMessageBox::Ok )
+    if ( QMessageBox::warning( this, tr( "Remove Configuration" ), tr( "Are you sure you want to remove '%1'?\n\n"
+                                                                       "Operation can NOT be undone!" )
+                                                                     .arg( name ),
+                               QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel )
+         == QMessageBox::Ok )
     {
       mConfigModel->removeRow( index.row() );
     }

@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswidgetstatehelper_p.h"
+#include "moc_qgswidgetstatehelper_p.cpp"
 #include <QWindow>
 #include <QWidget>
 #include <QEvent>
@@ -22,16 +23,14 @@
 #include "qgsguiutils.h"
 #include "qgslogger.h"
 
-QgsWidgetStateHelper::QgsWidgetStateHelper( QObject *parent ) : QObject( parent )
+QgsWidgetStateHelper::QgsWidgetStateHelper( QObject *parent )
+  : QObject( parent )
 {
-
 }
 
 bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
 {
-  if ( event->type() == QEvent::Close ||
-       event->type() == QEvent::Destroy ||
-       event->type() == QEvent::Hide )
+  if ( event->type() == QEvent::Close || event->type() == QEvent::Destroy || event->type() == QEvent::Hide )
   {
     QWidget *widget = qobject_cast<QWidget *>( object );
 

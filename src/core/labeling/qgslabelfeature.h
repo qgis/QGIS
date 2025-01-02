@@ -299,14 +299,52 @@ class CORE_EXPORT QgsLabelFeature
     /**
      * Applies to "around point" placement strategy or linestring features.
      * Distance of the label from the feature (in map units)
+     *
+     * \see setDistLabel()
+     * \see maximumDistance()
      */
     double distLabel() const { return mDistLabel; }
 
     /**
      * Applies to "around point" placement strategy or linestring features.
      * Set distance of the label from the feature (in map units)
+     *
+     * \see distLabel()
+     * \see setMaximumDistance()
      */
     void setDistLabel( double dist ) { mDistLabel = dist; }
+
+    /**
+     * Returns the maximum distance which labels are allowed to be from their corresponding points.
+     *
+     * This setting works alongside distLabel() to define a permissible
+     * range of distances at which labels can be placed from their points.
+     *
+     * The default value is 0, which indicates that no maximum is set and the that distLabel()
+     * always be respected.
+     *
+     * \see setMaximumDistance()
+     * \see distLabel()
+     *
+     * \since QGIS 3.38
+     */
+    double maximumDistance() const { return mMaximumDistance; }
+
+    /**
+     * Sets the maximum \a distance which labels are allowed to be from their corresponding points.
+     *
+     * This setting works alongside distLabel() to define a permissible
+     * range of distances at which labels can be placed from their points.
+     *
+     * The default value is 0, which indicates that no maximum is set and the that distLabel()
+     * always be respected.
+     *
+     * \see maximumDistance()
+     * \see setDistLabel()
+     *
+     * \since QGIS 3.38
+     */
+    void setMaximumDistance( double distance ) { mMaximumDistance = distance; }
 
     /**
      * Returns the priority ordered list of predefined positions for label candidates. This property
@@ -625,6 +663,22 @@ class CORE_EXPORT QgsLabelFeature
     bool allowDegradedPlacement() const { return mAllowDegradedPlacement; }
 
     /**
+     * Returns the label prioritization technique.
+     *
+     * \see setPrioritization()
+     * \since QGIS 3.38
+     */
+    Qgis::LabelPrioritization prioritization() const { return mPrioritization; }
+
+    /**
+     * Sets the label prioritization technique.
+     *
+     * \see prioritization()
+     * \since QGIS 3.26
+     */
+    void setPrioritization( Qgis::LabelPrioritization prioritization ) { mPrioritization = prioritization; }
+
+    /**
      * Sets whether the label can be placed in inferior fallback positions if it cannot otherwise
      * be placed.
      *
@@ -676,6 +730,10 @@ class CORE_EXPORT QgsLabelFeature
     QgsPointXY mPositionOffset;
     //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel = 0;
+
+    //! Maximum distance of label from the feature.
+    double mMaximumDistance = 0;
+
     //! Offset type for certain placement modes
     Qgis::LabelOffsetType mOffsetType = Qgis::LabelOffsetType::FromPoint;
     //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)
@@ -719,6 +777,7 @@ class CORE_EXPORT QgsLabelFeature
 
     Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
     bool mAllowDegradedPlacement = false;
+    Qgis::LabelPrioritization mPrioritization = Qgis::LabelPrioritization::PreferCloser;
 
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 

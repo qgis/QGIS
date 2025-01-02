@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsbrowsermodel.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -142,11 +142,12 @@ items, i.e. it does not fetch children.
 .. versionadded:: 3.6
 %End
 
- void connectItem( QgsDataItem *item ) /Deprecated/;
+ void connectItem( QgsDataItem *item ) /Deprecated="Since 3.4. This method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!)."/;
 %Docstring
 
-.. deprecated::
-   Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+.. deprecated:: 3.4
+
+   This method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
 %End
 
     bool initialized() const;
@@ -259,5 +260,5 @@ Populates the model
  *                                                                      *
  * src/core/browser/qgsbrowsermodel.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

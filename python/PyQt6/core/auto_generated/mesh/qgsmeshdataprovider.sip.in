@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -112,6 +112,7 @@ read on demand
 #include "qgsmeshdataprovider.h"
 %End
   public:
+
     virtual ~QgsMeshDataSourceInterface();
 
     bool contains( const QgsMesh::ElementType &type ) const;
@@ -167,7 +168,6 @@ Saves the ``mesh`` frame to the source.
 :param mesh: the mesh to save
 
 :return: ``True`` on success
-
 
 .. versionadded:: 3.22
 %End
@@ -304,7 +304,7 @@ Returns whether the faces are active for particular dataset
         const QVector<QgsMeshDataBlock> &datasetValues,
         const QVector<QgsMeshDataBlock> &datasetActive,
         const QVector<double> &times
-                                                      ) /Deprecated/;
+                                                      ) /Deprecated="Since 3.12.3. "/;
 %Docstring
 Creates a new dataset group from a data and
 persists it into a destination path
@@ -324,11 +324,9 @@ On success, the mesh's dataset group count is changed
 
    Doesn't work if there is ":" in the path (e.g. Windows system)
 
-
 .. versionadded:: 3.6
 
-.. deprecated::
-   QGIS 3.12.3
+.. deprecated:: 3.12.3
 %End
 
     virtual bool persistDatasetGroup( const QString &outputFilePath,
@@ -375,7 +373,6 @@ On success, the mesh's dataset group count is changed
 
 :return: ``True`` on failure, ``False`` on success
 
-
 .. versionadded:: 3.16
 %End
 
@@ -408,7 +405,6 @@ Returns a list of dataset indexes of the dataset in a specific dataset group tha
 
 :return: the dataset index
 
-
 .. versionadded:: 3.22
 %End
 
@@ -436,7 +432,7 @@ Responsible for reading native mesh data
   public:
     QgsMeshDataProvider( const QString &uri,
                          const QgsDataProvider::ProviderOptions &providerOptions,
-                         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                         Qgis::DataProviderReadFlags = Qgis::DataProviderReadFlags() );
 %Docstring
 Ctor
 %End
@@ -471,6 +467,17 @@ Closes the data provider and free every resources used
 .. versionadded:: 3.22
 %End
 
+    virtual bool removeDatasetGroup( int index ) = 0;
+%Docstring
+Remove dataset group from the mesh
+
+emits dataChanged when successful
+
+:return: ``True`` on success
+
+.. versionadded:: 3.42
+%End
+
   signals:
     void datasetGroupsAdded( int count );
 %Docstring
@@ -484,5 +491,5 @@ Emitted when some new dataset groups have been added
  *                                                                      *
  * src/core/mesh/qgsmeshdataprovider.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

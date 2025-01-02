@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      * \endcode
      */
     QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     bool isValid() const override;
     QString name() const override;
@@ -127,6 +127,9 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      * \endcode
      */
     bool addDataset( const QString &uri ) override;
+
+    bool removeDatasetGroup( int index ) override;
+
     QStringList extraDatasets() const override;
     int datasetGroupCount() const override;
     int datasetCount( int groupIndex ) const override;
@@ -194,7 +197,7 @@ class QgsMeshMemoryProviderMetadata final: public QgsProviderMetadata
   public:
     QgsMeshMemoryProviderMetadata();
     QIcon icon() const override;
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 

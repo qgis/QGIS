@@ -30,9 +30,7 @@
  */
 class QgsRotateFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsRotateFeaturesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,10 +44,9 @@ class QgsRotateFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     double mAngle = 0.0;
     bool mDynamicAngle = false;
     QgsProperty mAngleProperty;
@@ -58,12 +55,9 @@ class QgsRotateFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsPointXY mAnchor;
     QgsCoordinateReferenceSystem mAnchorCrs;
     bool mTransformedAnchor = false;
-
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMROTATE_H
-
-

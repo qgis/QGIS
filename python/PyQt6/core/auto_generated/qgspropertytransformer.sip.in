@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspropertytransformer.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -50,9 +50,6 @@ list.
     ~QgsCurveTransform();
 
     QgsCurveTransform( const QgsCurveTransform &other );
-%Docstring
-Copy constructor
-%End
 
 
     QList< QgsPointXY > controlPoints() const;
@@ -182,9 +179,6 @@ Constructor for QgsPropertyTransformer
 %End
 
     QgsPropertyTransformer( const QgsPropertyTransformer &other );
-%Docstring
-Copy constructor.
-%End
 
     virtual ~QgsPropertyTransformer();
 
@@ -292,10 +286,9 @@ Attempts to parse an expression into a corresponding property transformer.
 
 :param expression: expression to parse
 
-:return: - corresponding property transformer, or ``None`` if expression could not
-         - baseExpression: will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
-         - fieldName: will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
-         be parsed to a transformer.
+:return: - corresponding property transformer, or ``None`` if expression could not be parsed to a transformer.
+         - baseExpression: the component of the source expression which is used to calculate the input to the property transformer. This an empty string if a field reference is the transformer input.
+         - fieldName: a field name which is used to calculate the input to the property transformer. This an empty string if an expression is the transformer input.
 %End
 
   protected:
@@ -312,7 +305,7 @@ This applies any curve transforms which may exist on the transformer.
 class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
 %Docstring(signature="appended")
-QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
+:py:class:`QgsPropertyTransformer` subclass for scaling an input numeric value into an output numeric value.
 %End
 
 %TypeHeaderCode
@@ -356,9 +349,9 @@ Attempts to parse an expression into a corresponding :py:class:`QgsSizeScaleTran
 :param expression: expression to parse
 
 :return: - corresponding :py:class:`QgsSizeScaleTransformer`, or ``None`` if expression could not
-         - baseExpression: will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
-         - fieldName: will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
-         be parsed to a size scale transformer.
+           be parsed to a size scale transformer.
+         - baseExpression: the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
+         - fieldName: a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
 %End
 
     double value( double input ) const;
@@ -498,10 +491,9 @@ Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
 
 :param expression: expression to parse
 
-:return: - corresponding QgsSizeScaleTransformer, or ``None`` if expression could not
-         - baseExpression: will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
-         - fieldName: will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
-         be parsed to a size scale transformer.
+:return: - corresponding QgsSizeScaleTransformer, or ``None`` if expression could not be parsed to a size scale transformer.
+         - baseExpression: the component of the source expression which is used to calculate the input to the property transformer. This an empty string if a field reference is the transformer input.
+         - fieldName: a field name which is used to calculate the input to the property transformer. This an empty string if an expression is the transformer input.
 %End
 
     double size( double value ) const;
@@ -634,10 +626,6 @@ Constructor for QgsColorRampTransformer.
 %End
 
     QgsColorRampTransformer( const QgsColorRampTransformer &other );
-%Docstring
-Copy constructor
-%End
-
 
     virtual Type transformerType() const;
     virtual QgsColorRampTransformer *clone() const /Factory/;
@@ -717,5 +705,5 @@ to work correctly.
  *                                                                      *
  * src/core/qgspropertytransformer.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

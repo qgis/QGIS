@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsvaluerelationsearchwidgetwrapper.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ It will be used as a search widget and produces expression to look for in the la
 #include "qgsvaluerelationsearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsValueRelationSearchWidgetWrapper
@@ -70,5 +69,5 @@ Called when current value of search widget changes
  *                                                                      *
  * src/gui/editorwidgets/qgsvaluerelationsearchwidgetwrapper.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

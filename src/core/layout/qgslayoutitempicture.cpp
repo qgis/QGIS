@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitempicture.h"
+#include "moc_qgslayoutitempicture.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"
@@ -93,7 +94,7 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
     painter->setRenderHint( QPainter::RenderHint::SmoothPixmapTransform, true );
 
   //picture resizing
-  if ( mMode != FormatUnknown )
+  if ( mMode != Qgis::PictureFormat::Unknown )
   {
     double boundRectWidthMM;
     double boundRectHeightMM;
@@ -195,11 +196,11 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
       }
     }
 
-    if ( mMode == FormatSVG )
+    if ( mMode == Qgis::PictureFormat::SVG )
     {
       mSVG.render( painter, QRectF( 0, 0, boundRectWidthMM, boundRectHeightMM ) );
     }
-    else if ( mMode == FormatRaster )
+    else if ( mMode == Qgis::PictureFormat::Raster )
     {
       painter->drawImage( QRectF( 0, 0, boundRectWidthMM, boundRectHeightMM ), mImage, imageRect );
     }
@@ -348,7 +349,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   mHasExpressionError = false;
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PictureSource ) )
   {
-    mMode = FormatUnknown;
+    mMode = Qgis::PictureFormat::Unknown;
     bool ok = false;
     const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::PictureSource );
     source = sourceProperty.value( *evalContext, source, &ok );
@@ -361,7 +362,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
         QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( tr( "Picture expression eval error" ), sourceProperty.asExpression() ) );
       }
     }
-    else if ( source.type() != QVariant::ByteArray )
+    else if ( source.userType() != QMetaType::Type::QByteArray )
     {
       source = source.toString().trimmed();
       QgsDebugMsgLevel( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ), 2 );
@@ -404,11 +405,11 @@ void QgsLayoutItemPicture::loadRemotePicture( const QString &url )
     }
 
     mImage = imageReader.read();
-    mMode = FormatRaster;
+    mMode = Qgis::PictureFormat::Raster;
   }
   else
   {
-    mMode = FormatUnknown;
+    mMode = Qgis::PictureFormat::Unknown;
   }
 }
 
@@ -419,7 +420,7 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
 
   if ( !pic.exists() )
   {
-    mMode = FormatUnknown;
+    mMode = Qgis::PictureFormat::Unknown;
   }
   else
   {
@@ -439,14 +440,14 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
       {
-        mMode = FormatSVG;
+        mMode = Qgis::PictureFormat::SVG;
         const QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
         mDefaultSvgSize.setWidth( viewBox.width() );
         mDefaultSvgSize.setHeight( viewBox.height() );
       }
       else
       {
-        mMode = FormatUnknown;
+        mMode = Qgis::PictureFormat::Unknown;
       }
     }
     else
@@ -471,11 +472,11 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
 
       if ( imageReader.read( &mImage ) )
       {
-        mMode = FormatRaster;
+        mMode = Qgis::PictureFormat::Raster;
       }
       else
       {
-        mMode = FormatUnknown;
+        mMode = Qgis::PictureFormat::Unknown;
       }
     }
   }
@@ -492,20 +493,20 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
 
   switch ( mMode )
   {
-    case FormatUnknown:
+    case Qgis::PictureFormat::Unknown:
       break;
 
-    case FormatRaster:
+    case Qgis::PictureFormat::Raster:
     {
       bool fitsInCache = false;
       bool isMissing = false;
       mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, mLayout->renderContext().dpi(), -1, &isMissing );
       if ( mImage.isNull() || isMissing )
-        mMode = FormatUnknown;
+        mMode = Qgis::PictureFormat::Unknown;
       break;
     }
 
-    case FormatSVG:
+    case Qgis::PictureFormat::SVG:
     {
       const QgsExpressionContext context = createExpressionContext();
       const QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor, context, mSvgFillColor );
@@ -520,14 +521,14 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
       mSVG.load( svgContent );
       if ( mSVG.isValid() && !isMissingImage )
       {
-        mMode = FormatSVG;
+        mMode = Qgis::PictureFormat::SVG;
         const QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
         mDefaultSvgSize.setWidth( viewBox.width() );
         mDefaultSvgSize.setHeight( viewBox.height() );
       }
       else
       {
-        mMode = FormatUnknown;
+        mMode = Qgis::PictureFormat::Unknown;
       }
       break;
     }
@@ -546,25 +547,25 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   QVariant imageData( data );
   mEvaluatedPath = data.toString();
 
-  if ( mEvaluatedPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) && mMode == FormatUnknown )
+  if ( mEvaluatedPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) && mMode == Qgis::PictureFormat::Unknown )
   {
     const QByteArray base64 = mEvaluatedPath.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
     imageData = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
   }
 
-  if ( imageData.type() == QVariant::ByteArray )
+  if ( imageData.userType() == QMetaType::Type::QByteArray )
   {
     if ( mImage.loadFromData( imageData.toByteArray() ) )
     {
-      mMode = FormatRaster;
+      mMode = Qgis::PictureFormat::Raster;
     }
   }
-  else if ( mMode == FormatUnknown  && mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
+  else if ( mMode == Qgis::PictureFormat::Unknown  && mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
   {
     //remote location (unsafe way, uses QEventLoop) - for old API/project compatibility only!!
     loadRemotePicture( mEvaluatedPath );
   }
-  else if ( mMode == FormatUnknown )
+  else if ( mMode == Qgis::PictureFormat::Unknown )
   {
     //local location - for old API/project compatibility only!!
     loadLocalPicture( mEvaluatedPath );
@@ -574,28 +575,30 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
     loadPictureUsingCache( mEvaluatedPath );
   }
 
-  if ( mMode != FormatUnknown ) //make sure we start with a new QImage
+  mLoaded = false;
+  if ( mMode != Qgis::PictureFormat::Unknown ) //make sure we start with a new QImage
   {
     recalculateSize();
+    mLoaded = true;
   }
   else if ( mHasExpressionError || !mEvaluatedPath.isEmpty() )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mIsMissingImage = true;
-    if ( mOriginalMode == FormatRaster )
+    if ( mOriginalMode == Qgis::PictureFormat::Raster )
     {
       const QString badFile( QStringLiteral( ":/images/composer/missing_image.png" ) );
       QImageReader imageReader( badFile );
       if ( imageReader.read( &mImage ) )
-        mMode = FormatRaster;
+        mMode = Qgis::PictureFormat::Raster;
     }
-    else if ( mOriginalMode == FormatSVG )
+    else if ( mOriginalMode == Qgis::PictureFormat::SVG )
     {
       const QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
       mSVG.load( badFile );
       if ( mSVG.isValid() )
       {
-        mMode = FormatSVG;
+        mMode = Qgis::PictureFormat::SVG;
         const QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
         mDefaultSvgSize.setWidth( viewBox.width() );
         mDefaultSvgSize.setHeight( viewBox.height() );
@@ -608,47 +611,13 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   emit changed();
 }
 
-QRectF QgsLayoutItemPicture::boundedImageRect( double deviceWidth, double deviceHeight )
-{
-  double imageToDeviceRatio;
-  if ( mImage.width() / deviceWidth > mImage.height() / deviceHeight )
-  {
-    imageToDeviceRatio = deviceWidth / mImage.width();
-    const double height = imageToDeviceRatio * mImage.height();
-    return QRectF( 0, 0, deviceWidth, height );
-  }
-  else
-  {
-    imageToDeviceRatio = deviceHeight / mImage.height();
-    const double width = imageToDeviceRatio * mImage.width();
-    return QRectF( 0, 0, width, deviceHeight );
-  }
-}
-
-QRectF QgsLayoutItemPicture::boundedSVGRect( double deviceWidth, double deviceHeight )
-{
-  double imageToSvgRatio;
-  if ( deviceWidth / mDefaultSvgSize.width() > deviceHeight / mDefaultSvgSize.height() )
-  {
-    imageToSvgRatio = deviceHeight / mDefaultSvgSize.height();
-    const double width = mDefaultSvgSize.width() * imageToSvgRatio;
-    return QRectF( 0, 0, width, deviceHeight );
-  }
-  else
-  {
-    imageToSvgRatio = deviceWidth / mDefaultSvgSize.width();
-    const double height = mDefaultSvgSize.height() * imageToSvgRatio;
-    return QRectF( 0, 0, deviceWidth, height );
-  }
-}
-
 QSizeF QgsLayoutItemPicture::pictureSize()
 {
-  if ( mMode == FormatSVG )
+  if ( mMode == Qgis::PictureFormat::SVG )
   {
     return mDefaultSvgSize;
   }
-  else if ( mMode == FormatRaster )
+  else if ( mMode == Qgis::PictureFormat::Raster )
   {
     return QSizeF( mImage.width(), mImage.height() );
   }
@@ -683,7 +652,7 @@ void QgsLayoutItemPicture::setSvgDynamicParameters( const QMap<QString, QgsPrope
 
 void QgsLayoutItemPicture::shapeChanged()
 {
-  if ( mMode == FormatSVG && !mLoadingSvg )
+  if ( mMode == Qgis::PictureFormat::SVG && !mLoadingSvg )
   {
     mLoadingSvg = true;
     refreshPicture();
@@ -695,11 +664,15 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
 {
   const double oldRotation = mPictureRotation;
   mPictureRotation = rotation;
+  const QSizeF currentPictureSize = pictureSize();
+
+  // If the picture is not loaded yet, do not compute its rotated size
+  if ( !mLoaded || currentPictureSize == QSizeF( 0, 0 ) )
+    return;
 
   if ( mResizeMode == Zoom )
   {
     //find largest scaling of picture with this rotation which fits in item
-    const QSizeF currentPictureSize = pictureSize();
     const QRectF rotatedImageRect = QgsLayoutUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
     mPictureWidth = rotatedImageRect.width();
     mPictureHeight = rotatedImageRect.height();
@@ -707,7 +680,6 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
   }
   else if ( mResizeMode == ZoomResizeFrame )
   {
-    const QSizeF currentPictureSize = pictureSize();
     const QRectF oldRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
 
     //calculate actual size of image inside frame
@@ -764,7 +736,7 @@ void QgsLayoutItemPicture::refreshDataDefinedProperty( const QgsLayoutObject::Da
   QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
-void QgsLayoutItemPicture::setPicturePath( const QString &path, Format format )
+void QgsLayoutItemPicture::setPicturePath( const QString &path, Qgis::PictureFormat format )
 {
   mOriginalMode = format;
   mMode = format;
@@ -796,7 +768,7 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( mSvgFillColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( mSvgStrokeColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
-  elem.setAttribute( QStringLiteral( "mode" ), mOriginalMode );
+  elem.setAttribute( QStringLiteral( "mode" ), static_cast< int >( mOriginalMode ) );
 
   //rotation
   elem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
@@ -824,7 +796,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mSvgFillColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( QColor( 255, 255, 255 ) ) ) );
   mSvgStrokeColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( QColor( 0, 0, 0 ) ) ) );
   mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
-  mOriginalMode = static_cast< Format >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( FormatUnknown ) ).toInt() );
+  mOriginalMode = static_cast< Qgis::PictureFormat >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( static_cast< int >( Qgis::PictureFormat::Unknown ) ) ).toInt() );
   mMode = mOriginalMode;
 
   const QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
@@ -928,7 +900,7 @@ void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
   refreshPicture();
 }
 
-void QgsLayoutItemPicture::setMode( QgsLayoutItemPicture::Format mode )
+void QgsLayoutItemPicture::setMode( Qgis::PictureFormat mode )
 {
   if ( mOriginalMode == mode )
     return;

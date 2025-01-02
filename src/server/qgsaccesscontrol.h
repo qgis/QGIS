@@ -46,7 +46,6 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       mResolved = false;
     }
 
-    //! Constructor
     QgsAccessControl( const QgsAccessControl &copy )
     {
       mPluginsAccessControls = new QgsAccessControlFilterMap( *copy.mPluginsAccessControls );
@@ -60,8 +59,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       delete mPluginsAccessControls;
     }
 
-    //! Assignment operator
-    QgsAccessControl &operator= ( const QgsAccessControl &other )
+    QgsAccessControl &operator=( const QgsAccessControl &other )
     {
       if ( this != &other )
       {
@@ -174,7 +172,6 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 
     QMap<QString, QString> mFilterFeaturesExpressions;
     bool mResolved;
-
 };
 
 #endif

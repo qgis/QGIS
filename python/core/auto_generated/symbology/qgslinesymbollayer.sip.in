@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgslinesymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -47,6 +47,8 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 %End
 
     virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -676,24 +678,26 @@ Returns the map unit scale for the interval between symbols.
 .. seealso:: :py:func:`interval`
 %End
 
- Qgis::MarkerLinePlacement placement() const /Deprecated/;
+ Qgis::MarkerLinePlacement placement() const /Deprecated="Since 3.40. Use placements() instead."/;
 %Docstring
 Returns the placement of the symbols.
 
 .. seealso:: :py:func:`setPlacement`
 
-.. deprecated::
-   use :py:func:`~QgsTemplatedLineSymbolLayerBase.placements` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsTemplatedLineSymbolLayerBase.placements` instead.
 %End
 
- void setPlacement( Qgis::MarkerLinePlacement placement ) /Deprecated/;
+ void setPlacement( Qgis::MarkerLinePlacement placement ) /Deprecated="Since 3.40. Use setPlacements() instead."/;
 %Docstring
 Sets the ``placement`` of the symbols.
 
 .. seealso:: :py:func:`placement`
 
-.. deprecated::
-   use :py:func:`~QgsTemplatedLineSymbolLayerBase.setPlacements` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsTemplatedLineSymbolLayerBase.setPlacements` instead.
 %End
 
     Qgis::MarkerLinePlacements placements() const;
@@ -1037,21 +1041,23 @@ Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM ``element``.
     virtual void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property );
 
 
- bool rotateMarker() const /Deprecated/;
+ bool rotateMarker() const /Deprecated="Since 3.40. Use rotateSymbols() instead."/;
 %Docstring
 Shall the marker be rotated.
 
 :return: ``True`` if the marker should be rotated.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsMarkerLineSymbolLayer.rotateSymbols` instead.
 %End
 
- void setRotateMarker( bool rotate ) /Deprecated/;
+ void setRotateMarker( bool rotate ) /Deprecated="Since 3.40. Use setRotateSymbols() instead."/;
 %Docstring
 Shall the marker be rotated.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsMarkerLineSymbolLayer.setRotateSymbols` instead.
 %End
 
@@ -1358,6 +1364,8 @@ Set the line opacity.
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
+
     virtual void startRender( QgsSymbolRenderContext &context );
 
     virtual void stopRender( QgsSymbolRenderContext &context );
@@ -1420,6 +1428,8 @@ serialized in the ``properties`` map (corresponding to the output from
 %End
 
     virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -1606,5 +1616,5 @@ Sets the pen cap ``style`` used to render the line (e.g. flat, square, round, et
  *                                                                      *
  * src/core/symbology/qgslinesymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

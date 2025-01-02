@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingalgorithmconfigurationwidget.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ configuration options directly on algorithm level, in addition to parameters.
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 %End
   public:
-
     QgsProcessingAlgorithmConfigurationWidget( QWidget *parent = 0 );
 %Docstring
 Creates a new QgsProcessingAlgorithmConfigurationWidget
@@ -130,5 +129,5 @@ Check if this factory can create widgets for ``algorithm``.
  *                                                                      *
  * src/gui/processing/qgsprocessingalgorithmconfigurationwidget.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

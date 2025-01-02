@@ -70,9 +70,6 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     //! Returns layer uri or empty string if layer cannot be created
     QString uri() const { return mUri; }
 
-    //! Returns provider key
-    QString providerKey() const { return mProviderKey; }
-
     /**
      * Returns the supported CRS
      */

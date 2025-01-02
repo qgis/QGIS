@@ -8,9 +8,10 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-__author__ = 'Paul Blottiere'
-__date__ = '20/12/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Paul Blottiere"
+__date__ = "20/12/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 
@@ -20,7 +21,7 @@ from qgis.testing import unittest
 
 from utilities import unitTestDataPath
 
-DEFAULT_CACHE_SIZE = 256 * 1024 * 1024
+DEFAULT_CACHE_SIZE = 0  # Smart cache size
 
 
 class TestQgsServerSettings(unittest.TestCase):
@@ -259,5 +260,5 @@ class TestQgsServerSettings(unittest.TestCase):
         self.assertEqual(name, "QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

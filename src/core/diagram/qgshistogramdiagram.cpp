@@ -21,6 +21,8 @@
 
 #include <QPainter>
 
+const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = QStringLiteral( "Histogram" );
+
 QgsHistogramDiagram::QgsHistogramDiagram()
 {
   mCategoryBrush.setStyle( Qt::SolidPattern );
@@ -36,7 +38,7 @@ QgsHistogramDiagram *QgsHistogramDiagram::clone() const
 QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
   QSizeF size;
-  if ( feature.attributes().isEmpty() )
+  if ( feature.attributeCount() == 0 )
   {
     return size; //zero size if no attributes
   }
@@ -112,12 +114,11 @@ double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings &
 
 QString QgsHistogramDiagram::diagramName() const
 {
-  return DIAGRAM_NAME_HISTOGRAM;
+  return QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM;
 }
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c )
   QSizeF size;
 
   if ( attributes.isEmpty() )
@@ -207,7 +208,6 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     baseX += maxBleed;
     baseY -= maxBleed;
   }
-
 
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );

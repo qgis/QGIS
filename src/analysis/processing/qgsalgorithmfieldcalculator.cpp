@@ -54,7 +54,7 @@ QString QgsFieldCalculatorAlgorithm::outputName() const
 
 QList<int> QgsFieldCalculatorAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsFieldCalculatorAlgorithm::sourceFlags() const
@@ -71,44 +71,36 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
   fieldTypes.reserve( 11 );
   icons.reserve( 11 );
   for ( const auto &type :
-        std::vector < std::pair< QVariant::Type, QVariant::Type > >
-{
-  {QVariant::Double, QVariant::Invalid },
-  {QVariant::Int, QVariant::Invalid },
-  {QVariant::String, QVariant::Invalid },
-  {QVariant::Date, QVariant::Invalid },
-  {QVariant::Time, QVariant::Invalid },
-  {QVariant::DateTime, QVariant::Invalid },
-  {QVariant::Bool, QVariant::Invalid },
-  {QVariant::ByteArray, QVariant::Invalid },
-  {QVariant::StringList, QVariant::Invalid },
-  {QVariant::List, QVariant::Int },
-  {QVariant::List, QVariant::Double }
-} )
+        std::vector<std::pair<QMetaType::Type, QMetaType::Type>> {
+          { QMetaType::Type::Double, QMetaType::Type::UnknownType },
+          { QMetaType::Type::Int, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QString, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QDate, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QTime, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QDateTime, QMetaType::Type::UnknownType },
+          { QMetaType::Type::Bool, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QByteArray, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QStringList, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QVariantList, QMetaType::Type::Int },
+          { QMetaType::Type::QVariantList, QMetaType::Type::Double }
+        } )
   {
     fieldTypes << QgsVariantUtils::typeToDisplayString( type.first, type.second );
     icons << QgsFields::iconForFieldType( type.first, type.second );
   }
 
-  std::unique_ptr< QgsProcessingParameterString > fieldName = std::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
-  std::unique_ptr< QgsProcessingParameterEnum > fieldType = std::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
+  std::unique_ptr<QgsProcessingParameterString> fieldName = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
+  std::unique_ptr<QgsProcessingParameterEnum> fieldType = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
   fieldType->setMetadata(
-  {
-    QVariantMap( {{
-        QStringLiteral( "widget_wrapper" ),
-        QVariantMap(
-        { {
-            QStringLiteral( "icons" ), icons
-          }}
-        )
-      }} )
-  } );
+    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
+    }
+  );
 
-  std::unique_ptr< QgsProcessingParameterNumber > fieldLength = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr< QgsProcessingParameterExpression > expression = std::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
+  std::unique_ptr<QgsProcessingParameterNumber> fieldLength = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> fieldPrecision = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
+  std::unique_ptr<QgsProcessingParameterExpression> expression = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
 
-  expression->setMetadata( QVariantMap( {{"inlineEditor", true}} ) );
+  expression->setMetadata( QVariantMap( { { "inlineEditor", true } } ) );
 
   addParameter( fieldName.release() );
   addParameter( fieldType.release() );
@@ -138,7 +130,7 @@ QgsFieldCalculatorAlgorithm *QgsFieldCalculatorAlgorithm::createInstance() const
 
 bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
 
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
@@ -149,45 +141,45 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
-  QVariant::Type fieldType = QVariant::Type::String;
-  QVariant::Type fieldSubType = QVariant::Type::Invalid;
+  QMetaType::Type fieldType = QMetaType::Type::QString;
+  QMetaType::Type fieldSubType = QMetaType::Type::UnknownType;
   switch ( fieldTypeIdx )
   {
     case 0: // Float
-      fieldType = QVariant::Double;
+      fieldType = QMetaType::Type::Double;
       break;
     case 1: // Integer
-      fieldType = QVariant::Int;
+      fieldType = QMetaType::Type::Int;
       break;
     case 2: // String
-      fieldType = QVariant::String;
+      fieldType = QMetaType::Type::QString;
       break;
     case 3: // Date
-      fieldType = QVariant::Date;
+      fieldType = QMetaType::Type::QDate;
       break;
     case 4: // Time
-      fieldType = QVariant::Time;
+      fieldType = QMetaType::Type::QTime;
       break;
     case 5: // DateTime
-      fieldType = QVariant::DateTime;
+      fieldType = QMetaType::Type::QDateTime;
       break;
     case 6: // Boolean
-      fieldType = QVariant::Bool;
+      fieldType = QMetaType::Type::Bool;
       break;
     case 7: // Binary
-      fieldType = QVariant::ByteArray;
+      fieldType = QMetaType::Type::QByteArray;
       break;
     case 8: // StringList
-      fieldType = QVariant::StringList;
-      fieldSubType = QVariant::String;
+      fieldType = QMetaType::Type::QStringList;
+      fieldSubType = QMetaType::Type::QString;
       break;
     case 9: // IntegerList
-      fieldType = QVariant::List;
-      fieldSubType = QVariant::Int;
+      fieldType = QMetaType::Type::QVariantList;
+      fieldSubType = QMetaType::Type::Int;
       break;
     case 10: // DoubleList
-      fieldType = QVariant::List;
-      fieldSubType = QVariant::Double;
+      fieldType = QMetaType::Type::QVariantList;
+      fieldSubType = QMetaType::Type::Double;
       break;
   }
 
@@ -232,7 +224,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   if ( mExpression.hasParserError() )
     throw QgsProcessingException( QObject::tr( "Parser error with formula expression \"%2\": %3" )
-                                  .arg( expressionString, mExpression.parserErrorString() ) );
+                                    .arg( expressionString, mExpression.parserErrorString() ) );
 
   mExpression.prepare( &mExpressionContext );
 
@@ -261,7 +253,7 @@ QgsFeatureList QgsFieldCalculatorAlgorithm::processFeature( const QgsFeature &fe
     if ( mExpression.hasEvalError() )
     {
       throw QgsProcessingException( QObject::tr( "Evaluation error in expression \"%1\": %2" )
-                                    .arg( mExpression.expression(), mExpression.evalErrorString() ) );
+                                      .arg( mExpression.expression(), mExpression.evalErrorString() ) );
     }
 
     attributes[mFieldIdx] = value;

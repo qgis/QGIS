@@ -15,6 +15,7 @@
 
 
 #include "qgssettingseditorwidgetwrapperimpl.h"
+#include "moc_qgssettingseditorwidgetwrapperimpl.cpp"
 #include "qgslogger.h"
 #include "qgssettingsentryimpl.h"
 #include "qgscolorbutton.h"
@@ -24,15 +25,15 @@
 
 
 // *******
-// String
+// String with line edit (= default)
 // *******
 
-QString QgsSettingsStringEditorWidgetWrapper::id() const
+QString QgsSettingsStringLineEditWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::String ) ) );
 }
 
-bool QgsSettingsStringEditorWidgetWrapper::setWidgetValue( const QString &value ) const
+bool QgsSettingsStringLineEditWrapper::setWidgetValue( const QString &value ) const
 {
   if ( mEditor )
   {
@@ -46,7 +47,14 @@ bool QgsSettingsStringEditorWidgetWrapper::setWidgetValue( const QString &value 
   return false;
 }
 
-bool QgsSettingsStringEditorWidgetWrapper::setSettingFromWidget() const
+void QgsSettingsStringLineEditWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+    this->mSetting->setValue( text, this->mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsStringLineEditWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -60,7 +68,7 @@ bool QgsSettingsStringEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-QString QgsSettingsStringEditorWidgetWrapper::valueFromWidget() const
+QString QgsSettingsStringLineEditWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
@@ -74,15 +82,83 @@ QString QgsSettingsStringEditorWidgetWrapper::valueFromWidget() const
 }
 
 // *******
+// String with combo box
+// *******
+
+QString QgsSettingsStringComboBoxWrapper::id() const
+{
+  return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::String ) ) );
+}
+
+bool QgsSettingsStringComboBoxWrapper::setWidgetValue( const QString &value ) const
+{
+  if ( mEditor )
+  {
+    int idx = mMode == Mode::Data ? mEditor->findData( value ) : mEditor->findText( value );
+    if ( idx >= 0 )
+    {
+      mEditor->setCurrentIndex( idx );
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+  }
+  return false;
+}
+
+void QgsSettingsStringComboBoxWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( mEditor, &QComboBox::currentTextChanged, this, [=]( const QString &currentText ) {
+    QString textValue = currentText;
+    if ( mMode == Mode::Data )
+      textValue = mEditor->currentData().toString();
+    mSetting->setValue( textValue, mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsStringComboBoxWrapper::setSettingFromWidget() const
+{
+  if ( mEditor )
+  {
+    mSetting->setValue( valueFromWidget(), mDynamicKeyPartList );
+    return true;
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+  }
+  return false;
+}
+
+QString QgsSettingsStringComboBoxWrapper::valueFromWidget() const
+{
+  if ( mEditor )
+  {
+    return mMode == Mode::Data ? mEditor->currentData().toString() : mEditor->currentText();
+  }
+  else
+  {
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
+  }
+  return QString();
+}
+
+// *******
 // Boolean
 // *******
 
-QString QgsSettingsBoolEditorWidgetWrapper::id() const
+QString QgsSettingsBoolCheckBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Bool ) ) );
 }
 
-bool QgsSettingsBoolEditorWidgetWrapper::setWidgetValue( const bool &value ) const
+bool QgsSettingsBoolCheckBoxWrapper::setWidgetValue( const bool &value ) const
 {
   if ( mEditor )
   {
@@ -96,7 +172,14 @@ bool QgsSettingsBoolEditorWidgetWrapper::setWidgetValue( const bool &value ) con
   return false;
 }
 
-bool QgsSettingsBoolEditorWidgetWrapper::setSettingFromWidget() const
+void QgsSettingsBoolCheckBoxWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QCheckBox::clicked, this, [=]( bool checked ) {
+    this->mSetting->setValue( checked, this->mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsBoolCheckBoxWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -110,9 +193,8 @@ bool QgsSettingsBoolEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-bool QgsSettingsBoolEditorWidgetWrapper::valueFromWidget() const
+bool QgsSettingsBoolCheckBoxWrapper::valueFromWidget() const
 {
-
   if ( mEditor )
   {
     return mEditor->isChecked();
@@ -129,12 +211,12 @@ bool QgsSettingsBoolEditorWidgetWrapper::valueFromWidget() const
 // Integer
 // *******
 
-QString QgsSettingsIntegerEditorWidgetWrapper::id() const
+QString QgsSettingsIntegerSpinBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Integer ) ) );
 }
 
-bool QgsSettingsIntegerEditorWidgetWrapper::setWidgetValue( const int &value ) const
+bool QgsSettingsIntegerSpinBoxWrapper::setWidgetValue( const int &value ) const
 {
   if ( mEditor )
   {
@@ -148,7 +230,14 @@ bool QgsSettingsIntegerEditorWidgetWrapper::setWidgetValue( const int &value ) c
   return false;
 }
 
-bool QgsSettingsIntegerEditorWidgetWrapper::setSettingFromWidget() const
+void QgsSettingsIntegerSpinBoxWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int value ) {
+    this->mSetting->setValue( value, this->mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsIntegerSpinBoxWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -162,7 +251,7 @@ bool QgsSettingsIntegerEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-int QgsSettingsIntegerEditorWidgetWrapper::valueFromWidget() const
+int QgsSettingsIntegerSpinBoxWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
@@ -176,17 +265,16 @@ int QgsSettingsIntegerEditorWidgetWrapper::valueFromWidget() const
 }
 
 
-
 // *******
 // Double
 // *******
 
-QString QgsSettingsDoubleEditorWidgetWrapper::id() const
+QString QgsSettingsDoubleSpinBoxWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Double ) ) );
 }
 
-bool QgsSettingsDoubleEditorWidgetWrapper::setWidgetValue( const double &value ) const
+bool QgsSettingsDoubleSpinBoxWrapper::setWidgetValue( const double &value ) const
 {
   if ( mEditor )
   {
@@ -200,7 +288,14 @@ bool QgsSettingsDoubleEditorWidgetWrapper::setWidgetValue( const double &value )
   return false;
 }
 
-bool QgsSettingsDoubleEditorWidgetWrapper::setSettingFromWidget() const
+void QgsSettingsDoubleSpinBoxWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+    this->mSetting->setValue( value, this->mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsDoubleSpinBoxWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -214,7 +309,7 @@ bool QgsSettingsDoubleEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-double QgsSettingsDoubleEditorWidgetWrapper::valueFromWidget() const
+double QgsSettingsDoubleSpinBoxWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
@@ -231,12 +326,12 @@ double QgsSettingsDoubleEditorWidgetWrapper::valueFromWidget() const
 // Color
 // *******
 
-QString QgsSettingsColorEditorWidgetWrapper::id() const
+QString QgsSettingsColorButtonWrapper::id() const
 {
   return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Color ) ) );
 }
 
-bool QgsSettingsColorEditorWidgetWrapper::setWidgetValue( const QColor &value ) const
+bool QgsSettingsColorButtonWrapper::setWidgetValue( const QColor &value ) const
 {
   if ( mEditor )
   {
@@ -250,7 +345,7 @@ bool QgsSettingsColorEditorWidgetWrapper::setWidgetValue( const QColor &value ) 
   return false;
 }
 
-void QgsSettingsColorEditorWidgetWrapper::configureEditorPrivateImplementation()
+void QgsSettingsColorButtonWrapper::configureEditorPrivateImplementation()
 {
   if ( mEditor )
   {
@@ -262,7 +357,14 @@ void QgsSettingsColorEditorWidgetWrapper::configureEditorPrivateImplementation()
   }
 }
 
-bool QgsSettingsColorEditorWidgetWrapper::setSettingFromWidget() const
+void QgsSettingsColorButtonWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QgsColorButton::colorChanged, this, [=]( const QColor &color ) {
+    this->mSetting->setValue( color, this->mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsColorButtonWrapper::setSettingFromWidget() const
 {
   if ( mEditor )
   {
@@ -276,7 +378,7 @@ bool QgsSettingsColorEditorWidgetWrapper::setSettingFromWidget() const
   return false;
 }
 
-QColor QgsSettingsColorEditorWidgetWrapper::valueFromWidget() const
+QColor QgsSettingsColorButtonWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {

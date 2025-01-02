@@ -23,9 +23,22 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1,0,0">
      <item>
-      <widget class="QPushButton" name="mClearButton">
+      <widget class="QPushButton" name="mExecuteButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
-        <string>Clear</string>
+        <string>Execute</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mStopButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Stop</string>
        </property>
       </widget>
      </item>
@@ -57,22 +70,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mExecuteButton">
-       <property name="enabled">
-        <bool>false</bool>
+      <widget class="QToolButton" name="mClearButton">
+       <property name="toolTip">
+        <string>Clear</string>
        </property>
        <property name="text">
-        <string>Execute</string>
+        <string>Clear</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mStopButton">
-       <property name="enabled">
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/console/iconClearConsole.svg</normaloff>:/images/themes/default/console/iconClearConsole.svg</iconset>
+       </property>
+       <property name="autoRaise">
         <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Stop</string>
        </property>
       </widget>
      </item>
@@ -244,6 +254,8 @@
   <tabstop>mLayerNameLineEdit</tabstop>
   <tabstop>mLoadLayerPushButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

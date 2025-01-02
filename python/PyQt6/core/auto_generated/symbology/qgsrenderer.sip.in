@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsrenderer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -47,6 +47,9 @@ typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
 
 class QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+Abstract base class for all 2D vector feature renderers.
+%End
 
 %TypeHeaderCode
 #include "qgsrenderer.h"
@@ -137,7 +140,6 @@ be followed by a corresponding call to :py:func:`~QgsFeatureRenderer.stopRender`
 
 .. seealso:: :py:func:`stopRender`
 
-
 .. warning::
 
    This method is not thread safe. Before calling :py:func:`~QgsFeatureRenderer.startRender` in a non-main thread,
@@ -214,7 +216,7 @@ and generate a proper subclass.
 :return: A copy of this renderer
 %End
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 %Docstring
 Render a feature using this renderer in the given context.
 Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
@@ -258,6 +260,13 @@ E.g. if you only want to deal with visible features:
          deal_with_my_feature()
      else:
          skip_the_curren_feature()
+%End
+
+    virtual Qgis::FeatureRendererFlags flags() const;
+%Docstring
+Returns flags associated with the renderer.
+
+.. versionadded:: 3.40
 %End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
@@ -359,11 +368,9 @@ the features displayed using that key.
 :param layer: associated vector layer
 
 :return: - QGIS expression string for matching features with the specified key
-         - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
-
+         - ok: ``True`` if legend key was successfully converted to a filter expression
 
 .. seealso:: :py:func:`legendKeys`
-
 
 .. versionadded:: 3.26
 %End
@@ -497,7 +504,6 @@ Sets the renderer's property collection, used for data defined overrides.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -624,10 +630,21 @@ Currently clones
 .. versionadded:: 3.22
 %End
 
+    double maximumExtentBuffer( QgsRenderContext &context ) const;
+%Docstring
+Returns the maximum extent buffer found in this renderer's symbols.
+
+.. note::
+
+   Returns 0 if the renderer doesn't have any symbols.
+
+.. versionadded:: 3.42
+%End
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
-    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker ) throw( QgsCsException );
+    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker );
 %Docstring
 Render the ``feature`` with the ``symbol`` using ``context``.
 Use ``layer`` to specify the symbol layer, ``selected`` to
@@ -705,5 +722,5 @@ QFlags<QgsFeatureRenderer::Capability> operator|(QgsFeatureRenderer::Capability 
  *                                                                      *
  * src/core/symbology/qgsrenderer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

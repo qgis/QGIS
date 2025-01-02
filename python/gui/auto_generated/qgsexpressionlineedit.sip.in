@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsexpressionlineedit.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,7 +29,6 @@ is too complex or large for use.
 #include "qgsexpressionlineedit.h"
 %End
   public:
-
     explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsExpressionLineEdit.
@@ -113,7 +112,7 @@ Determines if the current expression is valid.
 
 
 :return: - ``True`` if the current expression is valid.
-         - expressionError: will be set to any generated error message 
+         - expressionError: any generated error message 
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
@@ -146,7 +145,6 @@ Sets the current expression to show in the widget.
 %End
 
   protected:
-
     virtual void changeEvent( QEvent *event );
 
 
@@ -157,5 +155,5 @@ Sets the current expression to show in the widget.
  *                                                                      *
  * src/gui/qgsexpressionlineedit.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

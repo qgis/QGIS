@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/mesh/qgsmeshtriangulation.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,12 +24,7 @@ Class that handles mesh creation with Delaunay constrained triangulation
 #include "qgsmeshtriangulation.h"
 %End
   public:
-
     QgsMeshTriangulation();
-%Docstring
-Constructor
-%End
-
     ~QgsMeshTriangulation();
 
     bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = 0, long featureCount = 1 );
@@ -80,7 +75,7 @@ Sets the coordinate reference system used for the triangulation
 };
 
 
-class QgsMeshZValueDatasetGroup: QgsMeshDatasetGroup
+class QgsMeshZValueDatasetGroup : QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
 
@@ -93,7 +88,6 @@ Convenient class that can be used to obtain a datasetgroup on vertices that repr
 #include "qgsmeshtriangulation.h"
 %End
   public:
-
     QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh );
 %Docstring
 Constructor
@@ -133,11 +127,7 @@ a Delaunay triangulation on provided existing vertex.
 #include "qgsmeshtriangulation.h"
 %End
   public:
-
     QgsMeshEditingDelaunayTriangulation();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 
@@ -149,5 +139,5 @@ Constructor
  *                                                                      *
  * src/analysis/mesh/qgsmeshtriangulation.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

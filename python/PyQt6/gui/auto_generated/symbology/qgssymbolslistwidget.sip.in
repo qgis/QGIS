@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssymbolslistwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,7 +18,6 @@ class QgsSymbolsListWidget : QWidget
 #include "qgssymbolslistwidget.h"
 %End
   public:
-
     QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsSymbolsListWidget.
@@ -68,17 +67,18 @@ Returns the vector layer associated with the widget.
     void updateDataDefinedLineWidth();
 
   signals:
+
     void changed();
+%Docstring
+Emitted when the symbol is modified in the widget.
+%End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/symbology/qgssymbolslistwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

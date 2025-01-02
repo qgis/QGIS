@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/qgsrasterpyramidsoptionswidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsRasterPyramidsOptionsWidget: QWidget
+class QgsRasterPyramidsOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget to select format-specific raster saving options
@@ -20,7 +20,6 @@ A widget to select format-specific raster saving options
 #include "qgsrasterpyramidsoptionswidget.h"
 %End
   public:
-
     QgsRasterPyramidsOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &provider = "gdal" );
 %Docstring
 Constructor for QgsRasterPyramidsOptionsWidget
@@ -50,8 +49,16 @@ Returns the selected pyramid format.
     void setOverviewList();
     void updateUi();
   signals:
+
     void overviewListChanged();
-    void someValueChanged(); /* emitted when any other setting changes */
+%Docstring
+Emitted when the list of configured overviews is changed.
+%End
+
+    void someValueChanged();
+%Docstring
+Emitted when settings are changed in the widget.
+%End
 
 };
 
@@ -61,5 +68,5 @@ Returns the selected pyramid format.
  *                                                                      *
  * src/gui/qgsrasterpyramidsoptionswidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

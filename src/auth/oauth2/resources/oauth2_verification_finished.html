@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-<script>
-// push any fragment as a query string to redirect server
-window.onload = function hashFunction() {
-    var query = location.hash.substr(1)
-    if (query != "") {
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "/?" + query, true);
-        xhttp.send();
-    }
-}
-</script>
-</head>
-<body>
+  <head>
+    <script>
+      // push any fragment as a query string to redirect server
+      window.onload = function hashFunction() {
+        var query = location.hash.substr(1);
+        if (query != "") {
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("GET", "/?" + query, true);
+          xhttp.send();
+        }
+      };
+    </script>
+    <style>
+      body {
+        font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+          "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Replacement of below placeholders is done by src/auth/oauth2/core/qgso2.cpp -->
 
-<h2>QGIS OAuth2 verification has finished</h2>
+    <h2>{{ H2_TITLE }}</h2>
 
-<h3>If you have not been returned to QGIS, bring the application to the forefront.</h3>
+    <h3>{{ H3_TITLE }}</h3>
 
-<p><a href="#" onclick="window.close()">Close window</a></p>
-
-</body>
+    <p><a href="#" onclick="window.close()">{{ CLOSE_WINDOW }}</a></p>
+  </body>
 </html>

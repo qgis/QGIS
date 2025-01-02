@@ -187,9 +187,7 @@ class CORE_EXPORT Qgs3DSymbolRegistry
     Qgs3DSymbolRegistry();
     ~Qgs3DSymbolRegistry();
 
-    //! Qgs3DSymbolRegistry cannot be copied.
     Qgs3DSymbolRegistry( const Qgs3DSymbolRegistry &rh ) = delete;
-    //! Qgs3DSymbolRegistry cannot be copied.
     Qgs3DSymbolRegistry &operator=( const Qgs3DSymbolRegistry &rh ) = delete;
 
     //! Returns metadata for specified symbol \a type. Returns NULLPTR if not found

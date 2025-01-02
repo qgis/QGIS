@@ -3,14 +3,14 @@
  *                                                                      *
  * src/server/qgsfcgiserverrequest.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsFcgiServerRequest: QgsServerRequest
+class QgsFcgiServerRequest : QgsServerRequest
 {
 %Docstring(signature="appended")
 Class defining fcgi request
@@ -49,5 +49,5 @@ Returns the header value
  *                                                                      *
  * src/server/qgsfcgiserverrequest.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

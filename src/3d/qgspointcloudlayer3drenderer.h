@@ -27,8 +27,7 @@
 
 class QgsPointCloudLayer;
 #include "qgspointcloud3dsymbol.h"
-#include "qgsfeature3dhandler_p.h"
-
+#include "qgs3drendercontext.h"
 #ifndef SIP_RUN
 
 /**
@@ -42,7 +41,6 @@ class QgsPointCloudLayer;
 class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
-
     /**
      * Constructor for QgsPointCloud3DRenderContext.
      *
@@ -52,13 +50,9 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
      */
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
-                                  double zValueScale, double zValueFixedOffset );
+    QgsPointCloud3DRenderContext( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset );
 
-    //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
-
-    //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloud3DRenderContext &operator=( const QgsPointCloud3DRenderContext & ) = delete;
 
     /**
@@ -105,46 +99,46 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * Retrieves the attribute \a value from \a data at the specified \a offset, where
      * \a type indicates the original data type for the attribute.
      */
-    template <typename T>
+    template<typename T>
     void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value ) const
     {
       switch ( type )
       {
         case QgsPointCloudAttribute::UChar:
-          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          value = *reinterpret_cast<const unsigned char *>( data + offset );
           return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
 
         case QgsPointCloudAttribute::Int32:
-          value = *reinterpret_cast< const qint32 * >( data + offset );
+          value = *reinterpret_cast<const qint32 *>( data + offset );
           return;
         case QgsPointCloudAttribute::UInt32:
-          value = *reinterpret_cast< const quint32 * >( data + offset );
+          value = *reinterpret_cast<const quint32 *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Int64:
-          value = *reinterpret_cast< const qint64 * >( data + offset );
+          value = *reinterpret_cast<const qint64 *>( data + offset );
           return;
         case QgsPointCloudAttribute::UInt64:
-          value = *reinterpret_cast< const quint64 * >( data + offset );
+          value = *reinterpret_cast<const quint64 *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Short:
-          value = *reinterpret_cast< const short * >( data + offset );
+          value = *reinterpret_cast<const short *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::UShort:
-          value = *reinterpret_cast< const unsigned short * >( data + offset );
+          value = *reinterpret_cast<const unsigned short *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Float:
-          value = *reinterpret_cast< const float * >( data + offset );
+          value = *reinterpret_cast<const float *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Double:
-          value = *reinterpret_cast< const double * >( data + offset );
+          value = *reinterpret_cast<const double *>( data + offset );
           return;
       }
     }
@@ -193,7 +187,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * Returns the 3D scene's extent in layer crs.
      * \since QGIS 3.30
      */
-    QgsRectangle extent() const { return mExtent; }
+    QgsRectangle layerExtent() const { return mLayerExtent; }
 
   private:
     //! Recalculates the 3D scene's extent in layer's crs
@@ -208,7 +202,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     double mZValueFixedOffset = 0;
     QgsCoordinateTransform mCoordinateTransform;
     std::unique_ptr<QgsFeedback> mFeedback;
-    QgsRectangle mExtent;
+    QgsRectangle mLayerExtent;
 };
 
 
@@ -250,7 +244,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
 
     QString type() const override;
     QgsPointCloudLayer3DRenderer *clone() const override SIP_FACTORY;
-    Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
+    Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     /**
      * Sets the 3D \a symbol associated with the renderer.
@@ -311,7 +305,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
-    std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
+    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     double mMaximumScreenError = 3.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 5000000;

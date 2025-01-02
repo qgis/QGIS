@@ -36,9 +36,10 @@ QString QgsClassificationEqualInterval::id() const
 }
 
 QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses )
+    const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( values )
+  Q_UNUSED( error )
 
   // Equal interval algorithm
   // Returns breaks based on dividing the range ('minimum' to 'maximum') into 'classes' parts.
@@ -90,10 +91,10 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, 
 }
 
 
-QgsClassificationMethod *QgsClassificationEqualInterval::clone() const
+std::unique_ptr< QgsClassificationMethod > QgsClassificationEqualInterval::clone() const
 {
-  QgsClassificationEqualInterval *c = new QgsClassificationEqualInterval();
-  copyBase( c );
+  std::unique_ptr< QgsClassificationEqualInterval > c = std::make_unique< QgsClassificationEqualInterval >();
+  copyBase( c.get() );
   return c;
 }
 

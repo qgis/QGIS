@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/fieldformatter/qgsvaluerelationfieldformatter.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,9 +30,6 @@ Constructor for ValueRelationItem
 %End
 
       ValueRelationItem();
-%Docstring
-Constructor for ValueRelationItem
-%End
 
       QVariant key;
       QString value;
@@ -159,7 +156,7 @@ optionally checks for ``parentFeature``
 
     static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
 %Docstring
-Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
+Returns the (possibly ``None``) layer from the widget's ``config`` and ``project``
 
 .. versionadded:: 3.8
 %End
@@ -175,5 +172,5 @@ Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
  *                                                                      *
  * src/core/fieldformatter/qgsvaluerelationfieldformatter.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

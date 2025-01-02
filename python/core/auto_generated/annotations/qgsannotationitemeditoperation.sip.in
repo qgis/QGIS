@@ -3,11 +3,56 @@
  *                                                                      *
  * src/core/annotations/qgsannotationitemeditoperation.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
+
+class QgsAnnotationItemEditContext
+{
+%Docstring(signature="appended")
+Encapsulates the context for an annotation item edit operation.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditContext();
+
+    QgsRectangle currentItemBounds() const;
+%Docstring
+Returns the current rendered bounds of the item, in the annotation layer's CRS.
+
+.. seealso:: :py:func:`setCurrentItemBounds`
+%End
+
+    void setCurrentItemBounds( const QgsRectangle &bounds );
+%Docstring
+Sets the current rendered ``bounds`` of the item, in the annotation layer's CRS.
+
+.. seealso:: :py:func:`currentItemBounds`
+%End
+
+    QgsRenderContext renderContext() const;
+%Docstring
+Returns the render context associated with the edit operation.
+
+.. seealso:: :py:func:`setRenderContext`
+%End
+
+    void setRenderContext( const QgsRenderContext &context );
+%Docstring
+Sets the render ``context`` associated with the edit operation.
+
+.. seealso:: :py:func:`renderContext`
+%End
+
+};
 
 class QgsAbstractAnnotationItemEditOperation
 {
@@ -65,10 +110,13 @@ Annotation item edit operation consisting of moving a node
 %End
   public:
 
-    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after );
+    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
+                                            double translatePixelsX = 0, double translatePixelsY = 0 );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationMoveNode, where the node with the specified ``id`` moves
 from ``before`` to ``after`` (in layer coordinates).
+
+Since QGIS 3.40 the ``translatePixelsX`` and ``translatePixelsY`` arguments specify the translation in pixels.
 %End
 
     virtual Type type() const;
@@ -91,6 +139,24 @@ Returns the node position before the move occurred (in layer coordinates).
 Returns the node position after the move occurred (in layer coordinates).
 
 .. seealso:: :py:func:`before`
+%End
+
+    double translationXPixels() const;
+%Docstring
+Returns the x-axis translation, in pixels.
+
+\since :py:func:`~QgsAnnotationItemEditOperationMoveNode.translationYPixels`
+
+.. versionadded:: 3.40
+%End
+
+    double translationYPixels() const;
+%Docstring
+Returns the y-axis translation, in pixels.
+
+\since :py:func:`~QgsAnnotationItemEditOperationMoveNode.translationXPixels`
+
+.. versionadded:: 3.40
 %End
 
 };
@@ -172,10 +238,13 @@ Annotation item edit operation consisting of translating (moving) an item
 %End
   public:
 
-    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY );
+    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY,
+        double translatePixelsX = 0, double translatePixelsY = 0 );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationTranslateItem, where the node with the specified ``id`` and translation
 (in map units)
+
+Since QGIS 3.40 the ``translatePixelsX`` and ``translatePixelsY`` arguments specify the translation in pixels.
 %End
 
     virtual Type type() const;
@@ -198,6 +267,24 @@ Returns the x-axis translation, in layer units.
 Returns the y-axis translation, in layer units.
 
 \since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationX`
+%End
+
+    double translationXPixels() const;
+%Docstring
+Returns the x-axis translation, in pixels.
+
+\since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationYPixels`
+
+.. versionadded:: 3.40
+%End
+
+    double translationYPixels() const;
+%Docstring
+Returns the y-axis translation, in pixels.
+
+\since :py:func:`~QgsAnnotationItemEditOperationTranslateItem.translationXPixels`
+
+.. versionadded:: 3.40
 %End
 
 };
@@ -238,5 +325,5 @@ This is used for creating a graphical representation of the operation during int
  *                                                                      *
  * src/core/annotations/qgsannotationitemeditoperation.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

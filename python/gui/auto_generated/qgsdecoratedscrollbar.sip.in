@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdecoratedscrollbar.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ Encapsulates the details of a highlight in a scrollbar, used alongside :py:class
 #include "qgsdecoratedscrollbar.h"
 %End
   public:
-
     enum class Priority
     {
       Invalid,
@@ -39,9 +38,6 @@ Constructor for QgsScrollBarHighlight.
 %End
 
     QgsScrollBarHighlight();
-%Docstring
-Default constructor for QgsScrollBarHighlight.
-%End
 
     int category;
 
@@ -64,7 +60,6 @@ Adds highlights (colored markers) to a scrollbar.
 #include "qgsdecoratedscrollbar.h"
 %End
   public:
-
     QgsScrollBarHighlightController();
     ~QgsScrollBarHighlightController();
 
@@ -153,5 +148,5 @@ Removes all highlights from the scroll bar.
  *                                                                      *
  * src/gui/qgsdecoratedscrollbar.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

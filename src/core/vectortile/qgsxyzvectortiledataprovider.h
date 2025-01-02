@@ -33,18 +33,15 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
   public:
     QgsXyzVectorTileDataProviderBase( const QString &uri,
                                       const QgsDataProvider::ProviderOptions &providerOptions,
-                                      QgsDataProvider::ReadFlags flags );
+                                      Qgis::DataProviderReadFlags flags );
     QgsXyzVectorTileDataProviderBase( const QgsXyzVectorTileDataProviderBase &other );
 
-    /**
-     * QgsXyzVectorTileDataProviderBase cannot be assigned.
-     */
     QgsXyzVectorTileDataProviderBase &operator=( const QgsXyzVectorTileDataProviderBase &other ) = delete;
 
     bool supportsAsync() const override;
     QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr, Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown ) const override;
-    QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
+    QList<QNetworkRequest> tileRequests( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
 
   protected:
 
@@ -71,12 +68,9 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
   public:
     QgsXyzVectorTileDataProvider( const QString &uri,
                                   const QgsDataProvider::ProviderOptions &providerOptions,
-                                  QgsDataProvider::ReadFlags flags );
+                                  Qgis::DataProviderReadFlags flags );
     QgsXyzVectorTileDataProvider( const QgsXyzVectorTileDataProvider &other );
 
-    /**
-     * QgsXyzVectorTileDataProvider cannot be assigned.
-     */
     QgsXyzVectorTileDataProvider &operator=( const QgsXyzVectorTileDataProvider &other ) = delete;
 
     Qgis::DataProviderFlags flags() const override;
@@ -84,6 +78,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
     QString description() const override;
     QgsVectorTileDataProvider *clone() const override;
     QString sourcePath() const override;
+    QgsStringMap sourcePaths() const override;
     bool isValid() const override;
     QgsRectangle extent() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -91,7 +86,6 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
 
     static QString XYZ_DATA_PROVIDER_KEY;
     static QString XYZ_DATA_PROVIDER_DESCRIPTION;
-
   protected:
 
     bool mIsValid = false;
@@ -116,7 +110,7 @@ class QgsXyzVectorTileDataProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsXyzVectorTileDataProviderMetadata();
-    QgsXyzVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsXyzVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QIcon icon() const override;
     ProviderCapabilities providerCapabilities() const override;
     QVariantMap decodeUri( const QString &uri ) const override;

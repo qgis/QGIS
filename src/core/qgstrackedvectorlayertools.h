@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgsvectorlayertools.h"
+#include "qgsexpressioncontext.h"
 
 /**
  * \ingroup core
@@ -28,9 +29,6 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
     Q_OBJECT
   public:
 
-    /**
-     * Constructor for QgsTrackedVectorLayerTools.
-     */
     QgsTrackedVectorLayerTools() = default;
 
     /**
@@ -40,13 +38,11 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
      * \param feature         A pointer to the feature
-     * \param parentWidget    The widget calling this function to be passed to the used dialog
-     * \param showModal       If the used dialog should be modal or not
-     * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
+     * \param context         A context object to be used for e.g. to calculate feature expression-based values (since QGIS 3.38)
      *
      * \returns               TRUE in case of success, FALSE if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override;
+    bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature SIP_OUT, const QgsVectorLayerToolsContext &context ) const override;
     bool startEditing( QgsVectorLayer *layer ) const override;
     bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer *layer ) const override;

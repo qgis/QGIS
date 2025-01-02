@@ -15,6 +15,7 @@
 
 
 #include "qgspainteffectwidget.h"
+#include "moc_qgspainteffectwidget.cpp"
 #include "qgslogger.h"
 #include "qgspainteffect.h"
 #include "qgsshadoweffect.h"
@@ -117,7 +118,7 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
 {
   setupUi( this );
   connect( mBlurTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mBlurTypeCombo_currentIndexChanged );
-  connect( mBlurStrengthSpnBx, static_cast< void ( QDoubleSpinBox::* )( double ) >( &QDoubleSpinBox::valueChanged ), this, &QgsBlurWidget::mBlurStrengthSpnBx_valueChanged );
+  connect( mBlurStrengthSpnBx, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsBlurWidget::mBlurStrengthSpnBx_valueChanged );
   connect( mBlurUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsBlurWidget::mBlurUnitWidget_changed );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mDrawModeComboBox_currentIndexChanged );
   connect( mBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mBlendCmbBx_currentIndexChanged );
@@ -125,8 +126,7 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
   mBlurTypeCombo->addItem( tr( "Stack Blur (fast, doesn't support high dpi)" ), QgsBlurEffect::StackBlur );
   mBlurTypeCombo->addItem( tr( "Gaussian Blur (quality, supports high dpi)" ), QgsBlurEffect::GaussianBlur );
 
-  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
-                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   initGui();
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsBlurWidget::opacityChanged );
@@ -256,14 +256,14 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 
 {
   setupUi( this );
-  connect( mShadowOffsetAngleSpnBx, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowOffsetAngleSpnBx_valueChanged );
+  connect( mShadowOffsetAngleSpnBx, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowOffsetAngleSpnBx_valueChanged );
   connect( mShadowOffsetAngleDial, &QDial::valueChanged, this, &QgsShadowEffectWidget::mShadowOffsetAngleDial_valueChanged );
-  connect( mShadowOffsetSpnBx, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowOffsetSpnBx_valueChanged );
+  connect( mShadowOffsetSpnBx, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowOffsetSpnBx_valueChanged );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsShadowEffectWidget::mOffsetUnitWidget_changed );
   connect( mShadowColorBtn, &QgsColorButton::colorChanged, this, &QgsShadowEffectWidget::mShadowColorBtn_colorChanged );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsShadowEffectWidget::mDrawModeComboBox_currentIndexChanged );
   connect( mShadowBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsShadowEffectWidget::mShadowBlendCmbBx_currentIndexChanged );
-  connect( mShadowRadiuSpnBx, static_cast< void ( QDoubleSpinBox::* )( double ) >( &QDoubleSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowRadiuSpnBx_valueChanged );
+  connect( mShadowRadiuSpnBx, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsShadowEffectWidget::mShadowRadiuSpnBx_valueChanged );
   connect( mBlurUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsShadowEffectWidget::mBlurUnitWidget_changed );
 
   mShadowColorBtn->setAllowOpacity( false );
@@ -271,10 +271,8 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
   mShadowOffsetAngleSpnBx->setClearValue( 0 );
 
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
-                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
-                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   initGui();
 
@@ -430,7 +428,6 @@ void QgsShadowEffectWidget::mShadowBlendCmbBx_currentIndexChanged( int index )
 }
 
 
-
 //
 // glow
 //
@@ -440,22 +437,20 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
 {
   setupUi( this );
-  connect( mSpreadSpnBx, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGlowWidget::mSpreadSpnBx_valueChanged );
+  connect( mSpreadSpnBx, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGlowWidget::mSpreadSpnBx_valueChanged );
   connect( mSpreadUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGlowWidget::mSpreadUnitWidget_changed );
   connect( mColorBtn, &QgsColorButton::colorChanged, this, &QgsGlowWidget::mColorBtn_colorChanged );
   connect( mBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGlowWidget::mBlendCmbBx_currentIndexChanged );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGlowWidget::mDrawModeComboBox_currentIndexChanged );
-  connect( mBlurRadiusSpnBx, static_cast< void ( QDoubleSpinBox::* )( double ) >( &QDoubleSpinBox::valueChanged ), this, &QgsGlowWidget::mBlurRadiusSpnBx_valueChanged );
+  connect( mBlurRadiusSpnBx, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGlowWidget::mBlurRadiusSpnBx_valueChanged );
   connect( mBlurUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGlowWidget::mBlurUnitWidget_changed );
 
   mColorBtn->setAllowOpacity( false );
   mColorBtn->setColorDialogTitle( tr( "Select Glow Color" ) );
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
-  mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
-                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
-                             << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   btnColorRamp->setShowGradientOnly( true );
 
@@ -648,19 +643,18 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
 {
   setupUi( this );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTransformWidget::mDrawModeComboBox_currentIndexChanged );
-  connect( mSpinTranslateX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinTranslateX_valueChanged );
-  connect( mSpinTranslateY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinTranslateY_valueChanged );
+  connect( mSpinTranslateX, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinTranslateX_valueChanged );
+  connect( mSpinTranslateY, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinTranslateY_valueChanged );
   connect( mTranslateUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTransformWidget::mTranslateUnitWidget_changed );
   connect( mReflectXCheckBox, &QCheckBox::stateChanged, this, &QgsTransformWidget::mReflectXCheckBox_stateChanged );
   connect( mReflectYCheckBox, &QCheckBox::stateChanged, this, &QgsTransformWidget::mReflectYCheckBox_stateChanged );
-  connect( mSpinShearX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinShearX_valueChanged );
-  connect( mSpinShearY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinShearY_valueChanged );
-  connect( mSpinScaleX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinScaleX_valueChanged );
-  connect( mSpinScaleY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinScaleY_valueChanged );
-  connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mRotationSpinBox_valueChanged );
+  connect( mSpinShearX, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinShearX_valueChanged );
+  connect( mSpinShearY, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinShearY_valueChanged );
+  connect( mSpinScaleX, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinScaleX_valueChanged );
+  connect( mSpinScaleY, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mSpinScaleY_valueChanged );
+  connect( mRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTransformWidget::mRotationSpinBox_valueChanged );
 
-  mTranslateUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits
-                                  << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mTranslateUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mSpinTranslateX->setClearValue( 0 );
   mSpinTranslateY->setClearValue( 0 );
   mRotationSpinBox->setClearValue( 0 );
@@ -839,10 +833,10 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   setupUi( this );
   connect( mBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorEffectWidget::mBlendCmbBx_currentIndexChanged );
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorEffectWidget::mDrawModeComboBox_currentIndexChanged );
-  connect( mBrightnessSpinBox, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mBrightnessSpinBox_valueChanged );
-  connect( mContrastSpinBox, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mContrastSpinBox_valueChanged );
-  connect( mSaturationSpinBox, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mSaturationSpinBox_valueChanged );
-  connect( mColorizeStrengthSpinBox, static_cast< void ( QSpinBox::* )( int ) >( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mColorizeStrengthSpinBox_valueChanged );
+  connect( mBrightnessSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mBrightnessSpinBox_valueChanged );
+  connect( mContrastSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mContrastSpinBox_valueChanged );
+  connect( mSaturationSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mSaturationSpinBox_valueChanged );
+  connect( mColorizeStrengthSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsColorEffectWidget::mColorizeStrengthSpinBox_valueChanged );
   connect( mColorizeCheck, &QCheckBox::stateChanged, this, &QgsColorEffectWidget::mColorizeCheck_stateChanged );
   connect( mColorizeColorButton, &QgsColorButton::colorChanged, this, &QgsColorEffectWidget::mColorizeColorButton_colorChanged );
   connect( mGrayscaleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorEffectWidget::mGrayscaleCombo_currentIndexChanged );

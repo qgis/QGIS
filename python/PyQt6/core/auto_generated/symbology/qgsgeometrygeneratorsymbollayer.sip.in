@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsgeometrygeneratorsymbollayer.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -11,6 +11,9 @@
 
 class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 {
+%Docstring(signature="appended")
+A symbol layer subclass which alters rendered feature shapes through the use of QGIS expressions.
+%End
 
 %TypeHeaderCode
 #include "qgsgeometrygeneratorsymbollayer.h"
@@ -148,5 +151,5 @@ context which is available to the evaluated expression.
  *                                                                      *
  * src/core/symbology/qgsgeometrygeneratorsymbollayer.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgscamerapose.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,6 @@ The pose is defined with the following parameters:
 #include "qgscamerapose.h"
 %End
   public:
-
     QgsVector3D centerPoint() const;
 %Docstring
 Returns center point (towards which point the camera is looking)
@@ -88,5 +87,5 @@ Reads configuration from a DOM element previously written using :py:func:`~QgsCa
  *                                                                      *
  * src/3d/qgscamerapose.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

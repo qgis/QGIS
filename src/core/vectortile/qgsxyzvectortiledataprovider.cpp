@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvectortiledataprovider.h"
 #include "qgsxyzvectortiledataprovider.h"
+#include "moc_qgsxyzvectortiledataprovider.cpp"
 #include "qgsthreadingutils.h"
 #include "qgstiles.h"
 #include "qgsvectortileloader.h"
@@ -37,7 +39,7 @@ QString QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_DESCRIPTION = QObject::t
 // QgsXyzVectorTileDataProviderBase
 //
 
-QgsXyzVectorTileDataProviderBase::QgsXyzVectorTileDataProviderBase( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+QgsXyzVectorTileDataProviderBase::QgsXyzVectorTileDataProviderBase( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
   QgsDataSourceUri dsUri;
@@ -67,62 +69,81 @@ QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const Q
 {
   QList<QgsVectorTileRawData> rawTiles;
   rawTiles.reserve( tiles.size() );
-  const QString source = sourcePath();
   for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
-    if ( feedback && feedback->isCanceled() )
-      break;
-
-    const QByteArray rawData = loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), source, mAuthCfg, mHeaders, feedback, usage );
-    if ( !rawData.isEmpty() )
+    QMap<QString, QByteArray> data;
+    const QgsStringMap sources = sourcePaths();
+    QgsStringMap::const_iterator it = sources.constBegin();
+    for ( ; it != sources.constEnd(); ++it )
     {
-      rawTiles.append( QgsVectorTileRawData( id, rawData ) );
+      if ( feedback && feedback->isCanceled() )
+        break;
+
+      const QByteArray rawData = loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), it.value(), mAuthCfg, mHeaders, feedback, usage );
+      if ( !rawData.isEmpty() )
+      {
+        data[it.key()] = rawData;
+      }
     }
+    rawTiles.append( QgsVectorTileRawData( id, data ) );
   }
   return rawTiles;
 }
 
-QNetworkRequest QgsXyzVectorTileDataProviderBase::tileRequest( const QgsTileMatrixSet &set, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const
+QList<QNetworkRequest> QgsXyzVectorTileDataProviderBase::tileRequests( const QgsTileMatrixSet &set, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const
 {
-  QString urlTemplate = sourcePath();
+  QList<QNetworkRequest> requests;
 
-  if ( urlTemplate.contains( QLatin1String( "{usage}" ) ) )
+  const QgsStringMap sourcesPaths = sourcePaths();
+
+  QgsStringMap::const_iterator it = sourcesPaths.constBegin();
+
+  for ( ; it != sourcesPaths.constEnd(); ++it )
   {
-    switch ( usage )
+    QString urlTemplate = it.value();
+    QString layerName = it.key();
+
+    if ( urlTemplate.contains( QLatin1String( "{usage}" ) ) )
     {
-      case Qgis::RendererUsage::View:
-        urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
-        break;
-      case Qgis::RendererUsage::Export:
-        urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
-        break;
-      case Qgis::RendererUsage::Unknown:
-        urlTemplate.replace( QLatin1String( "{usage}" ), QString() );
-        break;
+      switch ( usage )
+      {
+        case Qgis::RendererUsage::View:
+          urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
+          break;
+        case Qgis::RendererUsage::Export:
+          urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
+          break;
+        case Qgis::RendererUsage::Unknown:
+          urlTemplate.replace( QLatin1String( "{usage}" ), QString() );
+          break;
+      }
     }
+
+    const QString url = QgsVectorTileUtils::formatXYZUrlTemplate( urlTemplate, id, set.tileMatrix( id.zoomLevel() ) );
+
+    QNetworkRequest request( url );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsXyzVectorTileDataProvider" ) );
+    QgsSetRequestInitiatorId( request, id.toString() );
+
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_COLUMN ), id.column() );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_ROW ), id.row() );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_ZOOM ), id.zoomLevel() );
+    request.setAttribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_SOURCE_ID ), layerName );
+
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    mHeaders.updateNetworkRequest( request );
+
+    if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+    {
+      QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
+    }
+
+    requests << request;
   }
 
-  const QString url = QgsVectorTileUtils::formatXYZUrlTemplate( urlTemplate, id, set.tileMatrix( id.zoomLevel() ) );
-
-  QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsXyzVectorTileDataProvider" ) );
-  QgsSetRequestInitiatorId( request, id.toString() );
-
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), id.column() );
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), id.row() );
-  request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), id.zoomLevel() );
-
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-
-  mHeaders.updateNetworkRequest( request );
-
-  if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
-  {
-    QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
-  }
-
-  return request;
+  return requests;
 }
 
 QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback, Qgis::RendererUsage usage )
@@ -175,7 +196,7 @@ QgsXyzVectorTileDataProviderMetadata::QgsXyzVectorTileDataProviderMetadata()
 {
 }
 
-QgsXyzVectorTileDataProvider *QgsXyzVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsXyzVectorTileDataProvider *QgsXyzVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsXyzVectorTileDataProvider( uri, options, flags );
 }
@@ -207,7 +228,21 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
   else
   {
     uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+    if ( dsUri.hasParam( QStringLiteral( "urlName" ) ) )
+      uriComponents.insert( QStringLiteral( "urlName" ), dsUri.param( QStringLiteral( "urlName" ) ) );
   }
+  int i = 2;
+  while ( true )
+  {
+    QString url = dsUri.param( QStringLiteral( "url_%2" ).arg( i ) );
+    QString urlName = dsUri.param( QStringLiteral( "urlName_%2" ).arg( i ) );
+    if ( url.isEmpty() || urlName.isEmpty() )
+      break;
+    uriComponents.insert( QStringLiteral( "urlName_%2" ).arg( i ), urlName );
+    uriComponents.insert( QStringLiteral( "url_%2" ).arg( i ), url );
+    i++;
+  }
+
 
   if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
     uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
@@ -231,6 +266,26 @@ QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &part
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "urlName" ) ) )
+    dsUri.setParam( QStringLiteral( "urlName" ), parts[ QStringLiteral( "urlName" ) ].toString() );
+
+  int i = 2;
+  while ( true )
+  {
+    QString urlNameKey = QStringLiteral( "urlName_%2" ).arg( i );
+    QString urlKey = QStringLiteral( "url_%2" ).arg( i );
+
+    if ( !parts.contains( urlNameKey ) || !parts.contains( urlKey ) )
+      break;
+    QString url = dsUri.param( QStringLiteral( "url_%2" ).arg( i ) );
+    QString urlName = dsUri.param( QStringLiteral( "urlName_%2" ).arg( i ) );
+    if ( url.isEmpty() || urlName.isEmpty() )
+      break;
+
+    dsUri.setParam( urlNameKey, parts[ urlNameKey ].toString() );
+    dsUri.setParam( urlKey, parts[ urlKey ].toString() );
+    i++;
+  }
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
     dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
@@ -297,7 +352,7 @@ QList<Qgis::LayerType> QgsXyzVectorTileDataProviderMetadata::supportedLayerTypes
 // QgsXyzVectorTileDataProvider
 //
 
-QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsXyzVectorTileDataProviderBase( uri, providerOptions, flags )
 {
   QgsDataSourceUri dsUri;
@@ -394,6 +449,30 @@ QString QgsXyzVectorTileDataProvider::sourcePath() const
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
   return dsUri.param( QStringLiteral( "url" ) );
+}
+
+QgsStringMap QgsXyzVectorTileDataProvider::sourcePaths() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( dataSourceUri() );
+
+  QgsStringMap paths = { { dsUri.param( QStringLiteral( "urlName" ) ), dsUri.param( QStringLiteral( "url" ) ) } };
+
+  int i = 2;
+  while ( true )
+  {
+    QString url = dsUri.param( QStringLiteral( "url_%2" ).arg( i ) );
+    QString urlName = dsUri.param( QStringLiteral( "urlName_%2" ).arg( i ) );
+    if ( url.isEmpty() || urlName.isEmpty() )
+      break;
+
+    paths.insert( urlName, url );
+    i++;
+  }
+
+  return paths;
 }
 
 ///@endcond

@@ -5,3 +5,7 @@ QgsAuthImportIdentityDialog.PkiPkcs12 = QgsAuthImportIdentityDialog.BundleTypes.
 QgsAuthImportIdentityDialog.Valid = QgsAuthImportIdentityDialog.Validity.Valid
 QgsAuthImportIdentityDialog.Invalid = QgsAuthImportIdentityDialog.Validity.Invalid
 QgsAuthImportIdentityDialog.Unknown = QgsAuthImportIdentityDialog.Validity.Unknown
+try:
+    QgsAuthImportIdentityDialog.__group__ = ['auth']
+except (NameError, AttributeError):
+    pass

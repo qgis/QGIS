@@ -14,10 +14,9 @@
  ***************************************************************************/
 
 #include "qgsabstractinputcontroller.h"
+#include "moc_qgsabstractinputcontroller.cpp"
 
 QgsAbstractInputController::QgsAbstractInputController( QObject *parent )
   : QObject( parent )
 {
-
 }
-

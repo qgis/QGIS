@@ -139,7 +139,7 @@ Q_DECLARE_METATYPE( QgsMesh );
 class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
 {
   public:
-    //! Dtor
+
     virtual ~QgsMeshDataSourceInterface() = default;
 
     /**
@@ -215,7 +215,6 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
 {
   public:
     QgsMeshDatasetSourceInterface();
-    //! Dtor
     virtual ~QgsMeshDatasetSourceInterface() = default;
 
     /**
@@ -444,7 +443,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
     //! Ctor
     QgsMeshDataProvider( const QString &uri,
                          const QgsDataProvider::ProviderOptions &providerOptions,
-                         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                         Qgis::DataProviderReadFlags = Qgis::DataProviderReadFlags() );
 
     QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
@@ -475,6 +474,17 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      * \since QGIS 3.22
      */
     virtual void close() = 0;
+
+    /**
+     * \brief Remove dataset group from the mesh
+     *
+     * emits dataChanged when successful
+     *
+     * \return TRUE on success
+     *
+     * \since QGIS 3.42
+     */
+    virtual bool removeDatasetGroup( int index ) = 0;
 
   signals:
     //! Emitted when some new dataset groups have been added

@@ -43,7 +43,6 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-
     /**
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
@@ -66,7 +65,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     /**
      * Returns TRUE if the action can run using the specified layer.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual bool canRunUsingLayer( QgsMapLayer *layer ) const SIP_DEPRECATED;
 
@@ -82,21 +81,21 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     /**
      * Triggers the action with the specified layer and list of feature.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) SIP_DEPRECATED;
 
     /**
      * Triggers the action with the specified layer and feature.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature ) SIP_DEPRECATED;
 
     /**
      * Triggers the action with the specified layer.
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED virtual void triggerForLayer( QgsMapLayer *layer ) SIP_DEPRECATED;
 
@@ -122,9 +121,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     virtual void triggerForLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
 
     //! Define the targets of the action
-    void setTargets( Qgis::MapLayerActionTargets targets ) {mTargets = targets;}
+    void setTargets( Qgis::MapLayerActionTargets targets ) { mTargets = targets; }
     //! Returns availibity of action
-    Qgis::MapLayerActionTargets targets() const {return mTargets;}
+    Qgis::MapLayerActionTargets targets() const { return mTargets; }
 
     /**
      * Returns TRUE if the action is only enabled for layers in editable mode.
@@ -135,21 +134,21 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     /**
      * Triggered when action has been run for a specific list of features
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) SIP_DEPRECATED;
 
     /**
      * Triggered when action has been run for a specific feature
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature ) SIP_DEPRECATED;
 
     /**
      * Triggered when action has been run for a specific layer
      *
-     * \deprecated use the version with QgsMapLayerActionContext instead.
+     * \deprecated QGIS 3.40. Use the version with QgsMapLayerActionContext instead.
      */
     Q_DECL_DEPRECATED void triggeredForLayer( QgsMapLayer *layer ) SIP_DEPRECATED;
 
@@ -175,7 +174,6 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     void triggeredForLayerV2( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
 
   private:
-
     // true if action is only valid for a single layer
     bool mSingleLayer = false;
     // layer if action is only valid for a single layer

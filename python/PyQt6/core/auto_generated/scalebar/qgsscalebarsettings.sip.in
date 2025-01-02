@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/scalebar/qgsscalebarsettings.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,42 +21,11 @@ for scalebar drawing with :py:class:`QgsScaleBarRenderer`.
 %End
   public:
 
-    enum Alignment /BaseType=IntEnum/
-    {
-      AlignLeft,
-      AlignMiddle,
-      AlignRight,
-    };
-
-    enum SegmentSizeMode /BaseType=IntEnum/
-    {
-      SegmentSizeFixed,
-      SegmentSizeFitWidth
-    };
-
-    enum LabelVerticalPlacement /BaseType=IntEnum/
-    {
-      LabelAboveSegment,
-      LabelBelowSegment,
-    };
-
-    enum LabelHorizontalPlacement /BaseType=IntEnum/
-    {
-      LabelCenteredEdge,
-      LabelCenteredSegment,
-    };
-
     QgsScaleBarSettings();
-%Docstring
-Constructor for QgsScaleBarSettings.
-%End
 
     ~QgsScaleBarSettings();
 
     QgsScaleBarSettings( const QgsScaleBarSettings &other );
-%Docstring
-Copy constructor
-%End
 
 
     int numberOfSegments() const;
@@ -155,7 +124,7 @@ Sets the number of scalebar ``units`` per segment.
 .. seealso:: :py:func:`unitsPerSegment`
 %End
 
-    SegmentSizeMode segmentSizeMode() const;
+    Qgis::ScaleBarSegmentSizeMode segmentSizeMode() const;
 %Docstring
 Returns the size mode for the scale bar segments.
 
@@ -166,7 +135,7 @@ Returns the size mode for the scale bar segments.
 .. seealso:: :py:func:`maximumBarWidth`
 %End
 
-    void setSegmentSizeMode( SegmentSizeMode mode );
+    void setSegmentSizeMode( Qgis::ScaleBarSegmentSizeMode mode );
 %Docstring
 Sets the size ``mode`` for scale bar segments.
 
@@ -290,27 +259,29 @@ Sets the text ``format`` used for drawing text in the scalebar.
 .. versionadded:: 3.2
 %End
 
- QFont font() const /Deprecated/;
+ QFont font() const /Deprecated="Since 3.40. Use textFormat() instead."/;
 %Docstring
 Returns the font used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`setFont`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.textFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.textFormat` instead.
 %End
 
- void setFont( const QFont &font ) /Deprecated/;
+ void setFont( const QFont &font ) /Deprecated="Since 3.40. Use setTextFormat() instead."/;
 %Docstring
 Sets the ``font`` used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`font`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setTextFormat` instead.
 %End
 
- QColor fontColor() const /Deprecated/;
+ QColor fontColor() const /Deprecated="Since 3.40. Use textFormat() instead."/;
 %Docstring
 Returns the color used for drawing text in the scalebar.
 
@@ -318,11 +289,12 @@ Returns the color used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`font`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.textFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.textFormat` instead.
 %End
 
- void setFontColor( const QColor &color ) /Deprecated/;
+ void setFontColor( const QColor &color ) /Deprecated="Since 3.40. Use textFormat() instead."/;
 %Docstring
 Sets the ``color`` used for drawing text in the scalebar.
 
@@ -330,11 +302,12 @@ Sets the ``color`` used for drawing text in the scalebar.
 
 .. seealso:: :py:func:`setFont`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.textFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.textFormat` instead.
 %End
 
- QColor fillColor() const /Deprecated/;
+ QColor fillColor() const /Deprecated="Since 3.40. Use fillSymbol() instead."/;
 %Docstring
 Returns the color used for fills in the scalebar.
 
@@ -342,11 +315,12 @@ Returns the color used for fills in the scalebar.
 
 .. seealso:: :py:func:`fillColor2`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.fillSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.fillSymbol` instead.
 %End
 
- void setFillColor( const QColor &color ) /Deprecated/;
+ void setFillColor( const QColor &color ) /Deprecated="Since 3.40. Use setFillSymbol() instead."/;
 %Docstring
 Sets the ``color`` used for fills in the scalebar.
 
@@ -354,11 +328,12 @@ Sets the ``color`` used for fills in the scalebar.
 
 .. seealso:: :py:func:`setFillColor2`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setFillSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setFillSymbol` instead.
 %End
 
- QColor fillColor2() const /Deprecated/;
+ QColor fillColor2() const /Deprecated="Since 3.40. Use alternateFillSymbol() instead."/;
 %Docstring
 Returns the secondary color used for fills in the scalebar.
 
@@ -366,11 +341,12 @@ Returns the secondary color used for fills in the scalebar.
 
 .. seealso:: :py:func:`fillColor`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.alternateFillSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.alternateFillSymbol` instead.
 %End
 
- void setFillColor2( const QColor &color ) /Deprecated/;
+ void setFillColor2( const QColor &color ) /Deprecated="Since 3.40. Use setAlternateFillSymbol() instead."/;
 %Docstring
 Sets the secondary ``color`` used for fills in the scalebar.
 
@@ -378,51 +354,56 @@ Sets the secondary ``color`` used for fills in the scalebar.
 
 .. seealso:: :py:func:`setFillColor2`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setAlternateFillSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setAlternateFillSymbol` instead.
 %End
 
- QColor lineColor() const /Deprecated/;
+ QColor lineColor() const /Deprecated="Since 3.40. Use lineSymbol() instead."/;
 %Docstring
 Returns the color used for lines in the scalebar.
 
 .. seealso:: :py:func:`setLineColor`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
 %End
 
- void setLineColor( const QColor &color ) /Deprecated/;
+ void setLineColor( const QColor &color ) /Deprecated="Since 3.40. Use setLineSymbol() instead."/;
 %Docstring
 Sets the ``color`` used for lines in the scalebar.
 
 .. seealso:: :py:func:`lineColor`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
 %End
 
- double lineWidth() const /Deprecated/;
+ double lineWidth() const /Deprecated="Since 3.40. Use lineSymbol() instead."/;
 %Docstring
 Returns the line width in millimeters for lines in the scalebar.
 
 .. seealso:: :py:func:`setLineWidth`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
 %End
 
- void setLineWidth( double width ) /Deprecated/;
+ void setLineWidth( double width ) /Deprecated="Since 3.40. Use setLineSymbol() instead."/;
 %Docstring
 Sets the line ``width`` in millimeters for lines in the scalebar.
 
 .. seealso:: :py:func:`lineWidth`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
 %End
 
- QPen pen() const /Deprecated/;
+ QPen pen() const /Deprecated="Since 3.40. Use lineSymbol() instead."/;
 %Docstring
 Returns the pen used for drawing outlines in the scalebar.
 
@@ -430,18 +411,20 @@ Returns the pen used for drawing outlines in the scalebar.
 
 .. seealso:: :py:func:`brush`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
 %End
 
- void setPen( const QPen &pen ) /Deprecated/;
+ void setPen( const QPen &pen ) /Deprecated="Since 3.40. Use setLineSymbol() instead."/;
 %Docstring
 Sets the pen used for drawing outlines in the scalebar.
 
 .. seealso:: :py:func:`pen`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
 %End
 
     QgsLineSymbol *lineSymbol() const;
@@ -582,7 +565,7 @@ transferred to the scalebar.
 .. versionadded:: 3.14
 %End
 
- QBrush brush() const /Deprecated/;
+ QBrush brush() const /Deprecated="Since 3.40. Use fillSymbol() instead."/;
 %Docstring
 Returns the primary brush used for filling the scalebar.
 
@@ -592,21 +575,23 @@ Returns the primary brush used for filling the scalebar.
 
 .. seealso:: :py:func:`pen`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.fillSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.fillSymbol` instead.
 %End
 
- void setBrush( const QBrush &brush ) /Deprecated/;
+ void setBrush( const QBrush &brush ) /Deprecated="Since 3.40. Use setFillSymbol() instead."/;
 %Docstring
 Sets the primary brush used for filling the scalebar.
 
 .. seealso:: :py:func:`brush`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setFillSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setFillSymbol` instead.
 %End
 
- QBrush brush2() const /Deprecated/;
+ QBrush brush2() const /Deprecated="Since 3.40. Use alternateFillSymbol() instead."/;
 %Docstring
 Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
 as single and double box styles.
@@ -615,18 +600,20 @@ as single and double box styles.
 
 .. seealso:: :py:func:`brush`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.alternateFillSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.alternateFillSymbol` instead.
 %End
 
- void setBrush2( const QBrush &brush ) /Deprecated/;
+ void setBrush2( const QBrush &brush ) /Deprecated="Since 3.40. Use setAlternateFillSymbol() instead."/;
 %Docstring
 Sets the secondary brush used for filling the scalebar.
 
 .. seealso:: :py:func:`brush`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setAlternateFillSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setAlternateFillSymbol` instead.
 %End
 
     double height() const;
@@ -657,7 +644,7 @@ Sets the spacing (in millimeters) between labels and the scalebar.
 .. seealso:: :py:func:`labelBarSpace`
 %End
 
-    LabelVerticalPlacement labelVerticalPlacement() const;
+    Qgis::ScaleBarDistanceLabelVerticalPlacement labelVerticalPlacement() const;
 %Docstring
 Returns the vertical placement of text labels.
 
@@ -666,7 +653,7 @@ Returns the vertical placement of text labels.
 .. versionadded:: 3.10
 %End
 
-    void setLabelVerticalPlacement( LabelVerticalPlacement placement );
+    void setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement placement );
 %Docstring
 Sets the vertical ``placement`` of text labels.
 
@@ -675,7 +662,7 @@ Sets the vertical ``placement`` of text labels.
 .. versionadded:: 3.10
 %End
 
-    LabelHorizontalPlacement labelHorizontalPlacement() const;
+    Qgis::ScaleBarDistanceLabelHorizontalPlacement labelHorizontalPlacement() const;
 %Docstring
 Returns the horizontal placement of text labels.
 
@@ -684,7 +671,7 @@ Returns the horizontal placement of text labels.
 .. versionadded:: 3.10
 %End
 
-    void setLabelHorizontalPlacement( LabelHorizontalPlacement placement );
+    void setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement placement );
 %Docstring
 Sets the horizontal ``placement`` of text labels.
 
@@ -707,58 +694,62 @@ Sets the ``space`` (margin) between the scalebar box and content in millimeters.
 .. seealso:: :py:func:`boxContentSpace`
 %End
 
-    Alignment alignment() const;
+    Qgis::ScaleBarAlignment alignment() const;
 %Docstring
 Returns the scalebar alignment.
 
 .. seealso:: :py:func:`setAlignment`
 %End
 
-    void setAlignment( Alignment alignment );
+    void setAlignment( Qgis::ScaleBarAlignment alignment );
 %Docstring
 Sets the scalebar ``alignment``.
 
 .. seealso:: :py:func:`alignment`
 %End
 
- Qt::PenJoinStyle lineJoinStyle() const /Deprecated/;
+ Qt::PenJoinStyle lineJoinStyle() const /Deprecated="Since 3.40. Use lineSymbol() instead."/;
 %Docstring
 Returns the join style used for drawing lines in the scalebar.
 
 .. seealso:: :py:func:`setLineJoinStyle`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.lineSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
 %End
 
- void setLineJoinStyle( Qt::PenJoinStyle style ) /Deprecated/;
+ void setLineJoinStyle( Qt::PenJoinStyle style ) /Deprecated="Since 3.40. Use setLineSymbol() instead."/;
 %Docstring
 Sets the join ``style`` used when drawing the lines in the scalebar
 
 .. seealso:: :py:func:`lineJoinStyle`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
 %End
 
- Qt::PenCapStyle lineCapStyle() const /Deprecated/;
+ Qt::PenCapStyle lineCapStyle() const /Deprecated="Since 3.40. Use lineSymbol() instead."/;
 %Docstring
 Returns the cap style used for drawing lines in the scalebar.
 
 .. seealso:: :py:func:`setLineCapStyle`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.lineSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.lineSymbol` instead.
 %End
 
- void setLineCapStyle( Qt::PenCapStyle style ) /Deprecated/;
+ void setLineCapStyle( Qt::PenCapStyle style ) /Deprecated="Since 3.40. Use setLineSymbol() instead."/;
 %Docstring
 Sets the cap ``style`` used when drawing the lines in the scalebar.
 
 .. seealso:: :py:func:`lineCapStyle`
 
-.. deprecated::
-   use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsScaleBarSettings.setLineSymbol` instead.
 %End
 
     const QgsNumericFormat *numericFormat() const;
@@ -789,5 +780,5 @@ Ownership of ``format`` is transferred to the settings.
  *                                                                      *
  * src/core/scalebar/qgsscalebarsettings.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

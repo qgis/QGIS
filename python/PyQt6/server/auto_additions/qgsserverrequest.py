@@ -20,3 +20,7 @@ QgsServerRequest.ACCEPT = QgsServerRequest.RequestHeader.ACCEPT
 QgsServerRequest.USER_AGENT = QgsServerRequest.RequestHeader.USER_AGENT
 QgsServerRequest.AUTHORIZATION = QgsServerRequest.RequestHeader.AUTHORIZATION
 QgsServerRequest.RequestHeader.baseClass = QgsServerRequest
+try:
+    QgsServerRequest.methodToString = staticmethod(QgsServerRequest.methodToString)
+except (NameError, AttributeError):
+    pass

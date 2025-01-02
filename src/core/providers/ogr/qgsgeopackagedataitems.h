@@ -175,28 +175,5 @@ class QgsGeoPackageDataItemProvider final: public QgsDataItemProvider
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
-
-/**
- * \brief The QgsConcurrentFileWriterImportTask class is the parent task for
- * importing layers from a drag and drop operation in the browser.
- * Individual layers need to be added as individual substask.
- */
-class CORE_EXPORT QgsConcurrentFileWriterImportTask : public QgsTask
-{
-    Q_OBJECT
-
-  public:
-    QgsConcurrentFileWriterImportTask( const QString &desc = QString() ) : QgsTask( desc ) {}
-    void emitProgressChanged( double progress ) { setProgress( progress ); }
-
-  protected:
-
-    bool run() override
-    {
-      return true;
-    }
-
-};
-
 ///@endcond
 #endif // QGSGEOPACKAGEDATAITEMS_H

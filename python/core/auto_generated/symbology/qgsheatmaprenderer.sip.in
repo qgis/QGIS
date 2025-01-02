@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsheatmaprenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -247,5 +247,5 @@ Sets the expression used for weighting points when generating the heatmap.
  *                                                                      *
  * src/core/symbology/qgsheatmaprenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

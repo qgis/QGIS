@@ -118,6 +118,7 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 
   mUserTablesOnly = true;
   mAllowGeometrylessTables = false;
+  mUseEstimatedMetadata = false;
   mSaveUserName = false;
   mSavePassword = false;
   mAuthcfg = QString();
@@ -126,6 +127,8 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
     mUserTablesOnly = QVariant( uri.param( QStringLiteral( "userTablesOnly" ) ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "allowGeometrylessTables" ) ) )
     mAllowGeometrylessTables = QVariant( uri.param( QStringLiteral( "allowGeometrylessTables" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "estimatedmetadata" ) ) )
+    mUseEstimatedMetadata = QVariant( uri.param( QStringLiteral( "estimatedmetadata" ) ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "saveUsername" ) ) )
     mSaveUserName = QVariant( uri.param( QStringLiteral( "saveUsername" ) ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "savePassword" ) ) )
@@ -137,11 +140,12 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 {
   QgsDataSourceUri uri;
-  uri.setParam( "connectionType", QString::number( static_cast<uint>( mConnectionType ) ) );
+  uri.setUseEstimatedMetadata( mUseEstimatedMetadata );
+  uri.setParam( QStringLiteral( "connectionType" ), QString::number( static_cast<uint>( mConnectionType ) ) );
   switch ( mConnectionType )
   {
     case QgsHanaConnectionType::Dsn:
-      uri.setParam( "dsn", mDsn );
+      uri.setParam( QStringLiteral( "dsn" ), mDsn );
       uri.setUsername( mUserName );
       uri.setPassword( mPassword );
       break;
@@ -189,50 +193,51 @@ void QgsHanaSettings::load()
   QgsSettings settings;
   const QString key = path();
   mConnectionType = QgsHanaConnectionType::HostPort;
-  if ( settings.contains( key + "/connectionType" ) )
-    mConnectionType = static_cast<QgsHanaConnectionType>( settings.value( key + "/connectionType" ).toUInt() );
+  if ( settings.contains( key + QStringLiteral( "/connectionType" ) ) )
+    mConnectionType = static_cast<QgsHanaConnectionType>( settings.value( key + QStringLiteral( "/connectionType" ) ).toUInt() );
   switch ( mConnectionType )
   {
     case QgsHanaConnectionType::Dsn:
-      mDsn = settings.value( key + "/dsn" ).toString();
+      mDsn = settings.value( key + QStringLiteral( "/dsn" ) ).toString();
       break;
     case QgsHanaConnectionType::HostPort:
-      mDriver = settings.value( key + "/driver" ).toString();
-      mHost = settings.value( key + "/host" ).toString();
-      mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
-      mIdentifier = settings.value( key + "/identifier" ).toString();
-      mMultitenant = settings.value( key + "/multitenant" ).toBool();
-      mDatabase = settings.value( key + "/database" ).toString();
+      mDriver = settings.value( key + QStringLiteral( "/driver" ) ).toString();
+      mHost = settings.value( key + QStringLiteral( "/host" ) ).toString();
+      mIdentifierType = settings.value( key + QStringLiteral( "/identifierType" ) ).toUInt();
+      mIdentifier = settings.value( key + QStringLiteral( "/identifier" ) ).toString();
+      mMultitenant = settings.value( key + QStringLiteral( "/multitenant" ) ).toBool();
+      mDatabase = settings.value( key + QStringLiteral( "/database" ) ).toString();
       break;
   }
-  mSchema = settings.value( key + "/schema" ).toString();
-  mAuthcfg = settings.value( key + "/authcfg" ).toString();
-  mSaveUserName = settings.value( key + "/saveUsername", false ).toBool();
+  mSchema = settings.value( key + QStringLiteral( "/schema" ) ).toString();
+  mAuthcfg = settings.value( key + QStringLiteral( "/authcfg" ) ).toString();
+  mSaveUserName = settings.value( key + QStringLiteral( "/saveUsername" ), false ).toBool();
   if ( mSaveUserName )
-    mUserName = settings.value( key + "/username" ).toString();
-  mSavePassword = settings.value( key + "/savePassword", false ).toBool();
+    mUserName = settings.value( key + QStringLiteral( "/username" ) ).toString();
+  mSavePassword = settings.value( key + QStringLiteral( "/savePassword" ), false ).toBool();
   if ( mSavePassword )
-    mPassword = settings.value( key + "/password" ).toString();
-  mUserTablesOnly = settings.value( key + "/userTablesOnly", true ).toBool();
-  mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", false ).toBool();
+    mPassword = settings.value( key + QStringLiteral( "/password" ) ).toString();
+  mUserTablesOnly = settings.value( key + QStringLiteral( "/userTablesOnly" ), true ).toBool();
+  mAllowGeometrylessTables = settings.value( key + QStringLiteral( "/allowGeometrylessTables" ), false ).toBool();
+  mUseEstimatedMetadata = settings.value( key + QStringLiteral( "/estimatedMetadata" ), false ).toBool();
 
   // SSL parameters
-  mSslEnabled = settings.value( key + "/sslEnabled", false ).toBool();
-  mSslCryptoProvider = settings.value( key + "/sslCryptoProvider" ).toString();
-  mSslKeyStore = settings.value( key + "/sslKeyStore" ).toString();
-  mSslTrustStore = settings.value( key + "/sslTrustStore" ).toString();
-  mSslValidateCertificate = settings.value( key + "/sslValidateCertificate", true ).toBool();
-  mSslHostNameInCertificate = settings.value( key + "/sslHostNameInCertificate" ).toString();
+  mSslEnabled = settings.value( key + QStringLiteral( "/sslEnabled" ), false ).toBool();
+  mSslCryptoProvider = settings.value( key + QStringLiteral( "/sslCryptoProvider" ) ).toString();
+  mSslKeyStore = settings.value( key + QStringLiteral( "/sslKeyStore" ) ).toString();
+  mSslTrustStore = settings.value( key + QStringLiteral( "/sslTrustStore" ) ).toString();
+  mSslValidateCertificate = settings.value( key + QStringLiteral( "/sslValidateCertificate" ), true ).toBool();
+  mSslHostNameInCertificate = settings.value( key + QStringLiteral( "/sslHostNameInCertificate" ) ).toString();
 
   // Proxy parameters
-  mProxyEnabled = settings.value( key + "/proxyEnabled", false ).toBool();
-  mProxyHttp = settings.value( key + "/proxyHttp", false ).toBool();
-  mProxyHost = settings.value( key + "/proxyHost" ).toString();
-  mProxyPort = settings.value( key + "/proxyPort" ).toUInt();
-  mProxyUsername = settings.value( key + "/proxyUsername" ).toString();
-  mProxyPassword = settings.value( key + "/proxyPassword" ).toString();
+  mProxyEnabled = settings.value( key + QStringLiteral( "/proxyEnabled" ), false ).toBool();
+  mProxyHttp = settings.value( key + QStringLiteral( "/proxyHttp" ), false ).toBool();
+  mProxyHost = settings.value( key + QStringLiteral( "/proxyHost" ) ).toString();
+  mProxyPort = settings.value( key + QStringLiteral( "/proxyPort" ) ).toUInt();
+  mProxyUsername = settings.value( key + QStringLiteral( "/proxyUsername" ) ).toString();
+  mProxyPassword = settings.value( key + QStringLiteral( "/proxyPassword" ) ).toString();
 
-  const QString keysPath = key + "/keys";
+  const QString keysPath = key + QStringLiteral( "/keys" );
   settings.beginGroup( keysPath );
   const QStringList schemaNames = settings.childGroups();
   if ( !schemaNames.empty() )
@@ -260,46 +265,47 @@ void QgsHanaSettings::save()
   const QString key( path() );
   QgsSettings settings;
 
-  settings.setValue( key + "/connectionType", static_cast<uint>( mConnectionType ) );
+  settings.setValue( key + QStringLiteral( "/connectionType" ), static_cast<uint>( mConnectionType ) );
   switch ( mConnectionType )
   {
     case QgsHanaConnectionType::Dsn:
-      settings.setValue( key + "/dsn", mDsn );
+      settings.setValue( key + QStringLiteral( "/dsn" ), mDsn );
       break;
     case QgsHanaConnectionType::HostPort:
-      settings.setValue( key + "/driver", mDriver );
-      settings.setValue( key + "/host", mHost );
-      settings.setValue( key + "/identifierType", mIdentifierType );
-      settings.setValue( key + "/identifier", mIdentifier );
-      settings.setValue( key + "/multitenant", mMultitenant );
-      settings.setValue( key + "/database", mDatabase );
+      settings.setValue( key + QStringLiteral( "/driver" ), mDriver );
+      settings.setValue( key + QStringLiteral( "/host" ), mHost );
+      settings.setValue( key + QStringLiteral( "/identifierType" ), mIdentifierType );
+      settings.setValue( key + QStringLiteral( "/identifier" ), mIdentifier );
+      settings.setValue( key + QStringLiteral( "/multitenant" ), mMultitenant );
+      settings.setValue( key + QStringLiteral( "/database" ), mDatabase );
       break;
   }
 
-  settings.setValue( key + "/schema", mSchema );
-  settings.setValue( key + "/authcfg", mAuthcfg );
-  settings.setValue( key + "/saveUsername", mSaveUserName );
-  settings.setValue( key + "/username", mSaveUserName ? mUserName : QString( ) );
-  settings.setValue( key + "/savePassword", mSavePassword );
-  settings.setValue( key + "/password", mSavePassword ? mPassword : QString( ) );
-  settings.setValue( key + "/userTablesOnly", mUserTablesOnly );
-  settings.setValue( key + "/allowGeometrylessTables", mAllowGeometrylessTables );
-  settings.setValue( key + "/sslEnabled", mSslEnabled );
-  settings.setValue( key + "/sslCryptoProvider", mSslCryptoProvider );
-  settings.setValue( key + "/sslKeyStore", mSslKeyStore );
-  settings.setValue( key + "/sslTrustStore", mSslTrustStore );
-  settings.setValue( key + "/sslValidateCertificate", mSslValidateCertificate );
-  settings.setValue( key + "/sslHostNameInCertificate", mSslHostNameInCertificate );
-  settings.setValue( key + "/proxyEnabled", mProxyEnabled );
-  settings.setValue( key + "/proxyHttp", mProxyHttp );
-  settings.setValue( key + "/proxyHost", mProxyHost );
-  settings.setValue( key + "/proxyPort", mProxyPort );
-  settings.setValue( key + "/proxyUsername", mProxyUsername );
-  settings.setValue( key + "/proxyPassword", mProxyPassword );
+  settings.setValue( key + QStringLiteral( "/schema" ), mSchema );
+  settings.setValue( key + QStringLiteral( "/authcfg" ), mAuthcfg );
+  settings.setValue( key + QStringLiteral( "/saveUsername" ), mSaveUserName );
+  settings.setValue( key + QStringLiteral( "/username" ), mSaveUserName ? mUserName : QString() );
+  settings.setValue( key + QStringLiteral( "/savePassword" ), mSavePassword );
+  settings.setValue( key + QStringLiteral( "/password" ), mSavePassword ? mPassword : QString() );
+  settings.setValue( key + QStringLiteral( "/userTablesOnly" ), mUserTablesOnly );
+  settings.setValue( key + QStringLiteral( "/allowGeometrylessTables" ), mAllowGeometrylessTables );
+  settings.setValue( key + QStringLiteral( "/estimatedMetadata" ), mUseEstimatedMetadata );
+  settings.setValue( key + QStringLiteral( "/sslEnabled" ), mSslEnabled );
+  settings.setValue( key + QStringLiteral( "/sslCryptoProvider" ), mSslCryptoProvider );
+  settings.setValue( key + QStringLiteral( "/sslKeyStore" ), mSslKeyStore );
+  settings.setValue( key + QStringLiteral( "/sslTrustStore" ), mSslTrustStore );
+  settings.setValue( key + QStringLiteral( "/sslValidateCertificate" ), mSslValidateCertificate );
+  settings.setValue( key + QStringLiteral( "/sslHostNameInCertificate" ), mSslHostNameInCertificate );
+  settings.setValue( key + QStringLiteral( "/proxyEnabled" ), mProxyEnabled );
+  settings.setValue( key + QStringLiteral( "/proxyHttp" ), mProxyHttp );
+  settings.setValue( key + QStringLiteral( "/proxyHost" ), mProxyHost );
+  settings.setValue( key + QStringLiteral( "/proxyPort" ), mProxyPort );
+  settings.setValue( key + QStringLiteral( "/proxyUsername" ), mProxyUsername );
+  settings.setValue( key + QStringLiteral( "/proxyPassword" ), mProxyPassword );
 
   if ( !mKeyColumns.empty() )
   {
-    const QString keysPath = key + "/keys/";
+    const QString keysPath = key + QStringLiteral( "/keys/" );
     settings.beginGroup( keysPath );
     const QStringList schemaNames = mKeyColumns.keys();
     for ( const QString &schemaName : schemaNames )
@@ -322,36 +328,76 @@ void QgsHanaSettings::removeConnection( const QString &name )
 {
   const QString key( getBaseKey() + name );
   QgsSettings settings;
-  settings.remove( key + "/connectionType" );
-  settings.remove( key + "/dsn" );
-  settings.remove( key + "/driver" );
-  settings.remove( key + "/host" );
-  settings.remove( key + "/identifierType" );
-  settings.remove( key + "/identifier" );
-  settings.remove( key + "/multitenant" );
-  settings.remove( key + "/database" );
-  settings.remove( key + "/schema" );
-  settings.remove( key + "/userTablesOnly" );
-  settings.remove( key + "/allowGeometrylessTables" );
-  settings.remove( key + "/username" );
-  settings.remove( key + "/password" );
-  settings.remove( key + "/saveUsername" );
-  settings.remove( key + "/savePassword" );
-  settings.remove( key + "/authcfg" );
-  settings.remove( key + "/sslEnabled" );
-  settings.remove( key + "/sslCryptoProvider" );
-  settings.remove( key + "/sslKeyStore" );
-  settings.remove( key + "/sslTrustStore" );
-  settings.remove( key + "/sslValidateCertificate" );
-  settings.remove( key + "/sslHostNameInCertificate" );
-  settings.remove( key + "/proxyEnabled" );
-  settings.remove( key + "/proxyHttp" );
-  settings.remove( key + "/proxyHost" );
-  settings.remove( key + "/proxyPort" );
-  settings.remove( key + "/proxyUsername" );
-  settings.remove( key + "/proxyPassword" );
-  settings.remove( key + "/keys" );
+  settings.remove( key + QStringLiteral( "/connectionType" ) );
+  settings.remove( key + QStringLiteral( "/dsn" ) );
+  settings.remove( key + QStringLiteral( "/driver" ) );
+  settings.remove( key + QStringLiteral( "/host" ) );
+  settings.remove( key + QStringLiteral( "/identifierType" ) );
+  settings.remove( key + QStringLiteral( "/identifier" ) );
+  settings.remove( key + QStringLiteral( "/multitenant" ) );
+  settings.remove( key + QStringLiteral( "/database" ) );
+  settings.remove( key + QStringLiteral( "/schema" ) );
+  settings.remove( key + QStringLiteral( "/userTablesOnly" ) );
+  settings.remove( key + QStringLiteral( "/allowGeometrylessTables" ) );
+  settings.remove( key + QStringLiteral( "/estimatedMetadata" ) );
+  settings.remove( key + QStringLiteral( "/username" ) );
+  settings.remove( key + QStringLiteral( "/password" ) );
+  settings.remove( key + QStringLiteral( "/saveUsername" ) );
+  settings.remove( key + QStringLiteral( "/savePassword" ) );
+  settings.remove( key + QStringLiteral( "/authcfg" ) );
+  settings.remove( key + QStringLiteral( "/sslEnabled" ) );
+  settings.remove( key + QStringLiteral( "/sslCryptoProvider" ) );
+  settings.remove( key + QStringLiteral( "/sslKeyStore" ) );
+  settings.remove( key + QStringLiteral( "/sslTrustStore" ) );
+  settings.remove( key + QStringLiteral( "/sslValidateCertificate" ) );
+  settings.remove( key + QStringLiteral( "/sslHostNameInCertificate" ) );
+  settings.remove( key + QStringLiteral( "/proxyEnabled" ) );
+  settings.remove( key + QStringLiteral( "/proxyHttp" ) );
+  settings.remove( key + QStringLiteral( "/proxyHost" ) );
+  settings.remove( key + QStringLiteral( "/proxyPort" ) );
+  settings.remove( key + QStringLiteral( "/proxyUsername" ) );
+  settings.remove( key + QStringLiteral( "/proxyPassword" ) );
+  settings.remove( key + QStringLiteral( "/keys" ) );
   settings.remove( key );
+  settings.sync();
+}
+
+void QgsHanaSettings::duplicateConnection( const QString &src, const QString &dst )
+{
+  const QString key( getBaseKey() + src );
+  const QString newKey( getBaseKey() + dst );
+
+  QgsSettings settings;
+  settings.setValue( newKey + QStringLiteral( "/connectionType" ), settings.value( key + QStringLiteral( "/connectionType" ) ).toUInt() );
+  settings.setValue( newKey + QStringLiteral( "/dsn" ), settings.value( key + QStringLiteral( "/dsn" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/driver" ), settings.value( key + QStringLiteral( "/driver" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/host" ), settings.value( key + QStringLiteral( "/host" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/identifierType" ), settings.value( key + QStringLiteral( "/identifierType" ) ).toUInt() );
+  settings.setValue( newKey + QStringLiteral( "/identifier" ), settings.value( key + QStringLiteral( "/identifier" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/multitenant" ), settings.value( key + QStringLiteral( "/multitenant" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/database" ), settings.value( key + QStringLiteral( "/database" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/schema" ), settings.value( key + QStringLiteral( "/schema" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/userTablesOnly" ), settings.value( key + QStringLiteral( "/userTablesOnly" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/allowGeometrylessTables" ), settings.value( key + QStringLiteral( "/allowGeometrylessTables" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/estimatedMetadata" ), settings.value( key + QStringLiteral( "/estimatedMetadata" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/username" ), settings.value( key + QStringLiteral( "/username" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/password" ), settings.value( key + QStringLiteral( "/password" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + QStringLiteral( "/authcfg" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/sslEnabled" ), settings.value( key + QStringLiteral( "/sslEnabled" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/sslCryptoProvider" ), settings.value( key + QStringLiteral( "/sslCryptoProvider" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/sslKeyStore" ), settings.value( key + QStringLiteral( "/sslKeyStore" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/sslTrustStore" ), settings.value( key + QStringLiteral( "/sslTrustStore" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/sslValidateCertificate" ), settings.value( key + QStringLiteral( "/sslValidateCertificate" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/sslHostNameInCertificate" ), settings.value( key + QStringLiteral( "/sslHostNameInCertificate" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/proxyEnabled" ), settings.value( key + QStringLiteral( "/proxyEnabled" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/proxyHttp" ), settings.value( key + QStringLiteral( "/proxyHttp" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/proxyHost" ), settings.value( key + QStringLiteral( "/proxyHost" ) ).toUInt() );
+  settings.setValue( newKey + QStringLiteral( "/proxyPort" ), settings.value( key + QStringLiteral( "/proxyPort" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/proxyUsername" ), settings.value( key + QStringLiteral( "/proxyUsername" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/proxyPassword" ), settings.value( key + QStringLiteral( "/proxyPassword" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/keys" ), settings.value( key + QStringLiteral( "/keys" ) ) );
   settings.sync();
 }
 
@@ -365,11 +411,11 @@ QStringList QgsHanaSettings::getConnectionNames()
 QString QgsHanaSettings::getSelectedConnection()
 {
   const QgsSettings settings;
-  return settings.value( getBaseKey() + "selected" ).toString();
+  return settings.value( getBaseKey() + QStringLiteral( "selected" ) ).toString();
 }
 
 void QgsHanaSettings::setSelectedConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( getBaseKey() + "selected", name );
+  settings.setValue( getBaseKey() + QStringLiteral( "selected" ), name );
 }

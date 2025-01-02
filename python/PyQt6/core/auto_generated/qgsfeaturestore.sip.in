@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturestore.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,9 +18,6 @@ A container for features with the same fields and crs.
 %End
   public:
     QgsFeatureStore();
-%Docstring
-Constructor
-%End
 
     QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
 %Docstring
@@ -185,5 +182,5 @@ typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
  *                                                                      *
  * src/core/qgsfeaturestore.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

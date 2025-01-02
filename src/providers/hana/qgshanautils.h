@@ -37,7 +37,7 @@ class QgsHanaUtils
     static QString quotedString( const QString &str );
     static QString quotedValue( const QVariant &value );
 
-    static QString toConstant( const QVariant &value, QVariant::Type type );
+    static QString toConstant( const QVariant &value, QMetaType::Type type );
 
     static QString toString( Qgis::DistanceUnit unit );
 

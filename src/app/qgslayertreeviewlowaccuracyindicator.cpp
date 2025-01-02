@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewlowaccuracyindicator.h"
+#include "moc_qgslayertreeviewlowaccuracyindicator.cpp"
 #include "qgsdatums.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -38,7 +39,6 @@ void QgsLayerTreeViewLowAccuracyIndicatorProvider::disconnectSignals( QgsMapLaye
 
 void QgsLayerTreeViewLowAccuracyIndicatorProvider::onIndicatorClicked( const QModelIndex & )
 {
-
 }
 
 QString QgsLayerTreeViewLowAccuracyIndicatorProvider::iconName( QgsMapLayer * )
@@ -79,7 +79,6 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
   }
   catch ( QgsNotSupportedException & )
   {
-
   }
 
   // dynamic crs with no epoch?
@@ -130,7 +129,6 @@ bool QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer( QgsMapLayer *lay
   }
   catch ( QgsNotSupportedException & )
   {
-
   }
 
   return false;

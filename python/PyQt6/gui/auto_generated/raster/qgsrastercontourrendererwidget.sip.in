@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrastercontourrendererwidget.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,5 +39,5 @@ Widget creation function (mainly for the use by the renderer registry)
  *                                                                      *
  * src/gui/raster/qgsrastercontourrendererwidget.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

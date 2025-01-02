@@ -365,6 +365,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterArea::typeName() )
+      sipType = sipType_QgsProcessingParameterArea;
+    else if ( sipCpp->type() == QgsProcessingParameterVolume::typeName() )
+      sipType = sipType_QgsProcessingParameterVolume;
     else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() )
       sipType = sipType_QgsProcessingParameterDuration;
     else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
@@ -1303,9 +1307,13 @@ class CORE_EXPORT QgsProcessingParameters
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a output layer destination.
+     *
+     * Since QGIS 3.38 the \a testOnly argument can be set to TRUE to evaluate the parameter to an output layer destination for advance testing only. This
+     * prevents default behavior such as output post-processing which would otherwise occur.
+     *
      * \since QGIS 3.4
      */
-    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly = false );
 
     /**
      * Evaluates the parameter with matching \a definition to a file based output destination.
@@ -1557,7 +1565,7 @@ class CORE_EXPORT QgsProcessingParameters
     /**
      * Evaluates the parameter with matching \a definition to a list of fields.
      *
-     * \deprecated use parameterAsStrings() instead.
+     * \deprecated QGIS 3.40. Use parameterAsStrings() instead.
      */
     Q_DECL_DEPRECATED static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_DEPRECATED;
 
@@ -1565,14 +1573,14 @@ class CORE_EXPORT QgsProcessingParameters
      * Evaluates the parameter with matching \a definition and \a value to a list of fields.
      *
      * \since QGIS 3.4
-     * \deprecated use parameterAsStrings() instead.
+     * \deprecated QGIS 3.40. Use parameterAsStrings() instead.
      */
     Q_DECL_DEPRECATED static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) SIP_DEPRECATED;
 
     /**
      * Evaluates the parameter with matching \a definition to a list of strings (e.g. field names or point cloud attributes).
      *
-     * \since QGIS 3.32.
+     * \since QGIS 3.32
      */
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
@@ -1852,6 +1860,15 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterExtent *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    /**
+     * Returns TRUE if \a value is a valid string value representing an extent.
+     *
+     * This method does NOT attempt to resolve \a value to a map layer.
+     */
+    static bool variantIsValidStringForExtent( const QVariant &value );
 
 };
 
@@ -2339,7 +2356,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "distance" ); }
+    static QString typeName() { return QStringLiteral( "distance" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
@@ -2385,6 +2402,169 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
 
 };
 
+
+/**
+ * \class QgsProcessingParameterArea
+ * \ingroup core
+ * \brief A double numeric parameter for area values. Linked to a source layer or CRS parameter
+ * to determine what units the area values are in.
+ *
+ * The number of decimals places shown in a area parameter's widget can be specified by
+ * setting the parameter's metadata. For example:
+ *
+ * \code{.py}
+ *   param = QgsProcessingParameterArea( 'VAL', 'Threshold')
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsProcessingParameterArea : public QgsProcessingParameterNumber
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterArea.
+     */
+    explicit QgsProcessingParameterArea( const QString &name, const QString &description = QString(),
+                                         const QVariant &defaultValue = QVariant(),
+                                         const QString &parentParameterName = QString(),
+                                         bool optional = false,
+                                         double minValue = 0,
+                                         double maxValue = std::numeric_limits<double>::max() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "area" ); } // cppcheck-suppress duplInheritedMember
+
+    QgsProcessingParameterArea *clone() const override SIP_FACTORY;
+
+    QString type() const override;
+    QStringList dependsOnOtherParameters() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    /**
+     * Returns the name of the parent parameter, or an empty string if this is not set.
+     * \see setParentParameterName()
+     */
+    QString parentParameterName() const;
+
+    /**
+     * Sets the name of the parent layer parameter. Use an empty string if this is not required.
+     * \see parentParameterName()
+     */
+    void setParentParameterName( const QString &parentParameterName );
+
+    /**
+     * Returns the default area unit for the parameter.
+     *
+     * \see setDefaultUnit()
+     */
+    Qgis::AreaUnit defaultUnit() const { return mDefaultUnit; }
+
+    /**
+     * Sets the default area \a unit for the parameter.
+     *
+     * \see defaultUnit()
+     */
+    void setDefaultUnit( Qgis::AreaUnit unit ) { mDefaultUnit = unit; }
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QString mParentParameterName;
+    Qgis::AreaUnit mDefaultUnit = Qgis::AreaUnit::Unknown;
+
+};
+
+
+/**
+ * \class QgsProcessingParameterVolume
+ * \ingroup core
+ * \brief A double numeric parameter for volume values. Linked to a source layer or CRS parameter
+ * to determine what units the volume values are in.
+ *
+ * The number of decimals places shown in a volume parameter's widget can be specified by
+ * setting the parameter's metadata. For example:
+ *
+ * \code{.py}
+ *   param = QgsProcessingParameterVolume( 'VAL', 'Threshold')
+ *   # only show two decimal places in parameter's widgets, not 6:
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'decimals': 2 }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsProcessingParameterVolume : public QgsProcessingParameterNumber
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterVolume.
+     */
+    explicit QgsProcessingParameterVolume( const QString &name, const QString &description = QString(),
+                                           const QVariant &defaultValue = QVariant(),
+                                           const QString &parentParameterName = QString(),
+                                           bool optional = false,
+                                           double minValue = 0,
+                                           double maxValue = std::numeric_limits<double>::max() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "volume" ); } // cppcheck-suppress duplInheritedMember
+
+    QgsProcessingParameterVolume *clone() const override SIP_FACTORY;
+
+    QString type() const override;
+    QStringList dependsOnOtherParameters() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    /**
+     * Returns the name of the parent parameter, or an empty string if this is not set.
+     * \see setParentParameterName()
+     */
+    QString parentParameterName() const;
+
+    /**
+     * Sets the name of the parent layer parameter. Use an empty string if this is not required.
+     * \see parentParameterName()
+     */
+    void setParentParameterName( const QString &parentParameterName );
+
+    /**
+     * Returns the default volume unit for the parameter.
+     *
+     * \see setDefaultUnit()
+     */
+    Qgis::VolumeUnit defaultUnit() const { return mDefaultUnit; }
+
+    /**
+     * Sets the default volume \a unit for the parameter.
+     *
+     * \see defaultUnit()
+     */
+    void setDefaultUnit( Qgis::VolumeUnit unit ) { mDefaultUnit = unit; }
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QString mParentParameterName;
+    Qgis::VolumeUnit mDefaultUnit = Qgis::VolumeUnit::Unknown;
+
+};
+
+
 /**
  * \class QgsProcessingParameterDuration
  * \ingroup core
@@ -2408,7 +2588,7 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "duration" ); }
+    static QString typeName() { return QStringLiteral( "duration" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterDuration *clone() const override SIP_FACTORY;
 
@@ -2462,7 +2642,7 @@ class CORE_EXPORT QgsProcessingParameterScale : public QgsProcessingParameterNum
     /**
      * Returns the type name for the parameter class.
      */
-    static QString typeName() { return QStringLiteral( "scale" ); }
+    static QString typeName() { return QStringLiteral( "scale" ); } // cppcheck-suppress duplInheritedMember
 
     QgsProcessingParameterScale *clone() const override SIP_FACTORY;
 
@@ -2472,7 +2652,7 @@ class CORE_EXPORT QgsProcessingParameterScale : public QgsProcessingParameterNum
     /**
      * Creates a new parameter using the definition from a script code.
      */
-    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+    static QgsProcessingParameterScale *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
 };
 
@@ -3927,6 +4107,7 @@ class CORE_EXPORT QgsProcessingParameterCoordinateOperation : public QgsProcessi
     void setDestinationCrs( const QVariant &crs ) { mDestCrs = crs; }
 
   private:
+    QString valueAsPythonStringPrivate( const QVariant &value, QgsProcessingContext &context, bool allowNonStringValues ) const ;
 
     QString mSourceParameterName;
     QString mDestParameterName;

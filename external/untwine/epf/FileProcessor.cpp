@@ -133,10 +133,14 @@ void FileProcessor::run()
     pdal::Options opts;
     opts.add("filename", m_fi.filename);
     opts.add("count", m_fi.numPoints);
-#ifdef PDAL_LAS_START
     if (m_fi.driver == "readers.las")
+    {
+        opts.add("nosrs", m_fi.no_srs);
+        opts.add("use_eb_vlr", "true");
+#ifdef PDAL_LAS_START
         opts.add("start", m_fi.start);
 #endif
+    }
 
     pdal::StageFactory factory;
     pdal::Stage *s = factory.createStage(m_fi.driver);

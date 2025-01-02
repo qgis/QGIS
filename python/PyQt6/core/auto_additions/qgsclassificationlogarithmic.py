@@ -2,3 +2,7 @@
 QgsClassificationLogarithmic.NoHandling = QgsClassificationLogarithmic.NegativeValueHandling.NoHandling
 QgsClassificationLogarithmic.Discard = QgsClassificationLogarithmic.NegativeValueHandling.Discard
 QgsClassificationLogarithmic.PrependBreak = QgsClassificationLogarithmic.NegativeValueHandling.PrependBreak
+try:
+    QgsClassificationLogarithmic.__group__ = ['classification']
+except (NameError, AttributeError):
+    pass

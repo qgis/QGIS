@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsrelationmanager.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -177,5 +177,5 @@ Updates relations status
  *                                                                      *
  * src/core/qgsrelationmanager.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgsmaskrendersettings.h"
 #include "qgis.h"
 #include <QtGlobal>
 #include <QColor>
@@ -52,7 +53,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagDisableTiledRasterLayerRenders = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
       FlagRenderLabelsByMapLayer = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
       FlagLosslessImageRendering = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
-      FlagSynchronousLegendGraphics = 1 << 11 //!< Query legend graphics synchronously.
+      FlagSynchronousLegendGraphics = 1 << 11, //!< Query legend graphics synchronously.
+      FlagAlwaysUseGlobalMasks = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -193,7 +195,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers will be rendered.
      *
      * \see currentExportLayer()
-     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
+     * \deprecated QGIS 3.40. Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
     Q_DECL_DEPRECATED void setCurrentExportLayer( int layer = -1 ) SIP_DEPRECATED { mCurrentExportLayer = layer; }
 
@@ -205,7 +207,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * If \a layer is -1, all item layers should be rendered.
      *
      * \see setCurrentExportLayer()
-     * \deprecated Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
+     * \deprecated QGIS 3.40. Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
     Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED  { return mCurrentExportLayer; }
 
@@ -265,6 +267,33 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during map renders.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    const QgsMaskRenderSettings &maskSettings() const SIP_SKIP { return mMaskRenderSettings; }
+
+    /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during map renders.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    QgsMaskRenderSettings &maskSettings() { return mMaskRenderSettings; }
+
+    /**
+     * Sets the mask render \a settings, which control how masks
+     * are drawn and behave during map renders.
+     *
+     * \see maskSettings()
+     * \since QGIS 3.38
+     */
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+
+    /**
      * Returns a list of map themes to use during the export.
      *
      * Items which handle layered exports (e.g. maps) may utilize this list to export different
@@ -302,7 +331,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /**
-     * Returns the possibly NULL feature filter provider.
+     * Returns the (possibly NULLPTR) feature filter provider.
      *
      * A feature filter provider for filtering visible features or attributes.
      * It is currently used by QGIS Server Access Control Plugins.
@@ -367,6 +396,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QVector<qreal> mPredefinedScales;
 
     QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
+
+    QgsMaskRenderSettings mMaskRenderSettings;
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;

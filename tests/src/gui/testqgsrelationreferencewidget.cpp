@@ -22,6 +22,7 @@
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsrelationreferencewidget.h>
 #include <editorwidgets/qgsrelationreferencewidgetwrapper.h>
+#include <editorwidgets/qgsrelationreferenceconfigdlg.h>
 #include <qgsproject.h>
 #include <qgsattributeform.h>
 #include <qgsrelationmanager.h>
@@ -31,6 +32,7 @@
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayertools.h"
+#include "qgsvectorlayertoolscontext.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptooldigitizefeature.h"
 
@@ -50,10 +52,10 @@ class TestQgsRelationReferenceWidget : public QObject
     TestQgsRelationReferenceWidget() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void testChainFilter();
     void testChainFilter_data();
@@ -70,10 +72,11 @@ class TestQgsRelationReferenceWidget : public QObject
     void testSetFilterExpression();
     void testSetFilterExpressionWithOrClause();
     void testComboLimit();
+    void testAllowNullDefault();
 
   private:
-    std::unique_ptr<QgsVectorLayer> mLayer1;
-    std::unique_ptr<QgsVectorLayer> mLayer2;
+    QgsVectorLayer *mLayer1 = nullptr;
+    QgsVectorLayer *mLayer2 = nullptr;
     std::unique_ptr<QgsRelation> mRelation;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingDockWidget *mCadWidget = nullptr;
@@ -98,12 +101,12 @@ void TestQgsRelationReferenceWidget::cleanupTestCase()
 void TestQgsRelationReferenceWidget::init()
 {
   // create layer
-  mLayer1.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) ) );
-  QgsProject::instance()->addMapLayer( mLayer1.get(), false, false );
+  mLayer1 = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( mLayer1 );
 
-  mLayer2.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) ) );
+  mLayer2 = new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   mLayer2->setDisplayExpression( QStringLiteral( "pk" ) );
-  QgsProject::instance()->addMapLayer( mLayer2.get(), false, false );
+  QgsProject::instance()->addMapLayer( mLayer2 );
 
   // create relation
   mRelation.reset( new QgsRelation() );
@@ -160,8 +163,7 @@ void TestQgsRelationReferenceWidget::init()
 
 void TestQgsRelationReferenceWidget::cleanup()
 {
-  QgsProject::instance()->removeMapLayer( mLayer1.get() );
-  QgsProject::instance()->removeMapLayer( mLayer2.get() );
+  QgsProject::instance()->clear();
 }
 
 void TestQgsRelationReferenceWidget::testChainFilter_data()
@@ -488,7 +490,7 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
 
   // set a null foreign key
-  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
+  w.setForeignKeys( QVariantList() << QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
   QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
   QCOMPARE( cbs[0]->isEnabled(), true );
   QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
@@ -517,30 +519,57 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
 {
   QWidget parentWidget;
   QgsRelationReferenceWidget w( &parentWidget );
+
   w.setRelation( *mRelation, true );
   w.init();
 
   QSignalSpy spy( &w, &QgsRelationReferenceWidget::foreignKeysChanged );
-
-  w.setForeignKeys( QVariantList() << 0 );
-  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 0 ) );
-  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(0)" ) );
-  QCOMPARE( spy.count(), 1 );
-
-  w.setForeignKeys( QVariantList() << 11 );
-  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
-  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
-  QCOMPARE( spy.count(), 2 );
-
-  w.setForeignKeys( QVariantList() << 12 );
-  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
-  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
-  QCOMPARE( spy.count(), 3 );
+  QEventLoop loop;
 
   w.setForeignKeys( QVariantList() << QVariant() );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
   QVERIFY( w.foreignKeys().at( 0 ).isNull() );
   QVERIFY( w.foreignKeys().at( 0 ).isValid() );
+  QCOMPARE( spy.count(), 1 );
+
+  w.setForeignKeys( QVariantList() << 12 );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "12" ) );
+  QCOMPARE( spy.count(), 2 );
+
+  w.setForeignKeys( QVariantList() << 11 );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "11" ) );
+  QCOMPARE( spy.count(), 3 );
+
+  w.setForeignKeys( QVariantList() << 0 );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 0 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(0)" ) );
   QCOMPARE( spy.count(), 4 );
+
+  w.setForeignKeys( QVariantList() << QVariant() );
+
+  QTimer::singleShot( 1000, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  QVERIFY( w.foreignKeys().at( 0 ).isNull() );
+  QVERIFY( w.foreignKeys().at( 0 ).isValid() );
+  QCOMPARE( spy.count(), 5 );
 }
 
 // Test issue https://github.com/qgis/QGIS/issues/29884
@@ -582,11 +611,9 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
 // referenced layer
 class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missing-qobject-macro
 {
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override
+    bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat, const QgsVectorLayerToolsContext &context ) const override
     {
-      Q_UNUSED( parentWidget );
-      Q_UNUSED( showModal );
-      Q_UNUSED( hideParent );
+      Q_UNUSED( context );
       feat->setAttribute( QStringLiteral( "pk" ), 13 );
       feat->setAttribute( QStringLiteral( "material" ), QStringLiteral( "steel" ) );
       feat->setAttribute( QStringLiteral( "diameter" ), 140 );
@@ -595,11 +622,11 @@ class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missin
       return true;
     }
 
-    bool startEditing( QgsVectorLayer * ) const override {return true;}
+    bool startEditing( QgsVectorLayer * ) const override { return true; }
 
-    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
+    bool stopEditing( QgsVectorLayer *, bool = true ) const override { return true; }
 
-    bool saveEdits( QgsVectorLayer * ) const override {return true;}
+    bool saveEdits( QgsVectorLayer * ) const override { return true; }
 };
 
 void TestQgsRelationReferenceWidget::testAddEntry()
@@ -629,35 +656,35 @@ void TestQgsRelationReferenceWidget::testAddEntry()
 
 void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
 {
-  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer1 );
 
-  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer2 );
 
   // create relation
   QgsRelation mRelation;
   mRelation.setId( QStringLiteral( "vl1.vl2" ) );
   mRelation.setName( QStringLiteral( "vl1.vl2" ) );
-  mRelation.setReferencingLayer( mLayer1.id() );
-  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.setReferencingLayer( layer1->id() );
+  mRelation.setReferencedLayer( layer2->id() );
   mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
   QVERIFY( mRelation.isValid() );
   QgsProject::instance()->relationManager()->addRelation( mRelation );
 
   // add feature
-  QgsFeature ft0( mLayer1.fields() );
+  QgsFeature ft0( layer1->fields() );
   ft0.setAttribute( QStringLiteral( "pk" ), 0 );
   ft0.setAttribute( QStringLiteral( "fk" ), 0 );
-  mLayer1.startEditing();
-  mLayer1.addFeature( ft0 );
-  mLayer1.commitChanges();
+  layer1->startEditing();
+  layer1->addFeature( ft0 );
+  layer1->commitChanges();
 
   // check that a new added entry in referenced layer populate correctly the
   // referencing combobox
   QgsMapCanvas canvas;
   QgsRelationReferenceWidget w( &canvas );
-  QVERIFY( mLayer1.startEditing() );
+  QVERIFY( layer1->startEditing() );
   w.setRelation( mRelation, true );
   w.init();
 
@@ -676,18 +703,18 @@ void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
 
 void TestQgsRelationReferenceWidget::testDependencies()
 {
-  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer1 );
 
-  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer2 );
 
   // create relation
   QgsRelation mRelation;
   mRelation.setId( QStringLiteral( "vl1.vl2" ) );
   mRelation.setName( QStringLiteral( "vl1.vl2" ) );
-  mRelation.setReferencingLayer( mLayer1.id() );
-  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.setReferencingLayer( layer1->id() );
+  mRelation.setReferencedLayer( layer2->id() );
   mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
   QVERIFY( mRelation.isValid() );
   QgsProject::instance()->relationManager()->addRelation( mRelation );
@@ -699,16 +726,14 @@ void TestQgsRelationReferenceWidget::testDependencies()
   w.setRelation( mRelation, true );
   w.init();
 
-  QCOMPARE( w.referencedLayerId(), mLayer2.id() );
-  QCOMPARE( w.referencedLayerName(), mLayer2.name() );
-  QCOMPARE( w.referencedLayerDataSource(), mLayer2.publicSource() );
-  QCOMPARE( w.referencedLayerProviderKey(), mLayer2.providerType() );
-
+  QCOMPARE( w.referencedLayerId(), layer2->id() );
+  QCOMPARE( w.referencedLayerName(), layer2->name() );
+  QCOMPARE( w.referencedLayerDataSource(), layer2->publicSource() );
+  QCOMPARE( w.referencedLayerProviderKey(), layer2->providerType() );
 }
 
 void TestQgsRelationReferenceWidget::testSetFilterExpression()
 {
-
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
@@ -730,11 +755,8 @@ void TestQgsRelationReferenceWidget::testSetFilterExpression()
   QCOMPARE( w.mComboBox->count(), 3 );
 }
 
-
-
 void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
 {
-
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
@@ -768,50 +790,50 @@ void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
 void TestQgsRelationReferenceWidget::testComboLimit()
 {
   // create layer
-  QgsVectorLayer childLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vlchild" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &childLayer, false, false );
+  QgsVectorLayer *childLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vlchild" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( childLayer );
 
-  QgsVectorLayer parentLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vlparent" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( &parentLayer, false, false );
+  QgsVectorLayer *parentLayer = new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vlparent" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( parentLayer );
 
   // create relation
   QgsRelation mRelation;
   mRelation.setId( QStringLiteral( "vlchild.vlparent" ) );
   mRelation.setName( QStringLiteral( "vlchild.vlparent" ) );
-  mRelation.setReferencingLayer( childLayer.id() );
-  mRelation.setReferencedLayer( parentLayer.id() );
+  mRelation.setReferencingLayer( childLayer->id() );
+  mRelation.setReferencedLayer( parentLayer->id() );
   mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
   QVERIFY( mRelation.isValid() );
   QgsProject::instance()->relationManager()->addRelation( mRelation );
 
   // add features
-  QgsFeature ft0( childLayer.fields() );
+  QgsFeature ft0( childLayer->fields() );
   ft0.setAttribute( QStringLiteral( "pk" ), 0 );
   ft0.setAttribute( QStringLiteral( "fk" ), 0 );
-  childLayer.startEditing();
-  childLayer.addFeature( ft0 );
-  childLayer.commitChanges();
+  childLayer->startEditing();
+  childLayer->addFeature( ft0 );
+  childLayer->commitChanges();
 
-  QgsFeature ft1( childLayer.fields() );
+  QgsFeature ft1( childLayer->fields() );
   ft1.setAttribute( QStringLiteral( "pk" ), 1 );
   ft1.setAttribute( QStringLiteral( "fk" ), 1 );
-  childLayer.startEditing();
-  childLayer.addFeature( ft1 );
-  childLayer.commitChanges();
+  childLayer->startEditing();
+  childLayer->addFeature( ft1 );
+  childLayer->commitChanges();
 
   for ( int i = 0; i < 200; i++ )
   {
-    QgsFeature ft( parentLayer.fields() );
+    QgsFeature ft( parentLayer->fields() );
     ft.setAttribute( QStringLiteral( "pk" ), i );
     ft.setAttribute( QStringLiteral( "material" ), QStringLiteral( "material %1" ).arg( i ) );
     ft.setAttribute( QStringLiteral( "diameter" ), 100 );
     ft.setAttribute( QStringLiteral( "raccord" ), QStringLiteral( "raccord %1" ).arg( i ) );
-    parentLayer.startEditing();
-    parentLayer.addFeature( ft );
-    parentLayer.commitChanges();
+    parentLayer->startEditing();
+    parentLayer->addFeature( ft );
+    parentLayer->commitChanges();
   }
 
-  QCOMPARE( parentLayer.featureCount(), 200 );
+  QCOMPARE( parentLayer->featureCount(), 200 );
 
   QWidget parentWidget;
   QgsRelationReferenceWidget w( &parentWidget );
@@ -869,7 +891,45 @@ void TestQgsRelationReferenceWidget::testComboLimit()
   w.setRelation( mRelation, true );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 201 );
+}
 
+void TestQgsRelationReferenceWidget::testAllowNullDefault()
+{
+  // Create parent and child layers
+  QgsVectorLayer *parentLayer = new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vlparent" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( parentLayer );
+
+  QgsVectorLayer *childLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vlchild" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( childLayer );
+
+  QgsRelation relation;
+  relation.setId( QStringLiteral( "vlchild.vlparent" ) );
+  relation.setName( QStringLiteral( "vlchild.vlparent" ) );
+  relation.setReferencingLayer( childLayer->id() );
+  relation.setReferencedLayer( parentLayer->id() );
+  relation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( relation.isValid() );
+
+  QgsProject::instance()->relationManager()->addRelation( relation );
+
+  // Test the config dialog
+  std::unique_ptr<QgsRelationReferenceConfigDlg> dlg;
+  dlg.reset( static_cast<QgsRelationReferenceConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "RelationReference" ), childLayer, 1, nullptr ) ) );
+  QVERIFY( dlg );
+
+  // Check that "Allow NULL" was not set by config
+  QCOMPARE( dlg->mAllowNullWasSetByConfig, false );
+
+  // Check the default value of "Allow NULL" checkbox
+  QCOMPARE( dlg->mCbxAllowNull->isChecked(), true );
+
+  // Set "Allow NULL" by config
+  QVariantMap config = dlg->config();
+  config["AllowNULL"] = false;
+  dlg->setConfig( config );
+
+  QCOMPARE( dlg->mAllowNullWasSetByConfig, true );
+  QCOMPARE( dlg->mCbxAllowNull->isChecked(), false );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsquadrilateral.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -207,5 +207,5 @@ Returns the perimeter of the quadrilateral, or 0 if the quadrilateral is empty.
  *                                                                      *
  * src/core/geometry/qgsquadrilateral.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -22,7 +22,7 @@
 #include <Qt3DRender/QEffect>
 #include <QMap>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -73,6 +73,15 @@ QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
   return new QgsSimpleLineMaterialSettings( *this );
 }
 
+bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsSimpleLineMaterialSettings *otherLine = dynamic_cast<const QgsSimpleLineMaterialSettings *>( other );
+  if ( !otherLine )
+    return false;
+
+  return *this == *otherLine;
+}
+
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
@@ -87,7 +96,7 @@ void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-Qt3DRender::QMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -122,14 +131,14 @@ Qt3DRender::QMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSet
 QMap<QString, QString> QgsSimpleLineMaterialSettings::toExportParameters() const
 {
   QMap<QString, QString> parameters;
-  parameters[ QStringLiteral( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[QStringLiteral( "Ka" )] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
   return parameters;
 }
 
-void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
+void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const
 {
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
-  ambientParameter->setValue( mAmbient );
+  const QColor ambient = materialContext.isSelected() ? materialContext.selectionColor().darker() : mAmbient;
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), ambient );
   effect->addParameter( ambientParameter );
 }
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsproxystyle.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ parenting to a parent widget.
 #include "qgsproxystyle.h"
 %End
   public:
-
     explicit QgsProxyStyle( QWidget *parent /Transfer/ );
 %Docstring
 Constructor for QgsProxyStyle. Ownership is transferred to the ``parent`` widget.
@@ -37,5 +36,5 @@ The base style for the QProxyStyle will be set to match the current QGIS applica
  *                                                                      *
  * src/gui/qgsproxystyle.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

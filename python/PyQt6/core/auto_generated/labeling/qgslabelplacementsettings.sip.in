@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgslabelplacementsettings.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -59,6 +59,24 @@ if the label cannot otherwise be placed on the line in a curved manner.
 .. seealso:: :py:func:`allowDegradedPlacement`
 %End
 
+    Qgis::LabelPrioritization prioritization() const;
+%Docstring
+Returns the label prioritization technique.
+
+.. seealso:: :py:func:`setPrioritization`
+
+.. versionadded:: 3.38
+%End
+
+    void setPrioritization( Qgis::LabelPrioritization prioritization );
+%Docstring
+Sets the technique used to prioritize labels.
+
+.. seealso:: :py:func:`prioritization`
+
+.. versionadded:: 3.38
+%End
+
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
 Updates the placement settings to respect any data defined properties
@@ -72,5 +90,5 @@ set within the specified ``properties`` collection.
  *                                                                      *
  * src/core/labeling/qgslabelplacementsettings.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

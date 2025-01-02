@@ -39,16 +39,15 @@ class QgsScrollBarHighlightOverlay;
 class GUI_EXPORT QgsScrollBarHighlight
 {
   public:
-
     /**
     * Priority, which dictates how overlapping highlights are rendered
     */
     enum class Priority : int
     {
-      Invalid = -1, //!< Invalid
-      LowPriority = 0, //!< Low priority, rendered below all other highlights
+      Invalid = -1,       //!< Invalid
+      LowPriority = 0,    //!< Low priority, rendered below all other highlights
       NormalPriority = 1, //!< Normal priority
-      HighPriority = 2, //!< High priority
+      HighPriority = 2,   //!< High priority
       HighestPriority = 3 //!< Highest priority, rendered above all other highlights
     };
 
@@ -57,9 +56,6 @@ class GUI_EXPORT QgsScrollBarHighlight
     */
     QgsScrollBarHighlight( int category, int position, const QColor &color, QgsScrollBarHighlight::Priority priority = QgsScrollBarHighlight::Priority::NormalPriority );
 
-    /**
-    * Default constructor for QgsScrollBarHighlight.
-    */
     QgsScrollBarHighlight() = default;
 
     //! Category ID
@@ -83,7 +79,6 @@ class GUI_EXPORT QgsScrollBarHighlight
 class GUI_EXPORT QgsScrollBarHighlightController
 {
   public:
-
     QgsScrollBarHighlightController();
     ~QgsScrollBarHighlightController();
 
@@ -171,11 +166,10 @@ class GUI_EXPORT QgsScrollBarHighlightController
     void removeAllHighlights();
 
   private:
-
-    QHash<int, QVector<QgsScrollBarHighlight> > mHighlights;
+    QHash<int, QVector<QgsScrollBarHighlight>> mHighlights;
     double mLineHeight = 0.0;
     double mVisibleRange = 0.0; // in pixels
-    double mMargin = 0.0; // in pixels
+    double mMargin = 0.0;       // in pixels
     QAbstractScrollArea *mScrollArea = nullptr;
     QPointer<QgsScrollBarHighlightOverlay> mOverlay;
 };
@@ -198,12 +192,7 @@ class QgsScrollBarHighlightOverlay : public QWidget
     bool eventFilter( QObject *object, QEvent *event ) override;
 
   private:
-    void drawHighlights( QPainter *painter,
-                         int docStart,
-                         int docSize,
-                         double docSizeToHandleSizeRatio,
-                         int handleOffset,
-                         const QRect &viewport );
+    void drawHighlights( QPainter *painter, int docStart, int docSize, double docSizeToHandleSizeRatio, int handleOffset, const QRect &viewport );
     void updateCache();
     QRect overlayRect() const;
     QRect handleRect() const;

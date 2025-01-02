@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgssnaptogridcanvasitem.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,7 +39,6 @@ Shows a grid on the map canvas given a spatial resolution.
       sipType = nullptr;
 %End
   public:
-
     QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas /TransferThis/ );
 %Docstring
 Will automatically be added to the ``mapCanvas``.
@@ -105,5 +104,5 @@ Enable this item. It will be hidden if disabled.
  *                                                                      *
  * src/gui/qgssnaptogridcanvasitem.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

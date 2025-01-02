@@ -80,7 +80,7 @@ class CORE_EXPORT QgsCadUtils
 
         /**
          * Snapped segment - only valid if actually used for something
-         * \deprecated will be removed in QGIS 4.0 - use snapMatch instead
+         * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - use snapMatch() instead.
          */
         QgsPointLocator::Match edgeMatch;
 
@@ -194,7 +194,6 @@ class CORE_EXPORT QgsCadUtils
          * \since QGIS 3.26
          */
         QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
-
 
 #ifdef SIP_RUN
         SIP_PROPERTY( name = cadPointList, get = _cadPointList, set = _setCadPointList )

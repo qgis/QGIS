@@ -110,11 +110,9 @@ QgsStyleFromProjectAlgorithm::~QgsStyleFromProjectAlgorithm() = default;
 
 void QgsStyleFromProjectAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input project (leave blank to use current)" ), Qgis::ProcessingFileParameterBehavior::File,
-                QString(), QVariant(), true, QObject::tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS)" ) ) );
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input project (leave blank to use current)" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), true, QObject::tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS)" ) ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ),
-                QObject::tr( "Style files (*.xml)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ), QObject::tr( "Style files (*.xml)" ) ) );
 
   const QStringList options = QStringList()
                               << QObject::tr( "Symbols" )
@@ -175,7 +173,7 @@ bool QgsStyleFromProjectAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   if ( mProjectPath.isEmpty() && !context.project() )
     return false;
 
-  const QList< int > selectedObjects = parameterAsEnums( parameters, QStringLiteral( "OBJECTS" ), context );
+  const QList<int> selectedObjects = parameterAsEnums( parameters, QStringLiteral( "OBJECTS" ), context );
   if ( selectedObjects.contains( 0 ) )
     mObjects << QgsStyle::SymbolEntity;
   if ( selectedObjects.contains( 1 ) )
@@ -185,7 +183,7 @@ bool QgsStyleFromProjectAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   if ( selectedObjects.contains( 3 ) )
     mObjects << QgsStyle::LabelSettingsEntity;
 
-  mStyle = std::make_unique< QgsStyle >();
+  mStyle = std::make_unique<QgsStyle>();
   mStyle->createMemoryDatabase();
 
   if ( mProjectPath.isEmpty() )
@@ -203,7 +201,7 @@ QVariantMap QgsStyleFromProjectAlgorithm::processAlgorithm( const QVariantMap &p
   {
     // load project from path
     QgsProject p( nullptr, Qgis::ProjectCapabilities() );
-    if ( !p.read( mProjectPath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoad3DViews ) )
+    if ( !p.read( mProjectPath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontUpgradeAnnotations ) )
     {
       throw QgsProcessingException( QObject::tr( "Could not read project %1" ).arg( mProjectPath ) );
     }
@@ -228,7 +226,3 @@ QVariantMap QgsStyleFromProjectAlgorithm::processAlgorithm( const QVariantMap &p
 }
 
 ///@endcond
-
-
-
-

@@ -38,17 +38,23 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
-    //! Constructor for QgsOnlineTerrainGenerator
+    /**
+     * Creates a new instance of a QgsOnlineTerrainGenerator object.
+     */
+    static QgsTerrainGenerator *create() SIP_FACTORY;
+
     QgsOnlineTerrainGenerator();
     ~QgsOnlineTerrainGenerator() override;
 
-    //! Sets CRS of the terrain
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
-    //! Returns CRS of the terrain
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
+    QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
     //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
-    void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }
+    void setResolution( int resolution )
+    {
+      mResolution = resolution;
+      updateGenerator();
+    }
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
@@ -64,15 +70,11 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     Type type() const override;
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
-    float heightAt( double x, double y, const Qgs3DMapSettings &map ) const override;
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
-    //void resolveReferences( const QgsProject &project ) override;
+    float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
   private:
-
     void updateGenerator();
 
     QgsCoordinateReferenceSystem mCrs;

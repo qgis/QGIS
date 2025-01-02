@@ -263,7 +263,7 @@
       </extent>
       <id>testlayer20150528120452665</id>
       <datasource>./testlayer.shp</datasource>
-      <title>A test vector layer èé</title>
+      <title wfs="A test wfs vector layer èé">A test vector layer èé</title>
       <abstract>A test vector layer with unicode òà</abstract>
       <keywordList>
         <value></value>

@@ -34,14 +34,14 @@ class QgsExternalStorageFetchedContent;
 
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsexternalresourcewidget.h>
 
 #include <qgsexternalstoragefilewidget.h>
-% End
+//%End
 #endif
 
 
@@ -52,7 +52,6 @@ class QgsExternalStorageFetchedContent;
  */
 class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )
@@ -91,7 +90,15 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * \brief documentPath returns the path of the current document in the widget
      * \param type determines the type of the returned null variant if the document is not defined yet
      */
-    QVariant documentPath( QVariant::Type type = QVariant::String ) const;
+    QVariant documentPath( QMetaType::Type type = QMetaType::Type::QString ) const;
+
+    /**
+     * \brief documentPath returns the path of the current document in the widget
+     * \param type determines the type of the returned null variant if the document is not defined yet
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED QVariant documentPath( QVariant::Type type ) const SIP_DEPRECATED;
+
     void setDocumentPath( const QVariant &documentPath );
 
     /**
@@ -196,8 +203,8 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QgsMessageBar *messageBar() const;
 
   signals:
-    //! emitteed as soon as the current document changes
-    void valueChanged( const QString & );
+    //! Emitted as soon as the current document changes
+    void valueChanged( const QString &value );
 
   private slots:
     void loadDocument( const QString &path );

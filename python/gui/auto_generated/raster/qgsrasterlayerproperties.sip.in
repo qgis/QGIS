@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrasterlayerproperties.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ Property sheet for a raster map layer
 %End
   public:
 
-
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
@@ -44,12 +43,13 @@ Constructor
     virtual bool eventFilter( QObject *obj, QEvent *ev );
 
 
- void saveDefaultStyle() /Deprecated/;
+ void saveDefaultStyle() /Deprecated="Since 3.40. Use saveStyleAsDefault() instead."/;
 %Docstring
 Saves the default style when appropriate button is pressed
 
-.. deprecated::
-   use :py:func:`~QgsRasterLayerProperties.saveStyleAsDefault` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterLayerProperties.saveStyleAsDefault` instead.
 %End
 
   protected slots:
@@ -66,5 +66,5 @@ Saves the default style when appropriate button is pressed
  *                                                                      *
  * src/gui/raster/qgsrasterlayerproperties.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgsgpsconnection.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,8 +25,8 @@ Abstract base class for connection to a GPS device
 
 %TypeHeaderCode
 #include "qgsgpsconnection.h"
-#include <qgsgpsdconnection.h>
-#include <qgsnmeaconnection.h>
+#include "qgsgpsdconnection.h"
+#include "qgsnmeaconnection.h"
 %End
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsGpsdConnection" ) )
@@ -129,5 +129,5 @@ Parse available data source content
  *                                                                      *
  * src/core/gps/qgsgpsconnection.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

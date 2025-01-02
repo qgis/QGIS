@@ -27,7 +27,6 @@ class APP_EXPORT QgsSettingsLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
-
     QgsSettingsLocatorFilter( QObject *parent = nullptr );
     QgsSettingsLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "optionpages" ); }
@@ -40,8 +39,7 @@ class APP_EXPORT QgsSettingsLocatorFilter : public QgsLocatorFilter
     void triggerResult( const QgsLocatorResult &result ) override;
 
   private:
-
-    QMap<QString, QString> settingsPage( const QString &type,  const QString &page );
+    QMap<QString, QString> settingsPage( const QString &type, const QString &page );
 };
 
 #endif // QGSSETTINGSLOCATORFILTERS_H

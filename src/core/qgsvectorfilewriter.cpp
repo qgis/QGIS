@@ -343,7 +343,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     for ( int i = 0; i < datasourceOptions.size(); i++ )
     {
       QgsDebugMsgLevel( QStringLiteral( "-dsco=%1" ).arg( datasourceOptions[i] ), 2 );
-      options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().constData() );
+      options[i] = CPLStrdup( datasourceOptions[i].toUtf8().constData() );
     }
     options[ datasourceOptions.size()] = nullptr;
   }
@@ -456,7 +456,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     for ( int i = 0; i < layerOptions.size(); i++ )
     {
       QgsDebugMsgLevel( QStringLiteral( "-lco=%1" ).arg( layerOptions[i] ), 2 );
-      options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().constData() );
+      options[i] = CPLStrdup( layerOptions[i].toUtf8().constData() );
     }
     options[ layerOptions.size()] = nullptr;
   }
@@ -644,7 +644,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
         switch ( attrField.type() )
         {
-          case QVariant::LongLong:
+          case QMetaType::Type::LongLong:
           {
             const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
             if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
@@ -655,26 +655,26 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             ogrPrecision = 0;
             break;
           }
-          case QVariant::String:
+          case QMetaType::Type::QString:
             ogrType = OFTString;
             if ( ( ogrWidth <= 0 || ogrWidth > 255 ) && mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
               ogrWidth = 255;
             break;
 
-          case QVariant::Int:
+          case QMetaType::Type::Int:
             ogrType = OFTInteger;
             ogrWidth = ogrWidth > 0 && ogrWidth <= 10 ? ogrWidth : 10;
             ogrPrecision = 0;
             break;
 
-          case QVariant::Bool:
+          case QMetaType::Type::Bool:
             ogrType = OFTInteger;
             ogrSubType = OFSTBoolean;
             ogrWidth = 1;
             ogrPrecision = 0;
             break;
 
-          case QVariant::Double:
+          case QMetaType::Type::Double:
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,1)
             if ( mOgrDriverName == QLatin1String( "GPKG" ) && attrField.precision() == 0 && attrField.name().compare( fidFieldName, Qt::CaseInsensitive ) == 0 )
             {
@@ -686,11 +686,11 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             ogrType = OFTReal;
             break;
 
-          case QVariant::Date:
+          case QMetaType::Type::QDate:
             ogrType = OFTDate;
             break;
 
-          case QVariant::Time:
+          case QMetaType::Type::QTime:
             if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
             {
               ogrType = OFTString;
@@ -702,7 +702,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             }
             break;
 
-          case QVariant::DateTime:
+          case QMetaType::Type::QDateTime:
             if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
             {
               ogrType = OFTString;
@@ -714,11 +714,11 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             }
             break;
 
-          case QVariant::ByteArray:
+          case QMetaType::Type::QByteArray:
             ogrType = OFTBinary;
             break;
 
-          case QVariant::StringList:
+          case QMetaType::Type::QStringList:
           {
             // handle GPKG conversion to JSON
             if ( mOgrDriverName == QLatin1String( "GPKG" ) )
@@ -732,7 +732,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             if ( pszDataTypes && strstr( pszDataTypes, "StringList" ) )
             {
               ogrType = OFTStringList;
-              mSupportedListSubTypes.insert( QVariant::String );
+              mSupportedListSubTypes.insert( QMetaType::Type::QString );
             }
             else
             {
@@ -742,7 +742,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             break;
           }
 
-          case QVariant::Map:
+          case QMetaType::Type::QVariantMap:
           {
             // handle GPKG conversion to JSON
             const char *pszDataSubTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
@@ -757,7 +757,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             //intentional fall-through
           [[fallthrough]];
 
-          case QVariant::List:
+          case QMetaType::Type::QVariantList:
             // handle GPKG conversion to JSON
             if ( mOgrDriverName == QLatin1String( "GPKG" ) )
             {
@@ -767,13 +767,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             }
 
             // fall through to default for other unsupported types
-            if ( attrField.subType() == QVariant::String )
+            if ( attrField.subType() == QMetaType::Type::QString )
             {
               const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
               if ( pszDataTypes && strstr( pszDataTypes, "StringList" ) )
               {
                 ogrType = OFTStringList;
-                mSupportedListSubTypes.insert( QVariant::String );
+                mSupportedListSubTypes.insert( QMetaType::Type::QString );
               }
               else
               {
@@ -782,13 +782,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
               }
               break;
             }
-            else if ( attrField.subType() == QVariant::Int )
+            else if ( attrField.subType() == QMetaType::Type::Int )
             {
               const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
               if ( pszDataTypes && strstr( pszDataTypes, "IntegerList" ) )
               {
                 ogrType = OFTIntegerList;
-                mSupportedListSubTypes.insert( QVariant::Int );
+                mSupportedListSubTypes.insert( QMetaType::Type::Int );
               }
               else
               {
@@ -797,13 +797,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
               }
               break;
             }
-            else if ( attrField.subType() == QVariant::Double )
+            else if ( attrField.subType() == QMetaType::Type::Double )
             {
               const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
               if ( pszDataTypes && strstr( pszDataTypes, "RealList" ) )
               {
                 ogrType = OFTRealList;
-                mSupportedListSubTypes.insert( QVariant::Double );
+                mSupportedListSubTypes.insert( QMetaType::Type::Double );
               }
               else
               {
@@ -812,13 +812,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
               }
               break;
             }
-            else if ( attrField.subType() == QVariant::LongLong )
+            else if ( attrField.subType() == QMetaType::Type::LongLong )
             {
               const char *pszDataTypes = GDALGetMetadataItem( poDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
               if ( pszDataTypes && strstr( pszDataTypes, "Integer64List" ) )
               {
                 ogrType = OFTInteger64List;
-                mSupportedListSubTypes.insert( QVariant::LongLong );
+                mSupportedListSubTypes.insert( QMetaType::Type::LongLong );
               }
               else
               {
@@ -928,25 +928,32 @@ void QgsVectorFileWriter::init( QString vectorFileName,
               // - if successful, note that we know that field domain (if it
               //   is shared by other fields)
               // - assign its name to the new field.
-              std::unique_ptr<QgsFieldDomain> domain( sourceDatabaseProviderConnection->fieldDomain( domainName ) );
-              if ( domain )
+              try
               {
-                OGRFieldDomainH hFieldDomain = QgsOgrUtils::convertFieldDomain( domain.get() );
-                if ( hFieldDomain )
+                std::unique_ptr<QgsFieldDomain> domain( sourceDatabaseProviderConnection->fieldDomain( domainName ) );
+                if ( domain )
                 {
-                  char *pszFailureReason = nullptr;
-                  if ( GDALDatasetAddFieldDomain( mDS.get(), hFieldDomain, &pszFailureReason ) )
+                  OGRFieldDomainH hFieldDomain = QgsOgrUtils::convertFieldDomain( domain.get() );
+                  if ( hFieldDomain )
                   {
-                    existingDestDomainNames.insert( domainName );
-                    canSetFieldDomainName = true;
+                    char *pszFailureReason = nullptr;
+                    if ( GDALDatasetAddFieldDomain( mDS.get(), hFieldDomain, &pszFailureReason ) )
+                    {
+                      existingDestDomainNames.insert( domainName );
+                      canSetFieldDomainName = true;
+                    }
+                    else
+                    {
+                      QgsDebugError( QStringLiteral( "cannot create field domain: %1" ).arg( pszFailureReason ) );
+                    }
+                    CPLFree( pszFailureReason );
+                    OGR_FldDomain_Destroy( hFieldDomain );
                   }
-                  else
-                  {
-                    QgsDebugMsgLevel( QStringLiteral( "cannot create field domain: %1" ).arg( pszFailureReason ), 2 );
-                  }
-                  CPLFree( pszFailureReason );
-                  OGR_FldDomain_Destroy( hFieldDomain );
                 }
+              }
+              catch ( QgsProviderConnectionException & )
+              {
+                QgsDebugError( QStringLiteral( "Cannot retrieve field domain: %1" ).arg( domainName ) );
               }
             }
             if ( canSetFieldDomainName )
@@ -1115,76 +1122,6 @@ class QgsVectorFileWriterMetadataContainer
                                layerOptions
                              )
                            );
-
-
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,0)
-      // Support for Atlas BNA was removed in GDAL 3.3
-
-      // Atlas BNA
-      datasetOptions.clear();
-      layerOptions.clear();
-
-      datasetOptions.insert( QStringLiteral( "LINEFORMAT" ), new QgsVectorFileWriter::SetOption(
-                               QObject::tr( "New BNA files are created by the "
-                                            "systems default line termination conventions. "
-                                            "This may be overridden here." ),
-                               QStringList()
-                               << QStringLiteral( "CRLF" )
-                               << QStringLiteral( "LF" ),
-                               QString(), // Default value
-                               true // Allow None
-                             ) );
-
-      datasetOptions.insert( QStringLiteral( "MULTILINE" ), new QgsVectorFileWriter::BoolOption(
-                               QObject::tr( "By default, BNA files are created in multi-line format. "
-                                            "For each record, the first line contains the identifiers and the "
-                                            "type/number of coordinates to follow. Each following line contains "
-                                            "a pair of coordinates." ),
-                               true  // Default value
-                             ) );
-
-      datasetOptions.insert( QStringLiteral( "NB_IDS" ), new QgsVectorFileWriter::SetOption(
-                               QObject::tr( "BNA records may contain from 2 to 4 identifiers per record. "
-                                            "Some software packages only support a precise number of identifiers. "
-                                            "You can override the default value (2) by a precise value." ),
-                               QStringList()
-                               << QStringLiteral( "2" )
-                               << QStringLiteral( "3" )
-                               << QStringLiteral( "4" )
-                               << QStringLiteral( "NB_SOURCE_FIELDS" ),
-                               QStringLiteral( "2" ) // Default value
-                             ) );
-
-      datasetOptions.insert( QStringLiteral( "ELLIPSES_AS_ELLIPSES" ), new QgsVectorFileWriter::BoolOption(
-                               QObject::tr( "The BNA writer will try to recognize ellipses and circles when writing a polygon. "
-                                            "This will only work if the feature has previously been read from a BNA file. "
-                                            "As some software packages do not support ellipses/circles in BNA data file, "
-                                            "it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not "
-                                            "to export them as such, but keep them as polygons." ),
-                               true  // Default value
-                             ) );
-
-      datasetOptions.insert( QStringLiteral( "NB_PAIRS_PER_LINE" ), new QgsVectorFileWriter::IntOption(
-                               QObject::tr( "Limit the number of coordinate pairs per line in multiline format." ),
-                               2 // Default value
-                             ) );
-
-      datasetOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new QgsVectorFileWriter::IntOption(
-                               QObject::tr( "Set the number of decimal for coordinates. Default value is 10." ),
-                               10 // Default value
-                             ) );
-
-      driverMetadata.insert( QStringLiteral( "BNA" ),
-                             QgsVectorFileWriter::MetaData(
-                               QStringLiteral( "Atlas BNA" ),
-                               QObject::tr( "Atlas BNA" ),
-                               QStringLiteral( "*.bna" ),
-                               QStringLiteral( "bna" ),
-                               datasetOptions,
-                               layerOptions
-                             )
-                           );
-#endif
 
       // Comma Separated Value
       datasetOptions.clear();
@@ -1355,21 +1292,6 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
-      // FMEObjects Gateway
-      datasetOptions.clear();
-      layerOptions.clear();
-
-      driverMetadata.insert( QStringLiteral( "FMEObjects Gateway" ),
-                             QgsVectorFileWriter::MetaData(
-                               QStringLiteral( "FMEObjects Gateway" ),
-                               QObject::tr( "FMEObjects Gateway" ),
-                               QStringLiteral( "*.fdd" ),
-                               QStringLiteral( "fdd" ),
-                               datasetOptions,
-                               layerOptions
-                             )
-                           );
-
       // GeoJSON
       datasetOptions.clear();
       layerOptions.clear();
@@ -1427,7 +1349,7 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "GeoJSON - Newline Delimited" ),
                                QObject::tr( "GeoJSON - Newline Delimited" ),
                                QStringLiteral( "*.geojsonl *.geojsons *.json" ),
-                               QStringLiteral( "json" ),  // add json for now
+                               QStringLiteral( "geojsonl geojsons json" ),
                                datasetOptions,
                                layerOptions,
                                QStringLiteral( "UTF-8" )
@@ -2248,6 +2170,16 @@ class QgsVectorFileWriterMetadataContainer
       datasetOptions.clear();
       layerOptions.clear();
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+      layerOptions.insert( QStringLiteral( "TARGET_ARCGIS_VERSION" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Selects which ArcGIS version this dataset should be compatible with. ALL is used by default and means any ArcGIS 10.x or ArcGIS Pro version. Using ARCGIS_PRO_3_2_OR_LATER is required to export 64-bit integer fields as such, otherwise they will be converted as Real fields. ARCGIS_PRO_3_2_OR_LATER also supports proper Date and Time field types." ),
+                             QStringList()
+                             << QStringLiteral( "ALL" )
+                             << QStringLiteral( "ARCGIS_PRO_3_2_OR_LATER" ),
+                             QStringLiteral( "ALL" ) // Default value
+                           ) );
+#endif
+
       layerOptions.insert( QStringLiteral( "FEATURE_DATASET" ), new QgsVectorFileWriter::StringOption(
                              QObject::tr( "When this option is set, the new layer will be created inside the named "
                                           "FeatureDataset folder. If the folder does not already exist, it will be created." ),
@@ -2834,29 +2766,29 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
     switch ( field.type() )
     {
-      case QVariant::Int:
+      case QMetaType::Type::Int:
         OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
         break;
-      case QVariant::LongLong:
+      case QMetaType::Type::LongLong:
         OGR_F_SetFieldInteger64( poFeature.get(), ogrField, attrValue.toLongLong() );
         break;
-      case QVariant::Bool:
+      case QMetaType::Type::Bool:
         OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
         break;
-      case QVariant::String:
+      case QMetaType::Type::QString:
         OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         OGR_F_SetFieldDouble( poFeature.get(), ogrField, attrValue.toDouble() );
         break;
-      case QVariant::Date:
+      case QMetaType::Type::QDate:
         OGR_F_SetFieldDateTime( poFeature.get(), ogrField,
                                 attrValue.toDate().year(),
                                 attrValue.toDate().month(),
                                 attrValue.toDate().day(),
                                 0, 0, 0, 0 );
         break;
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
         if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
         {
           OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toDateTime().toString( QStringLiteral( "yyyy/MM/dd hh:mm:ss.zzz" ) ) ).constData() );
@@ -2876,7 +2808,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
                                     QgsOgrUtils::OGRTZFlagFromQt( dt ) );
         }
         break;
-      case QVariant::Time:
+      case QMetaType::Type::QTime:
         if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
         {
           OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
@@ -2893,17 +2825,17 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         }
         break;
 
-      case QVariant::ByteArray:
+      case QMetaType::Type::QByteArray:
       {
         const QByteArray ba = attrValue.toByteArray();
         OGR_F_SetFieldBinary( poFeature.get(), ogrField, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
         break;
       }
 
-      case QVariant::Invalid:
+      case QMetaType::Type::UnknownType:
         break;
 
-      case QVariant::StringList:
+      case QMetaType::Type::QStringList:
       {
         // handle GPKG conversion to JSON
         if ( mOgrDriverName == QLatin1String( "GPKG" ) )
@@ -2919,7 +2851,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         }
 
         QStringList list = attrValue.toStringList();
-        if ( mSupportedListSubTypes.contains( QVariant::String ) )
+        if ( mSupportedListSubTypes.contains( QMetaType::Type::QString ) )
         {
           int count = list.count();
           char **lst = new char *[count + 1];
@@ -2943,7 +2875,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         break;
       }
 
-      case QVariant::List:
+      case QMetaType::Type::QVariantList:
         // handle GPKG conversion to JSON
         if ( mOgrDriverName == QLatin1String( "GPKG" ) )
         {
@@ -2958,10 +2890,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         }
 
         // fall through to default for unsupported types
-        if ( field.subType() == QVariant::String )
+        if ( field.subType() == QMetaType::Type::QString )
         {
           QStringList list = attrValue.toStringList();
-          if ( mSupportedListSubTypes.contains( QVariant::String ) )
+          if ( mSupportedListSubTypes.contains( QMetaType::Type::QString ) )
           {
             int count = list.count();
             char **lst = new char *[count + 1];
@@ -2984,10 +2916,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           }
           break;
         }
-        else if ( field.subType() == QVariant::Int )
+        else if ( field.subType() == QMetaType::Type::Int )
         {
           const QVariantList list = attrValue.toList();
-          if ( mSupportedListSubTypes.contains( QVariant::Int ) )
+          if ( mSupportedListSubTypes.contains( QMetaType::Type::Int ) )
           {
             const int count = list.count();
             int *lst = new int[count];
@@ -3015,10 +2947,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           }
           break;
         }
-        else if ( field.subType() == QVariant::Double )
+        else if ( field.subType() == QMetaType::Type::Double )
         {
           const QVariantList list = attrValue.toList();
-          if ( mSupportedListSubTypes.contains( QVariant::Double ) )
+          if ( mSupportedListSubTypes.contains( QMetaType::Type::Double ) )
           {
             const int count = list.count();
             double *lst = new double[count];
@@ -3046,10 +2978,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           }
           break;
         }
-        else if ( field.subType() == QVariant::LongLong )
+        else if ( field.subType() == QMetaType::Type::LongLong )
         {
           const QVariantList list = attrValue.toList();
-          if ( mSupportedListSubTypes.contains( QVariant::LongLong ) )
+          if ( mSupportedListSubTypes.contains( QMetaType::Type::LongLong ) )
           {
             const int count = list.count();
             long long *lst = new long long[count];
@@ -3080,7 +3012,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         //intentional fall-through
         [[fallthrough]];
 
-      case QVariant::Map:
+      case QMetaType::Type::QVariantMap:
       {
         // handle GPKG conversion to JSON
         const char *pszDataSubTypes = GDALGetMetadataItem( OGRGetDriverByName( mOgrDriverName.toLocal8Bit().constData() ), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
@@ -3489,14 +3421,14 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
   {
     for ( int i = 0; i < details.outputFields.size(); i++ )
     {
-      if ( details.outputFields.at( i ).type() == QVariant::LongLong )
+      if ( details.outputFields.at( i ).type() == QMetaType::Type::LongLong )
       {
         QVariant min;
         QVariant max;
         layer->minimumAndMaximumValue( i, min, max );
         if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < std::numeric_limits<int>::max() )
         {
-          details.outputFields[i].setType( QVariant::Int );
+          details.outputFields[i].setType( QMetaType::Type::Int );
         }
       }
     }
@@ -3552,7 +3484,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
   return writeAsVectorFormatV2( details, fileName, QgsCoordinateTransformContext(), options, newFilename, newLayer, errorMessage );
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( PreparedWriterDetails &details, const QString &fileName, const QgsCoordinateTransformContext &transformContext, const QgsVectorFileWriter::SaveVectorOptions &options, QString *newFilename, QString *newLayer, QString *errorMessage )
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( PreparedWriterDetails &details, const QString &fileName, const QgsCoordinateTransformContext &transformContext, const QgsVectorFileWriter::SaveVectorOptions &options, QString *newFilename, QString *newLayer, QString *errorMessage, SinkFlags sinkFlags )
 {
   Qgis::WkbType destWkbType = details.destWkbType;
 
@@ -3573,7 +3505,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
               options.layerName != details.providerUriParams.value( QStringLiteral( "layerName" ) ) ) )
       {
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
+          *errorMessage = QObject::tr( "Cannot overwrite an OGR layer in place" );
         return ErrCreateDataSource;
       }
     }
@@ -3620,7 +3552,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
     newOptions.sourceDatabaseProviderConnection = details.sourceDatabaseProviderConnection.get();
   }
 
-  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, newOptions, QgsFeatureSink::SinkFlags(), &tempNewFilename, &tempNewLayer ) );
+  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, newOptions, sinkFlags, &tempNewFilename, &tempNewLayer ) );
   writer->setSymbologyScale( options.symbologyScale );
 
   if ( newFilename )
@@ -3844,7 +3776,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Qgs
   if ( err != NoError )
     return err;
 
-  return writeAsVectorFormatV2( details, fileName, transformContext, options, errorMessage, newFilename, newLayer );
+  return writeAsVectorFormatV2( details, fileName, transformContext, options, newFilename, newLayer, errorMessage );
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV3( QgsVectorLayer *layer, const QString &fileName, const QgsCoordinateTransformContext &transformContext, const QgsVectorFileWriter::SaveVectorOptions &options, QString *errorMessage, QString *newFilename, QString *newLayer )
@@ -3952,7 +3884,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
       bool nonSpatialFormat = false;
       if ( gdalDriver )
       {
-        nonSpatialFormat = GDALGetMetadataItem( gdalDriver, GDAL_DCAP_NONSPATIAL, nullptr ) != nullptr;
+        nonSpatialFormat = GDALGetMetadataItem( gdalDriver, GDAL_DCAP_NONSPATIAL, nullptr );
       }
 
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )

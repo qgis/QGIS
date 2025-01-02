@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfiledownloaderdialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,7 +28,6 @@ cancellation.
 #include "qgsfiledownloaderdialog.h"
 %End
   public:
-
     QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString() );
 %Docstring
 :py:class:`QgsFileDownloader`
@@ -67,5 +66,5 @@ Emitted when data are ready to be processed
  *                                                                      *
  * src/gui/qgsfiledownloaderdialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -43,13 +43,14 @@ class TestQgsRasterMarker : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsRasterMarker() : QgsTest( QStringLiteral( "Raster Marker Renderer Tests" ) ) {}
+    TestQgsRasterMarker()
+      : QgsTest( QStringLiteral( "Raster Marker Renderer Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void rasterMarkerSymbol();
     void anchor();
@@ -95,12 +96,12 @@ void TestQgsRasterMarker::initTestCase()
   //create a marker layer that will be used in all tests
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
-  mPointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                    pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mPointLayer );
+    QList<QgsMapLayer *>() << mPointLayer
+  );
 
   //setup the raster marker symbol
   mRasterMarker = new QgsRasterMarkerSymbolLayer();
@@ -129,7 +130,6 @@ void TestQgsRasterMarker::init()
 
 void TestQgsRasterMarker::cleanup()
 {
-
 }
 
 void TestQgsRasterMarker::rasterMarkerSymbol()

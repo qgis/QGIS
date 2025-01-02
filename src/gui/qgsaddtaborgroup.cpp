@@ -18,6 +18,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsaddtaborgroup.h"
+#include "moc_qgsaddtaborgroup.cpp"
 #include "qgssettings.h"
 #include "qgshelp.h"
 
@@ -88,7 +89,7 @@ int QgsAddAttributeFormContainerDialog::columnCount() const
 
 Qgis::AttributeEditorContainerType QgsAddAttributeFormContainerDialog::containerType() const
 {
-  return mTypeCombo->currentData().value< Qgis::AttributeEditorContainerType >();
+  return mTypeCombo->currentData().value<Qgis::AttributeEditorContainerType>();
 }
 
 void QgsAddAttributeFormContainerDialog::accept()
@@ -97,7 +98,6 @@ void QgsAddAttributeFormContainerDialog::accept()
   {
     switch ( containerType() )
     {
-
       case Qgis::AttributeEditorContainerType::GroupBox:
         QgsSettings().setValue( QStringLiteral( "/qgis/attributeForm/defaultGroupColumnCount" ), mColumnCountSpinBox->value() );
         break;
@@ -119,7 +119,7 @@ void QgsAddAttributeFormContainerDialog::showHelp()
 
 void QgsAddAttributeFormContainerDialog::containerTypeChanged()
 {
-  const Qgis::AttributeEditorContainerType type = mTypeCombo->currentData().value< Qgis::AttributeEditorContainerType >();
+  const Qgis::AttributeEditorContainerType type = mTypeCombo->currentData().value<Qgis::AttributeEditorContainerType>();
   switch ( type )
   {
     case Qgis::AttributeEditorContainerType::GroupBox:

@@ -22,7 +22,7 @@
 // QgsCalloutAbstractMetadata
 //
 
-QgsCalloutWidget *QgsCalloutAbstractMetadata::createCalloutWidget( QgsVectorLayer * )
+QgsCalloutWidget *QgsCalloutAbstractMetadata::createCalloutWidget( QgsMapLayer * )
 {
   return nullptr;
 }
@@ -36,7 +36,7 @@ QgsCallout *QgsCalloutMetadata::createCallout( const QVariantMap &properties, co
   return mCreateFunc ? mCreateFunc( properties, context ) : nullptr;
 }
 
-QgsCalloutWidget *QgsCalloutMetadata::createCalloutWidget( QgsVectorLayer *vl )
+QgsCalloutWidget *QgsCalloutMetadata::createCalloutWidget( QgsMapLayer *vl )
 {
   return mWidgetFunc ? mWidgetFunc( vl ) : nullptr;
 }

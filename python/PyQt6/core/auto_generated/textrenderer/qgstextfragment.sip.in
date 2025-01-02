@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextfragment.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -12,7 +12,13 @@
 class QgsTextFragment
 {
 %Docstring(signature="appended")
-Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
+Stores a fragment of document along with formatting overrides to be used when rendering the fragment.
+
+Text fragments consist of either a block of text or another atomic component of a document (such as an image).
+
+Each fragment has an associated :py:func:`~characterFormat`, which specifies the text formatting overrides
+to use when rendering the fragment. Additionally, the :py:func:`~characterFormat` may contain properties
+for other fragment types, such as image paths and sizes for image fragments.
 
 .. warning::
 
@@ -50,6 +56,21 @@ Sets the ``text`` content of the fragment.
 .. seealso:: :py:func:`text`
 %End
 
+    bool isTab() const;
+%Docstring
+Returns ``True`` if the fragment consists of just a tab character.
+
+.. versionadded:: 3.38
+%End
+
+    bool isWhitespace() const;
+%Docstring
+Returns ``True`` if the fragment consists of just whitespace characters, and does not
+contain any content to render.
+
+.. versionadded:: 3.38
+%End
+
     const QgsTextCharacterFormat &characterFormat() const;
 %Docstring
 Returns the character formatting for the fragment.
@@ -64,6 +85,13 @@ Sets the character ``format`` for the fragment.
 .. seealso:: :py:func:`characterFormat`
 %End
 
+    bool isImage() const;
+%Docstring
+Returns ``True`` if the fragment represents an image.
+
+.. versionadded:: 3.40
+%End
+
     double horizontalAdvance( const QFont &font, const QgsRenderContext &context, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
 %Docstring
 Returns the horizontal advance associated with this fragment, when rendered using
@@ -73,7 +101,7 @@ Set ``fontHasBeenUpdatedForFragment`` to ``True`` if ``font`` already represents
 format for this fragment.
 
 The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
-:py:class:`QgsTextRenderer`.FONT_WORKAROUND_SCALE and then manually calculations
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually calculations
 based on the resultant font metrics. Failure to do so will result in poor quality text rendering
 at small font sizes.
 %End
@@ -92,5 +120,5 @@ Applies a ``capitalization`` style to the fragment's text.
  *                                                                      *
  * src/core/textrenderer/qgstextfragment.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

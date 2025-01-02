@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/settings/qgssettingstreemodel.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,7 +25,6 @@ class QgsSettingsTreeModel : QAbstractItemModel
 #include "qgssettingstreemodel.h"
 %End
   public:
-
     enum class Column
     {
       Name,
@@ -107,5 +106,5 @@ Sets the filter text
  *                                                                      *
  * src/gui/settings/qgssettingstreemodel.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

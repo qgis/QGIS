@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsopacitywidget.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ A widget for setting an opacity value.
 #include "qgsopacitywidget.h"
 %End
   public:
-
     explicit QgsOpacityWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsOpacityWidget.
@@ -66,5 +65,5 @@ to 1.0 (opaque).
  *                                                                      *
  * src/gui/qgsopacitywidget.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

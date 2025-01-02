@@ -15,85 +15,123 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'April 2014'
-__copyright__ = '(C) 2014, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "April 2014"
+__copyright__ = "(C) 2014, Alexander Bruy"
 
 import random
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsField,
-                       QgsFeatureSink,
-                       QgsFeature,
-                       QgsFields,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsWkbTypes,
-                       QgsSpatialIndex,
-                       QgsFeatureRequest,
-                       QgsDistanceArea,
-                       QgsProject,
-                       QgsProcessing,
-                       QgsProcessingException,
-                       QgsProcessingParameterDistance,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterDefinition)
+from qgis.PyQt.QtCore import QMetaType
+from qgis.core import (
+    Qgis,
+    QgsField,
+    QgsFeatureSink,
+    QgsFeature,
+    QgsFields,
+    QgsGeometry,
+    QgsPointXY,
+    QgsWkbTypes,
+    QgsSpatialIndex,
+    QgsFeatureRequest,
+    QgsDistanceArea,
+    QgsProject,
+    QgsProcessing,
+    QgsProcessingException,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterDefinition,
+)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
 
 class RandomPointsAlongLines(QgisAlgorithm):
-    INPUT = 'INPUT'
-    POINTS_NUMBER = 'POINTS_NUMBER'
-    MIN_DISTANCE = 'MIN_DISTANCE'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    POINTS_NUMBER = "POINTS_NUMBER"
+    MIN_DISTANCE = "MIN_DISTANCE"
+    OUTPUT = "OUTPUT"
 
     def group(self):
-        return self.tr('Vector creation')
+        return self.tr("Vector creation")
 
     def groupId(self):
-        return 'vectorcreation'
+        return "vectorcreation"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'),
-                                                              [QgsProcessing.SourceType.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterNumber(self.POINTS_NUMBER,
-                                                       self.tr('Number of points'),
-                                                       QgsProcessingParameterNumber.Type.Integer,
-                                                       1, False, 1, 1000000000))
-        self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
-                                                         self.tr('Minimum distance between points'),
-                                                         0, self.INPUT, False, 0, 1000000000))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                                                            self.tr('Random points'),
-                                                            type=QgsProcessing.SourceType.TypeVectorPoint))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                self.INPUT,
+                self.tr("Input layer"),
+                [QgsProcessing.SourceType.TypeVectorLine],
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.POINTS_NUMBER,
+                self.tr("Number of points"),
+                QgsProcessingParameterNumber.Type.Integer,
+                1,
+                False,
+                1,
+                1000000000,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterDistance(
+                self.MIN_DISTANCE,
+                self.tr("Minimum distance between points"),
+                0,
+                self.INPUT,
+                False,
+                0,
+                1000000000,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT,
+                self.tr("Random points"),
+                type=QgsProcessing.SourceType.TypeVectorPoint,
+            )
+        )
 
     def name(self):
-        return 'randompointsalongline'
+        return "randompointsalongline"
 
     def displayName(self):
-        return self.tr('Random points along line')
+        return self.tr("Random points along line")
+
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         pointCount = self.parameterAsDouble(parameters, self.POINTS_NUMBER, context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
 
         fields = QgsFields()
-        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
+        fields.append(QgsField("id", QMetaType.Type.Int, "", 10, 0))
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Type.Point, source.sourceCrs(), QgsFeatureSink.SinkFlag.RegeneratePrimaryKey)
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            fields,
+            QgsWkbTypes.Type.Point,
+            source.sourceCrs(),
+            QgsFeatureSink.SinkFlag.RegeneratePrimaryKey,
+        )
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -122,7 +160,11 @@ class RandomPointsAlongLines(QgisAlgorithm):
             # pick random feature
             fid = random.choice(ids)
             try:
-                f = next(source.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
+                f = next(
+                    source.getFeatures(
+                        request.setFilterFid(fid).setSubsetOfAttributes([])
+                    )
+                )
             except StopIteration:
                 ids.remove(fid)
                 continue
@@ -168,7 +210,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
                 f = QgsFeature(nPoints)
                 f.initAttributes(1)
                 f.setFields(fields)
-                f.setAttribute('id', nPoints)
+                f.setAttribute("id", nPoints)
                 f.setGeometry(geom)
                 sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
                 index.addFeature(f)
@@ -178,7 +220,12 @@ class RandomPointsAlongLines(QgisAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-            feedback.pushInfo(self.tr('Could not generate requested number of random points. '
-                                      'Maximum number of attempts exceeded.'))
+            feedback.pushInfo(
+                self.tr(
+                    "Could not generate requested number of random points. "
+                    "Maximum number of attempts exceeded."
+                )
+            )
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

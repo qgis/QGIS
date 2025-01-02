@@ -3,3 +3,7 @@ QgsTextShadowSettings.ShadowLowest = QgsTextShadowSettings.ShadowPlacement.Shado
 QgsTextShadowSettings.ShadowText = QgsTextShadowSettings.ShadowPlacement.ShadowText
 QgsTextShadowSettings.ShadowBuffer = QgsTextShadowSettings.ShadowPlacement.ShadowBuffer
 QgsTextShadowSettings.ShadowShape = QgsTextShadowSettings.ShadowPlacement.ShadowShape
+try:
+    QgsTextShadowSettings.__group__ = ['textrenderer']
+except (NameError, AttributeError):
+    pass

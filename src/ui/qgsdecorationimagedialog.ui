@@ -74,7 +74,7 @@
        </widget>
       </item>
       <item row="0" column="2" colspan="3">
-       <widget class="QgsFileWidget" name="wgtImagePath" native="true"/>       
+       <widget class="QgsFileWidget" name="wgtImagePath" native="true"/>
       </item>
       <item row="1" column="1">
        <widget class="QLabel" name="colorLabel">
@@ -162,8 +162,8 @@
             <height>0</height>
            </size>
           </property>
-          <property name="whatsThis">
-           <string extracomment="Distance from the top of the canvas as a percentage of page height"/>
+          <property name="toolTip">
+           <string>Horizontal offset on the map canvas from the placement anchor</string>
           </property>
           <property name="minimum">
            <number>0</number>
@@ -191,8 +191,8 @@
             <height>0</height>
            </size>
           </property>
-          <property name="whatsThis">
-           <string extracomment="Distance from the left of the canvas as a percentage of page width"/>
+          <property name="toolTip">
+           <string>Vertical offset on the map canvas from the placement anchor</string>
           </property>
           <property name="minimum">
            <number>0</number>

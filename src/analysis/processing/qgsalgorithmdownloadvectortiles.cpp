@@ -27,14 +27,13 @@
 class SetStylePostProcessor : public QgsProcessingLayerPostProcessorInterface
 {
   public:
-
     SetStylePostProcessor( QDomDocument &doc )
       : mDocument( doc )
     {}
 
     void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
     {
-      if ( QgsVectorTileLayer *tileLayer = qobject_cast< QgsVectorTileLayer * >( layer ) )
+      if ( QgsVectorTileLayer *tileLayer = qobject_cast<QgsVectorTileLayer *>( layer ) )
       {
         QString errorMsg;
         tileLayer->importNamedStyle( mDocument, errorMsg );
@@ -43,7 +42,6 @@ class SetStylePostProcessor : public QgsProcessingLayerPostProcessorInterface
     }
 
   private:
-
     QDomDocument mDocument;
 };
 
@@ -84,7 +82,7 @@ QgsDownloadVectorTilesAlgorithm *QgsDownloadVectorTilesAlgorithm::createInstance
 
 void QgsDownloadVectorTilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QVariant(), false, QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorTile ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QVariant(), false, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorTile ) ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level to download" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_LIMIT" ), QObject::tr( "Tile limit" ), Qgis::ProcessingNumberParameterType::Integer, 100, false, 0 ) );
@@ -97,8 +95,8 @@ bool QgsDownloadVectorTilesAlgorithm::prepareAlgorithm( const QVariantMap &param
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
-  QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
-  mProvider.reset( qgis::down_cast< const QgsVectorTileDataProvider * >( vtLayer->dataProvider() )->clone() );
+  QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( layer );
+  mProvider.reset( qgis::down_cast<const QgsVectorTileDataProvider *>( vtLayer->dataProvider() )->clone() );
   mTileMatrixSet = vtLayer->tileMatrixSet();
   mSourceMinZoom = vtLayer->sourceMinZoom();
   mLayerName = vtLayer->name();
@@ -111,7 +109,7 @@ bool QgsDownloadVectorTilesAlgorithm::prepareAlgorithm( const QVariantMap &param
     throw QgsProcessingException( QObject::tr( "Requested maximum zoom level is bigger than available zoom level in the source layer. Please, select zoom level lower or equal to %1." ).arg( vtLayer->sourceMaxZoom() ) );
   }
 
-  mTileLimit = static_cast< long long >( parameterAsInt( parameters, QStringLiteral( "TILE_LIMIT" ), context ) );
+  mTileLimit = static_cast<long long>( parameterAsInt( parameters, QStringLiteral( "TILE_LIMIT" ), context ) );
 
   mStyleDocument = QDomDocument( QStringLiteral( "qgis" ) );
   QString errorMsg;
@@ -136,7 +134,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     QgsTileMatrix tileMatrix = mTileMatrixSet.tileMatrix( i );
     QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( mExtent );
     tileRanges.insert( i, tileRange );
-    tileCount += static_cast< long long >( tileRange.endColumn() - tileRange.startColumn() + 1 ) * ( tileRange.endRow() - tileRange.startRow() + 1 );
+    tileCount += static_cast<long long>( tileRange.endColumn() - tileRange.startColumn() + 1 ) * ( tileRange.endRow() - tileRange.startRow() + 1 );
   }
   if ( tileCount > mTileLimit )
   {
@@ -149,18 +147,20 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );
   }
   writer->setMetadataValue( "format", "pbf" );
-  writer->setMetadataValue( "name",  mLayerName );
+  writer->setMetadataValue( "name", mLayerName );
   writer->setMetadataValue( "minzoom", QString::number( mSourceMinZoom ) );
   writer->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
-  writer->setMetadataValue( "crs",  mTileMatrixSet.rootMatrix().crs().authid() );
+  writer->setMetadataValue( "crs", mTileMatrixSet.rootMatrix().crs().authid() );
   try
   {
     QgsCoordinateTransform ct( mTileMatrixSet.rootMatrix().crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), context.transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsRectangle wgsExtent = ct.transformBoundingBox( mExtent );
     QString boundsStr = QString( "%1,%2,%3,%4" )
-                        .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
-                        .arg( wgsExtent.xMaximum() ).arg( wgsExtent.yMaximum() );
+                          .arg( wgsExtent.xMinimum() )
+                          .arg( wgsExtent.yMinimum() )
+                          .arg( wgsExtent.xMaximum() )
+                          .arg( wgsExtent.yMaximum() );
     writer->setMetadataValue( "bounds", boundsStr );
   }
   catch ( const QgsCsException & )
@@ -182,7 +182,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     multiStepFeedback.setCurrentStep( it.key() );
 
     QgsTileMatrix tileMatrix = mTileMatrixSet.tileMatrix( it.key() );
-    tileCount = static_cast< long long >( it.value().endColumn() - it.value().startColumn() + 1 ) * ( it.value().endRow() - it.value().startRow() + 1 );
+    tileCount = static_cast<long long>( it.value().endColumn() - it.value().startColumn() + 1 ) * ( it.value().endRow() - it.value().startRow() + 1 );
 
     const QPointF viewCenter = tileMatrix.mapToTileCoordinates( mExtent.center() );
 
@@ -193,10 +193,14 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
       if ( feedback->isCanceled() )
         break;
 
-      if ( !rawTile.data.isEmpty() )
+      // TODO: at the moment, it handles single source only of tiles
+      // takes the first one
+      const QByteArray data = rawTile.data.first();
+
+      if ( !data.isEmpty() )
       {
         QByteArray gzipTileData;
-        QgsZipUtils::encodeGzip( rawTile.data, gzipTileData );
+        QgsZipUtils::encodeGzip( data, gzipTileData );
         int rowTMS = pow( 2, rawTile.id.zoomLevel() ) - rawTile.id.row() - 1;
         writer->setTileData( rawTile.id.zoomLevel(), rawTile.id.column(), rowTMS, gzipTileData );
       }

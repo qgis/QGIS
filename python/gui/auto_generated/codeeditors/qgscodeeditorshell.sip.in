@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorshell.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,6 @@ on all other platforms.
 #include "qgscodeeditorshell.h"
 %End
   public:
-
     QgsCodeEditorShell( QWidget *parent /TransferThis/ = 0, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, Qgis::ScriptLanguage language = Qgis::ScriptLanguage::Unknown );
 %Docstring
 Constructor for QgsCodeEditorShell.
@@ -50,5 +49,5 @@ on all other platforms.
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorshell.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

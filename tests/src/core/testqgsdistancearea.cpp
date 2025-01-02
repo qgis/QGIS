@@ -29,9 +29,8 @@
 #include "qgsproject.h"
 #include <memory>
 
-class TestQgsDistanceArea: public QObject
+class TestQgsDistanceArea : public QObject
 {
-
     Q_OBJECT
   private slots:
     void initTestCase();
@@ -47,7 +46,6 @@ class TestQgsDistanceArea: public QObject
     void emptyPolygon();
     void regression14675();
     void regression16820();
-
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -90,7 +88,7 @@ void TestQgsDistanceArea::basic()
   // Different Ellipsoid
   daB.setEllipsoid( QStringLiteral( "WGS72" ) );
   resultB = daB.measureLine( p1, p2 );
-  QVERIFY( ! qFuzzyCompare( resultA, resultB ) );
+  QVERIFY( !qFuzzyCompare( resultA, resultB ) );
 
   // Test assignment
   const std::shared_ptr<QgsDistanceArea> daC( new QgsDistanceArea );
@@ -182,12 +180,12 @@ void TestQgsDistanceArea::test_distances()
   const QString myFileName = QStringLiteral( TEST_DATA_DIR ) + "/GeodTest-nano.dat";
 
   QFile myFile( myFileName );
-  if ( ! myFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  if ( !myFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     QFAIL( "Couldn't open file" );
     return;
   }
-  QTextStream in( & myFile );
+  QTextStream in( &myFile );
   while ( !in.atEnd() )
   {
     QString line = in.readLine();
@@ -207,7 +205,6 @@ void TestQgsDistanceArea::test_distances()
       QGSCOMPARENEAR( result, myLineList[6].toDouble(), 0.0005 );
     }
   }
-
 }
 
 void TestQgsDistanceArea::regression13601()
@@ -276,7 +273,7 @@ void TestQgsDistanceArea::measureUnits()
   double result = calc.measureLine( p1, p2 );
   units = calc.lengthUnits();
   //no OTF, result will be in CRS unit (feet)
-  QCOMPARE( units, Qgis::DistanceUnit::Feet );
+  QCOMPARE( units, Qgis::DistanceUnit::FeetUSSurvey );
   QGSCOMPARENEAR( result, 7637.7952755903825, 0.001 );
 
   calc.setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -312,8 +309,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
 
   QgsDebugMsgLevel( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ), 1 );
 
-  QVERIFY( ( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == Qgis::AreaUnit::SquareDegrees )
-           || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == Qgis::AreaUnit::SquareMeters ) );
+  QVERIFY( ( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == Qgis::AreaUnit::SquareDegrees ) || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == Qgis::AreaUnit::SquareMeters ) );
 
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
   area = da.measureArea( polygon );
@@ -374,7 +370,7 @@ void TestQgsDistanceArea::emptyPolygon()
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //test that measuring an empty polygon doesn't crash
-  da.measurePolygon( QVector< QgsPointXY >() );
+  da.measurePolygon( QVector<QgsPointXY>() );
 }
 
 void TestQgsDistanceArea::regression14675()
@@ -398,7 +394,3 @@ void TestQgsDistanceArea::regression16820()
 
 QGSTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"
-
-
-
-

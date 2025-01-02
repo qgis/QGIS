@@ -17,7 +17,6 @@
 #include "qgscolorbrewerpalette.h"
 #include "qgscptcityarchive.h"
 
-#include "qgsapplication.h"
 #include "qgscolorutils.h"
 #include "qgslogger.h"
 
@@ -173,6 +172,34 @@ static QColor _interpolateHsl( const QColor &c1, const QColor &c2, const double 
   return QColor::fromHslF( hue > 1 ? hue - 1 : hue, saturation, lightness, alpha );
 }
 
+static QColor interpolateCmyk( const QColor &c1, const QColor &c2, const double value, const Qgis::AngularDirection )
+{
+  if ( std::isnan( value ) )
+    return c2;
+
+  const qreal cyan1 = c1.cyanF();
+  const qreal cyan2 = c2.cyanF();
+  const qreal cyan = ( cyan1 + value * ( cyan2 - cyan1 ) );
+
+  const qreal magenta1 = c1.magentaF();
+  const qreal magenta2 = c2.magentaF();
+  const qreal magenta = ( magenta1 + value * ( magenta2 - magenta1 ) );
+
+  const qreal yellow1 = c1.yellowF();
+  const qreal yellow2 = c2.yellowF();
+  const qreal yellow = ( yellow1 + value * ( yellow2 - yellow1 ) );
+
+  const qreal black1 = c1.blackF();
+  const qreal black2 = c2.blackF();
+  const qreal black = ( black1 + value * ( black2 - black1 ) );
+
+  const qreal alpha1 = c1.alphaF();
+  const qreal alpha2 = c2.alphaF();
+  const qreal alpha = ( alpha1 + value * ( alpha2 - alpha1 ) );
+
+  return QColor::fromCmykF( cyan, magenta, yellow, black, alpha ); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+}
+
 //////////////
 
 
@@ -193,8 +220,10 @@ void QgsGradientStop::setColorSpec( QColor::Spec spec )
     case QColor::Rgb:
     case QColor::Invalid:
     case QColor::ExtendedRgb:
-    case QColor::Cmyk:
       mFunc = _interpolateRgb;
+      break;
+    case QColor::Cmyk:
+      mFunc = interpolateCmyk;
       break;
     case QColor::Hsv:
       mFunc = _interpolateHsv;
@@ -603,8 +632,10 @@ void QgsGradientColorRamp::setColorSpec( QColor::Spec spec )
     case QColor::Rgb:
     case QColor::Invalid:
     case QColor::ExtendedRgb:
-    case QColor::Cmyk:
       mFunc = _interpolateRgb;
+      break;
+    case QColor::Cmyk:
+      mFunc = interpolateCmyk;
       break;
     case QColor::Hsv:
       mFunc = _interpolateHsv;
@@ -942,7 +973,7 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStri
     loadFile();
 }
 
-QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props )
+QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props ) // cppcheck-suppress duplInheritedMember
 {
   QString schemeName = DEFAULT_CPTCITY_SCHEMENAME;
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;

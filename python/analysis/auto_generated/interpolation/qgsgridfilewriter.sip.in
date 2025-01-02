@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/interpolation/qgsgridfilewriter.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ A class that does interpolation to a grid and writes the results to an ascii gri
 #include "qgsgridfilewriter.h"
 %End
   public:
-
     QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
 %Docstring
 Constructor for QgsGridFileWriter, for the specified ``interpolator``.
@@ -47,5 +46,5 @@ An optional ``feedback`` object can be set for progress reports and cancellation
  *                                                                      *
  * src/analysis/interpolation/qgsgridfilewriter.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,15 +3,18 @@
  *                                                                      *
  * src/server/qgsserverrequest.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
 
 class QgsServerRequest
 {
+%Docstring(signature="appended")
+:py:class:`QgsServerRequest`
+Class defining request interface passed to services :py:func:`QgsService.executeRequest()` method
+%End
 
 %TypeHeaderCode
 #include "qgsserverrequest.h"
@@ -20,7 +23,6 @@ class QgsServerRequest
     static const QMetaObject staticMetaObject;
 
   public:
-
     typedef QMap<QString, QString> Parameters;
     typedef QMap<QString, QString> Headers;
 
@@ -36,39 +38,23 @@ class QgsServerRequest
 
     enum RequestHeader /BaseType=IntEnum/
     {
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
+
       HOST,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
-      // https://tools.ietf.org/html/rfc7239
       FORWARDED,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
       X_FORWARDED_FOR,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Host
       X_FORWARDED_HOST,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
       X_FORWARDED_PROTO,
-      // The QGIS service URL
       X_QGIS_SERVICE_URL,
-      // The QGIS WMS service URL
       X_QGIS_WMS_SERVICE_URL,
-      // The QGIS WFS service URL
       X_QGIS_WFS_SERVICE_URL,
-      // The QGIS WCS service URL
       X_QGIS_WCS_SERVICE_URL,
-      // The QGIS WMTS service URL
       X_QGIS_WMTS_SERVICE_URL,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
       ACCEPT,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
       USER_AGENT,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
       AUTHORIZATION,
     };
 
     QgsServerRequest();
-%Docstring
-Constructor
-%End
 
     QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 %Docstring
@@ -89,10 +75,6 @@ Constructor
 %End
 
     QgsServerRequest( const QgsServerRequest &other );
-%Docstring
-Copy constructor.
-%End
-
 
     virtual ~QgsServerRequest();
 
@@ -109,8 +91,7 @@ Returns a string representation of an HTTP request ``method``.
 
 :return: the request url as seen by QGIS server
 
-.. seealso:: :py:func:`originalUrl`
-server, by default the two are equal
+.. seealso:: :py:func:`originalUrl` for the unrewritten url as seen by the web server, by default the two are equal
 %End
 
     QgsServerRequest::Method method() const;
@@ -204,7 +185,7 @@ Set the request url
 Returns the request url as seen by the web server,
 by default this is equal to the url seen by QGIS server
 
-.. seealso:: :py:func:`url`
+.. seealso:: :py:func:`url` for the rewritten url
 
 .. versionadded:: 3.6
 %End
@@ -213,8 +194,8 @@ by default this is equal to the url seen by QGIS server
 %Docstring
 Returns the base URL of QGIS server
 
-E.g. if we call QGIS server with 'http://example.com/folder?REQUEST=WMS&...'
-the base URL will be 'http://example.com/folder'
+E.g. if we call QGIS server with ``http://example.com/folder?REQUEST=WMS&...``
+the base URL will be ``http://example.com/folder``
 
 .. versionadded:: 3.20
 %End
@@ -224,7 +205,7 @@ the base URL will be 'http://example.com/folder'
 Set the request method
 %End
 
-    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString() ) const;
 %Docstring
 Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
 
@@ -232,12 +213,11 @@ Returns the query string parameter with the given ``name`` from the request URL,
 %End
 
   protected:
-
     void setOriginalUrl( const QUrl &url );
 %Docstring
 Set the request original ``url`` (the request url as seen by the web server)
 
-.. seealso:: :py:func:`setUrl`
+.. seealso:: :py:func:`setUrl` for the rewritten url
 
 .. versionadded:: 3.6
 %End
@@ -256,5 +236,5 @@ Set the base URL of QGIS server
  *                                                                      *
  * src/server/qgsserverrequest.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

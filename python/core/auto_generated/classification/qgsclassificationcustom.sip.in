@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/classification/qgsclassificationcustom.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,7 @@ which does not compute any break.
   public:
     QgsClassificationCustom();
 
-    virtual QgsClassificationMethod *clone() const;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const;
 
     virtual QString name() const;
 
@@ -42,5 +42,5 @@ which does not compute any break.
  *                                                                      *
  * src/core/classification/qgsclassificationcustom.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -15,9 +15,10 @@
 
 #include "qgis.h"
 #include "qgsvectorsimplifymethod.h"
+#include "moc_qgsvectorsimplifymethod.cpp"
 
 QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
-  : mSimplifyHints( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorSimplifyMethod::FullSimplification : QgsVectorSimplifyMethod::GeometrySimplification )
+  : mSimplifyHints( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? Qgis::VectorRenderingSimplificationFlag::FullSimplification : Qgis::VectorRenderingSimplificationFlag::GeometrySimplification )
   , mThreshold( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD )
 {
 }

@@ -34,6 +34,10 @@ class QgsExpressionHighlighter;
 class QgsRelation;
 class QgsCodeEditorExpression;
 
+#ifndef SIP_RUN
+static const QString DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME = QStringLiteral( "[Project Functions]" );
+#endif
+
 /**
  * \ingroup gui
  * \brief A reusable widget that can be used to build a expression string.
@@ -43,16 +47,15 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 {
     Q_OBJECT
   public:
-
     /**
      * Flag to determine what should be loaded
      * \since QGIS 3.14
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      LoadNothing = 0, //!< Do not load anything
-      LoadRecent = 1 << 1, //!< Load recent expressions given the collection key
-      LoadUserExpressions = 1 << 2, //!< Load user expressions
+      LoadNothing = 0,                            //!< Do not load anything
+      LoadRecent = 1 << 1,                        //!< Load recent expressions given the collection key
+      LoadUserExpressions = 1 << 2,               //!< Load user expressions
       LoadAll = LoadRecent | LoadUserExpressions, //!< Load everything
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -94,15 +97,15 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     QgsVectorLayer *layer() const;
 
-    //! \deprecated since QGIS 3.14 this is now done automatically
-    Q_DECL_DEPRECATED void loadFieldNames() {} SIP_DEPRECATED
+    //! \deprecated QGIS 3.14. This is now done automatically.
+    Q_DECL_DEPRECATED void loadFieldNames() SIP_DEPRECATED {}
 
-    //! \deprecated since QGIS 3.14 use expressionTree()->loadFieldNames() instead
-    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) {mExpressionTreeView->loadFieldNames( fields );} SIP_DEPRECATED
+    //! \deprecated QGIS 3.14. Use expressionTree()->loadFieldNames() instead.
+    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) SIP_DEPRECATED { mExpressionTreeView->loadFieldNames( fields ); }
 
     /**
      * Loads field names and values from the specified map.
-     * \deprecated since QGIS 3.14 this will not do anything, use setLayer() instead
+     * \deprecated QGIS 3.14. This will not do anything, use setLayer() instead.
      */
     Q_DECL_DEPRECATED void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) SIP_DEPRECATED;
 
@@ -166,7 +169,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      *
      * \since QGIS 3.38
      */
-    void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, const std::function< QgsExpressionContext( const QVariant & ) > &previewContextGenerator );
+    void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator );
 #else
 
     /**
@@ -182,45 +185,44 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      *
      * \since QGIS 3.38
      */
-    void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, SIP_PYCALLABLE );
-    % MethodCode
+    void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, SIP_PYCALLABLE );
+    //%MethodCode
     Py_XINCREF( a2 );
     Py_BEGIN_ALLOW_THREADS
-    sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value )->QgsExpressionContext
-    {
-      QgsExpressionContext res;
-      SIP_BLOCK_THREADS
-      PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
-      int state;
-      int sipIsError = 0;
-      QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-      if ( sipIsError == 0 )
-      {
-        res = QgsExpressionContext( *t1 );
-      }
-      sipReleaseType( t1, sipType_QgsExpressionContext, state );
-      SIP_UNBLOCK_THREADS
-      return res;
-    } );
+      sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value ) -> QgsExpressionContext {
+        QgsExpressionContext res;
+        SIP_BLOCK_THREADS
+        PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
+        int state;
+        int sipIsError = 0;
+        QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+        if ( sipIsError == 0 )
+        {
+          res = QgsExpressionContext( *t1 );
+        }
+        sipReleaseType( t1, sipType_QgsExpressionContext, state );
+        SIP_UNBLOCK_THREADS
+        return res;
+      } );
 
     Py_END_ALLOW_THREADS
-    % End
+    //%End
 #endif
 
 
     /**
      * Adds the current expression to the given \a collection.
      * By default it is saved to the collection "generic".
-     * \deprecated since QGIS 3.14 use expressionTree()->saveRecent() instead
+     * \deprecated QGIS 3.14. Use expressionTree()->saveRecent() instead.
      */
     Q_DECL_DEPRECATED void saveToRecent( const QString &collection = "generic" ) SIP_DEPRECATED;
 
     /**
      * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
-     * \deprecated since QGIS 3.14 use expressionTree()->loadRecent() instead
+     * \deprecated QGIS 3.14. Use expressionTree()->loadRecent() instead.
      */
-    Q_DECL_DEPRECATED void loadRecent( const QString &collection = QStringLiteral( "generic" ) )SIP_DEPRECATED ;
+    Q_DECL_DEPRECATED void loadRecent( const QString &collection = QStringLiteral( "generic" ) ) SIP_DEPRECATED;
 
     /**
      * Returns the expression tree
@@ -230,21 +232,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Loads the user expressions.
-     * \deprecated since QGIS 3.14 use expressionTree()->loadUserExpressions() instead
+     * \deprecated QGIS 3.14. Use expressionTree()->loadUserExpressions() instead.
      * \since QGIS 3.12
      */
     Q_DECL_DEPRECATED void loadUserExpressions() SIP_DEPRECATED;
 
     /**
      * Stores the user \a expression with given \a label and \a helpText.
-     * \deprecated since QGIS 3.14 use expressionTree()->saveToUserExpressions() instead
+     * \deprecated QGIS 3.14. Use expressionTree()->saveToUserExpressions() instead.
      * \since QGIS 3.12
      */
     Q_DECL_DEPRECATED void saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText ) SIP_DEPRECATED;
 
     /**
      * Removes the expression \a label from the user stored expressions.
-     * \deprecated since QGIS 3.14 use expressionTree()->removeFromUserExpressions() instead
+     * \deprecated QGIS 3.14. Use expressionTree()->removeFromUserExpressions() instead.
      * \since QGIS 3.12
      */
     Q_DECL_DEPRECATED void removeFromUserExpressions( const QString &label ) SIP_DEPRECATED;
@@ -265,6 +267,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadCodeFromFile( QString path );
 
     /**
+     * Loads code from the project into the function editor
+     *
+     * \since QGIS 3.40
+     */
+    void loadCodeFromProjectFunctions();
+
+    /**
      * Loads code into the function editor
      */
     void loadFunctionCode( const QString &code );
@@ -275,9 +284,16 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void updateFunctionFileList( const QString &path );
 
     /**
+     * Saves the current function editor text to a project entry.
+     *
+     * \since QGIS 3.40
+     */
+    void saveProjectFunctionsEntry();
+
+    /**
      * Returns a pointer to the dialog's function item model.
      * This method is exposed for testing purposes only - it should not be used to modify the model.
-     * \deprecated since QGIS 3.14
+     * \deprecated QGIS 3.14
      */
     Q_DECL_DEPRECATED QStandardItemModel *model() SIP_DEPRECATED;
 
@@ -365,14 +381,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Adds the current expressions to the stored user expressions.
      * \since QGIS 3.12
      */
-    void storeCurrentUserExpression( );
+    void storeCurrentUserExpression();
 
     /**
      * Removes the selected expression from the stored user expressions,
      * the selected expression must be a user stored expression.
      * \since QGIS 3.12
      */
-    void removeSelectedUserExpression( );
+    void removeSelectedUserExpression();
 
     /**
      * Edits the selected expression from the stored user expressions,
@@ -384,7 +400,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /**
      * Returns the list of expression items matching a \a label.
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.14 use expressionTree()->findExpressions instead
+     * \deprecated QGIS 3.14. Use expressionTree()->findExpressions instead.
      */
     const QList<QgsExpressionItem *> findExpressions( const QString &label );
 
@@ -486,10 +502,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
-    QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
     QgsExpressionContext mExpressionContext;
-    QPointer< QgsProject > mProject;
+    QPointer<QgsProject> mProject;
 
     // Translated name of the user expressions group
     QString mUserExpressionsGroupName;

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgslabelposition.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -44,9 +44,6 @@ Constructor for QgsLabelPosition.
 %End
 
     QgsLabelPosition();
-%Docstring
-Constructor for QgsLabelPosition
-%End
 
     SIP_PYOBJECT __repr__();
 %MethodCode
@@ -92,5 +89,5 @@ Constructor for QgsLabelPosition
  *                                                                      *
  * src/core/labeling/qgslabelposition.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

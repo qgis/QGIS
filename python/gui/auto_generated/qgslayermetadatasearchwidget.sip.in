@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgslayermetadatasearchwidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,8 +21,7 @@ It is designed to be embedded in the data source manager dialog.
 #include "qgslayermetadatasearchwidget.h"
 %End
   public:
-
-    explicit QgsLayerMetadataSearchWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    explicit QgsLayerMetadataSearchWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 %Docstring
 Creates a new QgsLayerMetadataSearchWidget.
 %End
@@ -54,5 +53,5 @@ Updates the extent filter based on the combo box current item ``index``.
  *                                                                      *
  * src/gui/qgslayermetadatasearchwidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -33,7 +33,6 @@ class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsCodeEditorHTML
     QgsCodeEditorHTML( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingparameterswidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ A widget which allows users to select the value for the parameters for an algori
 #include "qgsprocessingparameterswidget.h"
 %End
   public:
-
     QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingParametersWidget, for the specified ``algorithm``.
@@ -35,7 +34,6 @@ Constructor for QgsProcessingParametersWidget, for the specified ``algorithm``.
     const QgsProcessingAlgorithm *algorithm() const;
 
   protected:
-
     virtual void initWidgets();
 
     void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget /Transfer/, int stretch = 0 );
@@ -54,5 +52,5 @@ Constructor for QgsProcessingParametersWidget, for the specified ``algorithm``.
  *                                                                      *
  * src/gui/processing/qgsprocessingparameterswidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

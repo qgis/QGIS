@@ -3,9 +3,8 @@
  *                                                                      *
  * src/core/diagram/qgshistogramdiagram.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -21,6 +20,7 @@ A histogram style diagram.
 #include "qgshistogramdiagram.h"
 %End
   public:
+
     QgsHistogramDiagram();
 
     virtual QgsHistogramDiagram *clone() const /Factory/;
@@ -31,9 +31,9 @@ A histogram style diagram.
 
     virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s );
 
-    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is );
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings );
 
-    virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
+    virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const;
 
     virtual QString diagramName() const;
 
@@ -46,5 +46,5 @@ A histogram style diagram.
  *                                                                      *
  * src/core/diagram/qgshistogramdiagram.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

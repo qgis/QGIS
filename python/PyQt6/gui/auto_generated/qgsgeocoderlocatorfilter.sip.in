@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsgeocoderlocatorfilter.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,12 +25,7 @@ filter from a geocoder.
 #include "qgsgeocoderlocatorfilter.h"
 %End
   public:
-
-    QgsGeocoderLocatorFilter( const QString &name, const QString &displayName,
-                              const QString &prefix,
-                              QgsGeocoderInterface *geocoder,
-                              QgsMapCanvas *canvas,
-                              const QgsRectangle &boundingBox = QgsRectangle() );
+    QgsGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas, const QgsRectangle &boundingBox = QgsRectangle() );
 %Docstring
 Constructor for QgsGeocoderLocatorFilter.
 
@@ -61,5 +56,5 @@ filter.
  *                                                                      *
  * src/gui/qgsgeocoderlocatorfilter.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

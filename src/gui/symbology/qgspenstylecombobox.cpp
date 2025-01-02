@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspenstylecombobox.h"
+#include "moc_qgspenstylecombobox.cpp"
 
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
@@ -21,13 +22,14 @@
 #include <QList>
 #include <QPair>
 
+#include <QAbstractItemView>
 #include <QPainter>
 #include <QPen>
 
 QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget *parent )
   : QComboBox( parent )
 {
-  QList < QPair<Qt::PenStyle, QString> > styles;
+  QList<QPair<Qt::PenStyle, QString>> styles;
   styles << qMakePair( Qt::SolidLine, tr( "Solid Line" ) )
          << qMakePair( Qt::NoPen, tr( "No Line" ) )
          << qMakePair( Qt::DashLine, tr( "Dash Line" ) )
@@ -66,6 +68,8 @@ QIcon QgsPenStyleComboBox::iconForPen( Qt::PenStyle style )
   p.begin( &pix );
   QPen pen( style );
   pen.setWidth( 2 );
+  pen.setColor( view()->palette().color( QPalette::Text ) );
+
   p.setPen( pen );
   const double mid = iconSize().height() / 2.0;
   p.drawLine( 0, mid, iconSize().width(), mid );

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsfieldsitem.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -71,12 +71,12 @@ Returns the connection URI
 
     QgsVectorLayer *layer() /Factory/;
 %Docstring
-Creates and returns a (possibly NULL) layer from the connection URI and schema/table information
+Creates and returns a (possibly ``None``) layer from the connection URI and schema/table information
 %End
 
     QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
 %Docstring
-Returns the (possibly NULL) properties of the table this fields belong to.
+Returns the (possibly ``None``) properties of the table this fields belong to.
 
 .. versionadded:: 3.16
 %End
@@ -94,9 +94,10 @@ Returns ``True`` if the connection supports renaming fields.
 class QgsFieldItem : QgsDataItem
 {
 %Docstring(signature="appended")
-A layer field item, information about the connection URI, the schema and the
-table as well as the layer instance the field belongs to can be retrieved
-from the parent QgsFieldsItem object.
+A data item representing a single field from a layer.
+
+Information about the connection URI, the schema and the table as well as the layer
+instance the field belongs to can be retrieved from the parent :py:class:`QgsFieldsItem` object.
 
 .. versionadded:: 3.16
 %End
@@ -146,5 +147,5 @@ Returns the field definition.
  *                                                                      *
  * src/core/browser/qgsfieldsitem.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

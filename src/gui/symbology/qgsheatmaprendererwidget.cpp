@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsheatmaprendererwidget.h"
+#include "moc_qgsheatmaprendererwidget.cpp"
 #include "qgsheatmaprenderer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstemporalcontroller.h"
@@ -34,22 +35,17 @@ QgsRendererWidget *QgsHeatmapRendererWidget::create( QgsVectorLayer *layer, QgsS
 QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( auto *lMapCanvas = mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( lMapCanvas->mapSettings() )
-               << new QgsExpressionContextScope( lMapCanvas->expressionContextScope() );
-    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( lMapCanvas->temporalController() ) )
-    {
-      expContext << generator->createExpressionContextScope();
-    }
+    expContext = lMapCanvas->createExpressionContext();
   }
   else
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )
@@ -80,7 +76,8 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
     mRenderer = nullptr;
     QLabel *label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
                                     "'%1' is not a point layer and cannot be rendered as a heatmap." )
-                                .arg( layer->name() ), this );
+                                  .arg( layer->name() ),
+                                this );
     if ( !layout() )
       setLayout( new QGridLayout() );
     layout()->addWidget( label );
@@ -89,17 +86,12 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
 
   setupUi( this );
   connect( mRadiusUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsHeatmapRendererWidget::mRadiusUnitWidget_changed );
-  connect( mRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHeatmapRendererWidget::mRadiusSpinBox_valueChanged );
-  connect( mMaxSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHeatmapRendererWidget::mMaxSpinBox_valueChanged );
+  connect( mRadiusSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsHeatmapRendererWidget::mRadiusSpinBox_valueChanged );
+  connect( mMaxSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsHeatmapRendererWidget::mMaxSpinBox_valueChanged );
   connect( mQualitySlider, &QSlider::valueChanged, this, &QgsHeatmapRendererWidget::mQualitySlider_valueChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mRadiusUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters,
-                                 Qgis::RenderUnit::MetersInMapUnits,
-                                 Qgis::RenderUnit::Pixels,
-                                 Qgis::RenderUnit::MapUnits,
-                                 Qgis::RenderUnit::Points,
-                                 Qgis::RenderUnit::Inches } );
+  mRadiusUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mWeightExpressionWidget->registerExpressionContextGenerator( this );
   mWeightExpressionWidget->setAllowEmptyFieldName( true );
 
@@ -109,7 +101,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   }
   if ( !mRenderer )
   {
-    mRenderer = std::make_unique< QgsHeatmapRenderer >();
+    mRenderer = std::make_unique<QgsHeatmapRenderer>();
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -141,7 +133,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
 
   mWeightExpressionWidget->setLayer( layer );
   mWeightExpressionWidget->setField( mRenderer->weightExpression() );
-  connect( mWeightExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsHeatmapRendererWidget::weightExpressionChanged );
+  connect( mWeightExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsHeatmapRendererWidget::weightExpressionChanged );
 
   registerDataDefinedButton( mRadiusDDBtn, QgsFeatureRenderer::Property::HeatmapRadius );
   registerDataDefinedButton( mMaximumValueDDBtn, QgsFeatureRenderer::Property::HeatmapMaximum );
@@ -178,15 +170,14 @@ void QgsHeatmapRendererWidget::applyColorRamp()
 
 void QgsHeatmapRendererWidget::showLegendSettings()
 {
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast<QWidget *>( parent() ) );
   if ( panel && panel->dockMode() )
   {
     QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget( nullptr, QgsColorRampLegendNodeWidget::Capabilities() );
     legendPanel->setUseContinuousRampCheckBoxVisibility( false );
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mRenderer->legendSettings() );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [ = ]
-    {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [=] {
       mRenderer->setLegendSettings( legendPanel->settings() );
       emit widgetChanged();
     } );

@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgspostgresrastertemporalsettingswidget.h"
+#include "moc_qgspostgresrastertemporalsettingswidget.cpp"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 
 QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
-  , mRasterLayer( qobject_cast< QgsRasterLayer* >( layer ) )
+  , mRasterLayer( qobject_cast<QgsRasterLayer *>( layer ) )
 {
   Q_ASSERT( mRasterLayer );
   Q_ASSERT( mRasterLayer->dataProvider() );
@@ -33,13 +34,10 @@ QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget
   mPostgresRasterTemporalGroup->setVisible( true );
   mPostgresRasterTemporalGroup->setChecked( false );
 
-  mPostgresRasterTemporalFieldComboBox->setFilters( QgsFieldProxyModel::Filter::Date |
-      QgsFieldProxyModel::Filter::DateTime |
-      QgsFieldProxyModel::Filter::String );
+  mPostgresRasterTemporalFieldComboBox->setFilters( QgsFieldProxyModel::Filter::Date | QgsFieldProxyModel::Filter::DateTime | QgsFieldProxyModel::Filter::String );
   mPostgresRasterTemporalFieldComboBox->setAllowEmptyFieldName( true );
-  connect( mPostgresRasterTemporalFieldComboBox, &QgsFieldComboBox::fieldChanged, this, [ = ]( const QString & fieldName )
-  {
-    mPostgresRasterDefaultTime->setEnabled( ! fieldName.isEmpty() );
+  connect( mPostgresRasterTemporalFieldComboBox, &QgsFieldComboBox::fieldChanged, this, [=]( const QString &fieldName ) {
+    mPostgresRasterDefaultTime->setEnabled( !fieldName.isEmpty() );
   } );
   mPostgresRasterDefaultTime->setAllowNull( true );
   mPostgresRasterDefaultTime->setEmpty();
@@ -50,7 +48,7 @@ QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget
 
 void QgsPostgresRasterTemporalSettingsWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mRasterLayer = qobject_cast< QgsRasterLayer * >( layer );
+  mRasterLayer = qobject_cast<QgsRasterLayer *>( layer );
   const QgsFields fields { mRasterLayer->dataProvider()->fields() };
   mPostgresRasterTemporalFieldComboBox->setFields( fields );
 
@@ -60,13 +58,13 @@ void QgsPostgresRasterTemporalSettingsWidget::syncToLayer( QgsMapLayer *layer )
   if ( mRasterLayer->dataProvider()->uri().hasParam( QStringLiteral( "temporalFieldIndex" ) ) )
   {
     bool ok;
-    const int fieldIdx {  mRasterLayer->dataProvider()->uri().param( QStringLiteral( "temporalFieldIndex" ) ).toInt( &ok ) };
+    const int fieldIdx { mRasterLayer->dataProvider()->uri().param( QStringLiteral( "temporalFieldIndex" ) ).toInt( &ok ) };
     if ( ok && fields.exists( fieldIdx ) )
     {
       mPostgresRasterTemporalGroup->setChecked( true );
       mPostgresRasterTemporalFieldComboBox->setField( fields.field( fieldIdx ).name() );
 
-      const QList< QgsDateTimeRange > allRanges = mRasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
+      const QList<QgsDateTimeRange> allRanges = mRasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
       if ( !allRanges.empty() && allRanges.size() < 50 )
       {
         // if an appropriate number of unique ranges is known, show a combo box with these options instead of the free-form
@@ -98,9 +96,7 @@ void QgsPostgresRasterTemporalSettingsWidget::syncToLayer( QgsMapLayer *layer )
 void QgsPostgresRasterTemporalSettingsWidget::apply()
 {
   QgsDataSourceUri uri { mRasterLayer->dataProvider()->uri() };
-  if ( mPostgresRasterTemporalGroup->isEnabled() &&
-       mPostgresRasterTemporalGroup->isChecked() &&
-       ! mPostgresRasterTemporalFieldComboBox->currentField().isEmpty() )
+  if ( mPostgresRasterTemporalGroup->isEnabled() && mPostgresRasterTemporalGroup->isChecked() && !mPostgresRasterTemporalFieldComboBox->currentField().isEmpty() )
   {
     const QString originaUri { uri.uri() };
     const int fieldIdx { mRasterLayer->dataProvider()->fields().lookupField( mPostgresRasterTemporalFieldComboBox->currentField() ) };
@@ -122,7 +118,7 @@ void QgsPostgresRasterTemporalSettingsWidget::apply()
       {
         if ( mDefaultTimeComboBox->currentData().isValid() )
         {
-          defaultDateTime = mDefaultTimeComboBox->currentData().value< QDateTime >();
+          defaultDateTime = mDefaultTimeComboBox->currentData().value<QDateTime>();
         }
       }
 
@@ -134,7 +130,7 @@ void QgsPostgresRasterTemporalSettingsWidget::apply()
         uri.setParam( QStringLiteral( "temporalDefaultTime" ), defaultDateTime.toString( Qt::DateFormat::ISODate ) );
       }
 
-      if ( uri.uri( ) != originaUri )
+      if ( uri.uri() != originaUri )
         mRasterLayer->setDataSource( uri.uri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
     }
   }

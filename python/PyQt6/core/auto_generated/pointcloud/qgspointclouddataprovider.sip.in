@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointclouddataprovider.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -50,7 +50,7 @@ Responsible for reading native point cloud data and returning the indexed data.
 
     QgsPointCloudDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Ctor
 %End
@@ -103,7 +103,7 @@ May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointClou
 %Docstring
 Triggers loading of the point cloud index
 
-\sa :py:func:`~QgsPointCloudDataProvider.index`
+.. seealso:: :py:func:`index`
 %End
 
     virtual void generateIndex( ) = 0;
@@ -112,7 +112,7 @@ Triggers generation of the point cloud index
 
 emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 
-\sa :py:func:`~QgsPointCloudDataProvider.index`
+.. seealso:: :py:func:`index`
 %End
 
 
@@ -170,80 +170,6 @@ Only providers which report the CreateRenderer capability will return a 2D rende
 providers will return ``None``.
 %End
 
-    virtual bool hasStatisticsMetadata() const;
-%Docstring
-Returns whether the dataset contains statistics metadata
-
-.. versionadded:: 3.26
-%End
-
-
-    SIP_PYOBJECT metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
-%Docstring
-Returns a statistic for the specified ``attribute``, taken only from the metadata of the point cloud
-data source.
-
-This method will not perform any statistical calculations, rather it will return only precomputed attribute
-statistics which are included in the data source's metadata. Not all data sources include this information
-in the metadata, and even for sources with statistical metadata only some ``statistic`` values may be available.
-
-:raises ValueError: if no matching precalculated statistic is available for the attribute.
-%End
-%MethodCode
-    {
-      const QVariant res = sipCpp->metadataStatistic( *a0, a1 );
-      if ( !res.isValid() )
-      {
-        PyErr_SetString( PyExc_ValueError, QStringLiteral( "Statistic is not available" ).toUtf8().constData() );
-        sipIsErr = 1;
-      }
-      else
-      {
-        QVariant *v = new QVariant( res );
-        sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
-      }
-    }
-%End
-
-    virtual QVariantList metadataClasses( const QString &attribute ) const;
-%Docstring
-Returns a list of existing classes which are present for the specified ``attribute``, taken only from the
-metadata of the point cloud data source.
-
-This method will not perform any classification or scan for available classes, rather it will return only
-precomputed classes which are included in the data source's metadata. Not all data sources include this information
-in the metadata.
-%End
-
-
-
-    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
-%Docstring
-Returns a statistic for one class ``value`` from the specified ``attribute``, taken only from the metadata of the point cloud
-data source.
-This method will not perform any statistical calculations, rather it will return only precomputed class
-statistics which are included in the data source's metadata. Not all data sources include this information
-in the metadata, and even for sources with statistical metadata only some ``statistic`` values may be available.
-
-:raises ValueError: if no matching precalculated statistic is available for the attribute.
-%End
-%MethodCode
-    {
-      const QVariant res = sipCpp->metadataClassStatistic( *a0, *a1, a2 );
-      if ( !res.isValid() )
-      {
-        PyErr_SetString( PyExc_ValueError, QStringLiteral( "Statistic is not available" ).toUtf8().constData() );
-        sipIsErr = 1;
-      }
-      else
-      {
-        QVariant *v = new QVariant( res );
-        sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
-      }
-    }
-%End
-
-
     QgsPointCloudStatistics metadataStatistics();
 %Docstring
 Returns the object containing the statistics metadata extracted from the dataset
@@ -252,6 +178,11 @@ Returns the object containing the statistics metadata extracted from the dataset
 %End
 
     virtual bool supportsSubsetString() const;
+
+    virtual QString subsetStringDialect() const;
+
+    virtual QString subsetStringHelpUrl() const;
+
     virtual QString subsetString() const;
 
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = false );
@@ -296,6 +227,7 @@ Emitted when point cloud generation state is changed
 
   protected:
 
+
 };
 
 /************************************************************************
@@ -303,5 +235,5 @@ Emitted when point cloud generation state is changed
  *                                                                      *
  * src/core/pointcloud/qgspointclouddataprovider.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -45,7 +45,6 @@ class QgsGeorefToolAddPoint;
 class QgsGeorefToolDeletePoint;
 class QgsGeorefToolMovePoint;
 class QgsGeorefToolMovePoint;
-class QgsGCPCanvasItem;
 class QgsGcpPoint;
 class QgsMapLayer;
 class QgsScreenHelper;
@@ -117,8 +116,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
      * \param enable
      * \param finalize
      */
-    void addPoint( const QgsPointXY &sourceCoords, const QgsPointXY &destinationMapCoords,
-                   const QgsCoordinateReferenceSystem &destinationCrs, bool enable = true, bool finalize = true );
+    void addPoint( const QgsPointXY &sourceCoords, const QgsPointXY &destinationMapCoords, const QgsCoordinateReferenceSystem &destinationCrs, bool enable = true, bool finalize = true );
 
     void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
@@ -205,13 +203,11 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
      * a value of -1 indicates that thin plate spline interpolation should be used for warping.
     */
-    QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order,
-                                     double targetResX, double targetResY );
+    QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order, double targetResX, double targetResY );
 
     // utils
     bool validate();
-    QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
-        bool rasterToWorld = true, uint numSamples = 4 );
+    QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t, bool rasterToWorld = true, uint numSamples = 4 );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
     int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
     QString guessWorldFileName( const QString &sourceFileName );
@@ -262,7 +258,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QString mPdfOutputFile;
     QString mPdfOutputMapFile;
     bool mSaveGcp = false;
-    double  mUserResX, mUserResY;  // User specified target scale
+    double mUserResX, mUserResY; // User specified target scale
 
     QgsGcpTransformerInterface::TransformMethod mTransformMethod = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
@@ -271,10 +267,10 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     bool mCreateWorldFileOnly = false;
 
     QgsGCPList mPoints;
-    QList< QgsGcpPoint > mSavedPoints;
+    QList<QgsGcpPoint> mSavedPoints;
 
     QgsMapCanvas *mCanvas = nullptr;
-    std::unique_ptr< QgsMapLayer > mLayer;
+    std::unique_ptr<QgsMapLayer> mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
@@ -285,10 +281,9 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePointQgis = nullptr;
 
-    QgsGCPCanvasItem *mNewlyAddedPointItem = nullptr;
-
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
+    QgsGeorefDataPoint *mNewlyAddedPoint = nullptr;
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
     bool mUseZeroForTrans = false;

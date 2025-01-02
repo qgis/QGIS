@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsrendererrange.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,9 +21,6 @@ class QgsRendererRange
   public:
 
     QgsRendererRange();
-%Docstring
-Constructor for QgsRendererRange.
-%End
     ~QgsRendererRange();
 
     QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true, const QString &uuid = QString() );
@@ -181,19 +178,18 @@ Creates a DOM element representing the range in SLD format.
 %End
 
   protected:
-
-    void swap( QgsRendererRange &other );
 };
 
 typedef QList<QgsRendererRange> QgsRangeList;
 
 
-class QgsRendererRangeLabelFormat /Deprecated/
+class QgsRendererRangeLabelFormat /Deprecated="Since 3.10. Use QgsClassificationMethod instead."/
 {
 %Docstring(signature="appended")
 
-.. deprecated:: QGIS 3.10
-  use :py:class:`QgsClassificationMethod` instead
+.. deprecated:: 3.10
+
+   Use :py:class:`QgsClassificationMethod` instead.
 %End
 
 %TypeHeaderCode
@@ -240,5 +236,5 @@ class QgsRendererRangeLabelFormat /Deprecated/
  *                                                                      *
  * src/core/symbology/qgsrendererrange.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

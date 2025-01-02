@@ -67,7 +67,7 @@ QgsGeometryByExpressionAlgorithm *QgsGeometryByExpressionAlgorithm::createInstan
 
 QList<int> QgsGeometryByExpressionAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
 }
 
 Qgis::WkbType QgsGeometryByExpressionAlgorithm::outputWkbType( Qgis::WkbType ) const
@@ -82,12 +82,10 @@ Qgis::ProcessingFeatureSourceFlags QgsGeometryByExpressionAlgorithm::sourceFlags
 
 void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OUTPUT_GEOMETRY" ), QObject::tr( "Output geometry type" ),
-                QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OUTPUT_GEOMETRY" ), QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "WITH_Z" ), QObject::tr( "Output geometry has z dimension" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "WITH_M" ), QObject::tr( "Output geometry has m values" ), false ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Geometry expression" ),
-                QStringLiteral( "$geometry" ), QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Geometry expression" ), QStringLiteral( "@geometry" ), QStringLiteral( "INPUT" ) ) );
 }
 
 bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -145,7 +143,7 @@ QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeatur
   }
   else
   {
-    if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+    if ( value.userType() == qMetaTypeId<QgsGeometry>() )
     {
       const QgsGeometry geom = value.value<QgsGeometry>();
       feature.setGeometry( geom );

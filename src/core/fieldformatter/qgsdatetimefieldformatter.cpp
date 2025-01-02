@@ -60,17 +60,17 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
 
   QDateTime date;
   bool showTimeZone = false;
-  if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDate )
+  if ( static_cast<QMetaType::Type>( value.userType() ) == QMetaType::QDate )
   {
     date = value.toDateTime();
   }
-  else if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDateTime )
+  else if ( static_cast<QMetaType::Type>( value.userType() ) == QMetaType::QDateTime )
   {
     date = value.toDateTime();
     // we always show time zones for datetime values
     showTimeZone = true;
   }
-  else if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::QTime )
+  else if ( static_cast<QMetaType::Type>( value.userType() ) == QMetaType::QTime )
   {
     return  value.toTime().toString( displayFormat );
   }
@@ -95,6 +95,10 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     }
     else
     {
+      // Convert to UTC if the format string includes a Z, as QLocale::toString() doesn't do it
+      if ( displayFormat.indexOf( "Z" ) > 0 )
+        date = date.toUTC();
+
       result = date.toString( displayFormat );
     }
   }
@@ -106,30 +110,41 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   return result;
 }
 
-QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
+QString QgsDateTimeFieldFormatter::defaultFormat( QMetaType::Type type )
 {
   switch ( type )
   {
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       return QgsDateTimeFieldFormatter::DATETIME_FORMAT;
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       return QgsDateTimeFieldFormatter::TIME_FORMAT;
     default:
       return QgsDateTimeFieldFormatter::DATE_FORMAT;
   }
 }
 
-QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QVariant::Type type )
+QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
+{
+  return defaultFormat( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
+
+QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QMetaType::Type type )
 {
   switch ( type )
   {
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       return QgsDateTimeFieldFormatter::DATETIME_DISPLAY_FORMAT;
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       return QgsDateTimeFieldFormatter::TIME_FORMAT;
     default:
       return QgsDateTimeFieldFormatter::DATE_DISPLAY_FORMAT;
   }
+}
+
+QString QgsDateTimeFieldFormatter::defaultDisplayFormat( QVariant::Type type )
+{
+  return defaultDisplayFormat( QgsVariantUtils::variantTypeToMetaType( type ) );
 }
 
 void QgsDateTimeFieldFormatter::applyLocaleChange()

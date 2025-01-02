@@ -33,7 +33,7 @@
 #include <string>
 
 #ifndef SIP_RUN
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 #endif
 
 class QgsCoordinateReferenceSystem;
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     class LayerProperties
     {
       public:
-        //! Constructor
+
         LayerProperties() = default;
 
         //! Layer name
@@ -99,9 +99,7 @@ class CORE_EXPORT QgsGmlStreamingParser
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
 
-    //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser( const QgsGmlStreamingParser &other ) = delete;
-    //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser &operator=( const QgsGmlStreamingParser &other ) = delete;
 
     /**
@@ -382,10 +380,9 @@ class CORE_EXPORT QgsGmlStreamingParser
  * \ingroup core
  * \brief This class reads data from a WFS server or alternatively from a GML file.
  *
- * It
- * uses the expat XML parser and an event based model to keep performance high.
+ * It uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
- * request is finished
+ * request is finished.
 */
 class CORE_EXPORT QgsGml : public QObject
 {
@@ -397,7 +394,8 @@ class CORE_EXPORT QgsGml : public QObject
       const QgsFields &fields );
 
     /**
-     * Does the Http GET request to the wfs server
+     * Does the HTTP GET request to the WFS server
+     *
      *  \param uri GML URL
      *  \param wkbType wkbType to retrieve
      *  \param extent retrieved extents
@@ -415,7 +413,9 @@ class CORE_EXPORT QgsGml : public QObject
                      const QString &authcfg = QString() ) SIP_PYNAME( getFeaturesUri );
 
     /**
-     * Read from GML data. Constructor uri param is ignored
+     * Read from GML data.
+     *
+     * The constructor uri param is ignored.
      */
     int getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent = nullptr );
 
@@ -426,14 +426,32 @@ class CORE_EXPORT QgsGml : public QObject
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
     /**
-     * Returns features spatial reference system
+     * Returns the spatial reference system for features.
      */
     QgsCoordinateReferenceSystem crs() const;
 
   signals:
+
+    /**
+     * Emitted when data reading progresses.
+     *
+     * \param progress specifies the number of bytes processed so far
+     */
     void dataReadProgress( int progress );
+
+    /**
+     * Emitted when the total number of bytes to read changes.
+     *
+     * \param totalSteps specifies the total number of bytes which must be processed
+     */
     void totalStepsUpdate( int totalSteps );
-    //! Also emit signal with progress and totalSteps together (this is better for the status message)
+
+    /**
+     * Emitted when data reading progresses or the total number of bytes to read changes.
+     *
+     * \param progress specifies the number of bytes processed so far
+     * \param totalSteps specifies the total number of bytes which must be processed
+     */
     void dataProgressAndSteps( int progress, int totalSteps );
 
   private slots:

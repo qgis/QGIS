@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>537</width>
-    <height>134</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,13 +26,32 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mComboGeometryType"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Entity type</string>
+      <string>Geometry type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Expansions</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QTableView" name="mExpansionsTable"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mComboEntityType"/>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QWidget" name="mExtentLimitFrame" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -63,17 +82,20 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="mComboGeometryType"/>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QgsSpinBox" name="mSpinFeatureLimit">
+     <property name="maximum">
+      <number>999999999</number>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="1" colspan="2">
     <widget class="QgsSpinBox" name="mSpinPageSize">
      <property name="maximum">
       <number>9999999</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QWidget" name="mExtentLimitFrame" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -84,34 +106,24 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Geometry type</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>Extent limit</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mComboEntityType"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Feature limit</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QgsSpinBox" name="mSpinFeatureLimit">
-     <property name="maximum">
-      <number>999999999</number>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Entity type</string>
      </property>
     </widget>
    </item>

@@ -2259,7 +2259,27 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="mLayerOptWfsTitleLabel">
+                    <property name="text">
+                     <string>WFS title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="mLayerOptWfsTitleLineEdit">
+                    <property name="toolTip">
+                     <string>The alternative title is for the benefit of humans to identify the WFS layer if the original title is only helpful with the WMS grouping.</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Optional alternative title for the layer for use with WFS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
                    <widget class="QLineEdit" name="mLayerKeywordListLineEdit">
                     <property name="toolTip">
                      <string>List of keywords separated by comma to help catalog searching.</string>
@@ -2269,7 +2289,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="1">
+                  <item row="7" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_7">
                     <item>
                      <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
@@ -2309,7 +2329,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="5" column="0">
+                  <item row="6" column="0">
                    <widget class="QLabel" name="mLayerKeywordListLabel">
                     <property name="text">
                      <string>Keyword list</string>
@@ -2349,14 +2369,14 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
+                  <item row="4" column="0">
                    <widget class="QLabel" name="mLayerAbstractLabel">
                     <property name="text">
                      <string>Abstract</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="1">
+                  <item row="4" column="1">
                    <widget class="QPlainTextEdit" name="mLayerAbstractTextEdit">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -2375,7 +2395,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0">
+                  <item row="7" column="0">
                    <widget class="QLabel" name="mLayerDataUrlLabel">
                     <property name="text">
                      <string>Data URL</string>

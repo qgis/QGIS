@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterfilewriter.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -69,7 +69,7 @@ Ownership of the returned provider is passed to the caller.
 
 
  Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
+        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated="Since 3.8. Use version with transformContext instead."/;
 %Docstring
 Write raster file
 
@@ -80,8 +80,9 @@ Write raster file
 :param crs: crs to reproject to
 :param feedback: optional feedback object for progress reports
 
-.. deprecated:: QGIS 3.8
-  use version with transformContext instead
+.. deprecated:: 3.8
+
+   Use version with transformContext instead.
 %End
 
     Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
@@ -340,5 +341,5 @@ Note that this method works for all GDAL drivers, including those without create
  *                                                                      *
  * src/core/raster/qgsrasterfilewriter.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

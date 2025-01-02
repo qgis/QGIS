@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsembeddedsymbolrenderer.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -41,7 +41,7 @@ of ``defaultSymbol`` is transferred to the renderer.
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void stopRender( QgsRenderContext &context );
 
@@ -99,5 +99,5 @@ Creates a QgsEmbeddedSymbolRenderer from an existing ``renderer``.
  *                                                                      *
  * src/core/symbology/qgsembeddedsymbolrenderer.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshadvancedediting.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,9 +27,6 @@ in the method :py:func:`QgsMeshEditor.advancedEdit()`.
   public:
 
     QgsMeshAdvancedEditing();
-%Docstring
-Constructor
-%End
     virtual ~QgsMeshAdvancedEditing();
 
     void setInputVertices( const QList<int> verticesIndexes );
@@ -72,9 +69,12 @@ class QgsMeshEditRefineFaces : QgsMeshAdvancedEditing
 %Docstring(signature="appended")
 
 Class that can do a refinement of faces of a mesh.
+
 This refinement is operated only on faces with 3 or 4 vertices (triangles or quads) by adding a vertex on the middle of each refined face.
 For quad faces, a vertex is added on the centroid of the original face.
+
 New vertices Z value are interpolated between original vertices.
+
 Original triangle faces are replaced by four triangles, and original quad faces are replaced by four quads.
 Neighboring faces are triangulated to take account of the new vertex in the shared edge.
 
@@ -87,9 +87,6 @@ Neighboring faces are triangulated to take account of the new vertex in the shar
   public:
 
     QgsMeshEditRefineFaces();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 
@@ -104,7 +101,7 @@ class QgsMeshTransformVerticesByExpression : QgsMeshAdvancedEditing
 Class that can transform vertices of a mesh by expression
 
 Each coordinates are associated with an expression that can be defined with function
-returning the current coordinates (see :py:func:`~QgsMeshEditRefineFaces.setExpressions`):
+returning the current coordinates (see :py:func:`~setExpressions`):
 
 - $vertex_x
 - $vertex_y
@@ -127,9 +124,6 @@ expressionZ: "if( $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
   public:
 
     QgsMeshTransformVerticesByExpression();
-%Docstring
-Constructor
-%End
 
     virtual QString text() const;
 
@@ -168,5 +162,5 @@ If ``layer`` is not the same than the one used to make the calculation, this wil
  *                                                                      *
  * src/core/mesh/qgsmeshadvancedediting.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

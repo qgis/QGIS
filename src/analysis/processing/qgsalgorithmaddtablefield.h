@@ -30,9 +30,7 @@
  */
 class QgsAddTableFieldAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsAddTableFieldAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -42,20 +40,18 @@ class QgsAddTableFieldAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
     QgsAddTableFieldAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QgsField mField;
 };
 

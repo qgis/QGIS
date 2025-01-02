@@ -15,8 +15,10 @@
  ***************************************************************************/
 
 #include "qgsfields.h"
+#include "moc_qgsfields.cpp"
 #include "qgsfields_p.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 #include <QIcon>
 
 /***************************************************************************
@@ -41,6 +43,15 @@ QgsFields &QgsFields::operator =( const QgsFields &other )  //NOLINT
   return *this;
 }
 
+QgsFields::QgsFields( const QList<QgsField> &fields )
+{
+  d = new QgsFieldsPrivate();
+  for ( const QgsField &field : fields )
+  {
+    append( field );
+  }
+}
+
 QgsFields::~QgsFields() //NOLINT
 {}
 
@@ -56,16 +67,46 @@ void QgsFields::clear()
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsFields::append( const QgsField &field, FieldOrigin origin, int originIndex )
+bool QgsFields::append( const QgsField &field, Qgis::FieldOrigin origin, int originIndex )
 {
   if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
-  if ( originIndex == -1 && origin == OriginProvider )
+  if ( originIndex == -1 && origin == Qgis::FieldOrigin::Provider )
     originIndex = d->fields.count();
   d->fields.append( Field( field, origin, originIndex ) );
 
   d->nameToIndex.insert( field.name(), d->fields.count() - 1 );
+  return true;
+}
+
+bool QgsFields::append( const QList<QgsField> &fields, Qgis::FieldOrigin origin )
+{
+  for ( const QgsField &field : fields )
+  {
+    if ( d->nameToIndex.contains( field.name() ) )
+      return false;
+  }
+
+  for ( const QgsField &field : fields )
+  {
+    append( field, origin );
+  }
+  return true;
+}
+
+bool QgsFields::append( const QgsFields &fields )
+{
+  for ( const QgsField &field : fields )
+  {
+    if ( d->nameToIndex.contains( field.name() ) )
+      return false;
+  }
+
+  for ( int i = 0; i < fields.size(); ++ i )
+  {
+    append( fields.at( i ), fields.fieldOrigin( i ), fields.fieldOriginIndex( i ) );
+  }
   return true;
 }
 
@@ -92,7 +133,7 @@ bool QgsFields::appendExpressionField( const QgsField &field, int originIndex )
   if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
-  d->fields.append( Field( field, OriginExpression, originIndex ) );
+  d->fields.append( Field( field, Qgis::FieldOrigin::Expression, originIndex ) );
 
   d->nameToIndex.insert( field.name(), d->fields.count() - 1 );
   return true;
@@ -186,10 +227,10 @@ QgsField QgsFields::operator[]( int i ) const
   return d->fields[i].field;
 }
 
-QgsFields::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
+Qgis::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
 {
   if ( !exists( fieldIdx ) )
-    return OriginUnknown;
+    return Qgis::FieldOrigin::Unknown;
 
   return d->fields[fieldIdx].origin;
 }
@@ -278,10 +319,10 @@ QIcon QgsFields::iconForField( int fieldIdx, bool considerOrigin ) const
   {
     switch ( fieldOrigin( fieldIdx ) )
     {
-      case QgsFields::OriginExpression:
+      case Qgis::FieldOrigin::Expression:
         return QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) );
 
-      case QgsFields::OriginJoin:
+      case Qgis::FieldOrigin::Join:
         return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) );
 
       default:
@@ -291,51 +332,51 @@ QIcon QgsFields::iconForField( int fieldIdx, bool considerOrigin ) const
   return iconForFieldType( d->fields.at( fieldIdx ).field.type(), d->fields.at( fieldIdx ).field.subType(), d->fields.at( fieldIdx ).field.typeName() );
 }
 
-QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString )
+QIcon QgsFields::iconForFieldType( QMetaType::Type type, QMetaType::Type subType, const QString &typeString )
 {
   switch ( type )
   {
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) );
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) );
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) );
-    case QVariant::String:
+    case QMetaType::Type::QString:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) );
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) );
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) );
-    case QVariant::ByteArray:
+    case QMetaType::Type::QByteArray:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) );
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
     {
       switch ( subType )
       {
-        case QVariant::Int:
-        case QVariant::UInt:
-        case QVariant::LongLong:
-        case QVariant::ULongLong:
+        case QMetaType::Type::Int:
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::ULongLong:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayInteger.svg" ) );
-        case QVariant::Double:
+        case QMetaType::Type::Double:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayFloat.svg" ) );
-        case QVariant::String:
+        case QMetaType::Type::QString:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayString.svg" ) );
         default:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArray.svg" ) );
       }
     }
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldArrayString.svg" ) );
-    case QVariant::Map:
+    case QMetaType::Type::QVariantMap:
       return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldJson.svg" ) );
-    case QVariant::UserType:
+    case QMetaType::Type::User:
       if ( typeString.compare( QLatin1String( "geometry" ) ) == 0 )
       {
         return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldGeometry.svg" ) );
@@ -350,6 +391,11 @@ QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType, 
   }
 }
 
+QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString )
+{
+  return iconForFieldType( QgsVariantUtils::variantTypeToMetaType( type ), QgsVariantUtils::variantTypeToMetaType( subType ), typeString );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfields.cpp.
@@ -358,14 +404,14 @@ QIcon QgsFields::iconForFieldType( QVariant::Type type, QVariant::Type subType, 
 
 int QgsFields::lookupField( const QString &fieldName ) const
 {
-  if ( fieldName.isEmpty() ) //shortcut
-    return -1;
-
   for ( int idx = 0; idx < count(); ++idx )
   {
     if ( d->fields[idx].field.name() == fieldName )
       return idx;
   }
+
+  if ( fieldName.isEmpty() )
+    return -1;
 
   for ( int idx = 0; idx < count(); ++idx )
   {

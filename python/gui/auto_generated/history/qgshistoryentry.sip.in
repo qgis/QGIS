@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/history/qgshistoryentry.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,7 +20,6 @@ Encapsulates a history entry.
 #include "qgshistoryentry.h"
 %End
   public:
-
     QgsHistoryEntry();
 %Docstring
 Constructor for an invalid entry.
@@ -58,7 +57,6 @@ Returns ``True`` if the entry is valid.
     const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
 };
 
 
@@ -67,5 +65,5 @@ Returns ``True`` if the entry is valid.
  *                                                                      *
  * src/gui/history/qgshistoryentry.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

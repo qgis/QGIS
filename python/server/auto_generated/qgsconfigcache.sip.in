@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsconfigcache.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ Cache for server configuration.
 #include "qgsconfigcache.h"
 %End
   public:
-
     static void initialize( QgsServerSettings *settings );
 %Docstring
 Initialize from settings.
@@ -103,11 +102,10 @@ Remove all changed cache entries
 
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/server/qgsconfigcache.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -7,9 +7,9 @@
 
 """
 
-__author__ = 'elpaso@itopen.it'
-__date__ = '2022-11-07'
-__copyright__ = 'Copyright 2022, ItOpen'
+__author__ = "elpaso@itopen.it"
+__date__ = "2022-11-07"
+__copyright__ = "Copyright 2022, ItOpen"
 
 import os
 
@@ -22,17 +22,17 @@ from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
 class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
 
     # Provider test cases must define the string URI for the test
-    uri = ''
+    uri = ""
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
-    providerKey = 'mssql'
+    providerKey = "mssql"
 
     def setUp(self):
 
         super().setUp()
 
         dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
-        if 'QGIS_MSSQLTEST_DB' in os.environ:
-            dbconn = os.environ['QGIS_MSSQLTEST_DB']
+        if "QGIS_MSSQLTEST_DB" in os.environ:
+            dbconn = os.environ["QGIS_MSSQLTEST_DB"]
 
         self.uri = dbconn
 
@@ -41,11 +41,11 @@ class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
         what tableUri() offers"""
 
         uri = QgsDataSourceUri(conn.tableUri(schema_name, table_name))
-        uri.setGeometryColumn('geom')
-        uri.setParam('srid', '4326')
-        uri.setParam('type', 'POINT')
+        uri.setGeometryColumn("geom")
+        uri.setParam("srid", "4326")
+        uri.setParam("type", "POINT")
         return uri.uri()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

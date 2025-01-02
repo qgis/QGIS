@@ -1,0 +1,145 @@
+---
+name: 🪟 Windows Qt6
+on:
+  push:
+    branches:
+      - master
+      - release-**
+  pull_request:
+  release:
+    types: ['published']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  packages: write
+
+jobs:
+  build:
+    name: build (windows)
+    runs-on: windows-2022
+
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: 🐩 Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.29.6
+
+      - name: 🧽 Developer Command Prompt for Microsoft Visual C++
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: 🎡 Setup vcpkg
+        uses: ./.github/actions/setup-vcpkg
+
+      - name: 🦬 Setup flex/bison
+        uses: robinraju/release-downloader@v1.11
+        with:
+          repository: 'lexxmark/winflexbison'
+          fileName: '*.zip'
+          tag: 'v2.5.24'
+          extract: true
+
+      - name: 🛍️ Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 1G
+          key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          save: ${{ github.event_name == 'push' }}
+
+      - name: 🛍️ Tune ccache configuration
+        shell: bash
+        run: |
+          # To make ccache work properly with precompiled headers
+          ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
+
+      - name: 🌱 Install dependencies and generate project files
+        shell: bash
+        run: |
+          BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
+          SOURCE_DIR=$( cygpath "${{ github.workspace }}" )
+
+          cmake -S "${SOURCE_DIR}" \
+                -B "${BUILD_DIR}" \
+                -G Ninja \
+                -D CMAKE_BUILD_TYPE=Release \
+                -D WITH_VCPKG=ON \
+                -D CREATE_ZIP=ON \
+                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+                -D VCPKG_HOST_TRIPLET=x64-windows-release \
+                -D WITH_DESKTOP=ON \
+                -D WITH_3D=ON \
+                -D WITH_BINDINGS=ON \
+                -D ENABLE_TESTS=OFF \
+                -D BUILD_WITH_QT6=ON \
+                -D USE_CCACHE=ON \
+                -D ENABLE_UNITY_BUILDS=ON \
+                -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
+                -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
+                -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
+                -D CMAKE_C_COMPILER_LAUNCHER=ccache \
+                -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
+                -D WITH_QTWEBKIT=OFF \
+                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
+                -D NUGET_USERNAME=${{ github.actor }} \
+                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🌋 Build
+        shell: bash
+        run: |
+          cmake --build "${{ github.workspace }}/build" --config Release
+
+#      - uses: m-kuhn/action-tmate@patch-1
+#        if: failure()
+
+      - name: 📦 Package
+        shell: bash
+        run: |
+          cmake --build "${{ github.workspace }}/build" --target bundle --config Release
+
+      - name: 📦 Create SDK
+#        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+        run: |
+          vcpkg.exe export --zip --output-dir=./sdk --x-install-root=./build/vcpkg_installed --x-manifest-root=vcpkg
+
+      - name: 📤 Upload sdk
+#        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: qgis-sdk-x64-windows
+          path: |
+            sdk/vcpkg-export-*.zip
+
+      - name: 📑 Upload dep build logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-logs-x64-windows
+          path: |
+            C:/src/**/*.log
+
+      - name: 📤 Upload bundle
+        uses: actions/upload-artifact@v4
+        id: artifact-win64-qt6
+        with:
+          name: qgis-windows-qt6
+          path: |
+            build/*-win64.zip
+
+
+      - name: Schedule download comment
+        uses: ./.github/actions/post_sticky_comment
+        if: github.event_name == 'pull_request'
+        with:
+          marker: mingw64-qt6
+          body: |
+            ### 🪟 Windows Qt6 builds
+            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            *(Built from commit ${{ github.event.pull_request.head.sha }})*
+          pr: ${{ github.event.number }}

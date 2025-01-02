@@ -39,7 +39,6 @@ class QgsMessageBar;
  */
 class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsExternalStorageFileWidget *>( sipCpp ) )
@@ -55,7 +54,6 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     Q_PROPERTY( QString storageUrlExpression READ storageUrlExpressionString WRITE setStorageUrlExpression )
 
   public:
-
     /**
      * \brief QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
      */
@@ -104,7 +102,8 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     /**
      * Set \a urlExpression expression, which once evaluated, provide the URL used to store selected
      * documents. This is used only if an external storage has been defined
-     * \see setStorageType(), externalStorage()
+     * \see setStorageType()
+     * \see externalStorage()
      * \since QGIS 3.22
      */
     void setStorageUrlExpression( const QString &urlExpression );
@@ -163,7 +162,6 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     void setReadOnly( bool readOnly ) override;
 
   protected:
-
     void updateLayout() override;
 
     void setSelectedFileNames( QStringList fileNames ) override;
@@ -178,7 +176,6 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     void dropEvent( QDropEvent *event ) override;
 
   private:
-
     // stores \a fileNames files using current external storage.
     // This is a recursive method, \a storedUrls contains urls for previously stored
     // fileNames. When all files have been successfully stored, current mFilePath
@@ -192,7 +189,7 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 
     QgsExternalStorage *mExternalStorage = nullptr;
     QString mAuthCfg;
-    std::unique_ptr< QgsExpression > mStorageUrlExpression;
+    std::unique_ptr<QgsExpression> mStorageUrlExpression;
     QgsExpressionContext mExpressionContext;
     QgsExpressionContextScope *mScope = nullptr;
 

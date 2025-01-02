@@ -292,9 +292,9 @@ QString QgsVectorTileWriter::mbtilesJsonSchema()
     for ( const QgsField &field : fields )
     {
       QString fieldTypeStr;
-      if ( field.type() == QVariant::Bool )
+      if ( field.type() == QMetaType::Type::Bool )
         fieldTypeStr = QStringLiteral( "Boolean" );
-      else if ( field.type() == QVariant::Int || field.type() == QVariant::Double )
+      else if ( field.type() == QMetaType::Type::Int || field.type() == QMetaType::Type::Double )
         fieldTypeStr = QStringLiteral( "Number" );
       else
         fieldTypeStr = QStringLiteral( "String" );

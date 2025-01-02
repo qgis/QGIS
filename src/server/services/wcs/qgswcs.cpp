@@ -23,8 +23,8 @@
 #include "qgswcsdescribecoverage.h"
 #include "qgswcsgetcoverage.h"
 
-#define QSTR_COMPARE( str, lit )\
-  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
+#define QSTR_COMPARE( str, lit ) \
+  ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
 
 namespace QgsWcs
 {
@@ -35,10 +35,9 @@ namespace QgsWcs
    * \brief OGC web service specialized for WCS
    * \since QGIS 3.0
    */
-  class Service: public QgsService
+  class Service : public QgsService
   {
     public:
-
       /**
        * Constructor for WCS service.
        * \param serverIface Interface for plugins.
@@ -47,11 +46,10 @@ namespace QgsWcs
         : mServerIface( serverIface )
       {}
 
-      QString name()    const override { return QStringLiteral( "WCS" ); }
+      QString name() const override { return QStringLiteral( "WCS" ); }
       QString version() const override { return implementationVersion(); }
 
-      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
-                           const QgsProject *project ) override
+      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {
         Q_UNUSED( project )
 
@@ -68,8 +66,7 @@ namespace QgsWcs
         const QString req = params.value( QStringLiteral( "REQUEST" ) );
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
+          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
@@ -87,8 +84,7 @@ namespace QgsWcs
         else
         {
           // Operation not supported
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }
 
@@ -105,13 +101,13 @@ namespace QgsWcs
  * \brief Service module specialized for WCS
  * \since QGIS 3.0
  */
-class QgsWcsModule: public QgsServiceModule
+class QgsWcsModule : public QgsServiceModule
 {
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsgLevel( QStringLiteral( "WCSModule::registerSelf called" ), 2 );
-      registry.registerService( new  QgsWcs::Service( serverIface ) );
+      registry.registerService( new QgsWcs::Service( serverIface ) );
     }
 };
 

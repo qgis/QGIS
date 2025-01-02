@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsaggregatetoolbutton.h"
+#include "moc_qgsaggregatetoolbutton.cpp"
 #include "qgsaggregatecalculator.h"
 #include "qgis.h"
 
@@ -31,7 +32,7 @@ QgsAggregateToolButton::QgsAggregateToolButton()
   setText( tr( "Exclude" ) );
 }
 
-void QgsAggregateToolButton::setType( QVariant::Type type )
+void QgsAggregateToolButton::setType( QMetaType::Type type )
 {
   if ( mType == type )
     return;
@@ -40,21 +41,24 @@ void QgsAggregateToolButton::setType( QVariant::Type type )
   updateAvailableAggregates();
 }
 
+void QgsAggregateToolButton::setType( QVariant::Type type )
+{
+  setType( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
 void QgsAggregateToolButton::aboutToShowMenu()
 {
   mMenu->clear();
 
   QAction *action = mMenu->addAction( tr( "Exclude" ) );
-  connect( action, &QAction::triggered, this, [ this ]
-  {
+  connect( action, &QAction::triggered, this, [this] {
     setActive( false );
   } );
 
   for ( const auto &aggregate : std::as_const( mAvailableAggregates ) )
   {
     QAction *action = mMenu->addAction( aggregate.name );
-    connect( action, &QAction::triggered, this, [ this, aggregate ]
-    {
+    connect( action, &QAction::triggered, this, [this, aggregate] {
       setText( aggregate.name );
       setAggregate( aggregate.function );
     } );
@@ -118,7 +122,7 @@ bool QgsAggregateToolButton::active() const
   return mActive;
 }
 
-QVariant::Type QgsAggregateToolButton::type() const
+QMetaType::Type QgsAggregateToolButton::type() const
 {
   return mType;
 }

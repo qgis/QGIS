@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessinggui.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,14 +23,12 @@ Contains general functions and values related to Processing GUI components.
 #include "qgsprocessinggui.h"
 %End
   public:
-
     enum WidgetType
     {
       Standard,
       Batch,
       Modeler,
     };
-
 };
 
 /************************************************************************
@@ -38,5 +36,5 @@ Contains general functions and values related to Processing GUI components.
  *                                                                      *
  * src/gui/processing/qgsprocessinggui.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

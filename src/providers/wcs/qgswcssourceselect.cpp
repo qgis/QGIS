@@ -25,6 +25,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
+#include "moc_qgswcssourceselect.cpp"
 #include "qgswcscapabilities.h"
 #include "qgstreewidgetitem.h"
 
@@ -33,7 +34,6 @@
 QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, widgetMode )
 {
-
   mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
   mAddDefaultButton->hide();
@@ -45,7 +45,6 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
 void QgsWCSSourceSelect::populateLayerList()
 {
-
   mLayersTreeWidget->clear();
 
 
@@ -83,7 +82,7 @@ void QgsWCSSourceSelect::populateLayerList()
     QgsTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
     lItem->setData( 0, Qt::UserRole + 0, coverage->identifier );
-    lItem->setData( 0, Qt::UserRole + 1, "" );
+    lItem->setData( 0, Qt::UserRole + 1, coverage->title );
 
     // Make only leaves selectable
     if ( coverageParents.contains( coverage->orderId ) )
@@ -101,13 +100,24 @@ void QgsWCSSourceSelect::populateLayerList()
   }
 }
 
-QString QgsWCSSourceSelect::selectedIdentifier()
+QString QgsWCSSourceSelect::selectedIdentifier() const
 {
   const QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 ) return QString(); // should not happen
+  if ( selectionList.size() < 1 )
+    return QString(); // should not happen
   QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
   QgsDebugMsgLevel( " identifier = " + identifier, 2 );
   return identifier;
+}
+
+QString QgsWCSSourceSelect::selectedTitle() const
+{
+  const QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
+  if ( selectionList.empty() )
+    return QString(); // should not happen
+  QString title = selectionList.value( 0 )->data( 0, Qt::UserRole + 1 ).toString();
+  QgsDebugMsgLevel( " title = " + title, 2 );
+  return title;
 }
 
 void QgsWCSSourceSelect::addButtonClicked()
@@ -115,7 +125,10 @@ void QgsWCSSourceSelect::addButtonClicked()
   QgsDataSourceUri uri = mUri;
 
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return; }
+  if ( identifier.isEmpty() )
+  {
+    return;
+  }
 
   uri.setParam( QStringLiteral( "identifier" ), identifier );
 
@@ -129,13 +142,13 @@ void QgsWCSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "crs" ), selectedCrs() );
   //}
 
-  QgsDebugMsgLevel( "selectedFormat = " +  selectedFormat(), 2 );
+  QgsDebugMsgLevel( "selectedFormat = " + selectedFormat(), 2 );
   if ( !selectedFormat().isEmpty() )
   {
     uri.setParam( QStringLiteral( "format" ), selectedFormat() );
   }
 
-  QgsDebugMsgLevel( "selectedTime = " +  selectedTime(), 2 );
+  QgsDebugMsgLevel( "selectedTime = " + selectedTime(), 2 );
   if ( !selectedTime().isEmpty() )
   {
     uri.setParam( QStringLiteral( "time" ), selectedTime() );
@@ -144,17 +157,12 @@ void QgsWCSSourceSelect::addButtonClicked()
   if ( mSpatialExtentBox->isChecked() )
   {
     QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
-    QgsCoordinateTransform extentCrsToSSelectedCrs( mSpatialExtentBox->outputCrs(),
-        QgsCoordinateReferenceSystem( selectedCrs() ),
-        QgsProject::instance()->transformContext() );
+    QgsCoordinateTransform extentCrsToSSelectedCrs( mSpatialExtentBox->outputCrs(), QgsCoordinateReferenceSystem( selectedCrs() ), QgsProject::instance()->transformContext() );
     extentCrsToSSelectedCrs.setBallparkTransformsAreAppropriate( true );
     spatialExtent = extentCrsToSSelectedCrs.transformBoundingBox( spatialExtent );
     bool inverted = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) );
     QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                   .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
-                         qgsDoubleToString( spatialExtent.yMinimum() ),
-                         qgsDoubleToString( spatialExtent.xMaximum() ),
-                         qgsDoubleToString( spatialExtent.yMaximum() ) );
+                     .arg( qgsDoubleToString( spatialExtent.xMinimum() ), qgsDoubleToString( spatialExtent.yMinimum() ), qgsDoubleToString( spatialExtent.xMaximum() ), qgsDoubleToString( spatialExtent.yMaximum() ) );
 
     uri.setParam( QStringLiteral( "bbox" ), bbox );
   }
@@ -164,18 +172,24 @@ void QgsWCSSourceSelect::addButtonClicked()
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
   uri.setParam( QStringLiteral( "cache" ), cache );
 
+  QString title = selectedTitle();
+  if ( title.isEmpty() )
+    title = identifier;
+
   Q_NOWARN_DEPRECATED_PUSH
-  emit addRasterLayer( uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
+  emit addRasterLayer( uri.encodedUri(), title, QStringLiteral( "wcs" ) );
   Q_NOWARN_DEPRECATED_POP
-  emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
+  emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), title, QStringLiteral( "wcs" ) );
 }
 
 
 void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 {
-
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return; }
+  if ( identifier.isEmpty() )
+  {
+    return;
+  }
 
   mCapabilities.describeCoverage( identifier );
 
@@ -192,7 +206,6 @@ void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 
 void QgsWCSSourceSelect::updateButtons()
 {
-
   if ( mLayersTreeWidget->selectedItems().isEmpty() )
   {
     showStatusMessage( tr( "Select a layer" ) );
@@ -233,12 +246,17 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 
 QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
-
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   QgsDebugMsgLevel( "supportedFormat = " + c.supportedFormat.join( "," ), 2 );
   return c.supportedFormat;
@@ -247,22 +265,33 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 QStringList QgsWCSSourceSelect::selectedLayersCrses()
 {
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   return c.supportedCrs;
 }
 
 QStringList QgsWCSSourceSelect::selectedLayersTimes()
 {
-
   const QString identifier = selectedIdentifier();
-  if ( identifier.isEmpty() ) { return QStringList(); }
+  if ( identifier.isEmpty() )
+  {
+    return QStringList();
+  }
 
   const QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
-  if ( !c.valid ) { return QStringList(); }
+  if ( !c.valid )
+  {
+    return QStringList();
+  }
 
   QgsDebugMsgLevel( "times = " + c.times.join( "," ), 2 );
   return c.times;

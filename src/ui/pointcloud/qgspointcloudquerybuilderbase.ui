@@ -70,7 +70,7 @@
         </property>
         <item row="0" column="0">
          <widget class="QListView" name="lstAttributes">
-          <property name="whatsThis">
+          <property name="toolTip">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;List of attributes in this point cloud&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
@@ -102,7 +102,7 @@
         </property>
         <item row="0" column="0" colspan="2">
          <widget class="QListView" name="lstValues">
-          <property name="whatsThis">
+          <property name="toolTip">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;List of values for the current attribute.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="autoFillBackground">

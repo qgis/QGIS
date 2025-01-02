@@ -244,7 +244,7 @@
 
 /*
  * Define Python special method (bool, repr, etc.) using the given method or code
- * sipify.pl will create a dedicated python file named according to the class
+ * sipify.py will create a dedicated python file named according to the class
  * and located in python/{module}/auto_additions/{classname}.py
  * a simple method name can be provided (e.g. isValid) and sipify will create the proper code
  * or some Python code can be provided:
@@ -287,5 +287,9 @@
  */
 #define SIP_PYQT5_RUN
 
+/*
+ * Adds an include in the type header code
+ */
+#define SIP_TYPEHEADER_INCLUDE(file)
 
 #endif // QGIS_SIP_H

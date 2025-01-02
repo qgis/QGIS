@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/qgsprevieweffect.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsPreviewEffect: QGraphicsEffect
+class QgsPreviewEffect : QGraphicsEffect
 {
 %Docstring(signature="appended")
 A graphics effect which can be applied to a widget to simulate various printing and
@@ -61,5 +61,5 @@ Returns the mode used for the preview effect.
  *                                                                      *
  * src/gui/qgsprevieweffect.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

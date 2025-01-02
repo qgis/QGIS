@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/inputcontroller/qgs3dmapcontroller.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,7 +20,6 @@ Abstract base class for all 3D map controllers.
 #include "qgs3dmapcontroller.h"
 %End
   public:
-
     QgsAbstract3DMapController( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstract3DMapController, with the specified ``parent`` object.
@@ -38,5 +37,5 @@ Constructor for QgsAbstract3DMapController, with the specified ``parent`` object
  *                                                                      *
  * src/gui/inputcontroller/qgs3dmapcontroller.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

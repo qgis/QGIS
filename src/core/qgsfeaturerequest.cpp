@@ -89,6 +89,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mSimplifyMethod = rh.mSimplifyMethod;
   mLimit = rh.mLimit;
   mOrderBy = rh.mOrderBy;
+  mTransform = rh.mTransform;
   mCrs = rh.mCrs;
   mTransformContext = rh.mTransformContext;
   mTransformErrorCallback = rh.mTransformErrorCallback;
@@ -97,6 +98,34 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mFeedback = rh.mFeedback;
   return *this;
 }
+
+// Relaxed Equality operator
+bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
+{
+  if ( &rh == this )
+    return true;
+
+  return mFlags == rh.mFlags &&
+         mFilter == rh.mFilter &&
+         mSpatialFilter == rh.mSpatialFilter &&
+         mFilterRect == rh.mFilterRect &&
+         ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) &&
+         mDistanceWithin == rh.mDistanceWithin &&
+         mFilterFid == rh.mFilterFid &&
+         mFilterFids == rh.mFilterFids &&
+         ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression ) &&
+         mInvalidGeometryFilter == rh.mInvalidGeometryFilter &&
+         mAttrs == rh.mAttrs &&
+         mSimplifyMethod == rh.mSimplifyMethod &&
+         mLimit == rh.mLimit &&
+         mOrderBy == rh.mOrderBy &&
+         mTransform == rh.mTransform &&
+         mCrs == rh.mCrs &&
+         mTransformContext == rh.mTransformContext &&
+         mTimeout == rh.mTimeout &&
+         mRequestMayBeNested == rh.mRequestMayBeNested;
+}
+
 
 QgsFeatureRequest &QgsFeatureRequest::setFilterRect( const QgsRectangle &rect )
 {
@@ -287,6 +316,10 @@ QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod
   return *this;
 }
 
+QgsCoordinateTransform QgsFeatureRequest::coordinateTransform() const
+{
+  return mTransform;
+}
 
 QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
 {
@@ -296,6 +329,25 @@ QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
 QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const
 {
   return mTransformContext;
+}
+
+QgsCoordinateTransform QgsFeatureRequest::calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const
+{
+  if ( mTransform.isValid() )
+  {
+    return mTransform;
+  }
+  else if ( sourceCrs.isValid() && mCrs != sourceCrs )
+  {
+    return QgsCoordinateTransform( sourceCrs, mCrs, mTransformContext );
+  }
+  return QgsCoordinateTransform();
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setCoordinateTransform( const QgsCoordinateTransform &transform )
+{
+  mTransform = transform;
+  return *this;
 }
 
 QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
@@ -513,6 +565,25 @@ QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClaus
   {
     append( clause );
   }
+}
+
+bool QgsFeatureRequest::OrderBy::operator== ( const QgsFeatureRequest::OrderBy &other ) const
+{
+  if ( this == &other )
+    return true;
+  if ( size() != other.size() )
+    return false;
+  for ( int i = 0; i < size(); ++i )
+  {
+    if ( at( i ) != other.at( i ) )
+      return false;
+  }
+  return true;
+}
+
+bool QgsFeatureRequest::OrderBy::operator!= ( const QgsFeatureRequest::OrderBy &other ) const
+{
+  return !operator==( other );
 }
 
 QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::OrderBy::list() const

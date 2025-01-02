@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -76,7 +76,7 @@ Draws text within a rectangle using the specified settings.
 :param flags: text rendering flags (since QGIS 3.24)
 :param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted (since QGIS 3.30)
 
-.. seealso:: :py:func:`drawDocument`
+.. seealso:: :py:func:`drawDocument` which is more efficient if the text document and metrics have already been calculated.
 %End
 
     static void drawDocument( const QRectF &rect,
@@ -111,7 +111,6 @@ been calculated.
 :param mode: text layout mode. Only :py:class:`Qgis`.TextLayoutMode.Rectangle, :py:class:`Qgis`.TextLayoutMode.RectangleCapHeightBased and :py:class:`Qgis`.TextLayoutMode.RectangleAscentBased are accepted.
 :param flags: text rendering flags
 
-
 .. versionadded:: 3.30
 %End
 
@@ -131,6 +130,37 @@ Draws text at a point origin using the specified settings.
                        formats like SVG to maintain text as text objects, but at the cost of degraded
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
+%End
+
+    static void drawDocument( QPointF point,
+                              const QgsTextFormat &format,
+                              const QgsTextDocument &document,
+                              const QgsTextDocumentMetrics &metrics,
+                              QgsRenderContext &context,
+                              Qgis::TextHorizontalAlignment alignment,
+                              double rotation,
+                              Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point );
+%Docstring
+Draws a text document at a point origin using the specified settings.
+
+Calling this method is more efficient than calling :py:func:`~QgsTextRenderer.drawText` if the text document and metrics have already
+been calculated.
+
+.. warning::
+
+   Unlike :py:func:`~QgsTextRenderer.drawText`, this method does not automatically update data defined properties in the text ``format``. This
+   is the caller's responsibility to do, and must be done prior to generating the text ``document`` and ``metrics``.
+
+:param point: origin of text, in painter units
+:param format: base text format
+:param document: text document to draw
+:param metrics: precalculated text metrics
+:param context: destination render context
+:param alignment: horizontal alignment
+:param rotation: text rotation
+:param mode: optional layout mode (since QGIS 3.42)
+
+.. versionadded:: 3.40
 %End
 
     static void drawTextOnLine( const QPolygonF &line, const QString &text,
@@ -170,7 +200,7 @@ Draws a text document along a line using the specified settings.
 
  static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated="Since 3.40. Private API only, will be removed in 4.0."/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
@@ -188,13 +218,14 @@ Draws a single component of rendered text using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 
-.. deprecated::
-   Private API only, will be removed in 4.0
+.. deprecated:: 3.40
+
+   Private API only, will be removed in 4.0.
 %End
 
  static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated="Since 3.40. Private API only, will be removed in 4.0."/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
@@ -212,8 +243,9 @@ Draws a single component of rendered text using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 
-.. deprecated::
-   Private API only, will be removed in 4.0
+.. deprecated:: 3.40
+
+   Private API only, will be removed in 4.0.
 %End
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format, double scaleFactor = 1.0 );
@@ -223,7 +255,7 @@ in the specified render ``context``. The font metrics will take into account
 all scaling required by the render context.
 
 The optional ``scaleFactor`` argument can specify a font size scaling factor. It is recommended to set this to
-QgsTextRenderer.FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually scale painter devices or calculations
 based on the resultant font metrics. Failure to do so will result in poor quality text rendering
 at small font sizes.
 
@@ -288,6 +320,16 @@ Wraps a ``text`` string to multiple lines, such that each individual line will f
 
     static const double FONT_WORKAROUND_SCALE;
 
+    static double calculateScaleFactorForFormat( const QgsRenderContext &context, const QgsTextFormat &format );
+%Docstring
+Returns the scale factor used for upscaling font sizes and downscaling destination painter devices.
+
+Using this scale factor and manually adjusting any font metric based calculations results in more stable
+font metrics and sizes for small font sizes.
+
+.. versionadded:: 3.40
+%End
+
 
     static const double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR;
 
@@ -298,5 +340,5 @@ Wraps a ``text`` string to multiple lines, such that each individual line will f
  *                                                                      *
  * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,13 +3,13 @@
  *                                                                      *
  * src/analysis/interpolation/qgsidwinterpolator.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsIDWInterpolator: QgsInterpolator
+class QgsIDWInterpolator : QgsInterpolator
 {
 %Docstring(signature="appended")
 Inverse distance weight interpolator.
@@ -19,7 +19,6 @@ Inverse distance weight interpolator.
 #include "qgsidwinterpolator.h"
 %End
   public:
-
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 %Docstring
 Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
@@ -56,5 +55,5 @@ Point values are weighted by 1 / ( distance ^ coefficient ).
  *                                                                      *
  * src/analysis/interpolation/qgsidwinterpolator.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

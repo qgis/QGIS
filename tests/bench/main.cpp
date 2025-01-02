@@ -32,7 +32,7 @@
 #include <getopt.h>
 #endif
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include <ApplicationServices/ApplicationServices.h>
 #if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
 typedef SInt32 SRefCon;
@@ -58,7 +58,7 @@ void usage( std::string const &appName )
   std::cerr << "QGIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
             << QGSVERSION << ")\n"
             << "QGIS (QGIS) Benchmark is console application for QGIS benchmarking\n"
-            << "Usage: " << appName <<  " [options] [FILES]\n"
+            << "Usage: " << appName << " [options] [FILES]\n"
             << "  options:\n"
             << "\t[--iterations iterations]\tnumber of rendering cycles, default 1\n"
             << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
@@ -81,7 +81,7 @@ void usage( std::string const &appName )
             << "        and others supported by GDAL\n"
             << "     2. Vectors - Supported formats include ESRI Shapefiles\n"
             << "        and others supported by OGR and PostgreSQL layers using\n"
-            << "        the PostGIS extension\n"  ; // OK
+            << "        the PostGIS extension\n"; // OK
 
 
 } // usage()
@@ -102,13 +102,13 @@ static QStringList sFileList;
 
 int main( int argc, char *argv[] )
 {
-#ifdef Q_OS_WIN  // Windows
+#ifdef Q_OS_WIN // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
-#else //MinGW
+#else  //MinGW
   _fmode = _O_BINARY;
-#endif  // _MSC_VER
-#endif  // Q_OS_WIN
+#endif // _MSC_VER
+#endif // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behavior' flag setup
@@ -150,33 +150,31 @@ int main( int argc, char *argv[] )
   int optionChar;
   while ( true )
   {
-    static struct option long_options[] =
-    {
+    static struct option long_options[] = {
       /* These options set a flag. */
-      {"help", no_argument, nullptr, '?'},
+      { "help", no_argument, nullptr, '?' },
       /* These options don't set a flag.
        *  We distinguish them by their indices. */
-      {"iterations",    required_argument, nullptr, 'i'},
-      {"snapshot", required_argument, nullptr, 's'},
-      {"log", required_argument, nullptr, 'l'},
-      {"width",    required_argument, nullptr, 'w'},
-      {"height",   required_argument, nullptr, 'h'},
-      {"project",  required_argument, nullptr, 'p'},
-      {"extent",   required_argument, nullptr, 'e'},
-      {"optionspath", required_argument, nullptr, 'o'},
-      {"configpath", required_argument, nullptr, 'c'},
-      {"prefix", required_argument, nullptr, 'r'},
-      {"quality", required_argument, nullptr, 'q'},
-      {"parallel", no_argument, nullptr, 'P'},
-      {"print", required_argument, nullptr, 'R'},
-      {nullptr, 0, nullptr, 0}
+      { "iterations", required_argument, nullptr, 'i' },
+      { "snapshot", required_argument, nullptr, 's' },
+      { "log", required_argument, nullptr, 'l' },
+      { "width", required_argument, nullptr, 'w' },
+      { "height", required_argument, nullptr, 'h' },
+      { "project", required_argument, nullptr, 'p' },
+      { "extent", required_argument, nullptr, 'e' },
+      { "optionspath", required_argument, nullptr, 'o' },
+      { "configpath", required_argument, nullptr, 'c' },
+      { "prefix", required_argument, nullptr, 'r' },
+      { "quality", required_argument, nullptr, 'q' },
+      { "parallel", no_argument, nullptr, 'P' },
+      { "print", required_argument, nullptr, 'R' },
+      { nullptr, 0, nullptr, 0 }
     };
 
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    optionChar = getopt_long( argc, argv, "islwhpeocrq",
-                              long_options, &option_index );
+    optionChar = getopt_long( argc, argv, "islwhpeocrq", long_options, &option_index );
 
     /* Detect the end of the options. */
     if ( optionChar == -1 )
@@ -248,11 +246,11 @@ int main( int argc, char *argv[] )
 
       case '?':
         usage( argv[0] );
-        return 2;   // XXX need standard exit codes
+        return 2; // XXX need standard exit codes
 
       default:
         QgsDebugError( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
-        return 1;   // XXX need standard exit codes
+        return 1; // XXX need standard exit codes
     }
   }
 
@@ -391,7 +389,7 @@ int main( int argc, char *argv[] )
 
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
   // is not already defined, use the GDAL plugins in the application bundle.
   QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
@@ -426,10 +424,9 @@ int main( int argc, char *argv[] )
   // plugins. In mac be sure to look in the
   // application bundle...
 #ifdef Q_OS_WIN
-  QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
-                                    + QDir::separator() + "qtplugins" );
+  QCoreApplication::addLibraryPath( QApplication::applicationDirPath() + QDir::separator() + "qtplugins" );
 #endif
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   //qDebug("Adding qt image plugins to plugin search path...");
   CFURLRef myBundleRef = CFBundleCopyBundleURL( CFBundleGetMainBundle() );
   CFStringRef myMacPath = CFURLCopyFileSystemPath( myBundleRef, kCFURLPOSIXPathStyle );
@@ -479,24 +476,27 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
   /////////////////////////////////////////////////////////////////////
-  if ( ! myProjectFileName.isEmpty() )
+  if ( !myProjectFileName.isEmpty() )
   {
-    if ( ! qbench->openProject( myProjectFileName ) )
+    if ( !qbench->openProject( myProjectFileName ) )
     {
       fprintf( stderr, "Cannot load project\n" );
       return 1;
     }
   }
 
-  if ( ! myQuality.isEmpty() )
+  if ( !myQuality.isEmpty() )
   {
     QPainter::RenderHints hints;
     const QStringList list = myQuality.split( ',' );
     for ( const QString &q : list )
     {
-      if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
-      else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
-      else if ( q == QLatin1String( "SmoothPixmapTransform" ) ) hints |= QPainter::SmoothPixmapTransform;
+      if ( q == QLatin1String( "Antialiasing" ) )
+        hints |= QPainter::Antialiasing;
+      else if ( q == QLatin1String( "TextAntialiasing" ) )
+        hints |= QPainter::TextAntialiasing;
+      else if ( q == QLatin1String( "SmoothPixmapTransform" ) )
+        hints |= QPainter::SmoothPixmapTransform;
       else
       {
         fprintf( stderr, "Unknown quality option\n" );
@@ -518,8 +518,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsgLevel( QStringLiteral( "Trying to load file : %1" ).arg( ( *myIterator ) ), 1 );
     const QString myLayerName = *myIterator;
     // don't load anything with a .qgs or .qgz extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
-         !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) && !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
@@ -530,7 +529,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // Set initial extent if requested
   /////////////////////////////////////////////////////////////////////
-  if ( ! myInitialExtent.isEmpty() )
+  if ( !myInitialExtent.isEmpty() )
   {
     double coords[4];
     int pos, posOld = 0;
@@ -549,7 +548,7 @@ int main( int argc, char *argv[] )
         ok = false;
         break;
       }
-      coords[i] = QStringView {myInitialExtent} .mid( posOld, pos - posOld ).toDouble( &ok );
+      coords[i] = QStringView { myInitialExtent }.mid( posOld, pos - posOld ).toDouble( &ok );
       if ( !ok )
         break;
 
@@ -558,7 +557,7 @@ int main( int argc, char *argv[] )
 
     // parse last coordinate
     if ( ok )
-      coords[3] = QStringView {myInitialExtent} .mid( posOld ).toDouble( &ok );
+      coords[3] = QStringView { myInitialExtent }.mid( posOld ).toDouble( &ok );
 
     if ( !ok )
     {

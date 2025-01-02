@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/auth/qgsauthmethodedit.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -55,7 +55,6 @@ Clear GUI controls in subclassed widget
 %End
 
   protected:
-
     explicit QgsAuthMethodEdit( QWidget *parent = 0 );
 %Docstring
 Construct widget to edit an authentication method configuration
@@ -75,5 +74,5 @@ Construct widget to edit an authentication method configuration
  *                                                                      *
  * src/gui/auth/qgsauthmethodedit.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

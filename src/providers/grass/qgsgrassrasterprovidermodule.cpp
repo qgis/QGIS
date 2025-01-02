@@ -24,17 +24,18 @@
 static const QString PROVIDER_KEY = QStringLiteral( "grassraster" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
 
-class QgsGrassRasterProviderMetadata: public QgsProviderMetadata
+class QgsGrassRasterProviderMetadata : public QgsProviderMetadata
 {
   public:
-    QgsGrassRasterProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
-    QgsGrassRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override
+    QgsGrassRasterProviderMetadata()
+      : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+    QgsGrassRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override
     {
       Q_UNUSED( options );
       Q_UNUSED( flags );
       return new QgsGrassRasterProvider( uri );
     }
-    QList< Qgis::LayerType > supportedLayerTypes() const override
+    QList<Qgis::LayerType> supportedLayerTypes() const override
     {
       return { Qgis::LayerType::Raster };
     }
@@ -49,4 +50,3 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsGrassRasterProviderMetadata();
 }
-

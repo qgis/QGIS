@@ -48,8 +48,7 @@ class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
     //! provide model index for parent's child item
@@ -167,8 +166,7 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
 
   public:
     //! constructor
-    QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer,
-                                QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
+    QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer, QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
     ~QgsLabelingRulePropsWidget() override;
 
     //! Returns the rule being edited
@@ -195,6 +193,8 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     void buildExpression();
 
   private:
+    static QgsExpressionContext createExpressionContext( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer );
+
     QgsRuleBasedLabeling::Rule *mRule; // borrowed
     QgsVectorLayer *mLayer = nullptr;
 
@@ -217,7 +217,6 @@ class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingRulePropsDialog
      * \param rule associated rule based labeling rule
@@ -225,8 +224,7 @@ class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog
      * \param parent parent widget
      * \param mapCanvas map canvas
      */
-    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer,
-                                QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
+    QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer, QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
 
     /**
      * Returns the current set rule.

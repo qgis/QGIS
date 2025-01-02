@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/tiledscene/qgstiledscenelayerelevationproperties.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,6 +40,8 @@ Constructor for QgsTiledSceneLayerElevationProperties, with the specified ``pare
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
+
 
 };
 
@@ -48,5 +50,5 @@ Constructor for QgsTiledSceneLayerElevationProperties, with the specified ``pare
  *                                                                      *
  * src/core/tiledscene/qgstiledscenelayerelevationproperties.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -21,7 +21,36 @@ QgsBookmarkManagerModel.RoleRotation = QgsBookmarkManagerModel.CustomRole.Rotati
 QgsBookmarkManagerModel.CustomRoles.RoleRotation = QgsBookmarkManagerModel.CustomRole.Rotation
 QgsBookmarkManagerModel.RoleRotation.is_monkey_patched = True
 QgsBookmarkManagerModel.RoleRotation.__doc__ = "Bookmark map rotation"
-QgsBookmarkManagerModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsBookmarkManagerModel.CustomRoles\n\n.. versionadded:: 3.36\n\n" + '* ``RoleExtent``: ' + QgsBookmarkManagerModel.CustomRole.Extent.__doc__ + '\n' + '* ``RoleName``: ' + QgsBookmarkManagerModel.CustomRole.Name.__doc__ + '\n' + '* ``RoleId``: ' + QgsBookmarkManagerModel.CustomRole.Id.__doc__ + '\n' + '* ``RoleGroup``: ' + QgsBookmarkManagerModel.CustomRole.Group.__doc__ + '\n' + '* ``RoleRotation``: ' + QgsBookmarkManagerModel.CustomRole.Rotation.__doc__
+QgsBookmarkManagerModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsBookmarkManagerModel.CustomRoles
+
+.. versionadded:: 3.36
+
+* ``Extent``: Bookmark extent as a QgsReferencedRectangle
+
+  Available as ``QgsBookmarkManagerModel.RoleExtent`` in older QGIS releases.
+
+* ``Name``: Bookmark name
+
+  Available as ``QgsBookmarkManagerModel.RoleName`` in older QGIS releases.
+
+* ``Id``: Bookmark ID
+
+  Available as ``QgsBookmarkManagerModel.RoleId`` in older QGIS releases.
+
+* ``Group``: Bookmark group
+
+  Available as ``QgsBookmarkManagerModel.RoleGroup`` in older QGIS releases.
+
+* ``Rotation``: Bookmark map rotation
+
+  Available as ``QgsBookmarkManagerModel.RoleRotation`` in older QGIS releases.
+
+
+"""
 # --
 QgsBookmarkManagerModel.CustomRole.baseClass = QgsBookmarkManagerModel
 QgsBookmarkManagerModel.ColumnName = QgsBookmarkManagerModel.Columns.ColumnName

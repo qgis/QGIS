@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfocuswatcher.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ caught using the emitted signals.
 #include "qgsfocuswatcher.h"
 %End
   public:
-
     explicit QgsFocusWatcher( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsFocusWatcher.
@@ -52,7 +51,6 @@ Emitted when parent object gains focus.
 %Docstring
 Emitted when parent object loses focus.
 %End
-
 };
 
 /************************************************************************
@@ -60,5 +58,5 @@ Emitted when parent object loses focus.
  *                                                                      *
  * src/gui/qgsfocuswatcher.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

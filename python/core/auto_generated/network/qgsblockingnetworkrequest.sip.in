@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/network/qgsblockingnetworkrequest.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,6 +40,13 @@ between threads without issue.
       ServerExceptionError,
     };
 
+    enum class RequestFlag
+    {
+      EmptyResponseIsValid,
+    };
+    typedef QFlags<QgsBlockingNetworkRequest::RequestFlag> RequestFlags;
+
+
     explicit QgsBlockingNetworkRequest();
 %Docstring
 Constructor for QgsBlockingNetworkRequest
@@ -47,7 +54,7 @@ Constructor for QgsBlockingNetworkRequest
 
     ~QgsBlockingNetworkRequest();
 
-    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0, RequestFlags requestFlags = QgsBlockingNetworkRequest::RequestFlags() );
 %Docstring
 Performs a "get" operation on the specified ``request``.
 
@@ -59,6 +66,8 @@ If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authe
 this method.
 
 The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The optional ``requestFlags`` argument can be used to modify the behavior (added in QGIS 3.40).
 
 The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
 by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
@@ -202,20 +211,21 @@ Aborts the network request immediately.
 
   signals:
 
-    void downloadProgress( qint64, qint64 );
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 %Docstring
 Emitted when when data arrives during a request.
 %End
 
- void downloadFinished() /Deprecated/;
+ void downloadFinished() /Deprecated="Since 3.40. Use the finished() signal instead."/;
 %Docstring
 Emitted once a request has finished downloading.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the :py:func:`~QgsBlockingNetworkRequest.finished` signal instead.
 %End
 
-    void uploadProgress( qint64, qint64 );
+    void uploadProgress( qint64 bytesReceived, qint64 bytesTotal );
 %Docstring
 Emitted when when data are sent during a request.
 
@@ -235,5 +245,5 @@ Emitted once a request has finished.
  *                                                                      *
  * src/core/network/qgsblockingnetworkrequest.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

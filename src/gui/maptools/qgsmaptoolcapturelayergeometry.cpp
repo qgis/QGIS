@@ -15,11 +15,10 @@
 
 
 #include "qgsmaptoolcapturelayergeometry.h"
+#include "moc_qgsmaptoolcapturelayergeometry.cpp"
 #include "qgsproject.h"
 #include "qgscurvepolygon.h"
 #include "qgscurve.h"
-
-
 
 
 void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geometry )
@@ -39,11 +38,11 @@ void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geomet
     case QgsMapToolCapture::CapturePolygon:
       //does provider support circular strings?
       const bool datasetIsCurved = QgsWkbTypes::isCurvedType( vlayer->wkbType() );
-      const bool providerSupportsCurvedSegments = vlayer && ( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries );
+      const bool providerSupportsCurvedSegments = vlayer && ( vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries );
       if ( !datasetIsCurved || !providerSupportsCurvedSegments )
         g = QgsGeometry( g.constGet()->segmentize() );
 
-      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      QList<QgsVectorLayer *> avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
       {
         case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:

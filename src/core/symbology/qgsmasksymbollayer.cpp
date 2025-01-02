@@ -26,7 +26,7 @@ QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 
 QgsMaskMarkerSymbolLayer::~QgsMaskMarkerSymbolLayer() = default;
 
-bool QgsMaskMarkerSymbolLayer::enabled() const
+bool QgsMaskMarkerSymbolLayer::enabled() const // cppcheck-suppress duplInheritedMember
 {
   return !mMaskedSymbolLayers.isEmpty();
 }

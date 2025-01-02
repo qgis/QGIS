@@ -363,7 +363,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutManualTable,  //!< Manual (fixed) table
       LayoutMarker, //!< Marker item
 
-      LayoutElevationProfile, //!< Elevation profile item (since QGIS 3.30)
+      LayoutElevationProfile, //!< Elevation profile item \since QGIS 3.30
 
       // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
       // values, and must be updated if any additional types are added
@@ -390,9 +390,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      */
     bool populate();
 
-    //! QgsLayoutItemRegistry cannot be copied.
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh ) = delete;
-    //! QgsLayoutItemRegistry cannot be copied.
     QgsLayoutItemRegistry &operator=( const QgsLayoutItemRegistry &rh ) = delete;
 
     /**

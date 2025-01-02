@@ -47,7 +47,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
 
   public:
-
     /**
      * Create a new QgsFeatureListComboBox, optionally specifying a \a parent.
      */
@@ -104,7 +103,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * The identifier value of the currently selected feature. A value from the
      * identifierField.
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED QVariant identifierValue() const SIP_DEPRECATED;
 
@@ -119,7 +118,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * The identifier value of the currently selected feature. A value from the
      * identifierField.
-     * \deprecated since QGIS 3.10 use setIdentifierValues
+     * \deprecated QGIS 3.10. Use setIdentifierValues.
      */
     Q_DECL_DEPRECATED void setIdentifierValue( const QVariant &identifierValue ) SIP_DEPRECATED;
 
@@ -168,7 +167,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * Field name that will be used to uniquely identify the current feature.
      * Normally the primary key of the layer.
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED QString identifierField() const SIP_DEPRECATED;
 
@@ -182,7 +181,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * Field name that will be used to uniquely identify the current feature.
      * Normally the primary key of the layer.
-     * \deprecated since QGIS 3.10
+     * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED void setIdentifierField( const QString &identifierField ) SIP_DEPRECATED;
 
@@ -251,6 +250,12 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      */
     void currentFeatureChanged();
 
+    /**
+     * Emitted when the feature picker model changes its feature \a found state
+     * \since QGIS 3.38
+     */
+    void currentFeatureFoundChanged( bool found );
+
   private slots:
     void onCurrentTextChanged( const QString &text );
     void onFilterLineEditCleared();
@@ -272,7 +277,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     friend class TestQgsFeatureListComboBox;
 };
-
 
 
 #endif // QGSFIELDLISTCOMBOBOX_H

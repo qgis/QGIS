@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vectortile/qgsvectortilewriter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,7 +13,9 @@
 class QgsVectorTileWriter
 {
 %Docstring(signature="appended")
-Takes care of writing vector tiles. The intended use is to set up the class
+Takes care of writing vector tiles.
+
+The intended use is to set up the class
 by setting the destination URI, extent, zoom level range and input vector
 layers. Then with a call to :py:func:`~writeTiles` the data gets written. In case
 of a failure, :py:func:`~errorMessage` returns the cause of the problem during writing.
@@ -202,5 +204,5 @@ Returns a QByteArray with the encoded data
  *                                                                      *
  * src/core/vectortile/qgsvectortilewriter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgscategorizedsymbolrenderer.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,9 +21,6 @@ Represents an individual category (class) from a :py:class:`QgsCategorizedSymbol
   public:
 
     QgsRendererCategory();
-%Docstring
-Constructor for QgsRendererCategory.
-%End
 
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
 %Docstring
@@ -41,9 +38,6 @@ The optional ``uuid`` argument manually set the UUID key identifier for the cate
 %End
 
     QgsRendererCategory( const QgsRendererCategory &cat );
-%Docstring
-Copy constructor.
-%End
     ~QgsRendererCategory();
 
     QString uuid() const;
@@ -139,8 +133,6 @@ Converts the category to a matching SLD rule, within the specified DOM document 
 %End
 
   protected:
-
-    void swap( QgsRendererCategory &other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
@@ -163,6 +155,8 @@ A list of renderer ``categories`` can optionally be specified. If no categories 
 can be added later by calling :py:func:`~QgsCategorizedSymbolRenderer.addCategory`.
 %End
     ~QgsCategorizedSymbolRenderer();
+
+    virtual Qgis::FeatureRendererFlags flags() const;
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
@@ -485,19 +479,21 @@ output.
 hashtable for faster access to symbols
 %End
 
- QgsSymbol *skipRender() /Deprecated/;
+ QgsSymbol *skipRender() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated::
-   No longer used, will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   No longer used, will be removed in QGIS 4.0.
 %End
 
- QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated/;
+ QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated="Since 3.40. Use variant which takes a second bool argument instead."/;
 %Docstring
 Returns the matching symbol corresponding to an attribute ``value``.
 
-.. deprecated::
-   use variant which takes a second bool argument instead.
+.. deprecated:: 3.40
+
+   Use variant which takes a second bool argument instead.
 %End
 
 
@@ -528,5 +524,5 @@ of disabled categories.
  *                                                                      *
  * src/core/symbology/qgscategorizedsymbolrenderer.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

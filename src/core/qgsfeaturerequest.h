@@ -29,7 +29,7 @@
 #include "qgssimplifymethod.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatereferencesystem.h"
-
+#include "qgscoordinatetransform.h"
 
 /**
  * \ingroup core
@@ -231,6 +231,18 @@ class CORE_EXPORT QgsFeatureRequest
         CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
+         * Equality operator
+         * \since QGIS 3.38
+         */
+        CORE_EXPORT bool operator==( const OrderBy &v ) const;
+
+        /**
+         * Inequality operator
+         * \since QGIS 3.38
+         */
+        CORE_EXPORT bool operator!=( const OrderBy &v ) const;
+
+        /**
          * Gets a copy as a list of OrderByClauses
          *
          * This is only required in Python where the inheritance
@@ -289,10 +301,16 @@ class CORE_EXPORT QgsFeatureRequest
 
     //! construct a request with a filter expression
     explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
-    //! copy constructor
     QgsFeatureRequest( const QgsFeatureRequest &rh );
-    //! Assignment operator
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
+
+    /**
+     * Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
+     * \param other the other request
+     * \return TRUE if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
+     * \since QGIS 3.38
+     */
+    bool compare( const QgsFeatureRequest &other ) const;
 
     ~QgsFeatureRequest();
 
@@ -492,7 +510,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
      */
-    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const SIP_SKIP { return mInvalidGeometryCallback; }
 
     /**
      * Set the filter \a expression. {\see QgsExpression}
@@ -704,9 +722,29 @@ class CORE_EXPORT QgsFeatureRequest
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
+     * Returns the coordinate transform which will be used to transform
+     * the feature's geometries.
+     *
+     * If this transform is valid  then it will always be used to transform
+     * features, regardless of the destinationCrs() setting or the underlying
+     * feature source's actual CRS.
+     *
+     * \see setCoordinateTransform()
+     *
+     * \since QGIS 3.40
+     */
+    QgsCoordinateTransform coordinateTransform() const;
+
+    /**
      * Returns the destination coordinate reference system for feature's geometries,
      * or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
      * and all features will be left with their original geometry.
+     *
+     * \warning if coordinateTransform() returns a valid transform then the
+     * destinationCrs() will have no effect, and the coordinateTransform() will
+     * always be used to transform features.
+     *
+     * \see calculateTransform()
      * \see setDestinationCrs()
      * \see transformContext()
      */
@@ -719,6 +757,49 @@ class CORE_EXPORT QgsFeatureRequest
      * \see destinationCrs()
      */
     QgsCoordinateTransformContext transformContext() const;
+
+    /**
+     * Calculates the coordinate transform to use to transform geometries
+     * when they are originally in \a sourceCrs.
+     *
+     * This method will return coordinateTransform() if it is set (ignoring \a sourceCrs), otherwise
+     * it will calculate an appriopriate transform from \a sourceCrs to destinationCrs().
+     *
+     * \since QGIS 3.40
+     */
+    QgsCoordinateTransform calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const;
+
+    /**
+     * Sets the coordinate \a transform which will be used to transform
+     * the feature's geometries.
+     *
+     * If this transform is valid then it will always be used to transform
+     * features, regardless of the destinationCrs() setting or the underlying
+     * feature source's actual CRS.
+     *
+     * When a \a transform is set using setCoordinateTransform(), then any filterRect()
+     * or referenceGeometry() set on the request is expected to be in the
+     * same CRS as the destination CRS for the \a transform.
+     *
+     * The feature geometry transformation is performed
+     * after all filter expressions are tested and any virtual fields are
+     * calculated. Accordingly, any geometric expressions used in
+     * filterExpression() will be performed in the original
+     * source CRS. This ensures consistent results are returned regardless of the
+     * destination CRS. Similarly, virtual field values will be calculated using the
+     * original geometry in the source CRS, so these values are not affected by
+     * any destination CRS transform present in the feature request.
+     *
+     * \warning This method should be used with caution, and it is recommended
+     * to use the high-level setDestinationCrs() method instead. Setting a specific
+     * transform should only be done when there is a requirement to use a particular
+     * transform.
+     *
+     * \see coordinateTransform()
+     *
+     * \since QGIS 3.40
+     */
+    QgsFeatureRequest &setCoordinateTransform( const QgsCoordinateTransform &transform );
 
     /**
      * Sets the destination \a crs for feature's geometries. If set, all
@@ -739,6 +820,10 @@ class CORE_EXPORT QgsFeatureRequest
      * destination CRS. Similarly, virtual field values will be calculated using the
      * original geometry in the source CRS, so these values are not affected by
      * any destination CRS transform present in the feature request.
+     *
+     * \warning if coordinateTransform() returns a valid transform then the
+     * destinationCrs() will have no effect, and the coordinateTransform() will
+     * always be used to transform features.
      *
      * \see destinationCrs()
      */
@@ -778,7 +863,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \see setTransformErrorCallback()
      * \see destinationCrs()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const SIP_SKIP { return mTransformErrorCallback; }
 
 
     /**
@@ -797,7 +882,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
-     * \deprecated Use timeout() instead.
+     * \deprecated QGIS 3.40. Use timeout() instead.
      */
     Q_DECL_DEPRECATED int connectionTimeout() const SIP_DEPRECATED;
 
@@ -807,7 +892,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
-     * \deprecated Use setTimeout() instead.
+     * \deprecated QGIS 3.40. Use setTimeout() instead.
      */
     Q_DECL_DEPRECATED QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) SIP_DEPRECATED;
 
@@ -932,6 +1017,7 @@ class CORE_EXPORT QgsFeatureRequest
     Qgis::InvalidGeometryCheck mInvalidGeometryFilter = Qgis::InvalidGeometryCheck::NoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+    QgsCoordinateTransform mTransform;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     int mTimeout = -1;

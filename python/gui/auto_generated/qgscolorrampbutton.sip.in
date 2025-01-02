@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscolorrampbutton.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ saved color ramps, as well as option to invert the current color ramp and create
 #include "qgscolorrampbutton.h"
 %End
   public:
-
     QgsColorRampButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new color ramp button.
@@ -237,6 +236,10 @@ to the previous color ramp.
 :param colorramp: New color ramp for the button. The ramp will be cloned and ownership is not transferred.
 
 .. seealso:: :py:func:`setRandomColorRamp`
+
+.. seealso:: :py:func:`setColorRampFromName`
+
+.. seealso:: :py:func:`colorRamp`
 %End
 
     void setRandomColorRamp();
@@ -245,6 +248,10 @@ Sets the current color ramp for the button to random colors. Will emit a :py:fun
 if the color ramp is different to the previous color ramp.
 
 .. seealso:: :py:func:`setColorRamp`
+
+.. seealso:: :py:func:`setColorRampFromName`
+
+.. seealso:: :py:func:`colorRamp`
 %End
 
     void setColorRampFromName( const QString &name = QString() );
@@ -255,6 +262,10 @@ if the color ramp is different to the previous color ramp.
 :param name: Name of saved color ramp
 
 .. seealso:: :py:func:`setColorRamp`
+
+.. seealso:: :py:func:`setRandomColorRamp`
+
+.. seealso:: :py:func:`colorRamp`
 %End
 
     void setButtonBackground( QgsColorRamp *colorramp = 0 );
@@ -292,7 +303,6 @@ In case the new color ramp is the same, no signal is emitted to avoid infinite l
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void changeEvent( QEvent *e );
@@ -315,5 +325,5 @@ Reimplemented to detect right mouse button clicks on the color ramp button
  *                                                                      *
  * src/gui/qgscolorrampbutton.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -59,10 +59,10 @@ void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
   c->setParameterValues( mParameterValues );
 }
 
-QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr< QgsClassificationMethod > QgsClassificationMethod::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString methodId = element.attribute( QStringLiteral( "id" ) );
-  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
 
   // symmetric
   QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );
@@ -209,6 +209,12 @@ void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
 
 QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses )
 {
+  QString error;
+  return classesV2( layer, expression, nclasses, error );
+}
+
+QList<QgsClassificationRange> QgsClassificationMethod::classesV2( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString &error )
+{
   if ( expression.isEmpty() )
     return QList<QgsClassificationRange>();
 
@@ -243,7 +249,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   }
 
   // get the breaks, minimum and maximum might be updated by implementation
-  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses, error );
   breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );
@@ -256,7 +262,10 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QList<doub
   double maximum = *result.second;
 
   // get the breaks
-  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  QString error;
+  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses, error );
+  ( void )error;
+
   breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );
@@ -270,7 +279,10 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, 
   }
 
   // get the breaks
-  QList<double> breaks = calculateBreaks( minimum, maximum, QList<double>(), nclasses );
+  QString error;
+  QList<double> breaks = calculateBreaks( minimum, maximum, QList<double>(), nclasses, error );
+  ( void )error;
+
   breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );

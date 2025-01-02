@@ -36,24 +36,22 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
     Q_GADGET
 
   public:
-
     /**
      * Available transformation methods.
      */
     enum class TransformMethod : int
     {
-      Linear, //!< Linear transform
-      Helmert, //!< Helmert transform
-      PolynomialOrder1, //!< Polynomial order 1
-      PolynomialOrder2, //!< Polyonmial order 2
-      PolynomialOrder3, //!< Polynomial order
-      ThinPlateSpline, //!< Thin plate splines
-      Projective, //!< Projective
+      Linear,                  //!< Linear transform
+      Helmert,                 //!< Helmert transform
+      PolynomialOrder1,        //!< Polynomial order 1
+      PolynomialOrder2,        //!< Polyonmial order 2
+      PolynomialOrder3,        //!< Polynomial order
+      ThinPlateSpline,         //!< Thin plate splines
+      Projective,              //!< Projective
       InvalidTransform = 65535 //!< Invalid transform
     };
     Q_ENUM( TransformMethod )
 
-    //! Constructor for QgsGcpTransformerInterface
     QgsGcpTransformerInterface() = default;
 
     virtual ~QgsGcpTransformerInterface() = default;
@@ -137,7 +135,6 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 #endif
 
   private:
-
 #ifdef SIP_RUN
     QgsGcpTransformerInterface( const QgsGcpTransformerInterface &other )
 #endif
@@ -152,8 +149,6 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
 class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
-
-    //! Constructor for QgsLinearGeorefTransform
     QgsLinearGeorefTransform() = default;
 
     /**
@@ -171,15 +166,13 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
   private:
     struct LinearParameters
     {
-      QgsPointXY origin;
-      double scaleX = 1;
-      double scaleY = 1;
-      bool invertYAxis = false;
+        QgsPointXY origin;
+        double scaleX = 1;
+        double scaleY = 1;
+        bool invertYAxis = false;
     } mParameters;
 
-    static int linearTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-                                double *x, double *y, double *z, int *panSuccess );
-
+    static int linearTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess );
 };
 
 /**
@@ -191,8 +184,6 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
 class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
-
-    //! Constructor for QgsHelmertGeorefTransform
     QgsHelmertGeorefTransform() = default;
 
     /**
@@ -208,19 +199,16 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
     TransformMethod method() const override;
 
   private:
-
     struct HelmertParameters
     {
-      QgsPointXY origin;
-      double scale = 0;
-      double angle = 0;
-      bool invertYAxis = false;
+        QgsPointXY origin;
+        double scale = 0;
+        double angle = 0;
+        bool invertYAxis = false;
     };
     HelmertParameters mHelmertParameters;
 
-    static int helmertTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-                                 double *x, double *y, double *z, int *panSuccess );
-
+    static int helmertTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess );
 };
 
 /**
@@ -232,7 +220,6 @@ class ANALYSIS_EXPORT QgsHelmertGeorefTransform : public QgsGcpTransformerInterf
 class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
-
     //! Constructor for QgsGDALGeorefTransform
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
     ~QgsGDALGeorefTransform() override;
@@ -255,7 +242,6 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
     const bool mIsTPSTransform;
 
     void *mGDALTransformerArgs = nullptr;
-
 };
 
 /**
@@ -270,8 +256,6 @@ class ANALYSIS_EXPORT QgsGDALGeorefTransform : public QgsGcpTransformerInterface
 class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInterface SIP_SKIP
 {
   public:
-
-    //! Constructor for QgsProjectiveGeorefTransform
     QgsProjectiveGeorefTransform();
 
     QgsGcpTransformerInterface *clone() const override;
@@ -284,14 +268,12 @@ class ANALYSIS_EXPORT QgsProjectiveGeorefTransform : public QgsGcpTransformerInt
   private:
     struct ProjectiveParameters
     {
-      double H[9];        // Homography
-      double Hinv[9];     // Inverted homography
-      bool hasInverse;  // Could the inverted homography be calculated?
+        double H[9];     // Homography
+        double Hinv[9];  // Inverted homography
+        bool hasInverse; // Could the inverted homography be calculated?
     } mParameters;
 
-    static int projectiveTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-                                    double *x, double *y, double *z, int *panSuccess );
-
+    static int projectiveTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess );
 };
 
 #endif //QGSGCPTRANSFORMER_H

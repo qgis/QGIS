@@ -1,0 +1,48 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsflatterrainsettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsFlatTerrainSettings : QgsAbstractTerrainSettings
+{
+%Docstring(signature="appended")
+Terrain settings for a simple flat area terrain.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsflatterrainsettings.h"
+%End
+  public:
+    static QgsAbstractTerrainSettings *create() /Factory/;
+%Docstring
+Creates a new instance of a QgsFlatTerrainSettings object.
+%End
+
+    QgsFlatTerrainSettings *clone() const final /Factory/;
+    QString type() const final;
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
+    bool equals( const QgsAbstractTerrainSettings *other ) const final;
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsflatterrainsettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsfeaturelistview.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ Uses a :py:class:`QgsFeatureListModel` as source model.
 #include "qgsfeaturelistview.h"
 %End
   public:
-
     explicit QgsFeatureListView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates a feature list view
@@ -202,7 +201,6 @@ editLastFeature will try to edit the last feature of the list
 %End
 
 
-
 };
 
 /************************************************************************
@@ -210,5 +208,5 @@ editLastFeature will try to edit the last feature of the list
  *                                                                      *
  * src/gui/attributetable/qgsfeaturelistview.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -1,0 +1,107 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptooldigitizefeature.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsMapToolDigitizeFeature : QgsMapToolCaptureLayerGeometry
+{
+%Docstring(signature="appended")
+This tool digitizes geometry of new point/line/polygon features on already existing vector layers
+Once the map tool is enabled, user can digitize the feature geometry.
+A signal will then be emitted.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsmaptooldigitizefeature.h"
+%End
+  public:
+    QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = QgsMapToolCapture::CaptureNone );
+%Docstring
+QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
+
+:param canvas: the map canvas
+:param cadDockWidget: widget to setup advanced digitizing parameters
+:param mode: type of geometry to capture (point/line/polygon), :py:class:`QgsMapToolCapture`.CaptureNone to autodetect geometry
+%End
+
+    virtual QgsMapToolCapture::Capabilities capabilities() const;
+
+    virtual bool supportsTechnique( Qgis::CaptureTechnique technique ) const;
+
+
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
+
+
+    void setLayer( QgsMapLayer *vl );
+%Docstring
+Change the layer edited by the map tool
+
+:param vl: the layer to be edited by the map tool
+%End
+
+    virtual void activate();
+
+    virtual void deactivate();
+
+    virtual void reactivate();
+
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
+
+  signals:
+
+    void digitizingCompleted( const QgsFeature &feature );
+%Docstring
+Emitted whenever the digitizing has been successfully completed
+
+:param feature: the new digitized feature
+%End
+
+    void digitizingFinished();
+%Docstring
+Emitted whenever the digitizing has been ended without digitizing
+any feature
+%End
+
+    void digitizingCanceled();
+%Docstring
+Emitted when the digitizing process was interrupted by the user.
+
+.. versionadded:: 3.28
+%End
+
+  protected:
+    bool checkGeometryType() const;
+%Docstring
+Check if CaptureMode matches layer type. Default is ``True``.
+%End
+
+    void setCheckGeometryType( bool checkGeometryType );
+%Docstring
+Check if CaptureMode matches layer type. Default is ``True``.
+%End
+
+  private:
+    virtual void featureDigitized( const QgsFeature &feature );
+%Docstring
+Called when the feature has been digitized
+
+.. versionadded:: 3.26
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptooldigitizefeature.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

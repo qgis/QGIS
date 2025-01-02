@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterresamplefilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -71,5 +71,5 @@ Sets base class members from xml. Usually called from :py:func:`~QgsRasterResamp
  *                                                                      *
  * src/core/raster/qgsrasterresamplefilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

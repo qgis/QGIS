@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgshttpheaderwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ Display referer http header field and collapsible table of key/value pairs
 #include "qgshttpheaderwidget.h"
 %End
   public:
-
     explicit QgsHttpHeaderWidget( QWidget *parent = 0 );
 %Docstring
 Default constructor
@@ -44,7 +43,7 @@ Sets the widget from the headers
 .. versionadded:: 3.30
 %End
 
- void setFromSettings( const QgsSettings &settings, const QString &key ) /Deprecated/;
+ void setFromSettings( const QgsSettings &settings, const QString &key ) /Deprecated="Since 3.30. Use setFromHeaders() instead."/;
 %Docstring
 fill the inner header map from the settings defined at ``key``
 
@@ -53,11 +52,12 @@ fill the inner header map from the settings defined at ``key``
 :param settings:
 :param key:
 
-.. deprecated:: QGIS 3.30
-   use setFromHeaders instead
+.. deprecated:: 3.30
+
+   Use :py:func:`~QgsHttpHeaderWidget.setFromHeaders` instead.
 %End
 
- void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated/;
+ void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated="Since 3.30. Use a variant map for settinds directly."/;
 %Docstring
 update the ``settings`` with the http headers present in the inner map.
 
@@ -66,8 +66,9 @@ update the ``settings`` with the http headers present in the inner map.
 :param settings:
 :param key:
 
-.. deprecated:: QGIS 3.30
-   use a variant map for settinds directly
+.. deprecated:: 3.30
+
+   Use a variant map for settinds directly.
 %End
 
 };
@@ -77,5 +78,5 @@ update the ``settings`` with the http headers present in the inner map.
  *                                                                      *
  * src/gui/qgshttpheaderwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

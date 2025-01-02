@@ -64,7 +64,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * Filters according to layer type and/or geometry type.
      * \note for API compatibility
      * \since QGIS 3.34
-     * \deprecated since QGIS 3.34 use the flag signature instead
+     * \deprecated QGIS 3.34. Use the flag signature instead.
      */
     Q_DECL_DEPRECATED void setFilters( int filters ) SIP_DEPRECATED { setFilters( static_cast<Qgis::LayerFilters>( filters ) ); }
 
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * Sets the \a project from which map layers are shown.
      *
-     * If \a project is NULLPTR then QgsProject::instance() will be used.
+     * If \a project is NULLPTR then QgsProject.instance() will be used.
      *
      * \since QGIS 3.24
      */
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \see layerAllowlist()
      * \see setExceptedLayerList()
      *
-     * \deprecated use setLayerAllowList()
+     * \deprecated QGIS 3.40. Use setLayerAllowList().
      */
     Q_DECL_DEPRECATED void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) SIP_DEPRECATED;
 
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \see setLayerAllowlist()
      * \see exceptedLayerList()
      *
-     * \deprecated use layerAllowlist() instead
+     * \deprecated QGIS 3.40. Use layerAllowlist() instead.
      */
     Q_DECL_DEPRECATED QList<QgsMapLayer *> layerWhitelist() SIP_DEPRECATED {return mLayerAllowlist;}
 

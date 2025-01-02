@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/devtools/qgsdevtoolwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,12 +19,10 @@ A panel widget that can be shown in the developer tools panel.
 #include "qgsdevtoolwidget.h"
 %End
   public:
-
     QgsDevToolWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDevToolWidget, with the specified ``parent`` widget.
 %End
-
 };
 
 /************************************************************************
@@ -32,5 +30,5 @@ Constructor for QgsDevToolWidget, with the specified ``parent`` widget.
  *                                                                      *
  * src/gui/devtools/qgsdevtoolwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

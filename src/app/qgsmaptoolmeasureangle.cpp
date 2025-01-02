@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmeasureangle.h"
+#include "moc_qgsmaptoolmeasureangle.cpp"
 #include "qgsdisplayangle.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
@@ -32,8 +33,7 @@ QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
 {
   mToolName = tr( "Measure angle" );
 
-  connect( canvas, &QgsMapCanvas::destinationCrsChanged,
-           this, &QgsMapToolMeasureAngle::updateSettings );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapToolMeasureAngle::updateSettings );
 }
 
 QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()

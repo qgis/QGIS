@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgsprojectmetadata.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,7 +13,7 @@
 class QgsProjectMetadata : QgsAbstractMetadataBase
 {
 %Docstring(signature="appended")
-A structured metadata store for a map layer.
+A structured metadata store for a project.
 
 :py:class:`QgsProjectMetadata` handles storage and management of the metadata
 for a :py:class:`QgsProject`. This class is an internal QGIS format with a common
@@ -43,9 +43,6 @@ using :py:class:`QgsNativeProjectMetadataValidator`.
   public:
 
     QgsProjectMetadata();
-%Docstring
-Constructor for QgsProjectMetadata.
-%End
 
     virtual QgsProjectMetadata *clone() const /Factory/;
 
@@ -95,5 +92,5 @@ Sets the project's creation date/timestamp.
  *                                                                      *
  * src/core/metadata/qgsprojectmetadata.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

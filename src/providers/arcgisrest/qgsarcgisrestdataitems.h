@@ -77,8 +77,7 @@ class QgsArcGisPortalGroupsItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers,
-                               const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
+    QgsArcGisPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -100,8 +99,7 @@ class QgsArcGisPortalGroupItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsHttpHeaders &headers,
-                              const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
+    QgsArcGisPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -219,47 +217,60 @@ class QgsArcGisRestParentLayerItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     QgsArcGisRestParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     bool equal( const QgsDataItem *other ) override;
 
   private:
-
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
     QString mUrlPrefix;
-
 };
 
 /**
- * Represents a ArcGIS REST "Feature Service" layer item.
+ * Represents a ArcGIS REST layer item.
  */
-class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
+class QgsArcGisRestLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 
   public:
+    QgsArcGisRestLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, Qgis::BrowserLayerType layerType, const QString &providerId );
 
-    QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsHttpHeaders &headers,
-                                      const QString urlPrefix, Qgis::BrowserLayerType geometryType );
+    /**
+     * Returns the CRS for the layer.
+     */
+    QgsCoordinateReferenceSystem crs() const;
 
+  private:
+    QgsCoordinateReferenceSystem mCrs;
+};
+
+
+/**
+ * Represents a ArcGIS REST "Feature Service" layer item.
+ */
+class QgsArcGisFeatureServiceLayerItem : public QgsArcGisRestLayerItem
+{
+    Q_OBJECT
+
+  public:
+    QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType );
 };
 
 /**
  * Represents a ArcGIS REST "Map Service" (or "Image Service") layer item.
  */
 
-class QgsArcGisMapServiceLayerItem : public QgsLayerItem
+class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
 {
     Q_OBJECT
 
   public:
-    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &id, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
     QString supportedFormats() const { return mSupportedFormats; }
 
   private:
-
     QString mSupportedFormats;
 };
 
@@ -268,7 +279,6 @@ class QgsArcGisMapServiceLayerItem : public QgsLayerItem
 class QgsArcGisRestDataItemProvider : public QgsDataItemProvider
 {
   public:
-
     QgsArcGisRestDataItemProvider();
 
     QString name() override;

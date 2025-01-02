@@ -24,6 +24,7 @@
 
 #include "qgsrasterinterface.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsrectangle.h"
 
 class QDomElement;
 
@@ -40,7 +41,7 @@ class QgsLayerTreeLayer;
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
 
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer )
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer ) // cppcheck-suppress duplInheritedMember
 
   public:
 
@@ -222,6 +223,24 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * \brief Checks if the renderer needs to be refreshed according to \a extent.
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    bool needsRefresh( const QgsRectangle &extent ) const SIP_SKIP;
+
+    /**
+     * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
+     * If \a forceRefresh is TRUE, this will force the refresh even if needsRefresh() returns FALSE.
+     * \returns TRUE if the renderer has been refreshed
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    virtual bool refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh = false ) SIP_SKIP;
+
   protected:
 
     //! Write upper class info into rasterrenderer element (called by writeXml method of subclasses)
@@ -252,6 +271,9 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      * \since QGIS 3.10
      */
     QRgb renderColorForNodataPixel() const;
+
+    //! To save computations and possible infinite cycle of notifications
+    QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 
   private:
 

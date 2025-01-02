@@ -34,13 +34,14 @@
 #include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsgeometryutils_base.h"
+#include "qgslabelingenginerule.h"
 #include "qgsmessagelog.h"
 #include <cmath>
 #include <cfloat>
 
 using namespace pal;
 
-LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
+LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Qgis::LabelQuadrantPosition quadrant )
   : id( id )
   , feature( feature )
   , probFeat( 0 )
@@ -49,9 +50,9 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   , w( w )
   , h( h )
   , partId( -1 )
-  , reversed( isReversed )
   , upsideDown( false )
-  , quadrant( quadrant )
+  , mQuadrant( quadrant )
+  , mDirectionToLine( directionToLine )
   , mCost( cost )
   , mHasObstacleConflict( false )
   , mUpsideDownCharCount( 0 )
@@ -157,8 +158,8 @@ LabelPosition::LabelPosition( const LabelPosition &other )
 
   partId = other.partId;
   upsideDown = other.upsideDown;
-  reversed = other.reversed;
-  quadrant = other.quadrant;
+  mDirectionToLine = other.mDirectionToLine;
+  mQuadrant = other.mQuadrant;
   mHasObstacleConflict = other.mHasObstacleConflict;
   mUpsideDownCharCount = other.mUpsideDownCharCount;
 
@@ -448,6 +449,27 @@ void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
   }
 }
 
+QgsRectangle LabelPosition::outerBoundingBox() const
+{
+  double amin[2];
+  double amax[2];
+  getBoundingBox( amin, amax );
+  return QgsRectangle( amin[0], amin[1], amax[0], amax[1] );
+}
+
+QgsRectangle LabelPosition::boundingBoxForCandidateConflicts( Pal *pal ) const
+{
+  QgsRectangle bounds = outerBoundingBox();
+  QgsRectangle bufferedBounds = bounds;
+  const QList< QgsAbstractLabelingEngineRule * > rules = pal->rules();
+  for ( QgsAbstractLabelingEngineRule *rule : rules )
+  {
+    const QgsRectangle modifiedBounds = rule->modifyCandidateConflictSearchBoundingBox( bounds );
+    bufferedBounds.combineExtentWith( modifiedBounds );
+  }
+  return bufferedBounds;
+}
+
 bool LabelPosition::outerBoundingBoxIntersects( const LabelPosition *other ) const
 {
   if ( other->mOuterBoundsGeos )
@@ -488,20 +510,21 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
 
 void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index )
 {
-  double amin[2];
-  double amax[2];
-  getBoundingBox( amin, amax );
-  index.remove( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+  index.remove( this, outerBoundingBox() );
 }
 
 void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
 {
-  double amin[2];
-  double amax[2];
-  getBoundingBox( amin, amax );
-  index.insert( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+  index.insert( this, outerBoundingBox() );
 }
 
+const GEOSGeometry *LabelPosition::multiPartGeom() const
+{
+  if ( !mMultipartGeos )
+    createMultiPartGeosGeom();
+
+  return mMultipartGeos;
+}
 
 void LabelPosition::createMultiPartGeosGeom() const
 {
@@ -574,7 +597,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBou
         geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, xp, yp ) );
         contains = ( GEOSPreparedContainsProperly_r( geosctxt, mPreparedOuterBoundsGeos, point.get() ) == 1 );
       }
-      catch ( GEOSException &e )
+      catch ( GEOSException & )
       {
         contains = false;
       }

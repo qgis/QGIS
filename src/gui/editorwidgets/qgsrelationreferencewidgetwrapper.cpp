@@ -15,6 +15,7 @@
 
 
 #include "qgsrelationreferencewidgetwrapper.h"
+#include "moc_qgsrelationreferencewidgetwrapper.cpp"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"
@@ -102,10 +103,18 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
       break;
     }
     ctx = ctx->parentContext();
-  }
-  while ( ctx );
+  } while ( ctx );
 
-  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+  // If AllowNULL is not set in the config, provide a default value based on the
+  // constraints of the referencing fields
+  if ( !config( QStringLiteral( "AllowNULL" ) ).isValid() )
+  {
+    mWidget->setRelation( relation, relation.referencingFieldsAllowNull() );
+  }
+  else
+  {
+    mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+  }
 
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );
 }
@@ -113,13 +122,13 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 QVariant QgsRelationReferenceWidgetWrapper::value() const
 {
   if ( !mWidget )
-    return QVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
 
   const QVariantList fkeys = mWidget->foreignKeys();
 
   if ( fkeys.isEmpty() )
   {
-    return QVariant( field().type() );
+    return QgsVariantUtils::createNullVariant( field().type() );
   }
   else
   {
@@ -130,7 +139,7 @@ QVariant QgsRelationReferenceWidgetWrapper::value() const
       if ( fieldPairs.at( i ).referencingField() == field().name() )
         return fkeys.at( i );
     }
-    return QVariant( field().type() ); // should not happen
+    return QgsVariantUtils::createNullVariant( field().type() ); // should not happen
   }
 }
 
@@ -234,7 +243,7 @@ void QgsRelationReferenceWidgetWrapper::foreignKeysChanged( const QVariantList &
   if ( mBlockChanges != 0 ) // initial value is being set, we can ignore this signal
     return;
 
-  QVariant mainValue = QVariant( field().type() );
+  QVariant mainValue = QgsVariantUtils::createNullVariant( field().type() );
 
   if ( !mWidget || !mWidget->relation().isValid() )
   {

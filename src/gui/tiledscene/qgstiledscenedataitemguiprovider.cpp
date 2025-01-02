@@ -14,34 +14,48 @@
  ***************************************************************************/
 
 #include "qgstiledscenedataitemguiprovider.h"
+#include "moc_qgstiledscenedataitemguiprovider.cpp"
+#include "qgsquantizedmeshdataprovider.h"
 #include "qgstiledscenedataitems.h"
 #include "qgstiledsceneconnection.h"
 #include "qgstiledsceneconnectiondialog.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "qgsdataitemguiproviderutils.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
 
 ///@cond PRIVATE
 
-void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsTiledSceneLayerItem *layerItem = qobject_cast< QgsTiledSceneLayerItem * >( item ) )
+  if ( QgsTiledSceneLayerItem *layerItem = qobject_cast<QgsTiledSceneLayerItem *>( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [layerItem] { deleteConnection( layerItem ); } );
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+    menu->addAction( actionDuplicate );
+
+    const QList<QgsTiledSceneLayerItem *> sceneConnectionItems = QgsDataItem::filteredItems<QgsTiledSceneLayerItem>( selection );
+    QAction *actionDelete = new QAction( sceneConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [sceneConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( sceneConnectionItems, []( const QString &connectionName ) { QgsTiledSceneProviderConnection( QString() ).remove( connectionName ); }, context );
+    } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsTiledSceneRootItem *rootItem = qobject_cast< QgsTiledSceneRootItem * >( item ) )
+  if ( QgsTiledSceneRootItem *rootItem = qobject_cast<QgsTiledSceneRootItem *>( item ) )
   {
     QAction *actionNewCesium = new QAction( tr( "New Cesium 3D Tiles Connection…" ), menu );
-    connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newCesium3dTilesConnection( rootItem ); } );
+    connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newConnection( rootItem, "cesiumtiles" ); } );
     menu->addAction( actionNewCesium );
+
+    QAction *actionNewQM = new QAction( tr( "New Quantized Mesh Connection…" ), menu );
+    connect( actionNewQM, &QAction::triggered, this, [rootItem] { newConnection( rootItem, "quantizedmesh" ); } );
+    menu->addAction( actionNewQM );
 
     menu->addSeparator();
 
@@ -76,25 +90,26 @@ void QgsTiledSceneDataItemGuiProvider::editConnection( QgsDataItem *item )
   item->parent()->refreshConnections();
 }
 
-void QgsTiledSceneDataItemGuiProvider::deleteConnection( QgsDataItem *item )
+void QgsTiledSceneDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+  const QString connectionName = item->name();
+  const QgsTiledSceneProviderConnection::Data connection = QgsTiledSceneProviderConnection::connection( connectionName );
+  const QStringList connections = QgsTiledSceneProviderConnection::sTreeConnectionTiledScene->items();
 
-  QgsTiledSceneProviderConnection( QString() ).remove( item->name() );
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
+  QgsTiledSceneProviderConnection::addConnection( newConnectionName, connection );
   item->parent()->refreshConnections();
 }
 
-void QgsTiledSceneDataItemGuiProvider::newCesium3dTilesConnection( QgsDataItem *item )
+void QgsTiledSceneDataItemGuiProvider::newConnection( QgsDataItem *item, QString provider )
 {
   QgsTiledSceneConnectionDialog dlg;
   if ( !dlg.exec() )
     return;
 
   QgsTiledSceneProviderConnection::Data conn = QgsTiledSceneProviderConnection::decodedUri( dlg.connectionUri() );
-  conn.provider = QStringLiteral( "cesiumtiles" );
+  conn.provider = provider;
 
   QgsTiledSceneProviderConnection::addConnection( dlg.connectionName(), conn );
 
@@ -109,8 +124,7 @@ void QgsTiledSceneDataItemGuiProvider::saveConnections()
 
 void QgsTiledSceneDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

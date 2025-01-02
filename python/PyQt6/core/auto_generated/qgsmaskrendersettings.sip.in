@@ -1,0 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaskrendersettings.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsMaskRenderSettings
+{
+%Docstring(signature="appended")
+
+Contains settings regarding how masks are calculated and handled during a map render.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsmaskrendersettings.h"
+%End
+  public:
+
+    QgsMaskRenderSettings();
+
+    double simplifyTolerance() const;
+%Docstring
+Returns the simplification tolerance (in painter units) to use for on-the-fly simplification of mask paths while rendering.
+
+A tolerance of 0 indicates no simplification. (No simplification is the default behavior).
+
+.. note::
+
+   This property is only used when exporting to vector formats, and is ignored during raster format based rendering.
+
+.. seealso:: :py:func:`setSimplificationTolerance`
+%End
+
+    void setSimplificationTolerance( double tolerance );
+%Docstring
+Sets a simplification tolerance (in painter units) to use for on-the-fly simplification of mask paths while rendering.
+
+This will result in simpler, generalised paths.
+
+Set ``tolerance`` to 0 to disable simplification. (No simplification is the default behavior).
+
+.. note::
+
+   This property is only used when exporting to vector formats, and is ignored during raster format based rendering.
+
+.. seealso:: :py:func:`simplifyTolerance`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaskrendersettings.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

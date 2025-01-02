@@ -28,6 +28,7 @@ class QgsFeature;
 #include "qgsvectortilerenderer.h"
 #include "qgsvectortilematrixset.h"
 
+
 class QgsVectorTileRawData;
 
 /**
@@ -64,10 +65,11 @@ class CORE_EXPORT QgsVectorTileMVTDecoder
                                          const QSet< QString > *layerSubset = nullptr ) const;
 
   private:
-    vector_tile::Tile tile;
+    //! map of tiles for each source
+    QMap<QString, vector_tile::Tile> tiles;
     QgsTileXYZ mTileID;
     QgsVectorTileMatrixSet mStructure;
-    QMap<QString, int> mLayerNameToIndex;
+    QMap<QString, QMap<QString, int>> mLayerNameToIndex;
 };
 
 #endif // QGSVECTORTILEMVTDECODER_H

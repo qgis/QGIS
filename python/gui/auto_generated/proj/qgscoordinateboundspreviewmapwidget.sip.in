@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/proj/qgscoordinateboundspreviewmapwidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ A widget for showing the bounds of a rectangular region on an interactive map.
 #include "qgscoordinateboundspreviewmapwidget.h"
 %End
   public:
-
     QgsCoordinateBoundsPreviewMapWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCoordinateBoundsPreviewMapWidget.
@@ -58,5 +57,5 @@ Must be in EPSG:4326 coordinate reference system.
  *                                                                      *
  * src/gui/proj/qgscoordinateboundspreviewmapwidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -40,7 +40,7 @@ class QgsRunnableProviderCreator : public QObject, public QRunnable
                                 QString const &providerKey,
                                 QString const &dataSource,
                                 const QgsDataProvider::ProviderOptions &options,
-                                QgsDataProvider::ReadFlags flags );
+                                Qgis::DataProviderReadFlags flags );
 
     void run() override;
 
@@ -61,7 +61,7 @@ class QgsRunnableProviderCreator : public QObject, public QRunnable
     QString mProviderKey;
     QString mDataSource;
     QgsDataProvider::ProviderOptions mOptions;
-    QgsDataProvider::ReadFlags mFlags;
+    Qgis::DataProviderReadFlags mFlags;
 };
 
 #endif // QGSRUNNABLEPROVIDERCREATOR_H

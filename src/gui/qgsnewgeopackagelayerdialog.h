@@ -27,17 +27,16 @@
  * \ingroup gui
  * \brief Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers
 */
-class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
+class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
 {
     Q_OBJECT
 
   public:
-
     //! Behavior to use when an existing geopackage already exists
     enum OverwriteBehavior
     {
-      Prompt, //!< Prompt user for action
-      Overwrite, //!< Overwrite whole geopackage
+      Prompt,      //!< Prompt user for action
+      Overwrite,   //!< Overwrite whole geopackage
       AddNewLayer, //!< Keep existing contents and add new layer
     };
 
@@ -95,6 +94,8 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     void showHelp();
     void buttonBox_accepted();
     void buttonBox_rejected();
+    void moveFieldsUp();
+    void moveFieldsDown();
 
   private:
     bool apply();

@@ -251,17 +251,17 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
   return dsinfo_map;
 }
 
-static void populate_vector_vals( double *vals, size_t i,
-                                  const std::vector<double> &vals_x, const std::vector<double> &vals_y,
-                                  size_t idx, double fill_val_x, double fill_val_y )
+void MDAL::CFDataset2D::populate_vector_vals( double *vals, size_t i,
+    const std::vector<double> &vals_x, const std::vector<double> &vals_y,
+    size_t idx, double fill_val_x, double fill_val_y )
 {
   vals[2 * i] = MDAL::safeValue( vals_x[idx], fill_val_x );
   vals[2 * i + 1] = MDAL::safeValue( vals_y[idx], fill_val_y );
 }
 
-static void populate_polar_vector_vals( double *vals, size_t i,
-                                        const std::vector<double> &vals_x, const std::vector<double> &vals_y,
-                                        size_t idx, double fill_val_x, double fill_val_y, std::pair<double, double> referenceAngles )
+void MDAL::CFDataset2D::populate_polar_vector_vals( double *vals, size_t i,
+    const std::vector<double> &vals_x, const std::vector<double> &vals_y,
+    size_t idx, double fill_val_x, double fill_val_y, std::pair<double, double> referenceAngles )
 {
   double magnitude = MDAL::safeValue( vals_x[idx], fill_val_x );
   double direction = MDAL::safeValue( vals_y[idx], fill_val_y );
@@ -272,15 +272,15 @@ static void populate_polar_vector_vals( double *vals, size_t i,
   vals[2 * i + 1] = magnitude * sin( direction );
 }
 
-static void populate_scalar_vals( double *vals, size_t i,
-                                  const std::vector<double> &rawVals,
-                                  size_t idx,
-                                  double fill_val )
+void MDAL::CFDataset2D::populate_scalar_vals( double *vals, size_t i,
+    const std::vector<double> &rawVals,
+    size_t idx,
+    double fill_val )
 {
   vals[i] = MDAL::safeValue( rawVals[idx], fill_val );
 }
 
-static void fromClassificationToValue( const MDAL::Classification &classification, std::vector<double> &values, size_t classStartAt = 0 )
+void MDAL::CFDataset2D::fromClassificationToValue( const MDAL::Classification &classification, std::vector<double> &values, size_t classStartAt )
 {
   for ( size_t i = 0; i < values.size(); ++i )
   {

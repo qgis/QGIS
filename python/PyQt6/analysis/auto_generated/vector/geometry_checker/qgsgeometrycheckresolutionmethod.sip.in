@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckresolutionmethod.h *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,7 +20,6 @@ This class implements a resolution for problems detected in geometry checks.
 #include "qgsgeometrycheckresolutionmethod.h"
 %End
   public:
-
     QgsGeometryCheckResolutionMethod( int id, const QString &name, const QString &description, bool isStable = true );
 %Docstring
 Creates a new method with the specified parameters.
@@ -53,5 +52,5 @@ A human readable and translated description for this fix.
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckresolutionmethod.h *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

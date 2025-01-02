@@ -32,14 +32,14 @@
 #include <QToolButton>
 #include <QProgressBar>
 
-class TestQgsExternalStorageFileWidget: public QObject
+class TestQgsExternalStorageFileWidget : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void testLayout_data();
     void testLayout();
     void testStoring();
@@ -63,10 +63,8 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
     Q_OBJECT
 
   public:
-
     QgsTestExternalStorageStoredContent( const QString &filePath, const QString &url )
-      : QgsExternalStorageStoredContent(),
-        mUrl( filePath.endsWith( QLatin1String( "mydir" ) ) ? url + "mydir/" : url )
+      : QgsExternalStorageStoredContent(), mUrl( filePath.endsWith( QLatin1String( "mydir" ) ) ? url + "mydir/" : url )
     {}
 
     void store() override
@@ -104,15 +102,12 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
     }
 
   private:
-
     QString mUrl;
-
 };
 
 class QgsTestExternalStorage : public QgsExternalStorage
 {
   public:
-
     QString type() const override { return QStringLiteral( "test" ); }
 
     QString displayName() const override { return QStringLiteral( "Test" ); }
@@ -120,7 +115,6 @@ class QgsTestExternalStorage : public QgsExternalStorage
     static QPointer<QgsTestExternalStorageStoredContent> sCurrentStoredContent;
 
   protected:
-
     QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override
     {
       Q_UNUSED( authcfg );
@@ -283,12 +277,13 @@ void TestQgsExternalStorageFileWidget::testStoring()
   w.setUseLink( useLink );
   w.setReadOnly( false );
 
-  const QStringList fileNames = QStringList() << "myfile1.txt" << "myfile2.txt" ;
+  const QStringList fileNames = QStringList() << "myfile1.txt" << "myfile2.txt";
   for ( QString fileName : fileNames )
   {
     QVERIFY( useLink == w.mLinkLabel->isVisible() );
     QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-    if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+    if ( useLink )
+      QCOMPARE( w.mLinkEditButton->icon(), editIcon );
     QVERIFY( useLink != w.mLineEdit->isVisible() );
     QVERIFY( w.mFileWidgetButton->isVisible() );
     QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -325,7 +320,8 @@ void TestQgsExternalStorageFileWidget::testStoring()
 
     QVERIFY( useLink == w.mLinkLabel->isVisible() );
     QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-    if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+    if ( useLink )
+      QCOMPARE( w.mLinkEditButton->icon(), editIcon );
     QVERIFY( useLink != w.mLineEdit->isVisible() );
     QVERIFY( w.mFileWidgetButton->isVisible() );
     QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -369,7 +365,8 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFiles()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -418,7 +415,8 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFiles()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -466,7 +464,8 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesError()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -516,7 +515,8 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesError()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -564,7 +564,8 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesCancel()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -613,7 +614,8 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesCancel()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -640,7 +642,7 @@ void TestQgsExternalStorageFileWidget::testStoringChangeFeature()
   w.show();
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "myfield" ), QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "myfield" ), QMetaType::Type::QString ) );
 
   QgsFeature f1( fields );
   f1.setAttribute( QStringLiteral( "myfield" ), QStringLiteral( "val1" ) );
@@ -703,7 +705,8 @@ void TestQgsExternalStorageFileWidget::testStoringBadExpression()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -717,7 +720,8 @@ void TestQgsExternalStorageFileWidget::testStoringBadExpression()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -758,7 +762,8 @@ void TestQgsExternalStorageFileWidget::testStoringDirectory()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -783,7 +788,8 @@ void TestQgsExternalStorageFileWidget::testStoringDirectory()
 
   QVERIFY( useLink == w.mLinkLabel->isVisible() );
   QVERIFY( useLink == w.mLinkEditButton->isVisible() );
-  if ( useLink ) QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  if ( useLink )
+    QCOMPARE( w.mLinkEditButton->icon(), editIcon );
   QVERIFY( useLink != w.mLineEdit->isVisible() );
   QVERIFY( w.mFileWidgetButton->isVisible() );
   QVERIFY( w.mFileWidgetButton->isEnabled() );
@@ -837,11 +843,11 @@ void TestQgsExternalStorageFileWidget::testDragAndDrop()
   QVERIFY( !w.mCancelButton->isVisible() );
   QVERIFY( w.acceptDrops() );
 
-  std::unique_ptr<QDragEnterEvent> dragEvent( new QDragEnterEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  std::unique_ptr<QDragEnterEvent> dragEvent( new QDragEnterEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
   w.dragEnterEvent( dragEvent.get() );
   QVERIFY( dragEvent->isAccepted() );
 
-  std::unique_ptr<QDropEvent> dropEvent( new QDropEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  std::unique_ptr<QDropEvent> dropEvent( new QDropEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
   w.dropEvent( dropEvent.get() );
   QVERIFY( dropEvent->isAccepted() );
 

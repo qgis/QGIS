@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/qgsformannotation.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsFormAnnotation: QgsAnnotation
+class QgsFormAnnotation : QgsAnnotation
 {
 %Docstring(signature="appended")
 An annotation item that embeds a designer form showing the feature attribute
@@ -19,7 +19,6 @@ An annotation item that embeds a designer form showing the feature attribute
 #include "qgsformannotation.h"
 %End
   public:
-
     QgsFormAnnotation( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFormAnnotation.
@@ -63,7 +62,6 @@ Returns a new QgsFormAnnotation object.
 %End
 
   protected:
-
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
 
@@ -74,5 +72,5 @@ Returns a new QgsFormAnnotation object.
  *                                                                      *
  * src/gui/qgsformannotation.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

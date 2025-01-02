@@ -42,6 +42,55 @@ QgsFieldModel.JoinedFieldIsEditable.__doc__ = "``True`` if a joined field is edi
 QgsFieldModel.FieldIsWidgetEditable = QgsFieldModel.CustomRole.FieldIsWidgetEditable
 QgsFieldModel.FieldIsWidgetEditable.is_monkey_patched = True
 QgsFieldModel.FieldIsWidgetEditable.__doc__ = "``True`` if a is editable from the widget"
-QgsFieldModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsFieldModel.FieldRoles\n\n.. versionadded:: 3.36\n\n" + '* ``FieldNameRole``: ' + QgsFieldModel.CustomRole.FieldName.__doc__ + '\n' + '* ``FieldIndexRole``: ' + QgsFieldModel.CustomRole.FieldIndex.__doc__ + '\n' + '* ``ExpressionRole``: ' + QgsFieldModel.CustomRole.Expression.__doc__ + '\n' + '* ``IsExpressionRole``: ' + QgsFieldModel.CustomRole.IsExpression.__doc__ + '\n' + '* ``ExpressionValidityRole``: ' + QgsFieldModel.CustomRole.ExpressionValidity.__doc__ + '\n' + '* ``FieldTypeRole``: ' + QgsFieldModel.CustomRole.FieldType.__doc__ + '\n' + '* ``FieldOriginRole``: ' + QgsFieldModel.CustomRole.FieldOrigin.__doc__ + '\n' + '* ``IsEmptyRole``: ' + QgsFieldModel.CustomRole.IsEmpty.__doc__ + '\n' + '* ``EditorWidgetType``: ' + QgsFieldModel.CustomRole.EditorWidgetType.__doc__ + '\n' + '* ``JoinedFieldIsEditable``: ' + QgsFieldModel.CustomRole.JoinedFieldIsEditable.__doc__ + '\n' + '* ``FieldIsWidgetEditable``: ' + QgsFieldModel.CustomRole.FieldIsWidgetEditable.__doc__
+QgsFieldModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsFieldModel.FieldRoles
+
+.. versionadded:: 3.36
+
+* ``FieldName``: Return field name if index corresponds to a field
+
+  Available as ``QgsFieldModel.FieldNameRole`` in older QGIS releases.
+
+* ``FieldIndex``: Return field index if index corresponds to a field
+
+  Available as ``QgsFieldModel.FieldIndexRole`` in older QGIS releases.
+
+* ``Expression``: Return field name or expression
+
+  Available as ``QgsFieldModel.ExpressionRole`` in older QGIS releases.
+
+* ``IsExpression``: Return if index corresponds to an expression
+
+  Available as ``QgsFieldModel.IsExpressionRole`` in older QGIS releases.
+
+* ``ExpressionValidity``: Return if expression is valid or not
+
+  Available as ``QgsFieldModel.ExpressionValidityRole`` in older QGIS releases.
+
+* ``FieldType``: Return the field type (if a field, return QVariant if expression)
+
+  Available as ``QgsFieldModel.FieldTypeRole`` in older QGIS releases.
+
+* ``FieldOrigin``: Return the field origin (if a field, returns QVariant if expression)
+
+  Available as ``QgsFieldModel.FieldOriginRole`` in older QGIS releases.
+
+* ``IsEmpty``: Return if the index corresponds to the empty value
+
+  Available as ``QgsFieldModel.IsEmptyRole`` in older QGIS releases.
+
+* ``EditorWidgetType``: Editor widget type
+* ``JoinedFieldIsEditable``: ``True`` if a joined field is editable (returns QVariant if not a joined field)
+* ``FieldIsWidgetEditable``: ``True`` if a is editable from the widget
+
+"""
 # --
 QgsFieldModel.CustomRole.baseClass = QgsFieldModel
+try:
+    QgsFieldModel.fieldToolTip = staticmethod(QgsFieldModel.fieldToolTip)
+    QgsFieldModel.fieldToolTipExtended = staticmethod(QgsFieldModel.fieldToolTipExtended)
+except (NameError, AttributeError):
+    pass

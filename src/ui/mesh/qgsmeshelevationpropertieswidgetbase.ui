@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Raster Elevation Properties</string>
+   <string>Mesh Elevation Properties</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,2">
    <property name="leftMargin">
@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QLabel" name="label_9">
+    <widget class="QLabel" name="mConfigurationLabel">
      <property name="text">
       <string>Configuration</string>
      </property>
@@ -37,7 +37,7 @@
     <widget class="QComboBox" name="mModeComboBox"/>
    </item>
    <item row="2" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_3">
+    <widget class="QgsCollapsibleGroupBox" name="mProfileChartGroupBox">
      <property name="title">
       <string>Profile Chart Appearance</string>
      </property>
@@ -46,7 +46,7 @@
        <widget class="QComboBox" name="mStyleComboBox"/>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="mStyleLabel">
         <property name="text">
          <string>Style</string>
         </property>
@@ -64,7 +64,7 @@
          <number>0</number>
         </property>
         <widget class="QWidget" name="mPageLine">
-         <layout class="QGridLayout" name="gridLayout" columnstretch="1,0">
+         <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -78,7 +78,7 @@
            <number>0</number>
           </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="mLineStyleLabel">
             <property name="text">
              <string>Line style</string>
             </property>
@@ -114,14 +114,14 @@
            <number>0</number>
           </property>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="mLimitLabel">
             <property name="text">
              <string>Limit</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_7">
+           <widget class="QLabel" name="mFillStyleLabel">
             <property name="text">
              <string>Fill style</string>
             </property>
@@ -196,14 +196,14 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,2">
        <item row="1" column="0">
-        <widget class="QLabel" name="label_4">
+        <widget class="QLabel" name="mScaleLabel">
          <property name="text">
           <string>Scale</string>
          </property>
         </widget>
        </item>
        <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_11">
+        <widget class="QLabel" name="mFromVerticesLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -232,7 +232,7 @@
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="label_10">
+        <widget class="QLabel" name="mOffsetLabel">
          <property name="text">
           <string>Offset</string>
          </property>
@@ -244,7 +244,7 @@
           <number>6</number>
          </property>
          <property name="minimum">
-          <double>0.000000000000000</double>
+          <double>-99999999999.000000000000000</double>
          </property>
          <property name="maximum">
           <double>99999999999.000000000000000</double>
@@ -268,7 +268,7 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,2">
        <item row="1" column="0">
-        <widget class="QLabel" name="label_13">
+        <widget class="QLabel" name="mLowerLabel">
          <property name="text">
           <string>Lower</string>
          </property>
@@ -278,7 +278,7 @@
         <widget class="QComboBox" name="mLimitsComboBox"/>
        </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="label_14">
+        <widget class="QLabel" name="mUpperLabel">
          <property name="text">
           <string>Upper</string>
          </property>
@@ -318,7 +318,7 @@
         </widget>
        </item>
        <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_15">
+        <widget class="QLabel" name="mFixedRangeLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -404,6 +404,12 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>

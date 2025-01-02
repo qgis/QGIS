@@ -133,16 +133,16 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
   // if there's already a simplification method specified via the context, we respect that. Otherwise, we fall back
   // to the layer's individual setting
-  if ( renderContext()->vectorSimplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification )
+  if ( renderContext()->vectorSimplifyMethod().simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) )
   {
     mSimplifyMethod = renderContext()->vectorSimplifyMethod();
-    mSimplifyGeometry = renderContext()->vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::GeometrySimplification ||
-                        renderContext()->vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::FullSimplification;
+    mSimplifyGeometry = renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ||
+                        renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::FullSimplification;
   }
   else
   {
     mSimplifyMethod = layer->simplifyMethod();
-    mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( *renderContext(), QgsVectorSimplifyMethod::GeometrySimplification );
+    mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( *renderContext(), Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
   }
 
   mVertexMarkerOnlyForSelection = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected->value();
@@ -225,6 +225,14 @@ QgsFeedback *QgsVectorLayerRenderer::feedback() const
 bool QgsVectorLayerRenderer::forceRasterRender() const
 {
   return mForceRasterRender;
+}
+
+Qgis::MapLayerRendererFlags QgsVectorLayerRenderer::flags() const
+{
+  Qgis::MapLayerRendererFlags res;
+  if ( mRenderer && mRenderer->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::MapLayerRendererFlag::AffectsLabeling );
+  return res;
 }
 
 bool QgsVectorLayerRenderer::render()
@@ -346,6 +354,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
     if ( mDiagramProvider )
       mDiagramProvider->setClipFeatureGeometry( mLabelClipFeatureGeom );
   }
+
   renderer->modifyRequestExtent( requestExtent, context );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
@@ -442,14 +451,14 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
     else
     {
       QgsVectorSimplifyMethod vectorMethod;
-      vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+      vectorMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::NoSimplification );
       context.setVectorSimplifyMethod( vectorMethod );
     }
   }
   else
   {
     QgsVectorSimplifyMethod vectorMethod;
-    vectorMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+    vectorMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::NoSimplification );
     context.setVectorSimplifyMethod( vectorMethod );
   }
 

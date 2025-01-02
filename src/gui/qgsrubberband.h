@@ -36,10 +36,10 @@ class QPaintEvent;
 class QgsSymbol;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsrubberband.h>
-% End
+//%End
 #endif
 
 /**
@@ -73,7 +73,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     SIP_END
 #endif
   public:
-
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
     Q_PROPERTY( QColor strokeColor READ strokeColor WRITE setStrokeColor )
     Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
@@ -187,7 +186,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets the width of the line. Stroke width for polygon.
      *  \param width The width for any lines painted for this rubberband
      */
-    void setWidth( int width );
+    void setWidth( double width );
 
     /**
      * Returns the current width of the line or stroke width for polygon.
@@ -218,12 +217,12 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Sets the size of the point icons
      */
-    void setIconSize( int iconSize );
+    void setIconSize( double iconSize );
 
     /**
      * Returns the current icon size of the point icons.
      */
-    int iconSize() const { return mIconSize; }
+    double iconSize() const { return mIconSize; }
 
     /**
      * Sets the style of the line
@@ -419,7 +418,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   protected:
-
     /**
      * Paints the rubber band in response to an update event.
      *  \param p The QPainter object
@@ -449,25 +447,24 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     QPen mSecondaryPen;
 
     //! The size of the icon for points.
-    int mIconSize = 5;
+    double mIconSize = 5;
 
     //! Icon to be shown.
     IconType mIconType = ICON_CIRCLE;
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 
-    std::unique_ptr< QgsSymbol > mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 
     /**
      * Nested lists used for multitypes
      */
-    QVector< QVector< QVector <QgsPointXY> > > mPoints;
+    QVector<QVector<QVector<QgsPointXY>>> mPoints;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Polygon;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
 
     QgsRubberBand();
-
 };
 
 #endif

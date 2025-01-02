@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsmultilinestring.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,6 +25,23 @@ Multi line string geometry collection.
 Constructor for an empty multilinestring geometry.
 %End
 
+    QgsMultiLineString( const QList< QgsLineString > &linestrings ) /HoldGIL/;
+%Docstring
+Constructor for a multilinestring containing the specified ``linestrings``.
+
+The ``linestrings`` will be internally cloned.
+
+.. versionadded:: 3.38
+%End
+
+    QgsMultiLineString( const QList< QgsLineString * > &linestrings /Transfer/ ) /HoldGIL/;
+%Docstring
+Constructor for a multilinestring containing the specified ``linestrings``.
+
+Ownership of the ``linestrings`` will be transferred to the multilinestring.
+
+.. versionadded:: 3.38
+%End
 
 
     SIP_PYOBJECT lineStringN( int index ) /TypeHint="QgsLineString"/;
@@ -62,7 +79,10 @@ Returns the line string with the specified ``index``.
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
+    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ ) final;
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
+    virtual QgsMultiLineString *simplifyByDistance( double tolerance ) const /Factory/;
 
 
     virtual QgsMultiCurve *toCurveType() const /Factory/;
@@ -106,5 +126,5 @@ the measure between the supplied ``start`` and ``end`` values.
  *                                                                      *
  * src/core/geometry/qgsmultilinestring.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

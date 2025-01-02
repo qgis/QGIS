@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsrelationreferencesearchwidgetwrapper.h      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ Wraps a relation reference search widget.
 #include "qgsrelationreferencesearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsRelationReferenceSearchWidgetWrapper
@@ -70,12 +69,13 @@ Returns the default flags (equalTo)
 
   public slots:
 
- void onValueChanged( const QVariant &value ) /Deprecated/;
+ void onValueChanged( const QVariant &value ) /Deprecated="Since 3.10. Made private."/;
 %Docstring
 Called when current value of search widget changes
 
-.. deprecated:: QGIS 3.10
-   made private
+.. deprecated:: 3.10
+
+   Made private.
 %End
 
   protected slots:
@@ -89,5 +89,5 @@ Called when current value of search widget changes
  *                                                                      *
  * src/gui/editorwidgets/qgsrelationreferencesearchwidgetwrapper.h      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

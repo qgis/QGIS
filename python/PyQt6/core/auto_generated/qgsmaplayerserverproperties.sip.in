@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayerserverproperties.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -270,6 +270,15 @@ Sets the ``title`` of the layer used by QGIS Server in GetCapabilities request.
 .. versionadded:: 3.38
 %End
 
+    void setWfsTitle( const QString &title );
+%Docstring
+Sets the ``title`` of the layer used by QGIS Server in WFS GetCapabilities request.
+
+.. seealso:: :py:func:`title`
+
+.. versionadded:: 3.40
+%End
+
     QString title() const;
 %Docstring
 Returns the title of the layer used by QGIS Server in GetCapabilities request.
@@ -277,6 +286,16 @@ Returns the title of the layer used by QGIS Server in GetCapabilities request.
 .. seealso:: :py:func:`setTitle`
 
 .. versionadded:: 3.38
+%End
+
+    QString wfsTitle() const;
+%Docstring
+Returns the optional WFS title if set or the title of the layer used by
+QGIS WFS in GetCapabilities request.
+
+.. seealso:: :py:func:`setWfsTitle`
+
+.. versionadded:: 3.40
 %End
 
     void setAbstract( const QString &abstract );
@@ -426,5 +445,5 @@ class QgsVectorLayerServerProperties: QgsMapLayerServerProperties
  *                                                                      *
  * src/core/qgsmaplayerserverproperties.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

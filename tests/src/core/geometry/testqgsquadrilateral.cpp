@@ -22,7 +22,7 @@
 
 #include "testgeometryutils.h"
 
-class TestQgsQuadrilateral: public QObject
+class TestQgsQuadrilateral : public QObject
 {
     Q_OBJECT
   private slots:
@@ -44,8 +44,7 @@ class TestQgsQuadrilateral: public QObject
 
 void TestQgsQuadrilateral::constructor()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                         QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
   QVERIFY( quad.isValid() );
 
   QgsPointSequence pts = quad.points();
@@ -70,8 +69,7 @@ void TestQgsQuadrilateral::constructorEmpty()
 
 void TestQgsQuadrilateral::constructorWhenColinear()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                         QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
   QVERIFY( !quad.isValid() );
 
   QgsPointSequence pts = quad.points();
@@ -81,8 +79,7 @@ void TestQgsQuadrilateral::constructorWhenColinear()
   QVERIFY( pts.at( 2 ).isEmpty() );
   QVERIFY( pts.at( 3 ).isEmpty() );
 
-  QgsQuadrilateral quadXY( QgsPointXY( 0, 0 ), QgsPointXY( 0, 5 ),
-                           QgsPointXY( 0, 10 ), QgsPointXY( 10, 10 ) );
+  QgsQuadrilateral quadXY( QgsPointXY( 0, 0 ), QgsPointXY( 0, 5 ), QgsPointXY( 0, 10 ), QgsPointXY( 10, 10 ) );
   QVERIFY( !quadXY.isValid() );
 
   pts = quadXY.points();
@@ -95,8 +92,7 @@ void TestQgsQuadrilateral::constructorWhenColinear()
 
 void TestQgsQuadrilateral::constructorWhenAntiParallelogram()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ),
-                         QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
   QVERIFY( !quad.isValid() );
 
   QgsPointSequence pts = quad.points();
@@ -105,8 +101,7 @@ void TestQgsQuadrilateral::constructorWhenAntiParallelogram()
   QVERIFY( pts.at( 2 ).isEmpty() );
   QVERIFY( pts.at( 3 ).isEmpty() );
 
-  QgsQuadrilateral quadXY( QgsPointXY( 0, 0 ), QgsPointXY( 5, 5 ),
-                           QgsPointXY( 5, 0 ), QgsPointXY( 0, 5 ) );
+  QgsQuadrilateral quadXY( QgsPointXY( 0, 0 ), QgsPointXY( 5, 5 ), QgsPointXY( 5, 0 ), QgsPointXY( 0, 5 ) );
   QVERIFY( !quadXY.isValid() );
 
   pts = quadXY.points();
@@ -119,264 +114,168 @@ void TestQgsQuadrilateral::constructorWhenAntiParallelogram()
 
 void TestQgsQuadrilateral::fromRectangle()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                         QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
 
-  QCOMPARE( QgsQuadrilateral::fromRectangle( QgsRectangle( QgsPointXY( 0, 0 ), QgsPointXY( 0, 0 ) ) ),
-            QgsQuadrilateral() );
-  QCOMPARE( QgsQuadrilateral::fromRectangle( QgsRectangle( QgsPointXY( 0, 0 ), QgsPointXY( 5, 5 ) ) ),
-            quad ) ;
-  QCOMPARE( QgsQuadrilateral::fromRectangle( QgsRectangle( QgsPointXY( 5, 5 ), QgsPointXY( 0, 0 ) ) ),
-            quad ) ;
+  QCOMPARE( QgsQuadrilateral::fromRectangle( QgsRectangle( QgsPointXY( 0, 0 ), QgsPointXY( 0, 0 ) ) ), QgsQuadrilateral() );
+  QCOMPARE( QgsQuadrilateral::fromRectangle( QgsRectangle( QgsPointXY( 0, 0 ), QgsPointXY( 5, 5 ) ) ), quad );
+  QCOMPARE( QgsQuadrilateral::fromRectangle( QgsRectangle( QgsPointXY( 5, 5 ), QgsPointXY( 0, 0 ) ) ), quad );
 }
 
 void TestQgsQuadrilateral::rectangleFromExtent()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                         QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
-  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ),
-                          QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
-  QgsQuadrilateral quadM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ),
-                          QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ),
-                          QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ),
-                          QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointM ) );
-  QgsQuadrilateral quadZM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ),
-                           QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ),
-                           QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ),
-                           QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointZM ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
+  QgsQuadrilateral quadM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointM ) );
+  QgsQuadrilateral quadZM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointZM ) );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ) ),
-            QgsQuadrilateral() );
-  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ) ),
-            QgsQuadrilateral() );
+  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ) ), QgsQuadrilateral() );
+  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ) ), QgsQuadrilateral() );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ) ),
-            quad );
-  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ),
-            quad );
+  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ) ), quad );
+  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ), quad );
   // Z
-  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0, 10 ), QgsPoint( 5, 5 ) ),
-            quadZ );
-  QVERIFY( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10 ) )
-           != quadZ );
+  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0, 10 ), QgsPoint( 5, 5 ) ), quadZ );
+  QVERIFY( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10 ) ) != quadZ );
   QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10 ) ),
             quad ); // Z and M are only taken from the first point
   // M
-  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ) ),
-            quadM );
-  QVERIFY( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ) )
-           != quadM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ) ), quadM );
+  QVERIFY( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ) ) != quadM );
   QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10 ) ),
             quad ); // Z and M are only taken from the first point
   // ZM
-  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ) ),
-            quadZM );
-  QVERIFY( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20 ) )
-           != quadZM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ) ), quadZM );
+  QVERIFY( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20 ) ) != quadZM );
   QCOMPARE( QgsQuadrilateral::rectangleFromExtent( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20 ) ),
             quad ); // Z and M are only taken from the first point
 }
 
 void TestQgsQuadrilateral::rectangleFromCenterPoint()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                         QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
-  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ),
-                          QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
-  QgsQuadrilateral quadM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ),
-                          QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ),
-                          QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ),
-                          QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointM ) );
-  QgsQuadrilateral quadZM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ),
-                           QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ),
-                           QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ),
-                           QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointZM ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
+  QgsQuadrilateral quadM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointM ) );
+  QgsQuadrilateral quadZM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointZM ) );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 2.5, 2.5 ) ),
-            QgsQuadrilateral() ) ;
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 2.5, 2.5 ) ), QgsQuadrilateral() );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 5, 5 ) ),
-            quad ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 5, 0 ) ),
-            quad ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 0, 5 ) ),
-            quad ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 0, 0 ) ),
-            quad ) ;
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 5, 5 ) ), quad );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 5, 0 ) ), quad );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 0, 5 ) ), quad );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 0, 0 ) ), quad );
 
   // Z
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 5, 5 ) ),
-            quadZ ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 5, 0 ) ),
-            quadZ ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 0, 5 ) ),
-            quadZ ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 0, 0 ) ),
-            quadZ ) ;
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 5, 5 ) ), quadZ );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 5, 0 ) ), quadZ );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 0, 5 ) ), quadZ );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 0, 0 ) ), quadZ );
   QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 0, 0, 10 ) ),
-            quad ) ;  // Z and M are only taken from the first point
+            quad ); // Z and M are only taken from the first point
   // M
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ) ),
-            quadM ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 0 ) ),
-            quadM ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5 ) ),
-            quadM ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 0 ) ),
-            quadM ) ;
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ) ), quadM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 0 ) ), quadM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5 ) ), quadM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 0 ) ), quadM );
   QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ) ),
-            quad ) ; // Z and M are only taken from the first point
+            quad ); // Z and M are only taken from the first point
 
   // ZM
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ) ),
-            quadM ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 0 ) ),
-            quadM ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5 ) ),
-            quadM ) ;
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 0 ) ),
-            quadM ) ;
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ) ), quadM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 0 ) ), quadM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5 ) ), quadM );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 0 ) ), quadM );
   QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ) ),
-            quad ) ; // Z and M are only taken from the first point
-
+            quad ); // Z and M are only taken from the first point
 }
 
 void TestQgsQuadrilateral::rectangleFrom3points()
 {
-  QgsQuadrilateral rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                                         QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsQuadrilateral::Distance ),
-            QgsQuadrilateral() );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsQuadrilateral::Projected ),
-            QgsQuadrilateral() );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsQuadrilateral::Distance ), QgsQuadrilateral() );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsQuadrilateral::Projected ), QgsQuadrilateral() );
 
   // Z
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZ (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZ (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5, 10 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZ (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString Z (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString Z (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5, 10 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString Z (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZ (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZ (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4, 10 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZ (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 4, 10 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZ (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5 ), QgsPoint( 0, 5, 5 ), QgsPoint( 5, 5, 0 ), QgsQuadrilateral::Projected ).toString( 2 ),
-            QString( "Quadrilateral (Point 1: PointZ (0 0 5), Point 2: PointZ (0 5 5), Point 3: PointZ (5 5 0), Point 4: PointZ (5 0 0))" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5 ), QgsPoint( 0, 5, 5 ), QgsPoint( 5, 5, 10 ), QgsQuadrilateral::Projected ).toString( 2 ),
-            QString( "Quadrilateral (Point 1: PointZ (0 0 5), Point 2: PointZ (0 5 5), Point 3: PointZ (5 5 10), Point 4: PointZ (5 0 10))" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString Z (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString Z (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4, 10 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString Z (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 4, 10 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString Z (0 0 10, 0 5 10, 5 5 10, 5 0 10, 0 0 10)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5 ), QgsPoint( 0, 5, 5 ), QgsPoint( 5, 5, 0 ), QgsQuadrilateral::Projected ).toString( 2 ), QString( "Quadrilateral (Point 1: Point Z (0 0 5), Point 2: Point Z (0 5 5), Point 3: Point Z (5 5 0), Point 4: Point Z (5 0 0))" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5 ), QgsPoint( 0, 5, 5 ), QgsPoint( 5, 5, 10 ), QgsQuadrilateral::Projected ).toString( 2 ), QString( "Quadrilateral (Point 1: Point Z (0 0 5), Point 2: Point Z (0 5 5), Point 3: Point Z (5 5 10), Point 4: Point Z (5 0 10))" ) );
 
   // M
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringM (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringM (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringM (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString M (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString M (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString M (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringM (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringM (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringM (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringM (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString M (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString M (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString M (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString M (0 0 20, 0 5 20, 5 5 20, 5 0 20, 0 0 20)" ) );
   QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5, 10, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 5, 10, Qgis::WkbType::PointM ), QgsPoint( 5, 5, 0, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Projected ).toString( 2 ),
-            QString( "Quadrilateral (Point 1: PointM (0 0 10), Point 2: PointM (0 5 10), Point 3: PointM (5 5 10), Point 4: PointM (5 0 10))" ) ); // The first M is taken
+            QString( "Quadrilateral (Point 1: Point M (0 0 10), Point 2: Point M (0 5 10), Point 3: Point M (5 5 10), Point 4: Point M (5 0 10))" ) ); // The first M is taken
   QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5, 10, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 5, 10, Qgis::WkbType::PointM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ), QgsQuadrilateral::Projected ).toString( 2 ),
-            QString( "Quadrilateral (Point 1: PointM (0 0 10), Point 2: PointM (0 5 10), Point 3: PointM (5 5 10), Point 4: PointM (5 0 10))" ) ); // The first M is taken
+            QString( "Quadrilateral (Point 1: Point M (0 0 10), Point 2: Point M (0 5 10), Point 3: Point M (5 5 10), Point 4: Point M (5 0 10))" ) ); // The first M is taken
 
   // ZM
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString ZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString ZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Distance ).toLineString()->asWkt( 0 ), QString( "LineString ZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
 
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ),
-            QString( "LineStringZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString ZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString ZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString ZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 4, 10, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Projected ).toLineString()->asWkt( 0 ), QString( "LineString ZM (0 0 10 20, 0 5 10 20, 5 5 10 20, 5 0 10 20, 0 0 10 20)" ) );
   QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5, 10, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 5, 10, Qgis::WkbType::PointZM ), QgsPoint( 5, 5, 0, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Projected ).toString( 2 ),
-            QString( "Quadrilateral (Point 1: PointZM (0 0 5 10), Point 2: PointZM (0 5 5 10), Point 3: PointZM (5 5 0 10), Point 4: PointZM (5 0 0 10))" ) ); // The first M is taken
+            QString( "Quadrilateral (Point 1: Point ZM (0 0 5 10), Point 2: Point ZM (0 5 5 10), Point 3: Point ZM (5 5 0 10), Point 4: Point ZM (5 0 0 10))" ) ); // The first M is taken
   QCOMPARE( QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 5, 10, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 5, 10, Qgis::WkbType::PointZM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ), QgsQuadrilateral::Projected ).toString( 2 ),
-            QString( "Quadrilateral (Point 1: PointZM (0 0 5 10), Point 2: PointZM (0 5 5 10), Point 3: PointZM (5 5 10 10), Point 4: PointZM (5 0 10 10))" ) ); // The first M is taken
-
+            QString( "Quadrilateral (Point 1: Point ZM (0 0 5 10), Point 2: Point ZM (0 5 5 10), Point 3: Point ZM (5 5 10 10), Point 4: Point ZM (5 0 10 10))" ) ); // The first M is taken
 }
 
 void TestQgsQuadrilateral::squareFromDiagonal()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                         QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
-  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ),
-                          QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
-  QgsQuadrilateral quadM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ),
-                          QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointM ) );
-  QgsQuadrilateral quadZM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ),
-                           QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointZM ) );
-  QgsQuadrilateral quadInv( QgsPoint( 5, 5 ), QgsPoint( 5, 0 ),
-                            QgsPoint( 0, 0 ), QgsPoint( 0, 5 ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
+  QgsQuadrilateral quadM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointM ) );
+  QgsQuadrilateral quadZM( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 0, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 0, 10, 20, Qgis::WkbType::PointZM ) );
+  QgsQuadrilateral quadInv( QgsPoint( 5, 5 ), QgsPoint( 5, 0 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ) );
 
-  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ) ),
-            QgsQuadrilateral() );
-  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ) ),
-            quad );
-  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) )
-           != quad );
+  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ) ), QgsQuadrilateral() );
+  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ) ), quad );
+  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ) != quad );
 
   QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ).equals( quadInv, 1E-8 ) );
 
   // Z
-  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0, 10 ), QgsPoint( 5, 5 ) ),
-            quadZ );
-  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10 ) )
-           != quadZ );
+  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0, 10 ), QgsPoint( 5, 5 ) ), quadZ );
+  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10 ) ) != quadZ );
   QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10 ) ),
             quad ); // Z and M are only taken from the first point
   // M
-  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ) ),
-            quadM );
-  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ) )
-           != quadM );
+  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointM ), QgsPoint( 5, 5 ) ), quadM );
+  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ) ) != quadM );
   QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointM ) ),
             quad ); // Z and M are only taken from the first point
   // ZM
-  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ) ),
-            quadZM );
-  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ) )
-           != quadZM );
+  QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0, 10, 20, Qgis::WkbType::PointZM ), QgsPoint( 5, 5 ) ), quadZM );
+  QVERIFY( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ) ) != quadZM );
   QCOMPARE( QgsQuadrilateral::squareFromDiagonal( QgsPoint( 0, 0 ), QgsPoint( 5, 5, 10, 20, Qgis::WkbType::PointZM ) ),
             quad ); // Z and M are only taken from the first point
 }
 
 void TestQgsQuadrilateral::setPoint()
 {
-  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                         QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral quad( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
 
   QVERIFY( quad.setPoint( QgsPoint( -1, -1 ), QgsQuadrilateral::Point1 ) );
   QVERIFY( quad.setPoint( QgsPoint( -1, 6 ), QgsQuadrilateral::Point2 ) );
@@ -440,10 +339,8 @@ void TestQgsQuadrilateral::equals()
   quad2 = QgsQuadrilateral( QgsPoint( 0.01, 0.01, 0.01 ), QgsPoint( 0.01, 5.01, 0 ), QgsPoint( 5.01, 5.01, -0.01 ), QgsPoint( 5.01, 0.01, 0.04 ) );
   QVERIFY( quad1.equals( quad2, 1e-1 ) );
 
-  quad1 = QgsQuadrilateral( QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 0, 5, 0, 1 ),
-                            QgsPoint( Qgis::WkbType::PointM, 5, 5, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 5, 0, 0, 1 ) );
-  quad2 = QgsQuadrilateral( QgsPoint( Qgis::WkbType::PointM, 0.01, 0.01, 0, 1.01 ), QgsPoint( Qgis::WkbType::PointM, 0.01, 5.01, 0, 1.01 ),
-                            QgsPoint( Qgis::WkbType::PointM, 5.01, 5.01, 0, 1.01 ), QgsPoint( Qgis::WkbType::PointM, 5.01, 0.01, 0, 1.01 ) );
+  quad1 = QgsQuadrilateral( QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 0, 5, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 5, 5, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 5, 0, 0, 1 ) );
+  quad2 = QgsQuadrilateral( QgsPoint( Qgis::WkbType::PointM, 0.01, 0.01, 0, 1.01 ), QgsPoint( Qgis::WkbType::PointM, 0.01, 5.01, 0, 1.01 ), QgsPoint( Qgis::WkbType::PointM, 5.01, 5.01, 0, 1.01 ), QgsPoint( Qgis::WkbType::PointM, 5.01, 0.01, 0, 1.01 ) );
   QVERIFY( quad1.equals( quad2, 1e-1 ) );
 }
 
@@ -452,20 +349,17 @@ void TestQgsQuadrilateral::areaPerimeter()
   QCOMPARE( QgsQuadrilateral().area(), 0.0 );
   QCOMPARE( QgsQuadrilateral().perimeter(), 0.0 );
 
-  QgsQuadrilateral quad = QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ),
-                          QgsQuadrilateral::Projected );
+  QgsQuadrilateral quad = QgsQuadrilateral::rectangleFrom3Points( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5 ), QgsPoint( 5, 4 ), QgsQuadrilateral::Projected );
   QVERIFY( qgsDoubleNear( quad.area(), 25.0 ) );
   QVERIFY( qgsDoubleNear( quad.perimeter(), 20 ) );
 }
 
 void TestQgsQuadrilateral::toString()
 {
-  QCOMPARE( QgsQuadrilateral( ).toString(), QString( "Empty" ) );
+  QCOMPARE( QgsQuadrilateral().toString(), QString( "Empty" ) );
   QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 2.5, 2.5 ) ).toString(), QString( "Empty" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 5, 0 ) ).toString(),
-            QString( "Quadrilateral (Point 1: Point (0 0), Point 2: Point (0 5), Point 3: Point (5 5), Point 4: Point (5 0))" ) );
-  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 5, 0 ) ).toString(),
-            QString( "Quadrilateral (Point 1: PointZ (0 0 10), Point 2: PointZ (0 5 10), Point 3: PointZ (5 5 10), Point 4: PointZ (5 0 10))" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5 ), QgsPoint( 5, 0 ) ).toString(), QString( "Quadrilateral (Point 1: Point (0 0), Point 2: Point (0 5), Point 3: Point (5 5), Point 4: Point (5 0))" ) );
+  QCOMPARE( QgsQuadrilateral::rectangleFromCenterPoint( QgsPoint( 2.5, 2.5, 10 ), QgsPoint( 5, 0 ) ).toString(), QString( "Quadrilateral (Point 1: Point Z (0 0 10), Point 2: Point Z (0 5 10), Point 3: Point Z (5 5 10), Point 4: Point Z (5 0 10))" ) );
 }
 
 void TestQgsQuadrilateral::toPolygonToLineString()
@@ -476,10 +370,8 @@ void TestQgsQuadrilateral::toPolygonToLineString()
 
   QgsLineString ext, extZ;
   QgsPolygon polyg, polygZ;
-  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ),
-                          QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
-  quad = QgsQuadrilateral( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ),
-                           QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
+  QgsQuadrilateral quadZ( QgsPoint( 0, 0, 10 ), QgsPoint( 0, 5, 10 ), QgsPoint( 5, 5, 10 ), QgsPoint( 5, 0, 10 ) );
+  quad = QgsQuadrilateral( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ), QgsPoint( 5, 0 ) );
 
   ext.fromWkt( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" );
   QCOMPARE( quad.toLineString()->asWkt(), ext.asWkt() );

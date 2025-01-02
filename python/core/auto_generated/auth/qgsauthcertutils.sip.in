@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/auth/qgsauthcertutils.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -343,5 +343,5 @@ expiration and effective dates, optionally trusts the root CA
  *                                                                      *
  * src/core/auth/qgsauthcertutils.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

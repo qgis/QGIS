@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsinterval.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -95,7 +95,7 @@ otherwise it will be calculated using the average year length (31557600 seconds)
 Sets the interval duration in years.
 
 Replaces the interval size and changes the original interval unit
-and duration, :py:func:`originalDuration` and \see originalUnit().
+and duration, :py:func:`originalDuration` and :py:func:`originalUnit`.
 
 Changes the original unit to :py:class:`QgsUnitTypes`.TemporalYears
 
@@ -121,7 +121,7 @@ a month consists of exactly 30 days.
 Sets the interval duration in months.
 
 Replaces the interval size and changes the original interval unit
-and duration, :py:func:`originalDuration` and \see originalUnit().
+and duration, :py:func:`originalDuration` and :py:func:`originalUnit`.
 
 Changes the original unit to :py:class:`QgsUnitTypes`.TemporalMonths
 
@@ -146,7 +146,7 @@ otherwise it will be calculated using the QgsInterval.WEEKS constant.
 Sets the interval duration in weeks.
 
 Replaces the interval size and changes the original interval unit
-and duration, :py:func:`originalDuration` and \see originalUnit().
+and duration, :py:func:`originalDuration` and :py:func:`originalUnit`.
 
 Changes the original unit to :py:class:`QgsUnitTypes`.TemporalWeeks
 
@@ -171,7 +171,7 @@ otherwise it will be calculated using the QgsInterval.DAY constant.
 Sets the interval duration in days.
 
 Replaces the interval size and changes the original interval unit
-and duration, :py:func:`originalDuration` and \see originalUnit().
+and duration, :py:func:`originalDuration` and :py:func:`originalUnit`.
 
 Changes the original unit to :py:class:`QgsUnitTypes`.TemporalDays
 
@@ -196,7 +196,7 @@ otherwise it will be calculated using the QgsInterval.HOUR constant.
 Sets the interval duration in hours.
 
 Replaces the interval size and changes the original interval unit
-and duration, :py:func:`originalDuration` and \see originalUnit().
+and duration, :py:func:`originalDuration` and :py:func:`originalUnit`.
 
 The original unit to :py:class:`QgsUnitTypes`.TemporalHours
 
@@ -221,7 +221,7 @@ otherwise it will be calculated using the QgsInterval.MINUTE constant.
 Sets the interval duration in minutes.
 
 Replaces the interval size and changes the original interval unit
-and duration, :py:func:`originalDuration` and \see originalUnit().
+and duration, :py:func:`originalDuration` and :py:func:`originalUnit`.
 
 Changes the original unit to :py:class:`QgsUnitTypes`.TemporalMinutes
 
@@ -242,7 +242,7 @@ Returns the interval duration in seconds.
 Sets the interval duration in seconds.
 
 Replaces the interval size and changes the original interval unit
-and duration, :py:func:`originalDuration` and \see originalUnit().
+and duration, :py:func:`originalDuration` and :py:func:`originalUnit`.
 
 Changes the original unit to :py:class:`QgsUnitTypes`.TemporalSeconds
 
@@ -274,7 +274,7 @@ Returns the original interval duration.
 This original interval duration can be updated through calling
 QgsInterval setter methods.
 
-.. seealso:: :py:func:`originalUnit`
+.. seealso:: :py:func:`originalUnit` for the corresponding unit.
 
 If the original interval duration is not available or
 interval was set with a mix of units, calling :py:func:`~QgsInterval.originalUnit`
@@ -324,5 +324,5 @@ Converts a string to an interval
  *                                                                      *
  * src/core/qgsinterval.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

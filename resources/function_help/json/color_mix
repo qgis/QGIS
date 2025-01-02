@@ -1,0 +1,25 @@
+{
+  "name": "color_mix",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a color mixing the red, green, blue, and alpha values of two provided colors based on a given ratio. Returned type is the same as color arguments, i.e. a color string representation or a color object.",
+  "arguments": [{
+    "arg": "color1",
+    "description": "a color string or a color object"
+  }, {
+    "arg": "color2",
+    "description": "a color string or a color object"
+  }, {
+    "arg": "ratio",
+    "description": "a ratio"
+  }],
+  "examples": [{
+    "expression": "color_mix_rgb('0,0,0','255,255,255',0.5)",
+    "returns": "'127,127,127,255'"
+  },
+  {
+    "expression": "color_mix(color_cmykf(0.9,0.9,0.9,0.9),color_cmykf(0.1,0.1,0.1,0.1),0.5)",
+    "returns": "CMYKA: 0.50,0.50,0.50,0.50,1.00"
+  }],
+  "tags": ["green", "blue", "red", "alpha", "mixing", "color", "colors", "provided", "ratio"]
+}

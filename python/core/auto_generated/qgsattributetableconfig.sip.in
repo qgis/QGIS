@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsattributetableconfig.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,9 +31,6 @@ The configuration is specific for one vector layer.
     struct ColumnConfig
     {
       ColumnConfig();
-%Docstring
-Constructor for ColumnConfig
-%End
 
 
       QgsAttributeTableConfig::Type type;
@@ -52,9 +49,6 @@ Constructor for ColumnConfig
     };
 
     QgsAttributeTableConfig();
-%Docstring
-Constructor for QgsAttributeTableConfig.
-%End
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 %Docstring
@@ -268,5 +262,5 @@ The column's width is not considered.
  *                                                                      *
  * src/core/qgsattributetableconfig.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

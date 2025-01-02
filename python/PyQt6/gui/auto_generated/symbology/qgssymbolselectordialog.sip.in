@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssymbolselectordialog.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,7 +17,7 @@
 
 
 
-class QgsSymbolSelectorWidget: QgsPanelWidget
+class QgsSymbolSelectorWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 Symbol selector widget that can be used to select and build a symbol
@@ -27,7 +27,6 @@ Symbol selector widget that can be used to select and build a symbol
 #include "qgssymbolselectordialog.h"
 %End
   public:
-
 
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
@@ -130,8 +129,11 @@ Slot to update tree when a new symbol from style
 
     void changeLayer( QgsSymbolLayer *layer );
 %Docstring
-alters tree and sets proper widget when Layer Type is changed
-\note: The layer is received from the LayerPropertiesWidget
+Alters tree and sets proper widget when Layer Type is changed
+
+.. note::
+
+   The layer is received from the LayerPropertiesWidget
 %End
 
   signals:
@@ -145,12 +147,14 @@ Emitted when a symbol is modified in the widget.
 
 class QgsSymbolSelectorDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog that can be used to select and build a symbol.
+%End
 
 %TypeHeaderCode
 #include "qgssymbolselectordialog.h"
 %End
   public:
-
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, bool embedded = false );
 %Docstring
 Constructor for QgsSymbolSelectorDialog.
@@ -225,18 +229,23 @@ Slot to update tree when a new symbol from style
 
     void changeLayer( QgsSymbolLayer *layer );
 %Docstring
-alters tree and sets proper widget when Layer Type is changed
-\note: The layer is received from the LayerPropertiesWidget
+Alters tree and sets proper widget when Layer Type is changed
+
+.. note::
+
+   The layer is received from the LayerPropertiesWidget
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *e );
 
 
   signals:
 
     void symbolModified();
+%Docstring
+Emitted when the symbol defined in the dialog is modified.
+%End
 
 };
 
@@ -245,5 +254,5 @@ alters tree and sets proper widget when Layer Type is changed
  *                                                                      *
  * src/gui/symbology/qgssymbolselectordialog.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

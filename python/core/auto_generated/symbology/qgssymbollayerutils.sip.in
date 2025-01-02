@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbollayerutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,6 +18,9 @@ typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 
 class QgsSymbolLayerUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for working with symbols and symbol layers.
+%End
 
 %TypeHeaderCode
 #include "qgssymbollayerutils.h"
@@ -57,6 +60,13 @@ class QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
+    static bool hasSldSymbolizer( const QDomElement &element );
+%Docstring
+Returns ``True`` if a DOM ``element`` contains an SLD Symbolizer element.
+
+.. versionadded:: 3.42
+%End
+
     static Qgis::SymbolCoordinateReference decodeCoordinateReference( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a ``string`` representing a symbol coordinate reference mode.
@@ -64,7 +74,7 @@ Decodes a ``string`` representing a symbol coordinate reference mode.
 :param string: string to decode
 
 :return: - decoded marker clip mode
-         - ok: will be set to ``True`` if ``string`` was successfully decoded
+         - ok: ``True`` if ``string`` was successfully decoded
 
 .. seealso:: :py:func:`encodeCoordinateReference`
 
@@ -103,7 +113,7 @@ Decodes a ``string`` representing a marker clip mode.
 :param string: string to decode
 
 :return: - decoded marker clip mode
-         - ok: will be set to ``True`` if ``string`` was successfully decoded
+         - ok: ``True`` if ``string`` was successfully decoded
 
 .. seealso:: :py:func:`encodeMarkerClipMode`
 
@@ -126,7 +136,7 @@ Decodes a ``string`` representing a line clip mode.
 :param string: string to decode
 
 :return: - decoded line clip mode
-         - ok: will be set to ``True`` if ``string`` was successfully decoded
+         - ok: ``True`` if ``string`` was successfully decoded
 
 .. seealso:: :py:func:`encodeLineClipMode`
 
@@ -167,8 +177,7 @@ Converts a ``value`` to a point.
 :param value: value to convert
 
 :return: - converted point
-         - ok: will be set to ``True`` if value was successfully converted
-
+         - ok: ``True`` if value was successfully converted
 
 .. seealso:: :py:func:`decodePoint`
 
@@ -202,8 +211,7 @@ Converts a ``value`` to a size.
 :param value: value to convert
 
 :return: - converted size
-         - ok: will be set to ``True`` if value was successfully converted
-
+         - ok: ``True`` if value was successfully converted
 
 .. seealso:: :py:func:`decodeSize`
 
@@ -420,13 +428,15 @@ Converts a polygon symbolizer ``element`` to a list of marker symbol layers.
     static bool hasExternalGraphic( QDomElement &element );
 %Docstring
 Checks if ``element`` contains an ExternalGraphic element with format "image/svg+xml"
-@return ``True`` if the ExternalGraphic with format "image/svg+xml" is found .
+
+:return: ``True`` if the ExternalGraphic with format "image/svg+xml" is found .
 %End
 
     static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
 %Docstring
 Checks if ``element`` contains an ExternalGraphic element, if the optional ``format`` is specified it will also be checked.
-@return ``True`` if the ExternalGraphic element is found and the optionally specified format matches.
+
+:return: ``True`` if the ExternalGraphic element is found and the optionally specified format matches.
 
 .. versionadded:: 3.30
 %End
@@ -444,7 +454,8 @@ Checks if ``element`` contains an ExternalGraphic element, if the optional ``for
     static bool needRasterImageFill( QDomElement &element );
 %Docstring
 Checks if ``element`` contains a graphic fill with a raster image of type PNG, JPEG or GIF.
-@return ``True`` if element contains a graphic fill with a raster image.
+
+:return: ``True`` if element contains a graphic fill with a raster image.
 
 .. versionadded:: 3.30
 %End
@@ -661,7 +672,7 @@ Attempts to parse mime data as a color
 :param data: mime data to parse
 
 :return: - valid color if mimedata could be interpreted as a color, otherwise an invalid color
-         - hasAlpha: will be set to ``True`` if mime data was interpreted as a color containing an explicit alpha value
+         - hasAlpha: ``True`` if mime data was interpreted as a color containing an explicit alpha value
 %End
 
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
@@ -796,6 +807,15 @@ Determines an SVG symbol's name from its ``path``.
 .. seealso:: :py:func:`svgSymbolNameToPath`
 %End
 
+    static QList< QList< QPolygonF > > toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
+%Docstring
+Converts a ``geometry`` to a set of QPolygonF objects representing
+how the geometry should be drawn for a symbol of the given ``type``,
+as a list of geometry parts and rings.
+
+.. versionadded:: 3.40
+%End
+
     static QPointF polygonCentroid( const QPolygonF &points );
 %Docstring
 Calculate the centroid point of a QPolygonF
@@ -921,8 +941,9 @@ Converts a set of symbol layer id to a set of pointers to actual symbol layers c
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.30
-   because it was related to old :py:class:`QgsSymbolLayerReference` system
+.. deprecated:: 3.30
+
+   Because it was related to old :py:class:`QgsSymbolLayerReference` system.
 %End
 
     static double rendererFrameRate( const QgsFeatureRenderer *renderer );
@@ -1001,6 +1022,18 @@ Regenerate recursively unique id from ``symbolLayer`` and its children
 .. versionadded:: 3.30
 %End
 
+    static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
+%Docstring
+Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified
+ID.
+
+The ``bounds`` argument specifies the target bounds (in painter coordinates) for matching geometries. Only mask
+geometries which intersect ``bounds`` will be returned. If ``bounds`` is a null QRectF then all clip geometries
+for the symbol layer will be returned.
+
+.. versionadded:: 3.38
+%End
+
 
 };
 
@@ -1011,5 +1044,5 @@ Regenerate recursively unique id from ``symbolLayer`` and its children
  *                                                                      *
  * src/core/symbology/qgssymbollayerutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

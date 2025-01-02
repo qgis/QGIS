@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsstyleitemslistwidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ A reusable widget for showing a filtered list of entities from a :py:class:`QgsS
 #include "qgsstyleitemslistwidget.h"
 %End
   public:
-
     QgsStyleItemsListWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsStyleItemsListWidget, with the specified ``parent`` widget.
@@ -82,7 +81,6 @@ Returns the type of the item currently selected in the widget.
 %End
 
   protected:
-
     virtual void showEvent( QShowEvent *event );
 
 
@@ -118,13 +116,10 @@ manner given the context of the widget.
 
 };
 
-
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/qgsstyleitemslistwidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

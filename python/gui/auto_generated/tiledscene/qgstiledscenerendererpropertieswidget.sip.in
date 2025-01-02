@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ A generic widget for setting the 2D renderer for a tiled scene layer.
 #include "qgstiledscenerendererpropertieswidget.h"
 %End
   public:
-
     QgsTiledSceneRendererPropertiesWidget( QgsTiledSceneLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTiledSceneRendererPropertiesWidget, associated with the specified ``layer`` and ``style`` database.
@@ -49,5 +48,5 @@ Sets the ``context`` in which the widget is shown, e.g., the associated map canv
  *                                                                      *
  * src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

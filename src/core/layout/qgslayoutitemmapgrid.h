@@ -99,12 +99,12 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
      * Returns a reference to a grid at the specified \a index within the stack.
      * \see grid()
      */
-    QgsLayoutItemMapGrid &operator[]( int index );
+    QgsLayoutItemMapGrid &operator[]( int index ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns a list of QgsLayoutItemMapGrids contained by the stack.
      */
-    QList< QgsLayoutItemMapGrid * > asList() const;
+    QList< QgsLayoutItemMapGrid * > asList() const; // cppcheck-suppress duplInheritedMember
 
     bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -594,7 +594,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Sets the \a font used for drawing grid annotations.
      * Shortcut for annotationTextFormat().setFont().
      * \see annotationFont()
-     * \deprecated use setAnnotationTextFormat() instead
+     * \deprecated QGIS 3.40. Use setAnnotationTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setAnnotationFont( const QFont &font ) SIP_DEPRECATED;
 
@@ -602,7 +602,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Returns the font used for drawing grid annotations.
      * Shortcut for annotationTextFormat().font().
      * \see setAnnotationFont()
-     * \deprecated use annotationTextFormat() instead
+     * \deprecated QGIS 3.40. Use annotationTextFormat() instead.
      */
     Q_DECL_DEPRECATED QFont annotationFont() const SIP_DEPRECATED;
 
@@ -610,7 +610,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Sets the font \a color used for drawing grid annotations.
      * Shortcut for annotationTextFormat().setColor() and annotationTextFormat().setOpacity().
      * \see annotationFontColor()
-     * \deprecated use setAnnotationTextFormat() instead
+     * \deprecated QGIS 3.40. Use setAnnotationTextFormat() instead.
      */
     Q_DECL_DEPRECATED void setAnnotationFontColor( const QColor &color ) SIP_DEPRECATED;
 
@@ -618,7 +618,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Returns the font color used for drawing grid annotations.
      * Shortcut for annotationTextFormat().color() and annotationTextFormat().opacity().
      * \see setAnnotationFontColor()
-     * \deprecated use annotationTextFormat() instead
+     * \deprecated QGIS 3.40. Use annotationTextFormat() instead.
      */
     Q_DECL_DEPRECATED QColor annotationFontColor() const SIP_DEPRECATED;
 
@@ -996,7 +996,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     /**
      * Retrieves the second fill color for the grid frame.
      * \see setFrameFillColor2()
-     * \see framePenColor(
+     * \see framePenColor()
      * \see frameFillColor1()
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }

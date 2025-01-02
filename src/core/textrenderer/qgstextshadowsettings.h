@@ -48,11 +48,6 @@ class CORE_EXPORT QgsTextShadowSettings
     };
 
     QgsTextShadowSettings();
-
-    /**
-     * Copy constructor.
-     * \param other source QgsTextShadowSettings
-     */
     QgsTextShadowSettings( const QgsTextShadowSettings &other );
 
     QgsTextShadowSettings &operator=( const QgsTextShadowSettings &other );

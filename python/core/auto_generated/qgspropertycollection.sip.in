@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspropertycollection.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -120,7 +120,7 @@ Calculates the current value of the property with the specified key and interpre
 :param defaultDateTime: default datetime to return if the property cannot be calculated as a datetime
 
 :return: - value parsed to datetime
-         - ok: will be set to ``True`` if conversion was successful
+         - ok: ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -147,7 +147,7 @@ Calculates the current value of the property with the specified key and interpre
 :param defaultString: default string to return if the property cannot be calculated as a string
 
 :return: - value parsed to string
-         - ok: will be set to ``True`` if conversion was successful
+         - ok: ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -172,7 +172,7 @@ Calculates the current value of the property with the specified key and interpre
 :param defaultColor: default color to return if the property cannot be calculated as a color
 
 :return: - value parsed to color
-         - ok: will be set to ``True`` if conversion was successful
+         - ok: ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -197,7 +197,7 @@ Calculates the current value of the property with the specified key and interpre
 :param defaultValue: default double to return if the property cannot be calculated as a double
 
 :return: - value parsed to double
-         - ok: will be set to ``True`` if conversion was successful
+         - ok: ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -222,7 +222,7 @@ Calculates the current value of the property with the specified key and interpre
 :param defaultValue: default integer to return if the property cannot be calculated as a integer
 
 :return: - value parsed to integer
-         - ok: will be set to ``True`` if conversion was successful
+         - ok: ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -247,7 +247,7 @@ Calculates the current value of the property with the specified key and interpre
 :param defaultValue: default boolean to return if the property cannot be calculated as a boolean
 
 :return: - value parsed to bool
-         - ok: will be set to ``True`` if conversion was successful
+         - ok: ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
 
@@ -381,9 +381,6 @@ Constructor for QgsPropertyCollection
 %End
 
     QgsPropertyCollection( const QgsPropertyCollection &other );
-%Docstring
-Copy constructor.
-%End
 
 
     bool operator==( const QgsPropertyCollection &other ) const;
@@ -458,7 +455,7 @@ Convenience method, creates a :py:class:`QgsStaticProperty` and stores it within
 class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 {
 %Docstring(signature="appended")
-An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
+An ordered stack of :py:class:`QgsPropertyCollection` containers, where collections added later to the stack will take
 priority over earlier collections.
 %End
 
@@ -468,16 +465,10 @@ priority over earlier collections.
   public:
 
     QgsPropertyCollectionStack();
-%Docstring
-Constructor for QgsPropertyCollectionStack.
-%End
 
     ~QgsPropertyCollectionStack();
 
     QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
-%Docstring
-Copy constructor
-%End
 
 
     int count() const;
@@ -607,5 +598,5 @@ Returns the set of any fields referenced by the active properties from the stack
  *                                                                      *
  * src/core/qgspropertycollection.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

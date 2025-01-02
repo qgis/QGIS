@@ -37,7 +37,6 @@ class GUI_EXPORT QgsProcessingMatrixModelerWidget : public QWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMatrixModelerWidget.
      */

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsunitselectionwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ and millimeters. This widget is designed to allow users to edit the properties o
 #include "qgsunitselectionwidget.h"
 %End
   public:
-
     QgsMapUnitScaleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleWidget.
@@ -91,7 +90,6 @@ and millimeters. This dialog is designed to allow users to edit the properties o
 #include "qgsunitselectionwidget.h"
 %End
   public:
-
     QgsMapUnitScaleDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleDialog.
@@ -131,8 +129,9 @@ class QgsUnitSelectionWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget displaying a combobox allowing the user to choose between various display units,
-such as millimeters or map unit. If the user chooses map units, a button appears allowing
-adjustment of minimum and maximum scaling.
+such as millimeters or map units.
+
+If the user chooses map units, a button appears allowing adjustment of minimum and maximum scaling.
 
 .. seealso:: :py:class:`QgsMapUnitScaleWidget`
 
@@ -143,7 +142,6 @@ adjustment of minimum and maximum scaling.
 #include "qgsunitselectionwidget.h"
 %End
   public:
-
     QgsUnitSelectionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsUnitSelectionWidget.
@@ -233,7 +231,11 @@ Sets whether the widget can show the map scale button when the Map Units option 
 %End
 
   signals:
+
     void changed();
+%Docstring
+Emitted when the selected unit is changed, or the definition of the map unit scale is changed.
+%End
 
 };
 
@@ -242,5 +244,5 @@ Sets whether the widget can show the map scale button when the Map Units option 
  *                                                                      *
  * src/gui/qgsunitselectionwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

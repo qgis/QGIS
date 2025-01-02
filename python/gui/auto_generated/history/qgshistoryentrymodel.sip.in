@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/history/qgshistoryentrymodel.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,12 +22,7 @@ An item model representing history entries in a hierarchical tree structure.
 #include "qgshistoryentrymodel.h"
 %End
   public:
-
-    QgsHistoryEntryModel( const QString &providerId = QString(),
-                          Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
-                          QgsHistoryProviderRegistry *registry = 0,
-                          const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
-                          QObject *parent /TransferThis/ = 0 );
+    QgsHistoryEntryModel( const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = 0, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsHistoryEntryModel, with the specified ``parent`` object.
 
@@ -57,13 +52,10 @@ Returns node for given index. Returns root node for invalid index.
 
 };
 
-
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/history/qgshistoryentrymodel.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

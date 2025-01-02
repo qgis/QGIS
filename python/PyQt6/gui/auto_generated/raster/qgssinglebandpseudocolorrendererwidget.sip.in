@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/raster/qgssinglebandpseudocolorrendererwidget.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
+class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
 {
 %Docstring(signature="appended")
 
@@ -22,7 +22,6 @@ a raster min max widget and a band selector.
 #include "qgssinglebandpseudocolorrendererwidget.h"
 %End
   public:
-
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Creates new raster renderer widget
@@ -72,5 +71,5 @@ called when the color ramp tree has changed
  *                                                                      *
  * src/gui/raster/qgssinglebandpseudocolorrendererwidget.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

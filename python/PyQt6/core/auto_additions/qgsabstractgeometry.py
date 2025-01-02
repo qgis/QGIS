@@ -17,3 +17,19 @@ QgsAbstractGeometry.WkbFlag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsAbstractGeometry.WkbFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsAbstractGeometry.WkbFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsAbstractGeometry.WkbFlag.__or__ = lambda flag1, flag2: QgsAbstractGeometry.WkbFlag(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsAbstractGeometry.__group__ = ['geometry']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsVertexIterator.__group__ = ['geometry']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsGeometryPartIterator.__group__ = ['geometry']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsGeometryConstPartIterator.__group__ = ['geometry']
+except (NameError, AttributeError):
+    pass

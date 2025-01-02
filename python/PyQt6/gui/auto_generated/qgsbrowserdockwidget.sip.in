@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsbrowserdockwidget.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,7 +18,6 @@ A dock widget containing a :py:class:`QgsBrowserWidget` for navigating and manag
 #include "qgsbrowserdockwidget.h"
 %End
   public:
-
     explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserDockWidget
@@ -36,12 +35,13 @@ Returns a pointer to the :py:class:`QgsBrowserWidget` used by the dock widget.
 .. versionadded:: 3.22
 %End
 
- void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) /Deprecated/;
+ void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead."/;
 %Docstring
 Add directory to favorites.
 
-.. deprecated::
-   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead.
 %End
 
     void setMessageBar( QgsMessageBar *bar );
@@ -80,47 +80,52 @@ Used in the proxy browser model to hide items
 
   public slots:
 
- bool addLayerAtIndex( const QModelIndex &index ) /Deprecated/;
+ bool addLayerAtIndex( const QModelIndex &index ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project."/;
 %Docstring
 Adds the layer corresponding to the specified model ``index``.
 
 Returns ``True`` if the index was successfully intrepreted as a map layer and loaded, or
 ``False`` if the index is not a map layer or could not be loaded.
 
-.. deprecated::
-   will be removed in QGIS 4.0 - retrieve the :py:class:`QgsLayerItem` itself and manually add to project.
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 - retrieve the :py:class:`QgsLayerItem` itself and manually add to project.
 %End
 
- void showContextMenu( QPoint ) /Deprecated/;
+ void showContextMenu( QPoint ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Show context menu.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void addFavorite() /Deprecated/;
+ void addFavorite() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead."/;
 %Docstring
 Add current item to favorite.
 
-.. deprecated::
-   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead.
 %End
 
- void addFavoriteDirectory() /Deprecated/;
+ void addFavoriteDirectory() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead."/;
 %Docstring
 Add directory from file dialog to favorite.
 
-.. deprecated::
-   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead.
 %End
 
- void removeFavorite() /Deprecated/;
+ void removeFavorite() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead."/;
 %Docstring
 Remove from favorite.
 
-.. deprecated::
-   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead.
 %End
 
     void refresh();
@@ -128,108 +133,121 @@ Remove from favorite.
 Refresh the browser model and view.
 %End
 
- void showFilterWidget( bool visible ) /Deprecated/;
+ void showFilterWidget( bool visible ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Show/hide filter widget.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void enablePropertiesWidget( bool enable ) /Deprecated/;
+ void enablePropertiesWidget( bool enable ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Enable/disable properties widget.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void setFilterSyntax( QAction * ) /Deprecated/;
+ void setFilterSyntax( QAction * ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Sets filter syntax.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void setCaseSensitive( bool caseSensitive ) /Deprecated/;
+ void setCaseSensitive( bool caseSensitive ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Sets filter case sensitivity.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void setFilter() /Deprecated/;
+ void setFilter() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Apply filter to the model.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void setActiveIndex( const QModelIndex &index ) /Deprecated/;
+ void setActiveIndex( const QModelIndex &index ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Sets the selection to ``index`` and expand it.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void updateProjectHome() /Deprecated/;
+ void updateProjectHome() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Update project home directory.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void addSelectedLayers() /Deprecated/;
+ void addSelectedLayers() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Add selected layers to the project
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void showProperties() /Deprecated/;
+ void showProperties() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Show the layer properties.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void hideItem() /Deprecated/;
+ void hideItem() /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Hide current item.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void toggleFastScan() /Deprecated/;
+ void toggleFastScan() /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Toggle fast scan
 
-.. deprecated::
-   will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
- void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected ) /Deprecated/;
+ void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use."/;
 %Docstring
 Selection has changed.
 
-.. deprecated::
-   will be removed in QGIS 4.0 -- this method is not intended for public use
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0 -- this method is not intended for public use.
 %End
 
- void splitterMoved() /Deprecated/;
+ void splitterMoved() /Deprecated="Since 3.40. No longer used."/;
 %Docstring
 Splitter has been moved.
 
-.. deprecated::
-   no longer used.
+.. deprecated:: 3.40
+
+   No longer used.
 %End
 
   signals:
@@ -237,7 +255,7 @@ Splitter has been moved.
 %Docstring
 Emitted when a file needs to be opened
 %End
-    void handleDropUriList( const QgsMimeDataUtils::UriList & );
+    void handleDropUriList( const QgsMimeDataUtils::UriList &uris );
 %Docstring
 Emitted when drop uri list needs to be handled
 %End
@@ -253,5 +271,5 @@ Connections changed in the browser
  *                                                                      *
  * src/gui/qgsbrowserdockwidget.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

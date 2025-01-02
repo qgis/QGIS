@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsnewnamedialog.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,11 +20,7 @@ the dialog warns users if an entered name already exists.
 #include "qgsnewnamedialog.h"
 %End
   public:
-
-    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
-                      const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
-                      Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(), const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(), Qt::CaseSensitivity cs = Qt::CaseSensitive, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 New dialog constructor.
 
@@ -40,7 +36,7 @@ New dialog constructor.
 
    Earlier versions had a similar constructor but with extra arguments for ``regexp`` which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use :py:func:`~QgsNewNameDialog.setRegularExpression` instead.
 
-.. versionadded:: 3.22.
+.. versionadded:: 3.22
 %End
 
     void setHintString( const QString &hintString );
@@ -128,8 +124,7 @@ Name entered by user.
 .. seealso:: :py:func:`newNameChanged`
 %End
 
-    static bool exists( const QString &name, const QStringList &extensions,
-                        const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
+    static bool exists( const QString &name, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
 %Docstring
 Test if name or name with at least one extension exists.
 
@@ -160,8 +155,7 @@ Emitted when the name is changed in the dialog.
 List of names with extensions
 %End
     static QStringList fullNames( const QString &name, const QStringList &extensions );
-    static QStringList matching( const QStringList &newNames, const QStringList &existingNames,
-                                 Qt::CaseSensitivity cs = Qt::CaseSensitive );
+    static QStringList matching( const QStringList &newNames, const QStringList &existingNames, Qt::CaseSensitivity cs = Qt::CaseSensitive );
 };
 
 /************************************************************************
@@ -169,5 +163,5 @@ List of names with extensions
  *                                                                      *
  * src/gui/qgsnewnamedialog.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

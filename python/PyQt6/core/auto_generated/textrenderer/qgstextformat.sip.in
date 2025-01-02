@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextformat.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,11 +32,6 @@ set to an invalid state (see :py:func:`~QgsTextFormat.isValid`).
 %End
 
     QgsTextFormat( const QgsTextFormat &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsTextFormat
-%End
 
 
     ~QgsTextFormat();
@@ -156,14 +151,14 @@ of rendered text.
 .. seealso:: :py:func:`toQFont`
 %End
 
-    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0) const;
+    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Returns a font with the size scaled to match the format's size settings (including
 units and map unit scale) for a specified render context.
 
 :param context: destination render context
 :param scaleFactor: optional font size scaling factor. It is recommended to set this to
-                    :py:class:`QgsTextRenderer`.FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+                    :py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually scale painter devices or calculations
                     based on the resultant font metrics. Failure to do so will result in poor quality text rendering
                     at small font sizes.
 
@@ -507,6 +502,174 @@ Sets the ``unit`` for the line height for text.
 .. versionadded:: 3.28
 %End
 
+    double tabStopDistance() const;
+%Docstring
+Returns the distance for tab stops.
+
+.. note::
+
+   This value will be ignored if :py:func:`~QgsTextFormat.tabPositions` is non-empty.
+
+.. seealso:: :py:func:`tabPositions`
+
+.. seealso:: :py:func:`tabStopDistanceUnit`
+
+.. seealso:: :py:func:`setTabStopDistance`
+
+.. versionadded:: 3.38
+%End
+
+    void setTabStopDistance( double distance );
+%Docstring
+Sets the ``distance`` for tab stops.
+
+The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
+
+.. note::
+
+   This value will be ignored if :py:func:`~QgsTextFormat.tabPositions` is non-empty.
+
+.. seealso:: :py:func:`tabPositions`
+
+.. seealso:: :py:func:`tabStopDistance`
+
+.. seealso:: :py:func:`setTabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    class Tab
+{
+%Docstring(signature="appended")
+Defines a tab position for a text format.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgstextformat.h"
+%End
+      public:
+
+        explicit Tab( double position );
+%Docstring
+Constructor for a Tab at the specified ``position``.
+%End
+
+        void setPosition( double position );
+%Docstring
+Sets the tab position.
+
+.. seealso:: :py:func:`position`
+%End
+
+        double position() const;
+%Docstring
+Returns the tab position.
+
+.. seealso:: :py:func:`setPosition`
+%End
+
+        bool operator==( const QgsTextFormat::Tab &other ) const;
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        const QString str = QStringLiteral( "<QgsTextFormat.Tab: %1>" ).arg( sipCpp->position() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    };
+
+    QList< QgsTextFormat::Tab > tabPositions() const;
+%Docstring
+Returns the list of tab positions for tab stops.
+
+The units are specified using :py:func:`~QgsTextFormat.tabStopDistanceUnit`.
+
+.. note::
+
+   If non-empty, this list overrides any distance defined by :py:func:`~QgsTextFormat.tabStopDistance`.
+
+.. seealso:: :py:func:`setTabPositions`
+
+.. seealso:: :py:func:`tabStopDistance`
+
+.. seealso:: :py:func:`tabStopDistanceUnit`
+
+.. seealso:: :py:func:`setTabStopDistance`
+
+.. versionadded:: 3.42
+%End
+
+    void setTabPositions( const QList< QgsTextFormat::Tab > &positions );
+%Docstring
+Sets the list of tab ``positions`` for tab stops.
+
+The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
+
+.. note::
+
+   If non-empty, this list overrides any distance defined by :py:func:`~QgsTextFormat.setTabStopDistance`.
+
+.. seealso:: :py:func:`tabPositions`
+
+.. seealso:: :py:func:`setTabStopDistance`
+
+.. seealso:: :py:func:`setTabStopDistanceUnit`
+
+.. versionadded:: 3.42
+%End
+
+    Qgis::RenderUnit tabStopDistanceUnit() const;
+%Docstring
+Returns the units for the tab stop distance.
+
+.. seealso:: :py:func:`tabStopDistance`
+
+.. seealso:: :py:func:`tabPositions`
+
+.. seealso:: :py:func:`setTabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    void setTabStopDistanceUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the tab stop distance.
+
+.. seealso:: :py:func:`setTabStopDistance`
+
+.. seealso:: :py:func:`setTabPositions`
+
+.. seealso:: :py:func:`tabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    QgsMapUnitScale tabStopDistanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale object for the tab stop distance. This is only used if the
+tab stop distance is set to :py:class:`Qgis`.RenderUnit.MapUnits.
+
+.. seealso:: :py:func:`setTabStopDistanceMapUnitScale`
+
+.. seealso:: :py:func:`tabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
+    void setTabStopDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` object for the tab stop distance. This is only used if the
+tab stop distance is set to :py:class:`Qgis`.RenderUnit.MapUnits.
+
+.. seealso:: :py:func:`tabStopDistanceMapUnitScale`
+
+.. seealso:: :py:func:`setTabStopDistanceUnit`
+
+.. versionadded:: 3.38
+%End
+
     Qgis::TextOrientation orientation() const;
 %Docstring
 Returns the orientation of the text.
@@ -751,5 +914,5 @@ Returns a CSS string representing the specified text format as closely as possib
  *                                                                      *
  * src/core/textrenderer/qgstextformat.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsmultipoint.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -283,6 +283,7 @@ Returns the point with the specified ``index``.
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
+    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ ) final;
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
@@ -292,6 +293,8 @@ Returns the point with the specified ``index``.
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const /HoldGIL/;
+
+    virtual QgsMultiPoint *simplifyByDistance( double tolerance ) const /Factory/;
 
 
 
@@ -320,5 +323,5 @@ Returns the point with the specified ``index``.
  *                                                                      *
  * src/core/geometry/qgsmultipoint.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

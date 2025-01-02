@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/proj/qgsrecentcoordinatereferencesystemsmodel.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,14 +23,13 @@ A model for display of recently used coordinate reference systems.
 %End
   public:
 
-
     enum class CustomRole
     {
       Crs,
       AuthId,
     };
 
-    QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0);
+    QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsModel, with the specified ``parent`` object.
 %End
@@ -58,7 +57,7 @@ Returns an invalid CRS if the index is not valid.
 };
 
 
-class QgsRecentCoordinateReferenceSystemsProxyModel: QSortFilterProxyModel
+class QgsRecentCoordinateReferenceSystemsProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 A sort/filter proxy model for recent coordinate reference systems.
@@ -70,8 +69,7 @@ A sort/filter proxy model for recent coordinate reference systems.
 #include "qgsrecentcoordinatereferencesystemsmodel.h"
 %End
   public:
-
-    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0);
+    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given ``parent`` object.
 %End
@@ -123,5 +121,5 @@ Returns an invalid CRS if the index is not valid.
  *                                                                      *
  * src/gui/proj/qgsrecentcoordinatereferencesystemsmodel.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

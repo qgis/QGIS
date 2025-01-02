@@ -52,7 +52,7 @@ class QgsVectorLayer;
  *
  * \ingroup core
  * \since QGIS 3.12
- * \deprecated since QGIS 3.30 Replaced by QUuid to identify symbol layers
+ * \deprecated QGIS 3.30. Replaced by QUuid to identify symbol layers.
  */
 class CORE_EXPORT QgsSymbolLayerId
 {
@@ -73,10 +73,7 @@ class CORE_EXPORT QgsSymbolLayerId
       : mSymbolKey( key ), mIndexPath( { indexPath } )
     {}
 
-    //! Default copy constructor
     QgsSymbolLayerId( const QgsSymbolLayerId &other ) = default;
-
-    //! Default assignment operator
     QgsSymbolLayerId &operator=( const QgsSymbolLayerId &other ) = default;
 
     /**
@@ -91,7 +88,6 @@ class CORE_EXPORT QgsSymbolLayerId
 
     // TODO c++20 - replace with = default
 
-    //! Equality operator
     bool operator==( const QgsSymbolLayerId &other ) const
     {
       return ( mSymbolKey == other.mSymbolKey && mIndexPath == other.mIndexPath );
@@ -137,14 +133,14 @@ class CORE_EXPORT QgsSymbolLayerId
 class CORE_EXPORT QgsSymbolLayerReference
 {
   public:
-    //! Default constructor
+
     QgsSymbolLayerReference() = default;
 
     /**
      * Constructor
      * \param layerId layer id
      * \param symbolLayer symbol layer id
-     * \deprecated since QGIS 3.30
+     * \deprecated QGIS 3.30
      */
     Q_DECL_DEPRECATED QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) SIP_DEPRECATED
   : mLayerId( layerId ), mDeprecatedSymbolLayerId( symbolLayer )
@@ -167,7 +163,7 @@ class CORE_EXPORT QgsSymbolLayerReference
 
     /**
      * The symbol layer's id
-     * \deprecated since QGIS 3.30, use symbolLayerIdV2 instead
+     * \deprecated QGIS 3.30. Use symbolLayerIdV2() instead.
      */
     Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const SIP_DEPRECATED { return mDeprecatedSymbolLayerId; }
 
@@ -177,7 +173,6 @@ class CORE_EXPORT QgsSymbolLayerReference
      */
     QString symbolLayerIdV2() const { return mSymbolLayerId; }
 
-    //! Comparison operator
     bool operator==( const QgsSymbolLayerReference &other ) const
     {
       return mLayerId == other.mLayerId

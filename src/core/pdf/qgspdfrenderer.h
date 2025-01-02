@@ -53,9 +53,7 @@ class CORE_EXPORT QgsPdfRenderer
     QgsPdfRenderer( const QString &path );
     ~QgsPdfRenderer();
 
-    //! QgsPdfRenderer cannot be copied
     QgsPdfRenderer( const QgsPdfRenderer &other ) = delete;
-    //! QgsPdfRenderer cannot be copied
     QgsPdfRenderer &operator=( const QgsPdfRenderer &other ) = delete;
 
     /**

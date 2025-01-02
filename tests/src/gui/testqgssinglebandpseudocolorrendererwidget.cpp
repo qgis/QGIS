@@ -31,18 +31,16 @@ class TestQgsSingleBandPseudoColorRendererWidget : public QObject
     Q_OBJECT
 
   public:
-
     TestQgsSingleBandPseudoColorRendererWidget() {}
 
   private:
-
     QgsRasterLayer *mRasterLayer = nullptr;
 
   private slots:
 
     // init / cleanup
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     // tests
     void testEditLabel();
@@ -74,7 +72,7 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
 
   QgsRasterShader *rasterShader = new QgsRasterShader();
   QgsColorRampShader *colorRampShader = new QgsColorRampShader();
-  colorRampShader->setColorRampType( QgsColorRampShader::Interpolated );
+  colorRampShader->setColorRampType( Qgis::ShaderInterpolationMethod::Linear );
 
   const double min = 122.123456;
   const double max = 129.123456;
@@ -128,7 +126,6 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
   QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().minimumValue() ) );
   QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().maximumValue() ) );
 }
-
 
 
 QGSTEST_MAIN( TestQgsSingleBandPseudoColorRendererWidget )

@@ -28,13 +28,13 @@ class TestQgsLayoutPolyline : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutPolyline() : QgsTest( QStringLiteral( "Layout Polyline Tests" ), QStringLiteral( "composer_utils" ) ) {}
+    TestQgsLayoutPolyline()
+      : QgsTest( QStringLiteral( "Layout Polyline Tests" ), QStringLiteral( "composer_utils" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void drawArrowHead();
-
 };
 
 void TestQgsLayoutPolyline::initTestCase()

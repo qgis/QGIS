@@ -36,5 +36,32 @@ QgsDiagramLayerSettings.AlwaysShow.__doc__ = "Whether the diagram should always 
 QgsDiagramLayerSettings.StartAngle = QgsDiagramLayerSettings.Property.StartAngle
 QgsDiagramLayerSettings.StartAngle.is_monkey_patched = True
 QgsDiagramLayerSettings.StartAngle.__doc__ = "Angle offset for pie diagram"
-QgsDiagramLayerSettings.Property.__doc__ = "Data definable properties.\n\n" + '* ``BackgroundColor``: ' + QgsDiagramLayerSettings.Property.BackgroundColor.__doc__ + '\n' + '* ``StrokeColor``: ' + QgsDiagramLayerSettings.Property.StrokeColor.__doc__ + '\n' + '* ``StrokeWidth``: ' + QgsDiagramLayerSettings.Property.StrokeWidth.__doc__ + '\n' + '* ``PositionX``: ' + QgsDiagramLayerSettings.Property.PositionX.__doc__ + '\n' + '* ``PositionY``: ' + QgsDiagramLayerSettings.Property.PositionY.__doc__ + '\n' + '* ``Distance``: ' + QgsDiagramLayerSettings.Property.Distance.__doc__ + '\n' + '* ``Priority``: ' + QgsDiagramLayerSettings.Property.Priority.__doc__ + '\n' + '* ``ZIndex``: ' + QgsDiagramLayerSettings.Property.ZIndex.__doc__ + '\n' + '* ``IsObstacle``: ' + QgsDiagramLayerSettings.Property.IsObstacle.__doc__ + '\n' + '* ``Show``: ' + QgsDiagramLayerSettings.Property.Show.__doc__ + '\n' + '* ``AlwaysShow``: ' + QgsDiagramLayerSettings.Property.AlwaysShow.__doc__ + '\n' + '* ``StartAngle``: ' + QgsDiagramLayerSettings.Property.StartAngle.__doc__
+QgsDiagramLayerSettings.Property.__doc__ = """Data definable properties.
+
+* ``BackgroundColor``: Diagram background color
+* ``StrokeColor``: Stroke color
+* ``StrokeWidth``: Stroke width
+* ``PositionX``: X-coordinate data defined diagram position
+* ``PositionY``: Y-coordinate data defined diagram position
+* ``Distance``: Distance to diagram from feature
+* ``Priority``: Diagram priority (between 0 and 10)
+* ``ZIndex``: Z-index for diagram ordering
+* ``IsObstacle``: Whether diagram features act as obstacles for other diagrams/labels
+* ``Show``: Whether to show the diagram
+* ``AlwaysShow``: Whether the diagram should always be shown, even if it overlaps other diagrams/labels
+* ``StartAngle``: Angle offset for pie diagram
+
+"""
 # --
+try:
+    QgsDiagramSettings.__attribute_docs__ = {'sizeType': 'Diagram size unit', 'sizeScale': 'Diagram size unit scale', 'lineSizeUnit': 'Line unit index', 'lineSizeScale': 'Line unit scale', 'opacity': 'Opacity, from 0 (transparent) to 1.0 (opaque)', 'rotationOffset': 'Rotation offset, in degrees clockwise from horizontal.', 'maximumScale': 'The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no maximum scale visibility.\n\n.. seealso:: :py:func:`minimumScale`', 'minimumScale': 'The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no minimum scale visibility.\n\n.. seealso:: :py:func:`maximumScale`', 'minimumSize': 'Scale diagrams smaller than mMinimumSize to mMinimumSize'}
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDiagramInterpolationSettings.__attribute_docs__ = {'classificationField': 'Name of the field for classification'}
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDiagramRenderer.dpiPaintDevice = staticmethod(QgsDiagramRenderer.dpiPaintDevice)
+except (NameError, AttributeError):
+    pass

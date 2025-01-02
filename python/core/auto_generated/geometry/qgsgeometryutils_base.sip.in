@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsgeometryutils_base.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,7 @@ Convenience functions for geometry utils.
 
     static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 %Docstring
-Returns the squared 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (``z2``, ``z2``).
+Returns the squared 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``y2``, ``z2``).
 
 .. warning::
 
@@ -34,7 +34,7 @@ Returns the squared 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (
 
     static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 %Docstring
-Returns the 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (``z2``, ``z2``).
+Returns the 3D distance between (``x1``, ``y1``, ``z1``) and (``x2``, ``y2``, ``z2``).
 
 .. warning::
 
@@ -81,7 +81,7 @@ offset from the segment by the specified ``offset`` amount.
 :param offset: perpendicular offset from segment to apply to point. A negative ``offset`` shifts the point to the left of the segment, while a positive ``offset`` will shift it to the right of the segment.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -92,8 +92,6 @@ Example
        # Offset point at center of segment by 2 units to the left
        x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
        # (6.0, 7.0)
-
-
 
 :return: - x: calculated point x-coordinate
          - y: calculated point y-coordinate
@@ -259,11 +257,12 @@ The result is a line (segment) centered in point p and perpendicular to segment 
 :param segmentPoint1y: : y-coordinate of segmentPoint1, the segment's start point
 :param segmentPoint2x: : x-coordinate of segmentPoint2, the segment's end point
 :param segmentPoint2y: : y-coordinate of segmentPoint2, the segment's end point
-:param perpendicularSegmentPoint1x: : x-coordinate of the perpendicularCenterSegment's start point
-:param perpendicularSegmentPoint1y: : y-coordinate of the perpendicularCenterSegment's start point
-:param perpendicularSegmentPoint2x: : x-coordinate of the perpendicularCenterSegment's end point
-:param perpendicularSegmentPoint2y: : y-coordinate of the perpendicularCenterSegment's end point
 :param segmentLength: (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
+
+:return: - perpendicularSegmentPoint1x: : x-coordinate of the perpendicularCenterSegment's start point
+         - perpendicularSegmentPoint1y: : y-coordinate of the perpendicularCenterSegment's start point
+         - perpendicularSegmentPoint2x: : x-coordinate of the perpendicularCenterSegment's end point
+         - perpendicularSegmentPoint2y: : y-coordinate of the perpendicularCenterSegment's end point
 
 .. versionadded:: 3.24
 %End
@@ -292,10 +291,10 @@ A method to project one skew line onto another.
 :param P12: is the second point that belongs to first skew line,
 :param P2: is the first point that belongs to second skew line,
 :param P22: is the second point that belongs to second skew line,
-:param X1: is the result projection point of line P2P22 onto line P1P12,
 :param epsilon: the tolerance to use.
 
-:return: ``True`` if such point exists, ``False`` - otherwise.
+:return: - ``True`` if such point exists, ``False`` - otherwise.
+         - X1: is the result projection point of line P2P22 onto line P1P12,
 %End
 
     static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
@@ -313,7 +312,7 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
          - intersection: is the result intersection, of it can be found.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -517,5 +516,5 @@ Calculates Cartesian azimuth between points (``x1``, ``y1``) and (``x2``, ``y2``
  *                                                                      *
  * src/core/geometry/qgsgeometryutils_base.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

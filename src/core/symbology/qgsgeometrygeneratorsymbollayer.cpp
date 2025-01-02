@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsexpressionutils.h"
 #include "qgsgeometry.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
@@ -32,7 +33,7 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
   QString expression = properties.value( QStringLiteral( "geometryModifier" ) ).toString();
   if ( expression.isEmpty() )
   {
-    expression = QStringLiteral( "$geometry" );
+    expression = QStringLiteral( "@geometry" );
   }
   QgsGeometryGeneratorSymbolLayer *symbolLayer = new QgsGeometryGeneratorSymbolLayer( expression );
 
@@ -98,7 +99,9 @@ void QgsGeometryGeneratorSymbolLayer::startRender( QgsSymbolRenderContext &conte
 {
   mExpression->prepare( &context.renderContext().expressionContext() );
 
-  subSymbol()->startRender( context.renderContext() );
+  subSymbol()->setRenderHints( subSymbol()->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
+
+  subSymbol()->startRender( context.renderContext(), context.fields() );
 }
 
 void QgsGeometryGeneratorSymbolLayer::stopRender( QgsSymbolRenderContext &context )
@@ -335,7 +338,8 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::evaluateGeometryInPainterUnits( con
   generatorScope->setGeometry( drawGeometry );
 
   // step 3 - evaluate the new generated geometry.
-  QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+  QVariant value = mExpression->evaluate( &expressionContext );
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( value, mExpression.get() );
 
   // step 4 - transform geometry back from target units to painter units
   geom.transform( painterToTargetUnits.inverted( ) );
@@ -418,7 +422,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         {
           for ( const QPolygonF &ring : *rings )
           {
-            polygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+            std::unique_ptr< QgsLineString > fromRing = QgsLineString::fromQPolygonF( ring );
+            polygon->addInteriorRing( fromRing.release() );
           }
         }
         drawGeometry = QgsGeometry( std::move( polygon ) );
@@ -459,8 +464,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       case Qgis::RenderUnit::MetersInMapUnits: // unsupported, not exposed as an option
       case Qgis::RenderUnit::Percentage: // unsupported, not exposed as an option
       {
-        QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
-        f.setGeometry( coerceToExpectedType( geom ) );
+        QVariant value = mExpression->evaluate( &expressionContext );
+        f.setGeometry( coerceToExpectedType( QgsExpressionUtils::getGeometry( value, mExpression.get() ) ) );
         break;
       }
 

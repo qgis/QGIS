@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitempicture.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,13 +27,6 @@ A layout item subclass that displays SVG files or raster format images (jpg, png
       Clip,
       ZoomResizeFrame,
       FrameToImageSize
-    };
-
-    enum Format /BaseType=IntEnum/
-    {
-      FormatSVG,
-      FormatRaster,
-      FormatUnknown,
     };
 
     enum NorthMode /BaseType=IntEnum/
@@ -60,7 +53,7 @@ The caller takes responsibility for deleting the returned object.
 %End
 
 
-    void setPicturePath( const QString &path, Format format = FormatUnknown );
+    void setPicturePath( const QString &path, Qgis::PictureFormat format = Qgis::PictureFormat::Unknown );
 %Docstring
 Sets the source ``path`` of the image (may be svg or a raster format). Data defined
 picture source may override this value. The path can either be a local path
@@ -246,25 +239,29 @@ Sets the stroke ``width`` (in layout units) used for parametrized SVG files.
 .. seealso:: :py:func:`setSvgStrokeColor`
 %End
 
-    Format mode() const;
+    Qgis::PictureFormat mode() const;
 %Docstring
 Returns the current picture mode (image format), FormatUnknown if given
 picture format is unknown
 
 .. seealso:: :py:func:`setMode`
+
+.. seealso:: :py:func:`originalMode`
 %End
 
-    Format originalMode() const;
+    Qgis::PictureFormat originalMode() const;
 %Docstring
 Returns the original set picture mode (image format).
 It could differ from :py:func:`~QgsLayoutItemPicture.mode` if given picture format is unknown
 
 .. seealso:: :py:func:`setMode`
 
+.. seealso:: :py:func:`mode`
+
 .. versionadded:: 3.22
 %End
 
-    void setMode( Format mode );
+    void setMode( Qgis::PictureFormat mode );
 %Docstring
 Sets the current picture ``mode`` (image format).
 
@@ -367,5 +364,5 @@ Emitted on picture rotation change
  *                                                                      *
  * src/core/layout/qgslayoutitempicture.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

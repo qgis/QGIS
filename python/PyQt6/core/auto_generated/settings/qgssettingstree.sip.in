@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/settings/qgssettingstree.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,6 +22,11 @@ class QgsSettingsTree
 #include "qgssettingstree.h"
 %End
   public:
+
+    static QgsSettingsTreeNode *treeRoot();
+%Docstring
+Returns the tree root node for the settings tree
+%End
 
 
     static const QgsSettingsTreeNode *node( const QString &key );
@@ -50,5 +55,5 @@ Unregisters the tree node for the given plugin
  *                                                                      *
  * src/core/settings/qgssettingstree.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

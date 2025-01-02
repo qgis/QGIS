@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerelevationproperties.h"
+#include "moc_qgstiledscenelayerelevationproperties.cpp"
 #include "qgstiledscenelayer.h"
 
 QgsTiledSceneLayerElevationProperties::QgsTiledSceneLayerElevationProperties( QObject *parent )
@@ -76,4 +77,15 @@ QgsDoubleRange QgsTiledSceneLayerElevationProperties::calculateZRange( QgsMapLay
   }
 
   return QgsDoubleRange();
+}
+
+QList<double> QgsTiledSceneLayerElevationProperties::significantZValues( QgsMapLayer *layer ) const
+{
+  const QgsDoubleRange range = calculateZRange( layer );
+  if ( !range.isInfinite() && range.lower() != range.upper() )
+    return {range.lower(), range.upper() };
+  else if ( !range.isInfinite() )
+    return {range.lower() };
+  else
+    return {};
 }

@@ -120,7 +120,7 @@ class CORE_EXPORT QgsLabelLineSettings
     void setMergeLines( bool merge ) { mMergeLines = merge; }
 
     /**
-     * Updates the thinning settings to respect any data defined properties
+     * Updates the line settings to respect any data defined properties
      * set within the specified \a properties collection.
      */
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );

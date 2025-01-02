@@ -51,9 +51,7 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
     QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
                       double fixedAspectRatio = 0, const QMap<QString, QString> &parameters = QMap<QString, QString>() ) ;
 
-    //! QgsSvgCacheEntry cannot be copied.
     QgsSvgCacheEntry( const QgsSvgCacheEntry &rh ) = delete;
-    //! QgsSvgCacheEntry cannot be copied.
     QgsSvgCacheEntry &operator=( const QgsSvgCacheEntry &rh ) = delete;
 
     double size = 0.0; //size in pixels (cast to int for QImage)
@@ -102,15 +100,17 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
  *
  * Supported parameters are:
  *
- * - \a param(fill): fill color (with no opacity value)
- * - \a param(fill-opacity): fill color opacity
- * - \a param(outline): outline color (with no opacity value)
- * - \a param(outline-opacity): outline color opacity
- * - \a param(outline-width): width of outline strokes
+ * - ``param(fill)``: fill color (with no opacity value)
+ * - ``param(fill-opacity)``: fill color opacity
+ * - ``param(outline)``: outline color (with no opacity value)
+ * - ``param(outline-opacity)``: outline color opacity
+ * - ``param(outline-width)``: width of outline strokes
  *
  * E.g:
  *
+ * \code{.unparsed}
  *   <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
+ * \endcode
  *
  * \note QgsSvgCache is not usually directly created, but rather accessed through QgsApplication::svgCache().
 */
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
 
     /**
      * Emit a signal to be caught by qgisapp and display a msg on status bar.
-     * \deprecated Deprecated since QGIS 3.6 -- no longer emitted.
+     * \deprecated QGIS 3.6. No longer emitted.
      */
     Q_DECL_DEPRECATED void statusChanged( const QString  &statusQString ) SIP_DEPRECATED;
 

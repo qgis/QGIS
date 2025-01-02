@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasteriterator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,42 @@ Constructor for QgsRasterIterator, iterating over the specified ``input`` raster
 Since QGIS 3.34 the tileOverlapPixels can be used to specify a margin in pixels for retrieving pixels overlapping into neighbor cells.
 %End
 
-    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/, int &subRegionTop /Out/ );
+    void setSnapToPixelFactor( int factor );
+%Docstring
+Sets the "snap to pixel" factor in pixels.
+
+When set to a value greater than 1, the raster blocks will be snapped to boundaries
+matching exact multiples of this factor.
+
+Set to 1 to disable this behavior (default).
+
+.. warning::
+
+   When the "snap to pixel" factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+   A band of pixels on the right and bottom, with size at most of ``snap to pixel factor - 1``, may be skipped if they cannot be snapped
+   exactly to the factor.
+
+.. seealso:: :py:func:`snapToPixelFactor`
+
+.. versionadded:: 3.42
+%End
+
+    int snapToPixelFactor() const;
+%Docstring
+Returns the current "snap to pixel" factor in pixels.
+
+.. warning::
+
+   When the "snap to pixel" factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+   A band of pixels on the right and bottom, with size at most of ``snap to pixel factor - 1``, may be skipped if they cannot be snapped
+   exactly to the factor.
+
+.. seealso:: :py:func:`setSnapToPixelFactor`
+
+.. versionadded:: 3.42
+%End
+
+    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/, int &subRegionTop /Out/, int resamplingFactor = 1 );
 %Docstring
 Given an overall raster extent and width and height in pixels, calculates the sub region
 of the raster covering the specified ``subRegion``.
@@ -35,13 +70,13 @@ of the raster covering the specified ``subRegion``.
 :param rasterWidth: overall raster width
 :param rasterHeight: overall raster height
 :param subRegion: desired sub region extent
+:param resamplingFactor: optional resampling factor to snap boundaries to. When specified the calculated subregion will always be shrunk to snap to the pixel boundaries. (since QGIS 3.42)
 
 :return: - sub region geographic extent, snapped to exact pixel boundaries
          - subRegionWidth: width in pixels of sub region
          - subRegionHeight: height in pixels of sub region
          - subRegionLeft: starting column of left side of sub region
          - subRegionTop: starting row of top side of sub region
-
 
 .. versionadded:: 3.26
 %End
@@ -144,6 +179,46 @@ Returns the minimum tile width returned during iteration.
 .. seealso:: :py:func:`maximumTileWidth`
 %End
 
+    int blockCountWidth() const;
+%Docstring
+Returns the total number of blocks which cover the width of the input raster.
+
+.. seealso:: :py:func:`blockCount`
+
+.. seealso:: :py:func:`blockCountHeight`
+
+.. versionadded:: 3.42
+%End
+
+    int blockCountHeight() const;
+%Docstring
+Returns the total number of blocks which cover the height of the input raster.
+
+.. seealso:: :py:func:`blockCount`
+
+.. seealso:: :py:func:`blockCountWidth`
+
+.. versionadded:: 3.42
+%End
+
+    qgssize blockCount() const;
+%Docstring
+Returns the total number of blocks required to iterate over the input raster.
+
+.. seealso:: :py:func:`blockCountWidth`
+
+.. seealso:: :py:func:`blockCountHeight`
+
+.. versionadded:: 3.42
+%End
+
+    double progress( int bandNumber ) const;
+%Docstring
+Returns the raster iteration progress as a fraction from 0 to 1.0, for the specified ``bandNumber``.
+
+.. versionadded:: 3.42
+%End
+
     static const int DEFAULT_MAXIMUM_TILE_WIDTH;
 
     static const int DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -155,5 +230,5 @@ Returns the minimum tile width returned during iteration.
  *                                                                      *
  * src/core/raster/qgsrasteriterator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

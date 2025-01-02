@@ -45,7 +45,7 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * SnappingType defines on what object the snapping is performed
-     * \deprecated since QGIS 3.12 use Qgis::SnappingTypes instead.
+     * \deprecated QGIS 3.12. Use Qgis::SnappingTypes instead.
      */
     enum SnappingType
     {
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Convenient method to return the translated name of the enum type
      * Qgis::SnappingTypes.
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.26 use Qgis::snappingTypeToString instead
+     * \deprecated QGIS 3.26. Use snappingTypeToString() instead.
      */
     Q_DECL_DEPRECATED static QString snappingTypeFlagToString( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToString( type );}
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Convenient method to return an icon corresponding to the enum type
      * Qgis::SnappingTypes.
-     * \deprecated since QGIS 3.26 use Qgis::snappingTypeToString instead
+     * \deprecated QGIS 3.26. Use snappingTypeToIcon() instead.
      * \since QGIS 3.20
      */
     Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param type
          * \param tolerance
          * \param units
-         * \deprecated since QGIS 3.12 use the method with Qgis::SnappingTypes instead.
+         * \deprecated QGIS 3.12. Use the method with Qgis::SnappingTypes instead.
          */
         Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapToolUnit units ) SIP_DEPRECATED;
 
@@ -152,13 +152,13 @@ class CORE_EXPORT QgsSnappingConfig
 
         /**
          * Returns the flags type (vertices | segments | area | centroid | middle)
-         * \deprecated since QGIS 3.12 use typeFlag instead.
+         * \deprecated QGIS 3.12. Use typeFlag() instead.
          */
         Q_DECL_DEPRECATED QgsSnappingConfig::SnappingType type() const SIP_DEPRECATED;
 
         /**
          * define the type of snapping
-        * \deprecated since QGIS 3.12 use setTypeFlag instead.
+        * \deprecated QGIS 3.12. Use setTypeFlag() instead.
         */
         Q_DECL_DEPRECATED void setType( SnappingType type ) SIP_DEPRECATED;
 
@@ -204,9 +204,6 @@ class CORE_EXPORT QgsSnappingConfig
          */
         void setMaximumScale( double maxScale );
 
-        /**
-         * Compare this configuration to other.
-         */
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
         // TODO c++20 - replace with = default
@@ -252,13 +249,13 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * Returns the flags type (vertices | segments | area | centroid | middle)
-     * \deprecated since QGIS 3.12 use typeFlag instead.
+     * \deprecated QGIS 3.12. Use typeFlag() instead.
      */
     Q_DECL_DEPRECATED QgsSnappingConfig::SnappingType type() const SIP_DEPRECATED;
 
     /**
      * define the type of snapping
-    * \deprecated since QGIS 3.12 use setTypeFlag instead.
+    * \deprecated QGIS 3.12. Use setTypeFlag() instead.
     */
     Q_DECL_DEPRECATED void setType( QgsSnappingConfig::SnappingType type );
 
@@ -395,9 +392,6 @@ class CORE_EXPORT QgsSnappingConfig
      */
     void clearIndividualLayerSettings();
 
-    /**
-     * Compare this configuration to other.
-     */
     bool operator!= ( const QgsSnappingConfig &other ) const;
 
     /**

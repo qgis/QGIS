@@ -29,7 +29,6 @@
 class ANALYSIS_EXPORT QgsRasterMatrix
 {
   public:
-
     enum TwoArgOperator
     {
       opPLUS,
@@ -37,12 +36,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opMUL,
       opDIV,
       opPOW,
-      opEQ,         // =
-      opNE,         // != resp. <>
-      opGT,         // >
-      opLT,         // <
-      opGE,         // >=
-      opLE,         // <=
+      opEQ, // =
+      opNE, // != resp. <>
+      opGT, // >
+      opLT, // <
+      opGE, // >=
+      opLE, // <=
       opAND,
       opOR,
       opMIN,
@@ -64,10 +63,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opABS,
     };
 
-    //! Takes ownership of data array
     QgsRasterMatrix() = default;
 
-    //! \note note available in Python bindings
+    /**
+     * Takes ownership of \a data array.
+     * \note note available in Python bindings
+     */
     QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue ) SIP_SKIP;
     QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();
@@ -80,7 +81,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
      * Returns data array (but not ownership)
      * \note not available in Python bindings
      */
-    double *data() { return mData; } SIP_SKIP
+    double *data() SIP_SKIP { return mData; }
 
     /**
      * Returns data and ownership. Sets data and nrows, ncols of this matrix to 0

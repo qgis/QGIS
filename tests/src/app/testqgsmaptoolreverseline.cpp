@@ -70,28 +70,29 @@ void TestQgsMapToolReverseLine::cleanupTestCase()
 void TestQgsMapToolReverseLine::testReverseCurve()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> memoryLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature curve( memoryLayer->dataProvider()->fields(), 1 );
 
   curve.setAttribute( QStringLiteral( "pk" ), 1 );
   curve.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-                       "CircularString(10 10, 5 5)" ) ) );
+    "CircularString(10 10, 5 5)"
+  ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << curve );
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << memoryLayer.get() );
   mCanvas->setCurrentLayer( memoryLayer.get() );
 
-  std::unique_ptr< QgsMapToolReverseLine > tool( new QgsMapToolReverseLine( mCanvas ) );
+  std::unique_ptr<QgsMapToolReverseLine> tool( new QgsMapToolReverseLine( mCanvas ) );
 
   memoryLayer->startEditing();
   const QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 5, 5 );
-  const std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        QPoint( mapPoint.x(), mapPoint.y() )
-      ) );
+  const std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
+    mCanvas,
+    QEvent::MouseButtonRelease,
+    QPoint( mapPoint.x(), mapPoint.y() )
+  ) );
   // trigger mouseRelease handler
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );
@@ -100,40 +101,40 @@ void TestQgsMapToolReverseLine::testReverseCurve()
   const QString wkt = "CircularString (5 5, 10 10)";
   QCOMPARE( f.geometry().asWkt(), wkt );
   memoryLayer->rollBack();
-
 }
 
 void TestQgsMapToolReverseLine::testReverseLineString()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> memoryLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature line( memoryLayer->dataProvider()->fields(), 1 );
 
   line.setAttribute( QStringLiteral( "pk" ), 1 );
   line.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-      "LineStringZ(0 0 0, 10 10 10, 5 5 5)" ) ) );
+    "LineStringZ(0 0 0, 10 10 10, 5 5 5)"
+  ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << line );
   mCanvas->setLayers( QList<QgsMapLayer *>() << memoryLayer.get() );
   mCanvas->setCurrentLayer( memoryLayer.get() );
 
 
-  std::unique_ptr< QgsMapToolReverseLine > tool( new QgsMapToolReverseLine( mCanvas ) );
+  std::unique_ptr<QgsMapToolReverseLine> tool( new QgsMapToolReverseLine( mCanvas ) );
   memoryLayer->startEditing();
   const QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 6, 6 );
-  const std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        QPoint( mapPoint.x(), mapPoint.y() )
-      ) );
+  const std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
+    mCanvas,
+    QEvent::MouseButtonRelease,
+    QPoint( mapPoint.x(), mapPoint.y() )
+  ) );
   // trigger mouseRelease handler
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );
 
   const QgsFeature f = memoryLayer->getFeature( 1 );
 
-  const QString wkt = "LineStringZ (5 5 5, 10 10 10, 0 0 0)";
+  const QString wkt = "LineString Z (5 5 5, 10 10 10, 0 0 0)";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   memoryLayer->rollBack();
@@ -142,47 +143,48 @@ void TestQgsMapToolReverseLine::testReverseLineString()
 void TestQgsMapToolReverseLine::testReverseMultiLineString()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> memoryLayer( new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature multi( memoryLayer->dataProvider()->fields(), 1 );
 
   multi.setAttribute( QStringLiteral( "pk" ), 1 );
   multi.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-                       "MultiLineStringZ((0 0 0, 10 10 10, 5 5 5), (100 100 100, 120 120 120))" ) ) );
+    "MultiLineString Z((0 0 0, 10 10 10, 5 5 5), (100 100 100, 120 120 120))"
+  ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << multi );
   mCanvas->setLayers( QList<QgsMapLayer *>() << memoryLayer.get() );
   mCanvas->setCurrentLayer( memoryLayer.get() );
 
-  std::unique_ptr< QgsMapToolReverseLine > tool( new QgsMapToolReverseLine( mCanvas ) );
+  std::unique_ptr<QgsMapToolReverseLine> tool( new QgsMapToolReverseLine( mCanvas ) );
 
   memoryLayer->startEditing();
   QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 6, 6 );
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        QPoint( mapPoint.x(), mapPoint.y() )
-      ) );
+  std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
+    mCanvas,
+    QEvent::MouseButtonRelease,
+    QPoint( mapPoint.x(), mapPoint.y() )
+  ) );
   // trigger mouseRelease handler
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );
   QgsFeature f = memoryLayer->getFeature( 1 );
 
-  QString wkt = "MultiLineStringZ ((5 5 5, 10 10 10, 0 0 0),(100 100 100, 120 120 120))";
+  QString wkt = "MultiLineString Z ((5 5 5, 10 10 10, 0 0 0),(100 100 100, 120 120 120))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mapPoint = mCanvas->getCoordinateTransform()->transform( 110, 110 );
   event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 QPoint( mapPoint.x(), mapPoint.y() )
-               ) );
+    mCanvas,
+    QEvent::MouseButtonRelease,
+    QPoint( mapPoint.x(), mapPoint.y() )
+  ) );
   // trigger mouseRelease handler
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );
   f = memoryLayer->getFeature( 1 );
 
-  wkt = "MultiLineStringZ ((5 5 5, 10 10 10, 0 0 0),(120 120 120, 100 100 100))";
+  wkt = "MultiLineString Z ((5 5 5, 10 10 10, 0 0 0),(120 120 120, 100 100 100))";
   QCOMPARE( f.geometry().asWkt(), wkt );
   memoryLayer->rollBack();
 }

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingenummodelerwidget.h"
+#include "moc_qgsprocessingenummodelerwidget.cpp"
 #include "qgsgui.h"
 #include <QMessageBox>
 #include <QToolButton>
@@ -30,8 +31,8 @@ QgsProcessingEnumModelerWidget::QgsProcessingEnumModelerWidget( QWidget *parent 
   connect( mModel, &QStandardItemModel::itemChanged, this, &QgsProcessingEnumModelerWidget::onItemChanged );
 
   connect( mButtonAdd, &QToolButton::clicked, this, &QgsProcessingEnumModelerWidget::addItem );
-  connect( mButtonRemove, &QToolButton::clicked, this, [ = ] { removeItems( false ); } );
-  connect( mButtonClear, &QToolButton::clicked, this, [ = ] { removeItems( true ); } );
+  connect( mButtonRemove, &QToolButton::clicked, this, [=] { removeItems( false ); } );
+  connect( mButtonClear, &QToolButton::clicked, this, [=] { removeItems( true ); } );
 }
 
 void QgsProcessingEnumModelerWidget::addItem()
@@ -47,20 +48,18 @@ void QgsProcessingEnumModelerWidget::removeItems( const bool removeAll )
 {
   if ( removeAll )
   {
-    if ( QMessageBox::question( nullptr, tr( "Delete items" ),
-                                tr( "Are you sure you want to delete all items" ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+    if ( QMessageBox::question( nullptr, tr( "Delete items" ), tr( "Are you sure you want to delete all items" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
       mModel->clear();
   }
   else
   {
     QModelIndexList selected = mItemList->selectionModel()->selectedIndexes();
-    QSet< int > rows;
+    QSet<int> rows;
     rows.reserve( selected.count() );
     for ( const QModelIndex &i : selected )
       rows << i.row();
 
-    QList< int > rowsToDelete = qgis::setToList( rows );
+    QList<int> rowsToDelete = qgis::setToList( rows );
     std::sort( rowsToDelete.begin(), rowsToDelete.end(), std::greater<int>() );
 
     mItemList->setUpdatesEnabled( false );
@@ -145,19 +144,19 @@ void QgsProcessingEnumModelerWidget::setDefaultOptions( const QVariant &defaultV
     return;
 
   QVariant val = defaultValue;
-  QList< int > values;
-  if ( val.type() == QVariant::List || val.type() == QVariant::StringList )
+  QList<int> values;
+  if ( val.userType() == QMetaType::Type::QVariantList || val.userType() == QMetaType::Type::QStringList )
   {
     for ( const QVariant &var : val.toList() )
       values << var.toInt();
   }
-  else if ( val.type() == QVariant::String )
+  else if ( val.userType() == QMetaType::Type::QString )
   {
     QStringList split = val.toString().split( ',' );
     for ( const QString &var : split )
       values << var.toInt();
   }
-  else if ( val.type() == QVariant::Int )
+  else if ( val.userType() == QMetaType::Type::Int )
   {
     values << val.toInt();
   }

@@ -31,10 +31,6 @@ class QgsMessageBar;
 class GUI_EXPORT QgsHistoryWidgetContext
 {
   public:
-
-    /**
-     * Constructor for QgsHistoryWidgetContext.
-     */
     QgsHistoryWidgetContext() = default;
 
     /**
@@ -51,9 +47,7 @@ class GUI_EXPORT QgsHistoryWidgetContext
     QgsMessageBar *messageBar() const;
 
   private:
-
     QgsMessageBar *mMessageBar = nullptr;
-
 };
 
 #endif // QGSHISTORYWIDGETCONTEXT_H

@@ -106,7 +106,11 @@ void QgsExpressionContextScope::addVariable( const QgsExpressionContextScope::St
 
 bool QgsExpressionContextScope::removeVariable( const QString &name )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  return mVariables.remove( name );
+#else
   return mVariables.remove( name ) > 0;
+#endif
 }
 
 bool QgsExpressionContextScope::hasVariable( const QString &name ) const
@@ -764,4 +768,47 @@ void QgsExpressionContext::setFeedback( QgsFeedback *feedback )
 QgsFeedback *QgsExpressionContext::feedback() const
 {
   return mFeedback;
+}
+
+QString QgsExpressionContext::uniqueHash( bool &ok, const QSet<QString> &variables ) const
+{
+  QString hash;
+  ok = true;
+  const QString delimiter( QStringLiteral( "||~~||" ) );
+
+  if ( hasFeature() )
+  {
+    hash.append( QString::number( feature().id() ) + delimiter + QString::number( qHash( feature() ) ) + delimiter );
+  }
+
+  QStringList sortedVars = qgis::setToList( variables );
+  if ( sortedVars.empty() )
+    sortedVars = variableNames();
+  std::sort( sortedVars.begin(), sortedVars.end() );
+
+  for ( const QString &variableName : std::as_const( sortedVars ) )
+  {
+    const QVariant value = variable( variableName );
+    hash.append( variableName + "=" );
+    if ( QgsVariantUtils::isNull( value ) )
+    {
+      hash.append( delimiter );
+    }
+    else if ( value.type() == QVariant::String )
+    {
+      hash.append( value.toString() + delimiter );
+    }
+    else
+    {
+      const QString variantString = value.toString();
+      if ( variantString.isEmpty() )
+      {
+        ok = false;
+        return QString();
+      }
+      hash.append( variantString + delimiter );
+    }
+  }
+
+  return hash;
 }

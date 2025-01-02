@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdataitemguiprovider.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,11 +22,7 @@ Encapsulates the context in which a :py:class:`QgsDataItem` is shown within the 
 #include "qgsdataitemguiprovider.h"
 %End
   public:
-
     QgsDataItemGuiContext();
-%Docstring
-Constructor for QgsDataItemGuiContext.
-%End
 
     QgsMessageBar *messageBar() const;
 %Docstring
@@ -83,7 +79,6 @@ Providers must be registered via :py:class:`QgsDataItemGuiProviderRegistry`.
 #include "qgsdataitemguiprovider.h"
 %End
   public:
-
     virtual ~QgsDataItemGuiProvider();
 
     virtual QString name() = 0;
@@ -91,8 +86,7 @@ Providers must be registered via :py:class:`QgsDataItemGuiProviderRegistry`.
 Returns the provider's name.
 %End
 
-    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                                      const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
+    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 %Docstring
 Called when the given context ``menu`` is being populated for the given ``item``, allowing the provider
 to add its own actions and submenus to the context menu. Additionally,
@@ -105,7 +99,7 @@ Subclasses can utilize this list in order to create actions which operate on mul
 at once, e.g. to allow deletion of multiple layers from a database at once.
 
 When creating a context menu, this method is called for EVERY QgsDataItemGuiProvider
-within the :py:class:`QgsDataItemGuiProviderRegistry`. It is the :py:class:`QgsDataItemGuiProvider` subclass'
+within the :py:class:`QgsDataItemGuiProviderRegistry`. It is the QgsDataItemGuiProvider subclass'
 responsibility to test the ``item`` and ``selectedItems`` for their properties and classes and decide what actions
 (if any) are appropriate to add to the context ``menu``.
 
@@ -208,5 +202,5 @@ the default timeout for the message ``level`` should be used.
  *                                                                      *
  * src/gui/qgsdataitemguiprovider.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

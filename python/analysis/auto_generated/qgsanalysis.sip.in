@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/qgsanalysis.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,8 +25,6 @@ related to analysis classes.
 %End
   public:
 
-
-
     static QgsAnalysis *instance();
 %Docstring
 Returns a pointer to the singleton instance.
@@ -46,5 +44,5 @@ Returns the global geometry checker registry, used for managing all geometry che
  *                                                                      *
  * src/analysis/qgsanalysis.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaliditycheckresultswidget.h"
+#include "moc_qgsvaliditycheckresultswidget.cpp"
 #include "qgsvaliditycheckregistry.h"
 #include "qgsapplication.h"
 #include "qgsfeedback.h"
@@ -30,7 +31,6 @@ QgsValidityCheckResultsModel::QgsValidityCheckResultsModel( const QList<QgsValid
   : QAbstractItemModel( parent )
   , mResults( results )
 {
-
 }
 
 QModelIndex QgsValidityCheckResultsModel::index( int row, int column, const QModelIndex &parent ) const
@@ -69,7 +69,7 @@ QVariant QgsValidityCheckResultsModel::data( const QModelIndex &index, int role 
     case Qt::ToolTipRole:
       return res.title;
 
-    case static_cast< int >( QgsValidityCheckResultsModel::CustomRole::Description ):
+    case static_cast<int>( QgsValidityCheckResultsModel::CustomRole::Description ):
       return res.detailedDescription;
 
     case Qt::DecorationRole:
@@ -97,7 +97,6 @@ QgsValidityCheckResultsWidget::QgsValidityCheckResultsWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
-
 }
 
 void QgsValidityCheckResultsWidget::setResults( const QList<QgsValidityCheckResult> &results )
@@ -129,16 +128,15 @@ void QgsValidityCheckResultsWidget::setDescription( const QString &description )
 
 bool QgsValidityCheckResultsWidget::runChecks( int type, const QgsValidityCheckContext *context, const QString &title, const QString &description, QWidget *parent )
 {
-  std::unique_ptr< QgsFeedback > feedback = std::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = std::make_unique< QProgressDialog >( tr( "Running Checks…" ), tr( "Abort" ), 0, 100, parent );
+  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
+  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Running Checks…" ), tr( "Abort" ), 0, 100, parent );
   progressDialog->setWindowTitle( title );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Running Checks" ) );
 
-  connect( feedback.get(), &QgsFeedback::progressChanged, progressDialog.get(), [ & ]( double progress )
-  {
-    progressDialog->setValue( static_cast< int >( progress ) );
-    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+  connect( feedback.get(), &QgsFeedback::progressChanged, progressDialog.get(), [&]( double progress ) {
+    progressDialog->setValue( static_cast<int>( progress ) );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() );
 
     proxyTask->setProxyProgress( progress );
 
@@ -151,10 +149,8 @@ bool QgsValidityCheckResultsWidget::runChecks( int type, const QgsValidityCheckC
     {
       QCoreApplication::processEvents();
     }
-
   } );
-  connect( progressDialog.get(), &QProgressDialog::canceled, progressDialog.get(), [ & ]
-  {
+  connect( progressDialog.get(), &QProgressDialog::canceled, progressDialog.get(), [&] {
     feedback->cancel();
   } );
 
@@ -208,6 +204,6 @@ bool QgsValidityCheckResultsWidget::runChecks( int type, const QgsValidityCheckC
 
 void QgsValidityCheckResultsWidget::selectionChanged( const QModelIndex &current, const QModelIndex & )
 {
-  const QString desc = mResultsModel->data( current, static_cast< int >( QgsValidityCheckResultsModel::CustomRole::Description ) ).toString();
+  const QString desc = mResultsModel->data( current, static_cast<int>( QgsValidityCheckResultsModel::CustomRole::Description ) ).toString();
   mDetailedDescriptionTextBrowser->setHtml( desc );
 }

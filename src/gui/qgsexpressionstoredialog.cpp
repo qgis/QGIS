@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionstoredialog.h"
+#include "moc_qgsexpressionstoredialog.cpp"
 #include <QPushButton>
 #include <QStyle>
 
@@ -31,11 +32,9 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
   mValidationError->setStyleSheet( QStringLiteral( "QLabel { color : red; }" ) );
   QPushButton *saveBtn { buttonBox->button( QDialogButtonBox::StandardButton::Save ) };
   saveBtn->setEnabled( false );
-  connect( mLabel, &QLineEdit::textChanged, this, [ = ]( const QString & text )
-  {
+  connect( mLabel, &QLineEdit::textChanged, this, [=]( const QString &text ) {
     QString errorMessage;
-    if ( mOriginalLabel.simplified() != text.simplified() &&
-         mExistingLabels.contains( text.simplified() ) )
+    if ( mOriginalLabel.simplified() != text.simplified() && mExistingLabels.contains( text.simplified() ) )
     {
       errorMessage = tr( "A stored expression with this name already exists" );
     }
@@ -43,7 +42,7 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
     {
       errorMessage = tr( "Labels cannot contain slashes (/ or \\)" );
     }
-    if ( ! errorMessage.isEmpty() )
+    if ( !errorMessage.isEmpty() )
     {
       mValidationError->show();
       mValidationError->setText( errorMessage );

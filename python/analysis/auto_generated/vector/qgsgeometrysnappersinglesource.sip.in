@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/qgsgeometrysnappersinglesource.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -36,7 +36,6 @@ to run Fix geometries algorithm afterwards.
 #include "qgsgeometrysnappersinglesource.h"
 %End
   public:
-
     static int run( const QgsFeatureSource &source, QgsFeatureSink &sink, double thresh, QgsFeedback *feedback );
 %Docstring
 Run the algorithm on given source and output results to the sink, using threshold value in the source's map units.
@@ -49,5 +48,5 @@ Returns number of modified geometries.
  *                                                                      *
  * src/analysis/vector/qgsgeometrysnappersinglesource.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

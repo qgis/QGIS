@@ -32,21 +32,16 @@
 class ANALYSIS_EXPORT QgsLeastSquares
 {
   public:
-
     /**
      * Transforms the point at \a origin in-place, using a linear transformation calculated from the list of source and destination Ground Control Points (GCPs).
      */
-    static void linear( const QVector<QgsPointXY> &sourceCoordinates,
-                        const QVector<QgsPointXY> &destinationCoordinates,
-                        QgsPointXY &origin, double &pixelXSize, double &pixelYSize );
+    static void linear( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, QgsPointXY &origin, double &pixelXSize, double &pixelYSize );
 
     /**
      * Transforms the point at \a origin in-place, using a helmert transformation calculated from the list of source and destination Ground Control Points (GCPs).
      * \throws QgsNotSupportedException on QGIS built without GSL.
      */
-    static void helmert( const QVector<QgsPointXY> &sourceCoordinates,
-                         const QVector<QgsPointXY> &destinationCoordinates,
-                         QgsPointXY &origin, double &pixelSize, double &rotation );
+    static void helmert( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, QgsPointXY &origin, double &pixelSize, double &rotation );
 
 #if 0
     static void affine( QVector<QgsPointXY> mapCoords,
@@ -58,10 +53,7 @@ class ANALYSIS_EXPORT QgsLeastSquares
      * Calculates projective parameters from the list of source and destination Ground Control Points (GCPs).
      * \throws QgsNotSupportedException on QGIS built without GSL.
      */
-    static void projective( const QVector<QgsPointXY> &sourceCoordinates,
-                            const QVector<QgsPointXY> &destinationCoordinates,
-                            double H[9] );
-
+    static void projective( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, double H[9] );
 };
 
 #endif // QGSLEASTSQUARES_H

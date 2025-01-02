@@ -25,6 +25,8 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 
+class QItemSelection;
+
 class QgsLocatorResult;
 class QgsLocator;
 class QgsLocatorContext;
@@ -102,6 +104,12 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
 
     //! Update the canvas CRS used to create search context
     void updateCanvasCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * This will call filters implementation of selection/deselection of results
+     * \since QGIS 3.40
+     */
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private slots:
     void searchFinished();

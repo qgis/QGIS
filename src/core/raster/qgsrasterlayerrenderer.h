@@ -19,7 +19,6 @@
 #define SIP_NO_FILE
 
 #include "qgsmaplayerrenderer.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsmapclippingregion.h"
 
 class QPainter;
@@ -31,6 +30,7 @@ struct QgsRasterViewPort;
 class QgsRenderContext;
 
 class QgsRasterLayerRenderer;
+class QgsRasterLayerLabelProvider;
 
 #include "qgsrasterinterface.h"
 
@@ -77,13 +77,17 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
   private:
 
+    void prepareLabeling( QgsRasterLayer *layer );
+    void drawLabeling();
+
     QString mLayerName;
     QgsRasterViewPort *mRasterViewPort = nullptr;
 
     double mLayerOpacity = 1.0;
     std::unique_ptr<QgsRasterPipe> mPipe;
 
-    QgsRasterDataProvider::ProviderCapabilities mProviderCapabilities;
+    Qgis::RasterProviderCapabilities mProviderCapabilities;
+    Qgis::RasterInterfaceCapabilities mInterfaceCapabilities;
 
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
@@ -97,6 +101,9 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     bool mEnableProfile = false;
     quint64 mPreparationTime = 0;
+
+    // may be NULLPTR. no need to delete: if exists it is owned by labeling engine
+    QgsRasterLayerLabelProvider *mLabelProvider = nullptr;
 
     void drawElevationMap();
 

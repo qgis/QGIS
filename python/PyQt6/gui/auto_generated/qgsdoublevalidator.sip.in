@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdoublevalidator.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,7 +25,6 @@ local and C interpretation as a fallback.
 #include "qgsdoublevalidator.h"
 %End
   public:
-
     explicit QgsDoubleValidator( QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.
@@ -145,5 +144,5 @@ Returns top range limit
  *                                                                      *
  * src/gui/qgsdoublevalidator.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

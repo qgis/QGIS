@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsaccesscontrol.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,9 +29,6 @@ Constructor
 %End
 
     QgsAccessControl( const QgsAccessControl &copy );
-%Docstring
-Constructor
-%End
 
 
     ~QgsAccessControl();
@@ -158,5 +155,5 @@ Register an access control filter
  *                                                                      *
  * src/server/qgsaccesscontrol.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

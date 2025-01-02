@@ -65,9 +65,6 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 
     virtual ~QgsAbstractTerrainProvider();
 
-    /**
-     * QgsAbstractTerrainProvider cannot be assigned.
-     */
     QgsAbstractTerrainProvider &operator=( const QgsAbstractTerrainProvider &other ) = delete;
 
     /**
@@ -158,16 +155,9 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 
   protected:
 
-    /**
-     * Constructor for QgsAbstractTerrainProvider.
-     */
     QgsAbstractTerrainProvider() = default;
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor
-     */
     QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
 #endif
 
@@ -206,9 +196,6 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
 
-    /**
-     * Constructor for QgsFlatTerrainProvider.
-     */
     QgsFlatTerrainProvider() = default;
 
     QString type() const override;
@@ -231,13 +218,9 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
 {
   public:
 
-    /**
-     * Constructor for QgsRasterDemTerrainProvider.
-     */
     QgsRasterDemTerrainProvider() = default;
 
 #ifndef SIP_RUN
-    //! QgsRasterDemTerrainProvider cannot be assigned
     const QgsRasterDemTerrainProvider *operator=( const QgsRasterDemTerrainProvider &other ) = delete;
 #endif
 
@@ -285,13 +268,9 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
 {
   public:
 
-    /**
-     * Constructor for QgsMeshTerrainProvider.
-     */
     QgsMeshTerrainProvider() = default;
 
 #ifndef SIP_RUN
-    //! QgsMeshTerrainProvider cannot be assigned
     const QgsMeshTerrainProvider *operator=( const QgsMeshTerrainProvider &other ) = delete;
 #endif
 

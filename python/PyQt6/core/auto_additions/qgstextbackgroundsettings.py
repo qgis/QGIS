@@ -11,3 +11,7 @@ QgsTextBackgroundSettings.SizePercent = QgsTextBackgroundSettings.SizeType.SizeP
 QgsTextBackgroundSettings.RotationSync = QgsTextBackgroundSettings.RotationType.RotationSync
 QgsTextBackgroundSettings.RotationOffset = QgsTextBackgroundSettings.RotationType.RotationOffset
 QgsTextBackgroundSettings.RotationFixed = QgsTextBackgroundSettings.RotationType.RotationFixed
+try:
+    QgsTextBackgroundSettings.__group__ = ['textrenderer']
+except (NameError, AttributeError):
+    pass

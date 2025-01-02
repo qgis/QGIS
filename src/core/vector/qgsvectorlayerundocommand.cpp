@@ -315,7 +315,7 @@ QgsVectorLayerUndoCommandAddAttribute::QgsVectorLayerUndoCommandAddAttribute( Qg
 {
   const QgsFields &fields = layer()->fields();
   int i;
-  for ( i = 0; i < fields.count() && fields.fieldOrigin( i ) != QgsFields::OriginJoin; i++ )
+  for ( i = 0; i < fields.count() && fields.fieldOrigin( i ) != Qgis::FieldOrigin::Join; i++ )
     ;
   mFieldIndex = i;
 }
@@ -346,9 +346,9 @@ QgsVectorLayerUndoCommandDeleteAttribute::QgsVectorLayerUndoCommandDeleteAttribu
   , mFieldIndex( fieldIndex )
 {
   const QgsFields &fields = layer()->fields();
-  const QgsFields::FieldOrigin origin = fields.fieldOrigin( mFieldIndex );
+  const Qgis::FieldOrigin origin = fields.fieldOrigin( mFieldIndex );
   mOriginIndex = fields.fieldOriginIndex( mFieldIndex );
-  mProviderField = ( origin == QgsFields::OriginProvider );
+  mProviderField = ( origin == Qgis::FieldOrigin::Provider );
   mFieldName = fields.field( mFieldIndex ).name();
 
   if ( !mProviderField )
@@ -447,9 +447,9 @@ QgsVectorLayerUndoCommandRenameAttribute::QgsVectorLayerUndoCommandRenameAttribu
   , mNewName( newName )
 {
   const QgsFields &fields = layer()->fields();
-  const QgsFields::FieldOrigin origin = fields.fieldOrigin( mFieldIndex );
+  const Qgis::FieldOrigin origin = fields.fieldOrigin( mFieldIndex );
   mOriginIndex = fields.fieldOriginIndex( mFieldIndex );
-  mProviderField = ( origin == QgsFields::OriginProvider );
+  mProviderField = ( origin == Qgis::FieldOrigin::Provider );
 }
 
 void QgsVectorLayerUndoCommandRenameAttribute::undo()

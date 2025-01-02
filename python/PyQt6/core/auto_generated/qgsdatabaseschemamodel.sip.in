@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsdatabaseschemamodel.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -90,5 +90,5 @@ Refreshes the schema list by querying the underlying connection.
  *                                                                      *
  * src/core/qgsdatabaseschemamodel.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

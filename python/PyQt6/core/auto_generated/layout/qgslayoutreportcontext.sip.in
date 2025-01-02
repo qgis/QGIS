@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutreportcontext.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -74,25 +74,27 @@ Emits the :py:func:`~QgsLayoutReportContext.changed` signal.
 .. seealso:: :py:func:`layer`
 %End
 
- void setPredefinedScales( const QVector<qreal> &scales ) /Deprecated/;
+ void setPredefinedScales( const QVector<qreal> &scales ) /Deprecated="Since 3.40. Use QgsLayoutRenderContext.setPredefinedScales()."/;
 %Docstring
 Sets the list of predefined ``scales`` to use with the layout. This is used
 for maps which are set to the predefined atlas scaling mode.
 
 .. seealso:: :py:func:`predefinedScales`
 
-.. deprecated::
-   Use :py:func:`QgsLayoutRenderContext.setPredefinedScales()`
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLayoutRenderContext.setPredefinedScales()`.
 %End
 
- QVector<qreal> predefinedScales() const /Deprecated/;
+ QVector<qreal> predefinedScales() const /Deprecated="Since 3.40. Use QgsLayoutRenderContext.predefinedScales()."/;
 %Docstring
 Returns the current list of predefined scales for use with the layout.
 
 .. seealso:: :py:func:`setPredefinedScales`
 
-.. deprecated::
-   Use :py:func:`QgsLayoutRenderContext.predefinedScales()`
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLayoutRenderContext.predefinedScales()`.
 %End
 
   signals:
@@ -118,5 +120,5 @@ for the context.
  *                                                                      *
  * src/core/layout/qgslayoutreportcontext.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

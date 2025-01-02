@@ -33,7 +33,6 @@ class QgsLayoutItem;
  */
 class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsLayoutViewMouseEvent *>( sipCpp ) )
@@ -44,7 +43,6 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Constructor for QgsLayoutViewMouseEvent. Should only be required to be called from the QgsLayoutView.
      * \param view The view in which the event occurred.
@@ -61,8 +59,7 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
      *
      * The \a ignoreItems argument can be used to specify a list of items to avoid snapping to.
      */
-    void snapPoint( QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr,
-                    const QList<QgsLayoutItem *> &ignoreItems = QList< QgsLayoutItem * >() );
+    void snapPoint( QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr, const QList<QgsLayoutItem *> &ignoreItems = QList<QgsLayoutItem *>() );
 
     /**
      * Returns the event point location in layout coordinates.
@@ -83,14 +80,12 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
     bool isSnapped() const { return mSnapped; }
 
   private:
-
     //! The view in which the event was triggered.
     QgsLayoutView *mView = nullptr;
 
     bool mSnapped = false;
     QPointF mLayoutPoint;
     QPointF mSnappedPoint;
-
 };
 
 #endif // QGSLAYOUTVIEWMOUSEEVENT_H

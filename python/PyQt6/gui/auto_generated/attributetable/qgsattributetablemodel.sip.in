@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/attributetable/qgsattributetablemodel.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsAttributeTableModel: QAbstractTableModel
+class QgsAttributeTableModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
 A model backed by a :py:class:`QgsVectorLayerCache` which is able to provide
@@ -27,7 +27,6 @@ Is mostly referred to as "master model" within this doc and the source.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       FeatureId,
@@ -38,7 +37,6 @@ Is mostly referred to as "master model" within this doc and the source.
     };
 
   public:
-
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
 %Docstring
 Constructor
@@ -286,10 +284,14 @@ Handles updating the model when the conditional style for a field changes.
 
     void modelChanged();
 %Docstring
-Model has been changed
+Emitted when the model has been changed.
 %End
 
+
     void finished();
+%Docstring
+Emitted when the model has completely loaded all features.
+%End
 
 };
 
@@ -299,5 +301,5 @@ Model has been changed
  *                                                                      *
  * src/gui/attributetable/qgsattributetablemodel.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

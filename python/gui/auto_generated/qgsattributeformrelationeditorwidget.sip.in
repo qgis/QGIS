@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsattributeformrelationeditorwidget.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Widget to show for child relations on an attribute form.
 #include "qgsattributeformrelationeditorwidget.h"
 %End
   public:
-
     explicit QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form );
 %Docstring
 Constructor
@@ -48,5 +47,5 @@ Set multiple feature to edit simultaneously.
  *                                                                      *
  * src/gui/qgsattributeformrelationeditorwidget.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

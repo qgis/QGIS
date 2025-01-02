@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterblock.h"
+#include "qgsmessagelog.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
@@ -31,10 +32,138 @@
 #include <QFileInfo>
 #include <mutex>
 
+
+QgsGdalOption QgsGdalOption::fromXmlNode( const CPLXMLNode *node )
+{
+  if ( node->eType != CXT_Element || !EQUAL( node->pszValue, "Option" ) )
+    return {};
+
+  const QString optionName( CPLGetXMLValue( node, "name", nullptr ) );
+  if ( optionName.isEmpty() )
+    return {};
+
+  QgsGdalOption option;
+  option.name = optionName;
+
+  option.description = QString( CPLGetXMLValue( node, "description", nullptr ) );
+  option.scope = QString( CPLGetXMLValue( node, "scope", nullptr ) );
+
+  option.type = QgsGdalOption::Type::Text;
+
+  const char *pszType = CPLGetXMLValue( node, "type", nullptr );
+  const char *pszDefault = CPLGetXMLValue( node, "default", nullptr );
+  if ( pszType && EQUAL( pszType, "string-select" ) )
+  {
+    option.type = QgsGdalOption::Type::Select;
+    for ( auto psOption = node->psChild; psOption != nullptr; psOption = psOption->psNext )
+    {
+      if ( psOption->eType != CXT_Element ||
+           !EQUAL( psOption->pszValue, "Value" ) ||
+           !psOption->psChild )
+      {
+        continue;
+      }
+      option.options << psOption->psChild->pszValue;
+    }
+    option.defaultValue = pszDefault ? QString( pszDefault ) : option.options.value( 0 );
+    return option;
+  }
+  else if ( pszType && EQUAL( pszType, "boolean" ) )
+  {
+    option.type = QgsGdalOption::Type::Boolean;
+    option.defaultValue = pszDefault ? QString( pszDefault ) : QStringLiteral( "YES" );
+    return option;
+  }
+  else if ( pszType && EQUAL( pszType, "string" ) )
+  {
+    option.type = QgsGdalOption::Type::Text;
+    if ( pszDefault )
+      option.defaultValue = QString( pszDefault );
+    return option;
+  }
+  else if ( pszType && ( EQUAL( pszType, "int" ) || EQUAL( pszType, "integer" ) ) )
+  {
+    option.type = QgsGdalOption::Type::Int;
+    if ( pszDefault )
+    {
+      bool ok = false;
+      const int defaultInt = QString( pszDefault ).toInt( &ok );
+      if ( ok )
+        option.defaultValue = defaultInt;
+    }
+
+    if ( const char *pszMin = CPLGetXMLValue( node, "min", nullptr ) )
+    {
+      bool ok = false;
+      const int minInt = QString( pszMin ).toInt( &ok );
+      if ( ok )
+        option.minimum = minInt;
+    }
+    if ( const char *pszMax = CPLGetXMLValue( node, "max", nullptr ) )
+    {
+      bool ok = false;
+      const int maxInt = QString( pszMax ).toInt( &ok );
+      if ( ok )
+        option.maximum = maxInt;
+    }
+    return option;
+  }
+  else if ( pszType && EQUAL( pszType, "double" ) )
+  {
+    option.type = QgsGdalOption::Type::Double;
+    if ( pszDefault )
+    {
+      bool ok = false;
+      const double defaultDouble = QString( pszDefault ).toDouble( &ok );
+      if ( ok )
+        option.defaultValue = defaultDouble;
+    }
+
+    if ( const char *pszMin = CPLGetXMLValue( node, "min", nullptr ) )
+    {
+      bool ok = false;
+      const double minDouble = QString( pszMin ).toDouble( &ok );
+      if ( ok )
+        option.minimum = minDouble;
+    }
+    if ( const char *pszMax = CPLGetXMLValue( node, "max", nullptr ) )
+    {
+      bool ok = false;
+      const double maxDouble = QString( pszMax ).toDouble( &ok );
+      if ( ok )
+        option.maximum = maxDouble;
+    }
+    return option;
+  }
+
+  QgsDebugError( QStringLiteral( "Unhandled GDAL option type: %1" ).arg( pszType ) );
+  return {};
+}
+
+QList<QgsGdalOption> QgsGdalOption::optionsFromXml( const CPLXMLNode *node )
+{
+  QList< QgsGdalOption > options;
+  for ( auto psItem = node->psChild; psItem != nullptr; psItem = psItem->psNext )
+  {
+    const QgsGdalOption option = fromXmlNode( psItem );
+    if ( option.type == QgsGdalOption::Type::Invalid )
+      continue;
+
+    options << option;
+  }
+  return options;
+}
+
+
+//
+// QgsGdalUtils
+//
+
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
   const QString driverShortName = GDALGetDriverShortName( driver );
-  if ( driverShortName == QLatin1String( "SQLite" ) )
+  if ( driverShortName == QLatin1String( "SQLite" ) ||
+       driverShortName == QLatin1String( "PDF" ) )
   {
     // it supports Create() but only for vector side
     return false;
@@ -283,7 +412,7 @@ static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hD
 bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg, const char *pszCoordinateOperation )
 {
   char **papszOptions = nullptr;
-  if ( pszCoordinateOperation != nullptr )
+  if ( pszCoordinateOperation )
     papszOptions = CSLSetNameValue( papszOptions, "COORDINATE_OPERATION", pszCoordinateOperation );
 
   bool result = resampleSingleBandRasterStatic( hSrcDS, hDstDS, resampleAlg, papszOptions );
@@ -370,7 +499,9 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
     message += QStringLiteral( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
     message += QStringLiteral( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
     message += QStringLiteral( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
-    message += QStringLiteral( "  Help page:  http://www.gdal.org/%1\n\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_HELPTOPIC ) );
+    const QString helpUrl = gdalDocumentationUrlForDriver( myGdalDriver );
+    if ( !helpUrl.isEmpty() )
+      message += QStringLiteral( "  Help page:  %1\n\n" ).arg( helpUrl );
 
     // next get creation options
     // need to serialize xml to get newlines, should we make the basic xml prettier?
@@ -505,37 +636,37 @@ GDALDataType QgsGdalUtils::gdalDataTypeFromQgisDataType( Qgis::DataType dataType
   return GDALDataType::GDT_Unknown;
 }
 
-GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method )
+GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( Qgis::RasterResamplingMethod method )
 {
   GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
   switch ( method )
   {
-    case QgsRasterDataProvider::ResamplingMethod::Nearest:
-    case QgsRasterDataProvider::ResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
+    case Qgis::RasterResamplingMethod::Nearest:
+    case Qgis::RasterResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
       eResampleAlg = GRA_NearestNeighbour;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
+    case Qgis::RasterResamplingMethod::Bilinear:
       eResampleAlg = GRA_Bilinear;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Cubic:
+    case Qgis::RasterResamplingMethod::Cubic:
       eResampleAlg = GRA_Cubic;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
+    case Qgis::RasterResamplingMethod::CubicSpline:
       eResampleAlg = GRA_CubicSpline;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
+    case Qgis::RasterResamplingMethod::Lanczos:
       eResampleAlg = GRA_Lanczos;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Average:
+    case Qgis::RasterResamplingMethod::Average:
       eResampleAlg = GRA_Average;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Mode:
+    case Qgis::RasterResamplingMethod::Mode:
       eResampleAlg = GRA_Mode;
       break;
   }
@@ -645,14 +776,14 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
       bool isMultiLayer = false;
       if ( QString( GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
       {
-        if ( GDALGetMetadataItem( driver, GDAL_DMD_SUBDATASETS, nullptr ) != nullptr )
+        if ( GDALGetMetadataItem( driver, GDAL_DMD_SUBDATASETS, nullptr ) )
         {
           isMultiLayer = true;
         }
       }
       if ( !isMultiLayer && QString( GDALGetMetadataItem( driver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
       {
-        if ( GDALGetMetadataItem( driver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) != nullptr )
+        if ( GDALGetMetadataItem( driver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) )
         {
           isMultiLayer = true;
         }
@@ -711,11 +842,10 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
 {
   const QStringList vsiPrefixes = QgsGdalUtils::vsiArchivePrefixes();
 
-  for ( const QString &vsiPrefix : vsiPrefixes )
-  {
-    if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
-      return vsiPrefix;
-  }
+  const thread_local QRegularExpression vsiRx( QStringLiteral( "^(/vsi.+?/)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+  const QRegularExpressionMatch vsiMatch = vsiRx.match( path );
+  if ( vsiMatch.hasMatch() )
+    return vsiMatch.captured( 1 );
 
   if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
   {
@@ -725,7 +855,13 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
     return QStringLiteral( "/vsizip/" );
   }
   else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+  {
+    // GTFS driver directly handles .zip files
+    const char *const apszAllowedDrivers[] = { "GTFS", nullptr };
+    if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, apszAllowedDrivers, nullptr ) )
+      return QString();
     return QStringLiteral( "/vsizip/" );
+  }
   else if ( path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
@@ -761,6 +897,52 @@ QStringList QgsGdalUtils::vsiArchivePrefixes()
   return res;
 }
 
+QList<QgsGdalUtils::VsiNetworkFileSystemDetails> QgsGdalUtils::vsiNetworkFileSystems()
+{
+  // get supported extensions
+  static std::once_flag initialized;
+  static QList<QgsGdalUtils::VsiNetworkFileSystemDetails> VSI_FILE_SYSTEM_DETAILS;
+  std::call_once( initialized, [ = ]
+  {
+    if ( char **papszPrefixes = VSIGetFileSystemsPrefixes() )
+    {
+      for ( int i = 0; papszPrefixes[i]; i++ )
+      {
+        QgsGdalUtils::VsiNetworkFileSystemDetails details;
+        details.identifier = QString( papszPrefixes[i] );
+        if ( details.identifier.startsWith( '/' ) )
+          details.identifier = details.identifier.mid( 1 );
+        if ( details.identifier.endsWith( '/' ) )
+          details.identifier.chop( 1 );
+
+        if ( details.identifier == QLatin1String( "vsicurl" ) )
+          details.name = QObject::tr( "HTTP/HTTPS/FTP" );
+        else if ( details.identifier == QLatin1String( "vsis3" ) )
+          details.name = QObject::tr( "AWS S3" );
+        else if ( details.identifier == QLatin1String( "vsigs" ) )
+          details.name = QObject::tr( "Google Cloud Storage" );
+        else if ( details.identifier == QLatin1String( "vsiaz" ) )
+          details.name = QObject::tr( "Microsoft Azure Blob" );
+        else if ( details.identifier == QLatin1String( "vsiadls" ) )
+          details.name = QObject::tr( "Microsoft Azure Data Lake Storage" );
+        else if ( details.identifier == QLatin1String( "vsioss" ) )
+          details.name = QObject::tr( "Alibaba Cloud OSS" );
+        else if ( details.identifier == QLatin1String( "vsiswift" ) )
+          details.name = QObject::tr( "OpenStack Swift Object Storage" );
+        else if ( details.identifier == QLatin1String( "vsihdfs" ) )
+          details.name = QObject::tr( "Hadoop File System" );
+        else
+          continue;
+        VSI_FILE_SYSTEM_DETAILS.append( details );
+      }
+
+      CSLDestroy( papszPrefixes );
+    }
+  } );
+
+  return VSI_FILE_SYSTEM_DETAILS;
+}
+
 bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
 {
   return vsiArchivePrefixes().contains( prefix );
@@ -792,6 +974,52 @@ bool QgsGdalUtils::isVsiArchiveFileExtension( const QString &extension )
   return vsiArchiveFileExtensions().contains( extWithDot.toLower() );
 }
 
+Qgis::VsiHandlerType QgsGdalUtils::vsiHandlerType( const QString &prefix )
+{
+  if ( prefix.isEmpty() )
+    return Qgis::VsiHandlerType::Invalid;
+
+  QString vsiPrefix = prefix;
+  if ( vsiPrefix.startsWith( '/' ) )
+    vsiPrefix = vsiPrefix.mid( 1 );
+  if ( vsiPrefix.endsWith( '/' ) )
+    vsiPrefix.chop( 1 );
+
+  if ( !vsiPrefix.startsWith( QLatin1String( "vsi" ) ) )
+    return Qgis::VsiHandlerType::Invalid;
+
+  if ( vsiPrefix == QLatin1String( "vsizip" ) ||
+       vsiPrefix == QLatin1String( "vsigzip" ) ||
+       vsiPrefix == QLatin1String( "vsitar" ) ||
+       vsiPrefix == QLatin1String( "vsi7z" ) ||
+       vsiPrefix == QLatin1String( "vsirar" ) )
+    return Qgis::VsiHandlerType::Archive;
+
+  else if ( vsiPrefix == QLatin1String( "vsicurl" ) ||
+            vsiPrefix == QLatin1String( "vsicurl_streaming" ) )
+    return Qgis::VsiHandlerType::Network;
+
+  else if ( vsiPrefix == QLatin1String( "vsis3" ) ||
+            vsiPrefix == QLatin1String( "vsicurl_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsigs" ) ||
+            vsiPrefix == QLatin1String( "vsigs_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsiaz" ) ||
+            vsiPrefix == QLatin1String( "vsiaz_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsiadls" ) ||
+            vsiPrefix == QLatin1String( "vsioss" ) ||
+            vsiPrefix == QLatin1String( "vsioss_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsiswift" ) ||
+            vsiPrefix == QLatin1String( "vsiswift_streaming" ) ||
+            vsiPrefix == QLatin1String( "vsihdfs" ) ||
+            vsiPrefix == QLatin1String( "vsiwebhdfs" ) )
+    return Qgis::VsiHandlerType::Cloud;
+
+  else if ( vsiPrefix == QLatin1String( "vsimem" ) )
+    return Qgis::VsiHandlerType::Memory;
+
+  return Qgis::VsiHandlerType::Other;
+}
+
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type )
 {
   CPLPushErrorHandler( CPLQuietErrorHandler );
@@ -820,5 +1048,45 @@ bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType 
 
   CPLPopErrorHandler();
   return static_cast< bool >( hDriver );
+}
+
+QString QgsGdalUtils::gdalDocumentationUrlForDriver( GDALDriverH hDriver )
+{
+  if ( hDriver )
+  {
+    const QString gdalDriverHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );  // e.g. "drivers/vector/ili.html"
+    if ( !gdalDriverHelpTopic.isEmpty() )
+      return QStringLiteral( "https://gdal.org/%1" ).arg( gdalDriverHelpTopic );
+  }
+  return QString();
+}
+
+bool QgsGdalUtils::applyVsiCredentialOptions( const QString &prefix, const QString &path, const QVariantMap &options )
+{
+  QString vsiPrefix = prefix;
+  if ( !vsiPrefix.startsWith( '/' ) )
+    vsiPrefix.prepend( '/' );
+  if ( !vsiPrefix.endsWith( '/' ) )
+    vsiPrefix.append( '/' );
+
+  QString vsiPath = path;
+  if ( vsiPath.endsWith( '/' ) )
+    vsiPath.chop( 1 );
+
+  const QString bucket = vsiPrefix + vsiPath;
+
+  for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
+  {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
+    VSISetPathSpecificOption( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#elif GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 5, 0)
+    VSISetCredential( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
+#else
+    ( void )bucket;
+    QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), QStringLiteral( "GDAL" ), Qgis::MessageLevel::Critical );
+    return false;
+#endif
+  }
+  return true;
 }
 #endif

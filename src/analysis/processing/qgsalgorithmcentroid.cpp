@@ -64,6 +64,11 @@ QString QgsCentroidAlgorithm::shortHelpString() const
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsCentroidAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios;
+}
+
 QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
 {
   return new QgsCentroidAlgorithm();
@@ -71,10 +76,11 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
 
 void QgsCentroidAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterBoolean> allParts = std::make_unique< QgsProcessingParameterBoolean >(
-        QStringLiteral( "ALL_PARTS" ),
-        QObject::tr( "Create centroid for each part" ),
-        false );
+  std::unique_ptr<QgsProcessingParameterBoolean> allParts = std::make_unique<QgsProcessingParameterBoolean>(
+    QStringLiteral( "ALL_PARTS" ),
+    QObject::tr( "Create centroid for each part" ),
+    false
+  );
   allParts->setIsDynamic( true );
   allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "All parts" ), QObject::tr( "Create centroid for each part" ), QgsPropertyDefinition::Boolean ) );
   allParts->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -86,7 +92,7 @@ bool QgsCentroidAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
   mAllParts = parameterAsBoolean( parameters, QStringLiteral( "ALL_PARTS" ), context );
   mDynamicAllParts = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ALL_PARTS" ) );
   if ( mDynamicAllParts )
-    mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value< QgsProperty >();
+    mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value<QgsProperty>();
 
   return true;
 }

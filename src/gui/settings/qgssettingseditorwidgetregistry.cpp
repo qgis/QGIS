@@ -22,9 +22,6 @@
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgssettingsentry.h"
 
-#include "qgsvectorsimplifymethod.h"
-
-
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
 #endif
@@ -32,11 +29,11 @@
 
 QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
 {
-  addWrapper( new QgsSettingsStringEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsBoolEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsIntegerEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsDoubleEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsColorEditorWidgetWrapper() );
+  addWrapper( new QgsSettingsStringLineEditWrapper() );
+  addWrapper( new QgsSettingsBoolCheckBoxWrapper() );
+  addWrapper( new QgsSettingsIntegerSpinBoxWrapper() );
+  addWrapper( new QgsSettingsDoubleSpinBoxWrapper() );
+  addWrapper( new QgsSettingsColorButtonWrapper() );
 
   // enum
 #if defined( HAVE_QTSERIALPORT )
@@ -57,13 +54,12 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::SnappingType>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::TilePixelRatio>() );
 
-  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsVectorSimplifyMethod::SimplifyAlgorithm>() );
-  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsVectorSimplifyMethod::SimplifyHints>() );
+  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::VectorSimplificationAlgorithm>() );
+  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::VectorRenderingSimplificationFlags>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qt::TimeSpec>() );
 
   // flags
   addWrapper( new QgsSettingsFlagsEditorWidgetWrapper<Qgis::GpsInformationComponent, Qgis::GpsInformationComponents>() );
-
 }
 
 QgsSettingsEditorWidgetRegistry::~QgsSettingsEditorWidgetRegistry()
@@ -84,6 +80,11 @@ bool QgsSettingsEditorWidgetRegistry::addWrapper( QgsSettingsEditorWidgetWrapper
   return true;
 }
 
+void QgsSettingsEditorWidgetRegistry::addWrapperForSetting( QgsSettingsEditorWidgetWrapper *wrapper, const QgsSettingsEntryBase *setting )
+{
+  mSpecificWrappers.insert( setting, wrapper );
+}
+
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( const QString &id, QObject *parent ) const
 {
   QgsSettingsEditorWidgetWrapper *wrapper = mWrappers.value( id );
@@ -100,6 +101,10 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
 
 QWidget *QgsSettingsEditorWidgetRegistry::createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent ) const
 {
+  if ( mSpecificWrappers.contains( setting ) )
+  {
+    return mSpecificWrappers.value( setting )->createEditor( setting, dynamicKeyPartList, parent );
+  }
   QgsSettingsEditorWidgetWrapper *eww = createWrapper( setting->typeId(), parent );
   if ( eww )
     return eww->createEditor( setting, dynamicKeyPartList, parent );

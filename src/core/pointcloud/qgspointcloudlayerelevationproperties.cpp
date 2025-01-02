@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerelevationproperties.h"
+#include "moc_qgspointcloudlayerelevationproperties.cpp"
 #include "qgspointcloudlayer.h"
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
@@ -139,6 +140,17 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
   }
 
   return QgsDoubleRange();
+}
+
+QList<double> QgsPointCloudLayerElevationProperties::significantZValues( QgsMapLayer *layer ) const
+{
+  const QgsDoubleRange range = calculateZRange( layer );
+  if ( !range.isInfinite() && range.lower() != range.upper() )
+    return {range.lower(), range.upper() };
+  else if ( !range.isInfinite() )
+    return {range.lower() };
+  else
+    return {};
 }
 
 bool QgsPointCloudLayerElevationProperties::showByDefaultInElevationProfilePlots() const

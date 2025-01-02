@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/core/qgseditorwidgetautoconf.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,7 +18,6 @@ Base class for plugins allowing to pick automatically a widget type for editing 
 #include "qgseditorwidgetautoconf.h"
 %End
   public:
-
     virtual ~QgsEditorWidgetAutoConfPlugin();
 
     virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score /Out/ ) const = 0;
@@ -35,7 +34,6 @@ Typical scores are:
 :return: - and integer value rating how good is the setup provided by this plugin.
          - score: Where the score is returned (default to 0)
 %End
-
 };
 
 
@@ -46,5 +44,5 @@ Typical scores are:
  *                                                                      *
  * src/gui/editorwidgets/core/qgseditorwidgetautoconf.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

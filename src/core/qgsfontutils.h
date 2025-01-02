@@ -28,6 +28,7 @@ class QMimeData;
 /**
  * \ingroup core
  * \class QgsFontUtils
+ * \brief Contains utility functions for working with fonts.
  */
 class CORE_EXPORT QgsFontUtils
 {

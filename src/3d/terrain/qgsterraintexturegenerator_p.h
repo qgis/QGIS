@@ -37,7 +37,7 @@ class QgsRasterLayer;
 #include <QObject>
 #include <QSize>
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgsrectangle.h"
 
 class Qgs3DMapSettings;
@@ -90,11 +90,11 @@ class QgsTerrainTextureGenerator : public QObject
 
     struct JobData
     {
-      int jobId;
-      QgsChunkNodeId tileId;
-      QgsMapRendererSequentialJob *job = nullptr;
-      QgsRectangle extent;
-      QString debugText;
+        int jobId;
+        QgsChunkNodeId tileId;
+        QgsMapRendererSequentialJob *job = nullptr;
+        QgsRectangle extent;
+        QString debugText;
     };
 
     QHash<QgsMapRendererSequentialJob *, JobData> mJobs;

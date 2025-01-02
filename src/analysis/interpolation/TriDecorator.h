@@ -31,11 +31,10 @@
 class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
 {
   public:
-    //! Constructor for TriDecorator
     TriDecorator() = default;
     //! Constructor for TriDecorator with an existing triangulation
     explicit TriDecorator( QgsTriangulation *t );
-    void addLine( const QVector< QgsPoint> &points, QgsInterpolator::SourceType lineType ) override;
+    void addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Adds an association to a triangulation
     virtual void addTriangulation( QgsTriangulation *t );
@@ -60,6 +59,7 @@ class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
     bool pointInside( double x, double y ) override;
     bool swapEdge( double x, double y ) override;
     QList<int> pointsAroundEdge( double x, double y ) override;
+
   protected:
     //! Association with a Triangulation object
     QgsTriangulation *mTIN = nullptr;
@@ -70,7 +70,6 @@ class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
 inline TriDecorator::TriDecorator( QgsTriangulation *t )
   : mTIN( t )
 {
-
 }
 
 inline void TriDecorator::addTriangulation( QgsTriangulation *t )
@@ -80,4 +79,3 @@ inline void TriDecorator::addTriangulation( QgsTriangulation *t )
 
 #endif
 #endif
-

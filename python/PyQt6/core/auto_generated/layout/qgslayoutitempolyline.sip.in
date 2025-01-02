@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitempolyline.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -54,6 +54,8 @@ The caller takes responsibility for deleting the returned object.
     virtual QString displayName() const;
 
     virtual QPainterPath shape() const;
+
+    virtual bool isValid() const;
 
 
     QgsLineSymbol *symbol();
@@ -244,5 +246,5 @@ Returns the pen width in millimeters for the stroke of the arrow head.
  *                                                                      *
  * src/core/layout/qgslayoutitempolyline.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

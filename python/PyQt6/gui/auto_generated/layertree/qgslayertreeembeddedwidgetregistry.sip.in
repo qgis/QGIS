@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layertree/qgslayertreeembeddedwidgetregistry.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -65,7 +65,6 @@ Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned w
 #include "qgslayertreeembeddedwidgetregistry.h"
 %End
   public:
-
     QgsLayerTreeEmbeddedWidgetRegistry();
 %Docstring
 Constructor for QgsLayerTreeEmbeddedWidgetRegistry
@@ -101,7 +100,6 @@ Returns ``True`` on success, ``False`` if the provider was not registered.
 
   protected:
 
-
   private:
     QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other );
 };
@@ -112,5 +110,5 @@ Returns ``True`` on success, ``False`` if the provider was not registered.
  *                                                                      *
  * src/gui/layertree/qgslayertreeembeddedwidgetregistry.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

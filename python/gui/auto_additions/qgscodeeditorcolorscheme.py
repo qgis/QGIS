@@ -35,6 +35,52 @@ QgsCodeEditorColorScheme.ColorRole.ErrorBackground.__doc__ = "Error background c
 QgsCodeEditorColorScheme.ColorRole.FoldIconForeground.__doc__ = "Fold icon foreground color"
 QgsCodeEditorColorScheme.ColorRole.FoldIconHalo.__doc__ = "Fold icon halo color"
 QgsCodeEditorColorScheme.ColorRole.IndentationGuide.__doc__ = "Indentation guide line"
-QgsCodeEditorColorScheme.ColorRole.SearchMatchBackground.__doc__ = "Background color for search matches (since QGIS 3.38)"
-QgsCodeEditorColorScheme.ColorRole.__doc__ = "Color roles.\n\n" + '* ``Default``: ' + QgsCodeEditorColorScheme.ColorRole.Default.__doc__ + '\n' + '* ``Keyword``: ' + QgsCodeEditorColorScheme.ColorRole.Keyword.__doc__ + '\n' + '* ``Class``: ' + QgsCodeEditorColorScheme.ColorRole.Class.__doc__ + '\n' + '* ``Method``: ' + QgsCodeEditorColorScheme.ColorRole.Method.__doc__ + '\n' + '* ``Decoration``: ' + QgsCodeEditorColorScheme.ColorRole.Decoration.__doc__ + '\n' + '* ``Number``: ' + QgsCodeEditorColorScheme.ColorRole.Number.__doc__ + '\n' + '* ``Comment``: ' + QgsCodeEditorColorScheme.ColorRole.Comment.__doc__ + '\n' + '* ``CommentLine``: ' + QgsCodeEditorColorScheme.ColorRole.CommentLine.__doc__ + '\n' + '* ``CommentBlock``: ' + QgsCodeEditorColorScheme.ColorRole.CommentBlock.__doc__ + '\n' + '* ``Background``: ' + QgsCodeEditorColorScheme.ColorRole.Background.__doc__ + '\n' + '* ``Cursor``: ' + QgsCodeEditorColorScheme.ColorRole.Cursor.__doc__ + '\n' + '* ``CaretLine``: ' + QgsCodeEditorColorScheme.ColorRole.CaretLine.__doc__ + '\n' + '* ``SingleQuote``: ' + QgsCodeEditorColorScheme.ColorRole.SingleQuote.__doc__ + '\n' + '* ``DoubleQuote``: ' + QgsCodeEditorColorScheme.ColorRole.DoubleQuote.__doc__ + '\n' + '* ``TripleSingleQuote``: ' + QgsCodeEditorColorScheme.ColorRole.TripleSingleQuote.__doc__ + '\n' + '* ``TripleDoubleQuote``: ' + QgsCodeEditorColorScheme.ColorRole.TripleDoubleQuote.__doc__ + '\n' + '* ``Operator``: ' + QgsCodeEditorColorScheme.ColorRole.Operator.__doc__ + '\n' + '* ``QuotedOperator``: ' + QgsCodeEditorColorScheme.ColorRole.QuotedOperator.__doc__ + '\n' + '* ``Identifier``: ' + QgsCodeEditorColorScheme.ColorRole.Identifier.__doc__ + '\n' + '* ``QuotedIdentifier``: ' + QgsCodeEditorColorScheme.ColorRole.QuotedIdentifier.__doc__ + '\n' + '* ``Tag``: ' + QgsCodeEditorColorScheme.ColorRole.Tag.__doc__ + '\n' + '* ``UnknownTag``: ' + QgsCodeEditorColorScheme.ColorRole.UnknownTag.__doc__ + '\n' + '* ``MarginBackground``: ' + QgsCodeEditorColorScheme.ColorRole.MarginBackground.__doc__ + '\n' + '* ``MarginForeground``: ' + QgsCodeEditorColorScheme.ColorRole.MarginForeground.__doc__ + '\n' + '* ``SelectionBackground``: ' + QgsCodeEditorColorScheme.ColorRole.SelectionBackground.__doc__ + '\n' + '* ``SelectionForeground``: ' + QgsCodeEditorColorScheme.ColorRole.SelectionForeground.__doc__ + '\n' + '* ``MatchedBraceBackground``: ' + QgsCodeEditorColorScheme.ColorRole.MatchedBraceBackground.__doc__ + '\n' + '* ``MatchedBraceForeground``: ' + QgsCodeEditorColorScheme.ColorRole.MatchedBraceForeground.__doc__ + '\n' + '* ``Edge``: ' + QgsCodeEditorColorScheme.ColorRole.Edge.__doc__ + '\n' + '* ``Fold``: ' + QgsCodeEditorColorScheme.ColorRole.Fold.__doc__ + '\n' + '* ``Error``: ' + QgsCodeEditorColorScheme.ColorRole.Error.__doc__ + '\n' + '* ``ErrorBackground``: ' + QgsCodeEditorColorScheme.ColorRole.ErrorBackground.__doc__ + '\n' + '* ``FoldIconForeground``: ' + QgsCodeEditorColorScheme.ColorRole.FoldIconForeground.__doc__ + '\n' + '* ``FoldIconHalo``: ' + QgsCodeEditorColorScheme.ColorRole.FoldIconHalo.__doc__ + '\n' + '* ``IndentationGuide``: ' + QgsCodeEditorColorScheme.ColorRole.IndentationGuide.__doc__ + '\n' + '* ``SearchMatchBackground``: ' + QgsCodeEditorColorScheme.ColorRole.SearchMatchBackground.__doc__
+QgsCodeEditorColorScheme.ColorRole.SearchMatchBackground.__doc__ = "Background color for search matches \n.. versionadded:: 3.38"
+QgsCodeEditorColorScheme.ColorRole.__doc__ = """Color roles.
+
+* ``Default``: Default text color
+* ``Keyword``: Keyword color
+* ``Class``: Class color
+* ``Method``: Method color
+* ``Decoration``: Decoration color
+* ``Number``: Number color
+* ``Comment``: Comment color
+* ``CommentLine``: Line comment color
+* ``CommentBlock``: Comment block color
+* ``Background``: Background color
+* ``Cursor``: Cursor color
+* ``CaretLine``: Caret line color
+* ``SingleQuote``: Single quote color
+* ``DoubleQuote``: Double quote color
+* ``TripleSingleQuote``: Triple single quote color
+* ``TripleDoubleQuote``: Triple double quote color
+* ``Operator``: Operator color
+* ``QuotedOperator``: Quoted operator color
+* ``Identifier``: Identifier color
+* ``QuotedIdentifier``: Quoted identifier color
+* ``Tag``: Tag color
+* ``UnknownTag``: Unknown tag
+* ``MarginBackground``: Margin background color
+* ``MarginForeground``: Margin foreground color
+* ``SelectionBackground``: Selection background color
+* ``SelectionForeground``: Selection foreground color
+* ``MatchedBraceBackground``: Matched brace background color
+* ``MatchedBraceForeground``: Matched brace foreground color
+* ``Edge``: Edge color
+* ``Fold``: Fold color
+* ``Error``: Error color
+* ``ErrorBackground``: Error background color
+* ``FoldIconForeground``: Fold icon foreground color
+* ``FoldIconHalo``: Fold icon halo color
+* ``IndentationGuide``: Indentation guide line
+* ``SearchMatchBackground``: Background color for search matches
+
+  .. versionadded:: 3.38
+
+
+"""
 # --
+try:
+    QgsCodeEditorColorScheme.__group__ = ['codeeditors']
+except (NameError, AttributeError):
+    pass

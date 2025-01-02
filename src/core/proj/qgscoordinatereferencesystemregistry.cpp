@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscoordinatereferencesystemregistry.h"
+#include "moc_qgscoordinatereferencesystemregistry.cpp"
 #include "qgscoordinatereferencesystem_p.h"
 #include "qgscoordinatetransform.h"
 #include "qgsapplication.h"
@@ -351,7 +352,8 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
 QMap<QString, QgsProjOperation> QgsCoordinateReferenceSystemRegistry::projOperations() const
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [this]
+  static QMap< QString, QgsProjOperation > sProjOperations;
+  std::call_once( initialized, []
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize PROJ operations" ) );
 
@@ -367,21 +369,21 @@ QMap<QString, QgsProjOperation> QgsCoordinateReferenceSystemRegistry::projOperat
       value.mDescription = descriptionParts.value( 0 );
       value.mDetails = descriptionParts.mid( 1 ).join( '\n' );
 
-      mProjOperations.insert( value.id(), value );
+      sProjOperations.insert( value.id(), value );
 
       operation++;
     }
   } );
 
-  return mProjOperations;
+  return sProjOperations;
 }
 
 QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies() const
 {
 #if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
-
+  static QList< QgsCelestialBody > sCelestialBodies;
   static std::once_flag initialized;
-  std::call_once( initialized, [this]
+  std::call_once( initialized, []
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Initialize celestial bodies" ) );
 
@@ -389,7 +391,7 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
 
     int resultCount = 0;
     PROJ_CELESTIAL_BODY_INFO **list = proj_get_celestial_body_list_from_database( context, nullptr, &resultCount );
-    mCelestialBodies.reserve( resultCount );
+    sCelestialBodies.reserve( resultCount );
     for ( int i = 0; i < resultCount; i++ )
     {
       const PROJ_CELESTIAL_BODY_INFO *info = list[ i ];
@@ -401,12 +403,12 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
       body.mAuthority = QString( info->auth_name );
       body.mName = QString( info->name );
 
-      mCelestialBodies << body;
+      sCelestialBodies << body;
     }
     proj_celestial_body_list_destroy( list );
   } );
 
-  return mCelestialBodies;
+  return sCelestialBodies;
 #else
   throw QgsNotSupportedException( QObject::tr( "Retrieving celestial bodies requires a QGIS build based on PROJ 8.1 or later" ) );
 #endif
@@ -414,8 +416,9 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
 
 QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
 {
+  static QSet< QString > sKnownAuthorities;
   static std::once_flag initialized;
-  std::call_once( initialized, [this]
+  std::call_once( initialized, []
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Initialize authorities" ) );
 
@@ -425,49 +428,52 @@ QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
     for ( auto authIter = authorities; authIter && *authIter; ++authIter )
     {
       const QString authority( *authIter );
-      mKnownAuthorities.insert( authority.toLower() );
+      sKnownAuthorities.insert( authority.toLower() );
     }
 
     proj_string_list_destroy( authorities );
   } );
 
-  return mKnownAuthorities;
+  return sKnownAuthorities;
 }
 
 QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
 {
-  static std::once_flag initialized;
-  std::call_once( initialized, [this]
+  QgsReadWriteLocker locker( mCrsDbRecordsLock, QgsReadWriteLocker::Read );
+  if ( mCrsDbRecordsPopulated )
+    return mCrsDbRecords;
+
+  locker.changeMode( QgsReadWriteLocker::Write );
+
+  const QString srsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
+  if ( QFileInfo::exists( srsDatabaseFileName ) )
   {
-    const QString srsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
-    if ( QFileInfo::exists( srsDatabaseFileName ) )
+    // open the database containing the spatial reference data, and do a one-time read
+    sqlite3_database_unique_ptr database;
+    int result = database.open_v2( srsDatabaseFileName, SQLITE_OPEN_READONLY, nullptr );
+    if ( result == SQLITE_OK )
     {
-      // open the database containing the spatial reference data, and do a one-time read
-      sqlite3_database_unique_ptr database;
-      int result = database.open_v2( srsDatabaseFileName, SQLITE_OPEN_READONLY, nullptr );
+      const QString sql = QStringLiteral( "SELECT description, srs_id, auth_name, auth_id, projection_acronym, deprecated, srs_type FROM tbl_srs" );
+      sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
       if ( result == SQLITE_OK )
       {
-        const QString sql = QStringLiteral( "SELECT description, srs_id, auth_name, auth_id, projection_acronym, deprecated, srs_type FROM tbl_srs" );
-        sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
-        if ( result == SQLITE_OK )
+        while ( preparedStatement.step() == SQLITE_ROW )
         {
-          while ( preparedStatement.step() == SQLITE_ROW )
-          {
-            QgsCrsDbRecord record;
-            record.description = preparedStatement.columnAsText( 0 );
-            record.srsId = preparedStatement.columnAsText( 1 );
-            record.authName = preparedStatement.columnAsText( 2 );
-            record.authId = preparedStatement.columnAsText( 3 );
-            record.projectionAcronym = preparedStatement.columnAsText( 4 );
-            record.deprecated = preparedStatement.columnAsText( 5 ).toInt();
-            record.type = qgsEnumKeyToValue( preparedStatement.columnAsText( 6 ), Qgis::CrsType::Unknown );
-            mCrsDbRecords.append( record );
-          }
+          QgsCrsDbRecord record;
+          record.description = preparedStatement.columnAsText( 0 );
+          record.srsId = preparedStatement.columnAsText( 1 );
+          record.authName = preparedStatement.columnAsText( 2 );
+          record.authId = preparedStatement.columnAsText( 3 );
+          record.projectionAcronym = preparedStatement.columnAsText( 4 );
+          record.deprecated = preparedStatement.columnAsText( 5 ).toInt();
+          record.type = qgsEnumKeyToValue( preparedStatement.columnAsText( 6 ), Qgis::CrsType::Unknown );
+          mCrsDbRecords.append( record );
         }
       }
     }
-  } );
+  }
 
+  mCrsDbRecordsPopulated = true;
   return mCrsDbRecords;
 }
 

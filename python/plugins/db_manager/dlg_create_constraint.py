@@ -30,7 +30,7 @@ from .dlg_db_error import DlgDbError
 from .db_plugins.plugin import TableConstraint
 from .gui_utils import GuiUtils
 
-Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgCreateConstraint.ui'))
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgCreateConstraint.ui"))
 
 
 class DlgCreateConstraint(QDialog, Ui_Dialog):
@@ -65,7 +65,11 @@ class DlgCreateConstraint(QDialog, Ui_Dialog):
     def getConstraint(self):
         constr = TableConstraint(self.table)
         constr.name = ""
-        constr.type = TableConstraint.TypePrimaryKey if self.radPrimaryKey.isChecked() else TableConstraint.TypeUnique
+        constr.type = (
+            TableConstraint.TypePrimaryKey
+            if self.radPrimaryKey.isChecked()
+            else TableConstraint.TypeUnique
+        )
         constr.columns = []
         column = self.cboColumn.currentText()
         for fld in self.table.fields():

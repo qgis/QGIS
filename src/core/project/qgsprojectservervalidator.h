@@ -35,9 +35,6 @@ class CORE_EXPORT QgsProjectServerValidator
 
   public:
 
-    /**
-     * Constructor for QgsProjectServerValidator.
-     */
     QgsProjectServerValidator() = default;
 
     /**

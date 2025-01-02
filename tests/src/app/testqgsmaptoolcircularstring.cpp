@@ -77,7 +77,7 @@ void TestQgsMapToolCircularString::initTestCase()
 
   mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
-//  mCanvas->setMapTool( mMapTool );
+  //  mCanvas->setMapTool( mMapTool );
 }
 
 void TestQgsMapToolCircularString::cleanupTestCase()
@@ -94,7 +94,7 @@ void TestQgsMapToolCircularString::cleanup()
 void TestQgsMapToolCircularString::resetMapTool( QgsMapToolShapeMetadata *metadata )
 {
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
-  mMapTool->setCurrentShapeMapTool( metadata ) ;
+  mMapTool->setCurrentShapeMapTool( metadata );
 }
 
 void TestQgsMapToolCircularString::testAddCircularStringCurvePoint()
@@ -111,10 +111,10 @@ void TestQgsMapToolCircularString::testAddCircularStringCurvePoint()
   utils.mouseClick( 0, 2, Qt::RightButton );
   const QgsFeatureId newFid = utils.newFeatureId();
 
-  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QCOMPARE( mLayer->featureCount(), ( long ) 1 );
   const QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 0 333, 1 1 333, 0 2 333))";
+  const QString wkt = "CompoundCurve Z (CircularString Z (0 0 333, 1 1 333, 0 2 333))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
@@ -136,10 +136,10 @@ void TestQgsMapToolCircularString::testAddCircularStringRadius()
   utils.mouseClick( 0, 2, Qt::RightButton );
   const QgsFeatureId newFid = utils.newFeatureId();
 
-  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QCOMPARE( mLayer->featureCount(), ( long ) 1 );
   const QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 0 111, 0.17912878474779187 0.82087121525220819 111, 1 1 111))";
+  const QString wkt = "CompoundCurve Z (CircularString Z (0 0 111, 0.17912878474779187 0.82087121525220819 111, 1 1 111))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
@@ -165,10 +165,10 @@ void TestQgsMapToolCircularString::testAddCircularStringRadiusWithDeletedVertex(
   utils.mouseClick( 0, 2, Qt::RightButton );
   const QgsFeatureId newFid = utils.newFeatureId();
 
-  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QCOMPARE( mLayer->featureCount(), ( long ) 1 );
   const QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 0 111, 0.17912878474779187 0.82087121525220819 111, 1 1 111))";
+  const QString wkt = "CompoundCurve Z (CircularString Z (0 0 111, 0.17912878474779187 0.82087121525220819 111, 1 1 111))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
@@ -200,12 +200,12 @@ void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
   utilsCircular.mouseClick( 4, 2, Qt::RightButton );
   const QgsFeatureId newFid = utilsCircular.newFeatureId();
 
-  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QCOMPARE( mLayer->featureCount(), ( long ) 1 );
   const QgsFeature f = mLayer->getFeature( newFid );
 
   qDebug() << f.geometry().asWkt();
 
-  const QString wkt = "CompoundCurveZ ((2 1 333, 2 0 333, 0 0 333),CircularStringZ (0 0 333, 1 1 333, 0 2 333),(0 2 333, 2 2 333, 4 2 333))";
+  const QString wkt = "CompoundCurve Z ((2 1 333, 2 0 333, 0 0 333),CircularString Z (0 0 333, 1 1 333, 0 2 333),(0 2 333, 2 2 333, 4 2 333))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();

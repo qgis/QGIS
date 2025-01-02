@@ -97,6 +97,17 @@ namespace MDAL
       virtual size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       virtual size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
 
+      static void populate_vector_vals( double *vals, size_t i,
+                                        const std::vector<double> &vals_x, const std::vector<double> &vals_y,
+                                        size_t idx, double fill_val_x, double fill_val_y );
+      static void populate_polar_vector_vals( double *vals, size_t i,
+                                              const std::vector<double> &vals_x, const std::vector<double> &vals_y,
+                                              size_t idx, double fill_val_x, double fill_val_y, std::pair<double, double> referenceAngles );
+      static void populate_scalar_vals( double *vals, size_t i,
+                                        const std::vector<double> &rawVals,
+                                        size_t idx,
+                                        double fill_val );
+      static void fromClassificationToValue( const MDAL::Classification &classification, std::vector<double> &values, size_t classStartAt = 0 );
     protected:
       double mFillValX;
       double mFillValY;

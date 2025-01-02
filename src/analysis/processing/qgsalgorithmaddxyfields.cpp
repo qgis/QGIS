@@ -62,7 +62,7 @@ QString QgsAddXYFieldsAlgorithm::outputName() const
 
 QList<int> QgsAddXYFieldsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );
 }
 
 QgsAddXYFieldsAlgorithm *QgsAddXYFieldsAlgorithm::createInstance() const
@@ -104,8 +104,8 @@ QgsFields QgsAddXYFieldsAlgorithm::outputFields( const QgsFields &inputFields ) 
     const QString yFieldName = mPrefix + 'y';
 
     QgsFields outFields = inputFields;
-    outFields.append( QgsField( xFieldName, QVariant::Double, QString(), 20, 10 ) );
-    outFields.append( QgsField( yFieldName, QVariant::Double, QString(), 20, 10 ) );
+    outFields.append( QgsField( xFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
+    outFields.append( QgsField( yFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
     return outFields;
   }
 }
@@ -161,7 +161,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
       feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
     }
   }
-  QgsFeature f =  feature;
+  QgsFeature f = feature;
   QgsAttributes attributes = f.attributes();
   if ( !mIsInPlace )
   {
@@ -169,8 +169,8 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
   }
   else
   {
-    attributes[mInPlaceXFieldIndex] = x;
-    attributes[mInPlaceYFieldIndex] = y;
+    attributes[mInPlaceXFieldIndex] = std::move( x );
+    attributes[mInPlaceYFieldIndex] = std::move( y );
   }
   f.setAttributes( attributes );
   return QgsFeatureList() << f;
@@ -178,7 +178,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
 
 bool QgsAddXYFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Point;
   }

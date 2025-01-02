@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingrecentalgorithmlog.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,6 @@ The log contents are saved and restored via :py:class:`QgsSettings`.
 #include "qgsprocessingrecentalgorithmlog.h"
 %End
   public:
-
     QgsProcessingRecentAlgorithmLog( QObject *parent = 0 );
 %Docstring
 Constructor for QgsProcessingRecentAlgorithmLog, with the specified
@@ -68,5 +67,5 @@ a new algorithm ID is pushed to the list (see :py:func:`~QgsProcessingRecentAlgo
  *                                                                      *
  * src/gui/processing/qgsprocessingrecentalgorithmlog.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

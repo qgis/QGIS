@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsinterpolatedlinerenderer.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -308,9 +308,6 @@ The interpolation is done between two values defined at the extremities
   public:
 
     QgsInterpolatedLineSymbolLayer();
-%Docstring
-Constructor
-%End
 
     static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
 %Docstring
@@ -343,29 +340,33 @@ Creates the symbol layer
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
- void setExpressionsStringForWidth( const QString &start, const QString &end ) /Deprecated/;
+ void setExpressionsStringForWidth( const QString &start, const QString &end ) /Deprecated="Since 3.40. Use setDataDefinedProperty( QgsSymbolLayer.PropertyLineStartWidthValue ) and setDataDefinedProperty( QgsSymbolLayer.PropertyLineEndWidthValue ) instead."/;
 %Docstring
 Sets the expressions (as string) that define the extremety values af the line feature for width.
 
-.. deprecated::
-   use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead
+.. deprecated:: 3.40
+
+   Use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
 %End
 
- QString startValueExpressionForWidth() const /Deprecated/;
+ QString startValueExpressionForWidth() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineStartWidthValue ) instead."/;
 %Docstring
 Returns the epression related to the start extremity value for width.
 
-.. deprecated::
-   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) instead.
+.. deprecated:: 3.40
+
+   Use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) instead.
 %End
 
- QString endValueExpressionForWidth() const /Deprecated/;
+ QString endValueExpressionForWidth() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineEndWidthValue ) instead."/;
 %Docstring
 Returns the expression related to the end extremity value for width.
 
-.. deprecated::
-   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
+.. deprecated:: 3.40
+
+   Use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
 %End
+
 
     void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
 %Docstring
@@ -395,28 +396,31 @@ Returns the interpolated width used to render the width of lines, see ``:py:clas
 .. seealso:: :py:func:`setInterpolatedWidth`
 %End
 
- void setExpressionsStringForColor( const QString &start, const QString &end ) /Deprecated/;
+ void setExpressionsStringForColor( const QString &start, const QString &end ) /Deprecated="Since 3.40. Use setDataDefinedProperty( QgsSymbolLayer.PropertyLineStartColorValue ) and setDataDefinedProperty( QgsSymbolLayer.PropertyLineEndColorValue ) instead."/;
 %Docstring
 Sets the expressions (as string) that define the extremety values af the line feature for color.
 
-.. deprecated::
-   use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead
+.. deprecated:: 3.40
+
+   Use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead.
 %End
 
- QString startValueExpressionForColor() const /Deprecated/;
+ QString startValueExpressionForColor() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineStartColorValue ) instead."/;
 %Docstring
 Returns the epression related to the start extremity value for width for color
 
-.. deprecated::
-   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) instead.
+.. deprecated:: 3.40
+
+   Use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) instead.
 %End
 
- QString endValueExpressionForColor() const /Deprecated/;
+ QString endValueExpressionForColor() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineEndColorValue ) instead."/;
 %Docstring
 Returns the expression related to the end extremity value for width for color
 
-.. deprecated::
-   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead.
+.. deprecated:: 3.40
+
+   Use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead.
 %End
 
     void setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor );
@@ -443,5 +447,5 @@ Returns the interpolated color used to render the colors of lines, see ``:py:cla
  *                                                                      *
  * src/core/symbology/qgsinterpolatedlinerenderer.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

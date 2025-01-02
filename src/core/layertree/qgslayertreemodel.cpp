@@ -17,10 +17,12 @@
 #include <QTextStream>
 
 #include "qgslayertreemodel.h"
+#include "moc_qgslayertreemodel.cpp"
 
 #include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsproject.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
@@ -286,10 +288,15 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         if ( layer->isSpatial() && layer->crs().isValid() )
         {
+          QString layerCrs = layer->crs().authid();
+          if ( !std::isnan( layer->crs().coordinateEpoch() ) )
+          {
+            layerCrs += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
+          }
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-            title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() ).toHtmlEscaped();
+            title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layerCrs ).toHtmlEscaped();
           else
-            title += tr( " (%1)" ).arg( layer->crs().authid() ).toHtmlEscaped();
+            title += tr( " (%1)" ).arg( layerCrs ).toHtmlEscaped();
         }
 
         QStringList parts;
@@ -986,6 +993,11 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   connect( layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeModel::layerLegendChanged, Qt::UniqueConnection );
   connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeModel::layerFlagsChanged, Qt::UniqueConnection );
 
+  if ( QgsMapLayerElevationProperties *elevationProperties = layer->elevationProperties() )
+  {
+    connect( elevationProperties, &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsLayerTreeModel::layerProfileGenerationPropertyChanged, Qt::UniqueConnection );
+  }
+
   // using unique connection because there may be temporarily more nodes for a layer than just one
   // which would create multiple connections, however disconnect() would disconnect all multiple connections
   // even if we wanted to disconnect just one connection in each call.
@@ -1204,7 +1216,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
       return false;
     QgsReadWriteContext context;
     QString errorMessage;
-    QgsLayerDefinition::loadLayerDefinition( layerDefinitionDoc, QgsProject::instance(), QgsLayerTree::toGroup( nodeParent ), errorMessage, context );
+    QgsLayerDefinition::loadLayerDefinition( layerDefinitionDoc, QgsProject::instance(), QgsLayerTree::toGroup( nodeParent ), errorMessage, context ); // skip-keyword-check
     emit messageEmitted( tr( "New layers added from another QGIS instance" ) );
   }
   else
@@ -1224,7 +1236,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
     QDomElement elem = rootLayerTreeElem.firstChildElement();
     while ( !elem.isNull() )
     {
-      QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() );
+      QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() ); // skip-keyword-check
       if ( node )
         nodes << node;
 
@@ -1296,7 +1308,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
     {
       for ( QgsLayerTreeModelLegendNode *node : std::as_const( nodes ) )
       {
-        switch ( node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).value<QgsLayerTreeModelLegendNode::NodeTypes>() )
+        const QgsLayerTreeModelLegendNode::NodeTypes nodeType = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).value<QgsLayerTreeModelLegendNode::NodeTypes>();
+        switch ( nodeType )
         {
           case QgsLayerTreeModelLegendNode::EmbeddedWidget:
             filtered << node;
@@ -1311,6 +1324,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
           case QgsLayerTreeModelLegendNode::ColorRampLegend:
           {
             const QString ruleKey = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+            const bool isDataDefinedSize = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::IsDataDefinedSize ) ).toBool();
             const bool checked = ( mFilterSettings && !( mFilterSettings->flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
                                  || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
 
@@ -1319,7 +1333,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const
               if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() ) )
               {
                 auto it = mHitTestResults.constFind( vl->id() );
-                if ( it != mHitTestResults.constEnd() && it->contains( ruleKey ) )
+                if ( it != mHitTestResults.constEnd() &&
+                     ( it->contains( ruleKey ) ||
+                       ( !it->isEmpty() && isDataDefinedSize )
+                     )
+                   )
                 {
                   filtered << node;
                 }
@@ -1767,6 +1785,26 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
   }
 
   mInvalidatedNodes.clear();
+}
+
+void QgsLayerTreeModel::layerProfileGenerationPropertyChanged()
+{
+  if ( !mRootNode )
+    return;
+
+  QgsMapLayerElevationProperties *elevationProperties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
+  if ( !elevationProperties )
+    return;
+
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( elevationProperties->parent() ) )
+  {
+    QgsLayerTreeLayer *nodeLayer = mRootNode->findLayer( layer->id() );
+    if ( !nodeLayer )
+      return;
+
+    QModelIndex index = node2index( nodeLayer );
+    emit dataChanged( index, index );
+  }
 }
 
 // Legend nodes routines - end

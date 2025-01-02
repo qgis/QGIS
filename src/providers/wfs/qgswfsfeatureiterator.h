@@ -32,7 +32,7 @@ class QgsWFSSharedData;
 class QgsVectorDataProvider;
 
 //! Utility class to issue a GetFeature resultType=hits request
-class QgsWFSFeatureHitsAsyncRequest final: public QgsWfsRequest
+class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest
 {
     Q_OBJECT
   public:
@@ -64,15 +64,16 @@ class QgsWFSFeatureHitsAsyncRequest final: public QgsWfsRequest
  * A progress dialog may pop-up in GUI mode (if the download takes a certain time)
  * to allow canceling the download.
 */
-class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeatureDownloaderImpl
+class QgsWFSFeatureDownloaderImpl final : public QgsWfsRequest, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
 
-    DEFINE_FEATURE_DOWNLOADER_IMPL_SLOTS
+    DEFINE_FEATURE_DOWNLOADER_IMPL_SLOTS // cppcheck-suppress duplInheritedMember
 
-  signals:
-    /* Used internally by the stop() method */
-    void doStop();
+      signals :
+      /* Used internally by the stop() method */
+      void
+      doStop();
 
     /* Emitted with the total accumulated number of features downloaded. */
     void updateProgress( long long totalFeatureCount );
@@ -90,7 +91,7 @@ class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeature
     void startHitsRequest();
     void gotHitsResponse();
 
-    void createProgressDialog();
+    void createProgressTask();
 
   private:
     QUrl buildURL( qint64 startIndex, long long maxFeatures, bool forHits );

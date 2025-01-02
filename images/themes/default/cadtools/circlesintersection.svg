@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+ <g fill="none" stroke-linecap="square">
+  <circle cx="8" cy="16" r="1" stop-color="#000000" stroke="#000" stroke-width=".5"/>
+  <circle cx="16" cy="9" r="1" stop-color="#000000" stroke="#000" stroke-width=".5"/>
+  <circle cx="16" cy="9" r="6.5" stop-color="#000000" stroke="#f3e278"/>
+  <circle cx="8" cy="16" r="7.5" stop-color="#000000" stroke="#f3e278"/>
+ </g>
+ <circle cx="8" cy="16" r="1" fill="#f3e278" stop-color="#000000"/>
+ <circle cx="8" cy="16" r="7.5" fill="none" stop-color="#000000" stroke="#000" stroke-dasharray="1,3" stroke-linecap="square"/>
+ <circle cx="16" cy="9" r="6.5" fill="none" stop-color="#000000" stroke="#000" stroke-dasharray="0.99999899,2.99999696" stroke-linecap="square"/>
+ <circle cx="16" cy="9" r="1" fill="#f3e278" stop-color="#000000"/>
+ <g fill="none" stroke-linecap="square">
+  <rect x="7.5" y="6.5" width="4" height="4" stop-color="#000000" stroke="#000" stroke-width="2.5"/>
+  <rect x="7.5" y="6.5" width="4" height="4" stop-color="#000000" stroke="#ffa169" stroke-width="2"/>
+  <rect x="14.5" y="14.5" width="2" height="2" stop-color="#000000" stroke="#000" stroke-width="1.5"/>
+  <rect x="14.5" y="14.5" width="2" height="2" stop-color="#000000" stroke="#f3e278"/>
+ </g>
+</svg>

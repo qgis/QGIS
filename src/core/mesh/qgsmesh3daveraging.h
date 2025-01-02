@@ -88,7 +88,6 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
     //! Ctor
     QgsMesh3DAveragingMethod( Method method );
 
-    //! Dtor
     virtual ~QgsMesh3DAveragingMethod() = default;
 
     //! Calculated 2d block values from 3d stacked mesh values
@@ -289,6 +288,7 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3DAveragingMethod
  * \ingroup core
  *
  * \brief Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when countedFromTop())
+ *
  * The range is defined in the same length units as defined by model (e.g. meters)
  *
  * if countedFromTop(), the method represents averaging based on depth below surface.
@@ -357,6 +357,7 @@ class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3DAveragin
  * \ingroup core
  *
  * \brief Elevation averaging method averages the values based on range defined absolute value to the model's datum
+ *
  * The range is defined in the same length units as defined by model (e.g. meters)
  *
  * For example one can pull out results irrespective of water level change such as between -16m and -10m.
@@ -368,7 +369,6 @@ class CORE_EXPORT QgsMeshElevationAveragingMethod: public QgsMesh3DAveragingMeth
 {
   public:
 
-    //! Ctor
     QgsMeshElevationAveragingMethod();
 
     /**

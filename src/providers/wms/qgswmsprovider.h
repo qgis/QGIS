@@ -53,7 +53,6 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
 {
     Q_OBJECT
   public:
-
     QgsWmsLegendDownloadHandler( QgsNetworkAccessManager &networkAccessManager, const QgsWmsSettings &settings, const QUrl &url );
     ~QgsWmsLegendDownloadHandler() override;
 
@@ -61,7 +60,6 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
     void start() override;
 
   private:
-
     // Make sure to connect to "finish" before starting
     void startUrl( const QUrl &url );
 
@@ -83,13 +81,14 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
     void progressed( qint64, qint64 );
 };
 
-class QgsCachedImageFetcher: public QgsImageFetcher
+class QgsCachedImageFetcher : public QgsImageFetcher
 {
     Q_OBJECT
   public:
     explicit QgsCachedImageFetcher( const QImage &img );
 
     void start() override;
+
   private:
     const QImage _img; // copy is intentional
   private slots:
@@ -116,20 +115,10 @@ class QgsWmsInterpretationConverter
     virtual bool representsElevation() const;
 
     //! Returns statistics related to converted values
-    virtual QgsRasterBandStats statistics( int bandNo,
-                                           int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
-                                           const QgsRectangle &extent = QgsRectangle(),
-                                           int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
+    virtual QgsRasterBandStats statistics( int bandNo, int stats = static_cast<int>( Qgis::RasterBandStatistic::All ), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
 
     //! Returns the histogram related to converted values
-    virtual QgsRasterHistogram histogram( int bandNo,
-                                          int binCount = 0,
-                                          double minimum = std::numeric_limits<double>::quiet_NaN(),
-                                          double maximum = std::numeric_limits<double>::quiet_NaN(),
-                                          const QgsRectangle &extent = QgsRectangle(),
-                                          int sampleSize = 0,
-                                          bool includeOutOfRange = false,
-                                          QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
+    virtual QgsRasterHistogram histogram( int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
 
     //! Creates a converter instance corresponding to the \a key
     static std::unique_ptr<QgsWmsInterpretationConverter> createConverter( const QString &key );
@@ -142,24 +131,14 @@ class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretat
   public:
     void convert( const QRgb &color, float *converted ) const override;
 
-    QgsRasterBandStats statistics( int bandNo,
-                                   int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
-                                   const QgsRectangle &extent = QgsRectangle(),
-                                   int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
+    QgsRasterBandStats statistics( int bandNo, int stats = static_cast<int>( Qgis::RasterBandStatistic::All ), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
-    QgsRasterHistogram histogram( int bandNo,
-                                  int binCount = 0,
-                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
-                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
-                                  const QgsRectangle &extent = QgsRectangle(),
-                                  int sampleSize = 0,
-                                  bool includeOutOfRange = false,
-                                  QgsRasterBlockFeedback *feedback = nullptr ) const override;
+    QgsRasterHistogram histogram( int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
     bool representsElevation() const override;
 
-    static QString displayName() {return QObject::tr( "MapTiler Terrain RGB" );}
-    static QString interpretationKey() {return QStringLiteral( "maptilerterrain" );}
+    static QString displayName() { return QObject::tr( "MapTiler Terrain RGB" ); }
+    static QString interpretationKey() { return QStringLiteral( "maptilerterrain" ); }
 };
 
 //! Class to convert color to float value following the terrarium terrain RGB interpretation
@@ -168,24 +147,14 @@ class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationCon
   public:
     void convert( const QRgb &color, float *converted ) const override;
 
-    QgsRasterBandStats statistics( int bandNo,
-                                   int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
-                                   const QgsRectangle &extent = QgsRectangle(),
-                                   int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
+    QgsRasterBandStats statistics( int bandNo, int stats = static_cast<int>( Qgis::RasterBandStatistic::All ), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
-    QgsRasterHistogram histogram( int bandNo,
-                                  int binCount = 0,
-                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
-                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
-                                  const QgsRectangle &extent = QgsRectangle(),
-                                  int sampleSize = 0,
-                                  bool includeOutOfRange = false,
-                                  QgsRasterBlockFeedback *feedback = nullptr ) const override;
+    QgsRasterHistogram histogram( int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
     bool representsElevation() const override;
 
-    static QString displayName() {return QObject::tr( "Terrarium Terrain RGB" );}
-    static QString interpretationKey() {return QStringLiteral( "terrariumterrain" );}
+    static QString displayName() { return QObject::tr( "Terrarium Terrain RGB" ); }
+    static QString interpretationKey() { return QStringLiteral( "terrariumterrain" ); }
 };
 
 /**
@@ -197,14 +166,15 @@ class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationCon
  * data residing in a OGC Web Map Service.
  *
 */
-class QgsWmsProvider final: public QgsRasterDataProvider
+class QgsWmsProvider final : public QgsRasterDataProvider
 {
     Q_OBJECT
 
   public:
-
     static QString WMS_KEY;
     static QString WMS_DESCRIPTION;
+
+    static inline QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
     /**
      * Constructor for the provider.
@@ -224,7 +194,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
-    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
+    Qgis::RasterProviderCapabilities providerCapabilities() const override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server
@@ -242,7 +212,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     Qgis::DataProviderFlags flags() const override;
 
-    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
     QgsRectangle extent() const override;
@@ -293,7 +263,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     // TODO: Get the table name associated with this provider instance
 
-    int capabilities() const override;
+    Qgis::RasterInterfaceCapabilities capabilities() const override;
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
@@ -307,26 +277,35 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     static QString providerKey();
     QString description() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
-    QList< double > nativeResolutions() const override;
+    QList<double> nativeResolutions() const override;
     QgsLayerMetadata layerMetadata() const override;
-    bool enableProviderResampling( bool enable ) override { mProviderResamplingEnabled = enable; return true; }
-    bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
-    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
+    bool enableProviderResampling( bool enable ) override
+    {
+      mProviderResamplingEnabled = enable;
+      return true;
+    }
+    bool setZoomedInResamplingMethod( Qgis::RasterResamplingMethod method ) override
+    {
+      mZoomedInResamplingMethod = method;
+      return true;
+    }
+    bool setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod method ) override
+    {
+      mZoomedOutResamplingMethod = method;
+      return true;
+    }
+
+    /*
+     * Overridden because WMS provider can retrieve this information from the capabilities document.
+     * The size defined by the user in the provider settings takes precedence but cannot exceed the
+     * maximum tile size advertised by the capabilities document (if not null).
+     */
+    QSize maximumTileSize() const override;
 
     // Statistics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
-    QgsRasterBandStats bandStatistics( int bandNo,
-                                       Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
-                                       const QgsRectangle &extent = QgsRectangle(),
-                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBandStats bandStatistics( int bandNo, Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    QgsRasterHistogram histogram( int bandNo,
-                                  int binCount = 0,
-                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
-                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
-                                  const QgsRectangle &extent = QgsRectangle(),
-                                  int sampleSize = 0,
-                                  bool includeOutOfRange = false,
-                                  QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterHistogram histogram( int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -352,24 +331,25 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     //! Helper struct for tile requests
     struct TileRequest
     {
-      TileRequest( const QUrl &u, const QRectF &r, int i )
-        : url( u )
-        , rect( r )
-        , index( i )
-      {}
-      QUrl url;
-      QRectF rect;
-      int index;
+        TileRequest( const QUrl &u, const QRectF &r, int i )
+          : url( u )
+          , rect( r )
+          , index( i )
+        {}
+        QUrl url;
+        QRectF rect;
+        int index;
     };
     typedef QList<TileRequest> TileRequests;
 
     //! Tile identifier within a tile source
     typedef struct TilePosition
     {
-      TilePosition( int r, int c ): row( r ), col( c ) {}
-      bool operator==( TilePosition other ) const { return row == other.row && col == other.col; }
-      int row;
-      int col;
+        TilePosition( int r, int c )
+          : row( r ), col( c ) {}
+        bool operator==( TilePosition other ) const { return row == other.row && col == other.col; }
+        int row;
+        int col;
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
@@ -382,7 +362,6 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
-
     //! In case of XYZ tile layer, setup capabilities from its URI
     bool setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent = QgsRectangle(), int sourceMinZoom = -1, int sourceMaxZoom = -1, double sourceTilePixelRatio = 0. );
     //! In case of MBTiles layer, setup capabilities from its metadata
@@ -449,7 +428,6 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     bool ignoreExtents() const override;
 
   private:
-
     QUrl createRequestUrlWMS( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );
     void createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
@@ -470,10 +448,11 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-      TileImage( const QRectF &r, const QImage &i, bool smooth ): rect( r ), img( i ), smooth( smooth ) {}
-      QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
-      QImage img;  //!< Cached tile to be drawn
-      bool smooth; //!< Whether to use antialiasing/smooth transforms when rendering tile
+        TileImage( const QRectF &r, const QImage &i, bool smooth )
+          : rect( r ), img( i ), smooth( smooth ) {}
+        QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
+        QImage img;  //!< Cached tile to be drawn
+        bool smooth; //!< Whether to use antialiasing/smooth transforms when rendering tile
     } TileImage;
     //! Gets tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles, QgsRasterBlockFeedback *feedback = nullptr );
@@ -554,7 +533,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
      * The result of the identify reply
      */
     //QString mIdentifyResult;
-    QList< QgsNetworkReplyParser::RawHeaderMap > mIdentifyResultHeaders;
+    QList<QgsNetworkReplyParser::RawHeaderMap> mIdentifyResultHeaders;
     QList<QByteArray> mIdentifyResultBodies;
 
     // TODO: better
@@ -584,9 +563,9 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     int mTileReqNo = 0;
 
     //! chosen tile layer
-    QgsWmtsTileLayer        *mTileLayer = nullptr;
+    QgsWmtsTileLayer *mTileLayer = nullptr;
     //! chosen matrix set
-    QgsWmtsTileMatrixSet    *mTileMatrixSet = nullptr;
+    QgsWmtsTileMatrixSet *mTileMatrixSet = nullptr;
 
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;
@@ -603,12 +582,11 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     //! Temporal range member
     QgsDateTimeRange mRange;
 
-    QList< double > mNativeResolutions;
+    QList<double> mNativeResolutions;
 
     std::unique_ptr<QgsWmsInterpretationConverter> mConverter;
 
     friend class TestQgsWmsProvider;
-
 };
 
 
@@ -617,7 +595,7 @@ class QgsWmsImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback );
+    QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsAuthorizationSettings &auth, QImage *image, QgsRasterBlockFeedback *feedback );
     ~QgsWmsImageDownloadHandler() override;
 
     void downloadBlocking();
@@ -646,17 +624,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-
-    QgsWmsTiledImageDownloadHandler( const QString &providerUri,
-                                     const QgsWmsAuthorization &auth,
-                                     int reqNo,
-                                     const QgsWmsProvider::TileRequests &requests,
-                                     QImage *image,
-                                     const QgsRectangle &viewExtent,
-                                     double sourceResolution,
-                                     bool smoothPixmapTransform,
-                                     bool resamplingEnabled,
-                                     QgsRasterBlockFeedback *feedback );
+    QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsAuthorizationSettings &auth, int reqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, double sourceResolution, bool smoothPixmapTransform, bool resamplingEnabled, QgsRasterBlockFeedback *feedback );
     ~QgsWmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
@@ -671,7 +639,6 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     void canceled();
 
   protected:
-
     /**
      * \brief Relaunch tile request cloning previous request parameters and managing max repeat
      *
@@ -685,7 +652,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     QString mProviderUri;
     QString mBaseUrl;
-    QgsWmsAuthorization mAuth;
+    QgsAuthorizationSettings mAuth;
 
     QImage *mImage = nullptr;
     QgsRectangle mViewExtent;
@@ -714,10 +681,10 @@ class QgsWmsStatistics
   public:
     struct Stat
     {
-      Stat() = default;
-      int errors = 0;
-      int cacheHits = 0;
-      int cacheMisses = 0;
+        Stat() = default;
+        int errors = 0;
+        int cacheHits = 0;
+        int cacheMisses = 0;
     };
 
     //! Gets reference to layer's statistics - insert to map if does not exist yet
@@ -729,7 +696,7 @@ class QgsWmsStatistics
 
 Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
-class QgsWmsProviderMetadata final: public QgsProviderMetadata
+class QgsWmsProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -737,20 +704,20 @@ class QgsWmsProviderMetadata final: public QgsProviderMetadata
     QIcon icon() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
 
-    QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     ProviderCapabilities providerCapabilities() const override;
 
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
 
-    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     int priorityForUri( const QString &uri ) const override;
-    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QList<Qgis::LayerType> validLayerTypesForUri( const QString &uri ) const override;
 
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif

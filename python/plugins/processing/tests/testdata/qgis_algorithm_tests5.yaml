@@ -230,3 +230,95 @@ tests:
       OUTPUT:
         name: expected/simplify_coverage.gml
         type: vector
+
+  - algorithm: native:creategrid
+    name: Create rectangle grid with negative overlay
+    params:
+      CRS: EPSG:3857
+      EXTENT: 738054.729300000,738373.195700000,5770010.104900000,5770208.287300000
+        [EPSG:3857]
+      HOVERLAY: 0.0
+      HSPACING: 10.0
+      TYPE: 2
+      VOVERLAY: -10.0
+      VSPACING: 10.0
+    results:
+      OUTPUT:
+        name: expected/create_grid_negative_overlay.gml
+        type: vector
+
+  - algorithm: native:surfacetopolygon
+    name: Create polygon from surface of Mesh layer
+    params:
+      INPUT: 
+        name: quad_and_triangle.2dm
+        type: mesh
+    results:
+      OUTPUT:
+        name: expected/mesh_surface_to_polygon.gml
+        type: vector
+
+  - algorithm: native:surfacetopolygon
+    name: Create polygon from surface of Mesh layer - multiple parts with hole
+    params:
+      INPUT: 
+        name: mesh_two_part_with_hole.2dm
+        type: mesh
+    results:
+      OUTPUT:
+        name: expected/mesh_surface_to_polygon_complex_mesh_hole.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster min max
+    params:
+      BAND: 1
+      EXTRACT: 0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_min_max.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster min
+    params:
+      BAND: 1
+      EXTRACT: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_min.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster max
+    params:
+      BAND: 1
+      EXTRACT: 2
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_max.gml
+        type: vector
+
+  - algorithm: native:zonalminmaxpoint
+    name: Raster zonal min max
+    params:
+      INPUT:
+        name: custom/dem_zones.geojson
+        type: vector
+      INPUT_RASTER:
+        name: custom/dem_crs.tif
+        type: raster
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/raster_zonal_extremum.gml
+        type: vector

@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/symbology/qgspointdisplacementrendererwidget.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsPointDisplacementRendererWidget: QgsRendererWidget
+class QgsPointDisplacementRendererWidget : QgsRendererWidget
 {
 
 %TypeHeaderCode
@@ -36,5 +36,5 @@ class QgsPointDisplacementRendererWidget: QgsRendererWidget
  *                                                                      *
  * src/gui/symbology/qgspointdisplacementrendererwidget.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -32,7 +32,7 @@ QString QgsProcessingParameterTinInputLayers::type() const
 
 bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
-  if ( input.type() != QVariant::List )
+  if ( input.userType() != QMetaType::Type::QVariantList )
     return false;
 
   const QVariantList variantLayers = input.toList();
@@ -42,7 +42,7 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
 
   for ( const QVariant &variantLayer : variantLayers )
   {
-    if ( variantLayer.type() != QVariant::Map )
+    if ( variantLayer.userType() != QMetaType::Type::QVariantMap )
       return false;
     const QVariantMap layerMap = variantLayer.toMap();
 

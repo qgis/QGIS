@@ -1,0 +1,80 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsonlinedemterrainsettings.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsOnlineDemTerrainSettings : QgsAbstractTerrainSettings
+{
+%Docstring(signature="appended")
+Terrain settings for a terrain generator that uses an online DEM to build terrain.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsonlinedemterrainsettings.h"
+%End
+  public:
+    static QgsAbstractTerrainSettings *create() /Factory/;
+%Docstring
+Creates a new instance of a QgsOnlineDemTerrainSettings object.
+%End
+
+    QgsOnlineDemTerrainSettings *clone() const final /Factory/;
+    QString type() const final;
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
+    bool equals( const QgsAbstractTerrainSettings *other ) const final;
+
+    void setResolution( int resolution );
+%Docstring
+Sets the ``resolution`` of the terrain (how many elevation samples are taken on one side of a terrain tile).
+
+.. seealso:: :py:func:`resolution`
+%End
+
+    int resolution() const;
+%Docstring
+Returns the resolution of the terrain (how many elevation samples are taken on one side of a terrain tile).
+
+.. seealso:: :py:func:`resolution`
+%End
+
+    void setSkirtHeight( double height );
+%Docstring
+Sets the skirt ``height`` (in world units).
+
+Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+
+.. seealso:: :py:func:`skirtHeight`
+%End
+
+    double skirtHeight() const;
+%Docstring
+Returns the skirt height (in world units).
+
+Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+
+.. seealso:: :py:func:`setSkirtHeight`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsonlinedemterrainsettings.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

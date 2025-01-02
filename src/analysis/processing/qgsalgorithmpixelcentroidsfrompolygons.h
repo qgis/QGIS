@@ -30,9 +30,7 @@
  */
 class QgsPixelCentroidsFromPolygonsAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsPixelCentroidsFromPolygonsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -40,13 +38,12 @@ class QgsPixelCentroidsFromPolygonsAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsPixelCentroidsFromPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

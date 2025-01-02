@@ -32,19 +32,19 @@ class TestQgsLayoutPicture : public QgsTest
     Q_OBJECT
 
   public:
-
-    TestQgsLayoutPicture() : QgsTest( QStringLiteral( "Layout Picture Tests" ), QStringLiteral( "composer_picture" ) ) {}
+    TestQgsLayoutPicture()
+      : QgsTest( QStringLiteral( "Layout Picture Tests" ), QStringLiteral( "composer_picture" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void pictureRender();
     void pictureRaster();
     void pictureSvg();
-    void pictureRotation(); //test if picture pictureRotation is functioning
+    void pictureRotation();     //test if picture pictureRotation is functioning
     void pictureItemRotation(); //test if composer picture item rotation is functioning
 
     void pictureResizeZoom();
@@ -86,7 +86,7 @@ void TestQgsLayoutPicture::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QgsFontUtils::loadStandardTestFonts( {QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
+  QgsFontUtils::loadStandardTestFonts( { QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
@@ -100,7 +100,6 @@ void TestQgsLayoutPicture::initTestCase()
   mPicture->setPicturePath( mPngImage );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   mPicture->setFrameEnabled( true );
-
 }
 
 void TestQgsLayoutPicture::cleanupTestCase()
@@ -113,12 +112,10 @@ void TestQgsLayoutPicture::cleanupTestCase()
 
 void TestQgsLayoutPicture::init()
 {
-
 }
 
 void TestQgsLayoutPicture::cleanup()
 {
-
 }
 
 void TestQgsLayoutPicture::pictureRender()
@@ -136,7 +133,7 @@ void TestQgsLayoutPicture::pictureRaster()
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
   QgsLayoutItemPicture *p = new QgsLayoutItemPicture( &l );
-  p->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatRaster );
+  p->setPicturePath( mPngImage, Qgis::PictureFormat::Raster );
   p->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   p->setFrameEnabled( true );
 
@@ -151,7 +148,7 @@ void TestQgsLayoutPicture::pictureSvg()
   l.initializeDefaults();
   QgsLayoutItemPicture *p = new QgsLayoutItemPicture( &l );
   p->setResizeMode( QgsLayoutItemPicture::Zoom );
-  p->setPicturePath( mSvgImage, QgsLayoutItemPicture::FormatSVG );
+  p->setPicturePath( mSvgImage, Qgis::PictureFormat::SVG );
   p->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   p->setFrameEnabled( true );
 
@@ -170,6 +167,13 @@ void TestQgsLayoutPicture::pictureRotation()
 
   mLayout->removeItem( mPicture );
   mPicture->setPictureRotation( 0 );
+
+  // Set picture rotation on uninitialized picture should not create an invalid size (NaN)
+  std::unique_ptr<QgsLayoutItemPicture> uninitialized( new QgsLayoutItemPicture( mLayout ) );
+  uninitialized->setResizeMode( QgsLayoutItemPicture::ZoomResizeFrame );
+  QCOMPARE( uninitialized->sizeWithUnits().toQSizeF(), QSizeF( 0, 0 ) );
+  uninitialized->setPictureRotation( 10 );
+  QCOMPARE( uninitialized->sizeWithUnits().toQSizeF(), QSizeF( 0, 0 ) );
 }
 
 void TestQgsLayoutPicture::pictureItemRotation()
@@ -453,78 +457,78 @@ void TestQgsLayoutPicture::valid()
   picture->setPicturePath( mPngImage );
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mPngImage );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Raster );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Unknown );
 
   picture->setPicturePath( QStringLiteral( "bad" ) );
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Unknown );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Unknown );
 
   picture->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mSvgImage ) ) );
   picture->refreshPicture();
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mSvgImage );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatSVG );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::SVG );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Unknown );
 
   picture->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'bad'" ) ) );
   picture->refreshPicture();
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Unknown );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Unknown );
 
   // same tests with a given format
 
   picture->dataDefinedProperties().clear();
 
-  picture->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatRaster );
+  picture->setPicturePath( mPngImage, Qgis::PictureFormat::Raster );
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mPngImage );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatRaster );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Raster );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Raster );
 
-  picture->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatUnknown );
+  picture->setPicturePath( mPngImage, Qgis::PictureFormat::Unknown );
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mPngImage );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Raster );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Unknown );
 
-  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatUnknown );
+  picture->setPicturePath( QStringLiteral( "bad" ), Qgis::PictureFormat::Unknown );
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Unknown );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Unknown );
 
-  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatRaster );
+  picture->setPicturePath( QStringLiteral( "bad" ), Qgis::PictureFormat::Raster );
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster ); // cross image for missing image
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatRaster );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Raster ); // cross image for missing image
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Raster );
 
-  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatSVG );
+  picture->setPicturePath( QStringLiteral( "bad" ), Qgis::PictureFormat::SVG );
   picture->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mSvgImage ) ) );
   picture->refreshPicture();
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mSvgImage );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatSVG );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatSVG );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::SVG );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::SVG );
 
   picture->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'bad'" ) ) );
   picture->refreshPicture();
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatSVG ); // cross image for missing picture
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatSVG );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::SVG ); // cross image for missing picture
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::SVG );
 
-  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatUnknown );
+  picture->setPicturePath( QStringLiteral( "bad" ), Qgis::PictureFormat::Unknown );
   picture->refreshPicture();
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
-  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
-  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->mode(), Qgis::PictureFormat::Unknown );
+  QCOMPARE( picture->originalMode(), Qgis::PictureFormat::Unknown );
 }
 
 QGSTEST_MAIN( TestQgsLayoutPicture )

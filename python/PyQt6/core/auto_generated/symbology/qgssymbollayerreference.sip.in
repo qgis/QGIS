@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbollayerreference.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -37,8 +37,9 @@ path to symbol layers of the sub symbol are given by a list of indexes:
 
 .. versionadded:: 3.12
 
-.. deprecated:: QGIS 3.30
-   Replaced by QUuid to identify symbol layers
+.. deprecated:: 3.30
+
+   Replaced by QUuid to identify symbol layers.
 %End
 
 %TypeHeaderCode
@@ -58,10 +59,6 @@ QgsSymbolLayerId constructor with a symbol key and an index path
 %End
 
     QgsSymbolLayerId( const QgsSymbolLayerId &other );
-%Docstring
-Default copy constructor
-%End
-
 
     QString symbolKey() const;
 %Docstring
@@ -105,19 +102,17 @@ Type used to refer to a specific symbol layer in a symbol of a layer.
 #include "qgssymbollayerreference.h"
 %End
   public:
-    QgsSymbolLayerReference();
-%Docstring
-Default constructor
-%End
 
- QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) /Deprecated/;
+    QgsSymbolLayerReference();
+
+ QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) /Deprecated="Since 3.30. "/;
 %Docstring
 Constructor
 
 :param layerId: layer id
 :param symbolLayer: symbol layer id
 
-.. deprecated:: QGIS 3.30
+.. deprecated:: 3.30
 %End
 
     QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId );
@@ -135,12 +130,13 @@ Constructor
 The referenced vector layer / feature renderer
 %End
 
- QgsSymbolLayerId symbolLayerId() const /Deprecated/;
+ QgsSymbolLayerId symbolLayerId() const /Deprecated="Since 3.30. Use symbolLayerIdV2() instead."/;
 %Docstring
 The symbol layer's id
 
-.. deprecated:: QGIS 3.30
-  use symbolLayerIdV2 instead
+.. deprecated:: 3.30
+
+   Use :py:func:`~QgsSymbolLayerReference.symbolLayerIdV2` instead.
 %End
 
     QString symbolLayerIdV2() const;
@@ -196,5 +192,5 @@ into a :py:class:`QgsSymbolLayerReferenceList`
  *                                                                      *
  * src/core/symbology/qgssymbollayerreference.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

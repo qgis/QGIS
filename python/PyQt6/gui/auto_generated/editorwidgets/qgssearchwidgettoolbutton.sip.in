@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgssearchwidgettoolbutton.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,6 @@ operates.
       sipType = nullptr;
 %End
   public:
-
     explicit QgsSearchWidgetToolButton( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSearchWidgetToolButton.
@@ -158,5 +157,5 @@ Emitted when the active flags selected in the widget is changed
  *                                                                      *
  * src/gui/editorwidgets/qgssearchwidgettoolbutton.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

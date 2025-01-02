@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthmasterpassresetdialog.h"
+#include "moc_qgsauthmasterpassresetdialog.cpp"
 
 #include <QLineEdit>
 #include <QPushButton>
@@ -82,11 +83,10 @@ void QgsMasterPasswordResetDialog::leMasterPassNew_textChanged( const QString &p
 void QgsMasterPasswordResetDialog::validatePasswords()
 {
   const QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
-                      : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+                                 : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassCurrent->setStyleSheet( ss1 );
   const QString ss2 = mPassNewOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
-                      : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+                                 : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassNew->setStyleSheet( ss2 );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mPassCurOk && mPassNewOk );
 }
-

@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdatasourceuri.h"
+#include "moc_qgsdatasourceuri.cpp"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
@@ -713,7 +714,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   const auto constQueryItems = query.queryItems();
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
-    if ( !item.first.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
+    if ( !item.first.startsWith( QgsHttpHeaders::PARAM_PREFIX ) && item.first != QgsHttpHeaders::KEY_REFERER )
     {
       if ( item.first == QLatin1String( "username" ) )
         mUsername = query.queryItemValue( QStringLiteral( "username" ), QUrl::ComponentFormattingOption::FullyDecoded );

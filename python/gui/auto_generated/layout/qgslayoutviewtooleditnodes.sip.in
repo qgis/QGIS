@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutviewtooleditnodes.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ Layout view tool for edit node based items in the layout.
 #include "qgslayoutviewtooleditnodes.h"
 %End
   public:
-
     QgsLayoutViewToolEditNodes( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolEditNodes.
@@ -44,7 +43,7 @@ Deletes the selected node from the item.
 
     virtual void deactivate();
 
-    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
+    virtual QList<QgsLayoutItem *> ignoredSnapItems() const;
 
 
 };
@@ -54,5 +53,5 @@ Deletes the selected node from the item.
  *                                                                      *
  * src/gui/layout/qgslayoutviewtooleditnodes.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

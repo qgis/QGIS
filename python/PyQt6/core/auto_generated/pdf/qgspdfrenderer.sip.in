@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pdf/qgspdfrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -41,21 +41,21 @@ Constructs a PDF renderer for the file at the specified ``path``.
 Returns the file path of the associated PDF file.
 %End
 
-    int pageCount() const throw( QgsNotSupportedException );
+    int pageCount() const;
 %Docstring
 Returns the number of pages in the PDF.
 
 :raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
 %End
 
-    QRectF pageMediaBox( int pageNumber ) const throw( QgsNotSupportedException );
+    QRectF pageMediaBox( int pageNumber ) const;
 %Docstring
 Returns the media box for the specified page. Units are in PDF points.
 
 :raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
 %End
 
-    bool render( QPainter *painter, const QRectF &painterRect, int pageIndex ) throw( QgsNotSupportedException );
+    bool render( QPainter *painter, const QRectF &painterRect, int pageIndex );
 %Docstring
 Renders the PDF from the specified ``path`` to a ``painter``.
 
@@ -74,5 +74,5 @@ The ``painterRect`` argument specifies the target rectangle for the PDF page in
  *                                                                      *
  * src/core/pdf/qgspdfrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

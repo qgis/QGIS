@@ -1,0 +1,96 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/callouts/qgscalloutpanelwidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsCalloutPanelWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A panel widget for configuration of callouts.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgscalloutpanelwidget.h"
+%End
+  public:
+    QgsCalloutPanelWidget( QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
+%Docstring
+Constructor for QgsCalloutPanelWidget, with the specified ``parent`` widget
+
+The optional ``layer`` argument can be set to an associated map layer.
+%End
+
+    void setGeometryType( Qgis::GeometryType type );
+%Docstring
+Sets the geometry ``type`` for the objects associated with the callouts.
+
+If ``type`` is :py:class:`Qgis`.GeometryType.Unknown then an attempt will be made to
+deduce the type from the associated map layer.
+
+.. seealso:: :py:func:`geometryType`
+%End
+
+    Qgis::GeometryType geometryType() const;
+%Docstring
+Returns the geometry type for the objects associated with the callouts.
+
+If the type is :py:class:`Qgis`.GeometryType.Unknown then an attempt will be made to
+deduce the type from the associated map layer.
+
+.. seealso:: :py:func:`setGeometryType`
+%End
+
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+%End
+
+    void setCallout( const QgsCallout *callout );
+%Docstring
+Sets the widget state to match the specified ``callout``.
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`callout`
+%End
+
+    QgsCallout *callout() /Factory/;
+%Docstring
+Returns a new callout, respecting the configuration from the widget.
+
+.. seealso:: :py:func:`setCallout`
+%End
+
+  signals:
+
+    void calloutChanged();
+%Docstring
+Emitted when the callout defined by the widget changes
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/callouts/qgscalloutpanelwidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

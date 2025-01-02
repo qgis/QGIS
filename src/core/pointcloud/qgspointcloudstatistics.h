@@ -26,7 +26,7 @@
 #include <QtMath>
 
 class QgsPointCloudAttribute;
-class IndexedPointCloudNode;
+class QgsPointCloudNodeId;
 
 /**
  * \ingroup core
@@ -48,6 +48,12 @@ struct CORE_EXPORT QgsPointCloudAttributeStatistics
   //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
   void cumulateStatistics( const QgsPointCloudAttributeStatistics &stats );
 #endif
+
+  /**
+   * Returns the count of points in given class or -1 on error
+   * \since QGIS 3.42
+   */
+  int singleClassCount( int cls ) const;
 };
 
 /**
@@ -61,7 +67,6 @@ struct CORE_EXPORT QgsPointCloudAttributeStatistics
 class CORE_EXPORT QgsPointCloudStatistics
 {
   public:
-    //! Constructor
     QgsPointCloudStatistics();
 
 #ifndef SIP_RUN
@@ -124,7 +129,7 @@ class CORE_EXPORT QgsPointCloudStatistics
     QByteArray toStatisticsJson() const;
 
     //! Creates a statistics object from the JSON object \a stats
-    static QgsPointCloudStatistics fromStatisticsJson( QByteArray stats );
+    static QgsPointCloudStatistics fromStatisticsJson( const QByteArray &stats );
 
 #ifndef SIP_RUN
     //! Returns a map object containing all the statistics

@@ -30,6 +30,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgspointdistancerenderer.h"
+#include "qgsscaleutils.h"
 
 #include <QSet>
 
@@ -297,10 +298,15 @@ bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
     return true;
   if ( qgsDoubleNear( mMaximumScale, 0.0 ) && qgsDoubleNear( mMinimumScale, 0.0 ) )
     return true;
-  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && mMaximumScale > scale )
+
+  // maxScale is inclusive ( < --> no render )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( scale, mMaximumScale ) )
     return false;
-  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && mMinimumScale < scale )
+
+  // minScale is exclusive ( >= --> no render )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMinimumScale ) )
     return false;
+
   return true;
 }
 
@@ -369,7 +375,6 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
   if ( mSymbol )
   {
     QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
-    element.appendChild( ruleElem );
 
     //XXX: <se:Name> is the rule identifier, but our the Rule objects
     // have no properties could be used as identifier. Use the label.
@@ -403,6 +408,13 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
     QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
 
     mSymbol->toSld( doc, ruleElem, props );
+
+    // Only create rules if symbol could be converted to SLD, and is not an "empty" symbol. Otherwise we do not generate a rule, as
+    // SLD spec requires a Symbolizer element to be present
+    if ( QgsSymbolLayerUtils::hasSldSymbolizer( ruleElem ) )
+    {
+      element.appendChild( ruleElem );
+    }
   }
 
   // loop into children rule list
@@ -738,8 +750,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( cons
   if ( onlyActive )
     listChildren = mActiveChildren;
 
-  const auto constListChildren = listChildren;
-  for ( Rule *rule : constListChildren )
+  for ( Rule *rule : std::as_const( listChildren ) )
   {
     lst += rule->rulesForFeature( feature, context, onlyActive );
   }
@@ -969,6 +980,32 @@ QgsSymbol *QgsRuleBasedRenderer::symbolForFeature( const QgsFeature &, QgsRender
 {
   // not used at all
   return nullptr;
+}
+
+Qgis::FeatureRendererFlags QgsRuleBasedRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+
+  std::function< void( Rule *rule ) > exploreRule;
+  exploreRule = [&res, &exploreRule]( Rule * rule )
+  {
+    if ( !rule )
+      return;
+
+    if ( QgsSymbol *symbol = rule->symbol() )
+    {
+      if ( symbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+        res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+    }
+
+    for ( Rule *child : rule->children() )
+    {
+      exploreRule( child );
+    }
+  };
+  exploreRule( mRootRule );
+
+  return res;
 }
 
 bool QgsRuleBasedRenderer::renderFeature( const QgsFeature &feature,
@@ -1320,9 +1357,9 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
     // not quoting numbers saves a type cast
     if ( QgsVariantUtils::isNull( cat.value() ) )
       value = "NULL";
-    else if ( cat.value().type() == QVariant::Int )
+    else if ( cat.value().userType() == QMetaType::Type::Int )
       value = cat.value().toString();
-    else if ( cat.value().type() == QVariant::Double )
+    else if ( cat.value().userType() == QMetaType::Type::Double )
       // we loose precision here - so we may miss some categories :-(
       // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
       value = QString::number( cat.value().toDouble(), 'f', 4 );
@@ -1471,14 +1508,14 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       rule->setLabel( category.label() );
 
       //We first define the rule corresponding to the category
-      if ( category.value().type() == QVariant::List )
+      if ( category.value().userType() == QMetaType::Type::QVariantList )
       {
         QStringList values;
         const QVariantList list = category.value().toList();
         for ( const QVariant &v : list )
         {
           //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
-          if ( QVariant( v ).convert( QVariant::Double ) )
+          if ( QVariant( v ).convert( QMetaType::Type::Double ) )
           {
             values << v.toString();
           }
@@ -1500,7 +1537,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       else
       {
         //If the value is a number, we can use it directly, otherwise we need to quote it in the rule
-        if ( category.value().convert( QVariant::Double ) )
+        if ( category.value().convert( QMetaType::Type::Double ) )
         {
           value = category.value().toString();
         }

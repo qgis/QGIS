@@ -19,6 +19,7 @@
 #include "qgsmaptooledit.h"
 #include "qgis_app.h"
 #include "qgsrubberband.h"
+#include "qgssnappingconfig.h"
 
 class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
 {
@@ -35,16 +36,26 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
 
     void keyPressEvent( QKeyEvent *e ) override;
 
+    //! called when map tool is being activated
+    void activate() override;
+
     //! called when map tool is being deactivated
     void deactivate() override;
 
+  private slots:
+    // Recompute the extended limit
+    void extendLimit();
+    void reset();
+
   private:
-    //!  Rubberband that shows the limit
-    std::unique_ptr<QgsRubberBand>mRubberBandLimit;
+    //!  Rubberband that highlights the limit segment
+    std::unique_ptr<QgsRubberBand> mRubberBandLimit;
+    //!  Rubberband that extends the limit segment
+    std::unique_ptr<QgsRubberBand> mRubberBandLimitExtend;
     //! Rubberband that shows the feature being extended
-    std::unique_ptr<QgsRubberBand>mRubberBandExtend;
+    std::unique_ptr<QgsRubberBand> mRubberBandExtend;
     //!  Rubberband that shows the intersection point
-    std::unique_ptr<QgsRubberBand>mRubberBandIntersection;
+    std::unique_ptr<QgsRubberBand> mRubberBandIntersection;
     //!  Points for the limit
     QgsPoint pLimit1, pLimit2;
     //!  Points for extend
@@ -74,6 +85,9 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
     };
     //! The first step (0): choose the limit. The second step (1): choose the segment to trim/extend
     Step mStep = StepLimit;
+
+    //! Snapping config that will be restored on deactivation
+    QgsSnappingConfig mOriginalSnappingConfig;
 };
 
 #endif // QGSMAPTOOLTRIMEXTENDFEATURE_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
-    <height>862</height>
+    <width>1000</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,609 +19,8 @@
   <property name="windowTitle">
    <string>Raster Calculator</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_4">
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QgsScrollArea" name="scrollArea" native="true">
-       <property name="widgetResizable" stdset="0">
-        <bool>true</bool>
-       </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>806</width>
-          <height>808</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QSplitter" name="splitter_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <widget class="QSplitter" name="splitter">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <widget class="QGroupBox" name="mRasterBandsGroupBox">
-             <property name="title">
-              <string>Raster Bands</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_2">
-              <item row="0" column="0">
-               <widget class="QListWidget" name="mRasterBandsListWidget"/>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QGroupBox" name="mResultGroupBox">
-             <property name="title">
-              <string>Result Layer</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0">
-              <item row="3" column="0">
-               <widget class="QLabel" name="mOutputFormatLabel">
-                <property name="text">
-                 <string>Output format</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0" colspan="4">
-               <widget class="QGroupBox" name="groupBox_2">
-                <property name="title">
-                 <string>Spatial Extent</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="2" column="1">
-                  <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-999999999.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>999999999.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="3">
-                  <widget class="QLabel" name="mXMaxLabel">
-                   <property name="text">
-                    <string>X max</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="mYMinLabel">
-                   <property name="text">
-                    <string>Y min</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="mXMinLabel">
-                   <property name="text">
-                    <string>X min</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="2">
-                  <spacer name="horizontalSpacer_2">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>10</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="2" column="4">
-                  <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-999999999.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>999999999.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-999999999.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>999999999.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="3">
-                  <widget class="QLabel" name="mYMaxLabel">
-                   <property name="text">
-                    <string>Y max</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="4">
-                  <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
-                   <property name="decimals">
-                    <number>5</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-999999999.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>999999999.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" rowspan="2" colspan="5">
-                  <layout class="QGridLayout" name="gridLayout_3">
-                   <item row="0" column="1" rowspan="2" colspan="4">
-                    <spacer name="horizontalSpacer_4">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="0" column="0" rowspan="2">
-                    <widget class="QPushButton" name="mCurrentLayerExtentButton">
-                     <property name="text">
-                      <string>Use Selected Layer Extent</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="3" column="1" colspan="3">
-               <widget class="QComboBox" name="mOutputFormatComboBox"/>
-              </item>
-              <item row="9" column="0">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="7" column="1" colspan="3">
-               <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="mOutputLayerLabel">
-                <property name="text">
-                 <string>Output layer</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="4">
-               <widget class="QCheckBox" name="mUseVirtualProviderCheckBox">
-                <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Note: the result raster will not be usable with any processing algorithm that expects a materialized raster.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="text">
-                 <string>Create on-the-fly raster instead of writing layer to disk</string>
-                </property>
-                <property name="tristate">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="mVirtualLayerLabel">
-                <property name="text">
-                 <string>Layer name</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>Output CRS</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="0" colspan="4">
-               <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
-                <property name="text">
-                 <string>Add result to project</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1" colspan="3">
-               <widget class="QgsFileWidget" name="mOutputLayer" native="true"/>
-              </item>
-              <item row="1" column="1" colspan="3">
-               <widget class="QLineEdit" name="mVirtualLayerName">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="placeholderText">
-                 <string>Autogenerated from expression</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0" colspan="4">
-               <widget class="QGroupBox" name="groupBox_3">
-                <property name="title">
-                 <string>Resolution</string>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QLabel" name="mColumnsLabel">
-                   <property name="text">
-                    <string>Columns</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QgsSpinBox" name="mNColumnsSpinBox">
-                   <property name="maximum">
-                    <number>999999999</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="mRowsLabel">
-                   <property name="text">
-                    <string>Rows</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QgsSpinBox" name="mNRowsSpinBox">
-                   <property name="maximum">
-                    <number>999999999</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-           <widget class="QWidget" name="verticalLayoutWidget">
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <widget class="QgsCollapsibleGroupBox" name="mOperatorsGroupBox">
-               <property name="title">
-                <string>Operators</string>
-               </property>
-               <layout class="QGridLayout" name="gridLayout">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item row="0" column="0">
-                 <widget class="QPushButton" name="mPlusPushButton">
-                  <property name="text">
-                   <string notr="true">+</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QPushButton" name="mMultiplyPushButton">
-                  <property name="text">
-                   <string notr="true">*</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QPushButton" name="mOpenBracketPushButton">
-                  <property name="text">
-                   <string notr="true">(</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QPushButton" name="mMinButton">
-                  <property name="text">
-                   <string notr="true">min</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="4">
-                 <widget class="QPushButton" name="mConditionalStatButton">
-                  <property name="text">
-                   <string notr="true">IF</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="5">
-                 <widget class="QPushButton" name="mCosButton">
-                  <property name="text">
-                   <string notr="true">cos</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="6">
-                 <widget class="QPushButton" name="mACosButton">
-                  <property name="text">
-                   <string notr="true">acos</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="7">
-                 <spacer name="horizontalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>5</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QPushButton" name="mMinusPushButton">
-                  <property name="text">
-                   <string notr="true">-</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QPushButton" name="mDividePushButton">
-                  <property name="text">
-                   <string notr="true">/</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QPushButton" name="mCloseBracketPushButton">
-                  <property name="text">
-                   <string notr="true">)</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QPushButton" name="mMaxButton">
-                  <property name="text">
-                   <string notr="true">max</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="4">
-                 <widget class="QPushButton" name="mAndButton">
-                  <property name="text">
-                   <string notr="true">AND</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="5">
-                 <widget class="QPushButton" name="mSinButton">
-                  <property name="text">
-                   <string notr="true">sin</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="6">
-                 <widget class="QPushButton" name="mASinButton">
-                  <property name="text">
-                   <string notr="true">asin</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QPushButton" name="mLessButton">
-                  <property name="text">
-                   <string notr="true">&lt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QPushButton" name="mGreaterButton">
-                  <property name="text">
-                   <string notr="true">&gt;</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QPushButton" name="mEqualButton">
-                  <property name="text">
-                   <string notr="true">=</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="3">
-                 <widget class="QPushButton" name="mAbsButton">
-                  <property name="text">
-                   <string notr="true">abs</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="4">
-                 <widget class="QPushButton" name="mOrButton">
-                  <property name="text">
-                   <string notr="true">OR</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="5">
-                 <widget class="QPushButton" name="mTanButton">
-                  <property name="text">
-                   <string notr="true">tan</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="6">
-                 <widget class="QPushButton" name="mATanButton">
-                  <property name="text">
-                   <string notr="true">atan</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QPushButton" name="mLesserEqualButton">
-                  <property name="text">
-                   <string notr="true">&lt;=</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="QPushButton" name="mGreaterEqualButton">
-                  <property name="text">
-                   <string notr="true">&gt;=</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="2">
-                 <widget class="QPushButton" name="mNotEqualButton">
-                  <property name="text">
-                   <string notr="true">!=</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="3">
-                 <widget class="QPushButton" name="mExpButton">
-                  <property name="text">
-                   <string notr="true">^</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="4">
-                 <widget class="QPushButton" name="mSqrtButton">
-                  <property name="text">
-                   <string notr="true">sqrt</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="5">
-                 <widget class="QPushButton" name="mLogButton">
-                  <property name="text">
-                   <string notr="true">log10</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="6">
-                 <widget class="QPushButton" name="mLnButton">
-                  <property name="text">
-                   <string notr="true">ln</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="groupBox">
-               <property name="title">
-                <string>Raster Calculator Expression</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_2">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QTextEdit" name="mExpressionTextEdit"/>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="mExpressionValidLabel">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="1" column="0">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -629,6 +28,573 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QgsScrollArea" name="scrollArea">
+     <property name="widgetResizable" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_8">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QSplitter" name="splitter_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <widget class="QSplitter" name="splitter">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QGroupBox" name="mRasterBandsGroupBox">
+            <property name="title">
+             <string>Raster Bands</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QListWidget" name="mRasterBandsListWidget"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QGroupBox" name="mResultGroupBox">
+            <property name="title">
+             <string>Result Layer</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0">
+             <item row="3" column="0">
+              <widget class="QLabel" name="mOutputFormatLabel">
+               <property name="text">
+                <string>Output format</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="4">
+              <widget class="QGroupBox" name="groupBox_2">
+               <property name="title">
+                <string>Spatial Extent</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_5">
+                <item row="2" column="1">
+                 <widget class="QgsDoubleSpinBox" name="mXMinSpinBox">
+                  <property name="decimals">
+                   <number>5</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-999999999.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>999999999.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QLabel" name="mXMaxLabel">
+                  <property name="text">
+                   <string>X max</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="mYMinLabel">
+                  <property name="text">
+                   <string>Y min</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="mXMinLabel">
+                  <property name="text">
+                   <string>X min</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="4">
+                 <widget class="QgsDoubleSpinBox" name="mXMaxSpinBox">
+                  <property name="decimals">
+                   <number>5</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-999999999.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>999999999.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QgsDoubleSpinBox" name="mYMinSpinBox">
+                  <property name="decimals">
+                   <number>5</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-999999999.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>999999999.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="3">
+                 <widget class="QLabel" name="mYMaxLabel">
+                  <property name="text">
+                   <string>Y max</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="4">
+                 <widget class="QgsDoubleSpinBox" name="mYMaxSpinBox">
+                  <property name="decimals">
+                   <number>5</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-999999999.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>999999999.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0" rowspan="2" colspan="5">
+                 <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="0" column="1" rowspan="2" colspan="4">
+                   <spacer name="horizontalSpacer_4">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0" rowspan="2">
+                   <widget class="QPushButton" name="mCurrentLayerExtentButton">
+                    <property name="text">
+                     <string>Use Selected Layer Extent</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="3" column="1" colspan="3">
+              <widget class="QComboBox" name="mOutputFormatComboBox"/>
+             </item>
+             <item row="9" column="0">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="7" column="1" colspan="3">
+              <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+               <property name="focusPolicy">
+                <enum>Qt::StrongFocus</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="mOutputLayerLabel">
+               <property name="text">
+                <string>Output layer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="4">
+              <widget class="QCheckBox" name="mUseVirtualProviderCheckBox">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Note: the result raster will not be usable with any processing algorithm that expects a materialized raster.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>Create on-the-fly raster instead of writing layer to disk</string>
+               </property>
+               <property name="tristate">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mVirtualLayerLabel">
+               <property name="text">
+                <string>Layer name</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Output CRS</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0" colspan="4">
+              <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
+               <property name="text">
+                <string>Add result to project</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" colspan="3">
+              <widget class="QgsFileWidget" name="mOutputLayer"/>
+             </item>
+             <item row="1" column="1" colspan="3">
+              <widget class="QLineEdit" name="mVirtualLayerName">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="placeholderText">
+                <string>Autogenerated from expression</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" colspan="4">
+              <widget class="QGroupBox" name="groupBox_3">
+               <property name="title">
+                <string>Resolution</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QLabel" name="mColumnsLabel">
+                  <property name="text">
+                   <string>Columns</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QgsSpinBox" name="mNColumnsSpinBox">
+                  <property name="maximum">
+                   <number>999999999</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="mRowsLabel">
+                  <property name="text">
+                   <string>Rows</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QgsSpinBox" name="mNRowsSpinBox">
+                  <property name="maximum">
+                   <number>999999999</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="verticalLayoutWidget">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QgsCollapsibleGroupBox" name="mOperatorsGroupBox">
+              <property name="title">
+               <string>Operators</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="mPlusPushButton">
+                 <property name="text">
+                  <string notr="true">+</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="mMultiplyPushButton">
+                 <property name="text">
+                  <string notr="true">*</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QPushButton" name="mOpenBracketPushButton">
+                 <property name="text">
+                  <string notr="true">(</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="3">
+                <widget class="QPushButton" name="mMinButton">
+                 <property name="text">
+                  <string notr="true">min</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4">
+                <widget class="QPushButton" name="mConditionalStatButton">
+                 <property name="text">
+                  <string notr="true">IF</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="5">
+                <widget class="QPushButton" name="mCosButton">
+                 <property name="text">
+                  <string notr="true">cos</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="6">
+                <widget class="QPushButton" name="mACosButton">
+                 <property name="text">
+                  <string notr="true">acos</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="7">
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>5</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="0">
+                <widget class="QPushButton" name="mMinusPushButton">
+                 <property name="text">
+                  <string notr="true">-</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QPushButton" name="mDividePushButton">
+                 <property name="text">
+                  <string notr="true">/</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QPushButton" name="mCloseBracketPushButton">
+                 <property name="text">
+                  <string notr="true">)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QPushButton" name="mMaxButton">
+                 <property name="text">
+                  <string notr="true">max</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QPushButton" name="mAndButton">
+                 <property name="text">
+                  <string notr="true">AND</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="5">
+                <widget class="QPushButton" name="mSinButton">
+                 <property name="text">
+                  <string notr="true">sin</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="6">
+                <widget class="QPushButton" name="mASinButton">
+                 <property name="text">
+                  <string notr="true">asin</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QPushButton" name="mLessButton">
+                 <property name="text">
+                  <string notr="true">&lt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QPushButton" name="mGreaterButton">
+                 <property name="text">
+                  <string notr="true">&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2">
+                <widget class="QPushButton" name="mEqualButton">
+                 <property name="text">
+                  <string notr="true">=</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="3">
+                <widget class="QPushButton" name="mAbsButton">
+                 <property name="text">
+                  <string notr="true">abs</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="4">
+                <widget class="QPushButton" name="mOrButton">
+                 <property name="text">
+                  <string notr="true">OR</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="5">
+                <widget class="QPushButton" name="mTanButton">
+                 <property name="text">
+                  <string notr="true">tan</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="6">
+                <widget class="QPushButton" name="mATanButton">
+                 <property name="text">
+                  <string notr="true">atan</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QPushButton" name="mLesserEqualButton">
+                 <property name="text">
+                  <string notr="true">&lt;=</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QPushButton" name="mGreaterEqualButton">
+                 <property name="text">
+                  <string notr="true">&gt;=</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="2">
+                <widget class="QPushButton" name="mNotEqualButton">
+                 <property name="text">
+                  <string notr="true">!=</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="3">
+                <widget class="QPushButton" name="mExpButton">
+                 <property name="text">
+                  <string notr="true">^</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="4">
+                <widget class="QPushButton" name="mSqrtButton">
+                 <property name="text">
+                  <string notr="true">sqrt</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="5">
+                <widget class="QPushButton" name="mLogButton">
+                 <property name="text">
+                  <string notr="true">log10</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="6">
+                <widget class="QPushButton" name="mLnButton">
+                 <property name="text">
+                  <string notr="true">ln</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox">
+              <property name="title">
+               <string>Raster Calculator Expression</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QTextEdit" name="mExpressionTextEdit"/>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="mExpressionValidLabel">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -641,9 +607,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFileWidget</class>
@@ -652,20 +618,21 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QWidget</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

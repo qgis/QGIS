@@ -29,9 +29,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include <vector>
-#include <memory>
-
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
@@ -75,7 +72,7 @@ class CORE_EXPORT QgsProviderRegistry
        * as GUI for individual "Add XXX layer" buttons in the main window.
        * Likely not used in live code anymore.
        */
-      None,
+      Standalone,
 
       /**
        * Used for the data source manager dialog where the widget is embedded as the main content
@@ -102,7 +99,7 @@ class CORE_EXPORT QgsProviderRegistry
      * If the provider uses direct provider function pointers instead of a library an empty string will
      * be returned.
      *
-     * \deprecated QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+     * \deprecated QGIS 3.10. Providers may not need to be loaded from a library (empty string returned).
      */
     Q_DECL_DEPRECATED QString library( const QString &providerKey ) const SIP_DEPRECATED;
 
@@ -147,12 +144,12 @@ class CORE_EXPORT QgsProviderRegistry
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_TRANSFERBACK;
+                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) SIP_TRANSFERBACK;
 
     /**
      * Returns the provider capabilities
      * \param providerKey identifier of the provider
-     * \deprecated QGIS 3.10 (use instead capabilities() method of individual data item provider)
+     * \deprecated QGIS 3.10. Use instead capabilities() method of individual data item provider.
      */
     Q_DECL_DEPRECATED Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
 
@@ -238,9 +235,9 @@ class CORE_EXPORT QgsProviderRegistry
      * Returns a new widget for selecting layers from a provider.
      * Either the \a parent widget must be set or the caller becomes
      * responsible for deleting the returned widget.
-     * \deprecated QGIS 3.10 - use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead
+     * \deprecated QGIS 3.10. Use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead.
      */
-    Q_DECL_DEPRECATED QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) SIP_DEPRECATED;
 
     /**
      * Returns list of data item providers of the provider
@@ -354,7 +351,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \returns pointer to function or NULLPTR on error. If the provider uses direct provider
      * function pointers instead of a library NULLPTR will be returned.
      *
-     * \deprecated QGIS 3.10 - any provider functionality should be accessed through QgsProviderMetadata
+     * \deprecated QGIS 3.10. Any provider functionality should be accessed through QgsProviderMetadata.
      */
     Q_DECL_DEPRECATED QFunctionPointer function( const QString &providerKey, const QString &functionName ) const SIP_DEPRECATED;
 
@@ -365,7 +362,7 @@ class CORE_EXPORT QgsProviderRegistry
      * If the provider uses direct provider function pointers instead of a library NULLPTR will
      * be returned.
      *
-     * \deprecated QGIS 3.10 - providers may not need to be loaded from a library
+     * \deprecated QGIS 3.10. Providers may not need to be loaded from a library.
      */
     Q_DECL_DEPRECATED QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY SIP_DEPRECATED;
 
@@ -734,7 +731,7 @@ class CORE_EXPORT QgsProviderRegistry
     QString protocolDrivers() const;
 
     /**
-     * \deprecated since QGIS 3.10 - does nothing - use QgsGui::providerGuiRegistry()
+     * \deprecated QGIS 3.10. Does nothing - use QgsGui::providerGuiRegistry().
      */
     Q_DECL_DEPRECATED void registerGuis( QWidget *widget ) SIP_DEPRECATED;
 

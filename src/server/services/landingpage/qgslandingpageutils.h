@@ -20,7 +20,7 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-#include "nlohmann/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "qgsserversettings.h"
 #include "qgsserverrequest.h"
 
@@ -36,8 +36,7 @@ class QgsProject;
  */
 struct QgsLandingPageUtils
 {
-
-  /**
+    /**
    * Returns a list of available projects from various sources:
    *
    * - QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES directories
@@ -47,39 +46,38 @@ struct QgsLandingPageUtils
    *
    * \returns hash of project paths (or other storage identifiers) with a digest key
    */
-  static QMap<QString, QString> projects( const QgsServerSettings &settings );
+    static QMap<QString, QString> projects( const QgsServerSettings &settings );
 
-  /**
+    /**
    * Returns project information for a given \a projectPath, optional \a serverSettings and \a request
    */
-  static json projectInfo( const QString &projectPath, const QgsServerSettings *serverSettings = nullptr, const QgsServerRequest &request = QgsServerRequest() );
+    static json projectInfo( const QString &projectPath, const QgsServerSettings *serverSettings = nullptr, const QgsServerRequest &request = QgsServerRequest() );
 
-  /**
+    /**
    * Returns the layer tree information for the given \a project
    */
-  static json layerTree( const QgsProject &project, const QStringList &wmsLayersQueryable, const QStringList &wmsLayersSearchable, const QStringList &wmsRestrictedLayers );
+    static json layerTree( const QgsProject &project, const QStringList &wmsLayersQueryable, const QStringList &wmsLayersSearchable, const QStringList &wmsRestrictedLayers );
 
-  /**
+    /**
    * Extracts the project hash from the URL and returns the (possibly empty) project path.
    */
-  static QString projectPathFromUrl( const QString &url );
+    static QString projectPathFromUrl( const QString &url );
 
-  /**
+    /**
    * PROJECTS_RE regex to extract project hash from URL
    */
-  static const QRegularExpression PROJECT_HASH_RE;
+    static const QRegularExpression PROJECT_HASH_RE;
 
-  /**
+    /**
    * Available projects cache
    */
-  static QMap<QString, QString> AVAILABLE_PROJECTS;
+    static QMap<QString, QString> AVAILABLE_PROJECTS;
 
-  /**
+    /**
    * Extracts and returns the (possibly empty) project URI from the \a url path
    * by examining the project hash.
    */
-  static QString projectUriFromUrl( const QString &url, const QgsServerSettings &settings );
-
+    static QString projectUriFromUrl( const QString &url, const QgsServerSettings &settings );
 };
 
 #endif // QGSLANDINGPAGEUTILS_H

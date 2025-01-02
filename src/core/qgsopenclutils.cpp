@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsopenclutils.h"
+#include "moc_qgsopenclutils.cpp"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
@@ -25,8 +26,16 @@
 #include <QDebug>
 
 #ifdef Q_OS_WIN
+#if defined(UNICODE) && !defined(_UNICODE)
+#define _UNICODE
+#endif
 #include <windows.h>
 #include <tchar.h>
+#endif
+
+#if defined(_MSC_VER)
+#include <windows.h>
+#include <excpt.h>
 #endif
 
 QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = QLatin1String( "OpenClEnabled" );
@@ -100,7 +109,12 @@ void QgsOpenClUtils::init()
     }
 
 #ifdef Q_OS_WIN
-    HMODULE hModule = GetModuleHandle( "OpenCL.dll" );
+#ifdef _UNICODE
+#define _T(x) L##x
+#else
+#define _T(x) x
+#endif
+    HMODULE hModule = GetModuleHandle( _T( "OpenCL.dll" ) );
     if ( hModule )
     {
       TCHAR pszFileName[1024];
@@ -114,13 +128,13 @@ void QgsOpenClUtils::init()
         DWORD dwLen = GetFileVersionInfoSize( pszFileName, &dwUseless );
         if ( dwLen )
         {
-          LPTSTR lpVI = ( LPSTR ) malloc( dwLen );
+          LPTSTR lpVI = ( LPTSTR ) malloc( dwLen * sizeof( TCHAR ) );
           if ( lpVI )
           {
             if ( GetFileVersionInfo( pszFileName, 0, dwLen, lpVI ) )
             {
               VS_FIXEDFILEINFO *lpFFI;
-              if ( VerQueryValue( lpVI, "\\", ( LPVOID * ) &lpFFI, ( UINT * ) &dwUseless ) )
+              if ( VerQueryValue( lpVI, _T( "\\" ), ( LPVOID * ) &lpFFI, ( UINT * ) &dwUseless ) )
               {
                 QgsMessageLog::logMessage( QObject::tr( "OpenCL Product version: %1.%2.%3.%4" )
                                            .arg( lpFFI->dwProductVersionMS >> 16 )
@@ -163,13 +177,23 @@ void QgsOpenClUtils::init()
 
                   QgsDebugMsgLevel( QString( "d:%1 subBlock:%2" ).arg( d ).arg( subBlock ), 2 );
 
-                  BOOL r = VerQueryValue( lpVI, subBlock.toUtf8(), ( LPVOID * )&lpBuffer, ( UINT * )&dwUseless );
+                  BOOL r = VerQueryValue( lpVI,
+#ifdef UNICODE
+                                          subBlock.toStdWString().c_str(),
+#else
+                                          subBlock.toUtf8(),
+#endif
+                                          ( LPVOID * )&lpBuffer, ( UINT * )&dwUseless );
 
                   if ( r && lpBuffer && lpBuffer != INVALID_HANDLE_VALUE && dwUseless < 1023 )
                   {
                     QgsMessageLog::logMessage( QObject::tr( "Found OpenCL version info %1: %2" )
                                                .arg( d )
+#ifdef UNICODE
+                                               .arg( QString::fromUtf16( ( const ushort * ) lpBuffer ) ),
+#else
                                                .arg( QString::fromLocal8Bit( lpBuffer ) ),
+#endif
                                                LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
                   }
                 }
@@ -317,13 +341,41 @@ QString QgsOpenClUtils::deviceId( const cl::Device device )
          .arg( deviceInfo( QgsOpenClUtils::Info::Type, device ) );
 }
 
+#if defined(_MSC_VER)
+static void emitLogMessageForSEHException( int exceptionCode )
+{
+  QgsMessageLog::logMessage( QObject::tr( "Unexpected exception of code %1 occurred while searching for OpenCL device. Note that the application may become unreliable and may need to be restarted." ).arg( exceptionCode ),
+                             QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+}
+#endif
+
 bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
+{
+#if defined(_MSC_VER)
+  // Try to capture hard crashes such as https://github.com/qgis/QGIS/issues/59617
+  __try
+  {
+    // We cannot combine together __try and try in the same function.
+    return activateInternal( preferredDeviceId );
+  }
+  __except ( EXCEPTION_EXECUTE_HANDLER )
+  {
+    emitLogMessageForSEHException( GetExceptionCode() );
+    return false;
+  }
+#else
+  return activateInternal( preferredDeviceId );
+#endif
+}
+
+bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
 {
   if ( deviceId( activeDevice() ) == preferredDeviceId )
   {
     sAvailable = true;
     return false;
   }
+
   try
   {
     std::vector<cl::Platform> platforms;
@@ -436,6 +488,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
                                LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
     sAvailable = false;
   }
+
   return sAvailable;
 }
 

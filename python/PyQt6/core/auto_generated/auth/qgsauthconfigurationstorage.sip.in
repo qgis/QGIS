@@ -1,0 +1,698 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfigurationstorage.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAuthConfigurationStorage: QObject
+{
+%Docstring(signature="appended")
+Abstract class that defines the interface for all authentication configuration storage implementations.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsauthconfigurationstorage.h"
+%End
+  public:
+
+    struct MasterPasswordConfig
+    {
+      QString salt;
+      QString civ;
+      QString hash;
+    };
+
+    struct SettingParameter
+    {
+      QString name;
+      QString description;
+      QVariant::Type type;
+    };
+
+    QgsAuthConfigurationStorage( const QMap<QString, QVariant> &settings );
+%Docstring
+Creates a new authentication configuration storage.
+
+:param settings: Implementation-specific configuration settings.
+%End
+
+    virtual ~QgsAuthConfigurationStorage();
+
+    virtual QString name() const = 0;
+%Docstring
+Returns a human readable localized short name of the storage implementation (e.g "SQLite").
+This name is displayed to the user and used to identify the storage implementation.
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the type of the storage implementation.
+The type is used to identify the storage implementation internally (e.g. "sqlite").
+A valid type must be ASCII alphanumeric and contain no spaces.
+%End
+
+    virtual QString description() const = 0;
+%Docstring
+Returns a human readable localized description of the storage implementation (e.g. "Store credentials in a local SQLite database").
+This description is displayed to the user.
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+Returns the unique identifier of the storage object.
+The id is used to uniquely identify the storage object (e.g. the path or the connection URI to a storage configuration).
+%End
+
+    virtual bool initialize();
+%Docstring
+Initializes the storage.
+
+:return: ``True`` if the storage was successfully initialized, ``False`` otherwise.
+         If the storage is already initialized, this method does nothing and returns ``True``.
+
+.. note::
+
+   The default implementation does nothing and returns ``True``.
+   This method is called by the authentication manager when the storage is added to the manager.
+%End
+
+    virtual QString lastError() const;
+%Docstring
+Returns the last error message.
+%End
+
+    virtual bool isReady() const = 0;
+%Docstring
+Returns ``True`` is the storage is ready to be used.
+
+.. note::
+
+   This method should be called after the :py:func:`~QgsAuthConfigurationStorage.initialize` method to check whether the initialization was properly completed.
+%End
+
+    Qgis::AuthConfigurationStorageCapabilities capabilities() const;
+%Docstring
+Returns the capabilities of the storage.
+%End
+
+    QMap<QString, QVariant> settings() const;
+%Docstring
+Returns the settings of the storage.
+%End
+
+    virtual QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const = 0;
+%Docstring
+Returns a list of the settings accepted by the storage.
+%End
+
+    bool isEncrypted() const;
+%Docstring
+Returns ``True`` if the storage is encrypted.
+%End
+
+    bool isEnabled() const;
+%Docstring
+Returns ``True`` if the storage is enabled.
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Set the storage enabled status to ``enabled``.
+
+.. note::
+
+   This is a user-controlled setting: the storage may be enabled but not ready to be used.
+%End
+
+
+    virtual void setReadOnly( bool readOnly );
+%Docstring
+Utility method to unset all editing capabilities.
+
+.. note::
+
+   This method does not alter existing capabilities, make sure subclasses recompute capabilities if needed.
+%End
+
+    virtual bool isReadOnly() const;
+%Docstring
+Returns ``True`` if the storage is read-only, ``False`` otherwise.
+
+.. seealso:: :py:func:`setReadOnly`
+%End
+
+    virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const  = 0;
+%Docstring
+Returns a mapping of authentication configurations available from this storage.
+
+:param allowedMethods: Optional filter to return only configurations for specific authentication methods.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const  = 0;
+%Docstring
+Returns a mapping of authentication configurations available from this storage.
+The encrypted payload is added to the configuration as "encrypted_payload" key.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage
+
+.. note::
+
+   This convenience method is used by the authentication manager to retrieve the configurations
+   and check if it can decrypt all of them, it is faster than retrieve all the configurations one
+   by one.
+%End
+
+    virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload /Out/, bool full = false ) const  = 0;
+%Docstring
+Load an authentication configuration from the database.
+
+:param id: Configuration id.
+:param full: If ``True``, the full configuration is loaded and the (possibly encrypted) payload is populated, otherwise only the configuration metadata is loaded.
+
+:return: - Authentication configuration metadata.
+         - payload: (possibly encrypted) payload.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool storeMethodConfig( const QgsAuthMethodConfig &config, const QString &payload )  = 0;
+%Docstring
+Store an authentication config in the database.
+
+:param config: Authentication configuration.
+:param payload: payload to store (possibly encrypted).
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool removeMethodConfig( const QString &id )  = 0;
+%Docstring
+Removes the authentication configuration with the specified ``id``.
+
+:return: ``True`` if the configuration was removed, ``False`` otherwise.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool methodConfigExists( const QString &id ) const  = 0;
+%Docstring
+Check if an authentication configuration exists in the storage.
+
+:param id: Configuration id.
+
+:return: ``True`` if the configuration exists, ``False`` otherwise.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool storeAuthSetting( const QString &key, const QString &value )  = 0;
+%Docstring
+Store an authentication setting in the storage.
+
+:param key: Setting key.
+:param value: Setting value.
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual QString loadAuthSetting( const QString &key ) const  = 0;
+%Docstring
+Load an authentication setting from the storage.
+
+:param key: Setting key.
+
+:return: Setting value.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool removeAuthSetting( const QString &key )  = 0;
+%Docstring
+Remove an authentication setting from the storage.
+
+:param key: Setting key.
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool authSettingExists( const QString &key ) const  = 0;
+%Docstring
+Check if an authentication setting exists in the storage.
+
+:param key: Setting key.
+
+:return: ``True`` if the setting exists, ``False`` otherwise.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+
+    virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem )  = 0;
+%Docstring
+Store a certificate identity in the storage.
+
+:param cert: Certificate.
+:param keyPem: SSL key in PEM format.
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool removeCertIdentity( const QSslCertificate &cert )  = 0;
+%Docstring
+Remove a certificate identity from the storage.
+
+:param cert: Certificate.
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QSslCertificate loadCertIdentity( const QString &id ) const  = 0;
+%Docstring
+certIdentity get a certificate identity by ``id`` (sha hash)
+
+:param id: sha hash of the cert
+
+:return: the certificate
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const  = 0;
+%Docstring
+Returns a certificate identity bundle by ``id`` (sha hash).
+
+:param id: sha shash
+
+:return: a pair with the certificate and its SSL key as an encrypted string
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QList<QSslCertificate> certIdentities() const  = 0;
+%Docstring
+certIdentities get certificate identities
+
+:return: list of certificates
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual QStringList certIdentityIds() const  = 0;
+%Docstring
+certIdentityIds get list of certificate identity ids from database
+
+:return: list of certificate ids
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool certIdentityExists( const QString &id ) const  = 0;
+%Docstring
+Check if the certificate identity exists
+
+:param id: Certificate identity id
+
+:return: ``True`` if the certificate identity exists, ``False`` otherwise
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool removeCertIdentity( const QString &id )  = 0;
+%Docstring
+Remove a certificate identity from the storage.
+
+:param id: Certificate identity id
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config )  = 0;
+%Docstring
+Store an SSL certificate custom config
+
+:param config: SSL certificate custom config
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const  = 0;
+%Docstring
+Loads an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (host:port)
+
+:param id: sha hash
+:param hostport: string host:port
+
+:return: a SSL certificate custom config
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfigByHost( const QString &hostport ) const  = 0;
+%Docstring
+Loads an SSL certificate custom config by ``hostport`` (host:port)
+
+:param hostport: host:port
+
+:return: a SSL certificate custom config
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const  = 0;
+%Docstring
+sslCertCustomConfigs get SSL certificate custom configs
+
+:return: list of SSL certificate custom config
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual QStringList sslCertCustomConfigIds() const  = 0;
+%Docstring
+Returns the list of SSL certificate custom config ids.
+
+:return: list of SSL certificate custom config ids
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool sslCertCustomConfigExists( const QString &id, const QString &hostport )  = 0;
+%Docstring
+Check if SSL certificate custom config exists
+
+:param id: sha hash
+:param hostport: host:port
+
+:return: ``True`` if the SSL certificate custom config exists, ``False`` otherwise
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool removeSslCertCustomConfig( const QString &id, const QString &hostport )  = 0;
+%Docstring
+Remove an SSL certificate custom config
+
+:param id: sha hash
+:param hostport: host:port
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool storeCertAuthority( const QSslCertificate &cert )  = 0;
+%Docstring
+Store a certificate authority
+
+:param cert: Certificate authority
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual QStringList certAuthorityIds() const  = 0;
+%Docstring
+Returns the list of certificate authority IDs in the storage.
+
+:return: list of certificate authority IDs
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QSslCertificate loadCertAuthority( const QString &id ) const  = 0;
+%Docstring
+certAuthority get a certificate authority by ``id`` (sha hash)
+
+:param id: sha hash
+
+:return: a (possibly empty) certificate
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool certAuthorityExists( const QSslCertificate &cert ) const  = 0;
+%Docstring
+Check if a certificate authority exists
+
+:param cert: Certificate authority
+
+:return: ``True`` if the certificate authority exists, ``False`` otherwise
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool removeCertAuthority( const QSslCertificate &cert )  = 0;
+%Docstring
+Remove a certificate authority
+
+:param cert: Certificate authority
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> caCertsPolicy() const  = 0;
+%Docstring
+Returns the map of CA certificates hashes in the storages and their trust policy.
+
+:return: map of CA certificates hashes and their trust policy
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual const  QList<QSslCertificate> caCerts() const  = 0;
+%Docstring
+Returns the list of CA certificates in the storage
+
+:return: list of CA certificates
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy )  = 0;
+%Docstring
+Store certificate trust policy
+
+:param cert: Certificate
+:param policy: Trust policy
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const  = 0;
+%Docstring
+Load certificate trust policy
+
+:param cert: Certificate
+
+:return: Trust policy
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool removeCertTrustPolicy( const QSslCertificate &cert )  = 0;
+%Docstring
+Remove certificate trust policy
+
+:param cert: Certificate
+
+:return: Whether operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const  = 0;
+%Docstring
+Check if certificate trust policy exists
+
+:param cert: Certificate
+
+:return: ``True`` if the certificate trust policy exists, ``False`` otherwise
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const  = 0;
+%Docstring
+Returns the list of (encrypted) master passwords stored in the database.
+
+:return: list of master passwords
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config )  = 0;
+%Docstring
+Store a master password in the database.
+
+:param config: Master password configuration.
+
+:return: ``True`` if operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool clearMasterPasswords()  = 0;
+%Docstring
+Remove all master passwords from the database.
+
+:return: ``True`` if operation succeeded
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+    virtual bool erase()  = 0;
+%Docstring
+Completely erase the storage removing all configurations/certs/settings etc.
+
+:return: ``True`` if storage was completely erased, ``False`` if any error occurred.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage (e.g. the storage is read-only).
+%End
+
+    virtual bool clearMethodConfigs()  = 0;
+%Docstring
+Remove all authentications configurations from the storage.
+
+:return: ``True`` if authentications configurations were removed, ``False`` otherwise.
+
+.. note::
+
+   This method does not remove certificate and other assets.
+
+:raises QgsNotSupportedException: if the operation is not supported by the storage.
+%End
+
+
+  signals:
+
+    void messageLog( const QString &message, const QString &tag = QStringLiteral( "Authentication" ), Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+%Docstring
+Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
+
+:param message: Message to send
+:param tag: Associated tag (title)
+:param level: Message log level
+
+.. seealso:: :py:class:`QgsMessageLog`
+%End
+
+    void storageChanged( const QString &id );
+%Docstring
+Emitted when the storage was updated.
+
+:param id: The storage id
+
+.. note::
+
+   This is a generic changed signal and it is normally
+   emitted together with the dedicated signals which are
+   provided for specific changes on the individual tables.
+%End
+
+    void methodConfigChanged( );
+%Docstring
+Emitted when the storage method config table was changed.
+%End
+
+    void masterPasswordChanged();
+%Docstring
+Emitted when the storage master password table was changed.
+%End
+
+    void authSettingsChanged();
+%Docstring
+Emitted when the storage auth settings table was changed.
+%End
+
+    void readOnlyChanged( bool readOnly );
+%Docstring
+Emitted when the storage read-only status was changed.
+%End
+
+
+
+    void certIdentityChanged();
+%Docstring
+Emitted when the storage cert identity table was changed.
+%End
+
+    void certAuthorityChanged();
+%Docstring
+Emitted when the storage cert authority table was changed.
+%End
+
+    void sslCertCustomConfigChanged();
+%Docstring
+Emitted when the storage ssl cert custom config table was changed.
+%End
+
+    void sslCertTrustPolicyChanged();
+%Docstring
+Emitted when the storage ssl cert trust policy table was changed.
+%End
+
+
+  protected:
+
+    void setCapabilities( Qgis::AuthConfigurationStorageCapabilities capabilities );
+%Docstring
+Set the capabilities of the storage to ``capabilities``.
+%End
+
+    void setError( const QString &error, Qgis::MessageLevel level = Qgis::MessageLevel::Critical );
+%Docstring
+Set the last error message to ``error`` with message level ``level``.
+%End
+
+
+    virtual QString loggerTag() const;
+%Docstring
+Returns the logger tag for the storage.
+The default implementation returns the literal "Auth storage" followed by the storage name.
+%End
+
+
+
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfigurationstorage.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

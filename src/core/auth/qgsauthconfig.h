@@ -51,10 +51,7 @@ class CORE_EXPORT QgsAuthMethodConfig
 
     // TODO c++20 - replace with = default
 
-    //! Operator used to compare configs' equality
     bool operator==( const QgsAuthMethodConfig &other ) const;
-
-    //! Operator used to compare configs' inequality
     bool operator!=( const QgsAuthMethodConfig &other ) const;
 
     /**
@@ -456,6 +453,9 @@ class CORE_EXPORT QgsAuthConfigSslServer
 
     QString mSslHostPort;
     QSslCertificate mSslCert;
+
+    static QSsl::SslProtocol decodeSslProtocol( const QString &protocol );
+    static QString encodeSslProtocol( QSsl::SslProtocol protocol );
 
     QSsl::SslProtocol mSslProtocol;
     int mQtVersion;

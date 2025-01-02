@@ -25,10 +25,10 @@ QgsClassificationCustom::QgsClassificationCustom()
 }
 
 
-QgsClassificationMethod *QgsClassificationCustom::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationCustom::clone() const
 {
-  QgsClassificationCustom *c = new QgsClassificationCustom();
-  copyBase( c );
+  std::unique_ptr< QgsClassificationCustom > c = std::make_unique< QgsClassificationCustom >();
+  copyBase( c.get() );
   return c;
 }
 
@@ -43,11 +43,12 @@ QString QgsClassificationCustom::id() const
 }
 
 QList<double> QgsClassificationCustom::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses )
+    const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( minimum )
   Q_UNUSED( maximum )
   Q_UNUSED( values )
   Q_UNUSED( nclasses )
+  Q_UNUSED( error )
   return QList<double>();
 }

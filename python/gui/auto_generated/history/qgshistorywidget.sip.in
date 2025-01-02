@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/history/qgshistorywidget.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,12 +23,7 @@ A widget showing entries from a :py:class:`QgsHistoryProviderRegistry`.
 #include "qgshistorywidget.h"
 %End
   public:
-
-    QgsHistoryWidget( const QString &providerId = QString(),
-                      Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
-                      QgsHistoryProviderRegistry *registry = 0,
-                      const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
-                      QWidget *parent = 0 );
+    QgsHistoryWidget( const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = 0, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QWidget *parent = 0 );
 %Docstring
 Constructor for QgsHistoryWidget, with the specified ``parent`` widget.
 
@@ -47,5 +42,5 @@ will be used.
  *                                                                      *
  * src/gui/history/qgshistorywidget.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

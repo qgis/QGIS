@@ -36,9 +36,6 @@ class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
 
-    /**
-     * Constructor for QgsLegendSymbolItem.
-     */
     QgsLegendSymbolItem() = default;
 
     /**
@@ -108,6 +105,22 @@ class CORE_EXPORT QgsLegendSymbolItem
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 
+    /**
+     * Adds a \a key - \a value pair to the item's user data.
+     *
+     * \see userData()
+     * \since QGIS 3.38
+     */
+    void setUserData( int key, QVariant &value );
+
+    /**
+     * Retrieves the item's user data with the specified \a key.
+     *
+     * \see setUserData()
+     * \since QGIS 3.38
+     */
+    QVariant userData( int key ) const;
+
   private:
     //! Legend symbol -- may be NULLPTR.
     QgsSymbol *mSymbol = nullptr;
@@ -135,6 +148,8 @@ class CORE_EXPORT QgsLegendSymbolItem
     int mLevel = 0;
     //! Key of the parent legend node. For legends with tree hierarchy
     QString mParentKey;
+
+    QMap< int, QVariant > mUserData;
 };
 
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;

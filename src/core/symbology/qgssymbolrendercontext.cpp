@@ -38,6 +38,12 @@ void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant &value )
   mRenderContext.expressionContext().setOriginalValueVariable( value );
 }
 
+bool QgsSymbolRenderContext::forceVectorRendering() const
+{
+  return mRenderContext.testFlag( Qgis::RenderContextFlag::ForceVectorOutput )
+         || mRenderHints.testFlag( Qgis::SymbolRenderHint::ForceVectorRendering );
+}
+
 double QgsSymbolRenderContext::outputLineWidth( double width ) const
 {
   return mRenderContext.convertToPainterUnits( width, mOutputUnit, mMapUnitScale );

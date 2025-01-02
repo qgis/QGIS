@@ -33,8 +33,71 @@ QgsCoordinateReferenceSystemModel.RoleProj = QgsCoordinateReferenceSystemModel.C
 QgsCoordinateReferenceSystemModel.Roles.RoleProj = QgsCoordinateReferenceSystemModel.CustomRole.Proj
 QgsCoordinateReferenceSystemModel.RoleProj.is_monkey_patched = True
 QgsCoordinateReferenceSystemModel.RoleProj.__doc__ = "The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database)."
-QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsCoordinateReferenceSystemModel.Roles\n\n.. versionadded:: 3.36\n\n" + '* ``RoleNodeType``: ' + QgsCoordinateReferenceSystemModel.CustomRole.NodeType.__doc__ + '\n' + '* ``RoleName``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Name.__doc__ + '\n' + '* ``RoleAuthId``: ' + QgsCoordinateReferenceSystemModel.CustomRole.AuthId.__doc__ + '\n' + '* ``RoleDeprecated``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Deprecated.__doc__ + '\n' + '* ``RoleType``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Type.__doc__ + '\n' + '* ``RoleGroupId``: ' + QgsCoordinateReferenceSystemModel.CustomRole.GroupId.__doc__ + '\n' + '* ``RoleWkt``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Wkt.__doc__ + '\n' + '* ``RoleProj``: ' + QgsCoordinateReferenceSystemModel.CustomRole.Proj.__doc__
+QgsCoordinateReferenceSystemModel.Group = QgsCoordinateReferenceSystemModel.CustomRole.Group
+QgsCoordinateReferenceSystemModel.Group.is_monkey_patched = True
+QgsCoordinateReferenceSystemModel.Group.__doc__ = "Group name. \n.. versionadded:: 3.42"
+QgsCoordinateReferenceSystemModel.Projection = QgsCoordinateReferenceSystemModel.CustomRole.Projection
+QgsCoordinateReferenceSystemModel.Projection.is_monkey_patched = True
+QgsCoordinateReferenceSystemModel.Projection.__doc__ = "Projection name. \n.. versionadded:: 3.42"
+QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsCoordinateReferenceSystemModel.Roles
+
+.. versionadded:: 3.36
+
+* ``NodeType``: Corresponds to the node's type
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleNodeType`` in older QGIS releases.
+
+* ``Name``: The coordinate reference system name
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleName`` in older QGIS releases.
+
+* ``AuthId``: The coordinate reference system authority name and id
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleAuthId`` in older QGIS releases.
+
+* ``Deprecated``: ``True`` if the CRS is deprecated
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleDeprecated`` in older QGIS releases.
+
+* ``Type``: The coordinate reference system type
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleType`` in older QGIS releases.
+
+* ``GroupId``: The node ID (for group nodes)
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleGroupId`` in older QGIS releases.
+
+* ``Wkt``: The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleWkt`` in older QGIS releases.
+
+* ``Proj``: The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+
+  Available as ``QgsCoordinateReferenceSystemModel.RoleProj`` in older QGIS releases.
+
+* ``Group``: Group name.
+
+  .. versionadded:: 3.42
+
+* ``Projection``: Projection name.
+
+  .. versionadded:: 3.42
+
+
+"""
 # --
 QgsCoordinateReferenceSystemModel.CustomRole.baseClass = QgsCoordinateReferenceSystemModel
 QgsCoordinateReferenceSystemProxyModel.Filters.baseClass = QgsCoordinateReferenceSystemProxyModel
 Filters = QgsCoordinateReferenceSystemProxyModel  # dirty hack since SIP seems to introduce the flags in module
+try:
+    QgsCoordinateReferenceSystemModel.__group__ = ['proj']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
+except (NameError, AttributeError):
+    pass

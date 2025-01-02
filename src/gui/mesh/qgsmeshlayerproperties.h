@@ -44,7 +44,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param lyr Mesh map layer for which properties will be displayed
@@ -57,21 +56,21 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     /**
      * Saves the default style when appropriate button is pressed
      *
-     * \deprecated use saveStyleAsDefault() instead.
+     * \deprecated QGIS 3.40. Use saveStyleAsDefault() instead.
      */
     Q_DECL_DEPRECATED void saveDefaultStyle() SIP_DEPRECATED;
 
     /**
      * Loads a saved style when appropriate button is pressed
      *
-     * \deprecated use loadStyleFromFile() instead.
+     * \deprecated QGIS 3.40. Use loadStyleFromFile() instead.
      */
     Q_DECL_DEPRECATED void loadStyle() SIP_DEPRECATED;
 
     /**
      * Saves a style when appriate button is pressed
      *
-     * \deprecated use saveStyleToFile() instead.
+     * \deprecated QGIS 3.40. Use saveStyleToFile() instead.
      */
     Q_DECL_DEPRECATED void saveStyleAs() SIP_DEPRECATED;
 

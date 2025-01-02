@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgsrendererwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -79,12 +79,13 @@ vector layers have been changed. Will request the parent dialog
 to re-synchronize with the variables.
 %End
 
- void symbolLevelsChanged() /Deprecated/;
+ void symbolLevelsChanged() /Deprecated="Since 3.20. No longer emitted."/;
 %Docstring
 Emitted when the symbol levels settings have been changed.
 
-.. deprecated:: QGIS 3.20
-   -- no longer emitted.
+.. deprecated:: 3.20
+
+   No longer emitted.
 %End
 
   protected:
@@ -105,7 +106,7 @@ Creates widget to setup data-defined size legend.
 Returns newly created panel - may be ``None`` if it could not be opened. Ownership is transferred to the caller.
 %End
 
-    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+    virtual void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled );
 %Docstring
 Sets the symbol levels for the renderer defined in the widget.
 
@@ -124,7 +125,7 @@ and help text for the associated property.
 %End
 
   protected slots:
-    void  contextMenuViewCategories( QPoint p );
+    void contextMenuViewCategories( QPoint p );
     void changeSymbolColor();
 %Docstring
 Change color of selected symbols
@@ -185,7 +186,6 @@ Utility classes for "en masse" size definition.
 #include "qgsrendererwidget.h"
 %End
   public:
-
     QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );
 %Docstring
 Constructor
@@ -220,7 +220,6 @@ Returns the vector layer associated with the widget.
     void dataDefinedChanged();
 
   protected:
-
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
@@ -292,11 +291,10 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 };
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/symbology/qgsrendererwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

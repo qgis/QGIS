@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgspainting.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsPainting
+{
+%Docstring(signature="appended")
+Contains miscellaneous painting utility functions.
+%End
+
+%TypeHeaderCode
+#include "qgspainting.h"
+%End
+  public:
+
+    static QPainter::CompositionMode getCompositionMode( Qgis::BlendMode blendMode );
+%Docstring
+Returns a QPainter.CompositionMode corresponding to a :py:class:`Qgis`.BlendMode.
+
+.. seealso:: :py:func:`getBlendModeEnum`
+%End
+
+    static Qgis::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
+%Docstring
+Returns a :py:class:`Qgis`.BlendMode corresponding to a QPainter.CompositionMode.
+
+.. seealso:: :py:func:`getCompositionMode`
+%End
+
+    static bool isClippingMode( Qgis::BlendMode mode );
+%Docstring
+Returns ``True`` if ``mode`` is a clipping blend mode.
+
+.. versionadded:: 3.30
+%End
+
+    static QTransform triangleToTriangleTransform( double inX1, double inY1, double inX2, double inY2, double inX3, double inY3, double outX1, double outY1, double outX2, double outY2, double outX3, double outY3, bool &ok /Out/ );
+%Docstring
+Calculates the QTransform which maps the triangle defined by the points (``inX1``, ``inY1``), (``inY2``, ``inY2``), (``inX3``, ``inY3``)
+to the triangle defined by (``outX1``, ``outY1``), (``outY2``, ``outY2``), (``outX3``, ``outY3``).
+
+:param inX1: source triangle vertex 1 x-coordinate
+:param inY1: source triangle vertex 1 y-coordinate
+:param inX2: source triangle vertex 2 x-coordinate
+:param inY2: source triangle vertex 2 y-coordinate
+:param inX3: source triangle vertex 3 x-coordinate
+:param inY3: source triangle vertex 3 y-coordinate
+:param outX1: destination triangle vertex 1 x-coordinate
+:param outY1: destination triangle vertex 1 y-coordinate
+:param outX2: destination triangle vertex 2 x-coordinate
+:param outY2: destination triangle vertex 2 y-coordinate
+:param outX3: destination triangle vertex 3 x-coordinate
+:param outY3: destination triangle vertex 3 y-coordinate
+
+:return: - Calculated transform (if possible)
+         - ok: ``True`` if the transform could be determined.
+
+.. versionadded:: 3.34
+%End
+
+    static bool drawTriangleUsingTexture(
+      QPainter *painter,
+      const QPolygonF &triangle,
+      const QImage &textureImage,
+      float textureX1, float textureY1,
+      float textureX2, float textureY2,
+      float textureX3, float textureY3
+    );
+%Docstring
+Draws a ``triangle`` onto a ``painter`` using a mapped texture image.
+
+The triangle will be rendered using the portion of the texture image described by the triangle (``textureX1``, ``textureY1``), (``textureX2``, ``textureY2``), (``textureX3``, ``textureY3``).
+Texture coordinates should be in the range 0-1 (as a fraction of the image size), where (0, 0) coorresponds to the top-left of the texture image.
+
+The caller must ensure that ``triangle`` is a closed QPolygonF consisting of 4 vertices (the 3 triangle vertices + the first vertex again to close the polygon).
+
+Returns ``True`` if the triangle could be rendered, or ``False`` if it could not (e.g. when the described points are co-linear).
+
+.. versionadded:: 3.34
+%End
+
+    static int qtDefaultDpiX();
+%Docstring
+Returns the default Qt horizontal DPI.
+
+.. note::
+
+   This method proxies the internal Qt :py:func:`~QgsPainting.qt_defaultDpiX` function.
+
+.. seealso:: :py:func:`qtDefaultDpiY`
+
+.. versionadded:: 3.40
+%End
+
+    static int qtDefaultDpiY();
+%Docstring
+Returns the default Qt vertical DPI.
+
+.. note::
+
+   This method proxies the internal Qt :py:func:`~QgsPainting.qt_defaultDpiY` function.
+
+.. seealso:: :py:func:`qtDefaultDpiX`
+
+.. versionadded:: 3.40
+%End
+
+    static void applyScaleFixForQPictureDpi( QPainter *painter );
+%Docstring
+Applies a workaround to a ``painter`` to avoid an issue with incorrect scaling
+when drawing QPictures.
+
+.. note::
+
+   This is a low-level method, which alters the ``painter`` state and relies on the
+   caller saving/restoring painter state accordingly. Consider using
+   the high-level :py:func:`~QgsPainting.drawPicture` method instead.
+
+.. seealso:: :py:func:`drawPicture`
+
+.. versionadded:: 3.40
+%End
+
+    static void drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture );
+%Docstring
+Draws a picture onto a ``painter``, correctly applying workarounds to avoid issues
+with incorrect scaling.
+
+.. seealso:: :py:func:`applyScaleFixForQPictureDpi`
+
+.. versionadded:: 3.40
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgspainting.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

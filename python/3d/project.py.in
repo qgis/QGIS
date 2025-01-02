@@ -34,7 +34,7 @@ class Qgis3D(PyQtBindings):
 
     def __init__(self, project):
         """ Initialize the bindings. """
-        super().__init__(project, '3d')
+        super().__init__(project, '3d_p')
         self.sip_file = '3d.sip'
         self.exceptions = True
         self.release_gil = True

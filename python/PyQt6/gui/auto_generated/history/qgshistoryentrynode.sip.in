@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/history/qgshistoryentrynode.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,11 +20,7 @@ Base class for nodes representing a :py:class:`QgsHistoryEntry`.
 #include "qgshistoryentrynode.h"
 %End
   public:
-
     QgsHistoryEntryNode();
-%Docstring
-Constructor for QgsHistoryEntryNode.
-%End
     virtual ~QgsHistoryEntryNode();
 
 
@@ -106,11 +102,7 @@ Base class for history entry "group" nodes, which contain children of their own.
 #include "qgshistoryentrynode.h"
 %End
   public:
-
     QgsHistoryEntryGroup();
-%Docstring
-Constructor for QgsHistoryEntryGroup
-%End
     ~QgsHistoryEntryGroup();
 
 
@@ -161,13 +153,10 @@ Clears the group, removing all its children.
     QgsHistoryEntryGroup( const QgsHistoryEntryGroup &other );
 };
 
-
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/history/qgshistoryentrynode.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

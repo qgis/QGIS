@@ -26,15 +26,12 @@
  * \class QgsHillshadeFilter
  * \brief A hillshade filter.
  */
-class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
+class ANALYSIS_EXPORT QgsHillshadeFilter : public QgsDerivativeFilter
 {
   public:
-    QgsHillshadeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth = 300,
-                        double lightAngle = 40 );
+    QgsHillshadeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth = 300, double lightAngle = 40 );
 
-    float processNineCellWindow( float *x11, float *x21, float *x31,
-                                 float *x12, float *x22, float *x32,
-                                 float *x13, float *x23, float *x33 ) override;
+    float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) override;
 
     float lightAzimuth() const { return mLightAzimuth; }
     void setLightAzimuth( float azimuth );
@@ -42,7 +39,6 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
     void setLightAngle( float angle );
 
   private:
-
 #ifdef HAVE_OPENCL
 
     const QString openClProgramBaseName() const override
@@ -61,10 +57,8 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
 
 #ifdef HAVE_OPENCL
   private:
-
     void addExtraRasterParams( std::vector<float> &params ) override;
 #endif
-
 };
 
 #endif // QGSHILLSHADEFILTER_H

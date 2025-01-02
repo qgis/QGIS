@@ -24,6 +24,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsrasterlayer.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsrasterlayertemporalproperties.h"
 
@@ -38,16 +39,17 @@ class TestQgsProjectProperties : public QObject
     TestQgsProjectProperties();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testProjectPropertiesDirty();
     void testEllipsoidChange();
     void testEllipsoidCrsSync();
     void testBearingFormat();
     void testTimeSettings();
+    void testColorSettings();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -74,7 +76,7 @@ void TestQgsProjectProperties::cleanupTestCase()
 void TestQgsProjectProperties::testProjectPropertiesDirty()
 {
   // create a temporary layer
-  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
   // add layer to project, to insure presence of layer-related project settings
@@ -98,41 +100,40 @@ void TestQgsProjectProperties::testEllipsoidChange()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
-  std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr<QgsProjectProperties> pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "ESRI:107900" ) );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "ESRI:107900" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7002" ) );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7002" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7005" ) );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7005" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "NONE" ) );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "PARAMETER:55:66" ) );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "PARAMETER:55:66" ) );
-
 }
 
 void TestQgsProjectProperties::testEllipsoidCrsSync()
@@ -145,7 +146,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
-  std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr<QgsProjectProperties> pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
@@ -155,7 +156,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
 
   // if ellipsoid is not set to none, then it should always be synced with the project crs choice
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
@@ -164,14 +165,14 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
 
   // but if ellipsoid is initially set, then changing the project CRS should update the ellipsoid to match
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7021" ) );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
   // ellipsoid should be updated to match CRS ellipsoid
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7019" ) );
 
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4240" ) ) );
   pp->apply();
   pp.reset();
@@ -181,7 +182,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   // some ArcGIS versions: see https://github.com/OSGeo/PROJ/issues/1781
   const QString wkt = QStringLiteral( R"""(PROJCS["Belge 1972 / Belgian Lambert 72",GEOGCS["Belge 1972",DATUM["Reseau_National_Belge_1972",SPHEROID["International 1924",6378388,297],AUTHORITY["EPSG","6313"]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",4.36748666666667],PARAMETER["standard_parallel_1",49.8333339],PARAMETER["standard_parallel_2",51.1666672333333],PARAMETER["false_easting",150000.01256],PARAMETER["false_northing",5400088.4378],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]])""" );
   const QgsCoordinateReferenceSystem customCrs = QgsCoordinateReferenceSystem::fromWkt( wkt );
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( customCrs );
   pp->apply();
   pp.reset();
@@ -191,7 +192,7 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem() );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "NONE" ) );
 
-  pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->setSelectedCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
   pp->apply();
   pp.reset();
@@ -202,11 +203,11 @@ void TestQgsProjectProperties::testEllipsoidCrsSync()
 void TestQgsProjectProperties::testBearingFormat()
 {
   QgsProject::instance()->clear();
-  std::unique_ptr< QgsBearingNumericFormat > format = std::make_unique< QgsBearingNumericFormat >();
+  std::unique_ptr<QgsBearingNumericFormat> format = std::make_unique<QgsBearingNumericFormat>();
   format->setNumberDecimalPlaces( 9 );
   QgsProject::instance()->displaySettings()->setBearingFormat( format.release() );
 
-  std::unique_ptr< QgsProjectProperties > pp = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr<QgsProjectProperties> pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
   pp->apply();
   QCOMPARE( QgsProject::instance()->displaySettings()->bearingFormat()->numberDecimalPlaces(), 9 );
 }
@@ -214,13 +215,12 @@ void TestQgsProjectProperties::testBearingFormat()
 void TestQgsProjectProperties::testTimeSettings()
 {
   QgsProject::instance()->clear();
-  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
-                                 QDateTime( QDate( 2020, 12, 31 ), QTime(), Qt::UTC ) );
+  const QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ), QDateTime( QDate( 2020, 12, 31 ), QTime(), Qt::UTC ) );
 
   QgsProject::instance()->timeSettings()->setTemporalRange( range );
   const QgsDateTimeRange projectRange = QgsProject::instance()->timeSettings()->temporalRange();
 
-  std::unique_ptr< QgsProjectProperties > projectProperties = std::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  std::unique_ptr<QgsProjectProperties> projectProperties = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
 
   QCOMPARE( projectRange, range );
 
@@ -230,19 +230,16 @@ void TestQgsProjectProperties::testTimeSettings()
   QgsRasterLayer *secondLayer = new QgsRasterLayer( QString(), QStringLiteral( "secondLayer" ), QStringLiteral( "wms" ) );
   QgsRasterLayer *thirdLayer = new QgsRasterLayer( QString(), QStringLiteral( "thirdLayer" ), QStringLiteral( "wms" ) );
 
-  const QgsDateTimeRange firstRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
-                                      QDateTime( QDate( 2020, 3, 31 ), QTime(), Qt::UTC ) );
-  const QgsDateTimeRange secondRange = QgsDateTimeRange( QDateTime( QDate( 2020, 4, 1 ), QTime(), Qt::UTC ),
-                                       QDateTime( QDate( 2020, 7, 31 ), QTime(), Qt::UTC ) );
-  const QgsDateTimeRange thirdRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ), QTime(), Qt::UTC ),
-                                      QDateTime( QDate( 2020, 2, 28 ), QTime(), Qt::UTC ) );
+  const QgsDateTimeRange firstRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ), QDateTime( QDate( 2020, 3, 31 ), QTime(), Qt::UTC ) );
+  const QgsDateTimeRange secondRange = QgsDateTimeRange( QDateTime( QDate( 2020, 4, 1 ), QTime(), Qt::UTC ), QDateTime( QDate( 2020, 7, 31 ), QTime(), Qt::UTC ) );
+  const QgsDateTimeRange thirdRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ), QTime(), Qt::UTC ), QDateTime( QDate( 2020, 2, 28 ), QTime(), Qt::UTC ) );
 
   firstLayer->temporalProperties()->setIsActive( true );
-  qobject_cast< QgsRasterLayerTemporalProperties * >( firstLayer->temporalProperties() )->setFixedTemporalRange( firstRange );
+  qobject_cast<QgsRasterLayerTemporalProperties *>( firstLayer->temporalProperties() )->setFixedTemporalRange( firstRange );
   secondLayer->temporalProperties()->setIsActive( true );
-  qobject_cast< QgsRasterLayerTemporalProperties * >( secondLayer->temporalProperties() )->setFixedTemporalRange( secondRange );
+  qobject_cast<QgsRasterLayerTemporalProperties *>( secondLayer->temporalProperties() )->setFixedTemporalRange( secondRange );
   thirdLayer->temporalProperties()->setIsActive( true );
-  qobject_cast< QgsRasterLayerTemporalProperties * >( thirdLayer->temporalProperties() )->setFixedTemporalRange( thirdRange );
+  qobject_cast<QgsRasterLayerTemporalProperties *>( thirdLayer->temporalProperties() )->setFixedTemporalRange( thirdRange );
 
   QgsProject::instance()->addMapLayers( { firstLayer, secondLayer, thirdLayer } );
 
@@ -254,6 +251,52 @@ void TestQgsProjectProperties::testTimeSettings()
 
   QCOMPARE( secondProjectRange, expectedRange );
 }
+
+void TestQgsProjectProperties::testColorSettings()
+{
+  QgsProject::instance()->clear();
+  QCOMPARE( QgsProject::instance()->styleSettings()->colorModel(), Qgis::ColorModel::Rgb );
+  QVERIFY( !QgsProject::instance()->styleSettings()->colorSpace().isValid() );
+
+  std::unique_ptr<QgsProjectProperties> pp = std::make_unique<QgsProjectProperties>( mQgisApp->mapCanvas() );
+  QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Rgb );
+  QVERIFY( !pp->mColorSpace.isValid() );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+  QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "<i>None</i>" ) );
+  QVERIFY( !pp->mRemoveIccProfile->isEnabled() );
+#else
+  QVERIFY( !pp->mRemoveIccProfile->isVisible() );
+  QVERIFY( !pp->mAddIccProfile->isVisible() );
+  QVERIFY( !pp->mSaveIccProfile->isVisible() );
+  QVERIFY( !pp->mColorSpaceName->isVisible() );
+  QVERIFY( !pp->mIccProfileLabel->isVisible() );
+#endif
+
+  pp->mColorModel->setCurrentIndex( pp->mColorModel->findData( QVariant::fromValue( Qgis::ColorModel::Cmyk ) ) );
+  QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Cmyk );
+
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+
+  const QString iccProfileFilePath = QStringLiteral( TEST_DATA_DIR ) + "/sRGB2014.icc";
+  pp->addIccProfile( iccProfileFilePath );
+  QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "sRGB2014" ) );
+  QVERIFY( pp->mRemoveIccProfile->isEnabled() );
+  QVERIFY( !pp->mColorModel->isEnabled() );
+  QCOMPARE( static_cast<Qgis::ColorModel>( pp->mColorModel->currentData().toInt() ), Qgis::ColorModel::Rgb );
+
+  pp->apply();
+  QCOMPARE( QgsProject::instance()->styleSettings()->colorModel(), Qgis::ColorModel::Rgb );
+  QVERIFY( QgsProject::instance()->styleSettings()->colorSpace().isValid() );
+  QCOMPARE( QgsProject::instance()->styleSettings()->colorSpace().description(), QStringLiteral( "sRGB2014" ) );
+
+  pp->removeIccProfile();
+  QVERIFY( !pp->mColorSpace.isValid() );
+  QCOMPARE( pp->mColorSpaceName->text(), QStringLiteral( "<i>None</i>" ) );
+  QVERIFY( !pp->mRemoveIccProfile->isEnabled() );
+
+#endif
+}
+
 
 QGSTEST_MAIN( TestQgsProjectProperties )
 

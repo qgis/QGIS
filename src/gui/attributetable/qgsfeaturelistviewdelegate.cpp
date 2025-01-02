@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturelistviewdelegate.h"
+#include "moc_qgsfeaturelistviewdelegate.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturelistmodel.h"
@@ -110,7 +111,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   const QVariant conditionalIcon = index.model()->data( index, Qt::DecorationRole );
   if ( conditionalIcon.isValid() )
   {
-    const QPixmap pixmap = conditionalIcon.value< QPixmap >();
+    const QPixmap pixmap = conditionalIcon.value<QPixmap>();
     iconLayoutBounds.moveLeft( iconLayoutBounds.x() + icon.width() + QFontMetrics( textOption.font ).horizontalAdvance( 'X' ) );
     iconLayoutBounds.setTop( option.rect.y() + ( option.rect.height() - pixmap.height() ) / 2.0 );
     iconLayoutBounds.setHeight( pixmap.height() );
@@ -124,12 +125,12 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   const QVariant font = index.model()->data( index, Qt::FontRole );
   if ( font.isValid() )
   {
-    textOption.font = font.value< QFont >();
+    textOption.font = font.value<QFont>();
   }
   const QVariant textColor = index.model()->data( index, Qt::ForegroundRole );
   if ( textColor.isValid() )
   {
-    textOption.palette.setColor( QPalette::Text, textColor.value< QColor >() );
+    textOption.palette.setColor( QPalette::Text, textColor.value<QColor>() );
   }
 
   if ( featInfo.isNew )

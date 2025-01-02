@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmapcanvas.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,7 +39,6 @@ Map canvas is a class for displaying all GIS data types on a canvas.
       sipType = nullptr;
 %End
   public:
-
     QgsMapCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -76,6 +75,24 @@ to first clear the theme association by calling :py:func:`~QgsMapCanvas.setTheme
 empty string before :py:func:`~QgsMapCanvas.setLayers` calls can be made.
 
 .. seealso:: :py:func:`layers`
+%End
+
+    void setFlags( Qgis::MapCanvasFlags flags );
+%Docstring
+Sets ``flags`` which control how the map canvas behaves.
+
+.. seealso:: :py:func:`flags`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::MapCanvasFlags flags() const;
+%Docstring
+Returns flags which control how the map canvas behaves.
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.40
 %End
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -247,7 +264,7 @@ If ``magnified`` is ``False`` then scale lock settings will be ignored, and the 
 rectangle will ALWAYS be visible in the canvas.
 %End
 
-    bool setReferencedExtent( const QgsReferencedRectangle &extent ) throw( QgsCsException );
+    bool setReferencedExtent( const QgsReferencedRectangle &extent );
 %Docstring
 Sets the canvas to the specified ``extent``.
 
@@ -342,9 +359,7 @@ Pan to the combined extent of the selected features of all provided (vector) lay
 .. versionadded:: 3.18
 %End
 
-    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
-                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
-                          int flashes = 3, int duration = 500 );
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
 %Docstring
 Causes a set of features with matching ``ids`` from a vector ``layer`` to flash
 within the canvas.
@@ -359,9 +374,7 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 .. seealso:: :py:func:`flashGeometries`
 %End
 
-    void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
-                          int flashes = 3, int duration = 500 );
+    void flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
 %Docstring
 Causes a set of ``geometries`` to flash within the canvas.
 
@@ -388,7 +401,7 @@ that this map tool won't be used any more.
 You don't have to call it manually, :py:class:`QgsMapTool` takes care of it.
 %End
 
-    QgsMapTool *mapTool();
+    QgsMapTool *mapTool() const;
 %Docstring
 Returns the currently active tool
 %End
@@ -464,9 +477,10 @@ all their child layers.
 .. seealso:: :py:func:`setLayers`
 %End
 
+
     void freeze( bool frozen = true );
 %Docstring
-Freeze/thaw the map canvas. This is used to prevent the canvas from
+Freezes/thaws the map canvas. This is used to prevent the canvas from
 responding to events while layers are being added/removed etc.
 
 :param frozen: Boolean specifying if the canvas should be frozen (``True``) or
@@ -475,18 +489,26 @@ responding to events while layers are being added/removed etc.
 .. seealso:: :py:func:`isFrozen`
 
 .. seealso:: :py:func:`setRenderFlag`
-               while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.freeze` should be used to programmatically halt map updates,
+   while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 
     bool isFrozen() const;
 %Docstring
 Returns ``True`` if canvas is frozen.
 
-.. seealso:: :py:func:`renderFlag`
-have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
-determine whether a user has disabled rendering via GUI.
-
 .. seealso:: :py:func:`freeze`
+
+.. seealso:: :py:func:`renderFlag`
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.isFrozen` should be used to determine whether map updates
+   have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
+   determine whether a user has disabled rendering via GUI.
 %End
 
     bool renderFlag() const;
@@ -497,8 +519,12 @@ renders via the GUI.
 .. seealso:: :py:func:`setRenderFlag`
 
 .. seealso:: :py:func:`isFrozen`
-have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
-determine whether a user has disabled rendering via GUI.
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.isFrozen` should be used to determine whether map updates
+   have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
+   determine whether a user has disabled rendering via GUI.
 %End
 
     Qgis::DistanceUnit mapUnits() const;
@@ -758,7 +784,7 @@ Sets segmentation tolerance type (maximum angle or maximum difference between cu
 :param type: the segmentation tolerance typename
 %End
 
-    QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
+    QList<QgsMapCanvasAnnotationItem *> annotationItems() const;
 %Docstring
 Returns a list of all annotation items in the canvas.
 %End
@@ -928,7 +954,11 @@ Sets whether a user has disabled canvas renders via the GUI.
 .. seealso:: :py:func:`renderFlag`
 
 .. seealso:: :py:func:`freeze`
-             while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.freeze` should be used to programmatically halt map updates,
+   while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 
     void stopRendering();
@@ -1051,7 +1081,7 @@ Emits current mouse position
    changed in 1.3
 %End
 
-    void scaleChanged( double );
+    void scaleChanged( double scale );
 %Docstring
 Emitted when the scale of the map changes
 %End
@@ -1073,12 +1103,12 @@ Emitted when the scale locked state of the map changes
 Emitted when the extents of the map change
 %End
 
-    void rotationChanged( double );
+    void rotationChanged( double rotation );
 %Docstring
 Emitted when the rotation of the map changes
 %End
 
-    void magnificationChanged( double );
+    void magnificationChanged( double magnification );
 %Docstring
 Emitted when the scale of the map changes
 %End
@@ -1089,7 +1119,7 @@ Emitted when canvas background color changes
 %End
 
 
-    void renderComplete( QPainter * );
+    void renderComplete( QPainter *painter );
 %Docstring
 Emitted when the canvas has rendered.
 Passes a pointer to the painter on which the map was drawn. This is
@@ -1147,12 +1177,12 @@ Emitted when selection in any ``layer`` gets changed.
    Since QGIS 3.28 this signal is emitted for multiple layer types, including :py:class:`QgsVectorLayer` and :py:class:`QgsVectorTileLayer`
 %End
 
-    void zoomLastStatusChanged( bool );
+    void zoomLastStatusChanged( bool available );
 %Docstring
 Emitted when zoom last status changed
 %End
 
-    void zoomNextStatusChanged( bool );
+    void zoomNextStatusChanged( bool available );
 %Docstring
 Emitted when zoom next status changed
 %End
@@ -1184,7 +1214,7 @@ Emitted when the canvas has been assigned a different map theme.
 .. seealso:: :py:func:`setTheme`
 %End
 
-    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
 emit a message (usually to be displayed in a message bar)
 %End
@@ -1244,7 +1274,6 @@ Can be used to extend the context menu.
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void keyPressEvent( QKeyEvent *e );
@@ -1306,5 +1335,5 @@ called on resize or changed extent to notify canvas items to change their rectan
  *                                                                      *
  * src/gui/qgsmapcanvas.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

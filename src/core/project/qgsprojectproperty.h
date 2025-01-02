@@ -127,7 +127,6 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 {
   public:
 
-    //! Constructor for QgsProjectPropertyValue.
     QgsProjectPropertyValue() = default;
 
     /**

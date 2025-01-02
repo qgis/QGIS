@@ -38,17 +38,16 @@ class QgsReadWriteContext;
 class _3D_EXPORT Qgs3DAnimationSettings
 {
   public:
-    //! ctor
     Qgs3DAnimationSettings();
 
     //! keyframe definition
     struct Keyframe
     {
-      float time = 0;    //!< Relative time of the keyframe in seconds
-      QgsVector3D point; //!< Point towards which the camera is looking in 3D world coords
-      float dist = 0;    //!< Distance of the camera from the focal point
-      float pitch = 0;   //!< Tilt of the camera in degrees (0 = looking from the top, 90 = looking from the side, 180 = looking from the bottom)
-      float yaw = 0;     //!< Horizontal rotation around the focal point in degrees
+        float time = 0;    //!< Relative time of the keyframe in seconds
+        QgsVector3D point; //!< Point towards which the camera is looking in 3D world coords
+        float dist = 0;    //!< Distance of the camera from the focal point
+        float pitch = 0;   //!< Tilt of the camera in degrees (0 = looking from the top, 90 = looking from the side, 180 = looking from the bottom)
+        float yaw = 0;     //!< Horizontal rotation around the focal point in degrees
     };
 
     typedef QVector<Keyframe> Keyframes;

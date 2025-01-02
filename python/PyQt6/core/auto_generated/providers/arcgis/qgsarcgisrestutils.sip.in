@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/arcgis/qgsarcgisrestutils.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -74,7 +74,7 @@ Utility functions for working with ArcGIS REST services.
 
   public:
 
-    static QVariant::Type convertFieldType( const QString &type );
+    static QMetaType::Type convertFieldType( const QString &type );
 %Docstring
 Converts an ESRI REST field ``type`` to a QVariant type.
 %End
@@ -96,7 +96,7 @@ Caller takes ownership of the returned object.
 :param hasZ: set to ``True`` to if geometry includes Z values
 
 :return: - converted geometry
-         - crs: will be set to the parsed geometry CRS
+         - crs: the parsed geometry CRS
 %End
 
     static QgsCoordinateReferenceSystem convertSpatialReference( const QVariantMap &spatialReferenceMap );
@@ -196,7 +196,7 @@ Converts a ``feature`` to an ArcGIS REST JSON representation.
 .. versionadded:: 3.28
 %End
 
-    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context );
+    static QVariant variantToAttributeValue( const QVariant &variant, QMetaType::Type expectedType, const QgsArcGisRestContext &context );
 %Docstring
 Converts a variant to a REST attribute value.
 
@@ -227,5 +227,5 @@ QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::Feat
  *                                                                      *
  * src/core/providers/arcgis/qgsarcgisrestutils.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

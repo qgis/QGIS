@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsfeaturelistmodel.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,11 +20,7 @@ class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
     struct FeatureInfo
     {
       public:
-
         FeatureInfo();
-%Docstring
-Constructor for FeatureInfo.
-%End
 
         bool isNew;
 
@@ -38,7 +34,6 @@ Constructor for FeatureInfo.
     };
 
   public:
-
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFeatureListModel
@@ -157,32 +152,36 @@ Sort this model by its display expression.
 %Docstring
 Does nothing except for calling :py:func:`~QgsFeatureListModel.beginRemoveRows`
 
-.. deprecated::
-   Use :py:func:`~QgsFeatureListModel.beginRemoveRows` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsFeatureListModel.beginRemoveRows` instead.
 %End
 
  void onEndRemoveRows( const QModelIndex &parent, int first, int last );
 %Docstring
 Does nothing except for calling :py:func:`~QgsFeatureListModel.endRemoveRows`
 
-.. deprecated::
-   Use :py:func:`~QgsFeatureListModel.endRemoveRows` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsFeatureListModel.endRemoveRows` instead.
 %End
 
  void onBeginInsertRows( const QModelIndex &parent, int first, int last );
 %Docstring
 Does nothing except for calling :py:func:`~QgsFeatureListModel.beginInsertRows`
 
-.. deprecated::
-   use :py:func:`~QgsFeatureListModel.beginInsertRows` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsFeatureListModel.beginInsertRows` instead.
 %End
 
  void onEndInsertRows( const QModelIndex &parent, int first, int last );
 %Docstring
 Does nothing except for calling :py:func:`~QgsFeatureListModel.endInsertRows`
 
-.. deprecated::
-   use :py:func:`~QgsFeatureListModel.endInsertRows` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsFeatureListModel.endInsertRows` instead.
 %End
 
 };
@@ -193,5 +192,5 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.endInsertRows`
  *                                                                      *
  * src/gui/attributetable/qgsfeaturelistmodel.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

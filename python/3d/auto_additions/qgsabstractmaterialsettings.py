@@ -22,5 +22,28 @@ QgsAbstractMaterialSettings.TrianglesFromModel.__doc__ = "Triangle based renderi
 QgsAbstractMaterialSettings.TrianglesDataDefined = QgsMaterialSettingsRenderingTechnique.TrianglesDataDefined
 QgsAbstractMaterialSettings.TrianglesDataDefined.is_monkey_patched = True
 QgsAbstractMaterialSettings.TrianglesDataDefined.__doc__ = "Triangle based rendering with possibility of datadefined color \n.. versionadded:: 3.18"
-QgsMaterialSettingsRenderingTechnique.__doc__ = 'Material rendering techniques\n\n.. versionadded:: 3.16\n\n' + '* ``Triangles``: ' + QgsMaterialSettingsRenderingTechnique.Triangles.__doc__ + '\n' + '* ``Lines``: ' + QgsMaterialSettingsRenderingTechnique.Lines.__doc__ + '\n' + '* ``InstancedPoints``: ' + QgsMaterialSettingsRenderingTechnique.InstancedPoints.__doc__ + '\n' + '* ``Points``: ' + QgsMaterialSettingsRenderingTechnique.Points.__doc__ + '\n' + '* ``TrianglesWithFixedTexture``: ' + QgsMaterialSettingsRenderingTechnique.TrianglesWithFixedTexture.__doc__ + '\n' + '* ``TrianglesFromModel``: ' + QgsMaterialSettingsRenderingTechnique.TrianglesFromModel.__doc__ + '\n' + '* ``TrianglesDataDefined``: ' + QgsMaterialSettingsRenderingTechnique.TrianglesDataDefined.__doc__
+QgsMaterialSettingsRenderingTechnique.__doc__ = """Material rendering techniques
+
+.. versionadded:: 3.16
+
+* ``Triangles``: Triangle based rendering (default)
+* ``Lines``: Line based rendering, requires line data
+* ``InstancedPoints``: Instanced based rendering, requiring triangles and point data
+* ``Points``: Point based rendering, requires point data
+* ``TrianglesWithFixedTexture``: Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
+* ``TrianglesFromModel``: Triangle based rendering, using a model object source
+* ``TrianglesDataDefined``: Triangle based rendering with possibility of datadefined color
+
+  .. versionadded:: 3.18
+
+
+"""
 # --
+try:
+    QgsMaterialContext.__group__ = ['materials']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractMaterialSettings.__group__ = ['materials']
+except (NameError, AttributeError):
+    pass

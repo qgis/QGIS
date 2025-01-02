@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/rules/qgslabelingengineruleregistry.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsLabelingEngineRuleRegistry
+{
+%Docstring(signature="appended")
+A registry for labeling engine rules.
+
+Labeling engine rules implement custom logic to modify the labeling solution for a map render,
+e.g. by preventing labels being placed which violate custom constraints.
+
+This registry stores available rules and is responsible for creating rules.
+
+:py:class:`QgsLabelingEngineRuleRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.labelEngineRuleRegistry()`.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingengineruleregistry.h"
+%End
+  public:
+
+    QgsLabelingEngineRuleRegistry();
+%Docstring
+Constructor for QgsLabelingEngineRuleRegistry, containing a set of
+default rules.
+%End
+    ~QgsLabelingEngineRuleRegistry();
+
+
+    QStringList ruleIds() const;
+%Docstring
+Returns a list of the rule IDs for rules present in the registry.
+%End
+
+    QString displayType( const QString &id ) const;
+%Docstring
+Returns a user-friendly, translated string representing the rule type with matching ``id``.
+%End
+
+    bool isAvailable( const QString &id ) const;
+%Docstring
+Returns ``True`` if the rule is with matching ``id`` is available for use within the current QGIS environment.
+
+Rules can return ``False`` if required dependencies are not available, e.g. if a library version
+is too old for the rule.
+%End
+
+    QgsAbstractLabelingEngineRule *create( const QString &id ) const /TransferBack/;
+%Docstring
+Creates a new rule from the type with matching ``id``.
+
+Returns ``None`` if no matching rule was found in the registry.
+
+The caller takes ownership of the returned object.
+%End
+
+    bool addRule( QgsAbstractLabelingEngineRule *rule /Transfer/ );
+%Docstring
+Adds a new ``rule`` type to the registry.
+
+The registry takes ownership of ``rule``.
+
+:return: ``True`` if the rule was successfully added.
+
+.. seealso:: :py:func:`removeRule`
+%End
+
+    void removeRule( const QString &id );
+%Docstring
+Removes the rule with matching ``id`` from the registry.
+
+.. seealso:: :py:func:`addRule`
+%End
+
+  private:
+    QgsLabelingEngineRuleRegistry( const QgsLabelingEngineRuleRegistry &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/rules/qgslabelingengineruleregistry.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

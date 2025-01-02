@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsspacerwidgetwrapper.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ Wraps a spacer widget.
 #include "qgsspacerwidgetwrapper.h"
 %End
   public:
-
     explicit QgsSpacerWidgetWrapper( QgsVectorLayer *layer, QWidget *editor = 0, QWidget *parent = 0 );
 %Docstring
 Create a new widget wrapper
@@ -59,5 +58,5 @@ Sets a flag to define if the spacer element will contain an horizontal line.
  *                                                                      *
  * src/gui/editorwidgets/qgsspacerwidgetwrapper.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

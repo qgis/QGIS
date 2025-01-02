@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/validity/qgsvaliditycheckcontext.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -78,5 +78,5 @@ Constructor for QgsLayoutValidityCheckContext for the specified ``layout``.
  *                                                                      *
  * src/core/validity/qgsvaliditycheckcontext.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

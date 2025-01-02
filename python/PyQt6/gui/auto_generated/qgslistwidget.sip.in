@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgslistwidget.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -11,7 +11,7 @@
 
 
 
-class QgsListWidget: QgsTableWidgetBase
+class QgsListWidget : QgsTableWidgetBase
 {
 %Docstring(signature="appended")
 Widget allowing to edit a QVariantList, using a table.
@@ -21,8 +21,7 @@ Widget allowing to edit a QVariantList, using a table.
 #include "qgslistwidget.h"
 %End
   public:
-
-    explicit QgsListWidget( QVariant::Type subType, QWidget *parent = 0 );
+    explicit QgsListWidget( QMetaType::Type subType, QWidget *parent = 0 );
 %Docstring
 Constructor.
 %End
@@ -59,5 +58,5 @@ Check the content is valid
  *                                                                      *
  * src/gui/qgslistwidget.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfontbutton.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,7 +29,6 @@ used only in a QFont object.
 #include "qgsfontbutton.h"
 %End
   public:
-
     enum Mode /BaseType=IntEnum/
     {
       ModeTextRenderer,
@@ -277,7 +276,6 @@ Emitted when the widget's text format settings are changed.
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void changeEvent( QEvent *e );
@@ -311,5 +309,5 @@ Emitted when the widget's text format settings are changed.
  *                                                                      *
  * src/gui/qgsfontbutton.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

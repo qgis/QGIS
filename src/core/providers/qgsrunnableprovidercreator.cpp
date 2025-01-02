@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrunnableprovidercreator.h"
+#include "moc_qgsrunnableprovidercreator.cpp"
 
 #include <QDebug>
 #include <QThread>
@@ -21,7 +22,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsruntimeprofiler.h"
 
-QgsRunnableProviderCreator::QgsRunnableProviderCreator( const QString &layerId, const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsRunnableProviderCreator::QgsRunnableProviderCreator( const QString &layerId, const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : mLayerId( layerId )
   , mProviderKey( providerKey )
   , mDataSource( dataSource )

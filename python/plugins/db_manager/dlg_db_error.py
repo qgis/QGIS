@@ -26,7 +26,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from .gui_utils import GuiUtils
 from .db_plugins.plugin import DbError
 
-Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgDbError.ui'))
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgDbError.ui"))
 
 
 class DlgDbError(QDialog, Ui_Dialog):
@@ -36,7 +36,7 @@ class DlgDbError(QDialog, Ui_Dialog):
         self.setupUi(self)
 
         def sanitize(txt):
-            return "" if txt is None else "<pre>" + txt.replace('<', '&lt;') + "</pre>"
+            return "" if txt is None else "<pre>" + txt.replace("<", "&lt;") + "</pre>"
 
         if isinstance(e, DbError):
             self.setQueryMessage(sanitize(e.msg), sanitize(e.query))

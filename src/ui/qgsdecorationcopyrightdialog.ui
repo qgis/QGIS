@@ -85,6 +85,9 @@
           <property name="maximum">
            <number>100</number>
           </property>
+          <property name="toolTip">
+           <string>Horizontal offset on the map canvas from the placement anchor</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -110,6 +113,9 @@
           </property>
           <property name="maximum">
            <number>100</number>
+          </property>
+          <property name="toolTip">
+           <string>Vertical offset on the map canvas from the placement anchor</string>
           </property>
          </widget>
         </item>

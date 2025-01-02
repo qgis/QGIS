@@ -28,7 +28,6 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGuiVectorLayerTools.
      */
@@ -40,14 +39,12 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      * \param layer           The layer to which the feature should be added
      * \param defaultValues   Default values for the feature to add
      * \param defaultGeometry A default geometry to add to the feature
-     * \param feat            A pointer to the feature
-     * \param parentWidget    The widget calling this function to be passed to the used dialog
-     * \param showModal       If the used dialog should be modal or not
-     * \param hideParent      If the parent widget should be hidden, when the used dialog is opened
+     * \param feature         A pointer to the feature
+     * \param context         A context object to be used for e.g. to calculate feature expression-based values (since QGIS 3.38)
      *
-     * \returns                TRUE in case of success, FALSE if the operation failed/was aborted
+     * \returns               TRUE in case of success, FALSE if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const override;
+    bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const override;
 
     /**
      * This should be called, whenever a vector layer should be switched to edit mode. If successful
@@ -79,9 +76,26 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
      */
     bool saveEdits( QgsVectorLayer *layer ) const override;
 
+    /**
+     * Copy and move features with defined translation.
+     *
+     * \param layer The layer
+     * \param request The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
+     * \param dx The translation on x
+     * \param dy The translation on y
+     * \param errorMsg If given, it will contain the error message
+     * \param topologicalEditing If TRUE, the function will perform topological
+     * editing of the vertices of \a layer on \a layer and \a topologicalLayer
+     * \param topologicalLayer The layer where vertices from the moved features of \a layer will be added
+     * \param childrenInfoMsg If given, it will contain messages related to the creation of child features
+     * \returns TRUE if all features could be copied.
+     *
+     */
+    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr ) const override;
+
   private:
     void commitError( QgsVectorLayer *vlayer ) const;
-
+    bool avoidIntersection( QgsVectorLayer *layer, QgsFeatureRequest &request, QString *errorMsg = nullptr ) const;
 };
 
 #endif // QGSGUIVECTORLAYERTOOLS_H

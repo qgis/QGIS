@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsprovidersourcewidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Base class for widgets which allow customization of a provider's source URI.
 #include "qgsprovidersourcewidget.h"
 %End
   public:
-
     QgsProviderSourceWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProviderSourceWidget with the specified ``parent`` widget.
@@ -87,5 +86,5 @@ Emitted whenever the configuration of the widget changes.
  *                                                                      *
  * src/gui/qgsprovidersourcewidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

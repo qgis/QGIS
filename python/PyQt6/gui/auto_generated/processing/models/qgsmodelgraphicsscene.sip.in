@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/models/qgsmodelgraphicsscene.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ QGraphicsScene subclass representing the model designer.
 #include "qgsmodelgraphicsscene.h"
 %End
   public:
-
     enum ZValues /BaseType=IntEnum/
     {
       GroupBox,
@@ -203,13 +202,12 @@ Emitted when the user opts to view the previous log from the child algorithm wit
 %End
 
   protected:
-
     virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;
 %Docstring
 Creates a new graphic item for a model parameter.
 %End
 
-    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
+    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const /Factory/;
 %Docstring
 Creates a new graphic item for a model child algorithm.
 %End
@@ -219,8 +217,7 @@ Creates a new graphic item for a model child algorithm.
 Creates a new graphic item for a model output.
 %End
 
-    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
-        QgsModelComponentGraphicItem *parentItem ) const /Factory/;
+    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const /Factory/;
 %Docstring
 Creates a new graphic item for a model comment.
 %End
@@ -239,5 +236,5 @@ Creates a new graphic item for a model group box.
  *                                                                      *
  * src/gui/processing/models/qgsmodelgraphicsscene.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

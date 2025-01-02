@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsalignraster.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,7 @@ so they have the same:
 
 %TypeHeaderCode
 #include "qgsalignraster.h"
-#include <gdal_version.h>
+#include "gdal_version.h"
 %End
   public:
     QgsAlignRaster();
@@ -94,8 +94,7 @@ Gets raster value at the given coordinates (from the first band)
 
     struct ProgressHandler
     {
-
-      virtual bool progress( double complete ) = 0;
+        virtual bool progress( double complete ) = 0;
 %Docstring
 Method to be overridden for progress reporting.
 
@@ -104,7 +103,7 @@ Method to be overridden for progress reporting.
 :return: ``False`` if the execution should be canceled, ``True`` otherwise
 %End
 
-      virtual ~ProgressHandler();
+        virtual ~ProgressHandler();
     };
 
     void setProgressHandler( ProgressHandler *progressHandler );
@@ -236,7 +235,6 @@ Returns the index of the layer which has smallest cell size (returns -1 on error
 %End
 
   protected:
-
     bool createAndWarp( const Item &raster );
 %Docstring
 Internal function for processing of one raster (1. create output, 2. do the alignment)
@@ -256,7 +254,6 @@ Determine suggested output of raster warp to a different CRS. Returns ``True`` o
 
 
 
-
 };
 
 /************************************************************************
@@ -264,5 +261,5 @@ Determine suggested output of raster warp to a different CRS. Returns ``True`` o
  *                                                                      *
  * src/analysis/raster/qgsalignraster.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

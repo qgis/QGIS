@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '22.04'
+          - distro-version: '24.04'
             qt-version: 5
             run-tests: true
             with-qt6: OFF
@@ -57,6 +57,7 @@ jobs:
             with-compile-commands: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
+            unity-builds: ON
 
           - distro-version: '39'
             qt-version: 6
@@ -73,6 +74,7 @@ jobs:
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
+            unity-builds: ON
 
 
       fail-fast: false
@@ -124,11 +126,11 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
+          tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
           pull: true
           build-args:
@@ -165,6 +167,7 @@ jobs:
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
+                     --env ENABLE_UNITY_BUILDS=${{ matrix.unity-builds }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
@@ -227,59 +230,6 @@ jobs:
 #          set -e # switch back
 #          docker stop qgis-testing-environment
 
-
-#  tests-report-comment:
-#    name: Write tests report in a comment
-#    needs: build
-#    runs-on: ubuntu-latest
-#    if: always() && ( needs.build.result == 'failure' || needs.build.result == 'success' ) && github.event_name == 'pull_request'
-#    steps:
-#      - name: Find Comment
-#        uses: peter-evans/find-comment@v1
-#        id: find-comment
-#        with:
-#          issue-number: ${{ github.event.pull_request.number }}
-#          comment-author: 'github-actions[bot]'
-#          body-includes: Tests report
-#
-#      - name: Create comment
-#        if: ${{ steps.find-comment.outputs.comment-id == 0 }}
-#        uses: peter-evans/create-or-update-comment@v1
-#        id: create-comment
-#        with:
-#          issue-number: ${{ github.event.pull_request.number }}
-#          body: |
-#            **Tests report**
-#
-#      - name: Process
-#        id: process-vars
-#        env:
-#          COMMENT_FOUND: ${{ steps.find-comment.outputs.comment-id }}
-#          COMMENT_CREATED: ${{ steps.create-comment.outputs.comment-id }}
-#          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-#          CDASH_URL: ${{ needs.build.outputs.cdash_url }}
-#          COMPILE_OUTCOME: ${{ needs.build.outputs.compile_outcome }}
-#          TESTS_FAILING: ${{ needs.build.outputs.tests_failing }}
-#          RUNNERS_OUTCOME: ${{ needs.build.outputs.runners_outcome }}
-#        run: |
-#          echo "::set-output name=COMMENT_ID::"$([[ "${COMMENT_FOUND}" -eq "0" ]] && echo ${COMMENT_CREATED} || echo ${COMMENT_FOUND})
-#          if [[ ${COMPILE_OUTCOME} != "success" ]]; then
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :scream: compilation failed"
-#          elif [[ ${TESTS_FAILING} != "0" ]]; then
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :fire: ${TESTS_FAILING} unit-tests are failing ${CDASH_URL}"
-#          elif [[ ${RUNNERS_OUTCOME} != "success" ]]; then
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :broken_heart: QGIS runners test failed"
-#          else
-#            echo "::set-output name=COMMENT_BODY::${COMMIT_SHA} :sunglasses: unit-tests succeeded"
-#          fi
-#
-#      - name: Update comment
-#        uses: peter-evans/create-or-update-comment@v1
-#        with:
-#          comment-id: ${{ steps.process-vars.outputs.COMMENT_ID }}
-#          edit-mode: append
-#          body: ${{ steps.process-vars.outputs.COMMENT_BODY }}
-
   run-tests:
     name: Run tests
     env:
@@ -297,7 +247,7 @@ jobs:
 
         include:
           - qt-version: 5
-            distro-version: 22.04
+            distro-version: 24.04
             docker-target: binary-only
 
           - qt-version: 6
@@ -305,7 +255,7 @@ jobs:
             docker-target: binary-only
 
           - qt-version: 5
-            distro-version: 22.04
+            distro-version: 24.04
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
@@ -355,11 +305,11 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
+          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
           pull: true
           target: ${{ matrix.docker-target }}
@@ -440,7 +390,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '22.04'
+          - distro-version: '24.04'
             qt-version: 5
 
     steps:
@@ -466,11 +416,11 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
+          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
           pull: true
           target: ${{ matrix.docker-target }}

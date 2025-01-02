@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
+#include "moc_qgsgml.cpp"
 #include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -42,7 +43,11 @@
 
 using namespace nlohmann;
 
+#ifndef NS_SEPARATOR_DEFINED
+#define NS_SEPARATOR_DEFINED
 static const char NS_SEPARATOR = '?';
+#endif
+
 static const char *GML_NAMESPACE = "http://www.opengis.net/gml";
 static const char *GML32_NAMESPACE = "http://www.opengis.net/gml/3.2";
 
@@ -1482,16 +1487,16 @@ void QgsGmlStreamingParser::setAttribute( const QString &name, const QString &va
     QVariant var;
     switch ( att_it.value().second.type() )
     {
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         var = QVariant( value.toDouble( &conversionOk ) );
         break;
-      case QVariant::Int:
+      case QMetaType::Type::Int:
         var = QVariant( value.toInt( &conversionOk ) );
         break;
-      case QVariant::LongLong:
+      case QMetaType::Type::LongLong:
         var = QVariant( value.toLongLong( &conversionOk ) );
         break;
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
         var = QVariant( QDateTime::fromString( value, Qt::ISODate ) );
         break;
       default: //string type is default

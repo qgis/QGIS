@@ -3,8 +3,9 @@
  *                                                                      *
  * src/gui/qgsdial.h                                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
+
 
 
 
@@ -16,7 +17,6 @@ class QgsDial : QDial
 #include "qgsdial.h"
 %End
   public:
-
     QgsDial( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDial
@@ -38,10 +38,11 @@ Constructor for QgsDial
 
 
 };
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/qgsdial.h                                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

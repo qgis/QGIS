@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsdashspacedialog.h"
+#include "moc_qgsdashspacedialog.cpp"
 #include "qgsdoublevalidator.h"
 #include "qgsapplication.h"
 
 #include <QDialogButtonBox>
 #include <QFile>
 
-QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent ) : QgsPanelWidget( parent )
+QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
 
@@ -45,10 +47,9 @@ QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWi
 
   connect( mAddButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mAddButton_clicked );
   connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mRemoveButton_clicked );
-  connect( mDashSpaceTreeWidget, &QTreeWidget::itemChanged, this, [ this ] { emit widgetChanged(); } );
+  connect( mDashSpaceTreeWidget, &QTreeWidget::itemChanged, this, [this] { emit widgetChanged(); } );
 
-  connect( this, &QgsPanelWidget::widgetChanged, this, [ = ]
-  {
+  connect( this, &QgsPanelWidget::widgetChanged, this, [=] {
     const QVector<qreal> pattern = dashDotVector();
     double total = 0;
     for ( qreal part : pattern )
@@ -104,7 +105,8 @@ void QgsDashSpaceWidget::setUnit( Qgis::RenderUnit unit )
   headerItem->setText( 1, QStringLiteral( "%1 (%2)" ).arg( tr( "Space" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
 }
 
-QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent, Qt::WindowFlags f ) : QDialog( parent, f )
+QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsDashSpaceWidget( v );

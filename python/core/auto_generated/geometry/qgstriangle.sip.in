@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgstriangle.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -124,7 +124,7 @@ Returns the three lengths of the triangle.
          An empty list is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -143,7 +143,7 @@ Returns the three angles of the triangle.
          An empty list is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -161,7 +161,7 @@ Convenient method checking if the geometry is degenerate (have duplicate or coli
 :return: ``True`` if the triangle is degenerate or empty, otherwise ``False``.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -188,7 +188,7 @@ Is the triangle isocele (two sides with the same length)?
 :return: ``True`` or ``False``. Always ``False`` for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -211,7 +211,7 @@ Is the triangle equilateral (three sides with the same length)?
 :return: ``True`` or ``False``. Always ``False`` for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -234,7 +234,7 @@ Is the triangle right-angled?
 :return: ``True`` or ``False``. Always ``False`` for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -257,7 +257,7 @@ Is the triangle scalene (all sides have different lengths)?
 :return: ``True`` or ``False``. Always ``False`` for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -279,7 +279,7 @@ An altitude is a segment (defined by a :py:class:`QgsLineString`) from a vertex 
          An empty list is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -298,7 +298,7 @@ A median is a segment (defined by a :py:class:`QgsLineString`) from a vertex to 
          An empty list is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -319,7 +319,7 @@ The segment (defined by a :py:class:`QgsLineString`) returned bisect the angle o
          An empty list is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -338,7 +338,7 @@ Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at
          An empty triangle is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -359,7 +359,7 @@ An orthocenter is the point of intersection of the altitudes of a triangle.
          An empty point is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -378,7 +378,7 @@ Center of the circumscribed circle of the triangle.
          An empty point is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -397,7 +397,7 @@ Radius of the circumscribed circle of the triangle.
          0.0 is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -416,7 +416,7 @@ Circumscribed circle of the triangle.
          An empty circle is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -436,7 +436,7 @@ supported and is retrieved from the first 3D point amongst vertices.
          An empty point is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -455,7 +455,7 @@ Radius of the inscribed circle of the triangle.
          0.0 is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -474,7 +474,7 @@ Inscribed circle of the triangle.
          An empty circle is returned for empty triangle.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -496,5 +496,5 @@ Example
  *                                                                      *
  * src/core/geometry/qgstriangle.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

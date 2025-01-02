@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsvariableeditorwidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ variables from a :py:class:`QgsExpressionContext`.
 #include "qgsvariableeditorwidget.h"
 %End
   public:
-
     QgsVariableEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsVariableEditorWidget.
@@ -118,7 +117,6 @@ Emitted when the user has modified a scope using the widget.
 %End
 
   protected:
-
     virtual void showEvent( QShowEvent *event );
 
 
@@ -131,5 +129,5 @@ Emitted when the user has modified a scope using the widget.
  *                                                                      *
  * src/gui/qgsvariableeditorwidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

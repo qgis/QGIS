@@ -37,9 +37,6 @@ class CORE_EXPORT QgsAction
 {
   public:
 
-    /**
-     * Default constructor
-     */
     QgsAction() = default;
 
     /**

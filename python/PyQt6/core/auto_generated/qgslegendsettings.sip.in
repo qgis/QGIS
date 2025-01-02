@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgslegendsettings.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,8 +15,9 @@ class QgsLegendSettings
 {
 %Docstring(signature="appended")
 The :py:class:`QgsLegendSettings` class stores the appearance and layout settings
-for legend drawing with :py:class:`QgsLegendRenderer`. The content of the legend is given
-in :py:class:`QgsLegendModel` class.
+for legend drawing with :py:class:`QgsLegendRenderer`.
+
+The content of the legend is driven by the :py:class:`QgsLegendModel` class.
 %End
 
 %TypeHeaderCode
@@ -170,27 +171,29 @@ If ``False``, then then columns will be individually resized to their minimum po
 .. seealso:: :py:func:`equalColumnWidth`
 %End
 
- QColor fontColor() const /Deprecated/;
+ QColor fontColor() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
 %Docstring
 Returns the font color used for legend items.
 
 .. seealso:: :py:func:`setFontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
- void setFontColor( const QColor &c ) /Deprecated/;
+ void setFontColor( const QColor &c ) /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
 %Docstring
 Sets the font color used for legend items.
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
- QColor layerFontColor() const /Deprecated/;
+ QColor layerFontColor() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
 %Docstring
 Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
@@ -198,11 +201,12 @@ Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
- void setLayerFontColor( const QColor &fontColor ) /Deprecated/;
+ void setLayerFontColor( const QColor &fontColor ) /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
 %Docstring
 Sets layer font color to ``fontColor``
 Overrides :py:func:`~QgsLegendSettings.fontColor`
@@ -211,7 +215,8 @@ Overrides :py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
@@ -399,14 +404,15 @@ Returns whether to request legend graphics synchronously.
 .. versionadded:: 3.34
 %End
 
- double lineSpacing() const /Deprecated/;
+ double lineSpacing() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() from style() instead."/;
 %Docstring
 Returns the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`setLineSpacing`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLegendSettings.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
  void setLineSpacing( double s );
@@ -415,91 +421,102 @@ Sets the line spacing to use between lines of legend text.
 
 .. seealso:: :py:func:`lineSpacing`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLegendSettings.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
- double mmPerMapUnit() const /Deprecated/;
+ double mmPerMapUnit() const /Deprecated="Since 3.40. Use scale factor from render contexts instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use scale factor from render contexts instead.
 %End
 
- void setMmPerMapUnit( double mmPerMapUnit ) /Deprecated/;
+ void setMmPerMapUnit( double mmPerMapUnit ) /Deprecated="Since 3.40. Set scale factor on render contexts instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Set scale factor on render contexts instead.
 %End
 
- bool useAdvancedEffects() const /Deprecated/;
+ bool useAdvancedEffects() const /Deprecated="Since 3.40. Use flags from render contexts instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use flags from render contexts instead.
 %End
 
- void setUseAdvancedEffects( bool use ) /Deprecated/;
+ void setUseAdvancedEffects( bool use ) /Deprecated="Since 3.40. Set flag on render contexts instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Set flag on render contexts instead.
 %End
 
- double mapScale() const /Deprecated/;
+ double mapScale() const /Deprecated="Since 3.40. Take this property from the render context instead."/;
 %Docstring
 Returns the legend map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setMapScale`
 
-.. deprecated::
-   take this property from the render context instead
+.. deprecated:: 3.40
+
+   Take this property from the render context instead.
 %End
 
- void setMapScale( double scale ) /Deprecated/;
+ void setMapScale( double scale ) /Deprecated="Since 3.40. Set this property on the render context instead."/;
 %Docstring
 Sets the legend map ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`mapScale`
 
-.. deprecated::
-   set this property on the render context instead
+.. deprecated:: 3.40
+
+   Set this property on the render context instead.
 %End
 
- double mapUnitsPerPixel() const /Deprecated/;
+ double mapUnitsPerPixel() const /Deprecated="Since 3.40. Take these properties on render contexts instead."/;
 %Docstring
 Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
 
 .. seealso:: :py:func:`setMapUnitsPerPixel`
 
-.. deprecated::
-   take these properties on render contexts instead
+.. deprecated:: 3.40
+
+   Take these properties on render contexts instead.
 %End
 
- void setMapUnitsPerPixel( double mapUnitsPerPixel ) /Deprecated/;
+ void setMapUnitsPerPixel( double mapUnitsPerPixel ) /Deprecated="Since 3.40. Set these properties on render contexts instead."/;
 %Docstring
 Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the map settings.
 
 .. seealso:: :py:func:`mapUnitsPerPixel`
 
-.. deprecated::
-   set these properties on render contexts instead
+.. deprecated:: 3.40
+
+   Set these properties on render contexts instead.
 %End
 
- int dpi() const /Deprecated/;
+ int dpi() const /Deprecated="Since 3.40. Take dpi from render contexts instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Take dpi from render contexts instead.
 %End
 
- void setDpi( int dpi ) /Deprecated/;
+ void setDpi( int dpi ) /Deprecated="Since 3.40. Set dpi on render contexts instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Set dpi on render contexts instead.
 %End
 
@@ -593,5 +610,5 @@ Sets the  the JSON export flags to ``jsonRenderFlags``.
  *                                                                      *
  * src/core/qgslegendsettings.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

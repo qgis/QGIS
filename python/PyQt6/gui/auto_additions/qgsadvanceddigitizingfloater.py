@@ -8,7 +8,18 @@ QgsAdvancedDigitizingFloater.FloaterItem.Angle.__doc__ = ""
 QgsAdvancedDigitizingFloater.FloaterItem.CommonAngleSnapping.__doc__ = ""
 QgsAdvancedDigitizingFloater.FloaterItem.Distance.__doc__ = ""
 QgsAdvancedDigitizingFloater.FloaterItem.Bearing.__doc__ = ""
-QgsAdvancedDigitizingFloater.FloaterItem.__doc__ = "Available floater items\n\n" + '* ``XCoordinate``: ' + QgsAdvancedDigitizingFloater.FloaterItem.XCoordinate.__doc__ + '\n' + '* ``YCoordinate``: ' + QgsAdvancedDigitizingFloater.FloaterItem.YCoordinate.__doc__ + '\n' + '* ``MCoordinate``: ' + QgsAdvancedDigitizingFloater.FloaterItem.MCoordinate.__doc__ + '\n' + '* ``ZCoordinate``: ' + QgsAdvancedDigitizingFloater.FloaterItem.ZCoordinate.__doc__ + '\n' + '* ``Angle``: ' + QgsAdvancedDigitizingFloater.FloaterItem.Angle.__doc__ + '\n' + '* ``CommonAngleSnapping``: ' + QgsAdvancedDigitizingFloater.FloaterItem.CommonAngleSnapping.__doc__ + '\n' + '* ``Distance``: ' + QgsAdvancedDigitizingFloater.FloaterItem.Distance.__doc__ + '\n' + '* ``Bearing``: ' + QgsAdvancedDigitizingFloater.FloaterItem.Bearing.__doc__
+QgsAdvancedDigitizingFloater.FloaterItem.__doc__ = """Available floater items
+
+* ``XCoordinate``: 
+* ``YCoordinate``: 
+* ``MCoordinate``: 
+* ``ZCoordinate``: 
+* ``Angle``: 
+* ``CommonAngleSnapping``: 
+* ``Distance``: 
+* ``Bearing``: 
+
+"""
 # --
 QgsAdvancedDigitizingFloater.FloaterItems = lambda flags=0: QgsAdvancedDigitizingFloater.FloaterItem(flags)
 QgsAdvancedDigitizingFloater.FloaterItem.baseClass = QgsAdvancedDigitizingFloater

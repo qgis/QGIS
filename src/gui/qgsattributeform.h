@@ -49,31 +49,27 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     Q_OBJECT
 
   public:
-
-    //! Form modes \deprecated Use QgsAttributeEditorContext::Mode instead.
+    //! Form modes \deprecated QGIS 3.40. Use QgsAttributeEditorContext::Mode instead.
     enum Mode
     {
-      SingleEditMode, //!< Single edit mode, for editing a single feature
-      AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
+      SingleEditMode,      //!< Single edit mode, for editing a single feature
+      AddFeatureMode,      /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
       will add a new feature when the form is accepted. */
-      MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
-      SearchMode, //!< Form values are used for searching/filtering the layer
+      MultiEditMode,       //!< Multi edit mode, for editing fields of multiple features at once
+      SearchMode,          //!< Form values are used for searching/filtering the layer
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode
-      IdentifyMode //!< Identify the feature
+      IdentifyMode         //!< Identify the feature
     };
 
     //! Filter types
     enum FilterType
     {
       ReplaceFilter, //!< Filter should replace any existing filter
-      FilterAnd, //!< Filter should be combined using "AND"
-      FilterOr, //!< Filter should be combined using "OR"
+      FilterAnd,     //!< Filter should be combined using "AND"
+      FilterOr,      //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl,
-                               const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-                               QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsAttributeForm() override;
 
     const QgsFeature &feature() { return mFeature; }
@@ -211,7 +207,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
-     * \deprecated since 3.0
+     * \deprecated QGIS 3.0
      */
     Q_DECL_DEPRECATED void attributeChanged( const QString &attribute, const QVariant &value ) SIP_DEPRECATED;
 
@@ -348,8 +344,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeDeleted( int idx );
     void onRelatedFeaturesChanged();
     void onUpdatedFields();
-    void onConstraintStatusChanged( const QString &constraint,
-                                    const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
+    void onConstraintStatusChanged( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
     void preventFeatureRefresh();
     void synchronizeState();
     void layerSelectionChanged();
@@ -387,19 +382,20 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapper *eww );
     void updateFieldDependenciesVirtualFields( QgsEditorWidgetWrapper *eww );
     void updateRelatedLayerFieldsDependencies( QgsEditorWidgetWrapper *eww = nullptr );
+    void updateFieldDependenciesParent( QgsEditorWidgetWrapper *eww );
 
     void setMultiEditFeatureIdsRelations( const QgsFeatureIds &fids );
 
     struct WidgetInfo
     {
-      QWidget *widget = nullptr;
-      QString labelText;
-      QString toolTip;
-      QString hint;
-      bool labelOnTop = false;
-      bool labelAlignRight = false;
-      bool showLabel = true;
-      QgsAttributeEditorElement::LabelStyle labelStyle;
+        QWidget *widget = nullptr;
+        QString labelText;
+        QString toolTip;
+        QString hint;
+        bool labelOnTop = false;
+        bool labelAlignRight = false;
+        bool showLabel = true;
+        QgsAttributeEditorElement::LabelStyle labelStyle;
     };
 
     WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context );
@@ -411,7 +407,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void createWrappers();
     void afterWidgetInit();
 
-    void scanForEqualAttributes( QgsFeatureIterator &fit, QSet< int > &mixedValueFields, QHash< int, QVariant > &fieldSharedValues ) const;
+    void scanForEqualAttributes( QgsFeatureIterator &fit, QSet<int> &mixedValueFields, QHash<int, QVariant> &fieldSharedValues ) const;
 
     //! Save single feature or add feature edits
     bool saveEdits( QString *error );
@@ -422,6 +418,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateValuesDependencies( const int originIdx );
     void updateValuesDependenciesDefaultValues( const int originIdx );
     void updateValuesDependenciesVirtualFields( const int originIdx );
+    void updateValuesDependenciesParent();
     void updateRelatedLayerFields();
 
     void clearMultiEditMessages();
@@ -460,8 +457,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QDialogButtonBox *mButtonBox = nullptr;
     QWidget *mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface *> mInterfaces;
-    QMultiMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
-    QList< QgsAttributeFormWidget *> mFormWidgets;
+    QMultiMap<int, QgsAttributeFormEditorWidget *> mFormEditorWidgets;
+    QList<QgsAttributeFormWidget *> mFormWidgets;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
     QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
     QMap<QWidget *, QgsProperty> mEditableDataDefinedProperties;
@@ -474,36 +471,36 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     struct ContainerInformation
     {
-      ContainerInformation( QgsTabWidget *tabWidget, QWidget *widget, const QgsExpression &expression )
-        : tabWidget( tabWidget )
-        , widget( widget )
-        , expression( expression )
-        , isVisible( true )
-      {}
+        ContainerInformation( QgsTabWidget *tabWidget, QWidget *widget, const QgsExpression &expression )
+          : tabWidget( tabWidget )
+          , widget( widget )
+          , expression( expression )
+          , isVisible( true )
+        {}
 
-      ContainerInformation( QWidget *widget, const QgsExpression &expression )
-        : widget( widget )
-        , expression( expression )
-        , isVisible( true )
-      {}
+        ContainerInformation( QWidget *widget, const QgsExpression &expression )
+          : widget( widget )
+          , expression( expression )
+          , isVisible( true )
+        {}
 
-      ContainerInformation( QWidget *widget, const QgsExpression &visibilityExpression, bool collapsed, const QgsExpression &collapsedExpression )
-        : widget( widget )
-        , expression( visibilityExpression )
-        , isVisible( true )
-        , isCollapsed( collapsed )
-        , collapsedExpression( collapsedExpression )
-      {}
+        ContainerInformation( QWidget *widget, const QgsExpression &visibilityExpression, bool collapsed, const QgsExpression &collapsedExpression )
+          : widget( widget )
+          , expression( visibilityExpression )
+          , isVisible( true )
+          , isCollapsed( collapsed )
+          , collapsedExpression( collapsedExpression )
+        {}
 
 
-      QgsTabWidget *tabWidget = nullptr;
-      QWidget *widget = nullptr;
-      QgsExpression expression;
-      bool isVisible;
-      bool isCollapsed = false;
-      QgsExpression collapsedExpression;
+        QgsTabWidget *tabWidget = nullptr;
+        QWidget *widget = nullptr;
+        QgsExpression expression;
+        bool isVisible;
+        bool isCollapsed = false;
+        QgsExpression collapsedExpression;
 
-      void apply( QgsExpressionContext *expressionContext );
+        void apply( QgsExpressionContext *expressionContext );
     };
 
     void registerContainerInformation( ContainerInformation *info );
@@ -514,7 +511,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     // Contains information about tabs and groupboxes, their visibility/collapsed state conditions
     QVector<ContainerInformation *> mContainerVisibilityCollapsedInformation;
-    QMap<QString, QVector<ContainerInformation *> > mContainerInformationDependency;
+    QMap<QString, QVector<ContainerInformation *>> mContainerInformationDependency;
 
     // Variables below are used for Python
     static int sFormCounter;
@@ -555,6 +552,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     QSet<QgsEditorWidgetWrapper *> mRelatedLayerFieldsDependencies;
 
+    QSet<QgsEditorWidgetWrapper *> mParentDependencies;
+
     //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;
 
@@ -562,6 +561,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;
+    friend class TestQgsValueRelationWidgetWrapper;
 };
 
 #endif // QGSATTRIBUTEFORM_H

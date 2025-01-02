@@ -28,8 +28,7 @@
 #include <QSqlField>
 
 // read from QSettings and used in the provider connection
-const QStringList CONFIGURATION_PARAMETERS
-{
+const QStringList CONFIGURATION_PARAMETERS {
   QStringLiteral( "userTablesOnly" ),
   QStringLiteral( "geometryColumnsOnly" ),
   QStringLiteral( "allowGeometrylessTables" ),
@@ -43,8 +42,7 @@ const QStringList CONFIGURATION_PARAMETERS
 };
 
 // read from uri and used in the provider connection
-const QStringList EXTRA_CONNECTION_PARAMETERS
-{
+const QStringList EXTRA_CONNECTION_PARAMETERS {
   QStringLiteral( "dboptions" ),
   QStringLiteral( "dbworkspace" )
 };
@@ -62,7 +60,6 @@ class QgsOracleQuery : public QSqlQuery
 
   private:
     std::shared_ptr<QgsPoolOracleConn> mPconn;
-
 };
 
 QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
@@ -86,8 +83,8 @@ QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
   setConfiguration( configuration );
 }
 
-QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
   mProviderKey = QStringLiteral( "oracle" );
   setDefaultCapabilities();
@@ -98,8 +95,7 @@ QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &uri, co
 
   if ( inputUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) )
   {
-    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QStringLiteral( "true" )
-                                        || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
+    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
   }
 
   for ( const auto &param : EXTRA_CONNECTION_PARAMETERS )
@@ -117,8 +113,7 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
 {
   // TODO: we might check at this point if the user actually has the privileges and return
   //       properly filtered capabilities instead of all of them
-  mCapabilities =
-  {
+  mCapabilities = {
     Capability::DropVectorTable,
     Capability::DropRasterTable,
     Capability::CreateVectorTable,
@@ -137,14 +132,12 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     Capability::DeleteFieldCascade,
     Capability::AddField,
   };
-  mGeometryColumnCapabilities =
-  {
+  mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::SinglePart,
     GeometryColumnCapability::Curves
   };
-  mSqlLayerDefinitionCapabilities =
-  {
+  mSqlLayerDefinitionCapabilities = {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
@@ -166,19 +159,18 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOracleProviderCo
 
 QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) const
 {
-
   // Precondition
   if ( options.sql.isEmpty() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
   }
 
-  QgsDataSourceUri tUri( uri( ) );
+  QgsDataSourceUri tUri( uri() );
 
   tUri.setSql( options.filter );
   tUri.disableSelectAtId( options.disableSelectAtId );
 
-  if ( ! options.primaryKeyColumns.isEmpty() )
+  if ( !options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
     tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
@@ -190,27 +182,27 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     int pkId { 0 };
     while ( options.sql.contains( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      pkId ++;
+      pkId++;
     }
     tUri.setKeyColumn( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ) );
 
     int sqlId { 0 };
     while ( options.sql.contains( QStringLiteral( "qgis_generated_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      sqlId ++;
+      sqlId++;
     }
     tUri.setTable( QStringLiteral( "(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
   }
 
-  if ( ! options.geometryColumn.isEmpty() )
+  if ( !options.geometryColumn.isEmpty() )
   {
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 
   // Try to guess the geometry and srid
-  if ( ! vl->isValid() )
+  if ( !vl->isValid() )
   {
     const QString limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? QStringLiteral( "AND ROWNUM < 100" ) : QString() };
     const QString sql { QStringLiteral( R"(
@@ -219,18 +211,18 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
             FROM (%2) a
             WHERE a.%1 IS NOT NULL %3
             ORDER BY a.%1.SDO_GTYPE
-    )" ).arg( options.geometryColumn, options.sql, limit ) };
+    )" )
+                          .arg( options.geometryColumn, options.sql, limit ) };
     const QList<QList<QVariant>> candidates { executeSql( sql ) };
     for ( const QList<QVariant> &row : std::as_const( candidates ) )
     {
       bool ok;
-      const int type { row[ 0 ].toInt( &ok ) };
+      const int type { row[0].toInt( &ok ) };
       if ( ok )
       {
-        const int srid { row[ 1 ].toInt( &ok ) };
+        const int srid { row[1].toInt( &ok ) };
         if ( ok )
         {
-
           Qgis::WkbType geomType { Qgis::WkbType::Unknown };
 
           switch ( type )
@@ -343,7 +335,7 @@ void QgsOracleProviderConnection::remove( const QString &name ) const
 QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsPoolOracleConn conn( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
+  QgsPoolOracleConn conn( QgsDataSourceUri { uri() }.connectionInfo( false ) );
   if ( conn.get() )
   {
     types = conn.get()->nativeTypes();
@@ -357,12 +349,9 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeType
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()
 {
-  return
-  {
-    {
-      Qgis::SqlKeywordCategory::Keyword,
-      {
-        // From: http://docs.oracle.com/cd/B19306_01/server.102/b14200/ap_keywd.htm
+  return {
+    { Qgis::SqlKeywordCategory::Keyword,
+      { // From: http://docs.oracle.com/cd/B19306_01/server.102/b14200/ap_keywd.htm
         QStringLiteral( "ACCESS" ),
         QStringLiteral( "ADD" ),
         QStringLiteral( "ALL" ),
@@ -907,10 +896,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "SUBTYPE" )
       }
     },
-    {
-      Qgis::SqlKeywordCategory::Function,
-      {
-        // From: https://docs.oracle.com/cd/B19306_01/server.102/b14200/functions001.htm
+    { Qgis::SqlKeywordCategory::Function,
+      { // From: https://docs.oracle.com/cd/B19306_01/server.102/b14200/functions001.htm
         QStringLiteral( "CAST" ),
         QStringLiteral( "COALESCE" ),
         QStringLiteral( "DECODE" ),
@@ -927,10 +914,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "USERENV" )
       }
     },
-    {
-      Qgis::SqlKeywordCategory::Math,
-      {
-        QStringLiteral( "ABS" ),
+    { Qgis::SqlKeywordCategory::Math,
+      { QStringLiteral( "ABS" ),
         QStringLiteral( "ACOS" ),
         QStringLiteral( "ASIN" ),
         QStringLiteral( "ATAN" ),
@@ -961,10 +946,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "WIDTH_BUCKET" )
       }
     },
-    {
-      Qgis::SqlKeywordCategory::String,
-      {
-        QStringLiteral( "CHR" ),
+    { Qgis::SqlKeywordCategory::String,
+      { QStringLiteral( "CHR" ),
         QStringLiteral( "CONCAT" ),
         QStringLiteral( "INITCAP" ),
         QStringLiteral( "LOWER" ),
@@ -994,10 +977,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "REGEXP_INSTR" )
       }
     },
-    {
-      Qgis::SqlKeywordCategory::Aggregate,
-      {
-        QStringLiteral( "AVG" ),
+    { Qgis::SqlKeywordCategory::Aggregate,
+      { QStringLiteral( "AVG" ),
         QStringLiteral( "COLLECT" ),
         QStringLiteral( "CORR" ),
         QStringLiteral( "COUNT" ),
@@ -1044,10 +1025,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "XMLAGG" )
       }
     },
-    {
-      Qgis::SqlKeywordCategory::Geospatial,
-      {
-        // From http://docs.oracle.com/cd/B19306_01/appdev.102/b14255/toc.htm
+    { Qgis::SqlKeywordCategory::Geospatial,
+      { // From http://docs.oracle.com/cd/B19306_01/appdev.102/b14255/toc.htm
         // Spatial operators
         QStringLiteral( "SDO_ANYINTERACT" ),
         QStringLiteral( "SDO_CONTAINS" ),
@@ -1318,10 +1297,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "SDO_UTIL.VALIDATE_WKTGEOMETRY" )
       }
     },
-    {
-      Qgis::SqlKeywordCategory::Operator,
-      {
-        QStringLiteral( "AND" ),
+    { Qgis::SqlKeywordCategory::Operator,
+      { QStringLiteral( "AND" ),
         QStringLiteral( "OR" ),
         QStringLiteral( "||" ),
         QStringLiteral( "<" ),
@@ -1357,10 +1334,8 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
         QStringLiteral( "CASE {column} WHEN {value} THEN {value}" )
       }
     },
-    {
-      Qgis::SqlKeywordCategory::Constant,
-      {
-        QStringLiteral( "NULL" ),
+    { Qgis::SqlKeywordCategory::Constant,
+      { QStringLiteral( "NULL" ),
         QStringLiteral( "FALSE" ),
         QStringLiteral( "TRUE" )
       }
@@ -1374,7 +1349,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( feedback && feedback->isCanceled() )
     return QgsAbstractDatabaseProviderConnection::QueryResult();
 
-  std::shared_ptr<QgsPoolOracleConn> pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
+  std::shared_ptr<QgsPoolOracleConn> pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri { uri() }.connectionInfo( false ) );
   if ( !pconn->get() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
@@ -1392,8 +1367,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   {
     logWrapper.setError( qry->lastError().text() );
     throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" )
-                                          .arg( qry->lastQuery(),
-                                              qry->lastError().text() ) );
+                                            .arg( qry->lastQuery(), qry->lastError().text() ) );
   }
 
   if ( feedback && feedback->isCanceled() )
@@ -1436,7 +1410,7 @@ QVariantList QgsOracleProviderResultIterator::nextRowPrivate()
 
 bool QgsOracleProviderResultIterator::hasNextRowPrivate() const
 {
-  return ! mNextRow.isEmpty();
+  return !mNextRow.isEmpty();
 }
 
 QVariantList QgsOracleProviderResultIterator::nextRowInternal()
@@ -1461,14 +1435,7 @@ long long QgsOracleProviderResultIterator::rowCountPrivate() const
   return mQuery->size();
 }
 
-void QgsOracleProviderConnection::createVectorTable( const QString &schema,
-    const QString &name,
-    const QgsFields &fields,
-    Qgis::WkbType wkbType,
-    const QgsCoordinateReferenceSystem &srs,
-    bool overwrite,
-    const QMap<QString,
-    QVariant> *options ) const
+void QgsOracleProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
 {
   checkCapability( Capability::CreateVectorTable );
 
@@ -1476,22 +1443,22 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema,
   newUri.setSchema( schema );
   newUri.setTable( name );
   // Set geometry column and if it's not aspatial
-  if ( wkbType != Qgis::WkbType::Unknown &&  wkbType != Qgis::WkbType::NoGeometry )
+  if ( wkbType != Qgis::WkbType::Unknown && wkbType != Qgis::WkbType::NoGeometry )
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "GEOM" ) ).toString() );
   }
   QMap<int, int> map;
   QString errCause;
   const Qgis::VectorExportResult res = QgsOracleProvider::createEmptyLayer(
-                                         newUri.uri(),
-                                         fields,
-                                         wkbType,
-                                         srs,
-                                         overwrite,
-                                         map,
-                                         errCause,
-                                         options
-                                       );
+    newUri.uri(),
+    fields,
+    wkbType,
+    srs,
+    overwrite,
+    map,
+    errCause,
+    options
+  );
   if ( res != Qgis::VectorExportResult::Success )
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
 }
@@ -1519,13 +1486,13 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
   const bool geometryColumnsOnly { configuration().value( "geometryColumnsOnly", false ).toBool() };
-  const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() &&schema.isEmpty() };
+  const bool userTablesOnly { configuration().value( "userTablesOnly", false ).toBool() && schema.isEmpty() };
   const bool onlyExistingTypes { configuration().value( "onlyExistingTypes", false ).toBool() };
-  const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
+  const bool aspatial { !flags || flags.testFlag( TableFlag::Aspatial ) };
 
   QVector<QgsOracleLayerProperty> properties;
   const bool ok = conn->supportedLayers( properties, schema, geometryColumnsOnly, userTablesOnly, aspatial );
-  if ( ! ok )
+  if ( !ok )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1" ).arg( uri() ) );
   }
@@ -1559,7 +1526,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
 
     QgsAbstractDatabaseProviderConnection::TableProperty property;
     property.setFlags( prFlags );
-    for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ) ; i++ )
+    for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ); i++ )
     {
       property.addGeometryColumnType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
     }
@@ -1579,11 +1546,11 @@ void QgsOracleProviderConnection::dropVectorTable( const QString &schema, const 
 {
   checkCapability( Capability::DropVectorTable );
   executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
-                     .arg( QgsOracleConn::quotedIdentifier( schema ) )
-                     .arg( QgsOracleConn::quotedIdentifier( name ) ) );
+                       .arg( QgsOracleConn::quotedIdentifier( schema ) )
+                       .arg( QgsOracleConn::quotedIdentifier( name ) ) );
 
   executeSqlPrivate( QStringLiteral( "DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = '%1'" )
-                     .arg( name ) );
+                       .arg( name ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -1596,12 +1563,10 @@ void QgsOracleProviderConnection::renameVectorTable( const QString &schema, cons
 {
   checkCapability( Capability::RenameVectorTable );
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
-                     .arg( QgsOracleConn::quotedIdentifier( schema ),
-                           QgsOracleConn::quotedIdentifier( name ),
-                           QgsOracleConn::quotedIdentifier( newName ) ) );
+                       .arg( QgsOracleConn::quotedIdentifier( schema ), QgsOracleConn::quotedIdentifier( name ), QgsOracleConn::quotedIdentifier( newName ) ) );
 
   executeSqlPrivate( QStringLiteral( "UPDATE user_sdo_geom_metadata SET TABLE_NAME = '%1' where TABLE_NAME = '%2'" )
-                     .arg( newName, name ) );
+                       .arg( newName, name ) );
 }
 
 void QgsOracleProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsOracleProviderConnection::SpatialIndexOptions &options ) const
@@ -1656,7 +1621,7 @@ QIcon QgsOracleProviderConnection::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
 }
 
-QStringList QgsOracleProviderConnection::schemas( ) const
+QStringList QgsOracleProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
   QStringList schemas;

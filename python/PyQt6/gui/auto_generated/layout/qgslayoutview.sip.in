@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/layout/qgslayoutview.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsLayoutView: QGraphicsView
+class QgsLayoutView : QGraphicsView
 {
 %Docstring(signature="appended")
 A graphical widget to display and interact with :py:class:`QgsLayouts`.
@@ -27,7 +27,6 @@ A graphical widget to display and interact with :py:class:`QgsLayouts`.
       sipType = NULL;
 %End
   public:
-
     enum ClipboardOperation /BaseType=IntEnum/
     {
       ClipboardCut,
@@ -176,14 +175,14 @@ page.
 .. seealso:: :py:func:`pageChanged`
 %End
 
-    QList< QgsLayoutItemPage * > visiblePages() const;
+    QList<QgsLayoutItemPage *> visiblePages() const;
 %Docstring
 Returns a list of page items which are currently visible in the view.
 
 .. seealso:: :py:func:`visiblePageNumbers`
 %End
 
-    QList< int > visiblePageNumbers() const;
+    QList<int> visiblePageNumbers() const;
 %Docstring
 Returns a list of page numbers for pages which are currently visible in the view.
 
@@ -226,7 +225,7 @@ Cuts or copies the selected items, respecting the specified ``operation``.
 .. seealso:: :py:func:`pasteItems`
 %End
 
-    void copyItems( const QList< QgsLayoutItem * > &items, ClipboardOperation operation );
+    void copyItems( const QList<QgsLayoutItem *> &items, ClipboardOperation operation );
 %Docstring
 Cuts or copies the a list of ``items``, respecting the specified ``operation``.
 
@@ -235,7 +234,7 @@ Cuts or copies the a list of ``items``, respecting the specified ``operation``.
 .. seealso:: :py:func:`pasteItems`
 %End
 
-    QList< QgsLayoutItem * > pasteItems( PasteMode mode );
+    QList<QgsLayoutItem *> pasteItems( PasteMode mode );
 %Docstring
 Pastes items from clipboard, using the specified ``mode``.
 
@@ -246,7 +245,7 @@ A list of pasted items is returned.
 .. seealso:: :py:func:`hasItemsInClipboard`
 %End
 
-    QList< QgsLayoutItem * > pasteItems( QPointF layoutPoint );
+    QList<QgsLayoutItem *> pasteItems( QPointF layoutPoint );
 %Docstring
 Pastes items from clipboard, at the specified ``layoutPoint``,
 in layout units.
@@ -270,6 +269,7 @@ Returns ``True`` if the current clipboard contains layout items.
 Returns the delta (in layout coordinates) by which to move items
 for the given key ``event``.
 %End
+
 
     void setSectionLabel( const QString &label );
 %Docstring
@@ -457,7 +457,7 @@ Deletes all selected items.
 .. seealso:: :py:func:`deleteItems`
 %End
 
-    void deleteItems( const QList< QgsLayoutItem * > &items );
+    void deleteItems( const QList<QgsLayoutItem *> &items );
 %Docstring
 Delete the specified ``items``.
 
@@ -585,9 +585,9 @@ class QgsLayoutViewMenuProvider
 {
 %Docstring(signature="appended")
 
-Interface for a QgsLayoutView context menu.
+Interface for a :py:class:`QgsLayoutView` context menu.
 
-Implementations of this interface can be made to allow QgsLayoutView
+Implementations of this interface can be made to allow :py:class:`QgsLayoutView`
 instances to provide custom context menus (opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayoutView`
@@ -612,5 +612,5 @@ Returns a newly created menu instance (or ``None`` on error)
  *                                                                      *
  * src/gui/layout/qgslayoutview.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

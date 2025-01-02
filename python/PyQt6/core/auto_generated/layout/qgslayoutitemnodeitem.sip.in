@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemnodeitem.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -111,6 +111,15 @@ Deselects any selected nodes.
     virtual double estimatedFrameBleed() const;
 
 
+    virtual bool isValid() const = 0;
+%Docstring
+Must be reimplemented in subclasses.
+Typically a polyline is valid if it has at least 2 distinct nodes,
+while a polygon is valid if it has at least 3 distinct nodes.
+
+.. versionadded:: 3.40
+%End
+
   protected:
 
     QgsLayoutNodesItem( QgsLayout *layout );
@@ -191,5 +200,5 @@ currentRectangle in their implementations.
  *                                                                      *
  * src/core/layout/qgslayoutitemnodeitem.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

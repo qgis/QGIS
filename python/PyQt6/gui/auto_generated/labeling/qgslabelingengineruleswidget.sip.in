@@ -1,0 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelingengineruleswidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsLabelingEngineRulesWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A widget which allows configuration of a list of labeling engine rules.
+
+This widget allows users to add, remove, and edit the properties of a
+list of :py:class:`QgsAbstractLabelingEngineRule` objects.
+
+.. seealso:: :py:class:`QgsLabelingEngineRuleWidget` for a widget for configuring a single rule
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingengineruleswidget.h"
+%End
+  public:
+    QgsLabelingEngineRulesWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLabelingEngineRulesWidget.
+%End
+
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
+%Docstring
+Sets the ``rules`` to show in the widget.
+
+Ownership is not transferred, an internal copy will be made.
+%End
+
+    QList<QgsAbstractLabelingEngineRule *> rules() const /TransferBack/;
+%Docstring
+Returns the rules shown in the widget.
+
+The caller takes ownership of all returned rules.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the rules configured in the widget are changed.
+%End
+
+};
+
+
+class QgsLabelingEngineRulesDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog which allows configuration of a list of labeling engine rules.
+
+This dialog allows users to add, remove, and edit the properties of a
+list of :py:class:`QgsAbstractLabelingEngineRule` objects.
+
+.. seealso:: :py:class:`QgsLabelingEngineRulesWidget`
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingengineruleswidget.h"
+%End
+  public:
+    QgsLabelingEngineRulesDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor for QgsLabelingEngineRulesDialog.
+
+:param parent: parent widget
+:param flags: window flags for dialog
+%End
+
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
+%Docstring
+Sets the ``rules`` to show in the dialog.
+
+Ownership is not transferred, an internal copy will be made.
+%End
+
+    QList<QgsAbstractLabelingEngineRule *> rules() const /TransferBack/;
+%Docstring
+Returns the rules shown in the dialog.
+
+The caller takes ownership of all returned rules.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelingengineruleswidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -3,11 +3,11 @@
  *                                                                      *
  * src/server/qgsserverstatichandler.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
-class QgsServerStaticHandler: QgsServerOgcApiHandler
+class QgsServerStaticHandler : QgsServerOgcApiHandler
 {
 %Docstring(signature="appended")
 The :py:class:`QgsServerStaticHandler` class serves static files from the static path (resources/server/api/wfs3/static)
@@ -21,8 +21,7 @@ The :py:class:`QgsServerStaticHandler` class serves static files from the static
 #include "qgsserverstatichandler.h"
 %End
   public:
-
-    QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( "/static/(?<staticFilePath>.*)$" ), const QString &staticPathSuffix = QString( ) );
+    QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( "/static/(?<staticFilePath>.*)$" ), const QString &staticPathSuffix = QString() );
 %Docstring
 Creates QgsServerStaticHandler
 
@@ -51,5 +50,5 @@ Creates QgsServerStaticHandler
  *                                                                      *
  * src/server/qgsserverstatichandler.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappgpslogging.h"
+#include "moc_qgsappgpslogging.cpp"
 #include "qgsgui.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
@@ -30,30 +31,28 @@ const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSe
 
 const QgsSettingsEntryString *QgsAppGpsLogging::settingLastGpkgLog = new QgsSettingsEntryString( QStringLiteral( "last-gpkg-log" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "Last used Geopackage/Spatialite file for logging GPS locations" ) );
 
-const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVariant::Type, QString >>> QgsAppGpsLogging::sPointFields
-{
-  { Qgis::GpsInformationComponent::Timestamp, { QVariant::DateTime, QStringLiteral( "timestamp" )}},
-  { Qgis::GpsInformationComponent::Altitude, { QVariant::Double, QStringLiteral( "altitude" )}},
-  { Qgis::GpsInformationComponent::EllipsoidAltitude, { QVariant::Double, QStringLiteral( "altitude_wgs84" )}},
-  { Qgis::GpsInformationComponent::GroundSpeed, { QVariant::Double, QStringLiteral( "ground_speed" )}},
-  { Qgis::GpsInformationComponent::Bearing, { QVariant::Double, QStringLiteral( "bearing" )}},
-  { Qgis::GpsInformationComponent::Pdop, { QVariant::Double, QStringLiteral( "pdop" )}},
-  { Qgis::GpsInformationComponent::Hdop, { QVariant::Double, QStringLiteral( "hdop" )}},
-  { Qgis::GpsInformationComponent::Vdop, { QVariant::Double, QStringLiteral( "vdop" )}},
-  { Qgis::GpsInformationComponent::HorizontalAccuracy, { QVariant::Double, QStringLiteral( "horizontal_accuracy" )}},
-  { Qgis::GpsInformationComponent::VerticalAccuracy, { QVariant::Double, QStringLiteral( "vertical_accuracy" )}},
-  { Qgis::GpsInformationComponent::HvAccuracy, { QVariant::Double, QStringLiteral( "hv_accuracy" )}},
-  { Qgis::GpsInformationComponent::SatellitesUsed, { QVariant::Double, QStringLiteral( "satellites_used" )}},
-  { Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint, { QVariant::Double, QStringLiteral( "distance_since_previous" )}},
-  { Qgis::GpsInformationComponent::TrackTimeSinceLastPoint, { QVariant::Double, QStringLiteral( "time_since_previous" )}},
+const std::vector<std::tuple<Qgis::GpsInformationComponent, std::tuple<QMetaType::Type, QString>>> QgsAppGpsLogging::sPointFields {
+  { Qgis::GpsInformationComponent::Timestamp, { QMetaType::Type::QDateTime, QStringLiteral( "timestamp" ) } },
+  { Qgis::GpsInformationComponent::Altitude, { QMetaType::Type::Double, QStringLiteral( "altitude" ) } },
+  { Qgis::GpsInformationComponent::EllipsoidAltitude, { QMetaType::Type::Double, QStringLiteral( "altitude_wgs84" ) } },
+  { Qgis::GpsInformationComponent::GroundSpeed, { QMetaType::Type::Double, QStringLiteral( "ground_speed" ) } },
+  { Qgis::GpsInformationComponent::Bearing, { QMetaType::Type::Double, QStringLiteral( "bearing" ) } },
+  { Qgis::GpsInformationComponent::Pdop, { QMetaType::Type::Double, QStringLiteral( "pdop" ) } },
+  { Qgis::GpsInformationComponent::Hdop, { QMetaType::Type::Double, QStringLiteral( "hdop" ) } },
+  { Qgis::GpsInformationComponent::Vdop, { QMetaType::Type::Double, QStringLiteral( "vdop" ) } },
+  { Qgis::GpsInformationComponent::HorizontalAccuracy, { QMetaType::Type::Double, QStringLiteral( "horizontal_accuracy" ) } },
+  { Qgis::GpsInformationComponent::VerticalAccuracy, { QMetaType::Type::Double, QStringLiteral( "vertical_accuracy" ) } },
+  { Qgis::GpsInformationComponent::HvAccuracy, { QMetaType::Type::Double, QStringLiteral( "hv_accuracy" ) } },
+  { Qgis::GpsInformationComponent::SatellitesUsed, { QMetaType::Type::Double, QStringLiteral( "satellites_used" ) } },
+  { Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint, { QMetaType::Type::Double, QStringLiteral( "distance_since_previous" ) } },
+  { Qgis::GpsInformationComponent::TrackTimeSinceLastPoint, { QMetaType::Type::Double, QStringLiteral( "time_since_previous" ) } },
 };
 
-const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QVariant::Type, QString >>> QgsAppGpsLogging::sTrackFields
-{
-  { Qgis::GpsInformationComponent::TrackStartTime, { QVariant::DateTime, QStringLiteral( "start_time" )}},
-  { Qgis::GpsInformationComponent::TrackEndTime, { QVariant::DateTime, QStringLiteral( "end_time" )}},
-  { Qgis::GpsInformationComponent::TotalTrackLength, { QVariant::Double, QStringLiteral( "track_length" )}},
-  { Qgis::GpsInformationComponent::TrackDistanceFromStart, { QVariant::Double, QStringLiteral( "distance_from_start" )}},
+const std::vector<std::tuple<Qgis::GpsInformationComponent, std::tuple<QMetaType::Type, QString>>> QgsAppGpsLogging::sTrackFields {
+  { Qgis::GpsInformationComponent::TrackStartTime, { QMetaType::Type::QDateTime, QStringLiteral( "start_time" ) } },
+  { Qgis::GpsInformationComponent::TrackEndTime, { QMetaType::Type::QDateTime, QStringLiteral( "end_time" ) } },
+  { Qgis::GpsInformationComponent::TotalTrackLength, { QMetaType::Type::Double, QStringLiteral( "track_length" ) } },
+  { Qgis::GpsInformationComponent::TrackDistanceFromStart, { QMetaType::Type::Double, QStringLiteral( "distance_from_start" ) } },
 };
 
 
@@ -61,13 +60,11 @@ QgsAppGpsLogging::QgsAppGpsLogging( QgsAppGpsConnection *connection, QObject *pa
   : QObject( parent )
   , mConnection( connection )
 {
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [=] {
     if ( mGpkgLogger )
       mGpkgLogger->setTransformContext( QgsProject::instance()->transformContext() );
   } );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [=] {
     if ( mGpkgLogger )
       mGpkgLogger->setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
@@ -75,8 +72,7 @@ QgsAppGpsLogging::QgsAppGpsLogging( QgsAppGpsConnection *connection, QObject *pa
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsLogging::gpsConnected );
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsAppGpsLogging::gpsDisconnected );
 
-  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [ = ]
-  {
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [=] {
     if ( mGpkgLogger )
       mGpkgLogger->updateGpsSettings();
   } );
@@ -107,7 +103,7 @@ void QgsAppGpsLogging::setNmeaLogFile( const QString &filename )
 
 void QgsAppGpsLogging::setNmeaLoggingEnabled( bool enabled )
 {
-  if ( enabled == static_cast< bool >( mLogFile ) )
+  if ( enabled == static_cast<bool>( mLogFile ) )
     return;
 
   if ( mLogFile && !enabled )
@@ -133,6 +129,8 @@ void QgsAppGpsLogging::setGpkgLogFile( const QString &filename )
     {
       mGpkgLogger->endCurrentTrack();
       mGpkgLogger.reset();
+      mGpkgTracksLayer.reset();
+      mGpkgPointsLayer.reset();
 
       QgisApp::instance()->messageBar()->pushInfo( QString(), tr( "GPS logging stopped" ) );
     }
@@ -153,9 +151,9 @@ void QgsAppGpsLogging::gpsConnected()
   {
     startNmeaLogging();
   }
-  if ( mGpkgLogger )
+  if ( !mGpkgLogFile.isEmpty() )
   {
-    mGpkgLogger->setConnection( mConnection->connection() );
+    setGpkgLogFile( mGpkgLogFile );
   }
 }
 
@@ -165,7 +163,9 @@ void QgsAppGpsLogging::gpsDisconnected()
   if ( mGpkgLogger )
   {
     mGpkgLogger->endCurrentTrack();
-    mGpkgLogger->setConnection( nullptr );
+    mGpkgLogger.reset();
+    mGpkgTracksLayer.reset();
+    mGpkgPointsLayer.reset();
   }
 }
 
@@ -181,10 +181,10 @@ void QgsAppGpsLogging::startNmeaLogging()
 {
   if ( !mLogFile )
   {
-    mLogFile = std::make_unique< QFile >( mNmeaLogFile );
+    mLogFile = std::make_unique<QFile>( mNmeaLogFile );
   }
 
-  if ( mLogFile->open( QIODevice::Append ) )  // open in binary and explicitly output CR + LF per NMEA
+  if ( mLogFile->open( QIODevice::Append ) ) // open in binary and explicitly output CR + LF per NMEA
   {
     mLogFileTextStream.setDevice( mLogFile.get() );
 
@@ -196,7 +196,7 @@ void QgsAppGpsLogging::startNmeaLogging()
 
     connect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsAppGpsLogging::logNmeaSentence ); // added to handle raw data
   }
-  else  // error opening file
+  else // error opening file
   {
     mLogFile.reset();
 
@@ -217,7 +217,7 @@ void QgsAppGpsLogging::stopNmeaLogging()
 
 void QgsAppGpsLogging::createGpkgLogger()
 {
-  mGpkgLogger = std::make_unique< QgsVectorLayerGpsLogger >( mConnection->connection() );
+  mGpkgLogger = std::make_unique<QgsVectorLayerGpsLogger>( mConnection->connection() );
   mGpkgLogger->setTransformContext( QgsProject::instance()->transformContext() );
   mGpkgLogger->setEllipsoid( QgsProject::instance()->ellipsoid() );
   mGpkgLogger->updateGpsSettings();
@@ -229,14 +229,14 @@ void QgsAppGpsLogging::createGpkgLogger()
   uriParts.insert( QStringLiteral( "path" ), mGpkgLogFile );
   uriParts.insert( QStringLiteral( "layerName" ), QStringLiteral( "gps_points" ) );
 
-  mGpkgPointsLayer = std::make_unique< QgsVectorLayer >( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), uriParts ) );
+  mGpkgPointsLayer = std::make_unique<QgsVectorLayer>( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), uriParts ) );
   if ( mGpkgPointsLayer->isValid() )
   {
     for ( const auto &it : sPointFields )
     {
       Qgis::GpsInformationComponent component;
-      std::tuple< QVariant::Type, QString > fieldTypeToName;
-      QVariant::Type fieldType;
+      std::tuple<QMetaType::Type, QString> fieldTypeToName;
+      QMetaType::Type fieldType;
       QString fieldName;
       std::tie( component, fieldTypeToName ) = it;
       std::tie( fieldType, fieldName ) = fieldTypeToName;
@@ -258,14 +258,14 @@ void QgsAppGpsLogging::createGpkgLogger()
   }
 
   uriParts.insert( QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" ) );
-  mGpkgTracksLayer = std::make_unique< QgsVectorLayer >( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), uriParts ) );
+  mGpkgTracksLayer = std::make_unique<QgsVectorLayer>( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), uriParts ) );
   if ( mGpkgTracksLayer->isValid() )
   {
     for ( const auto &it : sTrackFields )
     {
       Qgis::GpsInformationComponent component;
-      std::tuple< QVariant::Type, QString > fieldTypeToName;
-      QVariant::Type fieldType;
+      std::tuple<QMetaType::Type, QString> fieldTypeToName;
+      QMetaType::Type fieldType;
       QString fieldName;
       std::tie( component, fieldTypeToName ) = it;
       std::tie( fieldType, fieldName ) = fieldTypeToName;
@@ -285,7 +285,6 @@ void QgsAppGpsLogging::createGpkgLogger()
     mGpkgTracksLayer.reset();
     return;
   }
-
 }
 
 bool QgsAppGpsLogging::createOrUpdateLogDatabase()
@@ -300,7 +299,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
     bool newFile = false;
     if ( !QFile::exists( mGpkgLogFile ) )
     {
-      if ( ! ogrMetadata->createDatabase( mGpkgLogFile, error ) )
+      if ( !ogrMetadata->createDatabase( mGpkgLogFile, error ) )
       {
         QgisApp::instance()->messageBar()->pushCritical( tr( "Create GPS Log" ), tr( "Database creation failed: %1" ).arg( error ) );
         emit gpkgLoggingFailed();
@@ -313,14 +312,14 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
     bool createPointLayer = true;
     if ( !newFile )
     {
-      std::unique_ptr< QgsVectorLayer > testLayer = std::make_unique< QgsVectorLayer>( ogrMetadata->encodeUri( {{QStringLiteral( "path" ), mGpkgLogFile }, {QStringLiteral( "layerName" ), QStringLiteral( "gps_points" )}} ), QString(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsVectorLayer> testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_points" ) } } ), QString(), QStringLiteral( "ogr" ) );
       if ( testLayer->isValid() )
       {
         createPointLayer = false;
       }
     }
 
-    QMap< int, int > unusedMap;
+    QMap<int, int> unusedMap;
     QVariantMap options;
     options.insert( QStringLiteral( "driverName" ), QgsVectorFileWriter::driverForExtension( fi.suffix() ) );
     options.insert( QStringLiteral( "update" ), true );
@@ -331,19 +330,15 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
       for ( const auto &it : sPointFields )
       {
         Qgis::GpsInformationComponent component;
-        std::tuple< QVariant::Type, QString > fieldTypeToName;
-        QVariant::Type fieldType;
+        std::tuple<QMetaType::Type, QString> fieldTypeToName;
+        QMetaType::Type fieldType;
         QString fieldName;
         std::tie( component, fieldTypeToName ) = it;
         std::tie( fieldType, fieldName ) = fieldTypeToName;
         pointFields.append( QgsField( fieldName, fieldType ) );
       }
 
-      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile,
-                                              pointFields,
-                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::PointZM : Qgis::WkbType::PointZ,
-                                              QgsCoordinateReferenceSystem( "EPSG:4326" ),
-                                              false, unusedMap, error, &options );
+      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, pointFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::PointZM : Qgis::WkbType::PointZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options );
       if ( result != Qgis::VectorExportResult::Success )
       {
         QgisApp::instance()->messageBar()->pushCritical( tr( "Create GPS Log" ), tr( "Database creation failed: %1" ).arg( error ) );
@@ -358,7 +353,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
     bool createTracksLayer = true;
     if ( !newFile )
     {
-      std::unique_ptr< QgsVectorLayer > testLayer = std::make_unique< QgsVectorLayer>( ogrMetadata->encodeUri( {{QStringLiteral( "path" ), mGpkgLogFile }, {QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" )}} ), QString(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsVectorLayer> testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" ) } } ), QString(), QStringLiteral( "ogr" ) );
       if ( testLayer->isValid() )
       {
         createTracksLayer = false;
@@ -371,19 +366,15 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
       for ( const auto &it : sTrackFields )
       {
         Qgis::GpsInformationComponent component;
-        std::tuple< QVariant::Type, QString > fieldTypeToName;
-        QVariant::Type fieldType;
+        std::tuple<QMetaType::Type, QString> fieldTypeToName;
+        QMetaType::Type fieldType;
         QString fieldName;
         std::tie( component, fieldTypeToName ) = it;
         std::tie( fieldType, fieldName ) = fieldTypeToName;
         tracksFields.append( QgsField( fieldName, fieldType ) );
       }
 
-      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile,
-                                              tracksFields,
-                                              QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::LineStringZM : Qgis::WkbType::LineStringZ,
-                                              QgsCoordinateReferenceSystem( "EPSG:4326" ),
-                                              false, unusedMap, error, &options );
+      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, tracksFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::LineStringZM : Qgis::WkbType::LineStringZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options );
       if ( result != Qgis::VectorExportResult::Success )
       {
         QgisApp::instance()->messageBar()->pushCritical( tr( "Create GPS Log" ), tr( "Database creation failed: %1" ).arg( error ) );
@@ -395,4 +386,3 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
   }
   return false;
 }
-

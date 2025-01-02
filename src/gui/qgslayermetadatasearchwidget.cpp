@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadatasearchwidget.h"
+#include "moc_qgslayermetadatasearchwidget.cpp"
 #include "qgslayermetadataresultsmodel.h"
 #include "qgslayermetadataresultsproxymodel.h"
 #include "qgsapplication.h"
@@ -26,7 +27,6 @@
 QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
-
   setupUi( this );
   setupButtons( mButtonBox );
 
@@ -46,26 +46,25 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mMetadataTableView->horizontalHeader()->setSectionResizeMode( QgsLayerMetadataResultsModel::Sections::GeometryType, QHeaderView::ResizeMode::ResizeToContents );
   mMetadataTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
-  mExtentFilterComboBox->addItem( QString( ) );
+  mExtentFilterComboBox->addItem( QString() );
   mExtentFilterComboBox->addItem( QStringLiteral( "Map Canvas Extent" ) );
   mExtentFilterComboBox->addItem( QStringLiteral( "Current Project Extent" ) );
   mExtentFilterComboBox->setCurrentIndex( 0 );
   mExtentFilterComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
   mExtentFilterComboBox->adjustSize();
 
-  mGeometryTypeComboBox->addItem( QString( ), QVariant() );
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Point ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Point ), static_cast< int >( Qgis::GeometryType::Point ) );
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Line ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Line ), static_cast< int >( Qgis::GeometryType::Line ) );
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Polygon ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Polygon ), static_cast< int >( Qgis::GeometryType::Polygon ) );
+  mGeometryTypeComboBox->addItem( QString(), QVariant() );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Point ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Point ), static_cast<int>( Qgis::GeometryType::Point ) );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Line ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Line ), static_cast<int>( Qgis::GeometryType::Line ) );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Polygon ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Polygon ), static_cast<int>( Qgis::GeometryType::Polygon ) );
   // Note: unknown geometry is mapped to null and missing from the combo
-  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Null ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Null ), static_cast< int >( Qgis::GeometryType::Null ) );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Null ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Null ), static_cast<int>( Qgis::GeometryType::Null ) );
   mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) ), tr( "Raster" ), QVariant() );
   mGeometryTypeComboBox->setCurrentIndex( 0 );
   mGeometryTypeComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
   mGeometryTypeComboBox->adjustSize();
 
-  auto updateLoadBtn = [ = ]
-  {
+  auto updateLoadBtn = [=] {
     if ( mIsLoading )
     {
       mAbortPushButton->setText( tr( "Abort" ) );
@@ -79,8 +78,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   };
 
   connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, mProgressBar, &QProgressBar::setValue );
-  connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, this,  [ = ]( int progress )
-  {
+  connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, this, [=]( int progress ) {
     if ( progress == 100 )
     {
       mIsLoading = false;
@@ -89,13 +87,12 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     }
   } );
 
-  connect( mAbortPushButton, &QPushButton::clicked, mSourceModel, [ = ]( bool )
-  {
-    if ( ! mIsLoading )
+  connect( mAbortPushButton, &QPushButton::clicked, mSourceModel, [=]( bool ) {
+    if ( !mIsLoading )
     {
       mIsLoading = true;
       mProgressBar->show();
-      mSourceModel->reloadAsync( );
+      mSourceModel->reloadAsync();
     }
     else
     {
@@ -106,17 +103,15 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     updateLoadBtn();
   } );
 
-  connect( mMetadataTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [ = ]( const QItemSelection &, const QItemSelection & )
-  {
+  connect( mMetadataTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]( const QItemSelection &, const QItemSelection & ) {
     emit enableButtons( mMetadataTableView->selectionModel()->hasSelection() );
   } );
 
   connect( mSearchFilterLineEdit, &QLineEdit::textEdited, mProxyModel, &QgsLayerMetadataResultsProxyModel::setFilterString );
-  connect( mSearchFilterLineEdit, &QgsFilterLineEdit::cleared, mProxyModel, [ = ] { mProxyModel->setFilterString( QString() ); } );
+  connect( mSearchFilterLineEdit, &QgsFilterLineEdit::cleared, mProxyModel, [=] { mProxyModel->setFilterString( QString() ); } );
   connect( mExtentFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayerMetadataSearchWidget::updateExtentFilter );
 
-  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
-  {
+  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
     if ( index == 0 ) // reset all filters
     {
       mProxyModel->setFilterGeometryTypeEnabled( false );
@@ -125,10 +120,10 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     else
     {
       const QVariant geomTypeFilterValue( mGeometryTypeComboBox->currentData() );
-      if ( geomTypeFilterValue.isValid() )  // Vector layers
+      if ( geomTypeFilterValue.isValid() ) // Vector layers
       {
         mProxyModel->setFilterGeometryTypeEnabled( true );
-        mProxyModel->setFilterGeometryType( geomTypeFilterValue.value<Qgis::GeometryType>( ) );
+        mProxyModel->setFilterGeometryType( geomTypeFilterValue.value<Qgis::GeometryType>() );
         mProxyModel->setFilterMapLayerTypeEnabled( true );
         mProxyModel->setFilterMapLayerType( Qgis::LayerType::Vector );
       }
@@ -139,16 +134,13 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
         mProxyModel->setFilterMapLayerType( Qgis::LayerType::Raster );
       }
     }
-
   } );
 
-  connect( QgsProject::instance(), &QgsProject::layersAdded, this, [ = ]( const QList<QgsMapLayer *> & )
-  {
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, [=]( const QList<QgsMapLayer *> & ) {
     updateExtentFilter( mExtentFilterComboBox->currentIndex() );
   } );
 
-  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [ = ]( const QStringList & )
-  {
+  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [=]( const QStringList & ) {
     updateExtentFilter( mExtentFilterComboBox->currentIndex() );
   } );
 
@@ -157,15 +149,13 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   // Start loading metadata in the model
   mSourceModel->reloadAsync();
   mIsLoading = true;
-
 }
 
 void QgsLayerMetadataSearchWidget::setMapCanvas( QgsMapCanvas *newMapCanvas )
 {
   if ( newMapCanvas && mapCanvas() != newMapCanvas )
   {
-    connect( newMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]
-    {
+    connect( newMapCanvas, &QgsMapCanvas::extentsChanged, this, [=] {
       updateExtentFilter( mExtentFilterComboBox->currentIndex() );
     } );
   }
@@ -189,7 +179,7 @@ void QgsLayerMetadataSearchWidget::updateExtentFilter( int index )
   }
   else
   {
-    mProxyModel->setFilterExtent( QgsRectangle( ) );
+    mProxyModel->setFilterExtent( QgsRectangle() );
   }
 }
 
@@ -201,38 +191,57 @@ void QgsLayerMetadataSearchWidget::refresh()
 void QgsLayerMetadataSearchWidget::addButtonClicked()
 {
   const QModelIndexList &selectedIndexes { mMetadataTableView->selectionModel()->selectedRows() };
-  if ( ! selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     for ( const auto &selectedIndex : std::as_const( selectedIndexes ) )
     {
-      const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), static_cast< int >( QgsLayerMetadataResultsModel::CustomRole::Metadata ) ).value<QgsLayerMetadataProviderResult>() };
+      const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), static_cast<int>( QgsLayerMetadataResultsModel::CustomRole::Metadata ) ).value<QgsLayerMetadataProviderResult>() };
+
+      QString layerName = metadataResult.title();
+      if ( layerName.isEmpty() )
+      {
+        QVariantMap components = QgsProviderRegistry::instance()->decodeUri( metadataResult.dataProviderName(), metadataResult.uri() );
+        if ( components.contains( QStringLiteral( "layerName" ) ) )
+        {
+          layerName = components.value( QStringLiteral( "layerName" ) ).toString();
+        }
+        else if ( components.contains( QStringLiteral( "table" ) ) )
+        {
+          layerName = components.value( QStringLiteral( "table" ) ).toString();
+        }
+        else
+        {
+          layerName = metadataResult.identifier();
+        }
+      }
+
       switch ( metadataResult.layerType() )
       {
         case Qgis::LayerType::Raster:
         {
           Q_NOWARN_DEPRECATED_PUSH
-          emit addRasterLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addRasterLayer( metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           Q_NOWARN_DEPRECATED_POP
-          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           break;
         }
         case Qgis::LayerType::Vector:
         {
           Q_NOWARN_DEPRECATED_PUSH
-          emit addVectorLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addVectorLayer( metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           Q_NOWARN_DEPRECATED_POP
-          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           break;
         }
         case Qgis::LayerType::Mesh:
         {
           Q_NOWARN_DEPRECATED_PUSH
-          emit addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addMeshLayer( metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           Q_NOWARN_DEPRECATED_POP
-          emit addLayer( metadataResult.layerType(), metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          emit addLayer( metadataResult.layerType(), metadataResult.uri(), layerName, metadataResult.dataProviderName() );
           break;
         }
-        default:  // unsupported
+        default: // unsupported
         {
           // Ignore
           break;
@@ -251,7 +260,7 @@ void QgsLayerMetadataSearchWidget::reset()
 void QgsLayerMetadataSearchWidget::showEvent( QShowEvent *event )
 {
   QgsAbstractDataSourceWidget::showEvent( event );
-  mSearchFilterLineEdit->setText( mProxyModel->filterString( ) );
+  mSearchFilterLineEdit->setText( mProxyModel->filterString() );
 }
 
 void QgsLayerMetadataSearchWidget::showHelp()

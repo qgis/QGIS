@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingregistry.h"
+#include "moc_qgsprocessingregistry.cpp"
 #include "qgsvectorfilewriter.h"
 #include "qgsprocessingparametertypeimpl.h"
 #include "qgsprocessingparametermeshdataset.h"
@@ -54,6 +55,8 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeFeatureSource() );
   addParameterType( new QgsProcessingParameterTypeNumber() );
   addParameterType( new QgsProcessingParameterTypeDistance() );
+  addParameterType( new QgsProcessingParameterTypeArea() );
+  addParameterType( new QgsProcessingParameterTypeVolume() );
   addParameterType( new QgsProcessingParameterTypeDuration() );
   addParameterType( new QgsProcessingParameterTypeScale() );
   addParameterType( new QgsProcessingParameterTypeBand() );

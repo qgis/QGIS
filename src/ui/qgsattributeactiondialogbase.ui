@@ -68,6 +68,19 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="2">
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="1" column="3">
        <widget class="QPushButton" name="mRemoveButton">
         <property name="sizePolicy">
@@ -88,7 +101,35 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="mAddButton">
+        <property name="toolTip">
+         <string>Add a new action</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="5">
+       <widget class="QPushButton" name="mDuplicateButton">
+        <property name="toolTip">
+         <string>Duplicate an action</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/mActionDuplicateLayout.svg</normaloff>:/images/themes/default/mActionDuplicateLayout.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
        <spacer name="horizontalSpacer_4">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -101,7 +142,7 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="6">
+      <item row="1" column="7">
        <widget class="QPushButton" name="mAddDefaultActionsButton">
         <property name="text">
          <string>Create Default Actions</string>
@@ -128,7 +169,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="7">
+      <item row="0" column="0" colspan="8">
        <widget class="QTableWidget" name="mAttributeActionTable">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -136,7 +177,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="whatsThis">
+        <property name="toolTip">
          <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Add to action list button. Actions can be edited here by double clicking on the item.</string>
         </property>
         <property name="selectionMode">
@@ -193,33 +234,6 @@
         </column>
        </widget>
       </item>
-      <item row="1" column="2">
-       <spacer name="horizontalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="mAddButton">
-        <property name="toolTip">
-         <string>Add a new action</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -273,6 +287,7 @@
   <tabstop>mMoveDownButton</tabstop>
   <tabstop>mRemoveButton</tabstop>
   <tabstop>mAddButton</tabstop>
+  <tabstop>mDuplicateButton</tabstop>
   <tabstop>mAddDefaultActionsButton</tabstop>
   <tabstop>mShowInAttributeTable</tabstop>
   <tabstop>mAttributeTableWidgetType</tabstop>

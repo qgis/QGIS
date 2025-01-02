@@ -68,7 +68,7 @@ QgsRoundnessAlgorithm *QgsRoundnessAlgorithm::createInstance() const
 
 QList<int> QgsRoundnessAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 Qgis::ProcessingSourceType QgsRoundnessAlgorithm::outputLayerType() const
@@ -79,7 +79,7 @@ Qgis::ProcessingSourceType QgsRoundnessAlgorithm::outputLayerType() const
 QgsFields QgsRoundnessAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "roundness" ), QVariant::Double ) );
+  outputFields.append( QgsField( QStringLiteral( "roundness" ), QMetaType::Type::Double ) );
   return outputFields;
 }
 
@@ -90,7 +90,7 @@ QgsFeatureList QgsRoundnessAlgorithm::processFeature( const QgsFeature &feature,
   if ( f.hasGeometry() )
   {
     QgsGeometry geom = f.geometry();
-    if ( const QgsCurvePolygon *poly = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet()->simplifiedTypeRef() ) )
+    if ( const QgsCurvePolygon *poly = qgsgeometry_cast<const QgsCurvePolygon *>( geom.constGet()->simplifiedTypeRef() ) )
     {
       double roundness = poly->roundness();
       attributes << QVariant( roundness );
@@ -109,5 +109,3 @@ QgsFeatureList QgsRoundnessAlgorithm::processFeature( const QgsFeature &feature,
 }
 
 ///@endcond
-
-

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnewvectorlayerdialog.h"
+#include "moc_qgsnewvectorlayerdialog.cpp"
 #include "qgsapplication.h"
 #include "qgsfilewidget.h"
 #include "qgis.h"
@@ -46,20 +47,21 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   connect( mFileFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged );
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewVectorLayerDialog::showHelp );
+  connect( mButtonUp, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::moveFieldsUp );
+  connect( mButtonDown, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::moveFieldsDown );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
 
-  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::String ), QgsVariantUtils::typeToDisplayString( QVariant::String ), "String" );
-  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::Int ), "Integer" );
-  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::Double ), "Real" );
-  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Date ), QgsVariantUtils::typeToDisplayString( QVariant::Date ), "Date" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), "String" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), "Integer" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), "Real" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDate ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "Date" );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
-  const Qgis::WkbType geomTypes[] =
-  {
+  const Qgis::WkbType geomTypes[] = {
     Qgis::WkbType::NoGeometry,
     Qgis::WkbType::Point,
     Qgis::WkbType::MultiPoint,
@@ -110,14 +112,15 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QString() ) );
   connect( mNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::nameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewVectorLayerDialog::selectionChanged );
-  connect( mGeometryTypeBox, static_cast<void( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
+  connect( mGeometryTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
     updateExtension();
     checkOk();
   } );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
+  mButtonUp->setEnabled( false );
+  mButtonDown->setEnabled( false );
 
   mFileName->setStorageMode( QgsFileWidget::SaveFile );
   mFileName->setFilter( QgsVectorFileWriter::filterForDriver( mFileFormatComboBox->currentData( Qt::UserRole ).toString() ) );
@@ -125,8 +128,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mFileName->setDialogTitle( tr( "Save Layer As" ) );
   const QgsSettings settings;
   mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
-  connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]
-  {
+  connect( mFileName, &QgsFileWidget::fileChanged, this, [=] {
     QgsSettings settings;
     const QFileInfo tmplFileInfo( mFileName->filePath() );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
@@ -181,8 +183,7 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
 Qgis::WkbType QgsNewVectorLayerDialog::selectedType() const
 {
   Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
-  wkbType = static_cast<Qgis::WkbType>
-            ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  wkbType = static_cast<Qgis::WkbType>( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   if ( mGeometryWithZRadioButton->isChecked() )
     wkbType = QgsWkbTypes::addZ( wkbType );
@@ -211,8 +212,15 @@ void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
   //use userrole to avoid translated type string
   const QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
+
   checkOk();
+
   mNameEdit->clear();
+
+  if ( !mNameEdit->hasFocus() )
+  {
+    mNameEdit->setFocus();
+  }
 }
 
 void QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked()
@@ -221,7 +229,7 @@ void QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked()
   checkOk();
 }
 
-void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> > &at ) const
+void QgsNewVectorLayerDialog::attributes( QList<QPair<QString, QString>> &at ) const
 {
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
@@ -254,6 +262,28 @@ void QgsNewVectorLayerDialog::nameChanged( const QString &name )
 void QgsNewVectorLayerDialog::selectionChanged()
 {
   mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
+  mButtonUp->setDisabled( mAttributeView->selectedItems().isEmpty() );
+  mButtonDown->setDisabled( mAttributeView->selectedItems().isEmpty() );
+}
+
+void QgsNewVectorLayerDialog::moveFieldsUp()
+{
+  int currentRow = mAttributeView->currentIndex().row();
+  if ( currentRow == 0 )
+    return;
+
+  mAttributeView->insertTopLevelItem( currentRow - 1, mAttributeView->takeTopLevelItem( currentRow ) );
+  mAttributeView->setCurrentIndex( mAttributeView->model()->index( currentRow - 1, 0 ) );
+}
+
+void QgsNewVectorLayerDialog::moveFieldsDown()
+{
+  int currentRow = mAttributeView->currentIndex().row();
+  if ( currentRow == mAttributeView->topLevelItemCount() - 1 )
+    return;
+
+  mAttributeView->insertTopLevelItem( currentRow + 1, mAttributeView->takeTopLevelItem( currentRow ) );
+  mAttributeView->setCurrentIndex( mAttributeView->model()->index( currentRow + 1, 0 ) );
 }
 
 QString QgsNewVectorLayerDialog::filename() const
@@ -301,7 +331,6 @@ void QgsNewVectorLayerDialog::updateExtension()
     }
   }
   setFilename( fileName );
-
 }
 
 void QgsNewVectorLayerDialog::accept()
@@ -324,9 +353,7 @@ void QgsNewVectorLayerDialog::accept()
 
     if ( !currentFound )
     {
-      if ( QMessageBox::question( this, windowTitle(),
-                                  tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ),
-                                  QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      if ( QMessageBox::question( this, windowTitle(), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
       {
         return;
       }
@@ -335,8 +362,7 @@ void QgsNewVectorLayerDialog::accept()
 
   updateExtension();
 
-  if ( QFile::exists( filename() ) && QMessageBox::warning( this, tr( "New ShapeFile Layer" ), tr( "The layer already exists. Are you sure you want to overwrite the existing file?" ),
-       QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Yes )
+  if ( QFile::exists( filename() ) && QMessageBox::warning( this, tr( "New ShapeFile Layer" ), tr( "The layer already exists. Are you sure you want to overwrite the existing file?" ), QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Yes )
     return;
 
   QDialog::accept();
@@ -361,7 +387,7 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   const QString enc = geomDialog.selectedFileEncoding();
   QgsDebugMsgLevel( QStringLiteral( "New file format will be: %1" ).arg( fileformat ), 2 );
 
-  QList< QPair<QString, QString> > attributes;
+  QList<QPair<QString, QString>> attributes;
   geomDialog.attributes( attributes );
 
   QgsSettings settings;

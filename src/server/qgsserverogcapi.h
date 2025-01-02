@@ -47,30 +47,28 @@ class QgsServerOgcApiHandler;
  */
 class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 {
-
     Q_GADGET
 
   public:
-
     // Note: non a scoped enum or qHash fails
     //! Rel link types
     enum Rel
     {
       // The following registered link relation types are used
-      alternate, //! Refers to a substitute for this context.
-      describedBy, //! Refers to a resource providing information about the link’s context.
-      collection, //! The target IRI points to a resource that is a member of the collection represented by the context IRI.
-      item, //! The target IRI points to a resource that is a member of the collection represented by the context IRI.
-      self, //! Conveys an identifier for the link’s context.
-      service_desc, //! Identifies service description for the context that is primarily intended for consumption by machines.
-      service_doc, //! Identifies service documentation for the context that is primarily intended for human consumption.
-      prev, //! Indicates that the link’s context is a part of a series, and that the previous in the series is the link targe
-      next, //! Indicates that the link’s context is a part of a series, and that the next in the series is the link target.
-      license, //! Refers to a license associated with this context.
+      alternate,    //!< Refers to a substitute for this context.
+      describedBy,  //!< Refers to a resource providing information about the link’s context.
+      collection,   //!< The target IRI points to a resource that is a member of the collection represented by the context IRI.
+      item,         //!< The target IRI points to a resource that is a member of the collection represented by the context IRI.
+      self,         //!< Conveys an identifier for the link’s context.
+      service_desc, //!< Identifies service description for the context that is primarily intended for consumption by machines.
+      service_doc,  //!< Identifies service documentation for the context that is primarily intended for human consumption.
+      prev,         //!< Indicates that the link’s context is a part of a series, and that the previous in the series is the link targe
+      next,         //!< Indicates that the link’s context is a part of a series, and that the next in the series is the link target.
+      license,      //!< Refers to a license associated with this context.
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
-      items, //! Refers to a resource that is comprised of members of the collection represented by the link’s context.
-      conformance, //! The target IRI points to a resource which represents the collection resource for the context IRI.
-      data //! The target IRI points to resource data
+      items,       //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
+      conformance, //!< The target IRI points to a resource which represents the collection resource for the context IRI.
+      data         //!< The target IRI points to resource data
     };
     Q_ENUM( Rel )
 
@@ -79,7 +77,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     enum ContentType
     {
       GEOJSON,
-      OPENAPI3, //! "application/openapi+json;version=3.0"
+      OPENAPI3, //!< "application/openapi+json;version=3.0"
       JSON,
       HTML,
       XML
@@ -94,17 +92,13 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
      * \param description API description
      * \param version API version
      */
-    QgsServerOgcApi( QgsServerInterface *serverIface,
-                     const QString &rootPath,
-                     const QString &name,
-                     const QString &description = QString(),
-                     const QString &version = QString() );
+    QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() );
 
     // QgsServerApi interface
     const QString name() const override { return mName; }
     const QString description() const override { return mDescription; }
     const QString version() const override { return mVersion; }
-    const QString rootPath() const override { return mRootPath ; }
+    const QString rootPath() const override { return mRootPath; }
 
     ~QgsServerOgcApi() override;
 
@@ -123,7 +117,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
      * Returns contentType specializations (e.g. JSON => [GEOJSON, OPENAPI3], XML => [GML])
      * \note not available in Python bindings
      */
-    static const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType> > contentTypeAliases() SIP_SKIP;
+    static const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> contentTypeAliases() SIP_SKIP;
 
     // Utilities
 #ifndef SIP_RUN
@@ -172,7 +166,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
 
     /**
      * Returns the Content-Type value corresponding to \a extension.
-     * \deprecated Use contentTypeFromExtension()
+     * \deprecated QGIS 3.40. Use contentTypeFromExtension().
      */
     Q_DECL_DEPRECATED static QgsServerOgcApi::ContentType contenTypeFromExtension( const std::string &extension ) SIP_DEPRECATED { return contentTypeFromExtension( extension ); } // spellok
 
@@ -190,10 +184,9 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     /**
      * Returns registered handlers
      */
-    const std::vector<std::shared_ptr<QgsServerOgcApiHandler> > handlers() const SIP_SKIP;
+    const std::vector<std::shared_ptr<QgsServerOgcApiHandler>> handlers() const SIP_SKIP;
 
   private:
-
     QString mRootPath;
     QString mName;
     QString mDescription;
@@ -211,7 +204,6 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
      * is a JSON-based format (OPENAPI3 or GEOJSON).
      */
     static QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> sContentTypeAliases;
-
 };
 
 #endif // QGSSERVEROGCAPI_H

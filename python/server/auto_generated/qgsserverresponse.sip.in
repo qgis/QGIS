@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverresponse.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,12 +19,7 @@ class QgsServerResponse
 #include "qgsserverresponse.h"
 %End
   public:
-
     QgsServerResponse();
-%Docstring
-constructor
-%End
-
     virtual ~QgsServerResponse();
 
     virtual void setHeader( const QString &key, const QString &value ) = 0;
@@ -68,7 +63,7 @@ Set the http status code
 Returns the http status code
 %End
 
-    virtual void sendError( int code,  const QString &message ) = 0;
+    virtual void sendError( int code, const QString &message ) = 0;
 %Docstring
 Send error
 This method delegates error handling at the server level. This is different
@@ -159,5 +154,5 @@ Returns the socket feedback if any
  *                                                                      *
  * src/server/qgsserverresponse.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

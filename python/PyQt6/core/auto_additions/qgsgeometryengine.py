@@ -7,3 +7,7 @@ QgsGeometryEngine.NodedGeometryError = QgsGeometryEngine.EngineOperationResult.N
 QgsGeometryEngine.InvalidBaseGeometry = QgsGeometryEngine.EngineOperationResult.InvalidBaseGeometry
 QgsGeometryEngine.InvalidInput = QgsGeometryEngine.EngineOperationResult.InvalidInput
 QgsGeometryEngine.SplitCannotSplitPoint = QgsGeometryEngine.EngineOperationResult.SplitCannotSplitPoint
+try:
+    QgsGeometryEngine.__group__ = ['geometry']
+except (NameError, AttributeError):
+    pass

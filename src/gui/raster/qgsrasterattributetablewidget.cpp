@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetablewidget.h"
+#include "moc_qgsrasterattributetablewidget.cpp"
 #include "qgsrasterattributetable.h"
 #include "qgsrasterlayer.h"
 #include "qgsapplication.h"
@@ -41,8 +42,7 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( "/mActionEditTable.svg" ), tr( "&Edit Attribute Table" ), editToolBar );
   mActionToggleEditing->setCheckable( true );
-  connect( mActionToggleEditing, &QAction::triggered, this, [ = ]( bool editable )
-  {
+  connect( mActionToggleEditing, &QAction::triggered, this, [=]( bool editable ) {
     setEditable( editable );
   } );
 
@@ -97,7 +97,6 @@ bool QgsRasterAttributeTableWidget::isDirty() const
 
 void QgsRasterAttributeTableWidget::init( int bandNumber )
 {
-
   disconnect( mRasterBandsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterAttributeTableWidget::bandChanged );
   mAttributeTableBuffer = nullptr;
   mCurrentBand = 0;
@@ -123,7 +122,7 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
       {
         mCurrentBand = bandNumber;
       }
-      else if ( ! availableRats.isEmpty() )
+      else if ( !availableRats.isEmpty() )
       {
         mCurrentBand = availableRats.first();
       }
@@ -138,18 +137,15 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
     mModel.reset( new QgsRasterAttributeTableModel( mAttributeTableBuffer.get() ) );
     mModel->setEditable( mEditable );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [ = ]( const QModelIndex &, const QModelIndex &, const QVector<int> & )
-    {
+    connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [=]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) {
       updateButtons();
     } );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsInserted, this, [ = ]( const QModelIndex &, int, int )
-    {
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsInserted, this, [=]( const QModelIndex &, int, int ) {
       setDelegates();
     } );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsRemoved, this, [ = ]( const QModelIndex &, int, int )
-    {
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsRemoved, this, [=]( const QModelIndex &, int, int ) {
       setDelegates();
     } );
 
@@ -170,7 +166,7 @@ void QgsRasterAttributeTableWidget::updateButtons()
 {
   const bool enableEditingButtons( static_cast<bool>( mAttributeTableBuffer ) && mEditable && mRATView->selectionModel()->currentIndex().isValid() );
   mActionToggleEditing->setChecked( mEditable );
-  mActionToggleEditing->setEnabled( enableEditingButtons );
+  mActionToggleEditing->setEnabled( mAttributeTableBuffer && mRasterLayer );
   mActionAddColumn->setEnabled( mEditable );
   mActionRemoveColumn->setEnabled( enableEditingButtons );
   mActionAddRow->setEnabled( enableEditingButtons );
@@ -193,12 +189,12 @@ void QgsRasterAttributeTableWidget::setMessageBar( QgsMessageBar *bar )
 
 bool QgsRasterAttributeTableWidget::setEditable( bool editable, bool allowCancel )
 {
-  const bool isDirty { mAttributeTableBuffer &&mAttributeTableBuffer->isDirty() &&mCurrentBand > 0 && mRasterLayer->attributeTable( mCurrentBand ) };
+  const bool isDirty { mAttributeTableBuffer && mAttributeTableBuffer->isDirty() && mCurrentBand > 0 && mRasterLayer->attributeTable( mCurrentBand ) };
   bool retVal { true };
   // Switch to read-only
-  if ( ! editable && isDirty )
+  if ( !editable && isDirty )
   {
-    QMessageBox::StandardButtons buttons { QMessageBox::Button::Yes |  QMessageBox::Button::No };
+    QMessageBox::StandardButtons buttons { QMessageBox::Button::Yes | QMessageBox::Button::No };
 
     if ( allowCancel )
     {
@@ -246,7 +242,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
   if ( mRasterLayer && mAttributeTableBuffer && mAttributeTableBuffer->isDirty() && mCurrentBand > 0 )
   {
     QgsRasterAttributeTable *attributeTable { mRasterLayer->dataProvider()->attributeTable( mCurrentBand ) };
-    if ( ! attributeTable )
+    if ( !attributeTable )
     {
       QgsDebugError( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
     }
@@ -255,12 +251,12 @@ void QgsRasterAttributeTableWidget::saveChanges()
       *attributeTable = *mAttributeTableBuffer;
       QString errorMessage;
       QString newPath { attributeTable->filePath() };
-      const bool nativeRatSupported = mRasterLayer->dataProvider()->providerCapabilities().testFlag( QgsRasterDataProvider::ProviderCapability::NativeRasterAttributeTable );
+      const bool nativeRatSupported = mRasterLayer->dataProvider()->providerCapabilities().testFlag( Qgis::RasterProviderCapability::NativeRasterAttributeTable );
       bool saveToNative { false };
 
-      if ( newPath.isEmpty() && ! nativeRatSupported )
+      if ( newPath.isEmpty() && !nativeRatSupported )
       {
-        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri( ) ) ? mRasterLayer->dataProvider()->dataSourceUri( ) + ".vat.dbf" : QString(), QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) ? mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" : QString(), QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
         if ( newPath.isEmpty() )
         {
           // Aborted by user
@@ -275,13 +271,13 @@ void QgsRasterAttributeTableWidget::saveChanges()
       bool writeSuccess { false };
 
       // Save to file
-      if ( ! saveToNative && ! newPath.isEmpty() )
+      if ( !saveToNative && !newPath.isEmpty() )
       {
         writeSuccess = attributeTable->writeToFile( attributeTable->filePath(), &errorMessage );
       }
       else if ( saveToNative )
       {
-        writeSuccess = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage );  //#spellok
+        writeSuccess = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage ); //#spellok
       }
 
       if ( writeSuccess )
@@ -299,7 +295,6 @@ void QgsRasterAttributeTableWidget::saveChanges()
       {
         return;
       }
-
     }
   }
 
@@ -308,14 +303,13 @@ void QgsRasterAttributeTableWidget::saveChanges()
 
 void QgsRasterAttributeTableWidget::classify()
 {
-
-  if ( ! mAttributeTableBuffer )
+  if ( !mAttributeTableBuffer )
   {
     notify( tr( "Classification Error" ), tr( "The raster attribute table is not set." ), Qgis::MessageLevel::Critical );
     return;
   }
 
-  if ( ! mRasterLayer )
+  if ( !mRasterLayer )
   {
     notify( tr( "Classification Error" ), tr( "The raster layer is not set." ), Qgis::MessageLevel::Critical );
     return;
@@ -324,18 +318,17 @@ void QgsRasterAttributeTableWidget::classify()
   QString confirmMessage;
   QString errorMessage;
 
-  if ( ! mAttributeTableBuffer->isValid( &errorMessage ) )
+  if ( !mAttributeTableBuffer->isValid( &errorMessage ) )
   {
     confirmMessage = tr( "The attribute table does not seem to be valid and it may produce an unusable symbology, validation errors:<br>%1<br>" ).arg( errorMessage );
   }
 
   if ( QMessageBox::question( nullptr, tr( "Apply Style From Attribute Table" ), confirmMessage.append( tr( "The existing symbology for the raster will be replaced by a new symbology from the attribute table and any unsaved changes to the current symbology will be lost, do you want to proceed?" ) ) ) == QMessageBox::Yes )
   {
-
     if ( QgsRasterRenderer *renderer = mAttributeTableBuffer->createRenderer( mRasterLayer->dataProvider(), mCurrentBand, mClassifyComboBox->currentData().toInt() ) )
     {
       mRasterLayer->setRenderer( renderer );
-      mRasterLayer->triggerRepaint( );
+      mRasterLayer->triggerRepaint();
       emit rendererChanged();
     }
     else
@@ -355,23 +348,23 @@ void QgsRasterAttributeTableWidget::addColumn()
       QString errorMessage;
       if ( dlg.isColor() )
       {
-        if ( ! mModel->insertColor( dlg.position(), &errorMessage ) )
+        if ( !mModel->insertColor( dlg.position(), &errorMessage ) )
         {
-          notify( tr( "Error adding color column" ), errorMessage,  Qgis::MessageLevel::Critical );
+          notify( tr( "Error adding color column" ), errorMessage, Qgis::MessageLevel::Critical );
         }
       }
       else if ( dlg.isRamp() )
       {
-        if ( ! mModel->insertRamp( dlg.position(), &errorMessage ) )
+        if ( !mModel->insertRamp( dlg.position(), &errorMessage ) )
         {
-          notify( tr( "Error adding color ramp column" ), errorMessage,  Qgis::MessageLevel::Critical );
+          notify( tr( "Error adding color ramp column" ), errorMessage, Qgis::MessageLevel::Critical );
         }
       }
       else
       {
-        if ( ! mModel->insertField( dlg.position(), dlg.name(), dlg.usage(), dlg.type(), &errorMessage ) )
+        if ( !mModel->insertField( dlg.position(), dlg.name(), dlg.usage(), dlg.type(), &errorMessage ) )
         {
-          notify( tr( "Error adding new column" ), errorMessage,  Qgis::MessageLevel::Critical );
+          notify( tr( "Error adding new column" ), errorMessage, Qgis::MessageLevel::Critical );
         }
       }
     }
@@ -387,9 +380,9 @@ void QgsRasterAttributeTableWidget::removeColumn()
     if ( QMessageBox::question( nullptr, tr( "Remove Column" ), tr( "Do you want to remove the selected column? This action cannot be undone." ) ) == QMessageBox::Yes )
     {
       QString errorMessage;
-      if ( ! mModel->removeField( currentIndex.column(), &errorMessage ) )
+      if ( !mModel->removeField( currentIndex.column(), &errorMessage ) )
       {
-        notify( tr( "Error removing column" ), errorMessage,  Qgis::MessageLevel::Critical );
+        notify( tr( "Error removing column" ), errorMessage, Qgis::MessageLevel::Critical );
       }
     }
   }
@@ -427,14 +420,14 @@ void QgsRasterAttributeTableWidget::addRow()
     QList<QgsRasterAttributeTable::Field> fields { mAttributeTableBuffer->fields() };
     for ( const QgsRasterAttributeTable::Field &field : std::as_const( fields ) )
     {
-      rowData.push_back( QVariant( field.type ) );
+      rowData.push_back( QgsVariantUtils::createNullVariant( field.type ) );
     }
 
     result = mModel->insertRow( position, rowData, &errorMessage );
 
-    if ( ! result )
+    if ( !result )
     {
-      notify( tr( "Error adding row" ), errorMessage,  Qgis::MessageLevel::Critical );
+      notify( tr( "Error adding row" ), errorMessage, Qgis::MessageLevel::Critical );
     }
     else
     {
@@ -450,9 +443,9 @@ void QgsRasterAttributeTableWidget::removeRow()
     if ( QMessageBox::question( nullptr, tr( "Remove Row" ), tr( "Do you want to remove the selected row? This action cannot be undone." ) ) == QMessageBox::Yes )
     {
       QString errorMessage;
-      if ( ! mModel->removeRow( mProxyModel->mapToSource( mRATView->selectionModel()->currentIndex() ).row(), &errorMessage ) )
+      if ( !mModel->removeRow( mProxyModel->mapToSource( mRATView->selectionModel()->currentIndex() ).row(), &errorMessage ) )
       {
-        notify( tr( "Error removing row" ), errorMessage,  Qgis::MessageLevel::Critical );
+        notify( tr( "Error removing row" ), errorMessage, Qgis::MessageLevel::Critical );
       }
     }
   }
@@ -468,7 +461,7 @@ void QgsRasterAttributeTableWidget::bandChanged( const int index )
     {
       setEditable( false );
     }
-    init( itemData.toInt( ) );
+    init( itemData.toInt() );
   }
 }
 
@@ -523,7 +516,7 @@ void QgsRasterAttributeTableWidget::setDelegates()
       }
 
       // Set delegates for doubles
-      if ( ( ! f.isColor() && ! f.isRamp() ) && f.type == QVariant::Type::Double )
+      if ( ( !f.isColor() && !f.isRamp() ) && f.type == QMetaType::Type::Double )
       {
         mRATView->setItemDelegateForColumn( fieldIdx, new LocalizedDoubleDelegate( mRATView ) );
       }
@@ -535,22 +528,22 @@ void QgsRasterAttributeTableWidget::setDelegates()
     {
       if ( mAttributeTableBuffer->usages().contains( Qgis::RasterAttributeTableFieldUsage::Alpha ) )
       {
-        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorAlphaDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count(), new ColorAlphaDelegate( mRATView ) );
       }
       else
       {
-        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count(), new ColorDelegate( mRATView ) );
       }
     }
     else if ( mAttributeTableBuffer->hasRamp() )
     {
       if ( mAttributeTableBuffer->usages().contains( Qgis::RasterAttributeTableFieldUsage::AlphaMin ) )
       {
-        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorRampAlphaDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count(), new ColorRampAlphaDelegate( mRATView ) );
       }
       else
       {
-        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorRampDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count(), new ColorRampDelegate( mRATView ) );
       }
     }
   }
@@ -572,7 +565,7 @@ void ColorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) c
 
 void ColorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  const QColor color { static_cast<QgsColorButton *>( editor )->color( ) };
+  const QColor color { static_cast<QgsColorButton *>( editor )->color() };
   model->setData( index, color );
 }
 
@@ -585,7 +578,7 @@ QWidget *ColorAlphaDelegate::createEditor( QWidget *parent, const QStyleOptionVi
 
 QWidget *ColorRampDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
-  QgsGradientColorRampDialog *editor = new QgsGradientColorRampDialog{ QgsGradientColorRamp(), parent };
+  QgsGradientColorRampDialog *editor = new QgsGradientColorRampDialog { QgsGradientColorRamp(), parent };
   return editor;
 }
 
@@ -609,7 +602,7 @@ void ColorRampDelegate::paint( QPainter *painter, const QStyleOptionViewItem &op
   gradient.setColorAt( 1, ramp.color2() );
   const QRect r = option.rect.adjusted( 1, 1, -1, -1 );
   const QgsScopedQPainterState painterState( painter );
-  painter->fillRect( r, QBrush{ gradient } );
+  painter->fillRect( r, QBrush { gradient } );
 }
 
 QWidget *ColorRampAlphaDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -633,8 +626,10 @@ QString LocalizedDoubleDelegate::displayText( const QVariant &value, const QLoca
   }
   else
   {
-    if ( dotPosition < 0 ) precision = 0;
-    else precision = s.length() - dotPosition - 1;
+    if ( dotPosition < 0 )
+      precision = 0;
+    else
+      precision = s.length() - dotPosition - 1;
 
     if ( -1 < value.toDouble() && value.toDouble() < 1 )
     {
@@ -645,8 +640,7 @@ QString LocalizedDoubleDelegate::displayText( const QVariant &value, const QLoca
       return QLocale().toString( value.toDouble(), 'f', precision );
     }
   }
-  return QLocale().toString( value.toDouble( ), 'f' );
+  return QLocale().toString( value.toDouble(), 'f' );
 }
 
 ///@endcond private
-

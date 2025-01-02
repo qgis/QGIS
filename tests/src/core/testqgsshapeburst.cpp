@@ -44,11 +44,12 @@ class TestQgsShapeburst : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsShapeburst() : QgsTest( QStringLiteral( "Shapeburst Renderer Tests" ) ) {}
+    TestQgsShapeburst()
+      : QgsTest( QStringLiteral( "Shapeburst Renderer Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void shapeburstSymbol();
     void shapeburstSymbolColors();
@@ -60,7 +61,7 @@ class TestQgsShapeburst : public QgsTest
     void shapeburstSymbolFromQml();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
@@ -89,16 +90,16 @@ void TestQgsShapeburst::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer *>() << mpPolysLayer
+  );
 
   //setup shapeburst fill
   mShapeburstFill = new QgsShapeburstFillSymbolLayer();
@@ -112,7 +113,6 @@ void TestQgsShapeburst::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-
 }
 void TestQgsShapeburst::cleanupTestCase()
 {
@@ -139,7 +139,6 @@ void TestQgsShapeburst::shapeburstSymbolColors()
 
 void TestQgsShapeburst::shapeburstSymbolRamp()
 {
-
   QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( 255, 255, 255, 0 ) ) );
@@ -188,7 +187,7 @@ void TestQgsShapeburst::shapeburstSymbolFromQml()
 {
   QVERIFY( setQml( "shapeburst" ) );
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
   QVERIFY( imageCheck( "shapeburst_from_qml" ) );
 }

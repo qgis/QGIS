@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsorganizetablecolumnsdialog.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Dialog for organising (hiding and reordering) columns in the attributes table.
 #include "qgsorganizetablecolumnsdialog.h"
 %End
   public:
-
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::Window );
 %Docstring
 Constructor
@@ -73,5 +72,5 @@ Toggle the check state of selected fields to hide or show them in the attribute 
  *                                                                      *
  * src/gui/attributetable/qgsorganizetablecolumnsdialog.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

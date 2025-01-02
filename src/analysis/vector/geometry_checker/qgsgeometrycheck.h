@@ -93,7 +93,6 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     Q_GADGET
 
   public:
-
     /**
      * A list of layers and feature ids for each of these layers.
      * In C++, the member `ids` can be accessed directly.
@@ -103,21 +102,21 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      */
     struct ANALYSIS_EXPORT LayerFeatureIds
     {
-      LayerFeatureIds() = default;
-      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn ) SIP_SKIP;
+        LayerFeatureIds() = default;
+        LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn ) SIP_SKIP;
 
-      QMap<QString, QgsFeatureIds> ids SIP_SKIP;
+        QMap<QString, QgsFeatureIds> ids SIP_SKIP;
 
 #ifndef SIP_RUN
-      QMap<QString, QgsFeatureIds> toMap() const
-      {
-        return ids;
-      }
+        QMap<QString, QgsFeatureIds> toMap() const
+        {
+          return ids;
+        }
 
-      bool isEmpty() const
-      {
-        return ids.isEmpty();
-      }
+        bool isEmpty() const
+        {
+          return ids.isEmpty();
+        }
 #endif
     };
 
@@ -175,49 +174,49 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      */
     struct Change
     {
-      Change() = default;
+        Change() = default;
 
-      /**
+        /**
        * Create a new Change
        */
-      Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
-        : what( _what )
-        , type( _type )
-        , vidx( _vidx )
-      {}
+        Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
+          : what( _what )
+          , type( _type )
+          , vidx( _vidx )
+        {}
 
-      /**
+        /**
        * What level this change affects.
        */
-      QgsGeometryCheck::ChangeWhat what = QgsGeometryCheck::ChangeWhat::ChangeFeature;
+        QgsGeometryCheck::ChangeWhat what = QgsGeometryCheck::ChangeWhat::ChangeFeature;
 
-      /**
+        /**
        * What action this change performs.
        */
-      QgsGeometryCheck::ChangeType type = QgsGeometryCheck::ChangeType::ChangeAdded;
+        QgsGeometryCheck::ChangeType type = QgsGeometryCheck::ChangeType::ChangeAdded;
 
-      /**
+        /**
        * The index of the part / ring / vertex, depending on \see what.
        */
-      QgsVertexId vidx;
+        QgsVertexId vidx;
 
-      // TODO c++20 - replace with = default
-      bool operator==( const QgsGeometryCheck::Change &other ) const
-      {
-        return what == other.what && type == other.type && vidx == other.vidx;
-      }
+        // TODO c++20 - replace with = default
+        bool operator==( const QgsGeometryCheck::Change &other ) const
+        {
+          return what == other.what && type == other.type && vidx == other.vidx;
+        }
 
-      bool operator!=( const QgsGeometryCheck::Change &other ) const
-      {
-        return !( *this == other );
-      }
+        bool operator!=( const QgsGeometryCheck::Change &other ) const
+        {
+          return !( *this == other );
+        }
     };
 
     /**
      * A collection of changes.
      * Grouped by layer id and feature id.
      */
-    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
+    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>>> Changes;
 
     /**
      * Create a new geometry check.
@@ -238,7 +237,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * Returns the configuration value with the \a name, saved in the QGIS settings for
      * this geometry check. If no configuration could be found, \a defaultValue is returned.
      */
-    template <class T>
+    template<class T>
     T configurationValue( const QString &name, const QVariant &defaultValue = QVariant() )
     {
       return mConfiguration.value( name, QgsSettings().value( "/geometry_checker/" + id() + "/" + name, defaultValue ) ).value<T>();
@@ -295,7 +294,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * Returns a list of descriptions for available resolutions for errors.
      * The index will be passed as ``method`` to \see fixError().
      *
-     * \deprecated since QGIS 3.12, use availableResolutionMethods() instead
+     * \deprecated QGIS 3.12. Use availableResolutionMethods() instead.
      * \since QGIS 3.4
      */
     Q_DECL_DEPRECATED virtual QStringList resolutionMethods() const SIP_DEPRECATED;
@@ -329,7 +328,6 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
-
     /**
      * Returns all layers and feature ids.
      *

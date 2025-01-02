@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgswfssubsetstringeditor.h"
+#include "moc_qgswfssubsetstringeditor.cpp"
 #include "qgswfsprovider.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
@@ -43,13 +44,14 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   const bool bSupportJoins = caps.featureTypes.size() > 1 && caps.supportsJoins;
   d->setSupportMultipleTables( bSupportJoins, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 
-  QMap< QString, QString > mapTypenameToTitle;
+  QMap<QString, QString> mapTypenameToTitle;
   for ( const QgsWfsCapabilities::FeatureType &f : std::as_const( caps.featureTypes ) )
     mapTypenameToTitle[f.name] = f.title;
 
-  QList< QgsSQLComposerDialog::PairNameTitle > tablenames;
+  QList<QgsSQLComposerDialog::PairNameTitle> tablenames;
   tablenames << QgsSQLComposerDialog::PairNameTitle(
-               QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ), mapTypenameToTitle[typeName] );
+    QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ), mapTypenameToTitle[typeName]
+  );
   if ( bSupportJoins )
   {
     for ( const auto &featureType : caps.featureTypes )
@@ -63,13 +65,14 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
           displayedIterTypename = unprefixedIterTypename;
 
         tablenames << QgsSQLComposerDialog::PairNameTitle(
-                     QgsSQLStatement::quotedIdentifierIfNeeded( displayedIterTypename ), mapTypenameToTitle[iterTypename] );
+          QgsSQLStatement::quotedIdentifierIfNeeded( displayedIterTypename ), mapTypenameToTitle[iterTypename]
+        );
       }
     }
   }
   d->addTableNames( tablenames );
 
-  QList< QgsSQLComposerDialog::Function> functionList;
+  QList<QgsSQLComposerDialog::Function> functionList;
   for ( const QgsWfsCapabilities::Function &f : std::as_const( caps.functionList ) )
   {
     QgsSQLComposerDialog::Function dialogF;
@@ -85,7 +88,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   }
   d->addFunctions( functionList );
 
-  QList< QgsSQLComposerDialog::Function> spatialPredicateList;
+  QList<QgsSQLComposerDialog::Function> spatialPredicateList;
   for ( const QgsWfsCapabilities::Function &f : std::as_const( caps.spatialPredicatesList ) )
   {
     QgsSQLComposerDialog::Function dialogF;
@@ -101,7 +104,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   }
   d->addSpatialPredicates( spatialPredicateList );
 
-  QList< QgsSQLComposerDialog::PairNameType> fieldList;
+  QList<QgsSQLComposerDialog::PairNameType> fieldList;
   QString fieldNamePrefix;
   if ( bSupportJoins )
   {
@@ -125,10 +128,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   return d;
 }
 
-QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject *parent,
-    const QgsWFSDataSourceURI &uri,
-    const QString &allSql,
-    const QgsWfsCapabilities::Capabilities &caps )
+QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject *parent, const QgsWFSDataSourceURI &uri, const QString &allSql, const QgsWfsCapabilities::Capabilities &caps )
   : QObject( parent )
   , mURI( uri )
   , mAllSql( allSql )
@@ -157,9 +157,7 @@ bool QgsWFSValidatorCallback::isValid( const QString &sqlStr, QString &errorReas
   return true;
 }
 
-QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
-    const QgsWFSDataSourceURI &uri,
-    const QgsWfsCapabilities::Capabilities &caps )
+QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog, const QgsWFSDataSourceURI &uri, const QgsWfsCapabilities::Capabilities &caps )
   : QObject( dialog )
   , mDialog( dialog )
   , mURI( uri )
@@ -183,7 +181,7 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
     return;
   }
 
-  QList< QgsSQLComposerDialog::PairNameType> fieldList;
+  QList<QgsSQLComposerDialog::PairNameType> fieldList;
   QString fieldNamePrefix( QgsSQLStatement::quotedIdentifierIfNeeded( typeName ) + "." );
   const auto constToList = p.fields().toList();
   for ( const QgsField &field : constToList )

@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '11/04/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "11/04/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 import sys
 
@@ -95,9 +96,34 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 13.0)
         self.assertEqual(box.zMaximum(), 5.0)
 
+        # constructor using two corners
+        box = QgsBox3d(QgsVector3D(3, 4, 5), QgsVector3D(8, 9, 10))
+        self.assertEqual(box.xMinimum(), 3.0)
+        self.assertEqual(box.yMinimum(), 4.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 8.0)
+        self.assertEqual(box.yMaximum(), 9.0)
+        self.assertEqual(box.zMaximum(), 10.0)
+
+        box = QgsBox3d(QgsVector3D(3, 4, 5), QgsVector3D(1, 2, 6))
+        self.assertEqual(box.xMinimum(), 1.0)
+        self.assertEqual(box.yMinimum(), 2.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 3.0)
+        self.assertEqual(box.yMaximum(), 4.0)
+        self.assertEqual(box.zMaximum(), 6.0)
+
+        box = QgsBox3d(QgsVector3D(3, 4, 5), QgsVector3D(1, 2, 6), False)
+        self.assertEqual(box.xMinimum(), 3.0)
+        self.assertEqual(box.yMinimum(), 4.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 1.0)
+        self.assertEqual(box.yMaximum(), 2.0)
+        self.assertEqual(box.zMaximum(), 6.0)
+
     def test_repr(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
-        self.assertEqual(str(box), '<QgsBox3D(5, 6, 7, 10, 11, 12)>')
+        self.assertEqual(str(box), "<QgsBox3D(5, 6, 7, 10, 11, 12)>")
 
     def testSetters(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
@@ -142,7 +168,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 11.0)
         self.assertEqual(box.zMaximum(), 12.0)
 
-        box2 = QgsBox3d(float('NaN'), 5, 12, 9, float('NaN'), float('NaN'))
+        box2 = QgsBox3d(float("NaN"), 5, 12, 9, float("NaN"), float("NaN"))
         self.assertNotEqual(box2.xMinimum(), box.xMinimum())
         self.assertEqual(box2.yMinimum(), 5.0)
         self.assertEqual(box2.zMinimum(), 12.0)
@@ -185,7 +211,9 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertTrue(box.intersects(QgsBox3d(7.0, 8.0, 9.0, 10.0, 11.0, 12.0)))
         self.assertTrue(box.intersects(QgsBox3d(0.0, 1.0, 2.0, 100.0, 111.0, 112.0)))
         self.assertTrue(box.intersects(QgsBox3d(1.0, 2.0, 3.0, 6.0, 7.0, 8.0)))
-        self.assertFalse(box.intersects(QgsBox3d(15.0, 16.0, 17.0, 110.0, 112.0, 113.0)))
+        self.assertFalse(
+            box.intersects(QgsBox3d(15.0, 16.0, 17.0, 110.0, 112.0, 113.0))
+        )
         self.assertFalse(box.intersects(QgsBox3d(5.0, 6.0, 17.0, 11.0, 13.0, 113.0)))
         self.assertFalse(box.intersects(QgsBox3d(5.0, 16.0, 7.0, 11.0, 23.0, 15.0)))
         self.assertFalse(box.intersects(QgsBox3d(15.0, 6.0, 7.0, 21.0, 13.0, 15.0)))
@@ -277,7 +305,14 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box9.yMaximum(), 12.0)
         self.assertEqual(box9.zMaximum(), 13.0)
 
-        box10 = QgsBox3d(float('nan'), float('nan'), float('nan'), float('nan'), float('nan'), float('nan'))
+        box10 = QgsBox3d(
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+        )
         box11 = QgsBox3d(1, 2, 3, 4, 5, 6)
         box10.combineWith(box11)
         self.assertEqual(box11.xMinimum(), 1)
@@ -287,7 +322,14 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box11.yMaximum(), 5)
         self.assertEqual(box11.zMaximum(), 6)
 
-        box12 = QgsBox3d(float('nan'), float('nan'), float('nan'), float('nan'), float('nan'), float('nan'))
+        box12 = QgsBox3d(
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+            float("nan"),
+        )
         box12.combineWith(7, 8, 9)
         self.assertEqual(box12.xMinimum(), 7)
         self.assertEqual(box12.yMinimum(), 8)
@@ -296,7 +338,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box12.yMaximum(), 8)
         self.assertEqual(box12.zMaximum(), 9)
 
-        box13 = QgsBox3d(float('nan'), -5, float('nan'), 14, float('nan'), float('nan'))
+        box13 = QgsBox3d(float("nan"), -5, float("nan"), 14, float("nan"), float("nan"))
         box14 = QgsBox3d(1, 2, 3, 4, 5, 6)
         box13.combineWith(box14)
         self.assertEqual(box13.xMinimum(), 1)
@@ -306,7 +348,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box13.yMaximum(), 5)
         self.assertEqual(box13.zMaximum(), 6)
 
-        box15 = QgsBox3d(-2, float('nan'), float('nan'), float('nan'), float('nan'), 23)
+        box15 = QgsBox3d(-2, float("nan"), float("nan"), float("nan"), float("nan"), 23)
         box15.combineWith(5, 6, 7)
         self.assertEqual(box15.xMinimum(), -2)
         self.assertEqual(box15.yMinimum(), 6)
@@ -314,6 +356,10 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box15.xMaximum(), 5)
         self.assertEqual(box15.yMaximum(), 6)
         self.assertEqual(box15.zMaximum(), 23)
+
+    def test_area(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box.area(), 42.0)
 
     def testVolume(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
@@ -335,7 +381,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertFalse(box.is2d())
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, -7.0, False)
         self.assertTrue(box.is2d())
-        box = QgsBox3d(5.0, 6.0, float('nan'), 11.0, 13.0, float('nan'))
+        box = QgsBox3d(5.0, 6.0, float("nan"), 11.0, 13.0, float("nan"))
         self.assertTrue(box.is2d())
 
     def testIs3d(self):
@@ -387,6 +433,16 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box3.yMinimum(), -7.0)
         self.assertEqual(box3.zMinimum(), -3.0)
 
+    def testGrow(self):
+        box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box.grow(2.0)
+        self.assertEqual(box.xMinimum(), 3.0)
+        self.assertEqual(box.yMinimum(), 4.0)
+        self.assertEqual(box.zMinimum(), 5.0)
+        self.assertEqual(box.xMaximum(), 13.0)
+        self.assertEqual(box.yMaximum(), 15.0)
+        self.assertEqual(box.zMaximum(), 17.0)
+
     def testIsNull(self):
         box1 = QgsBox3d()
         self.assertTrue(box1.isNull())
@@ -401,13 +457,13 @@ class TestQgsBox3d(unittest.TestCase):
         box4 = QgsBox3d(5, 6, 7, 12, 13, 14)
         self.assertFalse(box4.isNull())
 
-        box5 = QgsBox3d(5, 6, float('nan'), 12, 13, float('nan'))
+        box5 = QgsBox3d(5, 6, float("nan"), 12, 13, float("nan"))
         self.assertFalse(box5.isNull())
 
-        box6 = QgsBox3d(0, 0, float('nan'), 0, 0, float('nan'))
+        box6 = QgsBox3d(0, 0, float("nan"), 0, 0, float("nan"))
         self.assertFalse(box6.isNull())
 
-        box7 = QgsBox3d(0, 0, float('nan'), 0, 0, float('nan'))
+        box7 = QgsBox3d(0, 0, float("nan"), 0, 0, float("nan"))
         self.assertFalse(box7.isNull())
 
         box8 = QgsBox3d(0, 6, 8, 0, 13, 14)
@@ -420,8 +476,14 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertFalse(box10.isNull())
 
         box11 = QgsBox3d(
-            sys.float_info.max, sys.float_info.max, sys.float_info.max,
-            -sys.float_info.max, -sys.float_info.max, -sys.float_info.max, False)
+            sys.float_info.max,
+            sys.float_info.max,
+            sys.float_info.max,
+            -sys.float_info.max,
+            -sys.float_info.max,
+            -sys.float_info.max,
+            False,
+        )
         self.assertTrue(box11.isNull())
 
     def testIsEmpty(self):
@@ -466,13 +528,14 @@ class TestQgsBox3d(unittest.TestCase):
         box4 = QgsBox3d(1, 2, 3, 4, 5, 6)
         self.assertEqual(
             box4.toString(),
-            ("1.0000000000000000,2.0000000000000000,3.0000000000000000 : "
-             "4.0000000000000000,5.0000000000000000,6.0000000000000000"))
+            (
+                "1.0000000000000000,2.0000000000000000,3.0000000000000000 : "
+                "4.0000000000000000,5.0000000000000000,6.0000000000000000"
+            ),
+        )
 
         box3 = QgsBox3d(1.451845, 2.8543302, 3.3490346, 4.654983, 5.5484343, 6.4567982)
-        self.assertEqual(
-            box3.toString(3),
-            "1.452,2.854,3.349 : 4.655,5.548,6.457")
+        self.assertEqual(box3.toString(3), "1.452,2.854,3.349 : 4.655,5.548,6.457")
 
     def testMove(self):
         box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
@@ -493,7 +556,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box1b.yMaximum(), 11.0)
         self.assertEqual(box1b.zMaximum(), 12.0)
 
-        box1a += QgsVector3D(10., 20., 30.)
+        box1a += QgsVector3D(10.0, 20.0, 30.0)
         self.assertEqual(box1a.xMinimum(), 16.0)
         self.assertEqual(box1a.yMinimum(), 28.0)
         self.assertEqual(box1a.zMinimum(), 40.0)
@@ -501,7 +564,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box1a.yMaximum(), 35.0)
         self.assertEqual(box1a.zMaximum(), 48.0)
 
-        box1a -= QgsVector3D(10., 20., 30.)
+        box1a -= QgsVector3D(10.0, 20.0, 30.0)
         self.assertEqual(box1a.xMinimum(), 6.0)
         self.assertEqual(box1a.yMinimum(), 8.0)
         self.assertEqual(box1a.zMinimum(), 10.0)
@@ -512,16 +575,53 @@ class TestQgsBox3d(unittest.TestCase):
     def test_corners(self):
         box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
 
-        self.assertEqual(box1.corners(),
-                         [QgsVector3D(5, 6, 7),
-                          QgsVector3D(5, 13, 7),
-                          QgsVector3D(11, 6, 7),
-                          QgsVector3D(11, 13, 7),
-                          QgsVector3D(5, 6, 15),
-                          QgsVector3D(5, 13, 15),
-                          QgsVector3D(11, 6, 15),
-                          QgsVector3D(11, 13, 15)])
+        self.assertEqual(
+            box1.corners(),
+            [
+                QgsVector3D(5, 6, 7),
+                QgsVector3D(5, 13, 7),
+                QgsVector3D(11, 6, 7),
+                QgsVector3D(11, 13, 7),
+                QgsVector3D(5, 6, 15),
+                QgsVector3D(5, 13, 15),
+                QgsVector3D(11, 6, 15),
+                QgsVector3D(11, 13, 15),
+            ],
+        )
+
+    def test_set(self):
+        box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box1.xMinimum(), 5.0)
+        self.assertEqual(box1.yMinimum(), 6.0)
+        self.assertEqual(box1.zMinimum(), 7.0)
+        self.assertEqual(box1.xMaximum(), 11.0)
+        self.assertEqual(box1.yMaximum(), 13.0)
+        self.assertEqual(box1.zMaximum(), 15.0)
+
+        box1.set(23, 42, 43, 22, 24, 25, False)
+        self.assertEqual(box1.xMinimum(), 23.0)
+        self.assertEqual(box1.yMinimum(), 42.0)
+        self.assertEqual(box1.zMinimum(), 43.0)
+        self.assertEqual(box1.xMaximum(), 22.0)
+        self.assertEqual(box1.yMaximum(), 24.0)
+        self.assertEqual(box1.zMaximum(), 25.0)
+
+        box1.normalize()
+        self.assertEqual(box1.xMinimum(), 22.0)
+        self.assertEqual(box1.yMinimum(), 24.0)
+        self.assertEqual(box1.zMinimum(), 25.0)
+        self.assertEqual(box1.xMaximum(), 23.0)
+        self.assertEqual(box1.yMaximum(), 42.0)
+        self.assertEqual(box1.zMaximum(), 43.0)
+
+        box1.set(12, 13, 14, -5, -6, -7)
+        self.assertEqual(box1.xMinimum(), -5.0)
+        self.assertEqual(box1.yMinimum(), -6.0)
+        self.assertEqual(box1.zMinimum(), -7.0)
+        self.assertEqual(box1.xMaximum(), 12.0)
+        self.assertEqual(box1.yMaximum(), 13.0)
+        self.assertEqual(box1.zMaximum(), 14.0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

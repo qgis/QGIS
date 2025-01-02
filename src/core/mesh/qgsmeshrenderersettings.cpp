@@ -18,6 +18,7 @@
 #include "qgsmeshrenderersettings.h"
 #include "qgscolorutils.h"
 #include "qgsunittypes.h"
+#include "qgscolorramp.h"
 
 bool QgsMeshRendererMeshSettings::isEnabled() const
 {
@@ -96,6 +97,7 @@ void QgsMeshRendererScalarSettings::setClassificationMinimumMaximum( double mini
 {
   mClassificationMinimum = minimum;
   mClassificationMaximum = maximum;
+  updateShader();
 }
 
 double QgsMeshRendererScalarSettings::opacity() const { return mOpacity; }
@@ -130,6 +132,10 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
       break;
   }
   elem.setAttribute( QStringLiteral( "interpolation-method" ), methodTxt );
+
+  elem.setAttribute( QStringLiteral( "range-extent" ), QgsMeshRendererScalarSettings::extentString( mRangeExtent ) );
+  elem.setAttribute( QStringLiteral( "range-limit" ), QgsMeshRendererScalarSettings::limitsString( mRangeLimit ) );
+
   const QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   elem.appendChild( elemShader );
 
@@ -156,6 +162,10 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
   {
     mDataResamplingMethod = DataResamplingMethod::NoResampling;
   }
+
+  mRangeExtent = QgsMeshRendererScalarSettings::extentFromString( elem.attribute( "range-extent" ) );
+  mRangeLimit = QgsMeshRendererScalarSettings::limitsFromString( elem.attribute( "range-limit" ) );
+
   const QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader, context );
 
@@ -184,6 +194,69 @@ Qgis::RenderUnit QgsMeshRendererScalarSettings::edgeStrokeWidthUnit() const
 void QgsMeshRendererScalarSettings::setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit )
 {
   mEdgeStrokeWidthUnit = edgeStrokeWidthUnit;
+}
+
+void QgsMeshRendererScalarSettings::updateShader()
+{
+
+  mColorRampShader.setMinimumValue( mClassificationMinimum );
+  mColorRampShader.setMaximumValue( mClassificationMaximum );
+
+  if ( !mColorRampShader.isEmpty() )
+    mColorRampShader.classifyColorRamp( mColorRampShader.sourceColorRamp()->count(), 1, QgsRectangle(), nullptr );
+}
+
+QString QgsMeshRendererScalarSettings::extentString( Qgis::MeshRangeExtent extent )
+{
+  switch ( extent )
+  {
+    case Qgis::MeshRangeExtent::WholeMesh:
+      return QStringLiteral( "WholeMesh" );
+    case Qgis::MeshRangeExtent::FixedCanvas:
+      return QStringLiteral( "CurrentCanvas" );
+    case Qgis::MeshRangeExtent::UpdatedCanvas:
+      return QStringLiteral( "UpdatedCanvas" );
+  }
+  return QStringLiteral( "WholeMesh" );
+}
+
+Qgis::MeshRangeExtent QgsMeshRendererScalarSettings::extentFromString( const QString &extent )
+{
+  if ( extent == QLatin1String( "WholeMesh" ) )
+  {
+    return Qgis::MeshRangeExtent::WholeMesh;
+  }
+  else if ( extent == QLatin1String( "CurrentCanvas" ) )
+  {
+    return Qgis::MeshRangeExtent::FixedCanvas;
+  }
+  else if ( extent == QLatin1String( "UpdatedCanvas" ) )
+  {
+    return Qgis::MeshRangeExtent::UpdatedCanvas;
+  }
+
+  return Qgis::MeshRangeExtent::WholeMesh;
+}
+
+QString QgsMeshRendererScalarSettings::limitsString( Qgis::MeshRangeLimit limits )
+{
+  switch ( limits )
+  {
+    case Qgis::MeshRangeLimit::MinimumMaximum:
+      return QStringLiteral( "MinMax" );
+    default:
+      break;
+  }
+  return QStringLiteral( "None" );
+}
+
+Qgis::MeshRangeLimit QgsMeshRendererScalarSettings::limitsFromString( const QString &limits )
+{
+  if ( limits == QLatin1String( "MinMax" ) )
+  {
+    return Qgis::MeshRangeLimit::MinimumMaximum;
+  }
+  return Qgis::MeshRangeLimit::NotSet;
 }
 
 // ---------------------------------------------------------------------
@@ -815,7 +888,7 @@ void QgsMeshRendererVectorWindBarbSettings::setShaftLength( double shaftLength )
   mShaftLength = shaftLength;
 }
 
-Qgis::RenderUnit QgsMeshRendererVectorWindBarbSettings::shaftLengthUnits()
+Qgis::RenderUnit QgsMeshRendererVectorWindBarbSettings::shaftLengthUnits() const
 {
   return mShaftLengthUnits;
 }

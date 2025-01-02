@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgskde.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
 #include "qgskde.h"
 %End
   public:
-
     enum KernelShape /BaseType=IntEnum/
     {
       KernelQuartic,
@@ -48,21 +47,21 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
 
     struct Parameters
     {
-      QgsFeatureSource *source;
+        QgsFeatureSource *source;
 
-      double radius;
+        double radius;
 
-      QString radiusField;
+        QString radiusField;
 
-      QString weightField;
+        QString weightField;
 
-      double pixelSize;
+        double pixelSize;
 
-      QgsKernelDensityEstimation::KernelShape shape;
+        QgsKernelDensityEstimation::KernelShape shape;
 
-      double decayRatio;
+        double decayRatio;
 
-      QgsKernelDensityEstimation::OutputValues outputValues;
+        QgsKernelDensityEstimation::OutputValues outputValues;
     };
 
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
@@ -116,5 +115,5 @@ Finalises the output file. Must be called after adding all features via :py:func
  *                                                                      *
  * src/analysis/raster/qgskde.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

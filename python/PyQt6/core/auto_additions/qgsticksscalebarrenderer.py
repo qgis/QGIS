@@ -2,3 +2,7 @@
 QgsTicksScaleBarRenderer.TicksUp = QgsTicksScaleBarRenderer.TickPosition.TicksUp
 QgsTicksScaleBarRenderer.TicksDown = QgsTicksScaleBarRenderer.TickPosition.TicksDown
 QgsTicksScaleBarRenderer.TicksMiddle = QgsTicksScaleBarRenderer.TickPosition.TicksMiddle
+try:
+    QgsTicksScaleBarRenderer.__group__ = ['scalebar']
+except (NameError, AttributeError):
+    pass

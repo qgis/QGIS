@@ -98,11 +98,11 @@ QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( c
   }
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsCompoundCurve &QgsCompoundCurve::operator=( const QgsCompoundCurve &curve )
 {
   if ( &curve != this )
   {
-    clearCache();
     QgsCurve::operator=( curve );
     for ( const QgsCurve *c : curve.mCurves )
     {
@@ -465,13 +465,13 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
   return line;
 }
 
-QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   std::unique_ptr<QgsCompoundCurve> result( createEmptyWithSameType() );
 
   for ( QgsCurve *curve : mCurves )
   {
-    std::unique_ptr<QgsCurve> gridified( static_cast< QgsCurve * >( curve->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) );
+    std::unique_ptr<QgsCurve> gridified( static_cast< QgsCurve * >( curve->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
     if ( gridified )
     {
       result->mCurves.append( gridified.release() );
@@ -482,6 +482,12 @@ QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpac
     return nullptr;
   else
     return result.release();
+}
+
+QgsAbstractGeometry *QgsCompoundCurve::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsLineString > line( curveToLine() );
+  return line->simplifyByDistance( tolerance );
 }
 
 bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
@@ -825,6 +831,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
       removeCurve( curveId );
     }
   }
+  // We are on a vertex that belongs to two curves
   else if ( curveIds.size() == 2 )
   {
     const int nextCurveId = curveIds.at( 1 ).first;
@@ -835,46 +842,51 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
     Q_ASSERT( subVertexId.vertex == curve->numPoints() - 1 );
     Q_ASSERT( nextSubVertexId.vertex == 0 );
 
+    // globals start and end points
     const QgsPoint startPoint = curve->startPoint();
     const QgsPoint endPoint = nextCurve->endPoint();
 
-    if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::LineString &&
-         QgsWkbTypes::flatType( nextCurve->wkbType() ) == Qgis::WkbType::CircularString &&
-         nextCurve->numPoints() > 3 )
-    {
-      QgsPoint intermediatePoint;
-      Qgis::VertexType type;
-      nextCurve->pointAt( 2, intermediatePoint, type );
-      curve->moveVertex( QgsVertexId( 0, 0, curve->numPoints() - 1 ), intermediatePoint );
-    }
-    else if ( !curve->deleteVertex( subVertexId ) )
+    // delete the vertex on first curve
+    if ( !curve->deleteVertex( subVertexId ) )
     {
       clearCache(); //bbox may have changed
       return false;
     }
-    if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::CircularString &&
-         curve->numPoints() > 0 &&
-         QgsWkbTypes::flatType( nextCurve->wkbType() ) == Qgis::WkbType::LineString )
-    {
-      QgsPoint intermediatePoint = curve->endPoint();
-      nextCurve->moveVertex( QgsVertexId( 0, 0, 0 ), intermediatePoint );
-    }
-    else if ( !nextCurve->deleteVertex( nextSubVertexId ) )
+
+    // delete the vertex on second curve
+    if ( !nextCurve->deleteVertex( nextSubVertexId ) )
     {
       clearCache(); //bbox may have changed
       return false;
     }
-    if ( curve->numPoints() == 0 &&
-         nextCurve->numPoints() != 0 )
+
+    // if first curve is now empty and second is not then
+    // create a LineString to link from the global start point to the
+    // new start of the second curve and delete the first curve
+    if ( curve->numPoints() == 0 && nextCurve->numPoints() != 0 )
     {
-      nextCurve->moveVertex( QgsVertexId( 0, 0, 0 ), startPoint );
+      QgsPoint startPointOfSecond = nextCurve->startPoint();
       removeCurve( curveId );
+      QgsLineString *line = new QgsLineString();
+      line->insertVertex( QgsVertexId( 0, 0, 0 ), startPoint );
+      line->insertVertex( QgsVertexId( 0, 0, 1 ), startPointOfSecond );
+      mCurves.insert( curveId, line );
     }
+    // else, if the first curve is not empty and the second is
+    // then create a LineString to link from the new end of the first curve to the
+    // global end point and delete the first curve
     else if ( curve->numPoints() != 0 && nextCurve->numPoints() == 0 )
     {
-      curve->moveVertex( QgsVertexId( 0, 0, curve->numPoints() - 1 ), endPoint );
+      QgsPoint endPointOfFirst = curve->endPoint();
       removeCurve( nextCurveId );
+      QgsLineString *line = new QgsLineString();
+      line->insertVertex( QgsVertexId( 0, 0, 0 ), endPointOfFirst );
+      line->insertVertex( QgsVertexId( 0, 0, 1 ), endPoint );
+      mCurves.insert( nextCurveId, line );
     }
+    // else, if both curves are empty then
+    // remove both curves and create a LineString to link
+    // the curves before and the curves after the whole geometry
     else if ( curve->numPoints() == 0 &&
               nextCurve->numPoints() == 0 )
     {
@@ -885,6 +897,8 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
       line->insertVertex( QgsVertexId( 0, 0, 1 ), endPoint );
       mCurves.insert( curveId, line );
     }
+    // else, both curves still have vertices, create a LineString to link
+    // the curves if needed
     else
     {
       QgsPoint endPointOfFirst = curve->endPoint();
@@ -897,6 +911,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
         mCurves.insert( nextCurveId, line );
       }
     }
+    condenseCurves(); // We merge consecutive LineStrings and CircularStrings
   }
 
   bool success = !curveIds.isEmpty();

@@ -265,15 +265,13 @@ class CORE_EXPORT QgsProperty
      */
     static QgsProperty fromValue( const QVariant &value, bool isActive = true );
 
-    //! Copy constructor
     QgsProperty( const QgsProperty &other );
-
     QgsProperty &operator=( const QgsProperty &other );
 
     /**
      * Returns TRUE if the property is not an invalid type.
      */
-    operator bool() const;
+    explicit operator bool() const SIP_SKIP;
 
     bool operator==( const QgsProperty &other ) const;
     bool operator!=( const QgsProperty &other ) const;

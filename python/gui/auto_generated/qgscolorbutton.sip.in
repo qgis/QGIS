@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscolorbutton.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ and pasting colors, picking colors from the screen, and selecting colors from co
       sipType = NULL;
 %End
   public:
-
     enum Behavior
     {
       ShowDialog,
@@ -461,7 +460,6 @@ to a project color and is now no longer linked.
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void changeEvent( QEvent *e );
@@ -528,5 +526,5 @@ Reimplemented to accept dropped colors
  *                                                                      *
  * src/gui/qgscolorbutton.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

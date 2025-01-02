@@ -8,6 +8,22 @@ QgsFieldMappingModel.ColumnDataIndex.DestinationPrecision.__doc__ = "Destination
 QgsFieldMappingModel.ColumnDataIndex.DestinationConstraints.__doc__ = "Destination field constraints"
 QgsFieldMappingModel.ColumnDataIndex.DestinationAlias.__doc__ = "Destination alias"
 QgsFieldMappingModel.ColumnDataIndex.DestinationComment.__doc__ = "Destination comment"
-QgsFieldMappingModel.ColumnDataIndex.__doc__ = "The ColumnDataIndex enum represents the column index for the view\n\n" + '* ``SourceExpression``: ' + QgsFieldMappingModel.ColumnDataIndex.SourceExpression.__doc__ + '\n' + '* ``DestinationName``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationName.__doc__ + '\n' + '* ``DestinationType``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationType.__doc__ + '\n' + '* ``DestinationLength``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationLength.__doc__ + '\n' + '* ``DestinationPrecision``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationPrecision.__doc__ + '\n' + '* ``DestinationConstraints``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationConstraints.__doc__ + '\n' + '* ``DestinationAlias``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationAlias.__doc__ + '\n' + '* ``DestinationComment``: ' + QgsFieldMappingModel.ColumnDataIndex.DestinationComment.__doc__
+QgsFieldMappingModel.ColumnDataIndex.__doc__ = """The ColumnDataIndex enum represents the column index for the view
+
+* ``SourceExpression``: Expression
+* ``DestinationName``: Destination field name
+* ``DestinationType``: Destination field type string
+* ``DestinationLength``: Destination field length
+* ``DestinationPrecision``: Destination field precision
+* ``DestinationConstraints``: Destination field constraints
+* ``DestinationAlias``: Destination alias
+* ``DestinationComment``: Destination comment
+
+"""
 # --
 QgsFieldMappingModel.ColumnDataIndex.baseClass = QgsFieldMappingModel
+try:
+    QgsFieldMappingModel.Field.__attribute_docs__ = {'originalName': 'The original name of the field', 'field': 'The field in its current status (it might have been renamed)', 'expression': 'The expression for the mapped field from the source fields'}
+    QgsFieldMappingModel.Field.__doc__ = """The Field struct holds information about a mapped field"""
+except (NameError, AttributeError):
+    pass

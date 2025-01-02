@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscustomlayerorderwidget.h"
+#include "moc_qgscustomlayerorderwidget.cpp"
 
 #include <QCheckBox>
 #include <QListView>
@@ -25,8 +26,6 @@
 
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
-
-
 
 
 QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent )
@@ -88,7 +87,6 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 }
 
 
-
 ///@cond PRIVATE
 
 CustomLayerOrderModel::CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge *bridge, QObject *parent )
@@ -139,7 +137,7 @@ bool CustomLayerOrderModel::setData( const QModelIndex &index, const QVariant &v
     QgsLayerTreeLayer *nodeLayer = mBridge->rootGroup()->findLayer( id );
     if ( nodeLayer )
     {
-      nodeLayer->setItemVisibilityChecked( ! nodeLayer->itemVisibilityChecked() );
+      nodeLayer->setItemVisibilityChecked( !nodeLayer->itemVisibilityChecked() );
       return true;
     }
   }
@@ -239,7 +237,6 @@ void CustomLayerOrderModel::updateLayerVisibility( const QString &layerId )
   if ( row != -1 )
     emit dataChanged( index( row ), index( row ) );
 }
-
 
 
 ///@endcond

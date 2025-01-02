@@ -8,5 +8,20 @@ QgsAbstract3DSymbol.PropertyExtrusionHeight = QgsAbstract3DSymbol.Property.Extru
 QgsAbstract3DSymbol.Property.PropertyExtrusionHeight = QgsAbstract3DSymbol.Property.ExtrusionHeight
 QgsAbstract3DSymbol.PropertyExtrusionHeight.is_monkey_patched = True
 QgsAbstract3DSymbol.PropertyExtrusionHeight.__doc__ = "Extrusion height (zero means no extrusion)"
-QgsAbstract3DSymbol.Property.__doc__ = "Data definable properties.\n\n" + '* ``PropertyHeight``: ' + QgsAbstract3DSymbol.Property.Height.__doc__ + '\n' + '* ``PropertyExtrusionHeight``: ' + QgsAbstract3DSymbol.Property.ExtrusionHeight.__doc__
+QgsAbstract3DSymbol.Property.__doc__ = """Data definable properties.
+
+* ``Height``: Height (altitude)
+
+  Available as ``QgsAbstract3DSymbol.PropertyHeight`` in older QGIS releases.
+
+* ``ExtrusionHeight``: Extrusion height (zero means no extrusion)
+
+  Available as ``QgsAbstract3DSymbol.PropertyExtrusionHeight`` in older QGIS releases.
+
+
+"""
 # --
+try:
+    QgsAbstract3DSymbol.__group__ = ['3d']
+except (NameError, AttributeError):
+    pass

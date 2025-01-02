@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsgeometrycollection.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -95,7 +95,7 @@ Returns a geometry from within the collection.
 
     virtual void clear();
 
-    virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+    virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
@@ -121,6 +121,15 @@ reallocations and memory fragmentation.
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
 Adds a geometry and takes ownership. Returns ``True`` in case of success.
+%End
+
+    virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ );
+%Docstring
+Adds a list of geometries to the collection, transferring ownership to the collection.
+
+Returns ``True`` in case of success.
+
+.. versionadded:: 3.38
 %End
 
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
@@ -153,8 +162,16 @@ Removes a geometry from the collection by index.
     }
 %End
 
+    QVector< QgsAbstractGeometry * > takeGeometries() /Transfer/;
+%Docstring
+Removes all geometries from the collection, returning them and their ownership
+to the caller.
+
+.. versionadded:: 3.38
+%End
+
     void normalize() final /HoldGIL/;
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
@@ -250,6 +267,7 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
 
+    virtual QgsGeometryCollection *simplifyByDistance( double tolerance ) const /Factory/;
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
@@ -369,5 +387,5 @@ Reads a collection from a WKT string.
  *                                                                      *
  * src/core/geometry/qgsgeometrycollection.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

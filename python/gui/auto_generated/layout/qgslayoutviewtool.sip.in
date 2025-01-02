@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutviewtool.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,6 @@ to :py:class:`QgsLayoutView` widgets.
       sipType = NULL;
 %End
   public:
-
     enum Flag
     {
       FlagSnaps,
@@ -144,7 +143,7 @@ Returns the layout associated with the tool.
 .. seealso:: :py:func:`view`
 %End
 
-    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
+    virtual QList<QgsLayoutItem *> ignoredSnapItems() const;
 %Docstring
 Returns a list of items which should be ignored while snapping events
 for this tool.
@@ -169,7 +168,6 @@ item and should have its properties displayed in any designer windows.
 %End
 
   protected:
-
     void setFlags( QgsLayoutViewTool::Flags flags );
 %Docstring
 Sets the combination of ``flags`` that will be used for the tool.
@@ -198,5 +196,5 @@ instead treated as just a click on ``startViewPoint``.
  *                                                                      *
  * src/gui/layout/qgslayoutviewtool.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,12 +3,12 @@
  *                                                                      *
  * src/gui/raster/qgsrasterattributetabledialog.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
-class QgsRasterAttributeTableDialog: QDialog
+class QgsRasterAttributeTableDialog : QDialog
 {
 %Docstring(signature="appended")
 The :py:class:`QgsRasterAttributeTableDialog` class embeds an attribute table widget.
@@ -20,7 +20,6 @@ The :py:class:`QgsRasterAttributeTableDialog` class embeds an attribute table wi
 #include "qgsrasterattributetabledialog.h"
 %End
   public:
-
     QgsRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, int bandNumber = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Create a new QgsRasterAttributeTableDialog
@@ -30,7 +29,6 @@ Create a new QgsRasterAttributeTableDialog
 
     virtual void reject();
 
-
 };
 
 /************************************************************************
@@ -38,5 +36,5 @@ Create a new QgsRasterAttributeTableDialog
  *                                                                      *
  * src/gui/raster/qgsrasterattributetabledialog.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

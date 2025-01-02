@@ -120,7 +120,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
     //! If this is set to FALSE the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
-    bool scrollOnExpand() {return mScrollOnExpand;}
+    bool scrollOnExpand() { return mScrollOnExpand; }
 
   signals:
     //! Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
@@ -139,8 +139,6 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setStyleSheet( const QString &style );
 
   protected:
-    void init();
-
     //! Visual fixes for when group box is collapsed/expanded
     void collapseExpandFixes();
 
@@ -168,6 +166,9 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     QIcon mCollapseIcon;
     QIcon mExpandIcon;
+
+  private:
+    void init();
 };
 
 /**
@@ -177,7 +178,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
  * By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
- * \see basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
+ * \see QgsCollapsibleGroupBoxBasic which does not auto-save states
  * \note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the properties palette:
  * bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
  */
@@ -244,9 +245,11 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     void saveState() const;
 
   protected:
-    void init();
     void showEvent( QShowEvent *event ) override;
     QString saveKey() const;
+
+  private:
+    void init();
 
     // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while groupbox's dialog is open

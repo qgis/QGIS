@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsaggregatetoolbutton.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,18 +21,26 @@ Functions are filtered based on the type.
 #include "qgsaggregatetoolbutton.h"
 %End
   public:
-
     QgsAggregateToolButton();
 %Docstring
 Constructor
 %End
 
-    void setType( QVariant::Type type );
+    void setType( QMetaType::Type type );
 %Docstring
 Based on the ``type`` of underlying data, some aggregates will be available or not.
 %End
 
-    QVariant::Type type() const;
+ void setType( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+%Docstring
+Based on the ``type`` of underlying data, some aggregates will be available or not.
+
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
+%End
+
+    QMetaType::Type type() const;
 %Docstring
 Based on the ``type`` of underlying data, some aggregates will be available or not.
 %End
@@ -76,5 +84,5 @@ A function has been selected or deselected.
  *                                                                      *
  * src/gui/qgsaggregatetoolbutton.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

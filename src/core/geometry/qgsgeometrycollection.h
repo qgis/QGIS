@@ -184,7 +184,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int dimension() const override SIP_HOLDGIL;
     QString geometryType() const override SIP_HOLDGIL;
     void clear() override;
-    QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
@@ -203,6 +203,15 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     //! Adds a geometry and takes ownership. Returns TRUE in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
+
+    /**
+     * Adds a list of geometries to the collection, transferring ownership to the collection.
+     *
+     * Returns TRUE in case of success.
+     *
+     * \since QGIS 3.38
+     */
+    virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER );
 
     /**
      * Inserts a geometry before a specified index and takes ownership. Returns TRUE in case of success.
@@ -241,6 +250,14 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     }
     % End
 #endif
+
+    /**
+     * Removes all geometries from the collection, returning them and their ownership
+     * to the caller.
+     *
+     * \since QGIS 3.38
+     */
+    QVector< QgsAbstractGeometry * > takeGeometries() SIP_TRANSFER;
 
     void normalize() final SIP_HOLDGIL;
     void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
@@ -301,6 +318,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
     const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
+    virtual QgsGeometryCollection *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 

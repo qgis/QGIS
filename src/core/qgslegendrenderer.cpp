@@ -22,6 +22,8 @@
 #include "qgsrendercontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstextrenderer.h"
+#include "qgslayertreefilterproxymodel.h"
+
 #include <QJsonObject>
 #include <QPainter>
 
@@ -29,9 +31,22 @@
 
 QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
   : mLegendModel( legendModel )
+  , mProxyModel( std::make_unique< QgsLayerTreeFilterProxyModel >() )
   , mSettings( settings )
 {
+  mProxyModel->setLayerTreeModel( mLegendModel );
 }
+
+QgsLegendRenderer::QgsLegendRenderer( QgsLegendRenderer &&other )
+  : mLegendModel( other.mLegendModel )
+  , mProxyModel( std::move( other.mProxyModel ) )
+  , mSettings( std::move( other.mSettings ) )
+  , mLegendSize( other.mLegendSize )
+{
+  mProxyModel->setLayerTreeModel( mLegendModel );
+}
+
+QgsLegendRenderer::~QgsLegendRenderer() = default;
 
 QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 {
@@ -86,6 +101,9 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
   const QList<QgsLayerTreeNode *> childNodes = nodeGroup->children();
   for ( QgsLayerTreeNode *node : childNodes )
   {
+    if ( !mProxyModel->nodeShown( node ) )
+      continue;
+
     if ( QgsLayerTree::isGroup( node ) )
     {
       QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
@@ -126,7 +144,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
               const QString ruleKey { legendNodes.at( 0 )->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
               if ( ! ruleKey.isEmpty() )
               {
-                bool ok;
+                bool ok = false;
                 const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
                 if ( ok )
                 {
@@ -158,7 +176,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
                 const QString ruleKey { legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
                 if ( ! ruleKey.isEmpty() )
                 {
-                  bool ok;
+                  bool ok = false;
                   const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
                   if ( ok )
                   {
@@ -316,6 +334,9 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
   const QList<QgsLayerTreeNode *> childNodes = parentGroup->children();
   for ( QgsLayerTreeNode *node : childNodes )
   {
+    if ( !mProxyModel->nodeShown( node ) )
+      continue;
+
     if ( QgsLayerTree::isGroup( node ) )
     {
       QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
@@ -1085,6 +1106,11 @@ QgsLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node
 QgsLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node )
 {
   return nodeLegendStyle( node, mLegendModel );
+}
+
+QgsLayerTreeFilterProxyModel *QgsLegendRenderer::proxyModel()
+{
+  return mProxyModel.get();
 }
 
 void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style )

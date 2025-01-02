@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayermodel.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,9 +15,9 @@ class QgsMapLayerModel : QAbstractItemModel
 %Docstring(signature="appended")
 The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 
-.. seealso:: :py:class:`QgsMapLayerProxyModel`
+.. seealso:: :py:class:`QgsMapLayerProxyModel` to sort and/filter the layers
 
-.. seealso:: :py:class:`QgsFieldModel`
+.. seealso:: :py:class:`QgsFieldModel` to combine in with a field selector.
 %End
 
 %TypeHeaderCode
@@ -38,7 +38,7 @@ The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 %Docstring
 QgsMapLayerModel creates a model to display layers in widgets.
 
-If a specific ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
+If ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
 populate the model.
 %End
 
@@ -46,13 +46,13 @@ populate the model.
 %Docstring
 QgsMapLayerModel creates a model to display a specific list of layers in a widget.
 
-If a specific ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
+If ``project`` is not specified then the :py:func:`QgsProject.instance()` project will be used to
 populate the model.
 %End
 
     void setItemsCheckable( bool checkable );
 %Docstring
-setItemsCheckable defines if layers should be selectable in the widget
+Defines if layers should be selectable in the widget
 %End
 
     void setProject( QgsProject *project );
@@ -117,7 +117,7 @@ Returns ``True`` if the model includes layer's CRS in the display role.
 
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
 %Docstring
-layersChecked returns the list of layers which are checked (or unchecked)
+Returns the list of layers which are checked (or unchecked)
 %End
 
     void setLayersChecked( const QList< QgsMapLayer * > &layers );
@@ -127,7 +127,7 @@ Sets which layers are checked in the model.
 
     bool itemsCheckable() const;
 %Docstring
-returns if the items can be checked or not
+Returns whether the items can be checked or not
 %End
 
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
@@ -230,5 +230,5 @@ Returns the icon corresponding to a specified map ``layer``.
  *                                                                      *
  * src/core/qgsmaplayermodel.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

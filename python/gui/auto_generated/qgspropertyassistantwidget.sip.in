@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgspropertyassistantwidget.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,11 +21,7 @@ Shows a user-friendly assistant guiding users through the creation of :py:class:
 #include "qgspropertyassistantwidget.h"
 %End
   public:
-
-    QgsPropertyAssistantWidget( QWidget *parent /TransferThis/ = 0,
-                                const QgsPropertyDefinition &definition = QgsPropertyDefinition(),
-                                const QgsProperty &initialState = QgsProperty(),
-                                const QgsVectorLayer *layer = 0 );
+    QgsPropertyAssistantWidget( QWidget *parent /TransferThis/ = 0, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty(), const QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsPropertyAssistantWidget. Aside from a ``parent`` widget, the constructor accepts a
 corresponding property ``definition`` from which it customizes the displayed options (eg a color based
@@ -58,5 +54,5 @@ in the widget.
  *                                                                      *
  * src/gui/qgspropertyassistantwidget.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

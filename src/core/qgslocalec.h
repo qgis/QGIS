@@ -36,9 +36,7 @@ class CORE_EXPORT QgsLocaleNumC
     QgsLocaleNumC();
     ~QgsLocaleNumC();
 
-    //! QgsLocaleNumC cannot be copied
     QgsLocaleNumC( const QgsLocaleNumC &rh ) = delete;
-    //! QgsLocaleNumC cannot be copied
     QgsLocaleNumC &operator=( const QgsLocaleNumC &rh ) = delete;
 
 };

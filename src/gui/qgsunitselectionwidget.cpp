@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsunitselectionwidget.h"
+#include "moc_qgsunitselectionwidget.cpp"
 #include "qgshelp.h"
 #include <QDialogButtonBox>
 
@@ -44,8 +45,8 @@ QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   connect( mComboBoxMaxScale, &QgsScaleWidget::scaleChanged, this, &QgsMapUnitScaleWidget::settingsChanged );
   connect( mCheckBoxMinSize, &QCheckBox::toggled, this, &QgsMapUnitScaleWidget::settingsChanged );
   connect( mCheckBoxMaxSize, &QCheckBox::toggled, this, &QgsMapUnitScaleWidget::settingsChanged );
-  connect( mSpinBoxMinSize, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsMapUnitScaleWidget::settingsChanged );
-  connect( mSpinBoxMaxSize, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsMapUnitScaleWidget::settingsChanged );
+  connect( mSpinBoxMinSize, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMapUnitScaleWidget::settingsChanged );
+  connect( mSpinBoxMaxSize, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMapUnitScaleWidget::settingsChanged );
   mBlockSignals = false;
 }
 
@@ -120,9 +121,6 @@ QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 }
 
 
-
-
-
 QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   : QWidget( parent )
 
@@ -136,9 +134,9 @@ QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   setFocusPolicy( Qt::StrongFocus );
   setFocusProxy( mUnitCombo );
 
-  connect( mUnitCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::toggleUnitRangeButton );
+  connect( mUnitCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::toggleUnitRangeButton );
   connect( mMapScaleButton, &QToolButton::clicked, this, &QgsUnitSelectionWidget::showDialog );
-  connect( mUnitCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::changed );
+  connect( mUnitCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::changed );
 }
 
 void QgsUnitSelectionWidget::setUnits( const QStringList &units, int mapUnitIdx )
@@ -160,31 +158,31 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   mMapUnitIdx = -1;
   if ( units.contains( Qgis::RenderUnit::Millimeters ) )
   {
-    mUnitCombo->addItem( tr( "Millimeters" ), static_cast< int >( Qgis::RenderUnit::Millimeters ) );
+    mUnitCombo->addItem( tr( "Millimeters" ), static_cast<int>( Qgis::RenderUnit::Millimeters ) );
   }
   if ( units.contains( Qgis::RenderUnit::Points ) )
   {
-    mUnitCombo->addItem( tr( "Points" ), static_cast< int >( Qgis::RenderUnit::Points ) );
+    mUnitCombo->addItem( tr( "Points" ), static_cast<int>( Qgis::RenderUnit::Points ) );
   }
   if ( units.contains( Qgis::RenderUnit::Pixels ) )
   {
-    mUnitCombo->addItem( tr( "Pixels" ), static_cast< int >( Qgis::RenderUnit::Pixels ) );
+    mUnitCombo->addItem( tr( "Pixels" ), static_cast<int>( Qgis::RenderUnit::Pixels ) );
   }
   if ( units.contains( Qgis::RenderUnit::MetersInMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Meters at Scale" ), static_cast< int >( Qgis::RenderUnit::MetersInMapUnits ) );
+    mUnitCombo->addItem( tr( "Meters at Scale" ), static_cast<int>( Qgis::RenderUnit::MetersInMapUnits ) );
   }
   if ( units.contains( Qgis::RenderUnit::MapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Map Units" ), static_cast< int >( Qgis::RenderUnit::MapUnits ) );
+    mUnitCombo->addItem( tr( "Map Units" ), static_cast<int>( Qgis::RenderUnit::MapUnits ) );
   }
   if ( units.contains( Qgis::RenderUnit::Percentage ) )
   {
-    mUnitCombo->addItem( tr( "Percentage" ), static_cast< int >( Qgis::RenderUnit::Percentage ) );
+    mUnitCombo->addItem( tr( "Percentage" ), static_cast<int>( Qgis::RenderUnit::Percentage ) );
   }
   if ( units.contains( Qgis::RenderUnit::Inches ) )
   {
-    mUnitCombo->addItem( tr( "Inches" ), static_cast< int >( Qgis::RenderUnit::Inches ) );
+    mUnitCombo->addItem( tr( "Inches" ), static_cast<int>( Qgis::RenderUnit::Inches ) );
   }
   blockSignals( false );
 }
@@ -197,7 +195,7 @@ Qgis::RenderUnit QgsUnitSelectionWidget::unit() const
   const QVariant currentData = mUnitCombo->currentData();
   if ( currentData.isValid() )
   {
-    return static_cast< Qgis::RenderUnit >( currentData.toInt() );
+    return static_cast<Qgis::RenderUnit>( currentData.toInt() );
   }
   //unknown
   return Qgis::RenderUnit::Unknown;
@@ -212,7 +210,7 @@ void QgsUnitSelectionWidget::setUnit( int unitIndex )
 
 void QgsUnitSelectionWidget::setUnit( Qgis::RenderUnit unit )
 {
-  const int idx = mUnitCombo->findData( QVariant( static_cast< int >( unit ) ) );
+  const int idx = mUnitCombo->findData( QVariant( static_cast<int>( unit ) ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 

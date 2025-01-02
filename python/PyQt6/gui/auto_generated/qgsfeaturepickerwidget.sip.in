@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfeaturepickerwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ and whenever text is typed into the combobox, the completer and popup will adjus
 #include "qgsfeaturepickerwidget.h"
 %End
   public:
-
     QgsFeaturePickerWidget( QWidget *parent = 0 );
 %Docstring
 Create a new QgsFeaturePickerWidget, optionally specifying a ``parent``.
@@ -191,11 +190,10 @@ Emitted when showing the browser buttons changes
 };
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/qgsfeaturepickerwidget.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

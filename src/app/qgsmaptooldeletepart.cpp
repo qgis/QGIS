@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooldeletepart.h"
+#include "moc_qgsmaptooldeletepart.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
@@ -33,9 +34,7 @@ class SelectedOnlyFilter : public QgsPointLocator::MatchFilter
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
       // If there is a selection, we limit matches to selected features
-      if ( match.layer() &&
-           match.layer()->selectedFeatureCount() > 0 &&
-           !match.layer()->selectedFeatureIds().contains( match.featureId() ) )
+      if ( match.layer() && match.layer()->selectedFeatureCount() > 0 && !match.layer()->selectedFeatureIds().contains( match.featureId() ) )
       {
         return false;
       }
@@ -100,7 +99,8 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent *e )
   {
     emit messageEmitted(
       tr( "If there are selected features, the delete parts tool only applies to those. Clear the selection and try again." ),
-      Qgis::MessageLevel::Warning );
+      Qgis::MessageLevel::Warning
+    );
   }
 }
 
@@ -232,4 +232,3 @@ void QgsMapToolDeletePart::deactivate()
 {
   QgsMapTool::deactivate();
 }
-

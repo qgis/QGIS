@@ -17,6 +17,7 @@
 
 #include "qgssettings.h"
 #include "qgscptcityarchive.h"
+#include "moc_qgscptcityarchive.cpp"
 #include "qgis.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
@@ -423,7 +424,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
   return colorMap;
 }
 
-bool QgsCptCityArchive::isEmpty()
+bool QgsCptCityArchive::isEmpty() const
 {
   return ( mRootItems.isEmpty() );
 }
@@ -1690,50 +1691,6 @@ void QgsCptCityBrowserModel::fetchMore( const QModelIndex &parent )
     QgsDebugMsgLevel( "path = " + item->path(), 2 );
   }
 }
-
-
-#if 0
-QStringList QgsCptCityBrowserModel::mimeTypes() const
-{
-  QStringList types;
-  // In theory the mime type convention is: application/x-vnd.<vendor>.<application>.<type>
-  // but it seems a bit over formalized. Would be an application/x-qgis-uri better?
-  types << "application/x-vnd.qgis.qgis.uri";
-  return types;
-}
-
-QMimeData *QgsCptCityBrowserModel::mimeData( const QModelIndexList &indexes ) const
-{
-  QgsMimeDataUtils::UriList lst;
-  const auto constIndexes = indexes;
-  for ( const QModelIndex &index : constIndexes )
-  {
-    if ( index.isValid() )
-    {
-      QgsCptCityDataItem *ptr = ( QgsCptCityDataItem * ) index.internalPointer();
-      if ( ptr->type() != QgsCptCityDataItem::Layer ) continue;
-      QgsLayerItem *layer = ( QgsLayerItem * ) ptr;
-      lst.append( QgsMimeDataUtils::Uri( ayer ) );
-    }
-  }
-  return QgsMimeDataUtils::encodeUriList( lst );
-}
-
-bool QgsCptCityBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
-{
-  Q_UNUSED( row )
-  Q_UNUSED( column )
-
-  QgsCptCityDataItem *destItem = dataItem( parent );
-  if ( !destItem )
-  {
-    QgsDebugError( QStringLiteral( "DROP PROBLEM!" ) );
-    return false;
-  }
-
-  return destItem->handleDrop( data, action );
-}
-#endif
 
 QgsCptCityDataItem *QgsCptCityBrowserModel::dataItem( const QModelIndex &idx ) const
 {

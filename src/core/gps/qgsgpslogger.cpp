@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgpslogger.h"
+#include "moc_qgsgpslogger.cpp"
 #include "qgsgpsconnection.h"
 #include "gmath.h"
 #include "qgsgeometry.h"
@@ -267,7 +268,16 @@ double QgsGpsLogger::totalTrackLength() const
 {
   QVector<QgsPointXY> points;
   QgsGeometry::convertPointList( mCaptureListWgs84, points );
-  return mDistanceCalculator.measureLine( points );
+  try
+  {
+    return mDistanceCalculator.measureLine( points );
+  }
+  catch ( QgsCsException & )
+  {
+    // TODO report errors to user
+    QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    return 0;
+  }
 }
 
 double QgsGpsLogger::trackDistanceFromStart() const
@@ -275,7 +285,16 @@ double QgsGpsLogger::trackDistanceFromStart() const
   if ( mCaptureListWgs84.empty() )
     return 0;
 
-  return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
+  try
+  {
+    return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
+  }
+  catch ( QgsCsException & )
+  {
+    // TODO report errors to user
+    QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    return 0;
+  }
 }
 
 QVariant QgsGpsLogger::componentValue( Qgis::GpsInformationComponent component ) const
@@ -313,7 +332,17 @@ QVariant QgsGpsLogger::componentValue( Qgis::GpsInformationComponent component )
       return lastTimestamp();
 
     case Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint:
-      return mPreviousTrackPoint.isEmpty() ? QVariant() : distanceArea().measureLine( mPreviousTrackPoint, lastPosition() );
+      try
+      {
+        return mPreviousTrackPoint.isEmpty() ? QVariant() : distanceArea().measureLine( mPreviousTrackPoint, lastPosition() );
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        return 0;
+      }
+
     case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
       return mPreviousTrackPointTime.isValid() ? static_cast< double >( mPreviousTrackPointTime.msecsTo( lastTimestamp() ) ) / 1000 : QVariant();
   }

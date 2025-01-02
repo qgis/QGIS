@@ -350,9 +350,6 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      */
     QgsPropertyCollection( const QString &name = QString() );
 
-    /**
-     * Copy constructor.
-     */
     QgsPropertyCollection( const QgsPropertyCollection &other );
 
     QgsPropertyCollection &operator=( const QgsPropertyCollection &other );
@@ -489,14 +486,10 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 {
   public:
 
-    /**
-     * Constructor for QgsPropertyCollectionStack.
-     */
     QgsPropertyCollectionStack() = default;
 
     ~QgsPropertyCollectionStack() override;
 
-    //! Copy constructor
     QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
 
     QgsPropertyCollectionStack &operator=( const QgsPropertyCollectionStack &other );

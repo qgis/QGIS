@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 """
 /***************************************************************************
                            qgsplugininstallerfetchingdialog.py
@@ -24,16 +23,24 @@
  ***************************************************************************/
 """
 
+from pathlib import Path
+
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
-from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
 from .installer_data import repositories
 
 from qgis.gui import QgsGui
 
+Ui_QgsPluginInstallerFetchingDialogBase, _ = uic.loadUiType(
+    Path(__file__).parent / "qgsplugininstallerfetchingbase.ui"
+)
 
-class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDialogBase):
+
+class QgsPluginInstallerFetchingDialog(
+    QDialog, Ui_QgsPluginInstallerFetchingDialogBase
+):
     # ----------------------------------------- #
 
     def __init__(self, parent):
@@ -62,13 +69,23 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
     def displayState(self, key, state, state2=None):
         messages = [
             self.tr("Success"),
-            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Resolving host name…"),
-            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Connecting…"),
-            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Host connected. Sending request…"),
-            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Downloading data…"),
+            QCoreApplication.translate(
+                "QgsPluginInstallerFetchingDialog", "Resolving host name…"
+            ),
+            QCoreApplication.translate(
+                "QgsPluginInstallerFetchingDialog", "Connecting…"
+            ),
+            QCoreApplication.translate(
+                "QgsPluginInstallerFetchingDialog", "Host connected. Sending request…"
+            ),
+            QCoreApplication.translate(
+                "QgsPluginInstallerFetchingDialog", "Downloading data…"
+            ),
             self.tr("Idle"),
-            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Closing connection…"),
-            self.tr("Error")
+            QCoreApplication.translate(
+                "QgsPluginInstallerFetchingDialog", "Closing connection…"
+            ),
+            self.tr("Error"),
         ]
         message = messages[state]
         if state2:

@@ -18,10 +18,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsrasterresampler.h"
-#include "qgsrasterprojector.h"
 #include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
-#include "qgsmaptopixel.h"
 
 //resamplers
 #include "qgsbilinearrasterresampler.h"
@@ -136,7 +133,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider *>( mInput->sourceInput() );
-    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
+    if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
     {
       outputXRes = extent.width() / width;
       providerXRes = provider->extent().width() / provider->xSize();

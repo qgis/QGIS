@@ -33,20 +33,13 @@ class QgsSettingsEntryGroup;
  * list of child QgsSettingsRegistry and a list of child QgsSettingsRegistry
  *
  * \since QGIS 3.20
- * \deprecated since QGIS 3.30 use QgsSettings::treeRoot() instead
+ * \deprecated QGIS 3.30. Use QgsSettings::treeRoot() instead.
  */
 class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
 {
   public:
 
-    /**
-     * Constructor for QgsSettingsRegistry.
-     */
     QgsSettingsRegistry();
-
-    /**
-     * Destructor for QgsSettingsRegistry.
-     */
     virtual ~QgsSettingsRegistry();
 
     /**
@@ -86,7 +79,7 @@ class CORE_DEPRECATED_EXPORT QgsSettingsRegistry
     /**
      * Adds a group of setting to the registry
      * \since QGIS 3.26
-     * \deprecated since QGIS 3.30
+     * \deprecated QGIS 3.30
      */
     Q_DECL_DEPRECATED void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup ) SIP_DEPRECATED;
 

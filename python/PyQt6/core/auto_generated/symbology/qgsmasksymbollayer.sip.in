@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsmasksymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -71,6 +71,7 @@ Create a new QgsMaskMarkerSymbolLayer
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
+
     bool enabled() const;
 %Docstring
 Whether some masked symbol layers are defined
@@ -106,5 +107,5 @@ Sets the symbol layers that will be masked by the sub symbol's shape.
  *                                                                      *
  * src/core/symbology/qgsmasksymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

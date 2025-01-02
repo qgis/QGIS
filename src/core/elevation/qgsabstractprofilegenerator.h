@@ -401,13 +401,13 @@ class CORE_EXPORT QgsProfileGenerationContext
  *
  * The scenario will be:
  *
- * # elevation profile job (doing preparation in the GUI thread) calls
+ * - elevation profile job (doing preparation in the GUI thread) calls
  *   QgsAbstractProfileSource::createProfileGenerator() and gets an instance of this class.
  *   The instance is initialized at that point and should not need
  *   additional calls to the source.
- * # profile job (still in GUI thread) stores the generator for later use.
- * # profile job (in worker thread) calls QgsAbstractProfileGenerator::generateProfile()
- * # profile job (again in GUI thread) will check errors() and report them
+ * - profile job (still in GUI thread) stores the generator for later use.
+ * - profile job (in worker thread) calls QgsAbstractProfileGenerator::generateProfile()
+ * - profile job (again in GUI thread) will check errors() and report them
  *
  * \ingroup core
  * \since QGIS 3.26

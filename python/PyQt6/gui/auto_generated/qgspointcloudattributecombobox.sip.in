@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgspointcloudattributecombobox.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ It might be combined with a :py:class:`QgsMapLayerComboBox` to automatically upd
 #include "qgspointcloudattributecombobox.h"
 %End
   public:
-
     explicit QgsPointCloudAttributeComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsPointCloudAttributeComboBox creates a combo box to display the fields of a layer.
@@ -118,5 +117,5 @@ Sets the currently selected attribute by ``name``
  *                                                                      *
  * src/gui/qgspointcloudattributecombobox.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

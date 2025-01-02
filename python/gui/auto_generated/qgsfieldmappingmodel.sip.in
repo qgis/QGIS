@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/qgsfieldmappingmodel.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsFieldMappingModel: QAbstractTableModel
+class QgsFieldMappingModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
 The :py:class:`QgsFieldMappingModel` holds mapping information for mapping from one set of :py:class:`QgsFields` to another,
@@ -25,7 +25,6 @@ the mapping expression is editable.
 #include "qgsfieldmappingmodel.h"
 %End
   public:
-
     enum class ColumnDataIndex
     {
       SourceExpression,
@@ -41,15 +40,12 @@ the mapping expression is editable.
 
     struct Field
     {
-      QString originalName;
-      QgsField field;
-      QString expression;
+        QString originalName;
+        QgsField field;
+        QString expression;
     };
 
-    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
-                          const QgsFields &destinationFields = QgsFields(),
-                          const QMap<QString, QString> &expressions = QMap<QString, QString>(),
-                          QObject *parent = 0 );
+    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = 0 );
 %Docstring
 Constructs a QgsFieldMappingModel from a set of ``sourceFields``
 and ``destinationFields``, initial values for the expressions can be
@@ -68,12 +64,13 @@ Returns ``True`` if the destination fields are editable
 Sets the destination fields editable state to ``editable``
 %End
 
- static const QMap<QVariant::Type, QString> dataTypes();
+ static const QMap<QMetaType::Type, QString> dataTypes();
 %Docstring
 Returns a static map of supported data types
 
-.. deprecated::
-   QGIS 3.24 use :py:func:`~QgsFieldMappingModel.supportedDataTypes` instead
+.. deprecated:: 3.24
+
+   Use :py:func:`~QgsFieldMappingModel.supportedDataTypes` instead.
 %End
 
     static const QList<QgsVectorDataProvider::NativeType> supportedDataTypes();
@@ -93,7 +90,7 @@ Returns a list of source fields
 Returns a list of Field objects representing the current status of the model
 %End
 
-    QMap< QString, QgsProperty > fieldPropertyMap() const;
+    QMap<QString, QgsProperty> fieldPropertyMap() const;
 %Docstring
 Returns a map of destination field name to :py:class:`QgsProperty` definition for field value,
 representing the current status of the model.
@@ -101,7 +98,7 @@ representing the current status of the model.
 .. seealso:: :py:func:`setFieldPropertyMap`
 %End
 
-    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+    void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 %Docstring
 Sets a map of destination field name to :py:class:`QgsProperty` definition for field value.
 
@@ -144,8 +141,7 @@ Sets the base expression context ``generator``, which will generate the expressi
 contexts for expression based widgets used by the model.
 %End
 
-    void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
 Set destination fields to ``destinationFields``, initial values for the expressions can be
 optionally specified through ``expressions`` which is a map from the original
@@ -170,11 +166,10 @@ field name to the corresponding expression.
 };
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/qgsfieldmappingmodel.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

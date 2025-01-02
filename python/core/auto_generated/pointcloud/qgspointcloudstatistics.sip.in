@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointcloudstatistics.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,6 +18,13 @@ struct QgsPointCloudAttributeStatistics
   double mean;
   double stDev;
   int count;
+
+  int singleClassCount( int cls ) const;
+%Docstring
+Returns the count of points in given class or -1 on error
+
+.. versionadded:: 3.42
+%End
 };
 
 class QgsPointCloudStatistics
@@ -34,9 +41,6 @@ Class used to store statistics of a point cloud dataset.
 %End
   public:
     QgsPointCloudStatistics();
-%Docstring
-Constructor
-%End
 
 
     int sampledPointsCount() const;
@@ -99,7 +103,7 @@ Merges the current statistics with the statistics from ``stats``
 Converts the current statistics object into JSON object
 %End
 
-    static QgsPointCloudStatistics fromStatisticsJson( QByteArray stats );
+    static QgsPointCloudStatistics fromStatisticsJson( const QByteArray &stats );
 %Docstring
 Creates a statistics object from the JSON object ``stats``
 %End
@@ -111,5 +115,5 @@ Creates a statistics object from the JSON object ``stats``
  *                                                                      *
  * src/core/pointcloud/qgspointcloudstatistics.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

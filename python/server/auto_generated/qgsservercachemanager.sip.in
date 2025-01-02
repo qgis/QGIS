@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsservercachemanager.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,6 +22,7 @@ A helper class that centralizes caches accesses given by all the server cache fi
 
 %TypeHeaderCode
 #include "qgsservercachemanager.h"
+#include "qgsservercachefilter.h"
 %End
   public:
     QgsServerCacheManager( const QgsServerSettings &settings = QgsServerSettings() );
@@ -30,11 +31,6 @@ Constructor
 %End
 
     QgsServerCacheManager( const QgsServerCacheManager &copy );
-%Docstring
-Copy constructor
-%End
-
-
     ~QgsServerCacheManager();
 
     bool getCachedDocument( QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
@@ -139,5 +135,5 @@ Register a server cache filter
  *                                                                      *
  * src/server/qgsservercachemanager.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -19,10 +19,9 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsvirtualpointcloudprovider.h"
+#include "moc_qgsvirtualpointcloudprovider.cpp"
 #include "qgscopcpointcloudindex.h"
 #include "qgseptpointcloudindex.h"
-#include "qgsremotecopcpointcloudindex.h"
-#include "qgsremoteeptpointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudextentrenderer.h"
@@ -46,7 +45,7 @@
 QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
@@ -391,20 +390,10 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   if ( sl.index() )
     return;
 
-  if ( sl.uri().startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
-  {
-    if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsRemoteCopcPointCloudIndex() );
-    else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsRemoteEptPointCloudIndex() );
-  }
-  else
-  {
-    if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsCopcPointCloudIndex() );
-    else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsEptPointCloudIndex() );
-  }
+  if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    sl.setIndex( new QgsCopcPointCloudIndex() );
+  else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    sl.setIndex( new QgsEptPointCloudIndex() );
 
   if ( !sl.index() )
     return;
@@ -437,7 +426,7 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
   if ( names.contains( QLatin1String( "Classification" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar ) );
   if ( names.contains( QLatin1String( "ScanAngleRank" ) ) )
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ScanAngleRank" ), QgsPointCloudAttribute::Short ) );
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ScanAngleRank" ), QgsPointCloudAttribute::Float ) );
   if ( names.contains( QLatin1String( "UserData" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "UserData" ), QgsPointCloudAttribute::Char ) );
   if ( names.contains( QLatin1String( "PointSourceId" ) ) )
@@ -536,7 +525,7 @@ QIcon QgsVirtualPointCloudProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconPointCloudLayer.svg" ) );
 }
 
-QgsVirtualPointCloudProvider *QgsVirtualPointCloudProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsVirtualPointCloudProvider *QgsVirtualPointCloudProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsVirtualPointCloudProvider( uri, options, flags );
 }
@@ -626,5 +615,9 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsVirtualPointCloudProviderMe
          | ProviderMetadataCapability::PriorityForUri
          | ProviderMetadataCapability::QuerySublayers;
 }
+
+#undef PROVIDER_KEY
+#undef PROVIDER_DESCRIPTION
+
 ///@endcond
 

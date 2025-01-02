@@ -32,9 +32,6 @@ class CORE_EXPORT QgsHollowScaleBarRenderer: public QgsScaleBarRenderer
 {
   public:
 
-    /**
-     * Constructor for QgsHollowScaleBarRenderer.
-     */
     QgsHollowScaleBarRenderer() = default;
 
     QString id() const override;

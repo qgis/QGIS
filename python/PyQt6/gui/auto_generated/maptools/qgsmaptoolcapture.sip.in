@@ -1,0 +1,371 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptoolcapture.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
+{
+%Docstring(signature="appended")
+:py:class:`QgsMapToolCapture` is a base class capable of capturing point, lines and polygons.
+The tool supports different techniques: straight segments, curves, streaming and shapes
+Once the the geometry is captured the virtual private handler geometryCaptured is called
+as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
+%End
+
+%TypeHeaderCode
+#include "qgsmaptoolcapture.h"
+%End
+  public:
+    enum CaptureMode /BaseType=IntEnum/
+    {
+      CaptureNone,
+      CapturePoint,
+      CaptureLine,
+      CapturePolygon
+    };
+
+    enum Capability /BaseType=IntEnum/
+    {
+      NoCapabilities,
+      SupportsCurves,
+      ValidateGeometries,
+    };
+
+    typedef QFlags<QgsMapToolCapture::Capability> Capabilities;
+
+
+    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
+%Docstring
+constructor
+%End
+
+    ~QgsMapToolCapture();
+
+    virtual QgsMapToolCapture::Capabilities capabilities() const;
+%Docstring
+Returns flags containing the supported capabilities
+%End
+
+    virtual bool supportsTechnique( Qgis::CaptureTechnique technique ) const;
+%Docstring
+Returns ``True`` if the tool supports the specified capture ``technique``.
+
+.. versionadded:: 3.20
+%End
+
+    void setCurrentCaptureTechnique( Qgis::CaptureTechnique technique );
+%Docstring
+Sets the current capture if it is supported by the map tool
+
+.. versionadded:: 3.26
+%End
+
+    Qgis::CaptureTechnique currentCaptureTechnique() const;
+%Docstring
+Returns the active capture technique
+
+.. versionadded:: 3.32
+%End
+
+
+    virtual void activate();
+
+    virtual void deactivate();
+
+
+    CaptureMode mode() const;
+%Docstring
+The capture mode
+
+:return: Capture mode
+%End
+
+    int addCurve( QgsCurve *c );
+%Docstring
+Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
+%End
+
+    void clearCurve();
+%Docstring
+Clear capture curve.
+%End
+
+    const QgsCompoundCurve *captureCurve() const;
+%Docstring
+Gets the capture curve
+
+:return: Capture curve
+%End
+
+    QList<QgsPointLocator::Match> snappingMatches() const;
+%Docstring
+Returns a list of matches for each point on the captureCurve.
+%End
+
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
+
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
+
+
+    virtual void keyPressEvent( QKeyEvent *e );
+
+%Docstring
+Intercept key events like Esc or Del to delete the last point
+
+:param e: key event
+%End
+
+    void deleteTempRubberBand();
+%Docstring
+Clean a temporary rubberband
+%End
+
+    virtual void clean();
+
+%Docstring
+convenient method to clean members
+%End
+
+    QgsRubberBand *takeRubberBand() /Factory/;
+%Docstring
+Returns the rubberBand currently owned by this map tool and
+transfers ownership to the caller.
+
+May be ``None``.
+
+.. versionadded:: 3.8
+%End
+
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
+%Docstring
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
+WkbType of the current layer). If the point is snapped, then the Z
+value is derived from the snapped point.
+
+:param e: A mouse event
+
+:return: a point with ZM support if necessary
+%End
+
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
+%Docstring
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
+WkbType of the current layer).
+
+:param point: A point in 2D
+
+:return: a point with ZM support if necessary
+%End
+
+
+  public slots:
+
+ void setCircularDigitizingEnabled( bool enable ) /Deprecated="Since 3.26. Use setCurrentCaptureTechnique() instead."/;
+%Docstring
+Enable the digitizing with curve
+
+.. deprecated:: 3.26
+
+   Use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead.
+%End
+
+ void setStreamDigitizingEnabled( bool enable ) /Deprecated="Since 3.26. Use setCurrentCaptureTechnique() instead."/;
+%Docstring
+Toggles the stream digitizing mode.
+
+.. versionadded:: 3.20
+
+.. deprecated:: 3.26
+
+   Use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead.
+%End
+
+  protected:
+
+    int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
+%Docstring
+Converts a map point to layer coordinates
+
+:param mapPoint: the point in map coordinates
+:param layerPoint: the point in layer coordinates
+
+:return:
+         0 in case of success
+         1 if the current layer is ``None``
+         2 if the transformation failed
+%End
+
+
+    int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+%Docstring
+Converts a point to map coordinates and layer coordinates
+
+:param p: the input point
+:param layerPoint: the point in layer coordinates
+:param mapPoint: the point in map coordinates
+
+:return:
+         0 in case of success
+         1 if the current layer is ``None`` or not a vector layer
+         2 if the transformation failed
+%End
+
+
+    int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
+%Docstring
+Fetches the original point from the source layer if it has the same
+CRS as the current layer.
+If topological editing is activated, the points are projected to the
+current layer CRS.
+
+:return:
+         0 in case of success
+         1 if not applicable (CRS mismatch / invalid layer)
+         2 in case of failure
+%End
+
+    int addVertex( const QgsPointXY &point );
+%Docstring
+Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
+
+:return: 0 in case of success, 2 if coordinate transformation failed
+%End
+
+    int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
+%Docstring
+Variant to supply more information in the case of snapping
+
+:param mapPoint: The vertex to add in map coordinates
+:param match: Data about the snapping match. Can be an invalid match, if point not snapped.
+%End
+
+    void undo( bool isAutoRepeat = false );
+%Docstring
+Removes the last vertex from mRubberBand and mCaptureList.
+
+Since QGIS 3.20, if ``isAutoRepeat`` is set to ``True`` then the undo operation will be treated
+as a auto repeated undo as if the user has held down the undo key for an extended period of time.
+%End
+
+    void startCapturing();
+%Docstring
+Start capturing
+%End
+
+    bool isCapturing() const;
+%Docstring
+Are we currently capturing?
+
+:return: Is the tool in capture mode?
+%End
+
+    int size();
+%Docstring
+Number of points digitized
+
+:return: Number of points
+%End
+
+ QVector<QgsPointXY> points() const /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY."/;
+%Docstring
+List of digitized points
+
+:return: List of points
+
+.. deprecated:: 3.12
+
+   Will be removed in QGIS 4.0. Use the variant returns :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+%End
+
+
+    QgsPointSequence pointsZM() const;
+%Docstring
+List of digitized points
+
+:return: List of points
+
+.. versionadded:: 3.12
+%End
+
+ void setPoints( const QVector<QgsPointXY> &pointList ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
+%Docstring
+Set the points on which to work
+
+:param pointList: A list of points
+
+.. deprecated:: 3.12
+
+   Will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
+%End
+
+    void setPoints( const QgsPointSequence &pointList );
+%Docstring
+Set the points on which to work
+
+:param pointList: A list of points
+
+.. versionadded:: 3.12
+%End
+
+    void closePolygon();
+%Docstring
+Close an open polygon
+%End
+
+  protected slots:
+
+    void stopCapturing();
+%Docstring
+Stop capturing
+%End
+
+  private:
+    virtual void geometryCaptured( const QgsGeometry &geometry );
+%Docstring
+Called when the geometry is captured
+A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
+
+.. versionadded:: 3.26
+%End
+    virtual void pointCaptured( const QgsPoint &point );
+%Docstring
+Called when a point is captured
+geometryCaptured is called just before
+
+.. versionadded:: 3.26
+%End
+    virtual void lineCaptured( const QgsCurve *line );
+%Docstring
+Called when a line is captured
+geometryCaptured is called just before
+
+.. versionadded:: 3.26
+%End
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon );
+%Docstring
+Called when a polygon is captured
+geometryCaptured is called just before
+
+.. versionadded:: 3.26
+%End
+};
+
+QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1, QFlags<QgsMapToolCapture::Capability> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptoolcapture.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayermodel.h"
+#include "moc_qgsprovidersublayermodel.cpp"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsiconutils.h"
 #include "qgsapplication.h"
@@ -79,6 +80,7 @@ QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::addChild( std::uniq
 
   QgsProviderSublayerModelNode *res = child.get();
   mChildren.emplace_back( std::move( child ) );
+  // cppcheck-suppress returnDanglingLifetime
   return res;
 }
 

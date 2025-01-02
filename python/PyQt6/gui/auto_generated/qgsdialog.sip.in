@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdialog.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,10 +20,7 @@ A generic dialog with layout and button box
 #include "qgsdialog.h"
 %End
   public:
-
-    QgsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
-               Qt::Orientation orientation = Qt::Horizontal );
+    QgsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close, Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
 Constructor for QgsDialog.
 %End
@@ -45,5 +42,5 @@ Returns the button box.
  *                                                                      *
  * src/gui/qgsdialog.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

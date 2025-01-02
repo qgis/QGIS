@@ -1,0 +1,102 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingtools.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsAdvancedDigitizingTool : QObject
+{
+%Docstring(signature="appended")
+An abstract class for advanced digitizing tools.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsadvanceddigitizingtools.h"
+%End
+  public:
+    explicit QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+The advanced digitizing tool constructor.
+
+:param canvas: The map canvas on which the widget operates
+:param cadDockWidget: The cadDockWidget to which the floater belongs
+%End
+
+    QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the map canvas associated with the tool.
+%End
+
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
+%Docstring
+Returns the advanced digitizing widget associated with the tool.
+%End
+
+    virtual QWidget *createWidget();
+%Docstring
+Returns a widget to control the tool.
+
+.. note::
+
+   The caller gets the ownership.
+%End
+
+    virtual void paint( QPainter *painter );
+%Docstring
+Paints tool content onto the advanced digitizing canvas item.
+%End
+
+    virtual void canvasPressEvent( QgsMapMouseEvent *event );
+%Docstring
+Handles canvas press event.
+
+.. note::
+
+   To stop propagation, set the event's accepted property to ``False``.
+%End
+
+    virtual void canvasMoveEvent( QgsMapMouseEvent *event );
+%Docstring
+Handles canvas press move.
+
+.. note::
+
+   To stop propagation, set the event's accepted property to ``False``.
+%End
+
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *event );
+%Docstring
+Handles canvas release event.
+
+.. note::
+
+   To stop propagation, set the event's accepted property to ``False``.
+%End
+
+  signals:
+
+    void paintRequested();
+%Docstring
+Requests a new painting event to the advanced digitizing canvas item.
+%End
+
+  protected:
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingtools.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

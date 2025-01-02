@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointcloudattribute.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,9 +40,6 @@ pair of name and size in bytes
     };
 
     QgsPointCloudAttribute();
-%Docstring
-Ctor
-%End
     QgsPointCloudAttribute( const QString &name, DataType type );
 %Docstring
 Ctor
@@ -65,7 +62,7 @@ Returns the data type
 .. seealso:: :py:func:`variantType`
 %End
 
-    QVariant::Type variantType() const;
+    QMetaType::Type variantType() const;
 %Docstring
 Returns the most suitable equivalent QVariant data type to this attribute type.
 
@@ -110,10 +107,8 @@ Collection of point cloud attributes
 #include "qgspointcloudattribute.h"
 %End
   public:
+
     QgsPointCloudAttributeCollection();
-%Docstring
-Ctor
-%End
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
 %Docstring
 Ctor with given attributes
@@ -179,5 +174,5 @@ Converts the attribute collection to an equivalent :py:class:`QgsFields` collect
  *                                                                      *
  * src/core/pointcloud/qgspointcloudattribute.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

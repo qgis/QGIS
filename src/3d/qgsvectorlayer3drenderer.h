@@ -22,10 +22,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
-
 #include "qgsphongmaterialsettings.h"
-
-#include "qgsmaplayerref.h"
 
 #include <QObject>
 
@@ -67,13 +64,13 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRende
 
     QString type() const override { return "vector"; }
     QgsVectorLayer3DRenderer *clone() const override SIP_FACTORY;
-    Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
+    Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
   private:
-    std::unique_ptr<QgsAbstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
+    std::unique_ptr<QgsAbstract3DSymbol> mSymbol; //!< 3D symbol that defines appearance
 
   private:
 #ifdef SIP_RUN

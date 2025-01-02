@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsoptionsdialoghighlightwidget.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ This uses stylesheets.
 #include "qgsoptionsdialoghighlightwidget.h"
 %End
   public:
-
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) /Factory/;
 %Docstring
 create a highlight widget implementation for the proper widget type.
@@ -54,7 +53,6 @@ Returns the widget
 %End
 
   protected:
-
     virtual bool searchText( const QString &text ) = 0;
 %Docstring
 Search for the ``text`` in the widget and return ``True`` if it was found
@@ -87,5 +85,5 @@ Constructor
  *                                                                      *
  * src/gui/qgsoptionsdialoghighlightwidget.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextblock.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -36,6 +36,16 @@ Constructor for an empty text block.
 Constructor for a QgsTextBlock consisting of a single text ``fragment``.
 %End
 
+    static QgsTextBlock fromPlainText( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+%Docstring
+Constructor for QgsTextBlock consisting of a plain ``text``, and optional character ``format``.
+
+If ``text`` contains tab characters they will be appended as separate text fragments
+within the block, consisting of just the tab character.
+
+.. versionadded:: 3.38
+%End
+
     QString toPlainText() const;
 %Docstring
 Converts the block to plain text.
@@ -43,9 +53,36 @@ Converts the block to plain text.
 .. versionadded:: 3.16
 %End
 
+    void reserve( int count );
+%Docstring
+Reserves the specified ``count`` of fragments for optimised fragment appending.
+
+.. versionadded:: 3.40
+%End
+
     void append( const QgsTextFragment &fragment );
 %Docstring
 Appends a ``fragment`` to the block.
+%End
+
+    void insert( int index, const QgsTextFragment &fragment );
+%Docstring
+Inserts a ``fragment`` into the block, at the specified index.
+
+:raises IndexError: if no fragment exists at the specified index.
+
+.. versionadded:: 3.40
+%End
+%MethodCode
+    if ( a0 < 0 || a0 > sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->insert( a0, *a1 );
+    }
 %End
 
 
@@ -64,11 +101,36 @@ Returns ``True`` if the block is empty.
 Returns the number of fragments in the block.
 %End
 
+    const QgsTextBlockFormat &blockFormat() const;
+%Docstring
+Returns the block formatting for the fragment.
+
+.. seealso:: :py:func:`setBlockFormat`
+
+.. versionadded:: 3.40
+%End
+
+    void setBlockFormat( const QgsTextBlockFormat &format );
+%Docstring
+Sets the block ``format`` for the fragment.
+
+.. seealso:: :py:func:`blockFormat`
+
+.. versionadded:: 3.40
+%End
+
     void applyCapitalization( Qgis::Capitalization capitalization );
 %Docstring
 Applies a ``capitalization`` style to the block's text.
 
 .. versionadded:: 3.16
+%End
+
+    bool hasBackgrounds() const;
+%Docstring
+Returns ``True`` if the block or any of the fragments in the block have background brushes set.
+
+.. versionadded:: 3.42
 %End
 
     int __len__() const;
@@ -112,5 +174,5 @@ Returns the fragment at the specified ``index``.
  *                                                                      *
  * src/core/textrenderer/qgstextblock.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

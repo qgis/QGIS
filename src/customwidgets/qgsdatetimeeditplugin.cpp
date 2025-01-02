@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsdatetimeeditplugin.h"
+#include "moc_qgsdatetimeeditplugin.cpp"
 #include "qgsdatetimeedit.h"
 
 
@@ -93,5 +94,5 @@ QString QgsDateTimeEditPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

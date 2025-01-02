@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsattributeformeditorwidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,9 +22,7 @@ controlling the multi edit results.
 #include "qgsattributeformeditorwidget.h"
 %End
   public:
-
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
-                                           QgsAttributeForm *form  /TransferThis/ );
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form /TransferThis/ );
 %Docstring
 Constructor for QgsAttributeFormEditorWidget.
 
@@ -99,8 +97,9 @@ Emitted when the widget's value changes
 
 :param value: new widget value
 
-.. deprecated:: QGIS 3.10
-   use valuesChanged instead
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsAttributeFormEditorWidget.valuesChanged` instead.
 %End
 
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
@@ -120,5 +119,5 @@ Emitted when the widget's value changes
  *                                                                      *
  * src/gui/qgsattributeformeditorwidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

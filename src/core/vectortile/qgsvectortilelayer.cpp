@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayer.h"
+#include "moc_qgsvectortilelayer.cpp"
 
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
@@ -22,7 +23,6 @@
 #include "qgsvectortilelabeling.h"
 #include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsdatasourceuri.h"
 #include "qgslayermetadataformatter.h"
@@ -58,7 +58,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   connect( this, &QgsVectorTileLayer::selectionChanged, this, [this] { triggerRepaint(); } );
 }
 
-void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags )
+void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, Qgis::DataProviderReadFlags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -79,7 +79,7 @@ bool QgsVectorTileLayer::loadDataSource()
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
   const QgsDataProvider::ProviderOptions providerOptions { mTransformContext };
-  const QgsDataProvider::ReadFlags flags;
+  const Qgis::DataProviderReadFlags flags;
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   QString providerKey;
@@ -127,6 +127,7 @@ QgsVectorTileLayer *QgsVectorTileLayer::clone() const
   const QgsVectorTileLayer::LayerOptions options( mTransformContext );
   QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name(), options );
   layer->setRenderer( renderer() ? renderer()->clone() : nullptr );
+  layer->setLabeling( labeling() ? labeling()->clone() : nullptr );
   return layer;
 }
 
@@ -572,6 +573,8 @@ QString QgsVectorTileLayer::htmlMetadata() const
           htmlFormatter.historySectionHtml( ) %
           QStringLiteral( "<br>\n" ) %
 
+          customPropertyHtmlMetadata() %
+
           QStringLiteral( "\n</body>\n</html>\n" );
 
   return info;
@@ -709,8 +712,8 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
   auto addDerivedFields = []( QgsFeature & feature, const int tileZoom, const QString & layer )
   {
     QgsFields fields = feature.fields();
-    fields.append( QgsField( QStringLiteral( "tile_zoom" ), QVariant::Int ) );
-    fields.append( QgsField( QStringLiteral( "tile_layer" ), QVariant::String ) );
+    fields.append( QgsField( QStringLiteral( "tile_zoom" ), QMetaType::Type::Int ) );
+    fields.append( QgsField( QStringLiteral( "tile_layer" ), QMetaType::Type::QString ) );
     QgsAttributes attributes = feature.attributes();
     attributes << tileZoom << layer;
     feature.setFields( fields );

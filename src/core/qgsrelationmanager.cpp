@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationmanager.h"
+#include "moc_qgsrelationmanager.cpp"
 
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -93,6 +94,20 @@ void QgsRelationManager::removeRelation( const QgsRelation &relation )
 
 QgsRelation QgsRelationManager::relation( const QString &id ) const
 {
+  if ( !mRelations.contains( id ) )
+  {
+    // Check whether the provided ID refers to a polymorphic relation's generated ID
+    // from older versions of QGIS that used layer names instead of stable layer IDs.
+    const QList<QString> keys = mPolymorphicRelations.keys();
+    for ( const QString &key : keys )
+    {
+      if ( id.startsWith( key ) )
+      {
+        return mRelations.value( mPolymorphicRelations[key].upgradeGeneratedRelationId( id ) );
+      }
+    }
+  }
+
   return mRelations.value( id );
 }
 

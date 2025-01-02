@@ -1,0 +1,34 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiproviderutils.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsDataItemGuiProviderUtils
+{
+%Docstring(signature="appended")
+
+Utility functions for :py:class:`QgsDataItemGuiProviders`.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsdataitemguiproviderutils.h"
+%End
+  public:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiproviderutils.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

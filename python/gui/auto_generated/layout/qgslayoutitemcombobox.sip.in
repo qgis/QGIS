@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutitemcombobox.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,7 +20,6 @@ a matching type from a layout.
 #include "qgslayoutitemcombobox.h"
 %End
   public:
-
     explicit QgsLayoutItemComboBox( QWidget *parent /TransferThis/ = 0, QgsLayout *layout = 0 );
 %Docstring
 QgsLayoutItemComboBox creates a combo box to display a list of items in a
@@ -60,14 +59,14 @@ Returns the filter for the item types to show in the combo box.
 .. seealso:: :py:func:`setItemType`
 %End
 
-    void setExceptedItemList( const QList< QgsLayoutItem * > &exceptList );
+    void setExceptedItemList( const QList<QgsLayoutItem *> &exceptList );
 %Docstring
 Sets a list of specific items to exclude from the combo box.
 
 .. seealso:: :py:func:`exceptedItemList`
 %End
 
-    QList< QgsLayoutItem * > exceptedItemList() const;
+    QList<QgsLayoutItem *> exceptedItemList() const;
 %Docstring
 Returns the list of specific items excluded from the combo box.
 
@@ -147,5 +146,5 @@ Emitted whenever the currently selected item changes
  *                                                                      *
  * src/gui/layout/qgslayoutitemcombobox.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

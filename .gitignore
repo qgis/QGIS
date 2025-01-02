@@ -29,6 +29,10 @@
 .pydevproject
 .venv
 .vscode
+.vs
+.devcontainer
+.worktrees
+CMakePresets.json
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*
 /build*
@@ -58,6 +62,7 @@ ms-windows/osgeo4w/untgz/
 ms-windows/packages/
 ms-windows/progs/
 ms-windows/untgz/
+python/expressions/
 python/plugins/grassprovider/description/algorithms.json
 python/plugins/grassprovider/tests/testdata/directions.tif.aux.xml
 python/plugins/processing/tests/testdata/*.aux.xml
@@ -71,6 +76,7 @@ qgis.kdev4
 qgis.supp
 qtcreator-build/
 resources/themes/*/style.qss.auto
+resources/server/src/landingpage/node_modules/
 scripts/Debug
 scripts/RelWithDebInfo
 scripts/astyle.exe
@@ -102,6 +108,8 @@ tests/testdata/raster/band3_float32_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_int16_noct_epsg4326.tif.aux.xml
 tests/testdata/tenbytenraster.asc.aux.xml
 tests/testdata/test_plugin_path/plugin_started.txt
+tests/testdata/test_qgis_config_path/profiles/default/*
+!tests/testdata/test_qgis_config_path/profiles/default/python
 tests/testdata/widget_config.qlr
 tests/testdata/zip/testtar.tgz.properties
 venv

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssymbolwidgetcontext.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,19 +20,8 @@ map canvas and relevant expression contexts.
 #include "qgssymbolwidgetcontext.h"
 %End
   public:
-
     QgsSymbolWidgetContext();
-%Docstring
-Constructor for QgsSymbolWidgetContext.
-%End
-
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
-%Docstring
-Copy constructor.
-
-:param other: source QgsSymbolWidgetContext
-%End
-
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
@@ -92,7 +81,7 @@ the layer widget.
 .. seealso:: :py:func:`setExpressionContext`
 %End
 
-    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope > &scopes );
+    void setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope> &scopes );
 %Docstring
 Sets a list of additional expression context scopes to show as available within the layer.
 
@@ -101,7 +90,7 @@ Sets a list of additional expression context scopes to show as available within 
 .. seealso:: :py:func:`setExpressionContext`
 %End
 
-    QList< QgsExpressionContextScope > additionalExpressionContextScopes() const;
+    QList<QgsExpressionContextScope> additionalExpressionContextScopes() const;
 %Docstring
 Returns the list of additional expression context scopes to show as available within the layer.
 
@@ -141,5 +130,5 @@ of a parent symbol configuration widget.
  *                                                                      *
  * src/gui/symbology/qgssymbolwidgetcontext.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

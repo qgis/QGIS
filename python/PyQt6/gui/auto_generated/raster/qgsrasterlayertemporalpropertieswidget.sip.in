@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrasterlayertemporalpropertieswidget.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ A widget for configuring the temporal properties for a raster layer.
 #include "qgsrasterlayertemporalpropertieswidget.h"
 %End
   public:
-
     QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = 0, QgsRasterLayer *layer = 0 );
 %Docstring
 Constructor for QgsRasterLayerTemporalPropertiesWidget.
@@ -53,5 +52,5 @@ Adds a child ``widget`` to the properties widget.
  *                                                                      *
  * src/gui/raster/qgsrasterlayertemporalpropertieswidget.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluemapsearchwidgetwrapper.h"
+#include "moc_qgsvaluemapsearchwidgetwrapper.cpp"
 #include "qgstexteditconfigdlg.h"
 #include "qgsvaluemapconfigdlg.h"
 #include "qgsvaluemapfieldformatter.h"
@@ -86,7 +87,7 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   //clear any unsupported flags
   flags &= supportedFlags();
 
-  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const QMetaType::Type fldType = layer()->fields().at( mFieldIdx ).type();
   const QString fieldName = createFieldIdentifier();
 
   if ( flags & IsNull )
@@ -102,11 +103,11 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
 
   switch ( fldType )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::Double:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
     {
       if ( flags & EqualTo )
         return fieldName + '=' + currentKey;
@@ -158,9 +159,7 @@ void QgsValueMapSearchWidgetWrapper::setExpression( const QString &expression )
   QString str;
 
   str = QStringLiteral( "%1 = '%2'" )
-        .arg( QgsExpression::quotedColumnRef( fieldName ),
-              exp.replace( '\'', QLatin1String( "''" ) ) );
+          .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
 
   mExpression = str;
 }
-

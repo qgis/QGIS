@@ -39,7 +39,6 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 {
   public:
-
     /**
      * \ingroup analysis
      *
@@ -51,7 +50,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
     class ANALYSIS_EXPORT LayerFeature
     {
       public:
-
         /**
          * Create a new layer/feature combination.
          * The layer is defined by \a pool, \a feature needs to be from this layer.
@@ -65,6 +63,11 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          * The geometry will not be reprojected regardless of useMapCrs.
          */
         QgsFeature feature() const;
+
+        /**
+         * The layer CRS.
+         */
+        QgsCoordinateReferenceSystem layerCrs() const SIP_SKIP;
 
         /**
          * The layer.
@@ -117,20 +120,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         /**
          * Creates a new set of layer and features.
          */
-        LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
-                       const QMap<QString, QgsFeatureIds> &featureIds,
-                       const QList<Qgis::GeometryType> &geometryTypes,
-                       QgsFeedback *feedback,
-                       const QgsGeometryCheckContext *context,
-                       bool useMapCrs = false );
+        LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QgsFeatureIds> &featureIds, const QList<Qgis::GeometryType> &geometryTypes, QgsFeedback *feedback, const QgsGeometryCheckContext *context, bool useMapCrs = false );
 
         /**
          * Creates a new set of layer and features.
          */
-        LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
-                       const QList<QString> &layerIds, const QgsRectangle &extent,
-                       const QList<Qgis::GeometryType> &geometryTypes,
-                       const QgsGeometryCheckContext *context );
+        LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools, const QList<QString> &layerIds, const QgsRectangle &extent, const QList<Qgis::GeometryType> &geometryTypes, const QgsGeometryCheckContext *context );
 
         /**
          * \ingroup analysis
@@ -142,15 +137,11 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         class iterator
         {
           public:
-
             /**
              * Creates a new iterator.
              */
             iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent );
 
-            /**
-             * Copies the iterator \a rh.
-             */
             iterator( const iterator &rh );
             ~iterator();
 
@@ -181,7 +172,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             const LayerFeatures *mParent = nullptr;
             std::unique_ptr<QgsGeometryCheckerUtils::LayerFeature> mCurrentFeature;
 
-            iterator &operator= ( const iterator & ) = delete;
+            iterator &operator=( const iterator & ) = delete;
         };
 
         /**
@@ -212,12 +203,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 
 #ifndef SIP_RUN
 
-    static std::unique_ptr<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );
-
     static QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx );
     static const QgsAbstractGeometry *getGeomPart( const QgsAbstractGeometry *geom, int partIdx );
 
-    static QList <const QgsLineString *> polygonRings( const QgsPolygon *polygon );
+    static QList<const QgsLineString *> polygonRings( const QgsPolygon *polygon );
 
     static void filter1DTypes( QgsAbstractGeometry *geom );
 

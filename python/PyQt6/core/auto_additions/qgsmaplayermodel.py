@@ -17,6 +17,35 @@ QgsMapLayerModel.AdditionalRole = QgsMapLayerModel.CustomRole.Additional
 QgsMapLayerModel.ItemDataRole.AdditionalRole = QgsMapLayerModel.CustomRole.Additional
 QgsMapLayerModel.AdditionalRole.is_monkey_patched = True
 QgsMapLayerModel.AdditionalRole.__doc__ = "True if index corresponds to an additional (non map layer) item"
-QgsMapLayerModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsMapLayerModel.ItemDataRole\n\n.. versionadded:: 3.36\n\n" + '* ``LayerIdRole``: ' + QgsMapLayerModel.CustomRole.LayerId.__doc__ + '\n' + '* ``LayerRole``: ' + QgsMapLayerModel.CustomRole.Layer.__doc__ + '\n' + '* ``EmptyRole``: ' + QgsMapLayerModel.CustomRole.Empty.__doc__ + '\n' + '* ``AdditionalRole``: ' + QgsMapLayerModel.CustomRole.Additional.__doc__
+QgsMapLayerModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsMapLayerModel.ItemDataRole
+
+.. versionadded:: 3.36
+
+* ``LayerId``: Stores the map layer ID
+
+  Available as ``QgsMapLayerModel.LayerIdRole`` in older QGIS releases.
+
+* ``Layer``: Stores pointer to the map layer itself
+
+  Available as ``QgsMapLayerModel.LayerRole`` in older QGIS releases.
+
+* ``Empty``: True if index corresponds to the empty (not set) value
+
+  Available as ``QgsMapLayerModel.EmptyRole`` in older QGIS releases.
+
+* ``Additional``: True if index corresponds to an additional (non map layer) item
+
+  Available as ``QgsMapLayerModel.AdditionalRole`` in older QGIS releases.
+
+
+"""
 # --
 QgsMapLayerModel.CustomRole.baseClass = QgsMapLayerModel
+try:
+    QgsMapLayerModel.iconForLayer = staticmethod(QgsMapLayerModel.iconForLayer)
+except (NameError, AttributeError):
+    pass

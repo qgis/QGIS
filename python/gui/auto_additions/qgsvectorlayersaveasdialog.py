@@ -9,8 +9,24 @@ QgsVectorLayerSaveAsDialog.Option.GeometryType.__doc__ = "Show geometry group"
 QgsVectorLayerSaveAsDialog.Option.Extent.__doc__ = "Show extent group"
 QgsVectorLayerSaveAsDialog.Option.Metadata.__doc__ = "Show metadata options"
 QgsVectorLayerSaveAsDialog.Option.AllOptions.__doc__ = ""
-QgsVectorLayerSaveAsDialog.Option.__doc__ = "Available dialog options.\n\n" + '* ``Symbology``: ' + QgsVectorLayerSaveAsDialog.Option.Symbology.__doc__ + '\n' + '* ``DestinationCrs``: ' + QgsVectorLayerSaveAsDialog.Option.DestinationCrs.__doc__ + '\n' + '* ``Fields``: ' + QgsVectorLayerSaveAsDialog.Option.Fields.__doc__ + '\n' + '* ``AddToCanvas``: ' + QgsVectorLayerSaveAsDialog.Option.AddToCanvas.__doc__ + '\n' + '* ``SelectedOnly``: ' + QgsVectorLayerSaveAsDialog.Option.SelectedOnly.__doc__ + '\n' + '* ``GeometryType``: ' + QgsVectorLayerSaveAsDialog.Option.GeometryType.__doc__ + '\n' + '* ``Extent``: ' + QgsVectorLayerSaveAsDialog.Option.Extent.__doc__ + '\n' + '* ``Metadata``: ' + QgsVectorLayerSaveAsDialog.Option.Metadata.__doc__ + '\n' + '* ``AllOptions``: ' + QgsVectorLayerSaveAsDialog.Option.AllOptions.__doc__
+QgsVectorLayerSaveAsDialog.Option.__doc__ = """Available dialog options.
+
+* ``Symbology``: Show symbology options
+* ``DestinationCrs``: Show destination CRS (reprojection) option
+* ``Fields``: Show field customization group
+* ``AddToCanvas``: Show add to map option
+* ``SelectedOnly``: Show selected features only option
+* ``GeometryType``: Show geometry group
+* ``Extent``: Show extent group
+* ``Metadata``: Show metadata options
+* ``AllOptions``: 
+
+"""
 # --
 QgsVectorLayerSaveAsDialog.Option.baseClass = QgsVectorLayerSaveAsDialog
 QgsVectorLayerSaveAsDialog.Options.baseClass = QgsVectorLayerSaveAsDialog
 Options = QgsVectorLayerSaveAsDialog  # dirty hack since SIP seems to introduce the flags in module
+try:
+    QgsVectorLayerSaveAsDialog.__group__ = ['ogr']
+except (NameError, AttributeError):
+    pass

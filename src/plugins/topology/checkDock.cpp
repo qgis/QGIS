@@ -19,6 +19,7 @@
 #include <QProgressDialog>
 
 #include "checkDock.h"
+#include "moc_checkDock.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
@@ -52,7 +53,7 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mFixButton->hide();
   mFixBox->hide();
 
-  mErrorListModel = new DockFilterModel( mErrorList, parent );
+  mErrorListModel = new DockFilterModel( parent );
   mErrorListModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
   mErrorTableView->setModel( mErrorListModel );
   mErrorTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
@@ -61,7 +62,7 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   mConfigureDialog = new rulesDialog( mTest->testMap(), qIface, parent );
   mTestTable = mConfigureDialog->rulesTable();
 
-  QgsMapCanvas *canvas = qIface->mapCanvas();// mQgisApp->mapCanvas();
+  QgsMapCanvas *canvas = qIface->mapCanvas(); // mQgisApp->mapCanvas();
   mRBFeature1.reset( new QgsRubberBand( canvas ) );
   mRBFeature2.reset( new QgsRubberBand( canvas ) );
   mRBConflict.reset( new QgsRubberBand( canvas ) );
@@ -87,7 +88,7 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   connect( mFixButton, &QAbstractButton::clicked, this, &checkDock::fix );
   connect( mErrorTableView, &QAbstractItemView::clicked, this, &checkDock::errorListClicked );
 
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &checkDock::parseErrorListByLayer );
+  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &checkDock::parseErrorListByLayer );
 
   connect( this, &QDockWidget::visibilityChanged, this, &checkDock::updateRubberBands );
   connect( qgsInterface, &QgisInterface::newProjectCreated, mConfigureDialog, &rulesDialog::clearRules );
@@ -156,10 +157,15 @@ void checkDock::deleteErrors()
   updateFilterComboBox();
 
   mErrorList.clear();
-  mErrorListModel->resetModel();
+  updateModel();
 
   qDeleteAll( mRbErrorMarkers );
   mRbErrorMarkers.clear();
+}
+
+void checkDock::updateModel()
+{
+  mErrorListModel->setErrors( mErrorList );
 }
 
 void checkDock::parseErrorListByLayer( const QString &layerId )
@@ -179,7 +185,7 @@ void checkDock::parseErrorListByLayer( const QString &layerId )
       ++it;
   }
 
-  mErrorListModel->resetModel();
+  updateModel();
   mComment->setText( tr( "No errors were found" ) );
 }
 
@@ -200,7 +206,7 @@ void checkDock::parseErrorListByFeature( int featureId )
   }
 
   mComment->setText( tr( "No errors were found" ) );
-  mErrorListModel->resetModel();
+  updateModel();
 }
 
 void checkDock::configure()
@@ -323,7 +329,7 @@ void checkDock::fix()
   if ( mErrorList.at( row )->fix( fixName ) )
   {
     mErrorList.removeAt( row );
-    mErrorListModel->resetModel();
+    updateModel();
     //parseErrorListByFeature();
     mComment->setText( tr( "%n error(s) were found", nullptr, mErrorList.count() ) );
     qgsInterface->mapCanvas()->refresh();
@@ -349,17 +355,17 @@ void checkDock::runTests( ValidateType type )
     const QString layer2Str = mTestTable->item( i, 4 )->text();
 
     // test if layer1 is in the registry
-    if ( !( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
+    if ( !( ( QgsVectorLayer * ) QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
     {
       QgsMessageLog::logMessage( tr( "Layer %1 not found in registry." ).arg( layer1Str ), tr( "Topology plugin" ) );
       return;
     }
 
-    QgsVectorLayer *layer1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layer1Str );
+    QgsVectorLayer *layer1 = ( QgsVectorLayer * ) QgsProject::instance()->mapLayer( layer1Str );
     QgsVectorLayer *layer2 = nullptr;
 
-    if ( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer2Str ) )
-      layer2 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layer2Str );
+    if ( ( QgsVectorLayer * ) QgsProject::instance()->mapLayers().contains( layer2Str ) )
+      layer2 = ( QgsVectorLayer * ) QgsProject::instance()->mapLayer( layer2Str );
 
     QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );
@@ -402,7 +408,7 @@ void checkDock::runTests( ValidateType type )
   updateFilterComboBox();
 
   mToggleRubberband->setChecked( true );
-  mErrorListModel->resetModel();
+  updateModel();
 }
 
 void checkDock::updateFilterComboBox()

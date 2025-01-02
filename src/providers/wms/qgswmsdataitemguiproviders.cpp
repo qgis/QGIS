@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswmsdataitemguiproviders.h"
+#include "moc_qgswmsdataitemguiproviders.cpp"
 
 #include "qgswmsdataitems.h"
 
@@ -23,13 +24,15 @@
 #include "qgsxyzconnection.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswmssourceselect.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 
 static QWidget *_paramWidget( QgsDataItem *root )
 {
-  if ( qobject_cast<QgsWMSRootItem *>( root ) != nullptr )
+  if ( qobject_cast<QgsWMSRootItem *>( root ) )
   {
     return new QgsWMSSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   }
@@ -39,9 +42,9 @@ static QWidget *_paramWidget( QgsDataItem *root )
   }
 }
 
-void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWMSConnectionItem *connItem = qobject_cast< QgsWMSConnectionItem * >( item ) )
+  if ( QgsWMSConnectionItem *connItem = qobject_cast<QgsWMSConnectionItem *>( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
@@ -53,12 +56,19 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate );
+
+    const QList<QgsWMSConnectionItem *> wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
+    QAction *actionDelete = new QAction( wmsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [wmsConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( wmsConnectionItems, []( const QString &connectionName ) { QgsWMSConnection::deleteConnection( connectionName ); }, context );
+    } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsWMSRootItem *rootItem = qobject_cast< QgsWMSRootItem * >( item ) )
+  if ( QgsWMSRootItem *rootItem = qobject_cast<QgsWMSRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -90,14 +100,36 @@ void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
   }
 }
 
-void QgsWmsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
+void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+  const QString connectionName = item->name();
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wms" ) } );
 
-  QgsWMSConnection::deleteConnection( item->name() );
-  // the parent should be updated
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  const QStringList detailsParameters { QStringLiteral( "wms" ), connectionName };
+  const QStringList newDetailsParameters { QStringLiteral( "wms" ), newConnectionName };
+
+  QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsReportedLayerExtents->setValue( QgsOwsConnection::settingsReportedLayerExtents->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsIgnoreGetMapURI->setValue( QgsOwsConnection::settingsIgnoreGetMapURI->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsSmoothPixmapTransform->setValue( QgsOwsConnection::settingsSmoothPixmapTransform->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsDpiMode->setValue( QgsOwsConnection::settingsDpiMode->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsTilePixelRatio->setValue( QgsOwsConnection::settingsTilePixelRatio->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsFeatureCount->setValue( QgsOwsConnection::settingsFeatureCount->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsHeaders->setValue( QgsOwsConnection::settingsHeaders->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsUsername->setValue( QgsOwsConnection::settingsUsername->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsPassword->setValue( QgsOwsConnection::settingsPassword->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsAuthCfg->setValue( QgsOwsConnection::settingsAuthCfg->value( detailsParameters ), newDetailsParameters );
+
   item->parent()->refreshConnections();
 }
 
@@ -125,8 +157,7 @@ void QgsWmsDataItemGuiProvider::saveConnections()
 
 void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -140,20 +171,27 @@ void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 // -----------
 
 
-void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsXyzLayerItem *layerItem = qobject_cast< QgsXyzLayerItem * >( item ) )
+  if ( QgsXyzLayerItem *layerItem = qobject_cast<QgsXyzLayerItem *>( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), this );
-    connect( actionDelete, &QAction::triggered, this, [layerItem] { deleteConnection( layerItem ); } );
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
+    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+    menu->addAction( actionDuplicate );
+
+    const QList<QgsXyzLayerItem *> xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
+    QAction *actionDelete = new QAction( xyzConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [xyzConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( xyzConnectionItems, []( const QString &connectionName ) { QgsXyzConnectionUtils::deleteConnection( connectionName ); }, context );
+    } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsXyzTileRootItem *rootItem = qobject_cast< QgsXyzTileRootItem * >( item ) )
+  if ( QgsXyzTileRootItem *rootItem = qobject_cast<QgsXyzTileRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -187,13 +225,16 @@ void QgsXyzDataItemGuiProvider::editConnection( QgsDataItem *item )
   item->parent()->refreshConnections();
 }
 
-void QgsXyzDataItemGuiProvider::deleteConnection( QgsDataItem *item )
+void QgsXyzDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ), tr( "Are you sure you want to remove the connection “%1”?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+  const QString connectionName = item->name();
+  const QStringList connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
 
-  QgsXyzConnectionUtils::deleteConnection( item->name() );
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsXyzConnection connection = QgsXyzConnectionUtils::connection( connectionName );
+  connection.name = newConnectionName;
+  QgsXyzConnectionUtils::addConnection( connection );
 
   item->parent()->refreshConnections();
 }
@@ -216,8 +257,7 @@ void QgsXyzDataItemGuiProvider::saveXyzTilesServers()
 
 void QgsXyzDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

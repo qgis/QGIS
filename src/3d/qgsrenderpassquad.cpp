@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsrenderpassquad.h"
+#include "moc_qgsrenderpassquad.cpp"
 
 #include <random>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -43,12 +44,12 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QUrl>
 #include <QVector3D>
 
-QgsRenderPassQuad::QgsRenderPassQuad( QNode *parent )
+QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   Qt3DQGeometry *geom = new Qt3DQGeometry( this );
   Qt3DQAttribute *positionAttribute = new Qt3DQAttribute( this );
-  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f,  1.0f, 0.0f };
+  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f, 1.0f, 0.0f, /**/ -1.0f, 1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f, 1.0f, 0.0f };
 
   const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DQBuffer *vertexBuffer = nullptr;
@@ -98,8 +99,5 @@ QgsRenderPassQuad::QgsRenderPassQuad( QNode *parent )
 
   addComponent( mMaterial );
 
-  mLayer = new Qt3DRender::QLayer( this );
-  mLayer->setRecursive( true );
-  addComponent( mLayer );
+  addComponent( layer );
 }
-

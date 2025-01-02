@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/classification/qgsclassificationlogarithmic.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,7 @@ Implementation of a logarithmic scale method
     };
 
     QgsClassificationLogarithmic();
-    virtual QgsClassificationMethod *clone() const;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const;
 
     virtual QString name() const;
 
@@ -50,5 +50,5 @@ Implementation of a logarithmic scale method
  *                                                                      *
  * src/core/classification/qgsclassificationlogarithmic.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/network/qgsnetworkspeedstrategy.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ used for finding fastest path between two points.
 #include "qgsnetworkspeedstrategy.h"
 %End
   public:
-
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 %Docstring
 Default constructor
@@ -27,7 +26,7 @@ Default constructor
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const;
 
-    virtual QSet< int > requiredAttributes() const;
+    virtual QSet<int> requiredAttributes() const;
 
 
 };
@@ -37,5 +36,5 @@ Default constructor
  *                                                                      *
  * src/analysis/network/qgsnetworkspeedstrategy.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

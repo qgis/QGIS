@@ -129,6 +129,9 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
     const QList< QgsLayerMetadata::SpatialExtent > spatialExtents = extent.spatialExtents();
     for ( const QgsLayerMetadata::SpatialExtent &spatialExtent : spatialExtents )
     {
+      if ( spatialExtent.bounds.isNull() || spatialExtent.bounds.toRectangle().isNull() )
+        continue;
+
       if ( notFirstRow )
       {
         myMetadata += QLatin1String( "<br />\n" );

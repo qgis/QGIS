@@ -40,7 +40,6 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
 {
   public:
 
-    //! Constructor
     QgsMeshEditForceByLine() = default;
 
     //! Sets the input forcing line in rendering coordinates
@@ -145,7 +144,6 @@ class CORE_EXPORT QgsMeshEditForceByPolylines : public QgsMeshEditForceByLine
 {
   public:
 
-    //! Constructor
     QgsMeshEditForceByPolylines() = default;
 
     QString text() const override;

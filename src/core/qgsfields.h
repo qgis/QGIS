@@ -19,6 +19,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsfield.h"
 
 class QgsFieldsPrivate;
@@ -41,7 +42,7 @@ class QgsFieldsPrivate;
  *
  * \note QgsFields objects are implicitly shared.
  */
-class CORE_EXPORT  QgsFields
+class CORE_EXPORT QgsFields
 {
     Q_GADGET
 
@@ -51,15 +52,6 @@ class CORE_EXPORT  QgsFields
 
   public:
 
-    enum FieldOrigin
-    {
-      OriginUnknown,   //!< It has not been specified where the field comes from
-      OriginProvider,  //!< Field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
-      OriginJoin,      //!< Field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
-      OriginEdit,      //!< Field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
-      OriginExpression //!< Field is calculated from an expression
-    };
-
 #ifndef SIP_RUN
 
     typedef struct Field
@@ -67,7 +59,7 @@ class CORE_EXPORT  QgsFields
       Field()
       {}
 
-      Field( const QgsField &f, FieldOrigin o, int oi )
+      Field( const QgsField &f, Qgis::FieldOrigin o, int oi )
         : field( f )
         , origin( o )
         , originIndex( oi )
@@ -79,7 +71,7 @@ class CORE_EXPORT  QgsFields
       bool operator!=( const Field &other ) const { return !( *this == other ); }
 
       QgsField field;      //!< Field
-      FieldOrigin origin = OriginUnknown ;  //!< Origin of the field
+      Qgis::FieldOrigin origin = Qgis::FieldOrigin::Unknown ;  //!< Origin of the field
       int originIndex = -1 ;     //!< Index specific to the origin
     } Field;
 
@@ -88,34 +80,62 @@ class CORE_EXPORT  QgsFields
     /**
      * Constructor for an empty field container
      */
-    QgsFields();
+    QgsFields() SIP_HOLDGIL;
 
-    /**
-     * Copy constructor
-     */
-    QgsFields( const QgsFields &other );
-
-    /**
-     * Assignment operator
-     */
+    QgsFields( const QgsFields &other ) SIP_HOLDGIL;
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
+
+    /**
+     * Construct QgsFields from a list of \a fields.
+     *
+     * \since QGIS 3.40
+     */
+    QgsFields( const QList< QgsField > &fields ) SIP_HOLDGIL;
 
     virtual ~QgsFields();
 
     //! Removes all fields
-    void clear();
+    void clear() SIP_HOLDGIL;
 
-    //! Appends a field. The field must have unique name, otherwise it is rejected (returns FALSE)
-    bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    /**
+     * Appends a \a field.
+     *
+     * The field must have a unique name, otherwise it is rejected (returns FALSE).
+     *
+     * The \a originIndex argument must be set to a value corresponding to the \a origin type:
+     *
+     * - Qgis::FieldOrigin::Provider: The field's originIndex is the index in provider's fields.
+     * - Qgis::FieldOrigin::Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
+     * - Qgis::FieldOrigin::Edit: The originIndex is the index in the list of added attributes
+     */
+    bool append( const QgsField &field, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider, int originIndex = -1 ) SIP_HOLDGIL;
+
+    /**
+     * Appends a list of \a fields.
+     *
+     * The fields must have unique names, otherwise it is rejected (returns FALSE).
+     *
+     * \since QGIS 3.40
+     */
+    bool append( const QList< QgsField > &fields, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider ) SIP_HOLDGIL;
+
+    /**
+     * Appends another set of \a fields to these fields.
+     *
+     * The fields must have unique names, otherwise it is rejected (returns FALSE).
+     *
+     * \since QGIS 3.40
+     */
+    bool append( const QgsFields &fields ) SIP_HOLDGIL;
 
     /**
      * Renames a name of field. The field must have unique name, otherwise change is rejected (returns FALSE)
      * \since QGIS 3.6
      */
-    bool rename( int fieldIdx, const QString &name );
+    bool rename( int fieldIdx, const QString &name ) SIP_HOLDGIL;
 
     //! Appends an expression field. The field must have unique name, otherwise it is rejected (returns FALSE)
-    bool appendExpressionField( const QgsField &field, int originIndex );
+    bool appendExpressionField( const QgsField &field, int originIndex ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -130,7 +150,7 @@ class CORE_EXPORT  QgsFields
      *
      * \throws KeyError if no field with the specified index exists
      */
-    void remove( int fieldIdx );
+    void remove( int fieldIdx ) SIP_HOLDGIL;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
     {
@@ -145,41 +165,41 @@ class CORE_EXPORT  QgsFields
 #endif
 
     //! Extends with fields from another QgsFields container
-    void extend( const QgsFields &other );
+    void extend( const QgsFields &other ) SIP_HOLDGIL;
 
     //! Checks whether the container is empty
-    bool isEmpty() const;
+    bool isEmpty() const SIP_HOLDGIL;
 
     //! Returns number of items
-    int count() const;
+    int count() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
-    int __len__() const;
+    int __len__() const SIP_HOLDGIL;
     % MethodCode
     sipRes = sipCpp->count();
     % End
 
     //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
+    int __bool__() const SIP_HOLDGIL;
     % MethodCode
     sipRes = true;
     % End
 #endif
 
     //! Returns number of items
-    int size() const;
+    int size() const SIP_HOLDGIL;
 
     /**
      * Returns a list with field names
      */
-    QStringList names() const;
+    QStringList names() const SIP_HOLDGIL;
 
     /**
      * Returns if a field index is valid
      * \param i  Index of the field which needs to be checked
      * \returns   TRUE if the field exists
      */
-    Q_INVOKABLE bool exists( int i ) const;
+    Q_INVOKABLE bool exists( int i ) const SIP_HOLDGIL;
 
 #ifndef SIP_RUN
     //! Gets field at particular index (must be in range 0..N-1)
@@ -187,7 +207,7 @@ class CORE_EXPORT  QgsFields
 #endif
 
     //! Gets field at particular index (must be in range 0..N-1)
-    QgsField &operator[]( int i ) SIP_FACTORY;
+    QgsField &operator[]( int i ) SIP_HOLDGIL SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
     SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->count() );
@@ -199,7 +219,7 @@ class CORE_EXPORT  QgsFields
 #endif
 
 #ifdef SIP_RUN
-    SIP_PYOBJECT __getitem__( const QString &name ) const SIP_TYPEHINT( QgsField );
+    SIP_PYOBJECT __getitem__( const QString &name ) const SIP_HOLDGIL SIP_TYPEHINT( QgsField );
     % MethodCode
     const int fieldIdx = sipCpp->lookupField( *a0 );
     if ( fieldIdx == -1 )
@@ -226,7 +246,7 @@ class CORE_EXPORT  QgsFields
      * Returns the field at particular index (must be in range 0..N-1).
      * \throws KeyError if no field exists at the specified index
      */
-    QgsField at( int i ) const SIP_FACTORY;
+    QgsField at( int i ) const SIP_HOLDGIL SIP_FACTORY;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
     {
@@ -252,7 +272,7 @@ class CORE_EXPORT  QgsFields
      * Returns the field at particular index (must be in range 0..N-1).
      * \throws KeyError if no field exists at the specified index
      */
-    QgsField field( int fieldIdx ) const SIP_FACTORY;
+    QgsField field( int fieldIdx ) const SIP_HOLDGIL SIP_FACTORY;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
     {
@@ -278,7 +298,7 @@ class CORE_EXPORT  QgsFields
      * Returns the field with matching name.
      * \throws KeyError if no matching field was found.
      */
-    QgsField field( const QString &name ) const SIP_FACTORY;
+    QgsField field( const QString &name ) const SIP_HOLDGIL SIP_FACTORY;
     % MethodCode
     int fieldIdx = sipCpp->indexFromName( *a0 );
     if ( fieldIdx == -1 )
@@ -298,7 +318,7 @@ class CORE_EXPORT  QgsFields
     /**
      * Returns the field's origin (value from an enumeration).
      */
-    FieldOrigin fieldOrigin( int fieldIdx ) const;
+    Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const;
 #else
 
     /**
@@ -306,7 +326,7 @@ class CORE_EXPORT  QgsFields
      *
      * \throws KeyError if no field exists at the specified index
      */
-    FieldOrigin fieldOrigin( int fieldIdx ) const;
+    Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const SIP_HOLDGIL;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
     {
@@ -324,6 +344,10 @@ class CORE_EXPORT  QgsFields
 
     /**
      * Returns the field's origin index (its meaning is specific to each type of origin).
+     *
+     * - Qgis::FieldOrigin::Provider: The field's originIndex is the index in provider's fields.
+     * - Qgis::FieldOrigin::Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
+     * - Qgis::FieldOrigin::Edit: The originIndex is the index in the list of added attributes
      */
     int fieldOriginIndex( int fieldIdx ) const;
 #else
@@ -331,9 +355,13 @@ class CORE_EXPORT  QgsFields
     /**
      * Returns the field's origin index (its meaning is specific to each type of origin).
      *
+     * - Qgis::FieldOrigin::Provider: The field's originIndex is the index in provider's fields.
+     * - Qgis::FieldOrigin::Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
+     * - Qgis::FieldOrigin::Edit: The originIndex is the index in the list of added attributes
+     *
      * \throws KeyError if no field exists at the specified index
      */
-    int fieldOriginIndex( int fieldIdx ) const;
+    int fieldOriginIndex( int fieldIdx ) const SIP_HOLDGIL;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
     {
@@ -360,7 +388,7 @@ class CORE_EXPORT  QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see lookupField For a more tolerant alternative.
      */
-    Q_INVOKABLE int indexFromName( const QString &fieldName ) const;
+    Q_INVOKABLE int indexFromName( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Gets the field index from the field name.
@@ -373,7 +401,7 @@ class CORE_EXPORT  QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see lookupField For a more tolerant alternative.
      */
-    Q_INVOKABLE int indexOf( const QString &fieldName ) const;
+    Q_INVOKABLE int indexOf( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Looks up field's index from the field name.
@@ -388,18 +416,18 @@ class CORE_EXPORT  QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see indexFromName For a more performant and precise but less tolerant alternative.
      */
-    Q_INVOKABLE  int lookupField( const QString &fieldName ) const;
+    Q_INVOKABLE  int lookupField( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Utility function to get list of attribute indexes
      */
-    QgsAttributeList allAttributesList() const;
+    QgsAttributeList allAttributesList() const SIP_HOLDGIL;
 
     //! Utility function to return a list of QgsField instances
-    QList<QgsField> toList() const;
+    QList<QgsField> toList() const SIP_HOLDGIL;
 
-    bool operator==( const QgsFields &other ) const;
-    bool operator!=( const QgsFields &other ) const { return !( *this == other ); }
+    bool operator==( const QgsFields &other ) const SIP_HOLDGIL;
+    bool operator!=( const QgsFields &other ) const  SIP_HOLDGIL { return !( *this == other ); }
 
 #ifndef SIP_RUN
 
@@ -439,7 +467,18 @@ class CORE_EXPORT  QgsFields
      *
      * \since QGIS 3.16
      */
-    static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid, const QString &typeString = QString() );
+    static QIcon iconForFieldType( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType, const QString &typeString = QString() );
+
+    /**
+     * Returns an icon corresponding to a field \a type
+     *
+     * Since QGIS 3.24, the optional \a subType argument can be used to specify the type of variant list or map values.
+     * Since QGIS 3.30, the optional \a typeString argument can be used to specify field type strings for handling user field types.
+     *
+     * \since QGIS 3.16
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString = QString() ) SIP_DEPRECATED;
 
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const
@@ -449,7 +488,7 @@ class CORE_EXPORT  QgsFields
 
 #ifdef SIP_RUN
 
-    void __setitem__( int key, const QgsField &field );
+    void __setitem__( int key, const QgsField &field ) SIP_HOLDGIL;
     % MethodCode
     int idx = ( int )sipConvertFromSequenceIndex( a0, sipCpp->count() );
     if ( idx < 0 )

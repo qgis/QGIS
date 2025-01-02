@@ -29,8 +29,5 @@
 
   - New unit tests have been added for relevant changes
 
-  - You have run the `scripts/prepare_commit.sh` script (https://github.com/qgis/QGIS/blob/master/.github/CONTRIBUTING.md#contributing-to-qgis) before each commit.
-    If you didn't do this, you can also run `./scripts/astyle_all.sh` from your source folder.
-
-  - You have read the QGIS Coding Standards (https://docs.qgis.org/testing/en/docs/developers_guide/codingstandards.html) and this PR complies with them
+  - you have read the QGIS Developer Guide (https://docs.qgis.org/testing/en/docs/developers_guide/index.html) and your PR complies with its QGIS Coding Standards
 -->

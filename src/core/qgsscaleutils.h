@@ -23,6 +23,7 @@
 
 /**
  * \ingroup core
+ * \brief Contains utility functions for working with map scales.
  */
 class CORE_EXPORT QgsScaleUtils
 {
@@ -47,6 +48,34 @@ class CORE_EXPORT QgsScaleUtils
      * \returns TRUE on success and FALSE if failed
      */
     static bool loadScaleList( const QString &fileName, QStringList &scales, QString &errorMessage );
+
+    /**
+     * Returns whether the \a scale is equal to or greater than the \a minScale,
+     * taking non-round numbers into account.
+     *
+     * \param scale The current scale to be compared.
+     * \param minScale The minimum map scale (i.e. most "zoomed out" scale) at
+     * which features, labels or diagrams will be visible. The scale value
+     * indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see lessThanMaximumScale()
+     *
+     * \since QGIS 3.40
+     */
+    static bool equalToOrGreaterThanMinimumScale( const double scale, const double minScale );
+
+    /**
+     * Returns whether the \a scale is less than the \a maxScale, taking non-round
+     * numbers into account.
+     *
+     * \param scale The current scale to be compared.
+     * \param maxScale The maximum map scale (i.e. most "zoomed in" scale) at which
+     * features, labels or diagrams will be visible. The scale value indicates the
+     * scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see equalToOrGreaterThanMinimumScale()
+     *
+     * \since QGIS 3.40
+     */
+    static bool lessThanMaximumScale( const double scale, const double maxScale );
 };
 
 #endif

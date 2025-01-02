@@ -55,6 +55,7 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     QgsMeshLayerElevationProperties *clone() const override SIP_FACTORY;
     bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
+    QList< double > significantZValues( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
     QgsMapLayerElevationProperties::Flags flags() const override;
 

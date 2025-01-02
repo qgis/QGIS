@@ -303,16 +303,16 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
 
   for ( auto it = mData.begin(); it != mData.end(); ++it )
   {
-    QVariant defaultValue( field.type );
+    QVariant defaultValue = QgsVariantUtils::createNullVariant( field.type );
     // Set default values
     switch ( field.type )
     {
-      case QVariant::Type::Char:
-      case QVariant::Type::Int:
-      case QVariant::Type::UInt:
-      case QVariant::Type::LongLong:
-      case QVariant::Type::ULongLong:
-      case QVariant::Type::Double:
+      case QMetaType::Type::QChar:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::UInt:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::ULongLong:
+      case QMetaType::Type::Double:
         defaultValue = 0;
         break;
       default:
@@ -326,7 +326,7 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
   {
     mType = Qgis::RasterAttributeTableType::Thematic;
   }
-  else if ( field.usage == Qgis::RasterAttributeTableFieldUsage::Max || field.usage == Qgis::RasterAttributeTableFieldUsage::Max )
+  else if ( field.usage == Qgis::RasterAttributeTableFieldUsage::Min || field.usage == Qgis::RasterAttributeTableFieldUsage::Max )
   {
     mType = Qgis::RasterAttributeTableType::Athematic;
   }
@@ -337,9 +337,14 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
   return true;
 }
 
-bool QgsRasterAttributeTable::insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+bool QgsRasterAttributeTable::insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage )
 {
   return insertField( position, { name, usage, type}, errorMessage );
+}
+
+bool QgsRasterAttributeTable::insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+{
+  return insertField( position, name, usage, QgsVariantUtils::variantTypeToMetaType( type ), errorMessage );
 }
 
 bool QgsRasterAttributeTable::insertColor( int position, QString *errorMessage )
@@ -348,7 +353,7 @@ bool QgsRasterAttributeTable::insertColor( int position, QString *errorMessage )
   int idx { position };
   for ( const Qgis::RasterAttributeTableFieldUsage usage : std::as_const( colors ) )
   {
-    if ( ! insertField( idx, usageName( usage ), usage, QVariant::Type::Int, errorMessage ) )
+    if ( ! insertField( idx, usageName( usage ), usage, QMetaType::Type::Int, errorMessage ) )
     {
       return false;
     }
@@ -389,7 +394,7 @@ bool QgsRasterAttributeTable::insertRamp( int position, QString *errorMessage )
   int idx { position };
   for ( const Qgis::RasterAttributeTableFieldUsage usage : std::as_const( colors ) )
   {
-    if ( ! insertField( idx, usageName( usage ), usage, QVariant::Type::Int, errorMessage ) )
+    if ( ! insertField( idx, usageName( usage ), usage, QMetaType::Type::Int, errorMessage ) )
     {
       return false;
     }
@@ -398,9 +403,14 @@ bool QgsRasterAttributeTable::insertRamp( int position, QString *errorMessage )
   return true;
 }
 
-bool QgsRasterAttributeTable::appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+bool QgsRasterAttributeTable::appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage )
 {
   return insertField( mFields.count(), name, usage, type, errorMessage );
+}
+
+bool QgsRasterAttributeTable::appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
+{
+  return appendField( name, usage, QgsVariantUtils::variantTypeToMetaType( type ), errorMessage );
 }
 
 bool QgsRasterAttributeTable::appendField( const Field &field, QString *errorMessage )
@@ -570,15 +580,15 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
   for ( const QgsField &field : ratDbfSource.fields() )
   {
     const Qgis::RasterAttributeTableFieldUsage usage { guessFieldUsage( field.name(), field.type() ) };
-    QVariant::Type type { field.type() };
+    QMetaType::Type type { field.type() };
     // DBF sets all int fields to long but for RGBA it doesn't make sense
-    if ( type == QVariant::Type::LongLong &&
+    if ( type == QMetaType::Type::LongLong &&
          ( usage == Qgis::RasterAttributeTableFieldUsage::Red || usage == Qgis::RasterAttributeTableFieldUsage::RedMax || usage == Qgis::RasterAttributeTableFieldUsage::RedMin ||
            usage == Qgis::RasterAttributeTableFieldUsage::Green || usage == Qgis::RasterAttributeTableFieldUsage::GreenMax || usage == Qgis::RasterAttributeTableFieldUsage::GreenMin ||
            usage == Qgis::RasterAttributeTableFieldUsage::Blue || usage == Qgis::RasterAttributeTableFieldUsage::BlueMax || usage == Qgis::RasterAttributeTableFieldUsage::BlueMin ||
            usage == Qgis::RasterAttributeTableFieldUsage::Alpha || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMax || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMin ) )
     {
-      type = QVariant::Int;
+      type = QMetaType::Type::Int;
     }
 
     if ( usage == Qgis::RasterAttributeTableFieldUsage::MinMax || usage == Qgis::RasterAttributeTableFieldUsage::Min || usage == Qgis::RasterAttributeTableFieldUsage::Max )
@@ -596,7 +606,7 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
   }
 
   // Do we have a value field? If not, try to guess one
-  if ( ! hasValueField && mFields.count() > 1 && ( mFields.at( 0 ).type == QVariant::Int || mFields.at( 0 ).type == QVariant::Char || mFields.at( 0 ).type == QVariant::UInt || mFields.at( 0 ).type == QVariant::LongLong || mFields.at( 0 ).type == QVariant::ULongLong ) )
+  if ( ! hasValueField && mFields.count() > 1 && ( mFields.at( 0 ).type == QMetaType::Type::Int || mFields.at( 0 ).type == QMetaType::Type::QChar || mFields.at( 0 ).type == QMetaType::Type::UInt || mFields.at( 0 ).type == QMetaType::Type::LongLong || mFields.at( 0 ).type == QMetaType::Type::ULongLong ) )
   {
     mFields[0].usage = Qgis::RasterAttributeTableFieldUsage::MinMax;
   }
@@ -700,7 +710,7 @@ const QgsRasterAttributeTable::Field QgsRasterAttributeTable::fieldByName( const
   {
     *ok = false;
   }
-  return Field( QString(), Qgis::RasterAttributeTableFieldUsage::Generic, QVariant::String );
+  return Field( QString(), Qgis::RasterAttributeTableFieldUsage::Generic, QMetaType::Type::QString );
 }
 
 const QList<QgsRasterAttributeTable::Field> QgsRasterAttributeTable::fieldsByUsage( const Qgis::RasterAttributeTableFieldUsage fieldUsage ) const
@@ -859,7 +869,7 @@ QVariantList QgsRasterAttributeTable::row( const double matchValue ) const
   return QVariantList();
 }
 
-Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QVariant::Type type )
+Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QMetaType::Type type )
 {
   static const QStringList minValueNames { {
       QStringLiteral( "min" ),
@@ -879,7 +889,7 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
 
   const QString fieldLower { name.toLower() };
 
-  if ( type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt || type == QVariant::LongLong || type == QVariant::ULongLong )
+  if ( type == QMetaType::Type::Double || type == QMetaType::Type::Int || type == QMetaType::Type::UInt || type == QMetaType::Type::LongLong || type == QMetaType::Type::ULongLong )
   {
     if ( minValueNames.contains( fieldLower ) )
     {
@@ -899,7 +909,7 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
       return Qgis::RasterAttributeTableFieldUsage::PixelCount;
     }
     // Colors (not double)
-    else if ( type != QVariant::Double )
+    else if ( type != QMetaType::Type::Double )
     {
       if ( fieldLower.contains( "red" ) || fieldLower == QLatin1String( "r" ) )
       {
@@ -965,7 +975,7 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
     // end colors
   }
 
-  if ( type == QVariant::String )  // default to name for strings
+  if ( type == QMetaType::Type::QString )  // default to name for strings
   {
     return Qgis::RasterAttributeTableFieldUsage::Name;
   }
@@ -973,6 +983,11 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
   // default to generic for all other cases
   return Qgis::RasterAttributeTableFieldUsage::Generic;
 
+}
+
+Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QVariant::Type type )
+{
+  return guessFieldUsage( name, QgsVariantUtils::variantTypeToMetaType( type ) );
 }
 
 QString QgsRasterAttributeTable::usageName( const Qgis::RasterAttributeTableFieldUsage usage )
@@ -1061,12 +1076,12 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
   if ( const QgsPalettedRasterRenderer *palettedRenderer = dynamic_cast<const QgsPalettedRasterRenderer *>( renderer ) )
   {
     QgsRasterAttributeTable *rat = new QgsRasterAttributeTable();
-    rat->appendField( QStringLiteral( "Value" ), Qgis::RasterAttributeTableFieldUsage::MinMax, QVariant::Type::Double );
-    rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QVariant::Type::String );
-    rat->appendField( QStringLiteral( "Red" ), Qgis::RasterAttributeTableFieldUsage::Red, QVariant::Type::Int );
-    rat->appendField( QStringLiteral( "Green" ), Qgis::RasterAttributeTableFieldUsage::Green, QVariant::Type::Int );
-    rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QVariant::Type::Int );
-    rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QVariant::Type::Int );
+    rat->appendField( QStringLiteral( "Value" ), Qgis::RasterAttributeTableFieldUsage::MinMax, QMetaType::Type::Double );
+    rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QMetaType::Type::QString );
+    rat->appendField( QStringLiteral( "Red" ), Qgis::RasterAttributeTableFieldUsage::Red, QMetaType::Type::Int );
+    rat->appendField( QStringLiteral( "Green" ), Qgis::RasterAttributeTableFieldUsage::Green, QMetaType::Type::Int );
+    rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QMetaType::Type::Int );
+    rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QMetaType::Type::Int );
 
     const QgsPalettedRasterRenderer::ClassData classes { palettedRenderer->classes() };
 
@@ -1092,19 +1107,19 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
         switch ( shaderFunction->colorRampType() )
         {
 
-          case QgsColorRampShader::Type::Interpolated:
+          case Qgis::ShaderInterpolationMethod::Linear:
           {
-            rat->appendField( QStringLiteral( "Min" ), Qgis::RasterAttributeTableFieldUsage::Min, QVariant::Type::Double );
-            rat->appendField( QStringLiteral( "Max" ), Qgis::RasterAttributeTableFieldUsage::Max, QVariant::Type::Double );
-            rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QVariant::Type::String );
-            rat->appendField( QStringLiteral( "RedMin" ), Qgis::RasterAttributeTableFieldUsage::RedMin, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "GreenMin" ), Qgis::RasterAttributeTableFieldUsage::GreenMin, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "BlueMin" ), Qgis::RasterAttributeTableFieldUsage::BlueMin, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "AlphaMin" ), Qgis::RasterAttributeTableFieldUsage::AlphaMin, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "RedMax" ), Qgis::RasterAttributeTableFieldUsage::RedMax, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "GreenMax" ), Qgis::RasterAttributeTableFieldUsage::GreenMax, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "BlueMax" ), Qgis::RasterAttributeTableFieldUsage::BlueMax, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "AlphaMax" ), Qgis::RasterAttributeTableFieldUsage::AlphaMax, QVariant::Type::Int );
+            rat->appendField( QStringLiteral( "Min" ), Qgis::RasterAttributeTableFieldUsage::Min, QMetaType::Type::Double );
+            rat->appendField( QStringLiteral( "Max" ), Qgis::RasterAttributeTableFieldUsage::Max, QMetaType::Type::Double );
+            rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QMetaType::Type::QString );
+            rat->appendField( QStringLiteral( "RedMin" ), Qgis::RasterAttributeTableFieldUsage::RedMin, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "GreenMin" ), Qgis::RasterAttributeTableFieldUsage::GreenMin, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "BlueMin" ), Qgis::RasterAttributeTableFieldUsage::BlueMin, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "AlphaMin" ), Qgis::RasterAttributeTableFieldUsage::AlphaMin, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "RedMax" ), Qgis::RasterAttributeTableFieldUsage::RedMax, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "GreenMax" ), Qgis::RasterAttributeTableFieldUsage::GreenMax, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "BlueMax" ), Qgis::RasterAttributeTableFieldUsage::BlueMax, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "AlphaMax" ), Qgis::RasterAttributeTableFieldUsage::AlphaMax, QMetaType::Type::Int );
             const QList<QgsColorRampShader::ColorRampItem> rampItems { shaderFunction->colorRampItemList() };
             if ( rampItems.size() > 1 )
             {
@@ -1125,15 +1140,15 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
             break;
           }
 
-          case QgsColorRampShader::Type::Discrete:
+          case Qgis::ShaderInterpolationMethod::Discrete:
           {
-            rat->appendField( QStringLiteral( "Min" ), Qgis::RasterAttributeTableFieldUsage::Min, QVariant::Type::Double );
-            rat->appendField( QStringLiteral( "Max" ), Qgis::RasterAttributeTableFieldUsage::Max, QVariant::Type::Double );
-            rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QVariant::Type::String );
-            rat->appendField( QStringLiteral( "Red" ), Qgis::RasterAttributeTableFieldUsage::Red, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "Green" ), Qgis::RasterAttributeTableFieldUsage::Green, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QVariant::Type::Int );
+            rat->appendField( QStringLiteral( "Min" ), Qgis::RasterAttributeTableFieldUsage::Min, QMetaType::Type::Double );
+            rat->appendField( QStringLiteral( "Max" ), Qgis::RasterAttributeTableFieldUsage::Max, QMetaType::Type::Double );
+            rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QMetaType::Type::QString );
+            rat->appendField( QStringLiteral( "Red" ), Qgis::RasterAttributeTableFieldUsage::Red, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "Green" ), Qgis::RasterAttributeTableFieldUsage::Green, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QMetaType::Type::Int );
             const QList<QgsColorRampShader::ColorRampItem> rampItems { shaderFunction->colorRampItemList() };
             if ( rampItems.size( ) > 1 )
             {
@@ -1154,14 +1169,14 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
             break;
           }
 
-          case QgsColorRampShader::Type::Exact:
+          case Qgis::ShaderInterpolationMethod::Exact:
           {
-            rat->appendField( QStringLiteral( "Value" ), Qgis::RasterAttributeTableFieldUsage::MinMax, QVariant::Type::Double );
-            rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QVariant::Type::String );
-            rat->appendField( QStringLiteral( "Red" ), Qgis::RasterAttributeTableFieldUsage::Red, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "Green" ), Qgis::RasterAttributeTableFieldUsage::Green, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QVariant::Type::Int );
-            rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QVariant::Type::Int );
+            rat->appendField( QStringLiteral( "Value" ), Qgis::RasterAttributeTableFieldUsage::MinMax, QMetaType::Type::Double );
+            rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QMetaType::Type::QString );
+            rat->appendField( QStringLiteral( "Red" ), Qgis::RasterAttributeTableFieldUsage::Red, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "Green" ), Qgis::RasterAttributeTableFieldUsage::Green, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QMetaType::Type::Int );
+            rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QMetaType::Type::Int );
             const QList<QgsColorRampShader::ColorRampItem> rampItems { shaderFunction->colorRampItemList() };
             for ( const QgsColorRampShader::ColorRampItem &rampItem : std::as_const( rampItems ) )
             {
@@ -1199,26 +1214,26 @@ QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInform
 {
   std::call_once( usageInformationLoaderFlag, [ ]
   {
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Generic, { tr( "General Purpose Field" ), false, false, false, false, true, true, QList<QVariant::Type>() << QVariant::String << QVariant::Int << QVariant::LongLong << QVariant::Double } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::PixelCount, { tr( "Histogram Pixel Count" ), true, false, false, false, true, false, QList<QVariant::Type>() << QVariant::LongLong } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Name, { tr( "Class Name" ), false, false, false, false, true, true, QList<QVariant::Type>() << QVariant::String } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::MinMax, { tr( "Class Value (min=max)" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Min, { tr( "Class Minimum Value" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Max, { tr( "Class Maximum Value" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Red, { tr( "Red Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Green, { tr( "Green Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Blue, { tr( "Blue Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Alpha, { tr( "Alpha Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::RedMin, { tr( "Red Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::GreenMin, { tr( "Green Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::BlueMin, { tr( "Blue Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::AlphaMin, { tr( "Alpha Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::RedMax, { tr( "Red Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::GreenMax, { tr( "Green Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::BlueMax, { tr( "Blue Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::AlphaMax, { tr( "Alpha Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Generic, { tr( "General Purpose Field" ), false, false, false, false, true, true, QList<QMetaType::Type>() << QMetaType::Type::QString << QMetaType::Type::Int << QMetaType::Type::LongLong << QMetaType::Type::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::PixelCount, { tr( "Histogram Pixel Count" ), true, false, false, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::LongLong } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Name, { tr( "Class Name" ), false, false, false, false, true, true, QList<QMetaType::Type>() << QMetaType::Type::QString } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::MinMax, { tr( "Class Value (min=max)" ), true, true, false, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int << QMetaType::Type::LongLong << QMetaType::Type::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Min, { tr( "Class Minimum Value" ), true, true, false, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int << QMetaType::Type::LongLong << QMetaType::Type::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Max, { tr( "Class Maximum Value" ), true, true, false, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int << QMetaType::Type::LongLong << QMetaType::Type::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Red, { tr( "Red Color Value (0-255)" ), true, false, true, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Green, { tr( "Green Color Value (0-255)" ), true, false, true, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Blue, { tr( "Blue Color Value (0-255)" ), true, false, true, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Alpha, { tr( "Alpha Color Value (0-255)" ), true, false, true, false, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::RedMin, { tr( "Red Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::GreenMin, { tr( "Green Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::BlueMin, { tr( "Blue Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::AlphaMin, { tr( "Alpha Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::RedMax, { tr( "Red Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::GreenMax, { tr( "Green Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::BlueMax, { tr( "Blue Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::AlphaMax, { tr( "Alpha Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
     // Unsupported!!
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::MaxCount, { tr( "Maximum GFU value(equals to GFU_AlphaMax+1 currently)" ), true, false, false, true, false, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::MaxCount, { tr( "Maximum GFU value(equals to GFU_AlphaMax+1 currently)" ), true, false, false, true, false, false, QList<QMetaType::Type>() << QMetaType::Type::Int } );
   } );
   return QgsRasterAttributeTable::sUsageInformation;
 }
@@ -1391,26 +1406,26 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
             const QVariant val( orderedRat.value( rowIdx, labelIdx ) );
             bool ok { true };
             QString res;
-            switch ( val.type() )
+            switch ( val.userType() )
             {
-              case QVariant::Type::Char:
+              case QMetaType::Type::QChar:
                 return QString( val.toChar() );
-              case QVariant::Type::Int:
+              case QMetaType::Type::Int:
                 res = QLocale().toString( val.toInt( &ok ) );
                 break;
-              case QVariant::Type::LongLong:
+              case QMetaType::Type::LongLong:
                 res = QLocale().toString( val.toLongLong( &ok ) );
                 break;
-              case QVariant::Type::UInt:
+              case QMetaType::Type::UInt:
                 res = QLocale().toString( val.toUInt( &ok ) );
                 break;
-              case QVariant::Type::ULongLong:
+              case QMetaType::Type::ULongLong:
                 res = QLocale().toString( val.toULongLong( &ok ) );
                 break;
-              case QVariant::Type::Double:
+              case QMetaType::Type::Double:
                 res = QLocale().toString( val.toDouble( &ok ), 'g' );
                 break;
-              case QVariant::Type::String:
+              case QMetaType::Type::QString:
               default:
                 return val.toString( );
             }
@@ -1530,7 +1545,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     pseudoColorRenderer->setClassificationMin( minimumValue() );
     pseudoColorRenderer->setClassificationMax( maximumValue() );
     // Use discrete for single colors, interpolated for ramps
-    pseudoColorRenderer->createShader( ramp, hasRamp() ? QgsColorRampShader::Type::Interpolated : QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous, ramp->stops().count() + 2, true );
+    pseudoColorRenderer->createShader( ramp, hasRamp() ? Qgis::ShaderInterpolationMethod::Linear : Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::Continuous, ramp->stops().count() + 2, true );
     if ( pseudoColorRenderer->shader() )
     {
       pseudoColorRenderer->shader()->setMaximumValue( maximumValue() );

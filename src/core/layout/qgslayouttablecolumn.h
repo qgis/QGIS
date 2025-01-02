@@ -163,7 +163,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see setSortByRank()
      * \see sortOrder()
-     * \deprecated since QGIS 3.14 the order is now hold in a dedicated model
+     * \deprecated QGIS 3.14. The order is now hold in a dedicated model.
      */
     Q_DECL_DEPRECATED int sortByRank() const SIP_DEPRECATED { return mSortByRank; }
 
@@ -178,14 +178,14 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see sortByRank()
      * \see setSortOrder()
-     * \deprecated since QGIS 3.14 the order is now hold in a dedicated model
+     * \deprecated QGIS 3.14. The order is now hold in a dedicated model.
      */
     Q_DECL_DEPRECATED void setSortByRank( int rank ) SIP_DEPRECATED { mSortByRank = rank; }
 
     /**
      * Creates a duplicate column which is a deep copy of this column.
      * \returns a new QgsLayoutTableColumn with same properties as this column.
-     * \deprecated since QGIS 3.14 use a copy instead
+     * \deprecated QGIS 3.14. Use a copy instead.
      */
     Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY {return new QgsLayoutTableColumn( *this );}
 

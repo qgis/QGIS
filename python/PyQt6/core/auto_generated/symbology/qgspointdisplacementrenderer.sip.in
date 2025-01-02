@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgspointdisplacementrenderer.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,6 +33,8 @@ Constructor for QgsPointDisplacementRenderer.
 
 :param labelAttributeName: optional attribute name for labeling points
 %End
+
+    virtual Qgis::FeatureRendererFlags flags() const;
 
     virtual QgsPointDisplacementRenderer *clone() const /Factory/;
 
@@ -179,5 +181,5 @@ Creates a QgsPointDisplacementRenderer from an existing renderer.
  *                                                                      *
  * src/core/symbology/qgspointdisplacementrenderer.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

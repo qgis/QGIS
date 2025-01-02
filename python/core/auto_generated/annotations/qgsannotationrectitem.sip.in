@@ -1,0 +1,231 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationrectitem.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAnnotationRectItem : QgsAnnotationItem
+{
+%Docstring(signature="appended")
+Abstract base class for annotation items which render annotations in a rectangular shape.
+
+Subclasses should implement the pure virtual :py:func:`~render` method which takes a painter bounds argument.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsannotationrectitem.h"
+%End
+  public:
+
+    QgsAnnotationRectItem( const QgsRectangle &bounds );
+%Docstring
+Constructor for QgsAnnotationRectItem, rendering the annotation
+within the specified ``bounds`` geometry.
+%End
+    ~QgsAnnotationRectItem();
+
+    virtual Qgis::AnnotationItemFlags flags() const;
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
+
+    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
+
+    virtual Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
+
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
+
+    virtual QgsRectangle boundingBox() const;
+
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
+
+
+    QgsRectangle bounds() const;
+%Docstring
+Returns the bounds of the item.
+
+The coordinate reference system for the item will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+When the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the item will be placed
+at the center of the bounds.
+
+.. seealso:: :py:func:`setBounds`
+%End
+
+    void setBounds( const QgsRectangle &bounds );
+%Docstring
+Sets the ``bounds`` of the item.
+
+The coordinate reference system for the bounds will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+
+When the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize then the item will be placed
+at the center of the bounds.
+
+.. seealso:: :py:func:`bounds`
+%End
+
+    Qgis::AnnotationPlacementMode placementMode() const;
+%Docstring
+Returns the placement mode for the item.
+
+.. seealso:: :py:func:`setPlacementMode`
+%End
+
+    void setPlacementMode( Qgis::AnnotationPlacementMode mode );
+%Docstring
+Sets the placement ``mode`` for the item.
+
+.. seealso:: :py:func:`placementMode`
+%End
+
+    QSizeF fixedSize() const;
+%Docstring
+Returns the fixed size to use for the item, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+Units are retrieved via :py:func:`~QgsAnnotationRectItem.fixedSizeUnit`
+
+.. seealso:: :py:func:`setFixedSize`
+
+.. seealso:: :py:func:`fixedSizeUnit`
+%End
+
+    void setFixedSize( const QSizeF &size );
+%Docstring
+Sets the fixed ``size`` to use for the item, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+Units are set via :py:func:`~QgsAnnotationRectItem.setFixedSizeUnit`
+
+.. seealso:: :py:func:`fixedSize`
+
+.. seealso:: :py:func:`setFixedSizeUnit`
+%End
+
+    Qgis::RenderUnit fixedSizeUnit() const;
+%Docstring
+Returns the units to use for fixed item sizes, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+.. seealso:: :py:func:`setFixedSizeUnit`
+
+.. seealso:: :py:func:`fixedSize`
+%End
+
+    void setFixedSizeUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` to use for fixed item sizes, when the :py:func:`~QgsAnnotationRectItem.placementMode` is :py:class:`Qgis`.AnnotationPlacementMode.FixedSize.
+
+.. seealso:: :py:func:`fixedSizeUnit`
+
+.. seealso:: :py:func:`setFixedSize`
+%End
+
+    bool backgroundEnabled() const;
+%Docstring
+Returns ``True`` if the item's background should be rendered.
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+
+.. seealso:: :py:func:`backgroundSymbol`
+%End
+
+    void setBackgroundEnabled( bool enabled );
+%Docstring
+Sets whether the item's background should be rendered.
+
+.. seealso:: :py:func:`backgroundEnabled`
+
+.. seealso:: :py:func:`setBackgroundSymbol`
+%End
+
+    const QgsFillSymbol *backgroundSymbol() const;
+%Docstring
+Returns the symbol used to render the item's background.
+
+.. seealso:: :py:func:`backgroundEnabled`
+
+.. seealso:: :py:func:`setBackgroundSymbol`
+%End
+
+    void setBackgroundSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the item's background.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`backgroundSymbol`
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+%End
+
+    bool frameEnabled() const;
+%Docstring
+Returns ``True`` if the item's frame should be rendered.
+
+.. seealso:: :py:func:`setFrameEnabled`
+
+.. seealso:: :py:func:`frameSymbol`
+%End
+
+    void setFrameEnabled( bool enabled );
+%Docstring
+Sets whether the item's frame should be rendered.
+
+.. seealso:: :py:func:`frameEnabled`
+
+.. seealso:: :py:func:`setFrameSymbol`
+%End
+
+    const QgsFillSymbol *frameSymbol() const;
+%Docstring
+Returns the symbol used to render the item's frame.
+
+.. seealso:: :py:func:`frameEnabled`
+
+.. seealso:: :py:func:`setFrameSymbol`
+%End
+
+    void setFrameSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the item's frame.
+
+The item takes ownership of the symbol.
+
+.. seealso:: :py:func:`frameSymbol`
+
+.. seealso:: :py:func:`setBackgroundEnabled`
+%End
+
+  protected:
+    virtual void copyCommonProperties( const QgsAnnotationItem *other );
+
+    virtual bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+
+
+    virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterRect, QgsFeedback *feedback ) = 0;
+%Docstring
+Renders the item to the specified render ``context``.
+
+The ``painterRect`` argument specifies the bounds in painter units where the rectangular
+item should be rendered within.
+
+The ``feedback`` argument can be used to detect render cancellations during expensive
+render operations.
+%End
+
+  private:
+    QgsAnnotationRectItem( const QgsAnnotationRectItem &other );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationrectitem.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

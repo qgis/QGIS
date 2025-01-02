@@ -3,9 +3,8 @@
  *                                                                      *
  * src/core/qgsfeaturerequest.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -40,7 +39,6 @@ The options may be chained, e.g.:
        QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest.ExactIntersect)
 
 Examples:
-
 
 .. code-block:: python
 
@@ -204,6 +202,10 @@ Create a new empty order by
 Create a new order by from a list of clauses
 %End
 
+        bool operator==( const OrderBy &v ) const;
+
+        bool operator!=( const OrderBy &v ) const;
+
         QList<QgsFeatureRequest::OrderByClause> list() const;
 %Docstring
 Gets a copy as a list of OrderByClauses
@@ -273,8 +275,16 @@ should use the same CRS as the source layer/provider.
 construct a request with a filter expression
 %End
     QgsFeatureRequest( const QgsFeatureRequest &rh );
+
+    bool compare( const QgsFeatureRequest &other ) const;
 %Docstring
-copy constructor
+Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
+
+:param other: the other request
+
+:return: ``True`` if the requests are equal in all respects but without checking for Expression Context, Transform Error, Feedback and Invalid Geometry Callback
+
+.. versionadded:: 3.38
 %End
 
     ~QgsFeatureRequest();
@@ -634,7 +644,6 @@ the SubsetOfAttributes flag should be removed from the request.
 
 .. seealso:: :py:func:`setSubsetOfAttributes`
 
-
 .. versionadded:: 3.4
 %End
 
@@ -701,11 +710,33 @@ Returns the simplification method for geometries that will be fetched.
 .. seealso:: :py:func:`setSimplifyMethod`
 %End
 
+    QgsCoordinateTransform coordinateTransform() const;
+%Docstring
+Returns the coordinate transform which will be used to transform
+the feature's geometries.
+
+If this transform is valid  then it will always be used to transform
+features, regardless of the :py:func:`~QgsFeatureRequest.destinationCrs` setting or the underlying
+feature source's actual CRS.
+
+.. seealso:: :py:func:`setCoordinateTransform`
+
+.. versionadded:: 3.40
+%End
+
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
 Returns the destination coordinate reference system for feature's geometries,
 or an invalid :py:class:`QgsCoordinateReferenceSystem` if no reprojection will be done
 and all features will be left with their original geometry.
+
+.. warning::
+
+   if :py:func:`~QgsFeatureRequest.coordinateTransform` returns a valid transform then the
+   :py:func:`~QgsFeatureRequest.destinationCrs` will have no effect, and the :py:func:`~QgsFeatureRequest.coordinateTransform` will
+   always be used to transform features.
+
+.. seealso:: :py:func:`calculateTransform`
 
 .. seealso:: :py:func:`setDestinationCrs`
 
@@ -720,6 +751,51 @@ and reprojection is required
 .. seealso:: :py:func:`setDestinationCrs`
 
 .. seealso:: :py:func:`destinationCrs`
+%End
+
+    QgsCoordinateTransform calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const;
+%Docstring
+Calculates the coordinate transform to use to transform geometries
+when they are originally in ``sourceCrs``.
+
+This method will return :py:func:`~QgsFeatureRequest.coordinateTransform` if it is set (ignoring ``sourceCrs``), otherwise
+it will calculate an appriopriate transform from ``sourceCrs`` to :py:func:`~QgsFeatureRequest.destinationCrs`.
+
+.. versionadded:: 3.40
+%End
+
+    QgsFeatureRequest &setCoordinateTransform( const QgsCoordinateTransform &transform );
+%Docstring
+Sets the coordinate ``transform`` which will be used to transform
+the feature's geometries.
+
+If this transform is valid then it will always be used to transform
+features, regardless of the :py:func:`~QgsFeatureRequest.destinationCrs` setting or the underlying
+feature source's actual CRS.
+
+When a ``transform`` is set using :py:func:`~QgsFeatureRequest.setCoordinateTransform`, then any :py:func:`~QgsFeatureRequest.filterRect`
+or :py:func:`~QgsFeatureRequest.referenceGeometry` set on the request is expected to be in the
+same CRS as the destination CRS for the ``transform``.
+
+The feature geometry transformation is performed
+after all filter expressions are tested and any virtual fields are
+calculated. Accordingly, any geometric expressions used in
+:py:func:`~QgsFeatureRequest.filterExpression` will be performed in the original
+source CRS. This ensures consistent results are returned regardless of the
+destination CRS. Similarly, virtual field values will be calculated using the
+original geometry in the source CRS, so these values are not affected by
+any destination CRS transform present in the feature request.
+
+.. warning::
+
+   This method should be used with caution, and it is recommended
+   to use the high-level :py:func:`~QgsFeatureRequest.setDestinationCrs` method instead. Setting a specific
+   transform should only be done when there is a requirement to use a particular
+   transform.
+
+.. seealso:: :py:func:`coordinateTransform`
+
+.. versionadded:: 3.40
 %End
 
     QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
@@ -742,6 +818,12 @@ source CRS. This ensures consistent results are returned regardless of the
 destination CRS. Similarly, virtual field values will be calculated using the
 original geometry in the source CRS, so these values are not affected by
 any destination CRS transform present in the feature request.
+
+.. warning::
+
+   if :py:func:`~QgsFeatureRequest.coordinateTransform` returns a valid transform then the
+   :py:func:`~QgsFeatureRequest.destinationCrs` will have no effect, and the :py:func:`~QgsFeatureRequest.coordinateTransform` will
+   always be used to transform features.
 
 .. seealso:: :py:func:`destinationCrs`
 %End
@@ -782,7 +864,7 @@ Check if a feature is accepted by this requests filter
 :return: ``True``, if the filter accepts the feature
 %End
 
- int connectionTimeout() const /Deprecated/;
+ int connectionTimeout() const /Deprecated="Since 3.40. Use timeout() instead."/;
 %Docstring
 Returns the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
@@ -791,11 +873,12 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsFeatureRequest.timeout` instead.
 %End
 
- QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated/;
+ QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated="Since 3.40. Use setTimeout() instead."/;
 %Docstring
 Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
@@ -804,7 +887,8 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsFeatureRequest.setTimeout` instead.
 %End
 
@@ -939,5 +1023,5 @@ Gets an iterator for features matching the specified request
  *                                                                      *
  * src/core/qgsfeaturerequest.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

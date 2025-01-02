@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatereferencesystem.h"
+#include "moc_qgscoordinatereferencesystem.cpp"
 #include "qgscoordinatereferencesystem_p.h"
 
 #include "qgscoordinatereferencesystem_legacy_p.h"
@@ -833,6 +834,9 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 
 QList<Qgis::CrsAxisDirection> QgsCoordinateReferenceSystem::axisOrdering() const
 {
+  if ( type() == Qgis::CrsType::Compound )
+    return horizontalCrs().axisOrdering() + verticalCrs().axisOrdering();
+
   const PJ *projObject = d->threadLocalProjObject();
   if ( !projObject )
     return {};
@@ -1261,7 +1265,7 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( Qgis::CrsIdentifie
     id = QObject::tr( "Custom CRS: %1" ).arg( type == Qgis::CrsIdentifierType::MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
          : toProj() );
   if ( !id.isEmpty() && !std::isnan( d->mCoordinateEpoch ) )
-    id += QStringLiteral( " @ %1" ).arg( d->mCoordinateEpoch );
+    id += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( d->mCoordinateEpoch, 3 ) );
 
   return id;
 }
@@ -1630,7 +1634,7 @@ QString QgsCoordinateReferenceSystem::toOgcUrn() const
   if ( parts.length() == 2 )
   {
     if ( parts[0] == QLatin1String( "EPSG" ) )
-      return  QStringLiteral( "urn:ogc:def:crs:EPSG:0:%1" ).arg( parts[1] );
+      return  QStringLiteral( "urn:ogc:def:crs:EPSG::%1" ).arg( parts[1] );
     else if ( parts[0] == QLatin1String( "OGC" ) )
     {
       return  QStringLiteral( "urn:ogc:def:crs:OGC:1.3:%1" ).arg( parts[1] );
@@ -1684,7 +1688,11 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   {
 #ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
+#if PROJ_VERSION_MAJOR>=8
+    QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_context_errno_string( ctx, errNo ) ) );
+#else
     QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
+#endif
 #endif
     d->mIsValid = false;
   }
@@ -1716,9 +1724,13 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     QgsDebugMsgLevel( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ), 2 );
     QgsDebugMsgLevel( "INPUT: " + wkt, 2 );
     for ( auto iter = warnings; iter && *iter; ++iter )
+    {
       QgsDebugMsgLevel( *iter, 2 );
+    }
     for ( auto iter = grammarErrors; iter && *iter; ++iter )
+    {
       QgsDebugMsgLevel( *iter, 2 );
+    }
     QgsDebugMsgLevel( QStringLiteral( "---------------------------------------------------------------\n" ), 2 );
   }
   proj_string_list_destroy( warnings );
@@ -1833,10 +1845,72 @@ void QgsCoordinateReferenceSystem::setMapUnits()
               || unitName.compare( QLatin1String( "m" ), Qt::CaseInsensitive ) == 0
               || unitName.compare( QLatin1String( "meter" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Meters;
-    // we don't differentiate between these, suck it imperial users!
-    else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 ||
-              unitName.compare( QLatin1String( "foot" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetUSSurvey;
+    else if ( unitName.compare( QLatin1String( "foot" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Feet;
+    else if ( unitName.compare( QLatin1String( "British yard (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsBritishSears1922;
+    else if ( unitName.compare( QLatin1String( "British yard (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsBritishSears1922Truncated;
+    else if ( unitName.compare( QLatin1String( "British foot (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetBritishSears1922;
+    else if ( unitName.compare( QLatin1String( "British foot (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetBritishSears1922Truncated;
+    else if ( unitName.compare( QLatin1String( "British chain (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::ChainsBritishSears1922;
+    else if ( unitName.compare( QLatin1String( "British chain (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::ChainsBritishSears1922Truncated;
+    else if ( unitName.compare( QLatin1String( "British link (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::LinksBritishSears1922;
+    else if ( unitName.compare( QLatin1String( "British link (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::LinksBritishSears1922Truncated;
+    else if ( unitName.compare( QLatin1String( "British yard (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsBritishBenoit1895A;
+    else if ( unitName.compare( QLatin1String( "British foot (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetBritishBenoit1895A;
+    else if ( unitName.compare( QLatin1String( "British chain (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::ChainsBritishBenoit1895A;
+    else if ( unitName.compare( QLatin1String( "British link (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::LinksBritishBenoit1895A;
+    else if ( unitName.compare( QLatin1String( "British yard (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsBritishBenoit1895B;
+    else if ( unitName.compare( QLatin1String( "British foot (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetBritishBenoit1895B;
+    else if ( unitName.compare( QLatin1String( "British chain (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::ChainsBritishBenoit1895B;
+    else if ( unitName.compare( QLatin1String( "British link (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::LinksBritishBenoit1895B;
+    else if ( unitName.compare( QLatin1String( "British foot (1865)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetBritish1865;
+    else if ( unitName.compare( QLatin1String( "British foot (1936)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetBritish1936;
+    else if ( unitName.compare( QLatin1String( "Indian foot" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetIndian;
+    else if ( unitName.compare( QLatin1String( "Indian foot (1937)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetIndian1937;
+    else if ( unitName.compare( QLatin1String( "Indian foot (1962)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetIndian1962;
+    else if ( unitName.compare( QLatin1String( "Indian foot (1975)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetIndian1975;
+    else if ( unitName.compare( QLatin1String( "Indian yard" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsIndian;
+    else if ( unitName.compare( QLatin1String( "Indian yard (1937)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsIndian1937;
+    else if ( unitName.compare( QLatin1String( "Indian yard (1962)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsIndian1962;
+    else if ( unitName.compare( QLatin1String( "Indian yard (1975)" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsIndian1975;
+    else if ( unitName.compare( QLatin1String( "Gold Coast foot" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetGoldCoast;
+    else if ( unitName.compare( QLatin1String( "Clarke's foot" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::FeetClarkes;
+    else if ( unitName.compare( QLatin1String( "Clarke's yard" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::YardsClarkes;
+    else if ( unitName.compare( QLatin1String( "Clarke's chain" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::ChainsClarkes;
+    else if ( unitName.compare( QLatin1String( "Clarke's link" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::LinksClarkes;
     else if ( unitName.compare( QLatin1String( "kilometre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = Qgis::DistanceUnit::Kilometers;
     else if ( unitName.compare( QLatin1String( "centimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
@@ -1849,6 +1923,20 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       d->mMapUnits = Qgis::DistanceUnit::NauticalMiles;
     else if ( unitName.compare( QLatin1String( "yard" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Yards;
+    else if ( unitName.compare( QLatin1String( "fathom" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::Fathoms;
+    else if ( unitName.compare( QLatin1String( "US survey chain" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::ChainsUSSurvey;
+    else if ( unitName.compare( QLatin1String( "chain" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::ChainsInternational;
+    else if ( unitName.compare( QLatin1String( "link" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::LinksInternational;
+    else if ( unitName.compare( QLatin1String( "US survey link" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::LinksUSSurvey;
+    else if ( unitName.compare( QLatin1String( "US survey mile" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::MilesUSSurvey;
+    else if ( unitName.compare( QLatin1String( "German legal metre" ), Qt::CaseInsensitive ) == 0 )
+      d->mMapUnits = Qgis::DistanceUnit::MetersGermanLegal;
     // TODO - maybe more values to handle here?
     else
       d->mMapUnits = Qgis::DistanceUnit::Unknown;
@@ -3162,7 +3250,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
     // maybe we can directly grab the auth name and code from the crs
     const QString authName( proj_get_id_auth_name( d->threadLocalProjObject(), 0 ) );
     const QString authCode( proj_get_id_code( d->threadLocalProjObject(), 0 ) );
-    if ( !authName.isEmpty() && !authCode.isEmpty() && loadFromAuthCode( authName, authCode ) )
+    if ( !authName.isEmpty() && !authCode.isEmpty() && createFromOgcWmsCrs( QStringLiteral( "%1:%2" ).arg( authName, authCode ) ) )
     {
       return d->mIsValid;
     }

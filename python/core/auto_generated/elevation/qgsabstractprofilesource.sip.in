@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/elevation/qgsabstractprofilesource.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -42,5 +42,5 @@ May return ``None`` if the source cannot generate a profile at this time.
  *                                                                      *
  * src/core/elevation/qgsabstractprofilesource.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

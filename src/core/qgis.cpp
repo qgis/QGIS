@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgis.h"
+#include "moc_qgis.cpp"
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
@@ -34,8 +35,8 @@
 #include <geos_c.h>
 #include <ogr_api.h>
 
-#define xstr(x) str(x)
-#define str(x) #x
+#define qgis_xstr(x) qgis_str(x)
+#define qgis_str(x) #x
 
 // Version constants
 //
@@ -127,36 +128,36 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
   else if ( !rhs.isValid() || rhs.isNull() )
     return false;
 
-  switch ( lhs.type() )
+  switch ( lhs.userType() )
   {
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       return lhs.toInt() < rhs.toInt();
-    case QVariant::UInt:
+    case QMetaType::Type::UInt:
       return lhs.toUInt() < rhs.toUInt();
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       return lhs.toLongLong() < rhs.toLongLong();
-    case QVariant::ULongLong:
+    case QMetaType::Type::ULongLong:
       return lhs.toULongLong() < rhs.toULongLong();
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       return lhs.toDouble() < rhs.toDouble();
-    case QVariant::Char:
+    case QMetaType::Type::QChar:
       return lhs.toChar() < rhs.toChar();
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       return lhs.toDate() < rhs.toDate();
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       return lhs.toTime() < rhs.toTime();
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       return lhs.toDateTime() < rhs.toDateTime();
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return lhs.toBool() < rhs.toBool();
 
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
     {
       const QList<QVariant> &lhsl = lhs.toList();
       const QList<QVariant> &rhsl = rhs.toList();
 
       int i, n = std::min( lhsl.size(), rhsl.size() );
-      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && qgsVariantEqual( lhsl[i], rhsl[i] ); i++ )
+      for ( i = 0; i < n && lhsl[i].userType() == rhsl[i].userType() && qgsVariantEqual( lhsl[i], rhsl[i] ); i++ )
         ;
 
       if ( i == n )
@@ -165,7 +166,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
         return qgsVariantLessThan( lhsl[i], rhsl[i] );
     }
 
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
     {
       const QStringList &lhsl = lhs.toStringList();
       const QStringList &rhsl = rhs.toStringList();
@@ -200,41 +201,41 @@ uint qHash( const QVariant &variant )
   if ( !variant.isValid() || variant.isNull() )
     return std::numeric_limits<uint>::max();
 
-  switch ( variant.type() )
+  switch ( variant.userType() )
   {
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       return qHash( variant.toInt() );
-    case QVariant::UInt:
+    case QMetaType::Type::UInt:
       return qHash( variant.toUInt() );
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return qHash( variant.toBool() );
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       return qHash( variant.toDouble() );
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       return qHash( variant.toLongLong() );
-    case QVariant::ULongLong:
+    case QMetaType::Type::ULongLong:
       return qHash( variant.toULongLong() );
-    case QVariant::String:
+    case QMetaType::Type::QString:
       return qHash( variant.toString() );
-    case QVariant::Char:
+    case QMetaType::Type::QChar:
       return qHash( variant.toChar() );
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
       return qHash( variant.toList() );
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
       return qHash( variant.toStringList() );
-    case QVariant::ByteArray:
+    case QMetaType::Type::QByteArray:
       return qHash( variant.toByteArray() );
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       return qHash( variant.toDate() );
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       return qHash( variant.toTime() );
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       return qHash( variant.toDateTime() );
-    case QVariant::Url:
-    case QVariant::Locale:
-    case QVariant::RegularExpression:
+    case QMetaType::Type::QUrl:
+    case QMetaType::Type::QLocale:
+    case QMetaType::Type::QRegularExpression:
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    case QVariant::RegExp:
+    case QMetaType::Type::QRegExp:
 #endif
       return qHash( variant.toString() );
     default:
@@ -304,7 +305,7 @@ int Qgis::geosVersionMinor()
 
 int Qgis::geosVersionPatch()
 {
-  static const int version = atoi( xstr( GEOS_VERSION_PATCH ) );
+  static const int version = atoi( qgis_xstr( GEOS_VERSION_PATCH ) );
   return version;
 }
 

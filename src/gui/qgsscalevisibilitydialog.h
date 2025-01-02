@@ -37,7 +37,6 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     Q_PROPERTY( double maximumScale READ maximumScale WRITE setMaximumScale )
 
   public:
-
     /**
      * Constructor for QgsScaleVisibilityDialog, with specified dialog \a title. The \a mapCanvas argument
      * can be used to associate the dialog with a map canvas, allowing use of the current map scale
@@ -62,7 +61,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
      * Returns the selected maximum scale, or 0 if maximum scale is not set.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see minimumScale()
-     * \see setMaximumScale())
+     * \see setMaximumScale()
      */
     double maximumScale() const;
 
@@ -71,7 +70,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     /**
      * Set whether scale based visibility is enabled.
      * \see hasScaleVisibility()
-     * \deprecated Use setScaleVisibility()
+     * \deprecated QGIS 3.40. Use setScaleVisibility().
      */
     Q_DECL_DEPRECATED void setScaleVisiblity( bool hasScaleVisibility ) SIP_DEPRECATED { setScaleVisibility( hasScaleVisibility ); } // spellok
 
@@ -102,7 +101,6 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
   private:
     QGroupBox *mGroupBox = nullptr;
     QgsScaleRangeWidget *mScaleWidget = nullptr;
-
 };
 
 #endif // QGSSCALEVISIBILITYDIALOG_H

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgscalloutposition.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,9 +33,6 @@ Constructor for QgsCalloutPosition.
 %End
 
     QgsCalloutPosition();
-%Docstring
-Constructor for QgsCalloutPosition
-%End
 
     QgsFeatureId featureId;
 
@@ -138,5 +135,5 @@ The destination of the callout line is the line point associated with the featur
  *                                                                      *
  * src/core/labeling/qgscalloutposition.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

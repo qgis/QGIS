@@ -48,10 +48,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     return;
   }
 
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
-  {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
-  }
+  mTransform = mRequest.calculateTransform( mSource->mCrs );
   try
   {
     mFilterRect = filterRectToSourceCrs( mTransform );
@@ -105,7 +102,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
       if ( !mAttributeList.contains( attrIdx ) )
         mAttributeList << attrIdx;
     }
-
   }
   else
     mAttributeList = mSource->mFields.allAttributesList();
@@ -138,9 +134,9 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
                                        ")" );
 
         whereClause = QStringLiteral( "sdo_filter(%1,%2)='TRUE'" )
-                      .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
+                        .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
 
-        args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
+        args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
 
         if ( ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect ) != 0
              && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox )
@@ -149,9 +145,8 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
           if ( mConnection->hasSpatial() )
           {
             whereClause += QStringLiteral( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
-                           .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ),
-                                 bbox );
-            args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
+                             .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
+            args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
           }
           else
           {
@@ -194,7 +189,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     case Qgis::FeatureRequestFilterType::Expression:
       //handled below
       break;
-
   }
 
   if ( mSource->mRequestedGeomType != Qgis::WkbType::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
@@ -303,10 +297,8 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       if ( !execQuery( mSql, mArgs, 1 ) )
       {
         const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                              .arg( mQry.lastQuery(),
-                                    mQry.lastError().text() ) };
-        QgsMessageLog::logMessage( error,
-                                   QObject::tr( "Oracle" ) );
+                                .arg( mQry.lastQuery(), mQry.lastError().text() ) };
+        QgsMessageLog::logMessage( error, QObject::tr( "Oracle" ) );
         return false;
       }
     }
@@ -388,7 +380,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
             QgsField fld = mSource->mFields.at( idx );
 
             QVariant v = mQry.value( col );
-            if ( v.type() != fld.type() )
+            if ( v.userType() != fld.type() )
               v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
             primaryKeyVals << v;
 
@@ -425,7 +417,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       QgsField fld = mSource->mFields.at( idx );
 
       QVariant v = mQry.value( col );
-      if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( QLatin1String( ".SDO_GEOMETRY" ) ) )
+      if ( fld.type() == QMetaType::Type::QByteArray && fld.typeName().endsWith( QLatin1String( ".SDO_GEOMETRY" ) ) )
       {
         QByteArray ba( v.toByteArray() );
         if ( ba.size() > 0 )
@@ -436,10 +428,10 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         }
         else
         {
-          v = QVariant( QVariant::String );
+          v = QgsVariantUtils::createNullVariant( QMetaType::Type::QString );
         }
       }
-      else if ( v.type() != fld.type() )
+      else if ( v.userType() != fld.type() )
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
       feature.setAttribute( idx, v );
 
@@ -541,14 +533,11 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
 
     if ( !execQuery( query, args, 1 ) )
     {
-
       const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                            .arg( mQry.lastQuery(),
-                                  mQry.lastError().text() ) };
+                              .arg( mQry.lastQuery(), mQry.lastError().text() ) };
       if ( showLog )
       {
-        QgsMessageLog::logMessage( error,
-                                   QObject::tr( "Oracle" ) );
+        QgsMessageLog::logMessage( error, QObject::tr( "Oracle" ) );
       }
       return false;
     }
@@ -573,10 +562,7 @@ bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantLi
       // ORA-12170: TNS:Connect timeout occurred
       // Or if  there is a problem with the network connectivity try again N times
       // ORA-03114: Not Connected to Oracle
-      if ( mQry.lastError().nativeErrorCode() == QLatin1String( "12170" ) ||
-           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-12170" ), Qt::CaseInsensitive ) == 0 ||
-           mQry.lastError().nativeErrorCode() == QLatin1String( "3114" ) ||
-           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-3114" ), Qt::CaseInsensitive ) == 0 )
+      if ( mQry.lastError().nativeErrorCode() == QLatin1String( "12170" ) || mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-12170" ), Qt::CaseInsensitive ) == 0 || mQry.lastError().nativeErrorCode() == QLatin1String( "3114" ) || mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-3114" ), Qt::CaseInsensitive ) == 0 )
       {
         // restart connection
         mConnection->reconnect();

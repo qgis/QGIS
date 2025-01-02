@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgshistogramwidget.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ Graphical histogram for displaying distributions of field values.
 #include "qgshistogramwidget.h"
 %End
   public:
-
     QgsHistogramWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *layer = 0, const QString &fieldOrExp = QString() );
 %Docstring
 QgsHistogramWidget constructor. If layer and fieldOrExp are specified then the histogram
@@ -190,7 +189,6 @@ Sets the source field or expression to use for values in the histogram.
 %End
 
   protected:
-
     virtual void drawHistogram();
 %Docstring
 Updates and redraws the histogram.
@@ -204,5 +202,5 @@ Updates and redraws the histogram.
  *                                                                      *
  * src/gui/qgshistogramwidget.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

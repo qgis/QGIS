@@ -104,8 +104,6 @@ set(QGIS_APP_SRCS
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsplitparts.cpp
-  qgsmaptoolsvgannotation.cpp
-  qgsmaptooltextannotation.cpp
 
   annotations/qgsannotationitempropertieswidget.cpp
   annotations/qgsannotationlayerproperties.cpp
@@ -176,6 +174,7 @@ set(QGIS_APP_SRCS
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
+  devtools/documentation/qgsdocumentationpanelwidget.cpp
   devtools/querylogger/qgsappquerylogger.cpp
   devtools/querylogger/qgsdatabasequeryloggernode.cpp
   devtools/querylogger/qgsqueryloggerpanelwidget.cpp
@@ -263,6 +262,7 @@ set(QGIS_APP_SRCS
   options/qgsfontoptions.cpp
   options/qgsgpsdeviceoptions.cpp
   options/qgsgpsoptions.cpp
+  options/qgsideoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
   options/qgsrasterrenderingoptions.cpp
@@ -379,6 +379,7 @@ if (WITH_3D)
     3d/qgspointcloudlayer3drendererwidget.cpp
     3d/qgs3dmapcanvaswidget.cpp
     3d/qgs3dviewsmanagerdialog.cpp
+    3d/qgs3ddebugwidget.cpp
   )
 endif()
 
@@ -434,12 +435,6 @@ else()
   set(QWTPOLAR_INCLUDE_DIR "")
 endif()
 
-if (POSTGRES_FOUND)
-  if(HAVE_PGCONFIG)
-    add_definitions(-DHAVE_PGCONFIG=1)
-  endif()
-endif()
-
 # Test data dir for QgsAppScreenShots
 add_definitions(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
@@ -478,16 +473,26 @@ if(PEDANTIC)
 endif()
 
 if(MSVC)
-# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
-set_source_files_properties(
-  qgisapp.cpp
-  main.cpp
-  qgscrashhandler.cpp
-  PROPERTIES COMPILE_FLAGS -wd4091)
+  # -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
+  set_source_files_properties(
+    qgisapp.cpp
+    main.cpp
+    qgscrashhandler.cpp
+    PROPERTIES COMPILE_FLAGS -wd4091
+  )
+  set_source_files_properties(
+    qgisapp.cpp
+    PROPERTIES COMPILE_FLAGS "/bigobj"
+  )
+elseif(MINGW)
+  set_source_files_properties(
+    qgisapp.cpp
+    PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj"
+  )
 endif()
 
 if(HAVE_OPENCL)
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if(ENABLE_MODELTEST)
@@ -502,10 +507,6 @@ if (APPLE)
   include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
 endif()
 
-if (POSTGRES_FOUND)
-  include_directories(SYSTEM ${POSTGRES_INCLUDE_DIR})
-endif()
-
 #############
 if (ANDROID)
   add_library(${QGIS_APP_NAME} ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
@@ -513,7 +514,17 @@ if (ANDROID)
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 else()
-  add_executable(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS})
+  if(APPLE)
+    set (CREATE_MACOSX_BUNDLE TRUE CACHE BOOL "Create macosx bundle during build. Disable for development to avoid copying libraries and ease debugging.")
+    if(CREATE_MACOSX_BUNDLE)
+      set(MACOSX_BUNDLE "MACOSX_BUNDLE")
+    endif()
+  endif()
+  add_executable(${QGIS_APP_NAME} ${MACOSX_BUNDLE} WIN32 ${QGIS_APPMAIN_SRCS})
+
+  if(WIN32 AND BUILD_WITH_QT6)
+    qt_disable_unicode_defines(${QGIS_APP_NAME})
+  endif()
 
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
@@ -528,6 +539,9 @@ add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
 target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+if (POSTGRES_FOUND)
+  target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=${PostgreSQL_VERSION_STRING})
+endif()
 
 target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
@@ -565,7 +579,6 @@ if (WITH_3D)
 endif()
 
 target_include_directories(qgis_app SYSTEM PUBLIC
-  ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
@@ -589,6 +602,12 @@ target_link_libraries(qgis_app
 )
 
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
+
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_app PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_app PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 if (WITH_BINDINGS)
   add_definitions(-DWITH_BINDINGS)
@@ -666,16 +685,12 @@ if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   target_link_libraries(${QGIS_APP_NAME} ${EXECINFO_LIBRARY})
 endif()
 
-if (POSTGRES_FOUND)
-  target_link_libraries (qgis_app ${POSTGRES_LIBRARY})
-endif()
-
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
 endif()
 
 if(MSVC)
-  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
+  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION icons)
 endif()
 
 install(TARGETS qgis_app

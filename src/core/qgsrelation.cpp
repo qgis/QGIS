@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsrelation.h"
+#include "qgspolymorphicrelation.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrelation_p.h"
-#include "qgspolymorphicrelation.h"
 #include "qgsrelationmanager.h"
+#include "moc_qgsrelation.cpp"
 
 #include <QApplication>
 
@@ -225,7 +226,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
     int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     if ( referencingIdx >= 0 )
     {
-      QVariant::Type fieldType = referencingLayer()->fields().at( referencingIdx ).type();
+      QMetaType::Type fieldType = referencingLayer()->fields().at( referencingIdx ).type();
       conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val, fieldType );
     }
     else
@@ -247,7 +248,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
     int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     if ( referencedIdx >= 0 )
     {
-      QVariant::Type fieldType = referencedLayer()->fields().at( referencedIdx ).type();
+      QMetaType::Type fieldType = referencedLayer()->fields().at( referencedIdx ).type();
       conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ), fieldType );
     }
     else
@@ -275,7 +276,7 @@ QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
   QgsFeatureRequest request = getReferencedFeatureRequest( feature );
 
   QgsFeature f;
-  d->mReferencedLayer->getFeatures( request ).nextFeature( f );
+  ( void )d->mReferencedLayer->getFeatures( request ).nextFeature( f );
   return f;
 }
 
@@ -354,6 +355,26 @@ QgsAttributeList QgsRelation::referencingFields() const
   }
   return attrs;
 
+}
+
+bool QgsRelation::referencingFieldsAllowNull() const
+{
+  if ( ! referencingLayer() )
+  {
+    return false;
+  }
+
+  const auto fields = referencingFields();
+
+  return std::find_if( fields.constBegin(), fields.constEnd(), [&]( const auto & fieldIdx )
+  {
+    if ( !referencingLayer()->fields().exists( fieldIdx ) )
+    {
+      return false;
+    }
+    const QgsField field = referencingLayer()->fields().field( fieldIdx );
+    return field.constraints().constraints().testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull );
+  } ) == fields.constEnd();
 }
 
 bool QgsRelation::isValid() const

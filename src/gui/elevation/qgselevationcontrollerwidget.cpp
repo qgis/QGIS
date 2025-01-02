@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgselevationcontrollerwidget.h"
+#include "moc_qgselevationcontrollerwidget.cpp"
 #include "qgsrangeslider.h"
 #include "qgsrange.h"
 #include "qgsproject.h"
@@ -56,8 +57,7 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   mMenu->addAction( mInvertDirectionAction );
 
   mSettingsAction->sizeSpin()->clear();
-  connect( mSettingsAction->sizeSpin(), qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size )
-  {
+  connect( mSettingsAction->sizeSpin(), qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) {
     setFixedRangeSize( size < 0 ? -1 : size );
   } );
 
@@ -84,14 +84,12 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   const QgsDoubleRange projectRange = QgsProject::instance()->elevationProperties()->elevationRange();
   // if project doesn't have a range, just default to ANY range!
   setRangeLimits( projectRange.isInfinite() ? QgsDoubleRange( 0, 100 ) : projectRange );
-  connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::elevationRangeChanged, this, [this]( const QgsDoubleRange & range )
-  {
+  connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::elevationRangeChanged, this, [this]( const QgsDoubleRange &range ) {
     if ( !range.isInfinite() )
       setRangeLimits( range );
   } );
 
-  connect( mSlider, &QgsRangeSlider::rangeChanged, this, [this]( int, int )
-  {
+  connect( mSlider, &QgsRangeSlider::rangeChanged, this, [this]( int, int ) {
     if ( mBlockSliderChanges )
       return;
 
@@ -99,8 +97,7 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
     mSliderLabels->setRange( range() );
   } );
 
-  connect( mInvertDirectionAction, &QAction::toggled, this, [this]()
-  {
+  connect( mInvertDirectionAction, &QAction::toggled, this, [this]() {
     mSlider->setFlippedDirection( !mInvertDirectionAction->isChecked() );
     mSliderLabels->setInverted( mInvertDirectionAction->isChecked() );
 
@@ -121,8 +118,8 @@ void QgsElevationControllerWidget::resizeEvent( QResizeEvent *event )
 QgsDoubleRange QgsElevationControllerWidget::range() const
 {
   // if the current slider range is just the current range, but snapped to the slider precision, then losslessly return the current range
-  const int snappedLower = static_cast< int >( std::floor( mCurrentRange.lower() * mSliderPrecision ) );
-  const int snappedUpper = static_cast< int >( std::ceil( mCurrentRange.upper() * mSliderPrecision ) );
+  const int snappedLower = static_cast<int>( std::floor( mCurrentRange.lower() * mSliderPrecision ) );
+  const int snappedUpper = static_cast<int>( std::ceil( mCurrentRange.upper() * mSliderPrecision ) );
   if ( snappedLower == mSlider->lowerValue() && snappedUpper == mSlider->upperValue() )
     return mCurrentRange;
 
@@ -164,8 +161,7 @@ void QgsElevationControllerWidget::setRange( const QgsDoubleRange &range )
 
   mCurrentRange = range;
   mBlockSliderChanges = true;
-  mSlider->setRange( static_cast< int >( std::floor( range.lower() * mSliderPrecision ) ),
-                     static_cast< int >( std::ceil( range.upper() * mSliderPrecision ) ) );
+  mSlider->setRange( static_cast<int>( std::floor( range.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( range.upper() * mSliderPrecision ) ) );
   mBlockSliderChanges = false;
   emit rangeChanged( range );
 
@@ -185,16 +181,14 @@ void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits 
   mSliderPrecision = std::max( 1000, mSlider->height() ) / limitRange;
 
   mBlockSliderChanges = true;
-  mSlider->setRangeLimits( static_cast< int >( std::floor( limits.lower() * mSliderPrecision ) ),
-                           static_cast< int >( std::ceil( limits.upper() * mSliderPrecision ) ) );
+  mSlider->setRangeLimits( static_cast<int>( std::floor( limits.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( limits.upper() * mSliderPrecision ) ) );
 
   // clip current range to fit limits
   const double newCurrentLower = std::max( mCurrentRange.lower(), limits.lower() );
   const double newCurrentUpper = std::min( mCurrentRange.upper(), limits.upper() );
   const bool rangeHasChanged = newCurrentLower != mCurrentRange.lower() || newCurrentUpper != mCurrentRange.upper();
 
-  mSlider->setRange( static_cast< int >( std::floor( newCurrentLower * mSliderPrecision ) ),
-                     static_cast< int >( std::ceil( newCurrentUpper * mSliderPrecision ) ) );
+  mSlider->setRange( static_cast<int>( std::floor( newCurrentLower * mSliderPrecision ) ), static_cast<int>( std::ceil( newCurrentUpper * mSliderPrecision ) ) );
   mCurrentRange = QgsDoubleRange( newCurrentLower, newCurrentUpper );
   mBlockSliderChanges = false;
   if ( rangeHasChanged )
@@ -234,7 +228,7 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
   }
   else
   {
-    mSlider->setFixedRangeSize( static_cast< int >( std::round( mFixedRangeSize * mSliderPrecision ) ) );
+    mSlider->setFixedRangeSize( static_cast<int>( std::round( mFixedRangeSize * mSliderPrecision ) ) );
   }
   if ( mFixedRangeSize != mSettingsAction->sizeSpin()->value() )
     mSettingsAction->sizeSpin()->setValue( mFixedRangeSize );
@@ -244,6 +238,11 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
 void QgsElevationControllerWidget::setInverted( bool inverted )
 {
   mInvertDirectionAction->setChecked( inverted );
+}
+
+void QgsElevationControllerWidget::setSignificantElevations( const QList<double> &elevations )
+{
+  mSliderLabels->setSignificantElevations( elevations );
 }
 
 //
@@ -274,7 +273,7 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
   QStyleOptionSlider styleOption;
   styleOption.initFrom( this );
 
-  const QRect sliderRect = style()->subControlRect( QStyle::CC_Slider, &styleOption,  QStyle::SC_SliderHandle, this );
+  const QRect sliderRect = style()->subControlRect( QStyle::CC_Slider, &styleOption, QStyle::SC_SliderHandle, this );
   const int sliderHeight = sliderRect.height();
 
   QFont f = font();
@@ -286,30 +285,56 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
   const double lowerFraction = ( mRange.lower() - mLimits.lower() ) / limitRange;
   const double upperFraction = ( mRange.upper() - mLimits.lower() ) / limitRange;
   const int lowerY = !mInverted
-                     ? ( std::min( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction + fm.ascent() ) ),
-                                   rect().bottom() - fm.descent() ) )
-                     : ( std::max( static_cast< int >( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * lowerFraction - fm.descent() ) ),
-                                   rect().top() + fm.ascent() ) );
-  const int upperY = !mInverted ?
-                     ( std::max( static_cast< int >( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction - fm.descent() ) ),
-                                 rect().top() + fm.ascent() ) )
-                     : ( std::min( static_cast< int >( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * upperFraction + fm.ascent() ) ),
-                                   rect().bottom() - fm.descent() ) );
+                       ? ( std::min( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * lowerFraction + fm.ascent() ) ), rect().bottom() - fm.descent() ) )
+                       : ( std::max( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * lowerFraction - fm.descent() ) ), rect().top() + fm.ascent() ) );
+  const int upperY = !mInverted ? ( std::max( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * upperFraction - fm.descent() ) ), rect().top() + fm.ascent() ) )
+                                : ( std::min( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * upperFraction + fm.ascent() ) ), rect().bottom() - fm.descent() ) );
 
   const bool lowerIsCloseToLimit = !mInverted
-                                   ? ( lowerY + fm.height() > rect().bottom() - fm.descent() )
-                                   : ( lowerY - fm.height() < rect().top() + fm.ascent() ) ;
+                                     ? ( lowerY + fm.height() > rect().bottom() - fm.descent() )
+                                     : ( lowerY - fm.height() < rect().top() + fm.ascent() );
   const bool upperIsCloseToLimit = !mInverted
-                                   ? ( upperY - fm.height() < rect().top() + fm.ascent() )
-                                   : ( upperY + fm.height() > rect().bottom() - fm.descent() ) ;
+                                     ? ( upperY - fm.height() < rect().top() + fm.ascent() )
+                                     : ( upperY + fm.height() > rect().bottom() - fm.descent() );
   const bool lowerIsCloseToUpperLimit = !mInverted
-                                        ? ( lowerY - fm.height() < rect().top() + fm.ascent() )
-                                        : ( lowerY + fm.height() > rect().bottom() - fm.descent() );
+                                          ? ( lowerY - fm.height() < rect().top() + fm.ascent() )
+                                          : ( lowerY + fm.height() > rect().bottom() - fm.descent() );
 
   QLocale locale;
 
   QPainterPath path;
-  if ( mLimits.lower() > std::numeric_limits< double >::lowest() )
+
+  for ( double value : std::as_const( mSignificantElevations ) )
+  {
+    const double valueFraction = ( value - mLimits.lower() ) / limitRange;
+    const double verticalCenter = !mInverted
+                                    ? ( std::min( static_cast<int>( std::round( rect().bottom() - sliderHeight * 0.5 - ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ), rect().bottom() - fm.descent() ) )
+                                    : ( std::max( static_cast<int>( std::round( rect().top() + sliderHeight * 0.5 + ( rect().height() - sliderHeight ) * valueFraction + fm.capHeight() * 0.5 ) ), rect().top() + fm.ascent() ) );
+
+    const bool valueIsCloseToLower = verticalCenter + fm.height() > lowerY && verticalCenter - fm.height() < lowerY;
+    if ( valueIsCloseToLower )
+      continue;
+
+    const bool valueIsCloseToUpper = verticalCenter + fm.height() > upperY && verticalCenter - fm.height() < upperY;
+    if ( valueIsCloseToUpper )
+      continue;
+
+    const bool valueIsCloseToLowerLimit = !mInverted
+                                            ? ( verticalCenter + fm.height() > rect().bottom() - fm.descent() )
+                                            : ( verticalCenter - fm.height() < rect().top() + fm.ascent() );
+    if ( valueIsCloseToLowerLimit )
+      continue;
+
+    const bool valueIsCloseToUpperLimit = !mInverted
+                                            ? ( verticalCenter - fm.height() < rect().top() + fm.ascent() )
+                                            : ( verticalCenter + fm.height() > rect().bottom() - fm.descent() );
+    if ( valueIsCloseToUpperLimit )
+      continue;
+
+    path.addText( left, verticalCenter, f, locale.toString( value ) );
+  }
+
+  if ( mLimits.lower() > std::numeric_limits<double>::lowest() )
   {
     if ( lowerIsCloseToLimit )
     {
@@ -325,7 +350,7 @@ void QgsElevationControllerLabels::paintEvent( QPaintEvent * )
     }
   }
 
-  if ( mLimits.upper() < std::numeric_limits< double >::max() )
+  if ( mLimits.upper() < std::numeric_limits<double>::max() )
   {
     if ( qgsDoubleNear( mRange.upper(), mRange.lower() ) )
     {
@@ -375,8 +400,7 @@ void QgsElevationControllerLabels::setLimits( const QgsDoubleRange &limits )
     return;
 
   const QFontMetrics fm( font() );
-  const int maxChars = std::max( QLocale().toString( std::floor( limits.lower() ) ).length(),
-                                 QLocale().toString( std::floor( limits.upper() ) ).length() ) + 3;
+  const int maxChars = std::max( QLocale().toString( std::floor( limits.lower() ) ).length(), QLocale().toString( std::floor( limits.upper() ) ).length() ) + 3;
   setMinimumWidth( fm.horizontalAdvance( '0' ) * maxChars );
 
   mLimits = limits;
@@ -398,6 +422,15 @@ void QgsElevationControllerLabels::setInverted( bool inverted )
     return;
 
   mInverted = inverted;
+  update();
+}
+
+void QgsElevationControllerLabels::setSignificantElevations( const QList<double> &elevations )
+{
+  if ( elevations == mSignificantElevations )
+    return;
+
+  mSignificantElevations = elevations;
   update();
 }
 

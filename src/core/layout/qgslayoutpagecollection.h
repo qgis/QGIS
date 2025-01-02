@@ -232,7 +232,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * Returns the symbol to use for drawing pages in the collection.
      * \see setPageStyleSymbol()
      *
-     * \deprecated Use QgsLayoutItemPage::pageStyleSymbol() instead.
+     * \deprecated QGIS 3.40. Use QgsLayoutItemPage::pageStyleSymbol() instead.
      */
     Q_DECL_DEPRECATED const QgsFillSymbol *pageStyleSymbol() const SIP_DEPRECATED;
 
@@ -387,6 +387,13 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * Returns a reference to the collection's guide collection, which manages page snap guides.
      */
     SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+
+    /**
+     * Apply the source page properties (size & background color) to all other pages
+     *
+     * \since QGIS 3.42
+     */
+    void applyPropertiesToAllOtherPages( int sourcePage );
 
   public slots:
 

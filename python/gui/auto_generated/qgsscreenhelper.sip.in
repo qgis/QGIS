@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsscreenhelper.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ A utility class for dynamic handling of changes to screen properties.
 #include "qgsscreenhelper.h"
 %End
   public:
-
     QgsScreenHelper( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsScreenHelper for the specified parent ``widget``.
@@ -81,5 +80,5 @@ Emitted whenever the available geometry of the screen associated with the widget
  *                                                                      *
  * src/gui/qgsscreenhelper.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

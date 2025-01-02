@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMeshCalcUtils
      *
      * \note this instance do not support aggregate functions
      *
-     * \deprecated QGIS 3.22 because the constructor does not specify any time interval to calculate aggregate functions
+     * \deprecated QGIS 3.22. Because the constructor does not specify any time interval to calculate aggregate functions.
      */
     Q_DECL_DEPRECATED QgsMeshCalcUtils( QgsMeshLayer *layer,
                                         const QStringList &usedGroupNames,

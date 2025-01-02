@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbsourceselect.h"
+#include "moc_qgsogrdbsourceselect.cpp"
 ///@cond PRIVATE
 
 #include "qgsogrdbconnection.h"
@@ -32,8 +33,7 @@
 
 #include <QMessageBox>
 
-QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName,
-    const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName, const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
   , mOgrDriverName( theSettingsKey )
   , mName( theName )
@@ -50,14 +50,14 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
   QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName( ) ), false, QgsSettings::Section::Providers ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName() ), false, QgsSettings::Section::Providers ).toBool() );
 
-  setWindowTitle( tr( "Add %1 Layer(s)" ).arg( name( ) ) );
-  btnEdit->hide();  // hide the edit button
+  setWindowTitle( tr( "Add %1 Layer(s)" ).arg( name() ) );
+  btnEdit->hide(); // hide the edit button
   btnSave->hide();
   btnLoad->hide();
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Standalone )
   {
     mHoldDialogOpen->hide();
   }
@@ -75,7 +75,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
 QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName( ) ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
+  settings.setValue( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName() ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
 }
 
 
@@ -105,10 +105,10 @@ void QgsOgrDbSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 void QgsOgrDbSourceSelect::populateConnectionList()
 {
   cmbConnections->clear();
-  for ( const QString &name : QgsOgrDbConnection::connectionList( ogrDriverName( ) ) )
+  for ( const QString &name : QgsOgrDbConnection::connectionList( ogrDriverName() ) )
   {
     // retrieving the SQLite DB name and full path
-    const QString text = name + tr( "@" ) + QgsOgrDbConnection( name, ogrDriverName( ) ).path();
+    const QString text = name + tr( "@" ) + QgsOgrDbConnection( name, ogrDriverName() ).path();
     cmbConnections->addItem( text );
   }
 
@@ -135,7 +135,7 @@ QString QgsOgrDbSourceSelect::layerURI( const QModelIndex &index )
   QStandardItem *item = mTableModel->itemFromIndex( index );
   QString uri( item->data().toString() );
   QString sql = mTableModel->itemFromIndex( index.sibling( index.row(), 3 ) )->text();
-  if ( ! sql.isEmpty() )
+  if ( !sql.isEmpty() )
   {
     uri += QStringLiteral( "|subset=%1" ).arg( sql );
   }
@@ -151,8 +151,7 @@ void QgsOgrDbSourceSelect::btnDelete_clicked()
     subKey.truncate( idx );
 
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( subKey );
-  QMessageBox::StandardButton result =
-    QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
+  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result != QMessageBox::Yes )
     return;
 
@@ -164,13 +163,12 @@ void QgsOgrDbSourceSelect::btnDelete_clicked()
 
 void QgsOgrDbSourceSelect::addButtonClicked()
 {
-
   typedef QPair<QString, QString> LayerInfo;
   QList<LayerInfo> selectedVectors;
   QList<LayerInfo> selectedRasters;
 
-  typedef QMap < int, bool >schemaInfo;
-  QMap < QString, schemaInfo > dbInfo;
+  typedef QMap<int, bool> schemaInfo;
+  QMap<QString, schemaInfo> dbInfo;
 
   QItemSelection selection = mTablesTreeView->selectionModel()->selection();
   QModelIndexList selectedIndices = selection.indexes();
@@ -220,7 +218,6 @@ void QgsOgrDbSourceSelect::addButtonClicked()
       emit addVectorLayer( info.first, info.second );
       Q_NOWARN_DEPRECATED_POP
       emit addLayer( Qgis::LayerType::Vector, info.first, info.second, QStringLiteral( "ogr" ) );
-
     }
     for ( const LayerInfo &info : std::as_const( selectedRasters ) )
     {
@@ -229,7 +226,7 @@ void QgsOgrDbSourceSelect::addButtonClicked()
       Q_NOWARN_DEPRECATED_POP
       emit addLayer( Qgis::LayerType::Raster, info.first, info.second, QStringLiteral( "gdal" ) );
     }
-    if ( widgetMode() == QgsProviderRegistry::WidgetMode::None && ! mHoldDialogOpen->isChecked() )
+    if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone && !mHoldDialogOpen->isChecked() )
     {
       accept();
     }
@@ -249,7 +246,7 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
 
   mPath = conn.path();
 
-  const QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( mPath );
+  const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( mPath );
 
   QModelIndex rootItemIndex = mTableModel->indexFromItem( mTableModel->invisibleRootItem() );
   mTableModel->removeRows( 0, mTableModel->rowCount( rootItemIndex ), rootItemIndex );
@@ -385,13 +382,8 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
   QStringList openOptions;
-  const QString filePath = QgsOgrProviderUtils::analyzeURI( uri,
-                           isSubLayer,
-                           layerIndex,
-                           layerName,
-                           subsetString,
-                           ogrGeometryType,
-                           openOptions );
+  QVariantMap credentialOptions;
+  const QString filePath = QgsOgrProviderUtils::analyzeURI( uri, isSubLayer, layerIndex, layerName, subsetString, ogrGeometryType, openOptions, credentialOptions );
 
   QFileInfo pathInfo { filePath };
   const QString connectionName { pathInfo.fileName() };
@@ -407,23 +399,23 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
   if ( idx >= 0 )
   {
     cmbConnections->setCurrentIndex( idx );
-    if ( ! layerName.isEmpty() || layerIndex >= 0 )
+    if ( !layerName.isEmpty() || layerIndex >= 0 )
     {
       btnConnect_clicked();
       // Find table/layer
       QModelIndex index;
       if ( !layerName.isEmpty() )
       {
-        const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
+        const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() ) };
         const QModelIndexList indexList { mTableModel->match( mTableModel->index( 0, 0, parentIndex ), Qt::DisplayRole, layerName, 1, Qt::MatchFlag::MatchExactly ) };
-        if ( ! indexList.isEmpty() )
+        if ( !indexList.isEmpty() )
         {
           index = indexList.first();
         }
       }
       else if ( layerIndex >= 0 )
       {
-        const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() )};
+        const QModelIndex parentIndex { mTableModel->index( 0, 0, mTableModel->invisibleRootItem()->index() ) };
         index = proxyModel()->mapFromSource( mTableModel->index( layerIndex, 0, parentIndex ) );
       }
 
@@ -438,7 +430,6 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
           mTableModel->setSql( index, subsetString );
         }
       }
-
     }
     return true;
   }

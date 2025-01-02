@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmaplayerstylemanagerwidget.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ the layer styles.
 #include "qgsmaplayerstylemanagerwidget.h"
 %End
   public:
-
     QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 Style manager widget to manage the layers styles.
@@ -41,5 +40,5 @@ Style manager widget to manage the layers styles.
  *                                                                      *
  * src/gui/qgsmaplayerstylemanagerwidget.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -26,7 +26,9 @@
 class QgsVectorLayer;
 
 /**
- * The edit buffer group manages a group of edit buffers. Commands like commit and rollback are
+ * \brief The edit buffer group manages a group of edit buffers.
+ *
+ * Commands like commit and rollback are
  * managed by the group invokes individual addFeature(), deleteFeature(), ... in the correct order
  * across all contained edit buffers.
  *
@@ -50,7 +52,14 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
     void addLayer( QgsVectorLayer *layer );
 
     /**
-     * Remove all layers from this edit buffer group
+     * Remove a layer from this edit buffer group.
+     *
+     * \since QGIS 3.42
+     */
+    void removeLayer( QgsVectorLayer *layer );
+
+    /**
+     * Remove all layers from this edit buffer group.
      */
     void clear();
 

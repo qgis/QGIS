@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsrelation.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,6 +13,10 @@
 
 class QgsRelation
 {
+%Docstring(signature="appended")
+
+Represents a relationship between two vector layers.
+%End
 
 %TypeHeaderCode
 #include "qgsrelation.h"
@@ -166,7 +170,8 @@ which is referenced by the provided feature.
 
 :param feature: A feature from the referencing (child) layer
 
-:return: A request the referenced feature
+:return: The referenced (parent) feature, or an invalid feature if no matching feature
+         was found
 %End
 
     QString name() const;
@@ -258,6 +263,13 @@ Returns a list of attributes used to form the referencing fields
 (foreign key) on the referencing (child) layer.
 
 :return: A list of attributes
+%End
+
+    bool referencingFieldsAllowNull() const;
+%Docstring
+Returns ``True`` if none of the referencing fields has a NOT NULL constraint.
+
+.. versionadded:: 3.28
 %End
 
     bool isValid() const;
@@ -358,5 +370,5 @@ Returns a user-friendly translated string representing a relationship ``strength
  *                                                                      *
  * src/core/qgsrelation.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

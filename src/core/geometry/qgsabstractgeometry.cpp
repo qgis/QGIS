@@ -14,6 +14,7 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsabstractgeometry.h"
+#include "moc_qgsabstractgeometry.cpp"
 #include "qgspoint.h"
 #include "qgsgeometrycollection.h"
 #include "qgsvertexid.h"
@@ -211,10 +212,15 @@ double QgsAbstractGeometry::area() const
 QString QgsAbstractGeometry::wktTypeStr() const
 {
   QString wkt = geometryType();
+  QString suffix;
   if ( is3D() )
-    wkt += 'Z';
+    suffix += 'Z';
   if ( isMeasure() )
-    wkt += 'M';
+    suffix += 'M';
+  if ( !suffix.isEmpty() )
+  {
+    wkt += ' ' + suffix;
+  }
   return wkt;
 }
 

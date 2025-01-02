@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsspatialindex.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,9 +28,9 @@ A spatial index for :py:class:`QgsFeature` objects.
    class implements its own locks and accordingly, a single :py:class:`QgsSpatialIndex` object can safely
    be used across multiple threads.
 
-.. seealso:: :py:class:`QgsSpatialIndexKDBush`
+.. seealso:: :py:class:`QgsSpatialIndexKDBush` which is an optimised non-mutable index for point geometries only.
 
-.. seealso:: :py:class:`QgsMeshSpatialIndex`
+.. seealso:: :py:class:`QgsMeshSpatialIndex` which is for mesh faces
 %End
 
 %TypeHeaderCode
@@ -73,20 +73,18 @@ that of the spatial index construction.
 %End
 
     QgsSpatialIndex( const QgsSpatialIndex &other );
-%Docstring
-Copy constructor
-%End
 
     ~QgsSpatialIndex();
 
 
 
- bool insertFeature( const QgsFeature &feature ) /Deprecated/;
+ bool insertFeature( const QgsFeature &feature ) /Deprecated="Since 3.40. Use addFeature() instead."/;
 %Docstring
 Adds a ``feature`` to the index.
 
-.. deprecated::
-   Use :py:func:`~QgsSpatialIndex.addFeature` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsSpatialIndex.addFeature` instead.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
@@ -109,14 +107,15 @@ The ``flags`` argument is ignored.
 .. seealso:: :py:func:`addFeature`
 %End
 
- bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds ) /Deprecated/;
+ bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds ) /Deprecated="Since 3.40. Use addFeature() instead."/;
 %Docstring
 Add a feature ``id`` to the index with a specified bounding box.
 
 :return: ``True`` if feature was successfully added to index.
 
-.. deprecated::
-   Use :py:func:`~QgsSpatialIndex.addFeature` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsSpatialIndex.addFeature` instead.
 %End
 
     bool addFeature( QgsFeatureId id, const QgsRectangle &bounds );
@@ -234,5 +233,5 @@ QFlags<QgsSpatialIndex::Flag> operator|(QgsSpatialIndex::Flag f1, QFlags<QgsSpat
  *                                                                      *
  * src/core/qgsspatialindex.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

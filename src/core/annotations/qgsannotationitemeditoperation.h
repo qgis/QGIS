@@ -23,6 +23,53 @@
 #include "qgspointxy.h"
 #include "qgsvertexid.h"
 #include "qgsgeometry.h"
+#include "qgsrendercontext.h"
+
+/**
+ * \ingroup core
+ * \brief Encapsulates the context for an annotation item edit operation.
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsAnnotationItemEditContext
+{
+  public:
+
+    QgsAnnotationItemEditContext() = default;
+
+    /**
+     * Returns the current rendered bounds of the item, in the annotation layer's CRS.
+     *
+     * \see setCurrentItemBounds()
+     */
+    QgsRectangle currentItemBounds() const;
+
+    /**
+     * Sets the current rendered \a bounds of the item, in the annotation layer's CRS.
+     *
+     * \see currentItemBounds()
+     */
+    void setCurrentItemBounds( const QgsRectangle &bounds );
+
+    /**
+     * Returns the render context associated with the edit operation.
+     *
+     * \see setRenderContext()
+     */
+    QgsRenderContext renderContext() const;
+
+    /**
+     * Sets the render \a context associated with the edit operation.
+     *
+     * \see renderContext()
+     */
+    void setRenderContext( const QgsRenderContext &context );
+
+  private:
+
+    QgsRectangle mCurrentItemBounds;
+    QgsRenderContext mRenderContext;
+
+};
 
 /**
  * \ingroup core
@@ -79,8 +126,11 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
     /**
      * Constructor for QgsAnnotationItemEditOperationMoveNode, where the node with the specified \a id moves
      * from \a before to \a after (in layer coordinates).
+     *
+     * Since QGIS 3.40 the \a translatePixelsX and \a translatePixelsY arguments specify the translation in pixels.
      */
-    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after );
+    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
+                                            double translatePixelsX = 0, double translatePixelsY = 0 );
 
     Type type() const override;
 
@@ -103,12 +153,30 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
      */
     QgsPoint after() const { return mAfter; }
 
+    /**
+     * Returns the x-axis translation, in pixels.
+     *
+     * \since translationYPixels()
+     * \since QGIS 3.40
+     */
+    double translationXPixels() const { return mTranslatePixelsX; }
+
+    /**
+     * Returns the y-axis translation, in pixels.
+     *
+     * \since translationXPixels()
+     * \since QGIS 3.40
+     */
+    double translationYPixels() const { return mTranslatePixelsY; }
+
   private:
 
     QgsVertexId mNodeId;
     QgsPoint mBefore;
     QgsPoint mAfter;
 
+    double mTranslatePixelsX = 0;
+    double mTranslatePixelsY = 0;
 };
 
 
@@ -186,8 +254,11 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
     /**
      * Constructor for QgsAnnotationItemEditOperationTranslateItem, where the node with the specified \a id and translation
      * (in map units)
+     *
+     * Since QGIS 3.40 the \a translatePixelsX and \a translatePixelsY arguments specify the translation in pixels.
      */
-    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY );
+    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY,
+        double translatePixelsX = 0, double translatePixelsY = 0 );
 
     Type type() const override;
 
@@ -210,11 +281,29 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
      */
     double translationY() const { return mTranslateY; }
 
+    /**
+     * Returns the x-axis translation, in pixels.
+     *
+     * \since translationYPixels()
+     * \since QGIS 3.40
+     */
+    double translationXPixels() const { return mTranslatePixelsX; }
+
+    /**
+     * Returns the y-axis translation, in pixels.
+     *
+     * \since translationXPixels()
+     * \since QGIS 3.40
+     */
+    double translationYPixels() const { return mTranslatePixelsY; }
+
   private:
 
     QgsVertexId mNodeId;
     double mTranslateX = 0;
     double mTranslateY = 0;
+    double mTranslatePixelsX = 0;
+    double mTranslatePixelsY = 0;
 
 };
 

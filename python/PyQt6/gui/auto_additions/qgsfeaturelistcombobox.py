@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/gui/qgsfeaturelistcombobox.h
+try:
+    QgsFeatureListComboBox.__attribute_docs__ = {'modelUpdated': 'The underlying model has been updated.\n\n.. versionadded:: 3.2\n', 'sourceLayerChanged': 'The layer from which features should be listed.\n', 'displayExpressionChanged': 'The display expression will be used to display features as well as\nthe the value to match the typed text against.\n', 'filterExpressionChanged': 'An additional expression to further restrict the available features.\nThis can be used to integrate additional spatial or other constraints.\n', 'identifierValueChanged': 'The identifier value of the currently selected feature. A value from the\nidentifierField.\n', 'identifierFieldChanged': 'Field name that will be used to uniquely identify the current feature.\nNormally the primary key of the layer.\n', 'allowNullChanged': 'Determines if a NULL value should be available in the list.\n', 'currentFeatureChanged': 'Emitted when the current feature changes\n\n.. versionadded:: 3.16.5\n', 'currentFeatureFoundChanged': 'Emitted when the feature picker model changes its feature ``found`` state\n\n.. versionadded:: 3.38\n'}
+    QgsFeatureListComboBox.__signal_arguments__ = {'currentFeatureFoundChanged': ['found: bool']}
+except (NameError, AttributeError):
+    pass

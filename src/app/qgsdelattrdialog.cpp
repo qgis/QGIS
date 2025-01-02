@@ -17,10 +17,10 @@
 
 #include "qgsapplication.h"
 #include "qgsdelattrdialog.h"
+#include "moc_qgsdelattrdialog.cpp"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
@@ -30,25 +30,23 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
 
   if ( vl )
   {
-    const bool canDeleteAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
+    const bool canDeleteAttributes = vl->dataProvider()->capabilities() & Qgis::VectorProviderCapability::DeleteAttributes;
     listBox2->clear();
-    const QgsFields &layerAttributes = vl->fields();
+    const QgsFields layerAttributes = vl->fields();
     for ( int idx = 0; idx < layerAttributes.count(); ++idx )
     {
       QListWidgetItem *item = new QListWidgetItem( layerAttributes.at( idx ).name(), listBox2 );
-      switch ( vl->fields().fieldOrigin( idx ) )
+      item->setIcon( layerAttributes.iconForField( idx ) );
+      switch ( layerAttributes.fieldOrigin( idx ) )
       {
-        case QgsFields::OriginExpression:
-          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+        case Qgis::FieldOrigin::Expression:
           break;
 
-        case QgsFields::OriginJoin:
-          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
+        case Qgis::FieldOrigin::Join:
           item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           break;
 
         default:
-          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ) );
           if ( !vl->isEditable() || !canDeleteAttributes )
             item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
           break;

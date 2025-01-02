@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsquantizedmeshterrainsettings.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsQuantizedMeshTerrainSettings : QgsAbstractTerrainSettings
+{
+%Docstring(signature="appended")
+Terrain settings for a terrain generator that uses uses a quantized mesh tile layer to build a terrain.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsquantizedmeshterrainsettings.h"
+%End
+  public:
+    static QgsAbstractTerrainSettings *create() /Factory/;
+%Docstring
+Creates a new instance of a QgsQuantizedMeshTerrainSettings object.
+%End
+
+    QgsQuantizedMeshTerrainSettings *clone() const final /Factory/;
+    QString type() const final;
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
+    void resolveReferences( const QgsProject *project ) final;
+    bool equals( const QgsAbstractTerrainSettings *other ) const final;
+
+    void setLayer( QgsTiledSceneLayer *layer );
+%Docstring
+Sets the quantized mesh tile ``layer`` with elevation model to be used for terrain generation.
+
+.. seealso:: :py:func:`layer`
+%End
+
+    QgsTiledSceneLayer *layer() const;
+%Docstring
+Returns the quantized mesh tile layer with elevation model to be used for terrain generation.
+
+.. seealso:: :py:func:`setLayer`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsquantizedmeshterrainsettings.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

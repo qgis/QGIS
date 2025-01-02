@@ -69,6 +69,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/gps
       ${CMAKE_SOURCE_DIR}/src/core/labeling
+      ${CMAKE_SOURCE_DIR}/src/core/labeling/rules
       ${CMAKE_SOURCE_DIR}/src/core/layertree
       ${CMAKE_SOURCE_DIR}/src/core/layout
       ${CMAKE_SOURCE_DIR}/src/core/locator
@@ -77,6 +78,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
+      ${CMAKE_SOURCE_DIR}/src/core/painting
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/pdf
       ${CMAKE_SOURCE_DIR}/src/core/plot

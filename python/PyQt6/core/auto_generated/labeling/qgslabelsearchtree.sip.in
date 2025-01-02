@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/labeling/qgslabelsearchtree.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,18 +24,16 @@ A class to query the labeling structure at a given point (small wrapper around p
   public:
 
     QgsLabelSearchTree();
-%Docstring
-Constructor for QgsLabelSearchTree.
-%End
     ~QgsLabelSearchTree();
 
 
- void clear() /Deprecated/;
+ void clear() /Deprecated="Since 3.40. Has no effect since QGIS 3.12."/;
 %Docstring
 Removes and deletes all the entries.
 
-.. deprecated::
-   has no effect since QGIS 3.12
+.. deprecated:: 3.40
+
+   Has no effect since QGIS 3.12.
 %End
 
 
@@ -71,9 +69,7 @@ Sets the map ``settings`` associated with the labeling run.
 %End
 
   private:
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree( const QgsLabelSearchTree &rh );
-    //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
 };
 
@@ -82,5 +78,5 @@ Sets the map ``settings`` associated with the labeling run.
  *                                                                      *
  * src/core/labeling/qgslabelsearchtree.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

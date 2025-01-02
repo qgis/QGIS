@@ -31,9 +31,7 @@
  */
 class QgsPointOnSurfaceAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsPointOnSurfaceAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
@@ -43,29 +41,29 @@ class QgsPointOnSurfaceAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsPointOnSurfaceAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
-
     QString outputName() const override;
     Qgis::ProcessingSourceType outputLayerType() const override { return Qgis::ProcessingSourceType::VectorPoint; }
-    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override { Q_UNUSED( inputWkbType ) return Qgis::WkbType::Point; }
+    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override
+    {
+      Q_UNUSED( inputWkbType )
+      return Qgis::WkbType::Point;
+    }
     QgsFeatureSink::SinkFlags sinkFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     bool mAllParts = false;
     bool mDynamicAllParts = false;
     QgsProperty mAllPartsProperty;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMPOINTONSURFACE_H
-
-

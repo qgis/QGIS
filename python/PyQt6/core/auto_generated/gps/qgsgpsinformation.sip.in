@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgsgpsinformation.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -71,7 +71,7 @@ Returns the best fix status and corresponding constellation.
 
 
 :return: - best current fix status
-         - constellation: will be set to the constellation with best fix status
+         - constellation: the constellation with best fix status
 
 .. versionadded:: 3.30
 %End
@@ -113,12 +113,13 @@ Returns whether the connection information is valid
 .. versionadded:: 3.10
 %End
 
- Qgis::GpsFixStatus fixStatus() const /Deprecated/;
+ Qgis::GpsFixStatus fixStatus() const /Deprecated="Since 3.40. Use constellationFixStatus() or bestFixStatus() instead."/;
 %Docstring
 Returns the fix status
 
-.. deprecated::
-  , use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
 %End
 
     QString qualityDescription() const;
@@ -143,5 +144,5 @@ Returns the value of the corresponding GPS information ``component``.
  *                                                                      *
  * src/core/gps/qgsgpsinformation.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

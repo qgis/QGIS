@@ -37,9 +37,12 @@ QgsEditorConfigWidget *QgsRangeWidgetFactory::configWidget( QgsVectorLayer *vl, 
 unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().at( fieldIdx );
-  if ( field.type() == QVariant::Int ) return 20;
-  if ( field.type() == QVariant::Double ) return 5; // low priority because the fixed number of decimal places may alter the original data
-  if ( field.isNumeric() ) return 5; // widgets used support only signed 32bits (int) and double
+  if ( field.type() == QMetaType::Type::Int )
+    return 20;
+  if ( field.type() == QMetaType::Type::Double )
+    return 5; // low priority because the fixed number of decimal places may alter the original data
+  if ( field.isNumeric() )
+    return 5; // widgets used support only signed 32bits (int) and double
   return 0;
 }
 

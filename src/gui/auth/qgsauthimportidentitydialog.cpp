@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthimportidentitydialog.h"
+#include "moc_qgsauthimportidentitydialog.cpp"
 #include "ui_qgsauthimportidentitydialog.h"
 
 #include <QFile>
@@ -30,8 +31,7 @@
 #include "qgsapplication.h"
 
 
-QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-    QWidget *parent )
+QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent )
   : QDialog( parent )
   , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
@@ -89,20 +89,14 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
   {
     stkwBundleType->setVisible( true );
 
-    cmbIdentityTypes->addItem( tr( "PKI PEM/DER Certificate Paths" ),
-                               QVariant( QgsAuthImportIdentityDialog::PkiPaths ) );
-    cmbIdentityTypes->addItem( tr( "PKI PKCS#12 Certificate Bundle" ),
-                               QVariant( QgsAuthImportIdentityDialog::PkiPkcs12 ) );
+    cmbIdentityTypes->addItem( tr( "PKI PEM/DER Certificate Paths" ), QVariant( QgsAuthImportIdentityDialog::PkiPaths ) );
+    cmbIdentityTypes->addItem( tr( "PKI PKCS#12 Certificate Bundle" ), QVariant( QgsAuthImportIdentityDialog::PkiPkcs12 ) );
 
-    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             stkwBundleType, &QStackedWidget::setCurrentIndex );
-    connect( stkwBundleType, &QStackedWidget::currentChanged,
-             cmbIdentityTypes, &QComboBox::setCurrentIndex );
+    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stkwBundleType, &QStackedWidget::setCurrentIndex );
+    connect( stkwBundleType, &QStackedWidget::currentChanged, cmbIdentityTypes, &QComboBox::setCurrentIndex );
 
-    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, [ = ] { validateIdentity(); } );
-    connect( stkwBundleType, &QStackedWidget::currentChanged,
-             this, &QgsAuthImportIdentityDialog::validateIdentity );
+    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] { validateIdentity(); } );
+    connect( stkwBundleType, &QStackedWidget::currentChanged, this, &QgsAuthImportIdentityDialog::validateIdentity );
 
     cmbIdentityTypes->setCurrentIndex( 0 );
     stkwBundleType->setCurrentIndex( 0 );
@@ -122,7 +116,6 @@ void QgsAuthImportIdentityDialog::validateIdentity()
 
 bool QgsAuthImportIdentityDialog::validateBundle()
 {
-
   // clear out any previously set bundle
   const QSslCertificate emptycert;
   const QSslKey emptykey;
@@ -148,9 +141,7 @@ void QgsAuthImportIdentityDialog::clearValidation()
   teValidation->setStyleSheet( QString() );
 }
 
-void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
-    QgsAuthImportIdentityDialog::Validity valid,
-    bool append )
+void QgsAuthImportIdentityDialog::writeValidation( const QString &msg, QgsAuthImportIdentityDialog::Validity valid, bool append )
 {
   QString ss;
   QString txt( msg );
@@ -192,7 +183,7 @@ void QgsAuthImportIdentityDialog::chkPkiPathsPassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ), tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsCert->setText( fn );
@@ -202,7 +193,7 @@ void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 
 void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Private Key File" ), tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsKey->setText( fn );
@@ -223,7 +214,7 @@ void QgsAuthImportIdentityDialog::chkPkiPkcs12PassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ),  tr( "PKCS#12 (*.p12 *.pfx)" ) );
+  const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ), tr( "PKCS#12 (*.p12 *.pfx)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPkcs12Bundle->setText( fn );
@@ -282,8 +273,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
   const QDateTime startdate( clientcert.effectiveDate() );
   const QDateTime enddate( clientcert.expiryDate() );
 
-  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( QgsAuthCertUtils::certIsCurrent( clientcert ) ? Valid : Invalid ) );
+  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ), ( QgsAuthCertUtils::certIsCurrent( clientcert ) ? Valid : Invalid ) );
   //TODO: set enabled on cert info button, relative to cert validity
 
   // check for valid private key and that any supplied password works
@@ -302,9 +292,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
   if ( isvalid )
   {
     mCertBundle = qMakePair( clientcert, clientkey );
-    mPkiBundle = QgsPkiBundle( clientcert,
-                               clientkey,
-                               ca_certs );
+    mPkiBundle = QgsPkiBundle( clientcert, clientkey, ca_certs );
   }
 
   return isvalid;
@@ -378,8 +366,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   const QDateTime now( QDateTime::currentDateTime() );
   const bool bundlevalid = ( now >= startdate && now <= enddate );
 
-  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( bundlevalid ? Valid : Invalid ) );
+  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ), ( bundlevalid ? Valid : Invalid ) );
 
   if ( bundlevalid )
   {

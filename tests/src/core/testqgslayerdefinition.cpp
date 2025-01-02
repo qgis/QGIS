@@ -24,17 +24,17 @@
 #include <qgslayertree.h>
 #include <qgslayerdefinition.h>
 
-class TestQgsLayerDefinition: public QObject
+class TestQgsLayerDefinition : public QObject
 {
     Q_OBJECT
   public:
     TestQgsLayerDefinition() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     /**
      * test findLayers()
@@ -61,7 +61,6 @@ void TestQgsLayerDefinition::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
 }
 
 void TestQgsLayerDefinition::cleanupTestCase()
@@ -102,8 +101,8 @@ void TestQgsLayerDefinition::testLoadTopOfTree()
   //test if new layers are on top
   QList<QgsMapLayer *> orderedLayers = QgsProject::instance()->layerTreeRoot()->layerOrder();
   QCOMPARE( orderedLayers.length(), 3 );
-  QVERIFY( orderedLayers.at( 1 )->name() == QStringLiteral( "rgb256x256" ) );
-  QVERIFY( orderedLayers.at( 0 )->name() == QStringLiteral( "memoryLayer" ) );
+  QVERIFY( orderedLayers.at( 1 )->name() == QLatin1String( "rgb256x256" ) );
+  QVERIFY( orderedLayers.at( 0 )->name() == QLatin1String( "memoryLayer" ) );
 }
 
 void TestQgsLayerDefinition::testExportDoesNotCrash()
@@ -119,8 +118,5 @@ void TestQgsLayerDefinition::testExportDoesNotCrash()
 }
 
 
-
 QGSTEST_MAIN( TestQgsLayerDefinition )
 #include "testqgslayerdefinition.moc"
-
-

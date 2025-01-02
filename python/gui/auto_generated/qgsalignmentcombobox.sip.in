@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsalignmentcombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ when only a subset of Qt's alignment options should be exposed.
 #include "qgsalignmentcombobox.h"
 %End
   public:
-
     QgsAlignmentComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAlignmentComboBox, with the specified parent widget.
@@ -75,5 +74,5 @@ Emitted when the alignment is changed.
  *                                                                      *
  * src/gui/qgsalignmentcombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

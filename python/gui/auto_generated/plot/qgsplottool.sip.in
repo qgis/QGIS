@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/plot/qgsplottool.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,7 +43,6 @@ Plot tools are user tools for manipulating and interacting with a :py:class:`Qgs
       sipType = nullptr;
 %End
   public:
-
     ~QgsPlotTool();
 
     virtual Qgis::PlotToolFlags flags() const;
@@ -208,7 +207,6 @@ Emitted when the tool is deactivated
 %End
 
   protected:
-
     QgsPlotTool( QgsPlotCanvas *canvas /TransferThis/, const QString &name );
 %Docstring
 Constructor takes a plot canvas as a parameter.
@@ -251,5 +249,5 @@ Constrains a point to force it to fall within the specified rectangle.
  *                                                                      *
  * src/gui/plot/qgsplottool.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

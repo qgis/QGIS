@@ -57,15 +57,12 @@ Qgis::WkbType QgsMinimumEnclosingCircleAlgorithm::outputWkbType( Qgis::WkbType )
 
 void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), Qgis::ProcessingNumberParameterType::Integer,
-                72, false, 8, 100000 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), Qgis::ProcessingNumberParameterType::Integer, 72, false, 8, 100000 ) );
 }
 
 QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." ) +
-         QStringLiteral( "\n\n" ) +
-         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
@@ -75,11 +72,11 @@ QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createIn
 
 bool QgsMinimumEnclosingCircleAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
-  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+  if ( !QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
   // (no Z no M)
   return !( QgsWkbTypes::hasM( layer->wkbType() ) || QgsWkbTypes::hasZ( layer->wkbType() ) );
@@ -88,8 +85,8 @@ bool QgsMinimumEnclosingCircleAlgorithm::supportInPlaceEdit( const QgsMapLayer *
 QgsFields QgsMinimumEnclosingCircleAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "radius" ), QVariant::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "radius" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
   return fields;
 }
 
@@ -110,7 +107,7 @@ QgsFeatureList QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeat
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
     attrs << radius
-          << M_PI *radius *radius;
+          << M_PI * radius * radius;
     f.setAttributes( attrs );
   }
   else
@@ -124,4 +121,3 @@ QgsFeatureList QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeat
 }
 
 ///@endcond
-

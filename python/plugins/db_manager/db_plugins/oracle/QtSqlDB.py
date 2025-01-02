@@ -112,15 +112,17 @@ class QtSqlDBCursor:
             else:
                 continue
 
-            self.description.append([
-                f.name(),  # name
-                t,  # type_code
-                f.length(),  # display_size
-                f.length(),  # internal_size
-                f.precision(),  # precision
-                None,  # scale
-                f.requiredStatus() != QSqlField.RequiredStatus.Required  # null_ok
-            ])
+            self.description.append(
+                [
+                    f.name(),  # name
+                    t,  # type_code
+                    f.length(),  # display_size
+                    f.length(),  # internal_size
+                    f.precision(),  # precision
+                    None,  # scale
+                    f.requiredStatus() != QSqlField.RequiredStatus.Required,  # null_ok
+                ]
+            )
 
     def executemany(self, operation, seq_of_parameters):
         if len(seq_of_parameters) == 0:
@@ -146,9 +148,11 @@ class QtSqlDBCursor:
         row = []
         for i in range(len(self.description)):
             value = self.qry.value(i)
-            if (isinstance(value, QDate) or
-                    isinstance(value, QTime) or
-                    isinstance(value, QDateTime)):
+            if (
+                isinstance(value, QDate)
+                or isinstance(value, QTime)
+                or isinstance(value, QDateTime)
+            ):
                 value = value.toString()
             elif isinstance(value, QByteArray):
                 value = "GEOMETRY"
@@ -190,7 +194,8 @@ class QtSqlDBConnection:
 
     def __init__(self, driver, dbname, user, passwd):
         self.conn = QSqlDatabase.addDatabase(
-            driver, "qtsql_%d" % QtSqlDBConnection.connections)
+            driver, "qtsql_%d" % QtSqlDBConnection.connections
+        )
         QtSqlDBConnection.connections += 1
         self.conn.setDatabaseName(dbname)
         self.conn.setUserName(user)

@@ -108,7 +108,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a checkbox
       AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
       ActionHierarchical         = 0x10000, //!< Check/uncheck action has consequences on children (or parents for leaf node)
-      UseThreadedHitTest         = 0x20000, //!< Run legend hit tests in a background thread (since QGIS 3.30)
+      UseThreadedHitTest         = 0x20000, //!< Run legend hit tests in a background thread \since QGIS 3.30
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void layerLegendChanged();
 
     /**
-     * Emitted when layer flags have changed.
+     * Triggered when layer flags have changed.
      * \since QGIS 3.18
      */
     void layerFlagsChanged();
@@ -393,6 +393,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void legendNodeDataChanged();
 
     void invalidateLegendMapBasedData();
+
+  private slots:
+
+    /**
+     * Triggered when layer elevation properties have changed.
+     * \since QGIS 3.42
+     */
+    void layerProfileGenerationPropertyChanged();
 
   protected:
     void removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer );
@@ -456,8 +464,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Structure that stores tree representation of map layer's legend.
      * This structure is used only when the following requirements are met:
      *
-     * # tree legend representation is enabled in model (ShowLegendAsTree flag)
-     * # some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
+     * - tree legend representation is enabled in model (ShowLegendAsTree flag)
+     * - some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
      *
      * The tree structure (parents and children of each node) is extracted by analyzing nodes' parent rules.
      * \note not available in Python bindings

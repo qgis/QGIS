@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayerjoininfo.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,6 +13,7 @@ class QgsVectorLayerJoinInfo
 {
 %Docstring(signature="appended")
 Defines left outer join from our vector layer to some other vector layer.
+
 The join is done based on [our layer].targetField = [join layer].joinField
 %End
 
@@ -22,9 +23,6 @@ The join is done based on [our layer].targetField = [join layer].joinField
   public:
 
     QgsVectorLayerJoinInfo();
-%Docstring
-Constructor for QgsVectorLayerJoinInfo.
-%End
 
     void setJoinLayer( QgsVectorLayer *layer );
 %Docstring
@@ -148,20 +146,22 @@ join layer information.
 :return: the corresponding joined feature
 %End
 
- void setJoinFieldNamesBlackList( const QStringList &blackList ) /Deprecated/;
+ void setJoinFieldNamesBlackList( const QStringList &blackList ) /Deprecated="Since 3.40. Use setJoinFieldNamesBlockList() instead."/;
 %Docstring
 Sets a list of fields to ignore whatever happens.
 
-.. deprecated::
-   use :py:func:`~QgsVectorLayerJoinInfo.setJoinFieldNamesBlockList` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsVectorLayerJoinInfo.setJoinFieldNamesBlockList` instead.
 %End
 
- QStringList joinFieldNamesBlackList() const /Deprecated/;
+ QStringList joinFieldNamesBlackList() const /Deprecated="Since 3.40. Use joinFieldNamesBlockList() instead."/;
 %Docstring
 Returns the list of fields to ignore.
 
-.. deprecated::
-   use :py:func:`~QgsVectorLayerJoinInfo.joinFieldNamesBlockList` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsVectorLayerJoinInfo.joinFieldNamesBlockList` instead.
 %End
 
     void setJoinFieldNamesBlockList( const QStringList &list );
@@ -251,5 +251,5 @@ All fields will be used if ``None`` is returned.
  *                                                                      *
  * src/core/vector/qgsvectorlayerjoininfo.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

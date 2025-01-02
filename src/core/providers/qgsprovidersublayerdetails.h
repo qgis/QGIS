@@ -36,7 +36,7 @@
  *
  * \note It is possible that multiple data providers may be able to utilize the same underlying
  * sub layer in a single dataset, yet will interpret this layer differently. For instance, a layer
- * in a GeoPDF document can be interpreted as either a vector layer by the OGR data provider or a raster
+ * in a Geospatial PDF document can be interpreted as either a vector layer by the OGR data provider or a raster
  * layer by the GDAL provider. The providerKey() property can be used to determine the data provider
  * associated with a QgsProviderSubLayerDetails instance.
  *
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      * Set to TRUE if the layer is a potential dataset container and an in-depth scan
      * of its contents was skipped.
      *
-     * \see skippedContainerScan();
+     * \see skippedContainerScan()
      */
     void setSkippedContainerScan( bool skipped ) { mSkippedContainerScan = skipped; }
 
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      * Returns TRUE if the layer is a potential dataset container and an in-depth scan
      * of its contents was skipped.
      *
-     * \see setSkippedContainerScan();
+     * \see setSkippedContainerScan()
      */
     bool skippedContainerScan() const { return mSkippedContainerScan; }
 

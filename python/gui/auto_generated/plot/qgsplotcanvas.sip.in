@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/plot/qgsplotcanvas.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,7 +38,6 @@ Plot canvas is a class for displaying interactive 2d charts and plots.
       sipType = nullptr;
 %End
   public:
-
     QgsPlotCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPlotCanvas, with the specified ``parent`` widget.
@@ -157,7 +156,6 @@ but is still in a perfectly valid state.
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void keyPressEvent( QKeyEvent *e );
@@ -193,5 +191,5 @@ The default implementation does nothing.
  *                                                                      *
  * src/gui/plot/qgsplotcanvas.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

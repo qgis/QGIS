@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmapsettings.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,6 +39,7 @@ class QgsMapSettings : QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
 The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
+
 The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
 
 In order to set up :py:class:`QgsMapSettings` instance, it is necessary to set at least
@@ -252,6 +253,8 @@ all their child layers.
 .. seealso:: :py:func:`layerIds`
 %End
 
+
+
     void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Sets the list of ``layers`` to render in the map.
@@ -289,8 +292,9 @@ Returns custom rendering flags. Layers might honour these to alter their renderi
 
 .. seealso:: :py:func:`setCustomRenderFlags`
 
-.. deprecated::
-   use \see :py:func:`~QgsMapSettings.customRenderingFlags`.
+.. deprecated:: 3.40
+
+   Use \see :py:func:`~QgsMapSettings.customRenderingFlags`.
 %End
 
  void setCustomRenderFlags( const QString &customRenderFlags );
@@ -301,8 +305,9 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 
 .. seealso:: :py:func:`customRenderFlags`
 
-.. deprecated::
-   use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
+.. deprecated:: 3.40
+
+   Use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
 %End
 
     QVariantMap customRenderingFlags() const;
@@ -542,7 +547,7 @@ during rendering operations, e.g. for resolving relative symbol paths.
 
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
 %Docstring
-Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+Computes an *estimated* conversion factor between layer and map units, where ``layerUnits × layerToMapUnits = mapUnits``
 
 :param layer: The layer
 :param referenceExtent: A reference extent based on which to perform the computation. If not specified, the layer extent is used
@@ -552,7 +557,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 %Docstring
 transform bounding box from layer's CRS to output CRS
 
-.. seealso:: :py:func:`layerToMapCoordinates`
+.. seealso:: :py:func:`layerToMapCoordinates` const if you want to transform a rectangle
 
 :return: a bounding box (aligned rectangle) containing the transformed extent
 %End
@@ -561,7 +566,7 @@ transform bounding box from layer's CRS to output CRS
 %Docstring
 transform bounding box from output CRS to layer's CRS
 
-.. seealso:: :py:func:`mapToLayerCoordinates`
+.. seealso:: :py:func:`mapToLayerCoordinates` const if you want to transform a rectangle
 
 :return: a bounding box (aligned rectangle) containing the transformed extent
 %End
@@ -586,7 +591,7 @@ transform point coordinates from layer's CRS to output CRS
 %Docstring
 transform rectangle from layer's CRS to output CRS
 
-.. seealso:: :py:func:`layerExtentToOutputExtent`
+.. seealso:: :py:func:`layerExtentToOutputExtent` if you want to transform a bounding box
 
 :return: the transformed rectangle
 %End
@@ -611,7 +616,7 @@ transform point coordinates from output CRS to layer's CRS
 %Docstring
 transform rectangle from output CRS to layer's CRS
 
-.. seealso:: :py:func:`outputExtentToLayerExtent`
+.. seealso:: :py:func:`outputExtentToLayerExtent` if you want to transform a bounding box
 
 :return: the transformed rectangle
 %End
@@ -661,13 +666,19 @@ Compute the scale that corresponds to the specified ``extent``
 returns current extent of layer set
 %End
 
-
     void readXml( QDomNode &node );
 %Docstring
-serialization */
+Restore the map settings from a XML ``node``.
+
+.. seealso:: :py:func:`writeXml`
 %End
 
     void writeXml( QDomNode &node, QDomDocument &doc );
+%Docstring
+Writes the map settings to an XML ``node``.
+
+.. seealso:: :py:func:`readXml`
+%End
 
     void setSegmentationTolerance( double tolerance );
 %Docstring
@@ -829,6 +840,27 @@ The default is to use no global simplification, and fallback to individual layer
 .. versionadded:: 3.10
 %End
 
+
+    QgsMaskRenderSettings &maskSettings();
+%Docstring
+Returns a reference to the mask render settings, which control how masks
+are drawn and behave during the map render.
+
+.. seealso:: :py:func:`setMaskSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+%Docstring
+Sets the mask render ``settings``, which control how masks
+are drawn and behave during the map render.
+
+.. seealso:: :py:func:`maskSettings`
+
+.. versionadded:: 3.38
+%End
+
     void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
 %Docstring
 Adds a rendered feature ``handler`` to use while rendering the map settings.
@@ -977,6 +1009,7 @@ Sets the shading ``renderer`` used to render shading on the entire map
 
 
 
+
     void updateDerived();
 
 };
@@ -986,5 +1019,5 @@ Sets the shading ``renderer`` used to render shading on the entire map
  *                                                                      *
  * src/core/qgsmapsettings.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

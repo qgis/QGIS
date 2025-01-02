@@ -3,8 +3,9 @@
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorwidget.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
+
 
 
 
@@ -32,10 +33,7 @@ constructor.
 #include "qgscodeeditorwidget.h"
 %End
   public:
-
-    QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/,
-                         QgsMessageBar *messageBar = 0,
-                         QWidget *parent /TransferThis/ = 0 );
+    QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/, QgsMessageBar *messageBar = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorWidget, wrapping the specified ``editor`` widget.
 
@@ -45,6 +43,13 @@ If an explicit ``messageBar`` is specified then it will be used to provide
 feedback, otherwise an integrated message bar will be used.
 %End
     ~QgsCodeEditorWidget();
+
+    virtual void resizeEvent( QResizeEvent *event );
+
+    virtual void showEvent( QShowEvent *event );
+
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
 
     QgsCodeEditor *editor();
 %Docstring
@@ -59,6 +64,54 @@ Returns ``True`` if the search bar is visible.
     QgsMessageBar *messageBar();
 %Docstring
 Returns the message bar associated with the widget, to use for user feedback.
+%End
+
+    QgsScrollBarHighlightController *scrollbarHighlightController();
+%Docstring
+Returns the scrollbar highlight controller, which can be used to add highlights
+in the code editor scrollbar.
+%End
+
+    void addWarning( int lineNumber, const QString &warning );
+%Docstring
+Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
+
+This method calls :py:func:`QgsCodeEditor.addWarning()`, but also automatically adds
+highlights to the widget scrollbars locating the warning location.
+
+.. seealso:: :py:func:`clearWarnings`
+%End
+
+    void clearWarnings();
+%Docstring
+Clears all warning messages from the editor.
+
+This method calls :py:func:`QgsCodeEditor.clearWarnings()`, but also removes
+highlights from the widget scrollbars at the warning locations.
+
+.. seealso:: :py:func:`addWarning`
+%End
+
+    QString filePath() const;
+%Docstring
+Returns the widget's associated file path.
+
+.. seealso:: :py:func:`setFilePath`
+
+.. seealso:: :py:func:`filePathChanged`
+%End
+
+    bool save( const QString &path = QString() );
+%Docstring
+Saves the code editor content into the file ``path``.
+
+:return: ``False`` if the file path has not previously been set, or if writing the file fails.
+
+.. note::
+
+   When the path is empty, the content will be saved to the current file path if not empty.
+
+.. versionadded:: 3.38.2
 %End
 
   public slots:
@@ -88,6 +141,15 @@ Sets whether the search bar is ``visible``.
 .. seealso:: :py:func:`showSearchBar`
 
 .. seealso:: :py:func:`hideSearchBar`
+
+.. seealso:: :py:func:`setReplaceBarVisible`
+%End
+
+    void setReplaceBarVisible( bool visible );
+%Docstring
+Sets whether the replace bar is ``visible``.
+
+.. seealso:: :py:func:`setSearchBarVisible`
 %End
 
     void triggerFind();
@@ -98,11 +160,71 @@ This will automatically open the search bar and start a find operation using
 the default behavior, e.g. searching for any selected text in the code editor.
 %End
 
+    bool loadFile( const QString &path );
+%Docstring
+Loads the file at the specified ``path`` into the widget, replacing the code editor's
+content with that from the file.
+
+This automatically sets the widget's :py:func:`~QgsCodeEditorWidget.filePath`
+
+Returns ``True`` if the file was loaded successfully.
+%End
+
+    void setFilePath( const QString &path );
+%Docstring
+Sets the widget's associated file ``path``.
+
+.. seealso:: :py:func:`loadFile`
+
+.. seealso:: :py:func:`filePathChanged`
+
+.. seealso:: :py:func:`filePath`
+%End
+
+    bool openInExternalEditor( int line = -1, int column = -1 );
+%Docstring
+Attempts to opens the script from the editor in an external text editor.
+
+This requires that the widget has an associated :py:func:`~QgsCodeEditorWidget.filePath` set.
+
+Optionally a target ``line`` and ``column`` number can be specified to open the editor
+at the corresponding location. (Not all external editors support this.) Line/column
+numbers of -1 indicate that the current cursor position should be used. A ``line``
+number of 0 corresponds to the first line, and a column number of 0 corresponds to
+the first column.
+
+:return: ``True`` if the file was opened successfully.
+%End
+
+    bool shareOnGist( bool isPublic );
+%Docstring
+Shares the contents of the code editor on GitHub Gist.
+
+Requires that the user has configured an API token with appropriate permission in advance.
+
+:return: ``False`` if the user has not configured a GitHub personal access token.
+%End
+
   signals:
 
     void searchBarToggled( bool visible );
 %Docstring
 Emitted when the visibility of the search bar is changed.
+%End
+
+    void filePathChanged( const QString &path );
+%Docstring
+Emitted when the widget's associated file path is changed.
+
+.. seealso:: :py:func:`setFilePath`
+
+.. seealso:: :py:func:`filePath`
+%End
+
+    void loadedExternalChanges();
+%Docstring
+Emitted when the widget loads in text from the associated file to bring in
+changes made externally to the file.
 %End
 
 };
@@ -112,5 +234,5 @@ Emitted when the visibility of the search bar is changed.
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorwidget.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

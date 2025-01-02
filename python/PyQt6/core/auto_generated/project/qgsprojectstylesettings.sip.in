@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsprojectstylesettings.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,7 +38,7 @@ Returns the project default symbol for a given type.
 
 :param symbolType: the symbol type
 
-:return: a symbol pointer or NULL if there is no default set
+:return: a symbol pointer or ``None`` if there is no default set
 
 .. note::
 
@@ -50,7 +50,7 @@ Returns the project default symbol for a given type.
 Sets the project default symbol for a given type.
 
 :param symbolType: the symbol type
-:param symbol: the symbol pointer, set to NULL to clear default
+:param symbol: the symbol pointer, set to ``None`` to clear default
 
 .. note::
 
@@ -61,7 +61,7 @@ Sets the project default symbol for a given type.
 %Docstring
 Returns the project default color ramp.
 
-:return: a color ramp pointer or NULL if there is no default set
+:return: a color ramp pointer or ``None`` if there is no default set
 
 .. note::
 
@@ -72,7 +72,7 @@ Returns the project default color ramp.
 %Docstring
 Sets the project default color ramp.
 
-:param colorRamp: the color ramp, set to NULL to clear default
+:param colorRamp: the color ramp, set to ``None`` to clear default
 
 .. note::
 
@@ -139,6 +139,73 @@ Sets the style database to use for the project style.
 Returns the style database to use for project specific styles.
 
 .. seealso:: :py:func:`setProjectStyle`
+%End
+
+    void setColorModel( Qgis::ColorModel colorModel );
+%Docstring
+Set the project's color model to ``colorModel``
+
+This sets the default color model used when selecting a color in the whole application.
+Any color defined in a different color model than the one specified here will be converted to
+this color model when exporting a layout.
+
+If a color space has already been set and its color model differs from ``colorModel``, the project
+color space will be reset to invalid one (This is only true if QGIS is built against
+Qt 6.8.0 or greater). :py:func:`setColorSpace` colorSpace()
+
+The color model defaults to :py:class:`Qgis`.ColorModel.Rgb
+
+.. seealso:: :py:func:`colorModel`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::ColorModel colorModel() const;
+%Docstring
+Returns the project's color model
+
+This model is used as the default color model when selecting a color in the whole application.
+Any color defined in a different color model than the returned model will be converted to
+this color model when exporting a layout.
+
+The color model defaults to :py:class:`Qgis`.ColorModel.Rgb
+
+.. seealso:: :py:func:`setColorModel`
+
+.. versionadded:: 3.40
+%End
+
+    void setColorSpace( const QColorSpace &colorSpace );
+%Docstring
+Set the project's current color space to ``colorSpace``. ``colorSpace`` must be a valid RGB or CMYK color space.
+The color space's ICC profile will be added as a project attached file.
+
+The project color's space will be added to PDF layout exports when it is defined (i.e. it is different from
+the default invalid QColorSpace).
+
+If a color model has already been set and it differs from ``colorSpace``'s color model, the project's
+color model is set to match the color space's color model (This is only true if QGIS is built against
+Qt 6.8.0 or greater). :py:func:`setColorModel` colorModel()
+
+The color space defaults to an invalid color space.
+
+.. seealso:: :py:func:`colorSpace`
+
+.. versionadded:: 3.40
+%End
+
+    QColorSpace colorSpace() const;
+%Docstring
+Returns the project's color space.
+
+The project color's space will be added to PDF layout exports when it is defined (i.e. it is different from
+the default invalid QColorSpace).
+
+The color space defaults to an invalid color space.
+
+.. seealso:: :py:func:`setColorSpace`
+
+.. versionadded:: 3.40
 %End
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
@@ -301,7 +368,7 @@ class QgsProjectStyleDatabaseProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 
-A proxy model for filtering QgsProjectStyleDatabaseModel.
+A proxy model for filtering :py:class:`QgsProjectStyleDatabaseModel`.
 
 .. versionadded:: 3.26
 %End
@@ -350,5 +417,5 @@ QFlags<QgsProjectStyleDatabaseProxyModel::Filter> operator|(QgsProjectStyleDatab
  *                                                                      *
  * src/core/project/qgsprojectstylesettings.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

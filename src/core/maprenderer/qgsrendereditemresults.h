@@ -52,9 +52,7 @@ class CORE_EXPORT QgsRenderedItemResults
     QgsRenderedItemResults( const QgsRectangle &extent = QgsRectangle() );
     ~QgsRenderedItemResults();
 
-    //! QgsRenderedItemResults cannot be copied.
     QgsRenderedItemResults( const QgsRenderedItemResults & ) = delete;
-    //! QgsRenderedItemResults cannot be copied.
     QgsRenderedItemResults &operator=( const QgsRenderedItemResults &rh ) = delete;
 
     /**

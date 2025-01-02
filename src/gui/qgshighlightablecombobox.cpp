@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgshighlightablecombobox.h"
+#include "moc_qgshighlightablecombobox.cpp"
 #include <QPainter>
 
 QgsHighlightableComboBox::QgsHighlightableComboBox( QWidget *parent )
@@ -26,7 +27,7 @@ void QgsHighlightableComboBox::paintEvent( QPaintEvent *e )
   if ( mHighlight )
   {
     QPainter p( this );
-    const int width = 2;  // width of highlight rectangle inside frame
+    const int width = 2; // width of highlight rectangle inside frame
     p.setPen( QPen( palette().highlight(), width ) );
     const QRect r = rect().adjusted( width, width, -width, -width );
     p.drawRect( r );

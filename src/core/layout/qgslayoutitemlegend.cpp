@@ -17,11 +17,13 @@
 #include <limits>
 
 #include "qgslayoutitemlegend.h"
+#include "moc_qgslayoutitemlegend.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutmodel.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslegendstyle.h"
 #include "qgslogger.h"
@@ -105,20 +107,14 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   if ( !painter )
     return;
 
+  const QPointF oldPos = pos();
+
   ensureModelIsInitialized();
 
   if ( mFilterAskedForUpdate )
   {
     mFilterAskedForUpdate = false;
     doUpdateFilterByMap();
-  }
-
-  if ( mLayout )
-  {
-    if ( !mLayout->renderContext().isPreviewRender() && mLegendModel->hitTestInProgress() )
-    {
-      mLegendModel->waitForHitTestBlocking();
-    }
   }
 
   const int dpi = painter->device()->logicalDpiX();
@@ -153,10 +149,8 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   }
   mInitialMapScaleCalculated = true;
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer = createRenderer();
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
-
-  const QPointF oldPos = pos();
 
   //adjust box if width or height is too small
   if ( mSizeToContents )
@@ -265,7 +259,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
     Q_NOWARN_DEPRECATED_POP
   }
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer = createRenderer();
   legendRenderer.setLegendSize( rect().size() );
 
   legendRenderer.drawLegend( rc );
@@ -288,7 +282,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
   QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) :
                              QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer = createRenderer();
   const QSizeF size = legendRenderer.minimumSize( &context );
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ), 2 );
   if ( size.isValid() )
@@ -319,16 +313,33 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
   mCustomLayerTree.reset( rootGroup );
 }
 
-void QgsLayoutItemLegend::ensureModelIsInitialized()
+void QgsLayoutItemLegend::ensureModelIsInitialized() const
 {
   if ( mDeferLegendModelInitialization )
   {
-    mDeferLegendModelInitialization = false;
-    setCustomLayerTree( mCustomLayerTree.release() );
+    QgsLayoutItemLegend *mutableThis = const_cast< QgsLayoutItemLegend * >( this );
+    mutableThis->mDeferLegendModelInitialization = false;
+    mutableThis->setCustomLayerTree( mutableThis->mCustomLayerTree.release() );
   }
 }
 
+QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
+{
+  QgsLegendRenderer res( mLegendModel.get(), mSettings );
+
+  // only show private layers when not in auto update mode
+  res.proxyModel()->setShowPrivateLayers( static_cast< bool >( mCustomLayerTree ) );
+
+  return res;
+}
+
 QgsLegendModel *QgsLayoutItemLegend::model()
+{
+  ensureModelIsInitialized();
+  return mLegendModel.get();
+}
+
+const QgsLegendModel *QgsLayoutItemLegend::model() const
 {
   ensureModelIsInitialized();
   return mLegendModel.get();
@@ -1016,10 +1027,12 @@ void QgsLayoutItemLegend::updateFilterByMapAndRedraw()
 void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &overrides )
 {
   mLegendModel->setLayerStyleOverrides( overrides );
-  const QList< QgsLayerTreeLayer * > layers =  mLegendModel->rootGroup()->findLayers();
-  for ( QgsLayerTreeLayer *nodeLayer : layers )
-    mLegendModel->refreshLayerLegend( nodeLayer );
-
+  if ( QgsLayerTree *rootGroup = mLegendModel->rootGroup() )
+  {
+    const QList< QgsLayerTreeLayer * > layers =  rootGroup->findLayers();
+    for ( QgsLayerTreeLayer *nodeLayer : std::as_const( layers ) )
+      mLegendModel->refreshLayerLegend( nodeLayer );
+  }
 }
 
 void QgsLayoutItemLegend::clearLegendCachedData()
@@ -1121,6 +1134,10 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
   }
 
+  // only use thread hit tests for preview renders. In other cases we'll need a blocking hit test anyway, and we run a risk
+  // of deadlocks if a non-preview render is then started on the main thread.
+  mLegendModel->setFlag( QgsLayerTreeModel::UseThreadedHitTest, mLayout->renderContext().isPreviewRender() );
+
   const bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 
   const bool hasValidFilter = filterByExpression
@@ -1198,7 +1215,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         {
           mapExtent.transform( mapTransform );
         }
-        catch ( QgsCsException &cse )
+        catch ( QgsCsException & )
         {
           continue;
         }
@@ -1343,7 +1360,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
     }
     return true;
   };
-  return visit( mLegendModel->rootGroup( ) );
+  return visit( model()->rootGroup( ) );
 }
 
 bool QgsLayoutItemLegend::isRefreshing() const

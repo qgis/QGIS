@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfilterlineedit.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,6 @@ signal should be used instead of :py:func:`~textChanged`.
       sipType = NULL;
 %End
   public:
-
     enum ClearMode
     {
       ClearToNull,
@@ -268,5 +267,5 @@ Will select all text when this widget receives the focus.
  *                                                                      *
  * src/gui/qgsfilterlineedit.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

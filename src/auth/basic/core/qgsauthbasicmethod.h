@@ -31,7 +31,6 @@ class QgsAuthBasicMethod : public QgsAuthMethod
     Q_OBJECT
 
   public:
-
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -45,22 +44,19 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     QString displayDescription() const override;
 
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-                               const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-                                   const QString &dataprovider = QString() ) override;
+    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
 
-    bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg,
-                             const QString &dataprovider = QString() ) override;
+    bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
     void clearCachedConfig( const QString &authcfg ) override;
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent )const override;
+    QWidget *editWidget( QWidget *parent ) const override;
 #endif
 
   private:
@@ -81,11 +77,9 @@ class QgsAuthBasicMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthBasicMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthBasicMethod::AUTH_METHOD_KEY, QgsAuthBasicMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthBasicMethod *createAuthMethod() const override {return new QgsAuthBasicMethod;}
+    QgsAuthBasicMethod *createAuthMethod() const override { return new QgsAuthBasicMethod; }
     //QStringList supportedDataProviders() const override;
 };
-
-
 
 
 #endif // QGSAUTHBASICMETHOD_H

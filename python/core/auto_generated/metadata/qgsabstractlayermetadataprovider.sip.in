@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgsabstractlayermetadataprovider.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -47,9 +47,6 @@ Constructor for QgsLayerMetadataProviderResult.
 %End
 
     QgsLayerMetadataProviderResult( );
-%Docstring
-Default constructor.
-%End
 
     const QgsPolygon &geographicExtent() const;
 %Docstring
@@ -205,5 +202,5 @@ Searches for metadata optionally filtering by search string and geographic exten
  *                                                                      *
  * src/core/metadata/qgsabstractlayermetadataprovider.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

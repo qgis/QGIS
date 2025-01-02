@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverinterface.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,14 +23,13 @@ This class provides methods to access the request handler and
 the capabilities cache. A method to read the environment
 variables set in the main FCGI loop is also available.
 Plugins can add listeners (instances of :py:class:`QgsServerFilter`) with
-a certain priority through the registerFilter( :py:class:`QgsServerFilter`* , int) method.
+a certain priority through the :py:func:`~registerFilter` method.
 %End
 
 %TypeHeaderCode
 #include "qgsserverinterface.h"
 %End
   public:
-
 
     virtual ~QgsServerInterface();
 
@@ -152,5 +151,5 @@ Reloads the server settings re-reading the configuration.
  *                                                                      *
  * src/server/qgsserverinterface.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,3 +3,7 @@ QgsRasterRange.IncludeMinAndMax = QgsRasterRange.BoundsType.IncludeMinAndMax
 QgsRasterRange.IncludeMax = QgsRasterRange.BoundsType.IncludeMax
 QgsRasterRange.IncludeMin = QgsRasterRange.BoundsType.IncludeMin
 QgsRasterRange.Exclusive = QgsRasterRange.BoundsType.Exclusive
+try:
+    QgsRasterRange.__group__ = ['raster']
+except (NameError, AttributeError):
+    pass

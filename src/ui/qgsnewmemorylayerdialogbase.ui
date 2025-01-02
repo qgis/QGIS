@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
-    <height>596</height>
+    <width>507</width>
+    <height>749</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,17 +23,33 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="6" column="0" colspan="3">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Layer name</string>
+      <string>&lt;i&gt;&lt;b&gt;Warning:&lt;/b&gt; Temporary scratch layers are not saved and will be discarded when QGIS is closed.&lt;/i&gt;</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::TextFormat::AutoText</enum>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_3">
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="mNameLineEdit"/>
+   </item>
+   <item row="2" column="2">
+    <widget class="QCheckBox" name="mGeometryWithMCheckBox">
      <property name="text">
-      <string>Geometry type</string>
+      <string>Include M values</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -44,12 +60,25 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="2">
-    <widget class="QCheckBox" name="mGeometryWithMCheckBox">
-     <property name="text">
-      <string>Include M values</string>
+   <item row="7" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Layer name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QComboBox" name="mGeometryTypeBox"/>
    </item>
    <item row="4" column="0" colspan="3">
     <widget class="QGroupBox" name="groupBox">
@@ -121,7 +150,7 @@
          <string>Add field to list</string>
         </property>
         <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
+         <enum>Qt::LayoutDirection::LeftToRight</enum>
         </property>
         <property name="text">
          <string>Add to Fields List</string>
@@ -131,7 +160,7 @@
           <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
         </property>
         <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
+         <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
@@ -143,14 +172,71 @@
      <property name="title">
       <string>Fields List</string>
      </property>
-     <layout class="QGridLayout" name="_3">
-      <item row="2" column="0" colspan="3">
+     <layout class="QGridLayout" name="_3" columnstretch="1,0,0">
+      <item row="0" column="2">
+       <layout class="QVBoxLayout" name="pushBtnBox_2" stretch="0,0,1">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="mButtonUp">
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Move up</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mButtonDown">
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Move down</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Orientation::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0" colspan="2">
        <widget class="QTreeWidget" name="mAttributeView">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::DragDropMode::NoDragDrop</enum>
         </property>
         <property name="alternatingRowColors">
          <bool>true</bool>
@@ -183,7 +269,7 @@
         </column>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="1" column="1">
        <widget class="QToolButton" name="mRemoveAttributeButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -202,48 +288,19 @@
           <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
         </property>
         <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
+         <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="QLabel" name="label_2">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>&lt;i&gt;&lt;b&gt;Warning:&lt;/b&gt; Temporary scratch layers are not saved and will be discarded when QGIS is closed.&lt;/i&gt;</string>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::AutoText</enum>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+      <string>Geometry type</string>
      </property>
     </widget>
-   </item>
-   <item row="7" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="3">
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QComboBox" name="mGeometryTypeBox"/>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="mNameLineEdit"/>
    </item>
   </layout>
  </widget>
@@ -262,9 +319,17 @@
   <tabstop>mGeometryWithZCheckBox</tabstop>
   <tabstop>mGeometryWithMCheckBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mFieldNameEdit</tabstop>
+  <tabstop>mTypeBox</tabstop>
+  <tabstop>mWidth</tabstop>
+  <tabstop>mPrecision</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
+  <tabstop>mAttributeView</tabstop>
+  <tabstop>mButtonUp</tabstop>
+  <tabstop>mButtonDown</tabstop>
+  <tabstop>mRemoveAttributeButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -1,4 +1,3 @@
-# coding=utf-8
 """Plugin dependencies selection dialog
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -8,19 +7,26 @@
 
 """
 
-__author__ = 'elpaso@itopen.it'
-__date__ = '2018-09-19'
-__copyright__ = 'Copyright 2018, GISCE-TI S.L.'
-
+__author__ = "elpaso@itopen.it"
+__date__ = "2018-09-19"
+__copyright__ = "Copyright 2018, GISCE-TI S.L."
 
 import os
 
+from pathlib import Path
+
+from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets, QtCore
-from .ui_qgsplugindependenciesdialogbase import Ui_QgsPluginDependenciesDialogBase
 from qgis.utils import iface
 
+Ui_QgsPluginDependenciesDialogBase, _ = uic.loadUiType(
+    Path(__file__).parent / "qgsplugindependenciesdialogbase.ui"
+)
 
-class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDialogBase):
+
+class QgsPluginDependenciesDialog(
+    QtWidgets.QDialog, Ui_QgsPluginDependenciesDialogBase
+):
     """A dialog that shows plugin dependencies and offers a way to install or upgrade the
     dependencies.
     """
@@ -43,11 +49,21 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
         super().__init__(parent)
         self.setupUi(self)
         self.setWindowTitle(self.tr("Plugin Dependencies Manager"))
-        self.mPluginDependenciesLabel.setText(self.tr("Plugin dependencies for <b>%s</b>") % plugin_name)
+        self.mPluginDependenciesLabel.setText(
+            self.tr("Plugin dependencies for <b>%s</b>") % plugin_name
+        )
         self.setStyleSheet("QTableView { padding: 20px;}")
         # Name, Version Installed, Version Required, Version Available, Action Checkbox
         self.pluginList.setColumnCount(5)
-        self.pluginList.setHorizontalHeaderLabels([self.tr('Name'), self.tr('Installed'), self.tr('Required'), self.tr('Available'), self.tr('Action')])
+        self.pluginList.setHorizontalHeaderLabels(
+            [
+                self.tr("Name"),
+                self.tr("Installed"),
+                self.tr("Required"),
+                self.tr("Available"),
+                self.tr("Action"),
+            ]
+        )
         self.pluginList.setRowCount(len(not_found) + len(to_install) + len(to_upgrade))
         self.__actions = {}
 
@@ -58,18 +74,18 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
 
         def _make_row(data, i, name):
             widget = QtWidgets.QLabel("<b>%s</b>" % name)
-            widget.p_id = data['id']
-            widget.action = data['action']
-            widget.use_stable_version = data['use_stable_version']
+            widget.p_id = data["id"]
+            widget.action = data["action"]
+            widget.use_stable_version = data["use_stable_version"]
             self.pluginList.setCellWidget(i, 0, widget)
             self.pluginList.resizeColumnToContents(0)
-            widget = QtWidgets.QTableWidgetItem(_display(data['version_installed']))
+            widget = QtWidgets.QTableWidgetItem(_display(data["version_installed"]))
             widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.pluginList.setItem(i, 1, widget)
-            widget = QtWidgets.QTableWidgetItem(_display(data['version_required']))
+            widget = QtWidgets.QTableWidgetItem(_display(data["version_required"]))
             widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.pluginList.setItem(i, 2, widget)
-            widget = QtWidgets.QTableWidgetItem(_display(data['version_available']))
+            widget = QtWidgets.QTableWidgetItem(_display(data["version_available"]))
             widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
             self.pluginList.setItem(i, 3, widget)
 
@@ -109,8 +125,11 @@ class QgsPluginDependenciesDialog(QtWidgets.QDialog, Ui_QgsPluginDependenciesDia
             try:
                 if self.pluginList.cellWidget(i, 4).isChecked():
                     self.__actions[self.pluginList.cellWidget(i, 0).p_id] = {
-                        'action': self.pluginList.cellWidget(i, 0).action,
-                        'use_stable_version': self.pluginList.cellWidget(i, 0).use_stable_version}
+                        "action": self.pluginList.cellWidget(i, 0).action,
+                        "use_stable_version": self.pluginList.cellWidget(
+                            i, 0
+                        ).use_stable_version,
+                    }
             except:
                 pass
         super().accept()

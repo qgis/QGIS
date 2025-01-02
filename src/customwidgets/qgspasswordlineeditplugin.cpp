@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgspasswordlineedit.h"
 #include "qgspasswordlineeditplugin.h"
+#include "moc_qgspasswordlineeditplugin.cpp"
 
 
 QgsPasswordLineEditPlugin::QgsPasswordLineEditPlugin( QObject *parent )
@@ -93,5 +94,5 @@ QString QgsPasswordLineEditPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

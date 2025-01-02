@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdefaultvalue.h"
+#include "moc_qgsdefaultvalue.cpp"
 
 QgsDefaultValue::QgsDefaultValue( const QString &expression, bool applyOnUpdate )
   : mExpression( expression )

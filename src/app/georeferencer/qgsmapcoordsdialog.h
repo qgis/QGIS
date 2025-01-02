@@ -25,7 +25,7 @@
 
 #include "ui_qgsmapcoordsdialogbase.h"
 
-class QgsGCPCanvasItem;
+class QgsGeorefDataPoint;
 
 class QPushButton;
 
@@ -49,7 +49,6 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     void mouseReleased();
 
   private:
-
     QgsPointLocator::Match mapPointMatch( QMouseEvent *e );
 
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
@@ -60,16 +59,18 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapCoordsDialog.
      * \param qgisCanvas
-     * \param sourceCoordinates must be in source layer coordinates, NOT pixels (unless source image is completely non-referenced)!
+     * \param georefDataPoint Temporary data point used for preview on source and destination canvases while dialog is visible
      * \param rasterCrs
      * \param parent
      */
-    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &sourceCoordinates, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent = nullptr );
+    QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataPoint *georefDataPoint, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent = nullptr );
     ~QgsMapCoordsDialog() override;
+
+    //! Update the source coordinates of the newly added
+    void updateSourceCoordinates( const QgsPointXY &sourceCoordinates );
 
   private slots:
     void buttonBox_accepted();
@@ -101,12 +102,10 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     QgsMapTool *mPrevMapTool = nullptr;
     QgsMapCanvas *mQgisCanvas = nullptr;
 
-    QgsGCPCanvasItem *mNewlyAddedPointItem = nullptr;
-
     QgsCoordinateReferenceSystem mRasterCrs;
 
-    //! Source layer coordinates -- must be in source layer coordinates, not pixels (unless source image is completely non-referenced)
-    QgsPointXY mSourceLayerCoordinates;
+    //! Used for point preview. Holds the source layer coordinates -- must be in source layer coordinates, not pixels (unless source image is completely non-referenced)
+    QgsGeorefDataPoint *mNewlyAddedPoint = nullptr;
 };
 
 #endif

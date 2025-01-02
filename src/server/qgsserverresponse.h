@@ -43,11 +43,7 @@ class QgsServerException;
 class SERVER_EXPORT QgsServerResponse
 {
   public:
-
-    //!constructor
     QgsServerResponse() = default;
-
-    //! destructor
     virtual ~QgsServerResponse() = default;
 
     /**
@@ -99,7 +95,7 @@ class SERVER_EXPORT QgsServerResponse
      * \param code HHTP return code value
      * \param message An informative error message
      */
-    virtual void sendError( int code,  const QString &message ) = 0;
+    virtual void sendError( int code, const QString &message ) = 0;
 
     /**
      * Write string

@@ -1,0 +1,59 @@
+{
+  "basename": "tiles/ch.swisstopo.relief.vt/v1.0.0",
+  "name": "Terrain_v1.0.0",
+  "description": "A tileset showcasing swisstopo terrain layers.",
+  "attribution": "© swisstopo",
+  "version": "v1.0.0",
+  "format": "pbf",
+  "minzoom": 0,
+  "maxzoom": 14,
+  "scale": 1,
+  "vector_layers": [
+    {
+      "id": "hachure",
+      "description": "hachure depicts rock structures or glacier cracks in mountaineous areas.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {}
+    },
+    {
+      "id": "hillshade",
+      "description": "Hillshade is used for terrain shading and highlighting.",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "mask": "String"
+      }
+    },
+    {
+      "id": "scree",
+      "description": "Can be used to draw scree patterns",
+      "minzoom": 0,
+      "maxzoom": 14,
+      "fields": {
+        "weight": "Number"
+      }
+    }
+  ],
+  "profile": "mercator",
+  "scheme": "xyz",
+  "bounds": [
+    3.57,
+    44.18,
+    13.66,
+    48.88
+  ],
+  "center": [
+    8.6,
+    46.5,
+    7
+  ],
+  "tilejson": "2.0.0",
+  "tiles": [
+    "https://vectortiles0.geo.admin.ch/tiles/ch.swisstopo.relief.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles1.geo.admin.ch/tiles/ch.swisstopo.relief.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles2.geo.admin.ch/tiles/ch.swisstopo.relief.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles3.geo.admin.ch/tiles/ch.swisstopo.relief.vt/v1.0.0/{z}/{x}/{y}.pbf",
+    "https://vectortiles4.geo.admin.ch/tiles/ch.swisstopo.relief.vt/v1.0.0/{z}/{x}/{y}.pbf"
+  ]
+}

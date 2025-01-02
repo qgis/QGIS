@@ -120,20 +120,20 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
   request.setFeedback( feedback ? feedback : ( context ? context->feedback() : nullptr ) );
 
   //determine result type
-  QVariant::Type resultType = QVariant::Double;
+  QMetaType::Type resultType = QMetaType::Type::Double;
   int userType = 0;
   if ( attrNum == -1 )
   {
     if ( aggregate == Qgis::Aggregate::GeometryCollect )
     {
       // in this case we know the result should be a geometry value, so no need to sniff it out...
-      resultType = QVariant::UserType;
+      resultType = QMetaType::Type::User;
     }
     else
     {
       // check expression result type
       bool foundFeatures = false;
-      std::tuple<QVariant::Type, int> returnType = QgsExpressionUtils::determineResultType( fieldOrExpression, mLayer, request, *context, &foundFeatures );
+      std::tuple<QMetaType::Type, int> returnType = QgsExpressionUtils::determineResultType( fieldOrExpression, mLayer, request, *context, &foundFeatures );
       if ( !foundFeatures )
       {
         if ( ok )
@@ -143,7 +143,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
 
       resultType = std::get<0>( returnType );
       userType = std::get<1>( returnType );
-      if ( resultType == QVariant::Invalid )
+      if ( resultType == QMetaType::Type::UnknownType )
       {
         QVariant v;
         switch ( aggregate )
@@ -187,7 +187,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
             v = QString();
             break;
         }
-        resultType = v.type();
+        resultType = static_cast<QMetaType::Type>( v.userType() );
         userType = v.userType();
       }
     }
@@ -317,229 +317,229 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
   {
     QStringLiteral( "count" ),
     QCoreApplication::tr( "Count" ),
-    QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QDateTime
+        << QMetaType::Type::QDate
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "count_distinct" ),
     QCoreApplication::tr( "Count Distinct" ),
-    QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
-        << QVariant::UInt
-        << QVariant::Int
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QDateTime
+        << QMetaType::Type::QDate
+        << QMetaType::Type::UInt
+        << QMetaType::Type::Int
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "count_missing" ),
     QCoreApplication::tr( "Count Missing" ),
-    QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QDateTime
+        << QMetaType::Type::QDate
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "min" ),
     QCoreApplication::tr( "Min" ),
-    QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QDateTime
+        << QMetaType::Type::QDate
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "max" ),
     QCoreApplication::tr( "Max" ),
-    QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QDateTime
+        << QMetaType::Type::QDate
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "sum" ),
     QCoreApplication::tr( "Sum" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "mean" ),
     QCoreApplication::tr( "Mean" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "median" ),
     QCoreApplication::tr( "Median" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "stdev" ),
     QCoreApplication::tr( "Stdev" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "stdevsample" ),
     QCoreApplication::tr( "Stdev Sample" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "range" ),
     QCoreApplication::tr( "Range" ),
-    QSet<QVariant::Type>()
-        << QVariant::Date
-        << QVariant::DateTime
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QDate
+        << QMetaType::Type::QDateTime
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "minority" ),
     QCoreApplication::tr( "Minority" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "majority" ),
     QCoreApplication::tr( "Majority" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "q1" ),
     QCoreApplication::tr( "Q1" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "q3" ),
     QCoreApplication::tr( "Q3" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "iqr" ),
     QCoreApplication::tr( "InterQuartileRange" ),
-    QSet<QVariant::Type>()
-        << QVariant::Int
-        << QVariant::UInt
-        << QVariant::LongLong
-        << QVariant::ULongLong
-        << QVariant::Double
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::Int
+        << QMetaType::Type::UInt
+        << QMetaType::Type::LongLong
+        << QMetaType::Type::ULongLong
+        << QMetaType::Type::Double
   }
       << AggregateInfo
   {
     QStringLiteral( "min_length" ),
     QCoreApplication::tr( "Min Length" ),
-    QSet<QVariant::Type>()
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "max_length" ),
     QCoreApplication::tr( "Max Length" ),
-    QSet<QVariant::Type>()
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "concatenate" ),
     QCoreApplication::tr( "Concatenate" ),
-    QSet<QVariant::Type>()
-        << QVariant::String
+    QSet<QMetaType::Type>()
+        << QMetaType::Type::QString
   }
       << AggregateInfo
   {
     QStringLiteral( "collect" ),
     QCoreApplication::tr( "Collect" ),
-    QSet<QVariant::Type>()
+    QSet<QMetaType::Type>()
   }
       << AggregateInfo
   {
     QStringLiteral( "array_agg" ),
     QCoreApplication::tr( "Array Aggregate" ),
-    QSet<QVariant::Type>()
+    QSet<QMetaType::Type>()
   };
 
   return aggregates;
 }
 
-QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType, int userType,
+QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QMetaType::Type resultType, int userType,
     int attr, QgsExpression *expression, const QString &delimiter, QgsExpressionContext *context, bool *ok, QString *error )
 {
   if ( ok )
@@ -554,11 +554,11 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatur
 
   switch ( resultType )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::Double:
     {
       bool statOk = false;
       const Qgis::Statistic stat = numericStatFromAggregate( aggregate, &statOk );
@@ -575,8 +575,8 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatur
       return calculateNumericAggregate( fit, attr, expression, context, stat );
     }
 
-    case QVariant::Date:
-    case QVariant::DateTime:
+    case QMetaType::Type::QDate:
+    case QMetaType::Type::QDateTime:
     {
       bool statOk = false;
       const Qgis::DateTimeStatistic stat = dateTimeStatFromAggregate( aggregate, &statOk );
@@ -584,7 +584,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatur
       {
         if ( error )
           *error = ( expression ? QObject::tr( "Cannot calculate %1 on %2 values" ).arg( displayName( aggregate ) ) :
-                     QObject::tr( "Cannot calculate %1 on %2 fields" ).arg( displayName( aggregate ) ) ).arg( resultType == QVariant::Date ? QObject::tr( "date" ) : QObject::tr( "datetime" ) );
+                     QObject::tr( "Cannot calculate %1 on %2 fields" ).arg( displayName( aggregate ) ) ).arg( resultType == QMetaType::Type::QDate ? QObject::tr( "date" ) : QObject::tr( "datetime" ) );
         return QVariant();
       }
 
@@ -593,7 +593,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatur
       return calculateDateTimeAggregate( fit, attr, expression, context, stat );
     }
 
-    case QVariant::UserType:
+    case QMetaType::Type::User:
     {
       if ( aggregate == Qgis::Aggregate::GeometryCollect )
       {
@@ -630,12 +630,12 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatur
       if ( !statOk )
       {
         QString typeString;
-        if ( resultType == QVariant::Invalid )
+        if ( resultType == QMetaType::Type::UnknownType )
           typeString = QObject::tr( "null" );
-        else if ( resultType == QVariant::UserType )
+        else if ( resultType == QMetaType::Type::User )
           typeString = QMetaType::typeName( userType );
         else
-          typeString = resultType == QVariant::String ? QObject::tr( "string" ) : QVariant::typeToName( resultType );
+          typeString = resultType == QMetaType::Type::QString ? QObject::tr( "string" ) : QVariant::typeToName( resultType );
 
         if ( error )
           *error = expression ? QObject::tr( "Cannot calculate %1 on %3 values" ).arg( displayName( aggregate ), typeString )
@@ -874,7 +874,7 @@ QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator 
     Q_ASSERT( context );
     context->setFeature( f );
     const QVariant v = expression->evaluate( context );
-    if ( v.userType() == QMetaType::type( "QgsGeometry" ) )
+    if ( v.userType() == qMetaTypeId< QgsGeometry>() )
     {
       geometries << v.value<QgsGeometry>();
     }

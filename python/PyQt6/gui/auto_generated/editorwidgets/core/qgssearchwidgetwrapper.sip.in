@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/core/qgssearchwidgetwrapper.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -49,7 +49,7 @@
 
   for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
   {
-    *qlist << ( QgsSearchWidgetWrapper::FilterFlag )PyLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
+    *qlist << ( QgsSearchWidgetWrapper::FilterFlag ) PyLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
   }
 
   *sipCppPtr = qlist;
@@ -68,7 +68,6 @@ Shows a search widget on a filter form.
 #include "qgssearchwidgetwrapper.h"
 %End
   public:
-
     enum FilterFlag /BaseType=IntEnum/
     {
       EqualTo,
@@ -90,14 +89,14 @@ Shows a search widget on a filter form.
     typedef QFlags<QgsSearchWidgetWrapper::FilterFlag> FilterFlags;
 
 
-    static QList< QgsSearchWidgetWrapper::FilterFlag > exclusiveFilterFlags();
+    static QList<QgsSearchWidgetWrapper::FilterFlag> exclusiveFilterFlags();
 %Docstring
 Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
 
 .. seealso:: :py:func:`nonExclusiveFilterFlags`
 %End
 
-    static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
+    static QList<QgsSearchWidgetWrapper::FilterFlag> nonExclusiveFilterFlags();
 %Docstring
 Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
 
@@ -249,5 +248,5 @@ QFlags<QgsSearchWidgetWrapper::FilterFlag> operator|(QgsSearchWidgetWrapper::Fil
  *                                                                      *
  * src/gui/editorwidgets/core/qgssearchwidgetwrapper.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

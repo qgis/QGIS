@@ -20,8 +20,24 @@ QgsAbstractDatabaseProviderConnection.Foreign.is_monkey_patched = True
 QgsAbstractDatabaseProviderConnection.Foreign.__doc__ = "Foreign data wrapper"
 QgsAbstractDatabaseProviderConnection.IncludeSystemTables = QgsAbstractDatabaseProviderConnection.TableFlag.IncludeSystemTables
 QgsAbstractDatabaseProviderConnection.IncludeSystemTables.is_monkey_patched = True
-QgsAbstractDatabaseProviderConnection.IncludeSystemTables.__doc__ = "Include system tables (since QGIS 3.30)"
-QgsAbstractDatabaseProviderConnection.TableFlag.__doc__ = "Flags for table properties.\n\nFlags can be useful for filtering the tables returned\nfrom :py:func:`~QgsAbstractDatabaseProviderConnection.tables`.\n\n" + '* ``Aspatial``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial.__doc__ + '\n' + '* ``Vector``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Vector.__doc__ + '\n' + '* ``Raster``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Raster.__doc__ + '\n' + '* ``View``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.View.__doc__ + '\n' + '* ``MaterializedView``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.MaterializedView.__doc__ + '\n' + '* ``Foreign``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.Foreign.__doc__ + '\n' + '* ``IncludeSystemTables``: ' + QgsAbstractDatabaseProviderConnection.TableFlag.IncludeSystemTables.__doc__
+QgsAbstractDatabaseProviderConnection.IncludeSystemTables.__doc__ = "Include system tables \n.. versionadded:: 3.30"
+QgsAbstractDatabaseProviderConnection.TableFlag.__doc__ = """Flags for table properties.
+
+Flags can be useful for filtering the tables returned
+from :py:func:`~QgsAbstractDatabaseProviderConnection.tables`.
+
+* ``Aspatial``: Aspatial table (it does not contain any geometry column)
+* ``Vector``: Vector table (it does contain one geometry column)
+* ``Raster``: Raster table
+* ``View``: View table
+* ``MaterializedView``: Materialized view table
+* ``Foreign``: Foreign data wrapper
+* ``IncludeSystemTables``: Include system tables
+
+  .. versionadded:: 3.30
+
+
+"""
 # --
 QgsAbstractDatabaseProviderConnection.TableFlag.baseClass = QgsAbstractDatabaseProviderConnection
 QgsAbstractDatabaseProviderConnection.TableFlags = lambda flags=0: QgsAbstractDatabaseProviderConnection.TableFlag(flags)
@@ -68,6 +84,7 @@ QgsAbstractDatabaseProviderConnection.Curves = QgsAbstractDatabaseProviderConnec
 QgsAbstractDatabaseProviderConnection.SinglePoint = QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.SinglePoint
 QgsAbstractDatabaseProviderConnection.SingleLineString = QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.SingleLineString
 QgsAbstractDatabaseProviderConnection.SinglePolygon = QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.SinglePolygon
+QgsAbstractDatabaseProviderConnection.PolyhedralSurfaces = QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.PolyhedralSurfaces
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.baseClass = QgsAbstractDatabaseProviderConnection
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities = lambda flags=0: QgsAbstractDatabaseProviderConnection.GeometryColumnCapability(flags)
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities.baseClass = QgsAbstractDatabaseProviderConnection
@@ -82,3 +99,57 @@ QgsAbstractDatabaseProviderConnection.Capability.__bool__ = lambda flag: bool(_f
 QgsAbstractDatabaseProviderConnection.Capability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsAbstractDatabaseProviderConnection.Capability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsAbstractDatabaseProviderConnection.Capability.__or__ = lambda flag1, flag2: QgsAbstractDatabaseProviderConnection.Capability(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__attribute_docs__ = {'sql': 'The SQL expression that defines the SQL (query) layer', 'filter': 'Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability.Filters capability', 'layerName': 'Optional name for the new layer', 'primaryKeyColumns': 'List of primary key column names', 'geometryColumn': 'Name of the geometry column', 'disableSelectAtId': 'If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability.SelectAtId capability'}
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__doc__ = """The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
+
+.. seealso:: :py:func:`createSqlVectorLayer`
+
+.. versionadded:: 3.22"""
+    QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__attribute_docs__ = {'geometryColumnName': 'Specifies the name of the geometry column to create the index for'}
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__doc__ = """The SpatialIndexOptions contains extra options relating to spatial index creation.
+
+.. versionadded:: 3.14"""
+    QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.QueryResult.__doc__ = """The QueryResult class represents the result of a query executed by :py:func:`~QgsAbstractDatabaseProviderConnection.execSql`
+
+It encapsulates an iterator over the result rows and a list of the column names.
+
+Rows can be retrieved by iterating over the result with :py:func:`~QgsAbstractDatabaseProviderConnection.hasNextRow` and :py:func:`~QgsAbstractDatabaseProviderConnection.nextRow`
+or by calling :py:func:`~QgsAbstractDatabaseProviderConnection.rows` that will internally iterate over the results and return
+the whole result list.
+
+.. versionadded:: 3.18"""
+    QgsAbstractDatabaseProviderConnection.QueryResult.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.TableProperty.__doc__ = """The TableProperty class represents a database table or view.
+
+In case the table is a vector spatial table and it has multiple
+geometry columns, separate entries for each geometry column must
+be created.
+
+In case the table is a vector spatial table and the geometry column
+can contain multiple geometry types and/or CRSs, a clone of the property
+for the individual geometry type/CRS can be retrieved with at(i)"""
+    QgsAbstractDatabaseProviderConnection.TableProperty.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__doc__ = """The GeometryColumnType struct represents the combination
+of geometry type and CRS for the table geometry column."""
+    QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
+except (NameError, AttributeError):
+    pass

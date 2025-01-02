@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsauxiliarystorage.h"
+#include "moc_qgsauxiliarystorage.cpp"
 #include "qgslogger.h"
 #include "qgssqliteutils.h"
 #include "qgsproject.h"
@@ -480,24 +481,24 @@ QgsField QgsAuxiliaryLayer::createAuxiliaryField( const QgsPropertyDefinition &d
 
   if ( !def.name().isEmpty() || !def.comment().isEmpty() )
   {
-    QVariant::Type type = QVariant::Invalid;
+    QMetaType::Type type = QMetaType::Type::UnknownType;
     QString typeName;
     int len( 0 ), precision( 0 );
     switch ( def.dataType() )
     {
       case QgsPropertyDefinition::DataTypeString:
-        type = QVariant::String;
+        type = QMetaType::Type::QString;
         len = 50;
         typeName = QStringLiteral( "String" );
         break;
       case QgsPropertyDefinition::DataTypeNumeric:
-        type = QVariant::Double;
+        type = QMetaType::Type::Double;
         len = 0;
         precision = 0;
         typeName = QStringLiteral( "Real" );
         break;
       case QgsPropertyDefinition::DataTypeBoolean:
-        type = QVariant::Int; // sqlite does not have a bool type
+        type = QMetaType::Type::Int; // sqlite does not have a bool type
         typeName = QStringLiteral( "Integer" );
         break;
     }
@@ -571,15 +572,15 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
     def.setName( propertyName );
     switch ( f.type() )
     {
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         def.setDataType( QgsPropertyDefinition::DataTypeNumeric );
         break;
 
-      case QVariant::Bool:
+      case QMetaType::Type::Bool:
         def.setDataType( QgsPropertyDefinition::DataTypeBoolean );
         break;
 
-      case QVariant::String:
+      case QMetaType::Type::QString:
       default:
         def.setDataType( QgsPropertyDefinition::DataTypeString );
         break;

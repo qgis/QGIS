@@ -3,9 +3,8 @@
  *                                                                      *
  * src/core/auth/qgsauthmanager.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -35,7 +34,7 @@ and to utilize configurations through various authentication method plugins
       CRITICAL
     };
 
- bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) /Deprecated/;
+ bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) /Deprecated="Since 3.36. Use setup() or ensureInitialized() instead."/;
 %Docstring
 init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
 
@@ -48,8 +47,9 @@ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authen
 
 .. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
 
-.. deprecated:: QGIS 3.36
-  use :py:func:`~QgsAuthManager.setup` instead.
+.. deprecated:: 3.36
+
+   Use :py:func:`~QgsAuthManager.setup` or :py:func:`~QgsAuthManager.ensureInitialized` instead.
 %End
 
     void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
@@ -60,24 +60,63 @@ This method does not initialize the authentication framework, instead that is de
 to lazy-initialize when required.
 
 :param pluginPath: the plugin path
-:param authDatabasePath: the authentication DB path
+:param authDatabasePath: the authentication DB URI (or just the file path for SQLite)
+
+.. seealso:: :py:func:`ensureInitialized`
+%End
+
+    bool ensureInitialized() const;
+%Docstring
+Performs lazy initialization of the authentication framework, if it has
+not already been done.
+
+.. seealso:: :py:func:`setup`
+
+.. versionadded:: 3.40
 %End
 
     ~QgsAuthManager();
 
-    QSqlDatabase authDatabaseConnection() const;
+    QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry() const;
+%Docstring
+Returns the authentication configuration storage registry.
+
+.. versionadded:: 3.40
+%End
+
+ QSqlDatabase authDatabaseConnection() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead."/;
 %Docstring
 Sets up the application instance of the authentication database connection
+
+.. deprecated:: 3.40
+
+   Direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
 %End
 
-    const QString authDatabaseConfigTable() const;
+ const QString authDatabaseConfigTable() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use methodConfigTableName() instead."/;
 %Docstring
 Name of the authentication database table that stores configs
+
+.. deprecated:: 3.40
+
+   Direct access to the DB is not allowed, use :py:func:`~QgsAuthManager.methodConfigTableName` instead.
 %End
 
-    const QString authDatabaseServersTable() const;
+    const QString methodConfigTableName() const;
+%Docstring
+Returns the database table from the first ready storage that stores authentication configs,
+or an empty string if none available. The table is prefixed with schema and escaped if necessary.
+
+.. versionadded:: 3.40
+%End
+
+ const QString authDatabaseServersTable() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead."/;
 %Docstring
 Name of the authentication database table that stores server exceptions/configs
+
+.. deprecated:: 3.40
+
+   Direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
 %End
 
 
@@ -91,11 +130,35 @@ Whether QCA has the qca-ossl plugin, which a base run-time requirement
 Standard message for when QCA's qca-ossl plugin is missing and system is disabled
 %End
 
-    const QString authenticationDatabasePath() const;
+ const QString authenticationDatabasePath() const;
 %Docstring
 The standard authentication database file in ~/.qgis3/ or defined location
 
 .. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAuthManager.authenticationDatabaseUri` instead.
+%End
+
+    static bool isFilesystemBasedDatabase( const QString &uri );
+%Docstring
+Returns the ``True`` if the ``uri`` is a filesystem-based database (SQLite).
+%End
+
+
+    const QString authenticationDatabaseUri() const;
+%Docstring
+Returns the authentication database connection URI.
+
+.. versionadded:: 3.40
+%End
+
+    const QString authenticationDatabaseUriStripped() const;
+%Docstring
+Returns the authentication database connection URI with the password stripped.
+
+.. versionadded:: 3.40
 %End
 
     bool setMasterPassword( bool verify = false );
@@ -109,7 +172,7 @@ Main call to initially set or continually check master password is set
 :param verify: Whether password's hash was saved in authentication database
 %End
 
-    bool setMasterPassword( const QString &pass, bool verify = false );
+    bool setMasterPassword( const QString &password, bool verify = false );
 %Docstring
 Overloaded call to reset master password or set it initially without user interaction
 
@@ -117,7 +180,7 @@ Overloaded call to reset master password or set it initially without user intera
 
    Only use this in trusted reset functions, unit tests or user/app setup scripts!
 
-:param pass: Password to use
+:param password: Password to use
 :param verify: Whether password's hash was saved in authentication database
 %End
 
@@ -151,11 +214,11 @@ Clear supplied master password
    This will not necessarily clear authenticated connections cached in network connection managers
 %End
 
-    bool masterPasswordSame( const QString &pass ) const;
+    bool masterPasswordSame( const QString &password ) const;
 %Docstring
 Check whether supplied password is the same as the one already set
 
-:param pass: Password to verify
+:param password: Password to verify
 %End
 
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath /In,Out/ = 0 );
@@ -751,6 +814,7 @@ Store the password manager into the wallet
 
     static const QString AUTH_MAN_TAG;
 
+
   signals:
 
     void passwordHelperFailure();
@@ -765,7 +829,7 @@ Signals emitted on password helper success,
 mainly used in the tests to exit main application loop
 %End
 
-    void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+ void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const /Deprecated="Since 3.40. Use messageLog() instead."/;
 %Docstring
 Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 
@@ -774,9 +838,26 @@ Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 :param level: Message log level
 
 .. seealso:: :py:class:`QgsMessageLog`
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAuthManager.messageLog` instead.
 %End
 
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
+    void messageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
+%Docstring
+Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
+
+:param message: Message to send
+:param tag: Associated tag (title)
+:param level: Message log level
+
+.. seealso:: :py:class:`QgsMessageLog`
+
+.. versionadded:: 3.40
+%End
+
+ void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) /Deprecated="Since 3.40. Use passwordHelperMessageLog() instead."/;
 %Docstring
 Custom logging signal to inform the user about master password <-> password manager interactions
 
@@ -785,8 +866,24 @@ Custom logging signal to inform the user about master password <-> password mana
 :param level: Message log level
 
 .. seealso:: :py:class:`QgsMessageLog`
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAuthManager.passwordHelperMessageLog` instead.
 %End
 
+    void passwordHelperMessageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+%Docstring
+Custom logging signal to inform the user about master password <-> password manager interactions
+
+:param message: Message to send
+:param tag: Associated tag (title)
+:param level: Message log level
+
+.. seealso:: :py:class:`QgsMessageLog`
+
+.. versionadded:: 3.40
+%End
 
     void masterPasswordVerified( bool verified );
 %Docstring
@@ -830,5 +927,5 @@ Clear an authentication config from its associated authentication method cache
  *                                                                      *
  * src/core/auth/qgsauthmanager.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

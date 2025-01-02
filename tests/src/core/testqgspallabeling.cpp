@@ -26,20 +26,23 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsrenderchecker.h"
 
-class TestQgsPalLabeling: public QgsTest
+class TestQgsPalLabeling : public QgsTest
 {
     Q_OBJECT
 
   public:
-
-    TestQgsPalLabeling() : QgsTest( QStringLiteral( "PAL labeling Tests" ) ) {}
+    TestQgsPalLabeling()
+      : QgsTest( QStringLiteral( "PAL labeling Tests" ) ) {}
 
   private slots:
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void wrapChar();//test wrapping text lines
-    void graphemes(); //test splitting strings to graphemes
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void wrapChar();        //test wrapping text lines
+    void graphemes();       //test splitting strings to graphemes
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
     void testGeometryGenerator();
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+    void testPolygonWithEmptyRing();
+#endif
 };
 
 void TestQgsPalLabeling::cleanupTestCase()
@@ -161,17 +164,7 @@ void TestQgsPalLabeling::graphemes()
   expected2Pt11 += QChar( 0x17D2 );
   expected2Pt11 += QChar( 0x179F );
 
-  QCOMPARE( QgsPalLabeling::splitToGraphemes( str2 ), QStringList() << expected2Pt1
-            << expected2Pt2
-            << expected2Pt3
-            << expected2Pt4
-            << expected2Pt5
-            << expected2Pt6
-            << expected2Pt7
-            << expected2Pt8
-            << expected2Pt9
-            << expected2Pt10
-            << expected2Pt11 );
+  QCOMPARE( QgsPalLabeling::splitToGraphemes( str2 ), QStringList() << expected2Pt1 << expected2Pt2 << expected2Pt3 << expected2Pt4 << expected2Pt5 << expected2Pt6 << expected2Pt7 << expected2Pt8 << expected2Pt9 << expected2Pt10 << expected2Pt11 );
 }
 
 bool TestQgsPalLabeling::imageCheck( const QString &testName, QImage &image, int mismatchCount )
@@ -216,7 +209,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   settings.geometryGeneratorType = Qgis::GeometryType::Point;
   settings.geometryGenerator = "translate($geometry, 1, 0)";
 
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
 
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
@@ -231,7 +224,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   {
     for ( int y = 0; y < 10; y += 3 )
     {
-      f.setGeometry( std::make_unique< QgsPoint >( x, y ) );
+      f.setGeometry( std::make_unique<QgsPoint>( x, y ) );
       vl2->dataProvider()->addFeature( f );
     }
   }
@@ -268,6 +261,59 @@ void TestQgsPalLabeling::testGeometryGenerator()
   QVERIFY( imageCheck( QStringLiteral( "rotated_geometry_generator_translated" ), img, 20 ) );
 }
 
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+void TestQgsPalLabeling::testPolygonWithEmptyRing()
+{
+  // test that no labels are drawn outside of the specified label boundary
+  // TODO: fix on QGIS built against Qt6
+  QgsPalLayerSettings settings;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+
+  settings.placement = Qgis::LabelPlacement::OverPoint;
+
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f( vl2->fields(), 1 );
+  QgsPolygon *polygon = new QgsPolygon();
+  QVector<QgsPoint> points;
+  points << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 ) << QgsPoint( 10, 10 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 );
+  polygon->setExteriorRing( new QgsLineString( points ) );
+  polygon->addInteriorRing( new QgsLineString() );
+  f.setGeometry( QgsGeometry( polygon ) );
+  vl2->dataProvider()->addFeature( f );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  // insure that no crash occurs
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+}
+#endif
 
 QGSTEST_MAIN( TestQgsPalLabeling )
 #include "testqgspallabeling.moc"

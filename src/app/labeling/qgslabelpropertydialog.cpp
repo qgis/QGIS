@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
+#include "moc_qgslabelpropertydialog.cpp"
 #include "qgscallout.h"
 #include "qgsfontutils.h"
 #include "qgslogger.h"
@@ -55,18 +56,18 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   connect( mAlwaysShowChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled );
   connect( mShowCalloutChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::showCalloutToggled );
   connect( mBufferDrawChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::bufferDrawToggled );
-  connect( mLabelDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mLabelDistanceSpinBox_valueChanged );
-  connect( mXCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged );
-  connect( mYCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged );
+  connect( mLabelDistanceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mLabelDistanceSpinBox_valueChanged );
+  connect( mXCoordSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged );
+  connect( mYCoordSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged );
   connect( mFontFamilyCmbBx, &QFontComboBox::currentFontChanged, this, &QgsLabelPropertyDialog::mFontFamilyCmbBx_currentFontChanged );
   connect( mFontStyleCmbBx, &QComboBox::currentTextChanged, this, &QgsLabelPropertyDialog::mFontStyleCmbBx_currentIndexChanged );
   connect( mFontUnderlineBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontUnderlineBtn_toggled );
   connect( mFontStrikethroughBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontStrikethroughBtn_toggled );
   connect( mFontBoldBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontBoldBtn_toggled );
   connect( mFontItalicBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontItalicBtn_toggled );
-  connect( mFontSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mFontSizeSpinBox_valueChanged );
-  connect( mBufferSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mBufferSizeSpinBox_valueChanged );
-  connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mRotationSpinBox_valueChanged );
+  connect( mFontSizeSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mFontSizeSpinBox_valueChanged );
+  connect( mBufferSizeSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mBufferSizeSpinBox_valueChanged );
+  connect( mRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mRotationSpinBox_valueChanged );
   connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mFontColorButton_colorChanged );
   connect( mBufferColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mBufferColorButton_colorChanged );
   connect( mMultiLineAlignComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mMultiLineAlignComboBox_currentIndexChanged );
@@ -105,7 +106,7 @@ void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
 void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QString &labelText )
 {
   //get feature attributes
-  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( mCanvas->layer( layerId ) );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->layer( layerId ) );
   if ( !vlayer )
   {
     return;
@@ -152,12 +153,12 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
         const QgsFields &layerFields = vlayer->fields();
         switch ( layerFields.at( mCurLabelField ).type() )
         {
-          case QVariant::Double:
+          case QMetaType::Type::Double:
             mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );
             break;
-          case QVariant::Int:
-          case QVariant::UInt:
-          case QVariant::LongLong:
+          case QMetaType::Type::Int:
+          case QMetaType::Type::UInt:
+          case QMetaType::Type::LongLong:
             mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
             break;
           default:
@@ -360,12 +361,8 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
   //even if the data defined property is set to an expression, as it's useful to show
   //users what the evaluated property is...
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr )
-          << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-          << QgsExpressionContextUtils::layerScope( vlayer );
+  QgsExpressionContext context = QgisApp::instance()->mapCanvas()->createExpressionContext();
+  context << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 
   const auto constPropertyKeys = mDataDefinedProperties.propertyKeys();
@@ -383,7 +380,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
     }
 
     bool ok = false;
-    switch ( static_cast< QgsPalLayerSettings::Property>( key ) )
+    switch ( static_cast<QgsPalLayerSettings::Property>( key ) )
     {
       case QgsPalLayerSettings::Property::Show:
       {
@@ -523,12 +520,12 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       continue;
     }
 
-    const int ddIndex = dataDefinedColumnIndex( static_cast< QgsPalLayerSettings::Property >( key ), vlayer, context );
-    mPropertyToFieldMap[ key ] = ddIndex;
+    const int ddIndex = dataDefinedColumnIndex( static_cast<QgsPalLayerSettings::Property>( key ), vlayer, context );
+    mPropertyToFieldMap[key] = ddIndex;
     if ( ddIndex < 0 )
       continue; // can only modify attributes with an active data definition of a mapped field
 
-    switch ( static_cast< QgsPalLayerSettings::Property >( key ) )
+    switch ( static_cast<QgsPalLayerSettings::Property>( key ) )
     {
       case QgsPalLayerSettings::Property::Show:
         mShowLabelChkbx->setEnabled( true );
@@ -860,7 +857,7 @@ void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p
   if ( mDataDefinedProperties.isActive( p ) )
   {
     const QgsProperty prop = mDataDefinedProperties.property( p );
-    if ( const int index = mPropertyToFieldMap.value( static_cast< int >( p ) ); index >= 0 )
+    if ( const int index = mPropertyToFieldMap.value( static_cast<int>( p ) ); index >= 0 )
     {
       mChangedProperties.insert( index, value );
     }
@@ -869,8 +866,7 @@ void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p
 
 void QgsLabelPropertyDialog::enableWidgetsForPinnedLabels()
 {
-  const bool pinned = mXCoordSpinBox->value() >= ( mXCoordSpinBox->minimum() + mXCoordSpinBox->singleStep() ) &&
-                      mYCoordSpinBox->value() >= ( mYCoordSpinBox->minimum() + mYCoordSpinBox->singleStep() );
+  const bool pinned = mXCoordSpinBox->value() >= ( mXCoordSpinBox->minimum() + mXCoordSpinBox->singleStep() ) && mYCoordSpinBox->value() >= ( mYCoordSpinBox->minimum() + mYCoordSpinBox->singleStep() );
 
   mHaliComboBox->setEnabled( pinned && mCanSetHAlignment );
   mValiComboBox->setEnabled( pinned && mCanSetVAlignment );

@@ -68,7 +68,6 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 {
   public:
-
     /**
      * Constructor for QgsLayerTreeEmbeddedWidgetRegistry/
      *
@@ -79,9 +78,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
-    //! QgsLayerTreeEmbeddedWidgetRegistry cannot be copied.
     QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other ) = delete;
-    //! QgsLayerTreeEmbeddedWidgetRegistry cannot be copied.
     QgsLayerTreeEmbeddedWidgetRegistry &operator=( const QgsLayerTreeEmbeddedWidgetRegistry &other ) = delete;
 
     //! Returns list of all registered providers
@@ -103,7 +100,6 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     bool removeProvider( const QString &providerId );
 
   protected:
-
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider *> mProviders;
 
@@ -111,7 +107,6 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 #ifdef SIP_RUN
     QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other );
 #endif
-
 };
 
 

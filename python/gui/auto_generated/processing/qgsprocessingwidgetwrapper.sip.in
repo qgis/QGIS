@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingwidgetwrapper.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ An interface for objects which can create Processing contexts.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     virtual QgsProcessingContext *processingContext() = 0;
 %Docstring
 This method needs to be reimplemented in all classes which implement this interface
@@ -48,7 +47,6 @@ An interface for objects which can create sets of parameter values for processin
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     enum class Flag
     {
       SkipDefaultValueParameters,
@@ -86,11 +84,7 @@ to fine-tune its behavior.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     QgsProcessingParameterWidgetContext();
-%Docstring
-Constructor for QgsProcessingParameterWidgetContext.
-%End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
@@ -234,7 +228,7 @@ use in a standard algorithm dialog, a batch processing dialog, or a modeler dial
 
 Individual widget wrappers are not usually created directly, instead they are
 constructed through the central registry, via calls to
-:py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~QgsProcessingParameterWidgetContext.createParameterWidgetWrapper`.
+:py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~createParameterWidgetWrapper`.
 
 .. versionadded:: 3.4
 %End
@@ -243,9 +237,7 @@ constructed through the central registry, via calls to
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
-    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0,
-        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent /TransferThis/ = 0 );
+    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
 ``parameter`` definition and dialog ``type``.
@@ -323,7 +315,7 @@ Returns the parameter definition associated with this wrapper.
 
 %Property( name = param, get = parameterDefinition )
 
-    void setParameterValue( const QVariant &value, QgsProcessingContext &context );
+      void setParameterValue( const QVariant &value, QgsProcessingContext &context );
 %Docstring
 Sets the current ``value`` for the parameter.
 
@@ -362,7 +354,7 @@ to other parameter's values).
 .. versionadded:: 3.14
 %End
 
-    virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
+    virtual void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers );
 %Docstring
 Called after all wrappers have been created within a particular dialog or context,
 allowing the wrapper to connect to the wrappers of other, related parameters.
@@ -396,7 +388,6 @@ Emitted whenever the parameter value (as defined by the wrapped widget) is chang
 %End
 
   protected:
-
     virtual QWidget *createWidget() = 0 /Factory/;
 %Docstring
 Creates a new widget which allows customization of the parameter's value.
@@ -448,7 +439,6 @@ buttons and property override buttons to correctly show the appropriate vector l
 
   protected:
 
-
 };
 
 
@@ -458,9 +448,9 @@ class QgsProcessingParameterWidgetFactoryInterface
 
 An interface for Processing widget wrapper factories.
 
-Widget wrapper factories allow creation of QgsAbstractProcessingParameterWidgetWrapper objects.
+Widget wrapper factories allow creation of :py:class:`QgsAbstractProcessingParameterWidgetWrapper` objects.
 They are centrally managed by :py:class:`QgsProcessingGuiRegistry`. Usually, individual factories
-are not directly utilized, rather the :py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~QgsAbstractProcessingParameterWidgetWrapper.createParameterWidgetWrapper`
+are not directly utilized, rather the :py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~createParameterWidgetWrapper`
 method is used to create widget wrappers.
 
 .. versionadded:: 3.4
@@ -470,7 +460,6 @@ method is used to create widget wrappers.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     virtual ~QgsProcessingParameterWidgetFactoryInterface();
 
     virtual QString parameterType() const = 0;
@@ -478,8 +467,7 @@ method is used to create widget wrappers.
 Returns the type string for the parameter type the factory is associated with.
 %End
 
-    virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter,
-        QgsProcessingGui::WidgetType type ) = 0 /Factory/;
+    virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) = 0 /Factory/;
 %Docstring
 Creates a new widget wrapper for the specified ``parameter`` definition.
 
@@ -488,10 +476,7 @@ The ``type`` argument indicates the dialog type to create a wrapper for.
 .. seealso:: :py:func:`createModelerWidgetWrapper`
 %End
 
-    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model,
-        const QString &childId,
-        const QgsProcessingParameterDefinition *parameter,
-        QgsProcessingContext &context );
+    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context );
 %Docstring
 Creates a new modeler parameter widget for the given ``parameter``. This widget allows
 configuration of the parameter's value when used inside a Processing ``model``.
@@ -512,7 +497,8 @@ last for the lifetime of the widget.
       QgsProcessingContext &context,
       const QgsProcessingParameterWidgetContext &widgetContext,
       const QgsProcessingParameterDefinition *definition = 0,
-      const QgsProcessingAlgorithm *algorithm = 0 ) /Factory/;
+      const QgsProcessingAlgorithm *algorithm = 0
+    ) /Factory/;
 %Docstring
 Creates a new parameter definition widget allowing for configuration of an instance of
 the parameter type handled by this factory.
@@ -539,7 +525,6 @@ type will not be configurable when users add it as an input to their graphical m
 %End
 
   protected:
-
     virtual QStringList compatibleParameterTypes() const = 0;
 %Docstring
 Returns a list of compatible Processing parameter types for inputs
@@ -574,7 +559,7 @@ values which can be used as values for the parameter.
 .. seealso:: :py:func:`compatibleDataTypes`
 %End
 
-    virtual QList< int > compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
+    virtual QList<int> compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
 %Docstring
 Returns a list of compatible Processing data types for inputs
 for this widget for the specified ``parameter``.
@@ -608,10 +593,9 @@ Returns the default source type to use for the widget for the specified ``parame
 
 .. versionadded:: 3.24
 %End
-
 };
 
-class QgsProcessingHiddenWidgetWrapper: QgsAbstractProcessingParameterWidgetWrapper
+class QgsProcessingHiddenWidgetWrapper : QgsAbstractProcessingParameterWidgetWrapper
 {
 %Docstring(signature="appended")
 
@@ -628,10 +612,7 @@ interface.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
-    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0,
-                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard,
-                                      QObject *parent /TransferThis/ = 0 );
+    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
 ``parameter`` definition and dialog ``type``.
@@ -663,5 +644,5 @@ Sets the vector layer linked to the wrapper.
  *                                                                      *
  * src/gui/processing/qgsprocessingwidgetwrapper.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

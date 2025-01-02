@@ -17,6 +17,7 @@
 #include "qgsaddattrdialog.h"
 #include "qgscheckablecombobox.h"
 #include "qgssourcefieldsproperties.h"
+#include "moc_qgssourcefieldsproperties.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -40,12 +41,14 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
   mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
+  mSaveLayerEditsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAllEdits.svg" ) ) );
 
   //button signals
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::toggleEditing );
   connect( mAddAttributeButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::addAttributeClicked );
   connect( mDeleteAttributeButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::deleteAttributeClicked );
   connect( mCalculateFieldButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::calculateFieldClicked );
+  connect( mSaveLayerEditsButton, &QAbstractButton::clicked, this, &QgsSourceFieldsProperties::saveLayerEditsClicked );
 
   //slots
   connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsSourceFieldsProperties::editingToggled );
@@ -107,7 +110,7 @@ void QgsSourceFieldsProperties::loadRows()
 
 void QgsSourceFieldsProperties::updateFieldRenamingStatus()
 {
-  const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
+  const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::RenameAttributes ) && !mLayer->readOnly();
 
   for ( int row = 0; row < mFieldsList->rowCount(); ++row )
   {
@@ -163,12 +166,13 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
 
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
-      case QgsFields::OriginExpression:
-        if ( i == 7 ) continue;
+      case Qgis::FieldOrigin::Expression:
+        if ( i == 7 )
+          continue;
         mFieldsList->item( row, i )->setBackground( expressionColor );
         break;
 
-      case QgsFields::OriginJoin:
+      case Qgis::FieldOrigin::Join:
         mFieldsList->item( row, i )->setBackground( joinColor );
         break;
 
@@ -213,7 +217,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   mFieldsList->setItem( row, AttrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
   mFieldsList->setItem( row, AttrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
 
-  if ( mLayer->fields().fieldOrigin( idx ) == QgsFields::OriginExpression )
+  if ( mLayer->fields().fieldOrigin( idx ) == Qgis::FieldOrigin::Expression )
   {
     QWidget *expressionWidget = new QWidget;
     expressionWidget->setLayout( new QHBoxLayout );
@@ -245,12 +249,12 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   const auto constNotEditableCols = notEditableCols;
   for ( const int i : constNotEditableCols )
   {
-    if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression )
+    if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
       mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
     if ( notEditableCols[i] == AttrAliasCol )
       mFieldsList->item( row, i )->setToolTip( tr( "Edit alias in the Form config tab" ) );
   }
-  const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
+  const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::RenameAttributes ) && !mLayer->readOnly();
   if ( canRenameFields )
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() | Qt::ItemIsEditable );
   else
@@ -264,9 +268,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     if ( flag == Qgis::FieldConfigurationFlag::NoFlag )
       continue;
 
-    cb->addItemWithCheckState( QgsField::readableConfigurationFlag( flag ),
-                               mLayer->fieldConfigurationFlags( idx ).testFlag( flag ) ? Qt::Checked : Qt::Unchecked,
-                               QVariant::fromValue( flag ) );
+    cb->addItemWithCheckState( QgsField::readableConfigurationFlag( flag ), mLayer->fieldConfigurationFlags( idx ).testFlag( flag ) ? Qt::Checked : Qt::Unchecked, QVariant::fromValue( flag ) );
   }
   mFieldsList->setCellWidget( row, AttrConfigurationFlagsCol, cb );
 }
@@ -347,7 +349,7 @@ void QgsSourceFieldsProperties::deleteAttributeClicked()
       if ( idx < 0 )
         continue;
 
-      if ( mLayer->fields().fieldOrigin( idx ) == QgsFields::OriginExpression )
+      if ( mLayer->fields().fieldOrigin( idx ) == Qgis::FieldOrigin::Expression )
         expressionFields << idx;
       else
         providerFields << idx;
@@ -381,6 +383,11 @@ void QgsSourceFieldsProperties::calculateFieldClicked()
   }
 }
 
+void QgsSourceFieldsProperties::saveLayerEditsClicked()
+{
+  mLayer->commitChanges( false );
+}
+
 void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 {
   if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
@@ -389,15 +396,11 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     //avoiding that something will be changed, just because this is triggered by simple re-sorting
-    if ( !nameItem ||
-         nameItem->text().isEmpty() ||
-         !mLayer->fields().exists( idx ) ||
-         mLayer->fields().at( idx ).name() == nameItem->text()
-       )
+    if ( !nameItem || nameItem->text().isEmpty() || !mLayer->fields().exists( idx ) || mLayer->fields().at( idx ).name() == nameItem->text() )
       return;
 
     mLayer->beginEditCommand( tr( "Rename attribute" ) );
-    if ( mLayer->renameAttribute( idx,  nameItem->text() ) )
+    if ( mLayer->renameAttribute( idx, nameItem->text() ) )
     {
       mLayer->endEditCommand();
     }
@@ -420,20 +423,23 @@ void QgsSourceFieldsProperties::updateButtons()
   QgsVectorDataProvider *provider = mLayer->dataProvider();
   if ( !provider )
     return;
-  const QgsVectorDataProvider::Capabilities cap = provider->capabilities();
+  const Qgis::VectorProviderCapabilities cap = provider->capabilities();
 
-  mToggleEditingButton->setEnabled( ( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->readOnly() );
+  mToggleEditingButton->setEnabled( ( cap & Qgis::VectorProviderCapability::ChangeAttributeValues ) && !mLayer->readOnly() );
 
   if ( mLayer->isEditable() )
   {
-    mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
-    mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
+    mDeleteAttributeButton->setEnabled( cap & Qgis::VectorProviderCapability::DeleteAttributes );
+    mAddAttributeButton->setEnabled( cap & Qgis::VectorProviderCapability::AddAttributes );
     mToggleEditingButton->setChecked( true );
+    mSaveLayerEditsButton->setEnabled( true );
+    mSaveLayerEditsButton->setChecked( true );
   }
   else
   {
     mToggleEditingButton->setChecked( false );
     mAddAttributeButton->setEnabled( false );
+    mSaveLayerEditsButton->setEnabled( false );
 
     // Enable delete button if items are selected
     mDeleteAttributeButton->setEnabled( !mFieldsList->selectedItems().isEmpty() );
@@ -444,7 +450,7 @@ void QgsSourceFieldsProperties::updateButtons()
       if ( item->column() == 0 )
       {
         const int idx = mIndexedWidgets.indexOf( item );
-        if ( mLayer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression )
+        if ( mLayer->fields().fieldOrigin( idx ) != Qgis::FieldOrigin::Expression )
         {
           mDeleteAttributeButton->setEnabled( false );
           break;

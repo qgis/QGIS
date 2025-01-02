@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgrouplayer.h"
+#include "moc_qgsgrouplayer.cpp"
 #include "qgsmaplayerfactory.h"
 #include "qgspainting.h"
 #include "qgsmaplayerlistutils_p.h"
@@ -39,7 +40,7 @@ QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
 
   QgsDataProvider::ProviderOptions providerOptions;
   providerOptions.transformContext = options.transformContext;
-  mDataProvider = new QgsGroupLayerDataProvider( providerOptions, QgsDataProvider::ReadFlags() );
+  mDataProvider = new QgsGroupLayerDataProvider( providerOptions, Qgis::DataProviderReadFlags() );
 }
 
 QgsGroupLayer::~QgsGroupLayer()
@@ -365,7 +366,7 @@ void QgsGroupLayer::prepareLayersForRemovalFromGroup()
 ///@cond PRIVATE
 QgsGroupLayerDataProvider::QgsGroupLayerDataProvider(
   const ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( QString(), options, flags )
 {}
 

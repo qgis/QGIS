@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/materials/qgsphongmaterialsettings.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,11 +26,7 @@ with three color components: ambient, diffuse and specular.
 #include "qgsphongmaterialsettings.h"
 %End
   public:
-
     QgsPhongMaterialSettings();
-%Docstring
-Constructor for QgsPhongMaterialSettings.
-%End
 
     virtual QString type() const;
 
@@ -46,6 +42,8 @@ Returns a new instance of QgsPhongMaterialSettings.
 %End
 
     virtual QgsPhongMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
 
     QColor ambient() const;
@@ -126,7 +124,7 @@ Sets diffuse color component
 %Docstring
 Sets specular color component
 %End
-    void setShininess( float shininess );
+    void setShininess( double shininess );
 %Docstring
 Sets shininess of the surface
 %End
@@ -193,5 +191,5 @@ Sets the ``coefficient`` for the specular color contribution (ie strength factor
  *                                                                      *
  * src/3d/materials/qgsphongmaterialsettings.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

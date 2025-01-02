@@ -39,7 +39,6 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     Q_OBJECT
 
   public:
-
     /**
      * Widget for viewing and editing certificate authorities directly in database
      * \param parent Parent widget
@@ -80,7 +79,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     void showTrustedCertificateAuthorities();
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
+    void logMessage( const QString &message, const QString &authtag, Qgis::MessageLevel level );
 
   protected:
     //! Overridden show event of base widget
@@ -104,16 +103,11 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void populateRootCaCerts();
 
-    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
-                                 QgsAuthAuthoritiesEditor::CaType catype );
+    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs, QgsAuthAuthoritiesEditor::CaType catype );
 
-    void appendCertsToGroup( const QList<QSslCertificate> &certs,
-                             QgsAuthAuthoritiesEditor::CaType catype,
-                             QTreeWidgetItem *parent = nullptr );
+    void appendCertsToGroup( const QList<QSslCertificate> &certs, QgsAuthAuthoritiesEditor::CaType catype, QTreeWidgetItem *parent = nullptr );
 
-    void appendCertsToItem( const QList<QSslCertificate> &certs,
-                            QgsAuthAuthoritiesEditor::CaType catype,
-                            QTreeWidgetItem *parent = nullptr );
+    void appendCertsToItem( const QList<QSslCertificate> &certs, QgsAuthAuthoritiesEditor::CaType catype, QTreeWidgetItem *parent = nullptr );
 
     void updateCertTrustPolicyCache();
 
@@ -130,7 +124,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     QTreeWidgetItem *mDbCaSecItem = nullptr;
 
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy = QgsAuthCertUtils::DefaultTrust;
-    QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
+    QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList> mCertTrustCache;
 
     QMenu *mUtilitiesMenu = nullptr;
     bool mDisabled = false;

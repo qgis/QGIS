@@ -26,6 +26,7 @@
 #include "qgsexpression_p.h"
 #include "qgsvariantutils.h"
 #include "qgsunittypes.h"
+#include "qgscolorrampimpl.h"
 
 #include <QRegularExpression>
 
@@ -87,26 +88,26 @@ QString QgsExpression::quotedString( QString text )
 
 QString QgsExpression::quotedValue( const QVariant &value )
 {
-  return quotedValue( value, value.type() );
+  return quotedValue( value, static_cast<QMetaType::Type>( value.userType() ) );
 }
 
-QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
+QString QgsExpression::quotedValue( const QVariant &value, QMetaType::Type type )
 {
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( type )
   {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
 
-    case QVariant::List:
-    case QVariant::StringList:
+    case QMetaType::Type::QVariantList:
+    case QMetaType::Type::QStringList:
     {
       QStringList quotedValues;
       const QVariantList values = value.toList();
@@ -119,10 +120,15 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
     }
 
     default:
-    case QVariant::String:
+    case QMetaType::Type::QString:
       return quotedString( value.toString() );
   }
 
+}
+
+QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
+{
+  return quotedValue( value, QgsVariantUtils::variantTypeToMetaType( type ) );
 }
 
 bool QgsExpression::isFunctionName( const QString &name )
@@ -230,7 +236,8 @@ bool QgsExpression::hasParserError() const
 
 QString QgsExpression::parserErrorString() const
 {
-  return d->mParserErrorString;
+  return d->mParserErrorString.replace( "syntax error, unexpected end of file",
+                                        tr( "Incomplete expression. You might not have finished the full expression." ) );
 }
 
 QList<QgsExpression::ParserError> QgsExpression::parserErrors() const
@@ -545,7 +552,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
 
   QVariant result = expr.evaluate( &context );
   convertedValue = result.toDouble( &ok );
@@ -765,6 +772,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Ellipsoid acronym of current layer CRS." ) );
+
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the layer (e.g., 'EPSG:5703')." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_definition" ), QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of layer (full definition)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the layer." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the layer." ) );
 
   //feature variables
   sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );
@@ -1011,10 +1023,10 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
   const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
-  if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( value, nullptr );
+  if ( !geom.isNull() )
   {
     //result is a geometry
-    QgsGeometry geom = value.value<QgsGeometry>();
     if ( geom.isNull() )
       return startToken + tr( "empty geometry" ) + endToken;
     else
@@ -1029,13 +1041,13 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
-  else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
+  else if ( value.userType() == qMetaTypeId< QgsFeature>() )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
-  else if ( value.userType() == QMetaType::type( "QgsInterval" ) )
+  else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {
     QgsInterval interval = value.value<QgsInterval>();
     if ( interval.days() > 1 )
@@ -1055,26 +1067,26 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
     }
   }
-  else if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
+  else if ( value.userType() == qMetaTypeId< QgsGradientColorRamp>() )
   {
     return startToken + tr( "gradient ramp" ) + endToken;
   }
-  else if ( value.type() == QVariant::Date )
+  else if ( value.userType() == QMetaType::Type::QDate )
   {
     const QDate dt = value.toDate();
     return startToken + tr( "date: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd" ) ) ) + endToken;
   }
-  else if ( value.type() == QVariant::Time )
+  else if ( value.userType() == QMetaType::Type::QTime )
   {
     const QTime tm = value.toTime();
     return startToken + tr( "time: %1" ).arg( tm.toString( QStringLiteral( "hh:mm:ss" ) ) ) + endToken;
   }
-  else if ( value.type() == QVariant::DateTime )
+  else if ( value.userType() == QMetaType::Type::QDateTime )
   {
     const QDateTime dt = value.toDateTime();
     return startToken + tr( "datetime: %1 (%2)" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ), dt.timeZoneAbbreviation() ) + endToken;
   }
-  else if ( value.type() == QVariant::String )
+  else if ( value.userType() == QMetaType::Type::QString )
   {
     const QString previewString = value.toString();
     if ( previewString.length() > maximumPreviewLength + 3 )
@@ -1086,7 +1098,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return '\'' + previewString + '\'';
     }
   }
-  else if ( value.type() == QVariant::Map )
+  else if ( value.userType() == QMetaType::Type::QVariantMap )
   {
     QString mapStr = QStringLiteral( "{" );
     const QVariantMap map = value.toMap();
@@ -1109,7 +1121,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     mapStr += QLatin1Char( '}' );
     return mapStr;
   }
-  else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
+  else if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
   {
     QString listStr = QStringLiteral( "[" );
     const QVariantList list = value.toList();
@@ -1133,13 +1145,52 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     listStr += QLatin1Char( ']' );
     return listStr;
   }
-  else if ( value.type() == QVariant::Int ||
-            value.type() == QVariant::UInt ||
-            value.type() == QVariant::LongLong ||
-            value.type() == QVariant::ULongLong ||
-            value.type() == QVariant::Double ||
+  else if ( value.type() == QVariant::Color )
+  {
+    const QColor color = value.value<QColor>();
+
+    if ( !color.isValid() )
+    {
+      return tr( "<i>Invalid</i>" );
+    }
+
+    switch ( color.spec() )
+    {
+      case QColor::Spec::Cmyk:
+        return QStringLiteral( "CMYKA: %1,%2,%3,%4,%5" )
+               .arg( color.cyanF(), 0, 'f', 2 ).arg( color.magentaF(), 0, 'f', 2 )
+               .arg( color.yellowF(), 0, 'f', 2 ).arg( color.blackF(), 0, 'f', 2 )
+               .arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Hsv:
+        return QStringLiteral( "HSVA: %1,%2,%3,%4" )
+               .arg( color.hsvHueF(), 0, 'f', 2 ).arg( color.hsvSaturationF(), 0, 'f', 2 )
+               .arg( color.valueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Hsl:
+        return QStringLiteral( "HSLA: %1,%2,%3,%4" )
+               .arg( color.hslHueF(), 0, 'f', 2 ).arg( color.hslSaturationF(), 0, 'f', 2 )
+               .arg( color.lightnessF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Rgb:
+      case QColor::Spec::ExtendedRgb:
+        return QStringLiteral( "RGBA: %1,%2,%3,%4" )
+               .arg( color.redF(), 0, 'f', 2 ).arg( color.greenF(), 0, 'f', 2 )
+               .arg( color.blueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+
+      case QColor::Spec::Invalid:
+        return tr( "<i>Invalid</i>" );
+    }
+    QgsDebugError( QStringLiteral( "Unknown color format: %1" ).arg( color.spec() ) );
+    return tr( "<i>Unknown color format: %1</i>" ).arg( color.spec() );
+  }
+  else if ( value.userType() == QMetaType::Type::Int ||
+            value.userType() == QMetaType::Type::UInt ||
+            value.userType() == QMetaType::Type::LongLong ||
+            value.userType() == QMetaType::Type::ULongLong ||
+            value.userType() == QMetaType::Type::Double ||
             // Qt madness with QMetaType::Float :/
-            value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
+            value.userType() == static_cast<QMetaType::Type>( QMetaType::Float ) )
   {
     return QgsExpressionUtils::toLocalizedString( value );
   }
@@ -1154,18 +1205,23 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
 }
 
-QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType )
+QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QMetaType::Type fieldType )
 {
   QString expr;
 
   if ( QgsVariantUtils::isNull( value ) )
     expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
-  else if ( fieldType == QVariant::Type::Invalid )
+  else if ( fieldType == QMetaType::Type::UnknownType )
     expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
   else
     expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value, fieldType ) );
 
   return expr;
+}
+
+QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType )
+{
+  return createFieldEqualityExpression( fieldName, value, QgsVariantUtils::variantTypeToMetaType( fieldType ) );
 }
 
 bool QgsExpression::isFieldEqualityExpression( const QString &expression, QString &field, QVariant &value )
@@ -1437,6 +1493,3 @@ QList<const QgsExpressionNode *> QgsExpression::nodes() const
 
   return d->mRootNode->nodes();
 }
-
-
-

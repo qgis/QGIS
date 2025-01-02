@@ -37,7 +37,15 @@ class CORE_EXPORT QgsVariantUtils
      *
      * The optional \a subType can be used to specify the type of variant list or map values.
      */
-    static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
+    static QString typeToDisplayString( QMetaType::Type type, QMetaType::Type subType = QMetaType::Type::UnknownType );
+
+    /**
+     * Returns a user-friendly translated string representing a QVariant \a type.
+     *
+     * The optional \a subType can be used to specify the type of variant list or map values.
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid ) SIP_DEPRECATED;
 
     /**
      * Returns TRUE if the specified \a variant should be considered a NULL value.
@@ -48,6 +56,12 @@ class CORE_EXPORT QgsVariantUtils
      * \since QGIS 3.28
      */
     static bool isNull( const QVariant &variant, bool silenceNullWarnings SIP_PYARGREMOVE = false );
+
+    /**
+     * Returns TRUE if the specified \a metaType is a numeric type.
+     * \since QGIS 3.40
+     */
+    static bool isNumericType( QMetaType::Type metaType );
 
     /**
      * Converts a QVariant::Type to a QMetaType::Type.
@@ -69,6 +83,15 @@ class CORE_EXPORT QgsVariantUtils
      * \since QGIS 3.36
      */
     static QVariant::Type metaTypeToVariantType( QMetaType::Type metaType ) SIP_SKIP;
+
+
+    // TODO QGIS 4 remove this method
+
+    /**
+     * Helper method to properly create a null QVariant from a \a metaType
+     * Returns the created QVariant
+     */
+    static QVariant createNullVariant( QMetaType::Type metaType ) SIP_SKIP;
 
 };
 

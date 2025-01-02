@@ -28,12 +28,11 @@ class QCheckBox;
  * \ingroup gui
  * \brief A widget to select format-specific raster saving options
  */
-class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::QgsRasterPyramidsOptionsWidgetBase
+class GUI_EXPORT QgsRasterPyramidsOptionsWidget : public QWidget, private Ui::QgsRasterPyramidsOptionsWidgetBase
 {
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsRasterPyramidsOptionsWidget
     QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &provider = "gdal" );
 
@@ -44,7 +43,7 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     /**
      * Returns the selected pyramid format.
      */
-    Qgis::RasterPyramidFormat pyramidsFormat() const { return cbxPyramidsFormat->currentData().value< Qgis::RasterPyramidFormat >(); }
+    Qgis::RasterPyramidFormat pyramidsFormat() const { return cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(); }
 
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
@@ -63,14 +62,21 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     void updateUi() SIP_FORCE;
 
   signals:
+
+    /**
+     * Emitted when the list of configured overviews is changed.
+     */
     void overviewListChanged();
-    void someValueChanged(); /* emitted when any other setting changes */
+
+    /**
+     * Emitted when settings are changed in the widget.
+     */
+    void someValueChanged();
 
   private:
-
     QString mProvider;
-    QList< int > mOverviewList;
-    QMap< int, QCheckBox * > mOverviewCheckBoxes;
+    QList<int> mOverviewList;
+    QMap<int, QCheckBox *> mOverviewCheckBoxes;
 };
 
 // clazy:excludeall=qstring-allocations

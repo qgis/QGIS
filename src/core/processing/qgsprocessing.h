@@ -103,6 +103,13 @@ class CORE_EXPORT QgsProcessing
     }
 
     /**
+     * Converts a documentation \a flag to a translated string.
+     *
+     * \since QGIS 3.40
+     */
+    static QString documentationFlagToString( Qgis::ProcessingAlgorithmDocumentationFlag flag );
+
+    /**
      * Constant used to indicate that a Processing algorithm output should be a temporary layer/file.
      *
      * \since QGIS 3.6
@@ -117,9 +124,9 @@ class CORE_EXPORT QgsProcessing
     //! Settings entry temp path
     static const QgsSettingsEntryString *settingsTempPath;
     //! Settings entry default output vector layer ext
-    static const QgsSettingsEntryInteger *settingsDefaultOutputVectorLayerExt;
+    static const QgsSettingsEntryString *settingsDefaultOutputVectorLayerExt;
     //! Settings entry default output raster layer ext
-    static const QgsSettingsEntryInteger *settingsDefaultOutputRasterLayerExt;
+    static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerExt;
 #endif
 };
 

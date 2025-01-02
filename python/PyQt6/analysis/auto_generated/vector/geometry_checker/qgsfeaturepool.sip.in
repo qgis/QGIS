@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsfeaturepool.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,10 +26,11 @@ A feature pool is based on a vector layer and caches features.
 #include "qgsfeaturepool.h"
 %End
   public:
-
     QgsFeaturePool( QgsVectorLayer *layer );
 %Docstring
 Creates a new feature pool for ``layer``.
+
+Must be created on the same thread as ``layer``.
 %End
     virtual ~QgsFeaturePool();
 
@@ -38,6 +39,11 @@ Creates a new feature pool for ``layer``.
 Retrieves the feature with the specified ``id`` into ``feature``.
 It will be retrieved from the cache or from the underlying feature source if unavailable.
 If the feature is neither available from the cache nor from the source it will return ``False``.
+
+.. note::
+
+   This method can safely be called from a different thread vs the object's creation thread or
+   the original layer's thread.
 %End
 
 
@@ -45,12 +51,24 @@ If the feature is neither available from the cache nor from the source it will r
 %Docstring
 Updates a feature in this pool.
 Implementations will update the feature on the layer or on the data provider.
+
+.. warning::
+
+   This method can safely be called from a different thread vs the object's creation thread or
+   the original layer's thread. The update will be delegated to run in the main thread, and care must
+   be taken to avoid deadlocks if the main thread is busy.
 %End
 
     virtual void deleteFeature( QgsFeatureId fid ) = 0;
 %Docstring
 Removes a feature from this pool.
 Implementations will remove the feature from the layer or from the data provider.
+
+.. warning::
+
+   This method can safely be called from a different thread vs the object's creation thread or
+   the original layer's thread. The update will be delegated to run in the main thread, and care must
+   be taken to avoid deadlocks if the main thread is busy.
 %End
 
 
@@ -59,7 +77,10 @@ Implementations will remove the feature from the layer or from the data provider
 %Docstring
 Gets a pointer to the underlying layer.
 May return a ````None```` if the layer has been deleted.
-This must only be called from the main thread.
+
+.. warning::
+
+   This must be called from the same thread as the vector layer belongs to.
 %End
 
 
@@ -87,23 +108,42 @@ the background thread.
 %End
 
   protected:
-
     void insertFeature( const QgsFeature &feature, bool skipLock = false );
 %Docstring
 Inserts a feature into the cache and the spatial index.
 To be used by implementations of ``addFeature``.
+
+.. note::
+
+   This method can safely be called from a different thread vs the object's creation thread or
+   the original layer's thread.
 %End
 
-    void refreshCache( const QgsFeature &feature );
+    void refreshCache( QgsFeature feature, const QgsFeature &origFeature );
 %Docstring
 Changes a feature in the cache and the spatial index.
 To be used by implementations of ``updateFeature``.
+
+:param feature: the new feature to put in the cache and index
+:param origFeature: the original feature to remove from the index
+
+.. note::
+
+   This method can safely be called from a different thread vs the object's creation thread or
+   the original layer's thread.
+
+.. versionadded:: 3.42
 %End
 
     void removeFeature( const QgsFeatureId featureId );
 %Docstring
 Removes a feature from the cache and the spatial index.
 To be used by implementations of ``deleteFeature``.
+
+.. note::
+
+   This method can safely be called from a different thread vs the object's creation thread or
+   the original layer's thread.
 %End
 
 
@@ -117,5 +157,5 @@ To be used by implementations of ``deleteFeature``.
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsfeaturepool.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

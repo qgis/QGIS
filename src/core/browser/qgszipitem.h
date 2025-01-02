@@ -61,7 +61,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QStringList sProviderNames;
 
     /**
-     * \deprecated Will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED static QString vsiPrefix( const QString &uri ) SIP_DEPRECATED;
 

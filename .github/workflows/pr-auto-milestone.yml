@@ -1,6 +1,7 @@
 name: 📅 Auto set milestone on PR
 
 on:
+  workflow_call:
   pull_request_target:
     types:
       - opened

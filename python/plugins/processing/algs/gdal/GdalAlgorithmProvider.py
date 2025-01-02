@@ -15,18 +15,16 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
 from osgeo import gdal
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication,
-                       QgsProcessingProvider,
-                       QgsRuntimeProfiler)
+from qgis.core import QgsApplication, QgsProcessingProvider, QgsRuntimeProfiler
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
@@ -82,7 +80,7 @@ from .Dissolve import Dissolve
 from .ExecuteSql import ExecuteSql
 from .OffsetCurve import OffsetCurve
 from .ogr2ogr import ogr2ogr
-from .ogrinfo import ogrinfo
+from .ogrinfo import ogrinfo, ogrinfojson
 from .OgrToPostGis import OgrToPostGis
 from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from .OneSideBuffer import OneSideBuffer
@@ -90,8 +88,11 @@ from .PointsAlongLines import PointsAlongLines
 
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 
-pluginPath = os.path.normpath(os.path.join(
-    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+pluginPath = os.path.normpath(
+    os.path.join(os.path.split(os.path.dirname(__file__))[0], os.pardir)
+)
+
+gdal.UseExceptions()
 
 
 class GdalAlgorithmProvider(QgsProcessingProvider):
@@ -99,38 +100,41 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
-        QgsApplication.processingRegistry().addAlgorithmAlias('qgis:buildvirtualvector', 'gdal:buildvirtualvector')
+        QgsApplication.processingRegistry().addAlgorithmAlias(
+            "qgis:buildvirtualvector", "gdal:buildvirtualvector"
+        )
 
     def load(self):
-        with QgsRuntimeProfiler.profile('GDAL Provider'):
+        with QgsRuntimeProfiler.profile("GDAL Provider"):
             ProcessingConfig.settingIcons[self.name()] = self.icon()
-            ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
-                                                self.tr('Activate'), True))
+            ProcessingConfig.addSetting(
+                Setting(self.name(), "ACTIVATE_GDAL", self.tr("Activate"), True)
+            )
             ProcessingConfig.readSettings()
             self.refreshAlgorithms()
         return True
 
     def unload(self):
-        ProcessingConfig.removeSetting('ACTIVATE_GDAL')
+        ProcessingConfig.removeSetting("ACTIVATE_GDAL")
 
     def isActive(self):
-        return ProcessingConfig.getSetting('ACTIVATE_GDAL')
+        return ProcessingConfig.getSetting("ACTIVATE_GDAL")
 
     def setActive(self, active):
-        ProcessingConfig.setSettingValue('ACTIVATE_GDAL', active)
+        ProcessingConfig.setSettingValue("ACTIVATE_GDAL", active)
 
     def name(self):
-        return 'GDAL'
+        return "GDAL"
 
     def longName(self):
         version = GdalUtils.readableVersion()
-        return f'GDAL ({version})'
+        return f"GDAL ({version})"
 
     def id(self):
-        return 'gdal'
+        return "gdal"
 
     def helpId(self):
-        return 'gdal'
+        return "gdal"
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
@@ -203,6 +207,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         if int(gdal.VersionInfo()) > 3010000:
             self.algs.append(viewshed())
 
+        if int(gdal.VersionInfo()) >= 3070000:
+            self.algs.append(ogrinfojson())
+
         for a in self.algs:
             self.addAlgorithm(a)
 
@@ -215,7 +222,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         """
         return False
 
-    def tr(self, string, context=''):
-        if context == '':
-            context = 'GdalAlgorithmProvider'
+    def tr(self, string, context=""):
+        if context == "":
+            context = "GdalAlgorithmProvider"
         return QCoreApplication.translate(context, string)

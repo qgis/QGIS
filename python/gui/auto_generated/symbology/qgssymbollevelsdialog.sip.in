@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssymbollevelsdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ A widget which allows the user to modify the rendering order of symbol layers.
 #include "qgssymbollevelsdialog.h"
 %End
   public:
-
     QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolLevelsWidget
@@ -55,11 +54,12 @@ Sets whether the level ordering is always forced on and hide the checkbox (used 
 
   public slots:
 
- void apply() /Deprecated/;
+ void apply() /Deprecated="Since 3.20. Use symbolLevels() and manually apply the changes to the renderer as appropriate."/;
 %Docstring
 Apply button.
 
-.. deprecated:: QGIS 3.20.
+.. deprecated:: 3.20
+
    Use :py:func:`~QgsSymbolLevelsWidget.symbolLevels` and manually apply the changes to the renderer as appropriate.
 %End
 
@@ -78,7 +78,6 @@ A dialog which allows the user to modify the rendering order of symbol layers.
 #include "qgssymbollevelsdialog.h"
 %End
   public:
-
     QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolLevelsDialog.
@@ -108,5 +107,5 @@ Returns the current legend symbols with rendering passes set, as defined in the 
  *                                                                      *
  * src/gui/symbology/qgssymbollevelsdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

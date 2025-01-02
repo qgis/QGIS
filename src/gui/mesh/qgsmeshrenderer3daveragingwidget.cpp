@@ -19,6 +19,7 @@
 #include <QPixmap>
 
 #include "qgsmeshrenderer3daveragingwidget.h"
+#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"
@@ -36,53 +37,38 @@ QgsMeshRenderer3DAveragingWidget::QgsMeshRenderer3DAveragingWidget( QWidget *par
 
   mScreenHelper = new QgsScreenHelper( this );
 
-  connect( mAveragingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::onAveragingMethodChanged );
+  connect( mAveragingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshRenderer3DAveragingWidget::onAveragingMethodChanged );
 
   // Single Level Average Method (top)
-  connect( mSingleVerticalLayerIndexTopSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mSingleVerticalLayerIndexTopSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
   // Single Level Average Method (bottom)
-  connect( mSingleVerticalLayerIndexBottomSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mSingleVerticalLayerIndexBottomSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
   // Multi Levels Averaging Method (top)
-  connect( mMultiTopVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
-  connect( mMultiTopVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mMultiTopVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mMultiTopVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
   // MultiLevels Averaging Method (bottom)
-  connect( mMultiBottomVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
-  connect( mMultiBottomVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mMultiBottomVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mMultiBottomVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
   // Sigma Averaging Method
-  connect( mSigmaStartFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
-  connect( mSigmaEndFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mSigmaStartFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mSigmaEndFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
   // Depth Averaging Method
-  connect( mDepthStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
-  connect( mDepthEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mDepthStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mDepthEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
   // Height Averaging Method
-  connect( mHeightStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
-  connect( mHeightEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mHeightStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mHeightEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
 
   // Elevation Averaging Method
-  connect( mElevationStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
-  connect( mElevationEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mElevationStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
+  connect( mElevationEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRenderer3DAveragingWidget::widgetChanged );
 
   updateGraphics();
   connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsMeshRenderer3DAveragingWidget::updateGraphics );
@@ -157,7 +143,7 @@ std::unique_ptr<QgsMesh3DAveragingMethod> QgsMeshRenderer3DAveragingWidget::aver
   return averaging;
 }
 
-void QgsMeshRenderer3DAveragingWidget::syncToLayer( )
+void QgsMeshRenderer3DAveragingWidget::syncToLayer()
 {
   if ( !mMeshLayer )
     return;

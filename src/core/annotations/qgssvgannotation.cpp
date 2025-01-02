@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssvgannotation.h"
+#include "moc_qgssvgannotation.cpp"
 
 #include "qgsreadwritecontext.h"
 #include "qgsproject.h"

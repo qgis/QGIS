@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgssubstitutionlistwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ options for exporting and importing substitution lists.
 #include "qgssubstitutionlistwidget.h"
 %End
   public:
-
     QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListWidget.
@@ -67,7 +66,6 @@ options for exporting and importing substitution lists.
 #include "qgssubstitutionlistwidget.h"
 %End
   public:
-
     QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListDialog.
@@ -99,5 +97,5 @@ Returns the list of substitutions currently defined by the dialog.
  *                                                                      *
  * src/gui/qgssubstitutionlistwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

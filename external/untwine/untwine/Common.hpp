@@ -1,13 +1,5 @@
 #pragma once
 
-#ifdef _WIN32
-#include <Windows.h>
-#include <io.h>
-#else
-#include <unistd.h>
-#include <sys/mman.h>
-#endif
-
 #include <stdint.h>
 #include <array>
 #include <limits>
@@ -18,6 +10,7 @@
 #include <pdal/SpatialReference.hpp>
 #include <pdal/util/Bounds.hpp>
 
+#include "FatalError.hpp"
 #include "FileDimInfo.hpp"
 
 namespace untwine
@@ -28,13 +21,6 @@ const int CellCount = 128;
 
 using PointCount = uint64_t;
 using StringList = std::vector<std::string>;
-
-class  FatalError : public std::runtime_error
-{
-public:
-    inline FatalError(std::string const& msg) : std::runtime_error(msg)
-        {}
-};
 
 struct Options
 {
@@ -49,6 +35,7 @@ struct Options
     StringList dimNames;
     bool stats;
     std::string a_srs;
+    bool no_srs;
     bool metadata;
     bool dummy;
 };
@@ -125,7 +112,7 @@ inline bool isExtraDim(const std::string& name)
     using namespace pdal;
     using D = Dimension::Id;
 
-    static const std::array<Dimension::Id, 16> lasDims
+    static const std::array<Dimension::Id, 15> lasDims
     {
         D::X,
         D::Y,
@@ -133,7 +120,6 @@ inline bool isExtraDim(const std::string& name)
         D::Intensity,
         D::ReturnNumber,
         D::NumberOfReturns,
-        D::ReturnNumber,
         D::Classification,
         D::UserData,
         D::ScanAngleRank,
@@ -151,98 +137,5 @@ inline bool isExtraDim(const std::string& name)
             return false;
     return (name != UntwineBitsDimName);
 }
-
-// We check both _WIN32 and _MSC_VER to deal with MinGW, which doesn't support the special
-// Windows wide character interfaces for streams.
-#if defined(_WIN32) && defined(_MSC_VER)
-inline std::wstring toNative(const std::string& in)
-{
-    if (in.empty())
-        return std::wstring();
-
-    int len = MultiByteToWideChar(CP_UTF8, 0, in.data(), in.length(), nullptr, 0);
-    std::wstring out(len, 0);
-    if (MultiByteToWideChar(CP_UTF8, 0, in.data(), in.length(), out.data(), len) == 0)
-    {
-        char buf[200] {};
-        len = FormatMessageA(0, 0, GetLastError(), 0, buf, 199, 0);
-        throw FatalError("Can't convert UTF8 to UTF16: " + std::string(buf, len));
-    }
-    return out;
-}
-
-inline std::string fromNative(const std::wstring& in)
-{
-    if (in.empty())
-        return std::string();
-
-    int len = WideCharToMultiByte(CP_UTF8, 0, in.data(), in.length(), nullptr,
-        0, nullptr, nullptr);
-    std::string out(len, 0);
-    if (WideCharToMultiByte(CP_UTF8, 0, in.data(), in.length(), out.data(),
-        len, nullptr, nullptr) == 0)
-    {
-        char buf[200] {};
-        len = FormatMessageA(0, 0, GetLastError(), 0, buf, 199, 0);
-        throw FatalError("Can't convert UTF16 to UTF8: " + std::string(buf, len));
-    }
-    return out;
-}
-#else
-inline std::string toNative(const std::string& in)
-{
-    return in;
-}
-
-inline std::string fromNative(const std::string& in)
-{
-    return in;
-}
-#endif
-
-//ABELL - This exists here because older version of PDAL don't have it and the QGIS
-//  crew wanted things to work with older versions of PDAL.
-/**
-  Context info for mapping a file.
-*/
-struct MapContext
-{
-public:
-    MapContext() : m_fd(-1), m_addr(nullptr)
-    {}
-
-    void *addr() const
-    { return m_addr; }
-    std::string what() const
-    { return m_error; }
-
-    int m_fd;
-    size_t m_size;
-    void *m_addr;
-    std::string m_error;
-#ifdef _WIN32
-    HANDLE m_handle;
-#endif
-};
-
-/**
-  Map a file to memory.
-  \param filename  Filename to map.
-  \param readOnly  Must be true at this time.
-  \param pos       Starting position of file to map.
-  \param size      Number of bytes in file to map.
-  \return  MapContext.  addr() gets the mapped address.  what() gets
-      any error message.  addr() returns nullptr on error.
-*/
-MapContext mapFile(const std::string& filename, bool readOnly, size_t pos, size_t size);
-
-/**
-  Unmap a previously mapped file.
-  \param ctx  Previously returned MapContext
-  \return  MapContext indicating current state of the file mapping.
-*/
-MapContext unmapFile(MapContext ctx);
-
-std::vector<std::string> directoryList(const std::string& dir);
 
 } // namespace untwine

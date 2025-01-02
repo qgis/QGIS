@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgssatelliteinformation.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -53,5 +53,5 @@ Returns the GNSS constellation associated with the information.
  *                                                                      *
  * src/core/gps/qgssatelliteinformation.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

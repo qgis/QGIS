@@ -36,11 +36,11 @@
  */
 class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 {
-
   public:
-
     /**
      * Creates a new feature pool for \a layer.
+     *
+     * Must be created on the same thread as \a layer.
      */
     QgsFeaturePool( QgsVectorLayer *layer );
     virtual ~QgsFeaturePool() = default;
@@ -49,6 +49,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Retrieves the feature with the specified \a id into \a feature.
      * It will be retrieved from the cache or from the underlying feature source if unavailable.
      * If the feature is neither available from the cache nor from the source it will return FALSE.
+     *
+     * \note This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread.
      */
     bool getFeature( QgsFeatureId id, QgsFeature &feature );
 
@@ -59,26 +62,39 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * are returned. This is used to warm the cache for a particular area of interest
      * (bounding box) or other set of features.
      * This will get a new feature source from the source vector layer.
-     * This needs to be called from the main thread.
+     *
      * If \a feedback is specified, the call may return if the feedback is canceled.
+     *
+     * \warning This must be called from the same thread as the vector layer belongs to.
      */
     QgsFeatureIds getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback = nullptr ) SIP_SKIP;
 
     /**
      * Updates a feature in this pool.
      * Implementations will update the feature on the layer or on the data provider.
+     *
+     * \warning This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread. The update will be delegated to run in the main thread, and care must
+     * be taken to avoid deadlocks if the main thread is busy.
      */
     virtual void updateFeature( QgsFeature &feature ) = 0;
 
     /**
      * Removes a feature from this pool.
      * Implementations will remove the feature from the layer or from the data provider.
+     *
+     * \warning This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread. The update will be delegated to run in the main thread, and care must
+     * be taken to avoid deadlocks if the main thread is busy.
      */
     virtual void deleteFeature( QgsFeatureId fid ) = 0;
 
     /**
      * Returns the complete set of feature ids in this pool.
      * Note that this concerns the features governed by this pool, which are not necessarily all cached.
+     *
+     * \note This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread.
      *
      * \note not available in Python bindings
      */
@@ -88,6 +104,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Gets all feature ids in the bounding box \a rect. It will use a spatial index to
      * determine the ids.
      *
+     * \note This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread.
+     *
      * \note not available in Python bindings
      */
     QgsFeatureIds getIntersects( const QgsRectangle &rect ) const SIP_SKIP;
@@ -95,13 +114,15 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     /**
      * Gets a pointer to the underlying layer.
      * May return a ``NULLPTR`` if the layer has been deleted.
-     * This must only be called from the main thread.
+     *
+     * \warning This must be called from the same thread as the vector layer belongs to.
      */
     QgsVectorLayer *layer() const;
 
     /**
      * Gets a QPointer to the underlying layer.
-     * Note that access to any methods of the object
+     *
+     * \warning Access to any methods of the object
      * will need to be done on the main thread and
      * the pointer will need to be checked for validity
      * before usage.
@@ -134,22 +155,34 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QString layerName() const;
 
   protected:
-
     /**
      * Inserts a feature into the cache and the spatial index.
      * To be used by implementations of ``addFeature``.
+     *
+     * \note This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread.
      */
     void insertFeature( const QgsFeature &feature, bool skipLock = false );
 
     /**
      * Changes a feature in the cache and the spatial index.
      * To be used by implementations of ``updateFeature``.
+     *
+     * \param feature the new feature to put in the cache and index
+     * \param origFeature the original feature to remove from the index
+     *
+     * \note This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread.
+     * \since QGIS 3.42
      */
-    void refreshCache( const QgsFeature &feature );
+    void refreshCache( QgsFeature feature, const QgsFeature &origFeature );
 
     /**
      * Removes a feature from the cache and the spatial index.
      * To be used by implementations of ``deleteFeature``.
+     *
+     * \note This method can safely be called from a different thread vs the object's creation thread or
+     * the original layer's thread.
      */
     void removeFeature( const QgsFeatureId featureId );
 
@@ -184,7 +217,23 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QgsSpatialIndex mIndex;
     Qgis::GeometryType mGeometryType;
     std::unique_ptr<QgsVectorLayerFeatureSource> mFeatureSource;
+    QString mLayerId;
     QString mLayerName;
+    QgsCoordinateReferenceSystem mCrs;
+
+    /**
+    * Hash containing features whose geometry has been updated
+    * but which are not accessible if we get them
+    * from the layer (not thread-safe).
+    *
+    * The philosophy is that as soon as a feature geometry has
+    * changed, it will be in this hash, and the cache will not
+    * be used any more.
+    * \since QGIS 3.42
+    */
+    QHash<QgsFeatureId, QgsFeature> mUpdatedFeatures;
+
+    friend class TestQgsVectorLayerFeaturePool;
 };
 
 #endif // QGS_FEATUREPOOL_H

@@ -17,10 +17,10 @@
 ///@cond PRIVATE
 
 #include "qgsmeshmemorydataprovider.h"
+#include "moc_qgsmeshmemorydataprovider.cpp"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsapplication.h"
 
-#include <cstring>
 #include <QIcon>
 
 #define TEXT_PROVIDER_KEY QStringLiteral( "mesh_memory" )
@@ -48,7 +48,7 @@ QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
 
 QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri,
     const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
   : QgsMeshDataProvider( uri, options, flags )
 {
   QString data( uri );
@@ -430,6 +430,26 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
   return valid;
 }
 
+bool QgsMeshMemoryDataProvider::removeDatasetGroup( int index )
+{
+  if ( index < 0 && index > datasetGroupCount() - 1 )
+  {
+    return false;
+  }
+  else
+  {
+    const QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
+
+    mDatasetGroups.removeAt( index );
+
+    if ( !mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
+      mExtraDatasetUris.removeAll( datasetGroupMeta.uri() );
+
+    emit dataChanged();
+    return true;
+  }
+}
+
 QStringList QgsMeshMemoryDataProvider::extraDatasets() const
 {
   return mExtraDatasetUris;
@@ -619,7 +639,7 @@ QIcon QgsMeshMemoryProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconMeshLayer.svg" ) );
 }
 
-QgsDataProvider *QgsMeshMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsDataProvider *QgsMeshMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsMeshMemoryDataProvider( uri, options, flags );
 }
@@ -628,5 +648,8 @@ QList<Qgis::LayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() cons
 {
   return { Qgis::LayerType::Mesh };
 }
+
+#undef TEXT_PROVIDER_KEY
+#undef TEXT_PROVIDER_DESCRIPTION
 
 ///@endcond

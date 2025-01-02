@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/qgsdataprovider.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -57,23 +57,9 @@ Abstract base class for spatial data provider implementations.
 
     };
 
-    enum ReadFlag /BaseType=IntEnum/
-    {
-      FlagTrustDataSource,
-      SkipFeatureCount,
-      FlagLoadDefaultStyle,
-      SkipGetExtent,
-      SkipFullScan,
-      ForceReadOnly,
-      SkipCredentialsRequest,
-      ParallelThreadLoading,
-    };
-    typedef QFlags<QgsDataProvider::ReadFlag> ReadFlags;
-
-
     QgsDataProvider( const QString &uri = QString(),
                      const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
 
@@ -210,29 +196,87 @@ to determine what constitutes a valid layer.
 Update the extents of the layer. Not implemented by default.
 %End
 
+    virtual QString subsetStringDialect() const;
+%Docstring
+Returns a user-friendly string describing the dialect which is supported for subset strings
+by the provider.
+
+.. seealso:: :py:func:`subsetStringHelpUrl`
+
+.. seealso:: :py:func:`supportsSubsetString`
+
+.. seealso:: :py:func:`setSubsetString`
+
+.. seealso:: :py:func:`subsetString`
+
+.. versionadded:: 3.40
+%End
+
+    virtual QString subsetStringHelpUrl() const;
+%Docstring
+Returns a URL pointing to documentation describing the dialect which is supported for subset strings
+by the provider.
+
+.. seealso:: :py:func:`subsetStringDialect`
+
+.. seealso:: :py:func:`supportsSubsetString`
+
+.. seealso:: :py:func:`setSubsetString`
+
+.. seealso:: :py:func:`subsetString`
+
+.. versionadded:: 3.40
+%End
 
     virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true );
 %Docstring
-Set the subset string used to create a subset of features in
-the layer. This may be a sql where clause or any other string
-that can be used by the data provider to create a subset.
-Must be implemented in the dataprovider.
-%End
+Set the ``subset`` string used to create a subset of features in
+the layer.
 
+This may be a SQL where clause, or any other string that can be used by the data provider to create a subset.
+See :py:func:`~QgsDataProvider.subsetStringDialect` and :py:func:`~QgsDataProvider.subsetStringHelpUrl` for additional metadata on the dialect supported
+by the subset string.
+
+Must be implemented in the data provider.
+
+.. seealso:: :py:func:`subsetString`
+
+.. seealso:: :py:func:`subsetStringDialect`
+
+.. seealso:: :py:func:`subsetStringHelpUrl`
+
+.. seealso:: :py:func:`supportsSubsetString`
+%End
 
     virtual bool supportsSubsetString() const;
 %Docstring
 Returns ``True`` if the provider supports setting of subset strings.
+
+.. seealso:: :py:func:`subsetString`
+
+.. seealso:: :py:func:`setSubsetString`
 %End
 
     virtual QString subsetString() const;
 %Docstring
-Returns the subset definition string (typically sql) currently in
+Returns the subset definition string currently in
 use by the layer and used by the provider to limit the feature set.
-Must be overridden in the dataprovider, otherwise returns a null
-QString.
-%End
 
+This may be a SQL where clause, or any other string that can be used by the data provider to create a subset.
+See :py:func:`~QgsDataProvider.subsetStringDialect` and :py:func:`~QgsDataProvider.subsetStringHelpUrl` for additional metadata on the dialect supported
+by the subset string.
+
+Must be overridden in the data provider, otherwise returns an empty
+string.
+
+.. seealso:: :py:func:`setSubsetString`
+
+.. seealso:: :py:func:`subsetStringDialect`
+
+.. seealso:: :py:func:`subsetStringHelpUrl`
+
+.. seealso:: :py:func:`supportsSubsetString`
+%End
 
     virtual QStringList subLayers() const;
 %Docstring
@@ -277,6 +321,7 @@ Set the visibility of the given sublayer name
 %End
 
 
+
     virtual QString name() const = 0;
 %Docstring
 Returns a provider name
@@ -285,12 +330,6 @@ Essentially just returns the provider key.  Should be used to build file
 dialogs so that providers can be shown with their supported types. Thus
 if more than one provider supports a given format, the user is able to
 select a specific provider to open that file.
-
-\note
-
-Instead of being pure virtual, might be better to generalize this
-behavior and presume that none of the sub-classes are going to do
-anything strange with regards to their name or description?
 %End
 
 
@@ -299,12 +338,6 @@ anything strange with regards to their name or description?
 Returns description
 
 Returns a terse string describing what the provider is.
-
-\note
-
-Instead of being pure virtual, might be better to generalize this
-behavior and presume that none of the sub-classes are going to do
-anything strange with regards to their name or description?
 %End
 
 
@@ -316,10 +349,6 @@ Returns a string suitable for a QFileDialog of vector file formats
 supported by the data provider.  Naturally this will be an empty string
 for those data providers that do not deal with plain files, such as
 databases and servers.
-
-.. note::
-
-   It'd be nice to eventually be raster/vector neutral.
 %End
 
 
@@ -331,10 +360,6 @@ Returns a string suitable for a QFileDialog of raster file formats
 supported by the data provider.  Naturally this will be an empty string
 for those data providers that do not deal with plain files, such as
 databases and servers.
-
-.. note::
-
-   It'd be nice to eventually be raster/vector neutral.
 %End
 
 
@@ -525,13 +550,10 @@ Sets error message
 
 };
 
-QFlags<QgsDataProvider::ReadFlag> operator|(QgsDataProvider::ReadFlag f1, QFlags<QgsDataProvider::ReadFlag> f2);
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/core/providers/qgsdataprovider.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -14,6 +14,8 @@
 #include "../untwine/Common.hpp"
 #include "../untwine/ProgressWriter.hpp"
 
+#include <dirlist.hpp>  //untwine/os
+
 namespace untwine
 {
 namespace bu
@@ -53,7 +55,7 @@ void BuPyramid::getInputFiles()
         return std::make_pair(true, VoxelKey(x, y, z, level));
     };
 
-    std::vector<std::string> files = directoryList(m_b.opts.tempDir);
+    std::vector<std::string> files = os::directoryList(m_b.opts.tempDir);
 
     VoxelKey root;
     for (std::string file : files)

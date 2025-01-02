@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgsfontmanager.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -197,7 +197,7 @@ font is installed and available for use.
 :param family: input font family name to try to match to known fonts
 
 :return: - ``True`` if match was successful and the download will occur
-         - matchedFamily: will be set to found font family if a match was successful
+         - matchedFamily: found font family if a match was successful
 %End
 
     void enableFontDownloadsForSession();
@@ -209,7 +209,7 @@ Enables font downloads the the current QGIS session.
    Ensure that the :py:class:`QgsApplication` is fully initialized before calling this method.
 %End
 
- QString urlForFontDownload( const QString &family, QString &matchedFamily /Out/ ) const /Deprecated/;
+ QString urlForFontDownload( const QString &family, QString &matchedFamily /Out/ ) const /Deprecated="Since 3.38. Use detailsForFontDownload() instead."/;
 %Docstring
 Returns the URL at which the font ``family`` can be downloaded.
 
@@ -219,10 +219,11 @@ return an empty string for any font families not present in this list.
 :param family: input font family name to try to match to known fonts
 
 :return: - URL to download font, or an empty string if no URL is available
-         - matchedFamily: will be set to found font family if a match was successful
+         - matchedFamily: found font family if a match was successful
 
-.. deprecated:: QGIS 3.38
-  use :py:func:`~QgsFontManager.detailsForFontDownload` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsFontManager.detailsForFontDownload` instead.
 %End
 
     QgsFontDownloadDetails detailsForFontDownload( const QString &family, QString &matchedFamily /Out/ ) const;
@@ -238,12 +239,12 @@ return an invalid :py:class:`QgsFontDownloadDetails` for any font families not p
 :param family: input font family name to try to match to known fonts
 
 :return: - details required for downloading font, or an invalid :py:class:`QgsFontDownloadDetails` if no URL is available
-         - matchedFamily: will be set to found font family if a match was successful
+         - matchedFamily: found font family if a match was successful
 
 .. versionadded:: 3.38
 %End
 
- void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() ) /Deprecated/;
+ void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() ) /Deprecated="Since 3.38. Use the version which takes a QgsFontDownloadDetails argument instead."/;
 %Docstring
 Downloads a font and installs in the user's profile/fonts directory as an application font,
 where the font family can be downloaded via a single ``url``.
@@ -257,8 +258,9 @@ tasks, e.g. the font family name if known.
 
 .. seealso:: :py:func:`fontDownloadErrorOccurred`
 
-.. deprecated:: QGIS 3.38
-   use the version which takes a :py:class:`QgsFontDownloadDetails` argument instead
+.. deprecated:: 3.38
+
+   Use the version which takes a :py:class:`QgsFontDownloadDetails` argument instead.
 %End
 
     void downloadAndInstallFont( const QgsFontDownloadDetails &details, const QString &identifier = QString() );
@@ -278,7 +280,7 @@ tasks, e.g. the font family name if known.
 .. versionadded:: 3.38
 %End
 
-    bool installFontsFromData( const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/, const QString &filename = QString() );
+    bool installFontsFromData( const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/, const QString &filename = QString(), const QString &extension = QString() );
 %Docstring
 Installs local user fonts from the specified raw ``data``.
 
@@ -287,9 +289,10 @@ or a zipped archive of font files.
 
 :param data: raw font data or zipped font data
 :param filename: filename hint for destination file. Will be ignored for archived content (e.g. zip file data)
+:param extension: known file extension (eg "ttf", "otf") for font. Should be specified to avoid issues with font installation on Windows if filename is not specified (since QGIS 3.38)
 
 :return: - ``True`` if installation was successful.
-         - errorMessage: will be set to a descriptive error message if the installation fails
+         - errorMessage: a descriptive error message if the installation fails
          - families: will be populated with a list of font families installed from the data
          - licenseDetails: will be populated with font license details, if found
 %End
@@ -348,5 +351,5 @@ Emitted when an error occurs during font downloading.
  *                                                                      *
  * src/core/textrenderer/qgsfontmanager.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

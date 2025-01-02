@@ -53,11 +53,9 @@ class QgsMapLayer;
 class GUI_EXPORT QgsProviderGuiRegistry
 {
   public:
-
     //! Creates registry and loads static provider plugins
     QgsProviderGuiRegistry( const QString &pluginPath );
 
-    //! dtor
     virtual ~QgsProviderGuiRegistry();
 
     //! Returns list of available providers by their keys
@@ -117,7 +115,6 @@ class GUI_EXPORT QgsProviderGuiRegistry
     SIP_SKIP typedef std::map<QString, QgsProviderGuiMetadata *> GuiProviders;
 
   private:
-
     /**
      * Loads the dynamic plugins on the given path
      * When QGIS is compiled with FORCE_STATIC_LIBS,
@@ -130,7 +127,7 @@ class GUI_EXPORT QgsProviderGuiRegistry
      * By default only ogr and gdal providers, but when QGIS is compiled with
      * FORCE_STATIC_PROVIDERS, it also loads all the rest of providers
      */
-    void loadStaticProviders( );
+    void loadStaticProviders();
 
     //! Associative container of provider metadata handles
     GuiProviders mProviders;

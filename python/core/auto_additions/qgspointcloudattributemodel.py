@@ -25,8 +25,51 @@ QgsPointCloudAttributeModel.IsNumericRole = QgsPointCloudAttributeModel.CustomRo
 QgsPointCloudAttributeModel.FieldRoles.IsNumericRole = QgsPointCloudAttributeModel.CustomRole.IsNumeric
 QgsPointCloudAttributeModel.IsNumericRole.is_monkey_patched = True
 QgsPointCloudAttributeModel.IsNumericRole.__doc__ = "``True`` if the index corresponds to a numeric attributre"
-QgsPointCloudAttributeModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsPointCloudAttributeModel.FieldRoles\n\n.. versionadded:: 3.36\n\n" + '* ``AttributeNameRole``: ' + QgsPointCloudAttributeModel.CustomRole.AttributeName.__doc__ + '\n' + '* ``AttributeIndexRole``: ' + QgsPointCloudAttributeModel.CustomRole.AttributeIndex.__doc__ + '\n' + '* ``AttributeSizeRole``: ' + QgsPointCloudAttributeModel.CustomRole.AttributeSize.__doc__ + '\n' + '* ``AttributeTypeRole``: ' + QgsPointCloudAttributeModel.CustomRole.AttributeType.__doc__ + '\n' + '* ``IsEmptyRole``: ' + QgsPointCloudAttributeModel.CustomRole.IsEmpty.__doc__ + '\n' + '* ``IsNumericRole``: ' + QgsPointCloudAttributeModel.CustomRole.IsNumeric.__doc__
+QgsPointCloudAttributeModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsPointCloudAttributeModel.FieldRoles
+
+.. versionadded:: 3.36
+
+* ``AttributeName``: Attribute name
+
+  Available as ``QgsPointCloudAttributeModel.AttributeNameRole`` in older QGIS releases.
+
+* ``AttributeIndex``: Attribute index if index corresponds to an attribute
+
+  Available as ``QgsPointCloudAttributeModel.AttributeIndexRole`` in older QGIS releases.
+
+* ``AttributeSize``: Attribute size
+
+  Available as ``QgsPointCloudAttributeModel.AttributeSizeRole`` in older QGIS releases.
+
+* ``AttributeType``: Attribute type, see QgsPointCloudAttribute.DataType
+
+  Available as ``QgsPointCloudAttributeModel.AttributeTypeRole`` in older QGIS releases.
+
+* ``IsEmpty``: ``True`` if the index corresponds to the empty value
+
+  Available as ``QgsPointCloudAttributeModel.IsEmptyRole`` in older QGIS releases.
+
+* ``IsNumeric``: ``True`` if the index corresponds to a numeric attributre
+
+  Available as ``QgsPointCloudAttributeModel.IsNumericRole`` in older QGIS releases.
+
+
+"""
 # --
 QgsPointCloudAttributeModel.CustomRole.baseClass = QgsPointCloudAttributeModel
 QgsPointCloudAttributeProxyModel.Filters.baseClass = QgsPointCloudAttributeProxyModel
 Filters = QgsPointCloudAttributeProxyModel  # dirty hack since SIP seems to introduce the flags in module
+try:
+    QgsPointCloudAttributeModel.attributeToolTip = staticmethod(QgsPointCloudAttributeModel.attributeToolTip)
+    QgsPointCloudAttributeModel.iconForAttributeType = staticmethod(QgsPointCloudAttributeModel.iconForAttributeType)
+    QgsPointCloudAttributeModel.__group__ = ['pointcloud']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsPointCloudAttributeProxyModel.__group__ = ['pointcloud']
+except (NameError, AttributeError):
+    pass

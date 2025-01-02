@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/tiledscene/qgstiledscenetile.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,9 +40,6 @@ Constructor for an valid tile.
     ~QgsTiledSceneTile();
 
     QgsTiledSceneTile( const QgsTiledSceneTile &other );
-%Docstring
-Copy constructor
-%End
 
     bool isValid() const;
 %Docstring
@@ -121,16 +118,16 @@ Sets the ``resources`` ``attached`` to the tile.
 
     double geometricError() const;
 %Docstring
-Returns the tile's geometric error, which is the error, in scene CRS units, of the tile's
-simplified representation of its source geometry.
+Returns the tile's geometric error, which is the error, in meters, of
+the tile's simplified representation of its source geometry.
 
 .. seealso:: :py:func:`setGeometricError`
 %End
 
     void setGeometricError( double error );
 %Docstring
-Sets the tile's geometric ``error``, which is the error, in scene CRS units, of the tile's
-simplified representation of its source geometry.
+Sets the tile's geometric ``error``, which is the error, in meters, of
+the tile's simplified representation of its source geometry.
 
 .. seealso:: :py:func:`geometricError`
 %End
@@ -172,5 +169,5 @@ Sets additional ``metadata`` attached to the tile.
  *                                                                      *
  * src/core/tiledscene/qgstiledscenetile.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

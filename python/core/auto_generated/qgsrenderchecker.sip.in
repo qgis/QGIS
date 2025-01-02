@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsrenderchecker.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -109,7 +109,7 @@ Returns the total elapsed time for the rendering test.
 
 .. note::
 
-   this only records time for actual render part.
+   This only records time for actual render part.
 %End
     void setElapsedTimeTarget( int target );
 
@@ -183,6 +183,7 @@ Sets the largest allowable difference in size between the rendered and the expec
     enum class Flag
     {
       AvoidExportingRenderedImage,
+      Silent,
     };
 
     typedef QFlags<QgsRenderChecker::Flag> Flags;
@@ -192,9 +193,9 @@ Sets the largest allowable difference in size between the rendered and the expec
 %Docstring
 Test using renderer to generate the image to be compared.
 
-:param testName: - to be used as the basis for writing a file to
+:param testName: to be used as the basis for writing a file to
                  e.g. /tmp/theTestName.png
-:param mismatchCount: - defaults to 0 - the number of pixels that
+:param mismatchCount: defaults to 0. The number of pixels that
                       are allowed to be different from the control image. In some cases
                       rendering may be non-deterministic. This parameter allows you to account
                       for that by providing a tolerance.
@@ -202,22 +203,25 @@ Test using renderer to generate the image to be compared.
 
 .. note::
 
-   make sure to call setExpectedImage and setMapRenderer first
+   Make sure to call setExpectedImage and setMapRenderer first
 %End
 
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString(), QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 %Docstring
 Test using two arbitrary images (map renderer will not be used)
 
-:param testName: - to be used as the basis for writing a file to
+:param testName: to be used as the basis for writing a file to
                  e.g. /tmp/theTestName.png
-:param mismatchCount: - defaults to 0 - the number of pixels that
+:param mismatchCount: defaults to 0. The number of pixels that
                       are allowed to be different from the control image. In some cases
                       rendering may be non-deterministic. This parameter allows you to account
                       for that by providing a tolerance.
 :param renderedImageFile: to optionally override the output filename
 :param flags: render checker flags
-\note: make sure to call setExpectedImage and setRenderedImage first.
+
+.. note::
+
+   Make sure to call setExpectedImage and setRenderedImage first.
 %End
 
     bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
@@ -227,7 +231,7 @@ Test using two arbitrary images at the specified paths for equality.
 .. versionadded:: 3.18
 %End
 
- bool isKnownAnomaly( const QString &diffImageFile ) /Deprecated/;
+ bool isKnownAnomaly( const QString &diffImageFile ) /Deprecated="Since 3.40. Use the test mask system instead."/;
 %Docstring
 Gets a list of all the anomalies. An anomaly is a rendered difference
 file where there is some red pixel content (indicating a render check
@@ -237,7 +241,8 @@ acceptable.
 
 :return: a bool indicating if the diff matched one of the anomaly files
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the test mask system instead.
 %End
 
@@ -302,5 +307,5 @@ Compare two WKT strings with some tolerance
  *                                                                      *
  * src/core/qgsrenderchecker.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

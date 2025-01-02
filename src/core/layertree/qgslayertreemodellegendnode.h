@@ -50,9 +50,7 @@ class QgsTextDocumentMetrics;
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
-#ifdef SIP_RUN
-#include "qgscolorramplegendnode.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgscolorramplegendnode.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -92,6 +90,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       RuleKey SIP_MONKEYPATCH_COMPAT_NAME( RuleKeyRole ) = Qt::UserRole, //!< Rule key of the node (QString)
       ParentRuleKey SIP_MONKEYPATCH_COMPAT_NAME( ParentRuleKeyRole ), //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
       NodeType SIP_MONKEYPATCH_COMPAT_NAME( NodeTypeRole ), //!< Type of node. Added in 3.16
+      IsDataDefinedSize SIP_MONKEYPATCH_COMPAT_NAME( IsDataDefinedSizeRole ), //!< Set when a node is related to data defined size (title or separated legend items). Added in 3.38
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -106,7 +105,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       WmsLegend, //!< WMS legend node type
       DataDefinedSizeLegend, //!< Marker symbol legend node type
       EmbeddedWidget, //!< Embedded widget placeholder node type
-      ColorRampLegend, //!< Color ramp legend (since QGIS 3.18)
+      ColorRampLegend, //!< Color ramp legend \since QGIS 3.18
     };
 
     //! Returns pointer to the parent layer node
@@ -189,13 +188,13 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
       /**
        * Top-left corner of the legend item.
-       * \deprecated Use top, columnLeft, columnRight instead.
+       * \deprecated QGIS 3.40. Use top, columnLeft, columnRight instead.
        */
       Q_DECL_DEPRECATED QPointF point;
 
       /**
        * Offset from the left side where label should start.
-       * \deprecated use columnLeft, columnRight instead.
+       * \deprecated QGIS 3.40. Use columnLeft, columnRight instead.
        */
       Q_DECL_DEPRECATED double labelXOffset = 0.0;
 
@@ -678,8 +677,10 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param parent attach a parent QObject to the legend node.
      * \param isCheckable set to TRUE to enable the checkbox for the node (since QGIS 3.18)
      * \param ruleKey optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
+     * \param parentRuleKey rule key of parent (since QGIS 3.40)
      */
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr, bool isCheckable = false, const QString &ruleKey = QString() );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr,
+                               bool isCheckable = false, const QString &ruleKey = QString(), const QString &parentRuleKey = QString() );
 
     Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;
@@ -714,6 +715,7 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString mLabel;
     bool mCheckable = false;
     QString mRuleKey;
+    QString mParentRuleKey;
 };
 
 class QgsImageFetcher;
@@ -746,6 +748,13 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     void invalidateMapBasedData() override;
 
+    /**
+     *  Fetches the image from the server and returns it.
+     *  \since QGIS 3.40
+     */
+    QImage getLegendGraphicBlocking( ) const;
+
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -762,7 +771,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
   private:
 
-    // Lazily initializes mImage
+    // Lazy loading of the image
     QImage getLegendGraphic( bool synchronous = false ) const;
 
     QImage renderMessage( const QString &msg ) const;

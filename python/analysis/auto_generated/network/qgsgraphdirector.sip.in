@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/network/qgsgraphdirector.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,30 +25,27 @@ using "builder" design patter.
 #include "qgsgraphdirector.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast< QgsVectorLayerDirector * >( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsVectorLayerDirector *>( sipCpp ) != NULL )
       sipType = sipType_QgsVectorLayerDirector;
     else
       sipType = NULL;
 %End
   public:
-
     ~QgsGraphDirector();
 
-    virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                            const QVector< QgsPointXY > &additionalPoints,
-                            QVector< QgsPointXY > &snappedPoints /Out/,
-                            QgsFeedback *feedback = 0 ) const;
+    virtual void makeGraph( QgsGraphBuilderInterface *builder, const QVector<QgsPointXY> &additionalPoints, QVector<QgsPointXY> &snappedPoints /Out/, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Make a graph using :py:class:`QgsGraphBuilder`
 
 :param builder: the graph builder
 :param additionalPoints: list of points that should be snapped to the graph
-:param snappedPoints: list of snapped points
 :param feedback: feedback object for reporting progress
 
 .. note::
 
    if snappedPoints[i] == QgsPointXY(0.0,0.0) then snapping failed.
+
+:return: list of snapped points
 %End
 
     void addStrategy( QgsNetworkStrategy *prop /Transfer/ );
@@ -69,5 +66,5 @@ Returns director name
  *                                                                      *
  * src/analysis/network/qgsgraphdirector.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

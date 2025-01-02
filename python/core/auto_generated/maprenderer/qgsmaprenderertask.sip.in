@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/maprenderer/qgsmaprenderertask.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -100,5 +100,5 @@ Emitted when map rendering failed.
  *                                                                      *
  * src/core/maprenderer/qgsmaprenderertask.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsabstractrelationeditorwidget.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -34,8 +34,6 @@ Base class to build new relation widgets.
       sipType = 0;
 %End
   public:
-
-
     QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -95,25 +93,27 @@ Sets the editor ``context``
    the geometry of a referencing feature from this widget
 %End
 
-    QgsAttributeEditorContext editorContext( ) const;
+    QgsAttributeEditorContext editorContext() const;
 %Docstring
 Returns the attribute editor context.
 %End
 
- bool showLabel() const /Deprecated/;
+ bool showLabel() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Defines if a title label should be shown for this widget.
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
- void setShowLabel( bool showLabel ) /Deprecated/;
+ void setShowLabel( bool showLabel ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Defines if a title label should be shown for this widget.
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     QVariant nmRelationId() const;
@@ -127,12 +127,13 @@ Sets ``nmRelationId`` for the relation id of the second relation involved in an 
 If it's empty, then it's considered as a 1:M relationship.
 %End
 
- QString label() const /Deprecated/;
+ QString label() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Determines the label of this element
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     void setLabel( const QString &label = QString() );
@@ -226,9 +227,11 @@ Adds new features with given ``geometry``
 Delete a feature with given ``fid``
 %End
 
-    void linkFeature();
+    void linkFeature( const QString &filterExpression = QString() );
 %Docstring
 Links a new feature to the relation
+
+:param filterExpression: to filter the available features in the link dialog since QGIS 3.40
 %End
 
     void onLinkFeatureDlgAccepted();
@@ -255,18 +258,18 @@ Duplicates features
 
 
 
-
     void showEvent( QShowEvent * );
 %Docstring
 Refresh the UI when the widget becomes visible
 %End
 
- void updateTitle() /Deprecated/;
+ void updateTitle() /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Updates the title contents to reflect the current state of the widget
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     void deleteFeatures( const QgsFeatureIds &fids );
@@ -288,12 +291,13 @@ Should be used to refresh the UI regarding the new data.
 Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
- virtual void setTitle( const QString &title ) /Deprecated/;
+ virtual void setTitle( const QString &title ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Sets the title of the widget, if it is wrapped within a :py:class:`QgsCollapsibleGroupBox`
 
-.. deprecated:: QGIS 3.20
-   label is handled directly in :py:class:`QgsAttributeForm`.
+.. deprecated:: 3.20
+
+   Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
@@ -344,7 +348,6 @@ It will only be instantiated by {:py:class:`QgsAbstractRelationEditorWidgetFacto
       sipType = 0;
 %End
   public:
-
     explicit QgsAbstractRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget
@@ -412,7 +415,6 @@ Factory class for creating relation widgets and their corresponding config widge
 #include "qgsabstractrelationeditorwidget.h"
 %End
   public:
-
     QgsAbstractRelationEditorWidgetFactory();
 %Docstring
 Creates a new relation widget factory with given ``name``
@@ -459,5 +461,5 @@ Create a new configuration widget for this widget type.
  *                                                                      *
  * src/gui/qgsabstractrelationeditorwidget.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -1,0 +1,127 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgs3dterrainregistry.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class Qgs3DTerrainAbstractMetadata
+{
+%Docstring(signature="appended")
+Stores metadata about one 3D terrain class.
+
+.. note::
+
+   It's necessary to implement :py:func:`~createTerrainSettings` function.
+   In C++ you can use Qgs3DTerrainMetadata convenience class.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgs3dterrainregistry.h"
+%End
+  public:
+    Qgs3DTerrainAbstractMetadata( const QString &type, const QString &visibleName, const QIcon &icon = QIcon() );
+%Docstring
+Constructor for Qgs3DTerrainAbstractMetadata, with the specified ``type`` and ``visibleName``.
+
+An optional ``icon`` can be specified to represent the material type.
+%End
+
+    virtual ~Qgs3DTerrainAbstractMetadata();
+
+    QString type() const;
+%Docstring
+Returns the unique terrain type string.
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns the terrain's visible (translated) name.
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns an icon representing the terrain type, if available.
+%End
+
+    virtual QgsAbstractTerrainSettings *createTerrainSettings() = 0 /Factory/;
+%Docstring
+Creates a new instance of this terrain settings type.
+
+Caller takes ownership of the returned object.
+%End
+
+
+};
+
+
+
+
+class Qgs3DTerrainRegistry
+{
+%Docstring(signature="appended")
+Registry of available 3d terrain classes.
+
+Qgs3DTerrainRegistry is not usually directly created, but rather accessed through
+Qgs3D.terrainRegistry().
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgs3dterrainregistry.h"
+%End
+  public:
+    Qgs3DTerrainRegistry();
+    ~Qgs3DTerrainRegistry();
+
+
+    Qgs3DTerrainAbstractMetadata *terrainMetadata( const QString &type ) const;
+%Docstring
+Returns metadata for specified terrain ``type``. Returns ``None`` if not found
+%End
+
+    QStringList types() const;
+%Docstring
+Returns a list of all available terrain types.
+%End
+
+    bool addType( Qgs3DTerrainAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Registers a new terrain type. Takes ownership of the ``metadata`` instance.
+%End
+
+    QgsAbstractTerrainSettings *createTerrainSettings( const QString &type ) const /Factory/;
+%Docstring
+Creates a new instance of the terrain settings of the specified ``type``.
+
+The caller takes ownership of the returned object.
+
+Returns ``None`` if the specified type is not found in the registry.
+%End
+
+
+    QgsAbstractTerrainSettings *configureTerrainFromProject( QgsProjectElevationProperties *properties ) /Factory/;
+%Docstring
+Create terrain settings directly from a project's elevation ``properties``.
+%End
+
+  private:
+    Qgs3DTerrainRegistry( const Qgs3DTerrainRegistry &rh );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgs3dterrainregistry.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

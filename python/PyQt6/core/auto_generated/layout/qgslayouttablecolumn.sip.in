@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayouttablecolumn.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -174,7 +174,7 @@ is part of a :py:class:`QgsLayoutItemAttributeTable` and when :py:func:`~QgsLayo
 .. seealso:: :py:func:`setSortByRank`
 %End
 
- int sortByRank() const /Deprecated/;
+ int sortByRank() const /Deprecated="Since 3.14. The order is now hold in a dedicated model."/;
 %Docstring
 Returns the sort rank for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
@@ -192,11 +192,12 @@ If sort rank is <= 0 then the column is not being sorted.
 
 .. seealso:: :py:func:`sortOrder`
 
-.. deprecated:: QGIS 3.14
-   the order is now hold in a dedicated model
+.. deprecated:: 3.14
+
+   The order is now hold in a dedicated model.
 %End
 
- void setSortByRank( int rank ) /Deprecated/;
+ void setSortByRank( int rank ) /Deprecated="Since 3.14. The order is now hold in a dedicated model."/;
 %Docstring
 Sets the sort ``rank`` for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
@@ -213,18 +214,20 @@ If the sort ``rank`` is <= 0 then the column is not being sorted.
 
 .. seealso:: :py:func:`setSortOrder`
 
-.. deprecated:: QGIS 3.14
-   the order is now hold in a dedicated model
+.. deprecated:: 3.14
+
+   The order is now hold in a dedicated model.
 %End
 
- QgsLayoutTableColumn *clone() /Deprecated,Factory/;
+ QgsLayoutTableColumn *clone() /Deprecated="Since 3.14. Use a copy instead.",Factory/;
 %Docstring
 Creates a duplicate column which is a deep copy of this column.
 
 :return: a new QgsLayoutTableColumn with same properties as this column.
 
-.. deprecated:: QGIS 3.14
-   use a copy instead
+.. deprecated:: 3.14
+
+   Use a copy instead.
 %End
 
     bool operator==( const QgsLayoutTableColumn &other ) const;
@@ -246,5 +249,5 @@ Creates a duplicate column which is a deep copy of this column.
  *                                                                      *
  * src/core/layout/qgslayouttablecolumn.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

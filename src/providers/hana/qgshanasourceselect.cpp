@@ -18,6 +18,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsgui.h"
 #include "qgshanasourceselect.h"
+#include "moc_qgshanasourceselect.cpp"
 #include "qgshanaconnection.h"
 #include "qgshananewconnection.h"
 #include "qgshanatablemodel.h"
@@ -39,7 +40,8 @@
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsHanaSourceSelectDelegate::createEditor(
-  QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+  QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index
+) const
 {
   Q_UNUSED( option );
 
@@ -57,17 +59,17 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
     QComboBox *cb = new QComboBox( parent );
     for ( const Qgis::WkbType type :
           QList<Qgis::WkbType>()
-          << Qgis::WkbType::Point
-          << Qgis::WkbType::LineString
-          << Qgis::WkbType::Polygon
-          << Qgis::WkbType::MultiPoint
-          << Qgis::WkbType::MultiLineString
-          << Qgis::WkbType::MultiPolygon
-          << Qgis::WkbType::CircularString
-          << Qgis::WkbType::GeometryCollection
-          << Qgis::WkbType::NoGeometry )
+            << Qgis::WkbType::Point
+            << Qgis::WkbType::LineString
+            << Qgis::WkbType::Polygon
+            << Qgis::WkbType::MultiPoint
+            << Qgis::WkbType::MultiLineString
+            << Qgis::WkbType::MultiPolygon
+            << Qgis::WkbType::CircularString
+            << Qgis::WkbType::GeometryCollection
+            << Qgis::WkbType::NoGeometry )
     {
-      cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast< quint32>( type ) );
+      cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast<quint32>( type ) );
     }
     return cb;
   }
@@ -110,7 +112,8 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
 }
 
 void QgsHanaSourceSelectDelegate::setModelData(
-  QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+  QWidget *editor, QAbstractItemModel *model, const QModelIndex &index
+) const
 {
   QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
@@ -121,7 +124,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
 
       model->setData( index, QgsHanaTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != Qgis::WkbType::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
-      model->setData( index, static_cast< quint32>( type ), Qt::UserRole + 2 );
+      model->setData( index, static_cast<quint32>( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsHanaTableModel::DbtmPkCol )
     {
@@ -161,8 +164,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
     if ( index.column() == QgsHanaTableModel::DbtmGeomType )
       cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
 
-    if ( index.column() == QgsHanaTableModel::DbtmPkCol &&
-         !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
+    if ( index.column() == QgsHanaTableModel::DbtmPkCol && !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
     {
       const QStringList columns = index.data( Qt::UserRole + 2 ).toStringList();
       for ( const QString &colName : columns )
@@ -185,7 +187,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
   if ( le )
   {
     bool ok;
-    ( void )value.toInt( &ok );
+    ( void ) value.toInt( &ok );
     if ( index.column() == QgsHanaTableModel::DbtmSrid && !ok )
       value.clear();
 
@@ -196,7 +198,8 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
 QgsHanaSourceSelect::QgsHanaSourceSelect(
   QWidget *parent,
   Qt::WindowFlags fl,
-  QgsProviderRegistry::WidgetMode theWidgetMode )
+  QgsProviderRegistry::WidgetMode theWidgetMode
+)
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -208,12 +211,11 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( btnDelete, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnDelete_clicked );
   connect( btnSave, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnSave_clicked );
   connect( btnLoad, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnLoad_clicked );
-  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ),
-           this, &QgsHanaSourceSelect::cmbConnections_activated );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsHanaSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Standalone )
     mHoldDialogOpen->hide();
   else
     setWindowTitle( tr( "Add SAP HANA Table(s)" ) );
@@ -223,20 +225,17 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   mTableModel = new QgsHanaTableModel( this );
   init( mTableModel, new QgsHanaSourceSelectDelegate( this ) );
 
-  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
-           this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
 
   const QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
 
   restoreGeometry( settings.value( QStringLiteral( "Windows/HanaSourceSelect/geometry" ) ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/HanaSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" )
-                                     .arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   cbxAllowGeometrylessTables->setDisabled( true );
@@ -257,7 +256,7 @@ void QgsHanaSourceSelect::btnNew_clicked()
 void QgsHanaSourceSelect::btnDelete_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                      .arg( cmbConnections->currentText() );
+                        .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -280,15 +279,13 @@ void QgsHanaSourceSelect::btnSave_clicked()
 
 void QgsHanaSourceSelect::btnLoad_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ),
-                           QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
   }
 
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import,
-                                  QgsManageConnectionsDialog::HANA, fileName );
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::HANA, fileName );
   dlg.exec();
   populateConnectionList();
 }
@@ -352,8 +349,7 @@ QgsHanaSourceSelect::~QgsHanaSourceSelect()
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" )
-                       .arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -407,7 +403,7 @@ void QgsHanaSourceSelect::addButtonClicked()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "hana" ) );
-    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
       accept();
   }
 }
@@ -451,17 +447,12 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   mColumnTypeTask = std::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
 
-  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::setLayerType,
-           this, &QgsHanaSourceSelect::setLayerType );
-  connect( mColumnTypeThread.get(), &QThread::finished,
-           this, &QgsHanaSourceSelect::columnThreadFinished );
-  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progress,
-           mColumnTypeTask.get(), [&]( int i, int n )
-  {
+  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::setLayerType, this, &QgsHanaSourceSelect::setLayerType );
+  connect( mColumnTypeThread.get(), &QThread::finished, this, &QgsHanaSourceSelect::columnThreadFinished );
+  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progress, mColumnTypeTask.get(), [&]( int i, int n ) {
     mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
   } );
-  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progressMessage,
-           this, &QgsHanaSourceSelect::progressMessage );
+  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progressMessage, this, &QgsHanaSourceSelect::progressMessage );
 
   btnConnect->setText( tr( "Stop" ) );
   mColumnTypeThread->start();
@@ -521,7 +512,8 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
 }
 
 QString QgsHanaSourceSelect::fullDescription(
-  const QString &schema, const QString &table, const QString &column, const QString &type )
+  const QString &schema, const QString &table, const QString &column, const QString &type
+)
 {
   QString desc;
   if ( !schema.isEmpty() )
@@ -544,7 +536,8 @@ void QgsHanaSourceSelect::setSearchExpression( const QString &regexp )
 }
 
 void QgsHanaSourceSelect::treeWidgetSelectionChanged(
-  const QItemSelection &selected, const QItemSelection &deselected )
+  const QItemSelection &selected, const QItemSelection &deselected
+)
 {
   Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );

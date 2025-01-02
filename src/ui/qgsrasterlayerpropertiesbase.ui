@@ -139,6 +139,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Labels</string>
+          </property>
+          <property name="toolTip">
+           <string>Labels</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionLabeling.svg</normaloff>:/images/themes/default/mActionLabeling.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Histogram</string>
           </property>
           <property name="toolTip">
@@ -320,8 +332,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>354</width>
-                <height>457</height>
+                <width>320</width>
+                <height>455</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -350,7 +362,7 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -358,7 +370,7 @@
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -443,8 +455,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>665</width>
-                <height>365</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -471,7 +483,7 @@
                  <property name="title">
                   <string>Band Rendering</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
@@ -516,13 +528,13 @@
                  <property name="title">
                   <string>Layer Rendering</string>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
@@ -877,13 +889,13 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout">
@@ -985,6 +997,7 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_Labeling"/>
          <widget class="QWidget" name="mOptsPage_Histogram">
           <layout class="QVBoxLayout" name="verticalLayout_15">
            <property name="leftMargin">
@@ -1012,8 +1025,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>681</height>
+                <width>98</width>
+                <height>39</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1075,7 +1088,7 @@
              <property name="checked">
               <bool>false</bool>
              </property>
-             <property name="syncGroup">
+             <property name="syncGroup" stdset="0">
               <string notr="true">rastergeneral</string>
              </property>
              <layout class="QGridLayout" name="_5">
@@ -1095,11 +1108,8 @@
                <number>6</number>
               </property>
               <item row="0" column="0" colspan="2">
-               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
                 <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="whatsThis">
                  <string/>
                 </property>
                </widget>
@@ -1191,8 +1201,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>543</width>
-                <height>184</height>
+                <width>504</width>
+                <height>187</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1259,10 +1269,13 @@
                       </property>
                       <property name="html">
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell';&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -1625,8 +1638,8 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>374</width>
-                <height>694</height>
+                <width>331</width>
+                <height>709</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -1647,7 +1660,7 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastermeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -1783,7 +1796,7 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -1829,7 +1842,7 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
                  <property name="title">
                   <string>Metadata URL</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2033,10 +2046,15 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
@@ -2045,9 +2063,21 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
@@ -2066,18 +2096,6 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
    <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
    <extends>QWidget</extends>
    <header>qgslayertreeembeddedconfigwidget.h</header>
@@ -2087,11 +2105,6 @@ You can also import an existing raster attribute table from a VAT.DBF file and a
    <class>QgsCodeEditorHTML</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorhtml.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsImageSourceLineEdit</class>

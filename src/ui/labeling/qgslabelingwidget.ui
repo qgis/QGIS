@@ -14,7 +14,7 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <property name="margin">
+   <property name="margin" stdset="0">
     <number>0</number>
    </property>
    <item>
@@ -30,6 +30,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mLabelRulesButton">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Configure project labeling rules</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../images/images.qrc">
+         <normaloff>:/images/themes/default/mIconLabelingRules.svg</normaloff>:/images/themes/default/mIconLabelingRules.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mEngineSettingsButton">
        <property name="enabled">
         <bool>true</bool>
@@ -38,7 +52,7 @@
         <string>Automated placement settings (applies to all layers)</string>
        </property>
        <property name="icon">
-        <iconset resource="../../images/images.qrc">
+        <iconset resource="../../../images/images.qrc">
          <normaloff>:/images/themes/default/mIconAutoPlacementSettings.svg</normaloff>:/images/themes/default/mIconAutoPlacementSettings.svg</iconset>
        </property>
       </widget>
@@ -60,6 +74,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mLabelModeComboBox</tabstop>
+  <tabstop>mLabelRulesButton</tabstop>
+  <tabstop>mEngineSettingsButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

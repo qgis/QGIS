@@ -23,7 +23,7 @@
 #include "qgsbox3d.h"
 #include "qgsvector3d.h"
 #include "qgis_sip.h"
-#include "nlohmann/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsCesiumUtils
       //! GLTF binary content
       QByteArray gltf;
 
-      //! Optional RTC center
+      //! Center position of relative-to-center coordinates (when used)
       QgsVector3D rtcCenter;
     };
 

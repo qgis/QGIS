@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsheatmaprenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,7 @@ A renderer which draws points as a live heatmap
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void stopRender( QgsRenderContext &context );
 
@@ -247,5 +247,5 @@ Sets the expression used for weighting points when generating the heatmap.
  *                                                                      *
  * src/core/symbology/qgsheatmaprenderer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

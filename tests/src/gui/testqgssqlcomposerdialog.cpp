@@ -19,7 +19,7 @@
 #include <qgslogger.h>
 #include <qgssqlcomposerdialog.h>
 
-class TestQgsSQLComposerDialog: public QObject
+class TestQgsSQLComposerDialog : public QObject
 {
     Q_OBJECT
   private slots:
@@ -30,6 +30,7 @@ class TestQgsSQLComposerDialog: public QObject
     void testSelectSpatialPredicate();
     void testSelectOperator();
     void testJoins();
+
   private:
     bool runTest();
 };
@@ -224,9 +225,7 @@ void TestQgsSQLComposerDialog::testSelectColumn()
   if ( !runTest() )
     return;
   QgsSQLComposerDialog d;
-  d.addColumnNames( QList<QgsSQLComposerDialog::PairNameType>() <<
-                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "a" ), QString() ) <<
-                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "b" ), QStringLiteral( "type" ) ), QStringLiteral( "my_table" ) );
+  d.addColumnNames( QList<QgsSQLComposerDialog::PairNameType>() << QgsSQLComposerDialog::PairNameType( QStringLiteral( "a" ), QString() ) << QgsSQLComposerDialog::PairNameType( QStringLiteral( "b" ), QStringLiteral( "type" ) ), QStringLiteral( "my_table" ) );
 
   QCOMPARE( getColumnsCombo( d )->itemText( 1 ), QString( "a" ) );
   QCOMPARE( getColumnsCombo( d )->itemText( 2 ), QString( "b (type)" ) );
@@ -332,7 +331,7 @@ void TestQgsSQLComposerDialog::testSelectFunction()
   QCOMPARE( getFunctionsCombo( d )->itemText( 1 ), QString( "first_func()" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 2 ), QString( "second_func(): int" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 3 ), QString( "third_func(1 argument(s))" ) );
-  QCOMPARE( getFunctionsCombo( d )->itemText( 4 ), QString( "fourth_func(1 to 2 arguments)" ) );
+  QCOMPARE( getFunctionsCombo( d )->itemText( 4 ), QString( "fourth_func(1 to 2 argument(s))" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 5 ), QString( "fifth_func(1 argument(s) or more)" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 6 ), QString( "sixth_func(arg1, arg2: double, arg3: geometry, int)" ) );
   QCOMPARE( getFunctionsCombo( d )->itemText( 7 ), QString( "seventh_func(arg1[, arg2: double])" ) );

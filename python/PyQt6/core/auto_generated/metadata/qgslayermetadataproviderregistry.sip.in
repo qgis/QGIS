@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgslayermetadataproviderregistry.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -69,5 +69,5 @@ and ``geographicExtent``, an optional ``feedback`` can be used to monitor and co
  *                                                                      *
  * src/core/metadata/qgslayermetadataproviderregistry.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

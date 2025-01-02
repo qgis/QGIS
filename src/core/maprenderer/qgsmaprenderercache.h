@@ -61,7 +61,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * parameters have changed since last initialization.
      *
      * \returns flag whether the parameters are the same as last time
-     * \deprecated since QGIS 3.18 - will be removed in QGIS 4.0. Use the updateParameters() and clear()
+     * \deprecated QGIS 3.18. Will be removed in QGIS 4.0. Use the updateParameters() and clear().
      */
     Q_DECL_DEPRECATED bool init( const QgsRectangle &extent, double scale ) SIP_DEPRECATED;
 

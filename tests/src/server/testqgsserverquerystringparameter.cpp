@@ -94,10 +94,10 @@ void TestQgsServerQueryStringParameter::testArguments()
   // Test string (default)
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
   QCOMPARE( p.value( ctx ).toString(), QString( "123" ) );
-  QCOMPARE( p.value( ctx ).type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QString );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20string" ) );
   QCOMPARE( p.value( ctx ).toString(), QString( "a string" ) );
-  QCOMPARE( p.value( ctx ).type(), QVariant::String );
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QString );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/" ) );
   QCOMPARE( p.value( ctx ).toString(), QString() );
 
@@ -110,7 +110,7 @@ void TestQgsServerQueryStringParameter::testArguments()
   p.mType = QgsServerQueryStringParameter::Type::Integer;
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
   QCOMPARE( p.value( ctx ).toInt(), 123 );
-  QCOMPARE( p.value( ctx ).type(), QVariant::LongLong );
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::LongLong );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20string" ) );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
 
@@ -118,10 +118,10 @@ void TestQgsServerQueryStringParameter::testArguments()
   p.mType = QgsServerQueryStringParameter::Type::Double;
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
   QCOMPARE( p.value( ctx ).toDouble(), 123.0 );
-  QCOMPARE( p.value( ctx ).type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::Double );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123.456" ) );
   QCOMPARE( p.value( ctx ).toDouble(), 123.456 );
-  QCOMPARE( p.value( ctx ).type(), QVariant::Double );
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::Double );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20string" ) );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
   QCOMPARE( QString::fromStdString( p.data()["schema"]["type"] ), QString( "number" ) );
@@ -130,11 +130,10 @@ void TestQgsServerQueryStringParameter::testArguments()
   p.mType = QgsServerQueryStringParameter::Type::List;
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123,a%20value" ) );
   QCOMPARE( p.value( ctx ).toStringList(), QStringList() << QStringLiteral( "123" ) << QStringLiteral( "a value" ) );
-  QCOMPARE( p.value( ctx ).type(), QVariant::StringList );
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QStringList );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20value" ) );
   QCOMPARE( p.value( ctx ).toStringList(), QStringList() << QStringLiteral( "a value" ) );
-  QCOMPARE( p.value( ctx ).type(), QVariant::StringList );
-
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QStringList );
 }
 
 void TestQgsServerQueryStringParameter::testCustomValidators()
@@ -147,8 +146,7 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
   QCOMPARE( p.value( ctx ).toInt(), 123 );
 
   // Test a range validator that increments the value
-  const QgsServerQueryStringParameter::customValidator validator = [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
-  {
+  const QgsServerQueryStringParameter::customValidator validator = []( const QgsServerApiContext &, QVariant &value ) -> bool {
     const auto v { value.toLongLong() };
     // Change the value by adding 1
     value.setValue( v + 1 );
@@ -159,8 +157,7 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
 
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
   QCOMPARE( p.value( ctx ).toInt(), 502 );
-  QCOMPARE( p.value( ctx ).type(), QVariant::LongLong );
-
+  QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::LongLong );
 }
 
 void TestQgsServerQueryStringParameter::testDefaultValues()
@@ -177,7 +174,6 @@ void TestQgsServerQueryStringParameter::testDefaultValues()
   QCOMPARE( p2.value( ctx ).toInt(), 10 );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
   QCOMPARE( p2.value( ctx ).toInt(), 501 );
-
 }
 
 void TestQgsServerQueryStringParameter::testParseInput()

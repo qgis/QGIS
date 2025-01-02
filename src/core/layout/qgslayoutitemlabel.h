@@ -68,6 +68,16 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     void adjustSizeToText();
 
     /**
+     * Resizes the item so that the label's text fits to the item.
+     *
+     * Keeps the specified reference point stationary.
+     *
+     * \see sizeForText()
+     * \since QGIS 3.42
+     */
+    void adjustSizeToText( QgsLayoutItem::ReferencePoint referencePoint );
+
+    /**
      * Returns the required item size (in layout units) for the label's text to fill the item.
      * \see adjustSizeToText()
      */
@@ -109,14 +119,14 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     /**
      * Returns the label's current font.
      * \see setFont()
-     * \deprecated use textFormat() instead (since QGIS 3.24)
+     * \deprecated QGIS 3.40. Use textFormat() instead (since QGIS 3.24).
      */
     Q_DECL_DEPRECATED QFont font() const SIP_DEPRECATED;
 
     /**
      * Sets the label's current \a font.
      * \see font()
-     * \deprecated use setTextFormat() instead (since QGIS 3.24)
+     * \deprecated QGIS 3.40. Use setTextFormat() instead (since QGIS 3.24).
      */
     Q_DECL_DEPRECATED void setFont( const QFont &font ) SIP_DEPRECATED;
 
@@ -196,14 +206,14 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     /**
      * Sets the label font \a color.
      * \see fontColor()
-     * \deprecated Use setTextFormat() instead (since QGIS 3.24)
+     * \deprecated QGIS 3.40. Use setTextFormat() instead (since QGIS 3.24).
      */
     Q_DECL_DEPRECATED void setFontColor( const QColor &color ) SIP_DEPRECATED { mFormat.setColor( color ); }
 
     /**
      * Returns the label font color.
      * \see setFontColor()
-     * \deprecated use textFormat() instead (since QGIS 3.24)
+     * \deprecated QGIS 3.40. Use textFormat() instead (since QGIS 3.24).
      */
     Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED { return mFormat.color(); }
 
@@ -251,8 +261,6 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     void updateBoundingRect();
 
   private:
-    bool mFirstRender = true;
-
     // Text
     QString mText;
 

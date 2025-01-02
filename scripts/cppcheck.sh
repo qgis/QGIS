@@ -37,13 +37,17 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DCMAKE_SOURCE_DIR="/foo/bar" \
          -DQ_NOWARN_DEPRECATED_PUSH= \
          -DQ_NOWARN_DEPRECATED_POP= \
+         -DQ_NOWARN_UNREACHABLE_PUSH= \
+         -DQ_NOWARN_UNREACHABLE_POP= \
          -DQ_DECLARE_OPAQUE_POINTER= \
          -DQGIS_PROTECT_QOBJECT_THREAD_ACCESS = \
          -DQ_DECLARE_SQLDRIVER_PRIVATE = \
          -DSIP_MONKEYPATCH_SCOPEENUM_UNNEST = \
          -DSIP_ENUM_BASETYPE = \
+         -DSIP_TYPEHEADER_INCLUDE = \
          -DQT3D_FUNCTOR = \
          -DQgsSetCPLHTTPFetchOverriderInitiatorClass = \
+         -DQgsSetRequestInitiatorClass = \
          -DBUILTIN_UNREACHABLE="__builtin_unreachable();" \
          -i src/analysis/georeferencing/qgsgcptransformer.cpp \
          -j $(nproc) \

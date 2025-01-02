@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/textrenderer/qgstextdocument.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -44,16 +44,53 @@ Constructor for a QgsTextDocument consisting of a single text ``fragment``.
     static QgsTextDocument fromPlainText( const QStringList &lines );
 %Docstring
 Constructor for QgsTextDocument consisting of a set of plain text ``lines``.
+
+If any line contains tab characters they will be appended as separate text fragments
+within the document, consisting of just the tab character.
 %End
 
     static QgsTextDocument fromHtml( const QStringList &lines );
 %Docstring
 Constructor for QgsTextDocument consisting of a set of HTML formatted ``lines``.
+
+If the HTML contains tab characters they will be appended as separate text fragments
+within the document, consisting of just the tab character.
+%End
+
+    static QgsTextDocument fromTextAndFormat( const QStringList &lines, const QgsTextFormat &format );
+%Docstring
+Constructor for QgsTextDocument consisting of a set of ``lines``, respecting settings from a text ``format``.
+
+This method will determine from the text ``format`` whether the lines should be treated as HTML or plain text.
+
+.. versionadded:: 3.40
 %End
 
     void append( const QgsTextBlock &block );
 %Docstring
 Appends a ``block`` to the document.
+%End
+
+
+
+    void insert( int index, const QgsTextBlock &block );
+%Docstring
+Inserts a ``block`` into the document, at the specified index.
+
+:raises IndexError: if no block exists at the specified index.
+
+.. versionadded:: 3.40
+%End
+%MethodCode
+    if ( a0 < 0 || a0 > sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->insert( a0, *a1 );
+    }
 %End
 
 
@@ -123,6 +160,13 @@ Applies a ``capitalization`` style to the document's text.
 .. versionadded:: 3.16
 %End
 
+    bool hasBackgrounds() const;
+%Docstring
+Returns ``True`` if any blocks or fragments in the document have background brushes set.
+
+.. versionadded:: 3.42
+%End
+
 
 };
 
@@ -131,5 +175,5 @@ Applies a ``capitalization`` style to the document's text.
  *                                                                      *
  * src/core/textrenderer/qgstextdocument.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'February 2015'
-__copyright__ = '(C) 2014-2015, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "February 2015"
+__copyright__ = "(C) 2014-2015, Victor Olaya"
 
 import os
 import re
@@ -25,16 +25,9 @@ import shutil
 import stat
 import subprocess
 import sys
-from dataclasses import (
-    dataclass,
-    field
-)
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import (
-    Optional,
-    List,
-    Dict
-)
+from typing import Optional, List, Dict
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
@@ -52,22 +45,22 @@ from processing.tools.system import userFolder, isWindows, isMac, mkdir
 
 
 class GrassUtils:
-    GRASS_REGION_XMIN = 'GRASS7_REGION_XMIN'
-    GRASS_REGION_YMIN = 'GRASS7_REGION_YMIN'
-    GRASS_REGION_XMAX = 'GRASS7_REGION_XMAX'
-    GRASS_REGION_YMAX = 'GRASS7_REGION_YMAX'
-    GRASS_REGION_CELLSIZE = 'GRASS7_REGION_CELLSIZE'
-    GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
-    GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
-    GRASS_HELP_URL = 'GRASS_HELP_URL'
-    GRASS_USE_REXTERNAL = 'GRASS_USE_REXTERNAL'
-    GRASS_USE_VEXTERNAL = 'GRASS_USE_VEXTERNAL'
+    GRASS_REGION_XMIN = "GRASS7_REGION_XMIN"
+    GRASS_REGION_YMIN = "GRASS7_REGION_YMIN"
+    GRASS_REGION_XMAX = "GRASS7_REGION_XMAX"
+    GRASS_REGION_YMAX = "GRASS7_REGION_YMAX"
+    GRASS_REGION_CELLSIZE = "GRASS7_REGION_CELLSIZE"
+    GRASS_LOG_COMMANDS = "GRASS7_LOG_COMMANDS"
+    GRASS_LOG_CONSOLE = "GRASS7_LOG_CONSOLE"
+    GRASS_HELP_URL = "GRASS_HELP_URL"
+    GRASS_USE_REXTERNAL = "GRASS_USE_REXTERNAL"
+    GRASS_USE_VEXTERNAL = "GRASS_USE_VEXTERNAL"
 
     # TODO Review all default options formats
     GRASS_RASTER_FORMATS_CREATEOPTS = {
-        'GTiff': 'TFW=YES,COMPRESS=LZW',
-        'PNG': 'ZLEVEL=9',
-        'WEBP': 'QUALITY=85'
+        "GTiff": "TFW=YES,COMPRESS=LZW",
+        "PNG": "ZLEVEL=9",
+        "WEBP": "QUALITY=85",
     }
 
     sessionRunning = False
@@ -89,9 +82,9 @@ class GrassUtils:
         """
         gisdbase = GrassUtils.grassDataFolder()
         if isWindows():
-            batchFile = os.path.join(gisdbase, 'grass_batch_job.cmd')
+            batchFile = os.path.join(gisdbase, "grass_batch_job.cmd")
         else:
-            batchFile = os.path.join(gisdbase, 'grass_batch_job.sh')
+            batchFile = os.path.join(gisdbase, "grass_batch_job.sh")
         return batchFile
 
     @staticmethod
@@ -101,8 +94,8 @@ class GrassUtils:
         to this file
         """
         wkt = crs.toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED)
-        wkt_file = QgsProcessingUtils.generateTempFilename('crs.prj', context)
-        with open(wkt_file, 'w', encoding='utf-8') as f:
+        wkt_file = QgsProcessingUtils.generateTempFilename("crs.prj", context)
+        with open(wkt_file, "w", encoding="utf-8") as f:
             f.write(wkt)
         return wkt_file
 
@@ -125,13 +118,13 @@ class GrassUtils:
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
         with subprocess.Popen(
-            [GrassUtils.command, '-v'],
+            [GrassUtils.command, "-v"],
             shell=False,
             stdout=subprocess.PIPE,
             stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            startupinfo=si if isWindows() else None
+            startupinfo=si if isWindows() else None,
         ) as proc:
             try:
                 lines = proc.stdout.readlines()
@@ -174,31 +167,39 @@ class GrassUtils:
         vn = os.path.join(path, "etc", "VERSIONNUMBER")
         if os.path.isfile(vn):
             with open(vn) as f:
-                major, minor, patch = f.readlines()[0].split(' ')[0].split('.')
-                if patch != 'svn':
-                    patch = ''
+                major, minor, patch = f.readlines()[0].split(" ")[0].split(".")
+                if patch != "svn":
+                    patch = ""
                 cmdList = [
-                    "grass{}{}{}".format(major, minor, patch),
+                    f"grass{major}{minor}{patch}",
                     "grass",
-                    "grass{}{}{}.{}".format(major, minor, patch,
-                                            "bat" if isWindows() else "sh"),
-                    "grass.{}".format("bat" if isWindows() else "sh")
+                    "grass{}{}{}.{}".format(
+                        major, minor, patch, "bat" if isWindows() else "sh"
+                    ),
+                    "grass.{}".format("bat" if isWindows() else "sh"),
                 ]
         else:
-            cmdList = ["grass80", "grass78", "grass76", "grass74", "grass72",
-                       "grass70", "grass"]
+            cmdList = [
+                "grass80",
+                "grass78",
+                "grass76",
+                "grass74",
+                "grass72",
+                "grass70",
+                "grass",
+            ]
             cmdList.extend(
-                ["{}.{}".format(b, "bat" if isWindows() else "sh") for b in
-                 cmdList])
+                ["{}.{}".format(b, "bat" if isWindows() else "sh") for b in cmdList]
+            )
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
         if isWindows():
             # If nothing found, use OSGEO4W or QgsPrefix:
             if "OSGEO4W_ROOT" in os.environ:
-                testFolder = str(os.environ['OSGEO4W_ROOT'])
+                testFolder = str(os.environ["OSGEO4W_ROOT"])
             else:
                 testFolder = str(QgsApplication.prefixPath())
-            testFolder = os.path.join(testFolder, 'bin')
+            testFolder = os.path.join(testFolder, "bin")
             command = searchFolder(testFolder)
         elif isMac():
             # Search in grassPath
@@ -214,7 +215,7 @@ class GrassUtils:
 
         if command:
             GrassUtils.command = command
-            if path == '':
+            if path == "":
                 GrassUtils.path = os.path.dirname(command)
 
         return command
@@ -229,7 +230,7 @@ class GrassUtils:
             return GrassUtils.path
 
         if not isWindows() and not isMac():
-            return ''
+            return ""
 
         folder = None
         # Under MS-Windows, we use GISBASE or QGIS Path for folder
@@ -238,16 +239,21 @@ class GrassUtils:
                 folder = os.environ["GISBASE"]
             else:
                 testfolder = os.path.join(
-                    os.path.dirname(QgsApplication.prefixPath()), 'grass')
+                    os.path.dirname(QgsApplication.prefixPath()), "grass"
+                )
                 if os.path.isdir(testfolder):
-                    grassfolders = sorted([f for f in os.listdir(testfolder) if
-                                           f.startswith(
-                                               "grass-7.") and os.path.isdir(
-                                               os.path.join(testfolder, f))],
-                                          reverse=True,
-                                          key=lambda x: [int(v) for v in x[
-                                              len("grass-"):].split(
-                                              '.') if v != 'svn'])
+                    grassfolders = sorted(
+                        [
+                            f
+                            for f in os.listdir(testfolder)
+                            if f.startswith("grass-7.")
+                            and os.path.isdir(os.path.join(testfolder, f))
+                        ],
+                        reverse=True,
+                        key=lambda x: [
+                            int(v) for v in x[len("grass-") :].split(".") if v != "svn"
+                        ],
+                    )
                     if grassfolders:
                         folder = os.path.join(testfolder, grassfolders[0])
         elif isMac():
@@ -256,18 +262,21 @@ class GrassUtils:
                 folder = os.environ["GISBASE"]
             else:
                 # Find grass folder if it exists inside QGIS bundle
-                for version in ['', '8', '7', '80', '78', '76', '74', '72',
-                                '71', '70']:
-                    testfolder = os.path.join(str(QgsApplication.prefixPath()),
-                                              'grass{}'.format(version))
+                for version in ["", "8", "7", "80", "78", "76", "74", "72", "71", "70"]:
+                    testfolder = os.path.join(
+                        str(QgsApplication.prefixPath()), f"grass{version}"
+                    )
                     if os.path.isdir(testfolder):
                         folder = testfolder
                         break
                     # If nothing found, try standalone GRASS installation
                     if folder is None:
-                        for version in ['8', '6', '4', '2', '1', '0']:
-                            testfolder = '/Applications/GRASS-7.{}.app/Contents/MacOS'.format(
-                                version)
+                        for version in ["8", "6", "4", "2", "1", "0"]:
+                            testfolder = (
+                                "/Applications/GRASS-7.{}.app/Contents/MacOS".format(
+                                    version
+                                )
+                            )
                             if os.path.isdir(testfolder):
                                 folder = testfolder
                                 break
@@ -275,7 +284,7 @@ class GrassUtils:
         if folder is not None:
             GrassUtils.path = folder
 
-        return folder or ''
+        return folder or ""
 
     @staticmethod
     def userDescriptionFolder():
@@ -283,7 +292,7 @@ class GrassUtils:
         Creates and returns a directory for users to create additional algorithm descriptions.
         Or modified versions of stock algorithm descriptions shipped with QGIS.
         """
-        folder = Path(userFolder(), 'grassaddons', 'description')
+        folder = Path(userFolder(), "grassaddons", "description")
         folder.mkdir(parents=True, exist_ok=True)
         return folder
 
@@ -294,8 +303,10 @@ class GrassUtils:
         Note that the provider will load from these in sequence, so we put the userDescriptionFolder first
         to allow users to create modified versions of stock algorithms shipped with QGIS.
         """
-        return [GrassUtils.userDescriptionFolder(),
-                Path(__file__).parent.joinpath('description')]
+        return [
+            GrassUtils.userDescriptionFolder(),
+            Path(__file__).parent.joinpath("description"),
+        ]
 
     @staticmethod
     def getWindowsCodePage():
@@ -304,26 +315,26 @@ class GrassUtils:
         Used into GRASS exec script under MS-Windows.
         """
         from ctypes import cdll
+
         return str(cdll.kernel32.GetACP())
 
     @staticmethod
     def createGrassBatchJobFileFromGrassCommands(commands):
-        with open(GrassUtils.grassBatchJobFilename(), 'w') as fout:
+        with open(GrassUtils.grassBatchJobFilename(), "w") as fout:
             if not isWindows():
-                fout.write('#!/bin/sh\n')
+                fout.write("#!/bin/sh\n")
             else:
-                fout.write(
-                    'chcp {}>NUL\n'.format(GrassUtils.getWindowsCodePage()))
+                fout.write(f"chcp {GrassUtils.getWindowsCodePage()}>NUL\n")
             for command in commands:
                 GrassUtils.writeCommand(fout, command)
-            fout.write('exit')
+            fout.write("exit")
 
     @staticmethod
     def grassMapsetFolder():
         """
         Creates and returns the GRASS temporary DB LOCATION directory.
         """
-        folder = os.path.join(GrassUtils.grassDataFolder(), 'temp_location')
+        folder = os.path.join(GrassUtils.grassDataFolder(), "temp_location")
         mkdir(folder)
         return folder
 
@@ -333,7 +344,8 @@ class GrassUtils:
         Creates and returns the GRASS temporary DB directory.
         """
         tempfolder = os.path.normpath(
-            os.path.join(QgsProcessingUtils.tempFolder(), 'grassdata'))
+            os.path.join(QgsProcessingUtils.tempFolder(), "grassdata")
+        )
         mkdir(tempfolder)
         return tempfolder
 
@@ -348,45 +360,46 @@ class GrassUtils:
         input image or vector
         """
         folder = GrassUtils.grassMapsetFolder()
-        mkdir(os.path.join(folder, 'PERMANENT'))
-        mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
-        GrassUtils.writeGrassWindow(
-            os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
-        with open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w') as outfile:
+        mkdir(os.path.join(folder, "PERMANENT"))
+        mkdir(os.path.join(folder, "PERMANENT", ".tmp"))
+        GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "DEFAULT_WIND"))
+        with open(os.path.join(folder, "PERMANENT", "MYNAME"), "w") as outfile:
             outfile.write(
-                'QGIS GRASS GIS interface: temporary data processing location.\n')
+                "QGIS GRASS GIS interface: temporary data processing location.\n"
+            )
 
-        GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'WIND'))
-        mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
-        with open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w') as outfile:
-            outfile.write('DB_DRIVER: sqlite\n')
+        GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "WIND"))
+        mkdir(os.path.join(folder, "PERMANENT", "sqlite"))
+        with open(os.path.join(folder, "PERMANENT", "VAR"), "w") as outfile:
+            outfile.write("DB_DRIVER: sqlite\n")
             outfile.write(
-                'DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
+                "DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n"
+            )
 
     @staticmethod
     def writeGrassWindow(filename):
         """
         Creates the GRASS Window file
         """
-        with open(filename, 'w') as out:
-            out.write('proj:       0\n')
-            out.write('zone:       0\n')
-            out.write('north:      1\n')
-            out.write('south:      0\n')
-            out.write('east:       1\n')
-            out.write('west:       0\n')
-            out.write('cols:       1\n')
-            out.write('rows:       1\n')
-            out.write('e-w resol:  1\n')
-            out.write('n-s resol:  1\n')
-            out.write('top:        1\n')
-            out.write('bottom:     0\n')
-            out.write('cols3:      1\n')
-            out.write('rows3:      1\n')
-            out.write('depths:     1\n')
-            out.write('e-w resol3: 1\n')
-            out.write('n-s resol3: 1\n')
-            out.write('t-b resol:  1\n')
+        with open(filename, "w") as out:
+            out.write("proj:       0\n")
+            out.write("zone:       0\n")
+            out.write("north:      1\n")
+            out.write("south:      0\n")
+            out.write("east:       1\n")
+            out.write("west:       0\n")
+            out.write("cols:       1\n")
+            out.write("rows:       1\n")
+            out.write("e-w resol:  1\n")
+            out.write("n-s resol:  1\n")
+            out.write("top:        1\n")
+            out.write("bottom:     0\n")
+            out.write("cols3:      1\n")
+            out.write("rows3:      1\n")
+            out.write("depths:     1\n")
+            out.write("e-w resol3: 1\n")
+            out.write("n-s resol3: 1\n")
+            out.write("t-b resol:  1\n")
 
     @staticmethod
     def prepareGrassExecution(commands):
@@ -398,21 +411,26 @@ class GrassUtils:
             GrassUtils.grassBin()
 
         env = os.environ.copy()
-        env['GRASS_MESSAGE_FORMAT'] = 'plain'
-        if 'GISBASE' in env:
-            del env['GISBASE']
+        env["GRASS_MESSAGE_FORMAT"] = "plain"
+        if "GISBASE" in env:
+            del env["GISBASE"]
         GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
-        os.chmod(GrassUtils.grassBatchJobFilename(),
-                 stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-        command = [GrassUtils.command,
-                   os.path.join(GrassUtils.grassMapsetFolder(), 'PERMANENT'),
-                   '--exec', GrassUtils.grassBatchJobFilename()]
+        os.chmod(
+            GrassUtils.grassBatchJobFilename(),
+            stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE,
+        )
+        command = [
+            GrassUtils.command,
+            os.path.join(GrassUtils.grassMapsetFolder(), "PERMANENT"),
+            "--exec",
+            GrassUtils.grassBatchJobFilename(),
+        ]
 
         return command, env
 
     @staticmethod
     def executeGrass(commands, feedback, outputCommands=None):
-        loglines = [GrassUtils.tr('GRASS GIS execution console output')]
+        loglines = [GrassUtils.tr("GRASS GIS execution console output")]
         grassOutDone = False
         command, grassenv = GrassUtils.prepareGrassExecution(commands)
         # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
@@ -423,10 +441,8 @@ class GrassUtils:
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
-            kw['startupinfo'] = si
-            if sys.version_info >= (3, 6):
-                kw['encoding'] = "cp{}".format(
-                    GrassUtils.getWindowsCodePage())
+            kw["startupinfo"] = si
+            kw["encoding"] = f"cp{GrassUtils.getWindowsCodePage()}"
 
         def readline_with_recover(stdout):
             """A method wrapping stdout.readline() with try-except recovering.
@@ -440,7 +456,7 @@ class GrassUtils:
             try:
                 return stdout.readline()
             except UnicodeDecodeError:
-                return ''  # replaced-text
+                return ""  # replaced-text
 
         with subprocess.Popen(
             command,
@@ -450,33 +466,45 @@ class GrassUtils:
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             env=grassenv,
-            **kw
+            **kw,
         ) as proc:
-            for line in iter(lambda: readline_with_recover(proc.stdout), ''):
-                if 'GRASS_INFO_PERCENT' in line:
+            for line in iter(lambda: readline_with_recover(proc.stdout), ""):
+                if "GRASS_INFO_PERCENT" in line:
                     try:
-                        feedback.setProgress(
-                            int(line[len('GRASS_INFO_PERCENT') + 2:]))
+                        feedback.setProgress(int(line[len("GRASS_INFO_PERCENT") + 2 :]))
                     except Exception:
                         pass
                 else:
-                    if 'r.out' in line or 'v.out' in line:
+                    if "r.out" in line or "v.out" in line:
                         grassOutDone = True
                     loglines.append(line)
-                    if any([l in line for l in ['WARNING', 'ERROR']]):
+                    if any([l in line for l in ["WARNING", GrassUtils.tr("WARNING")]]):
+                        feedback.pushWarning(line.strip())
+                    elif any([l in line for l in ["ERROR", GrassUtils.tr("ERROR")]]):
                         feedback.reportError(line.strip())
-                    elif 'Segmentation fault' in line:
+                    elif "Segmentation fault" in line:
                         feedback.reportError(line.strip())
-                        feedback.reportError('\n' + GrassUtils.tr(
-                            'GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information.') + '\n')
-                        if ProcessingConfig.getSetting(
-                                GrassUtils.GRASS_USE_REXTERNAL):
-                            feedback.reportError(GrassUtils.tr(
-                                'Suggest disabling the experimental "use r.external" option from the Processing GRASS Provider options.') + '\n')
-                        if ProcessingConfig.getSetting(
-                                GrassUtils.GRASS_USE_VEXTERNAL):
-                            feedback.reportError(GrassUtils.tr(
-                                'Suggest disabling the experimental "use v.external" option from the Processing GRASS Provider options.') + '\n')
+                        feedback.reportError(
+                            "\n"
+                            + GrassUtils.tr(
+                                "GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information."
+                            )
+                            + "\n"
+                        )
+                        if ProcessingConfig.getSetting(GrassUtils.GRASS_USE_REXTERNAL):
+                            feedback.reportError(
+                                GrassUtils.tr(
+                                    'Suggest disabling the experimental "use r.external" option from the Processing GRASS Provider options.'
+                                )
+                                + "\n"
+                            )
+                        if ProcessingConfig.getSetting(GrassUtils.GRASS_USE_VEXTERNAL):
+                            feedback.reportError(
+                                GrassUtils.tr(
+                                    'Suggest disabling the experimental "use v.external" option from the Processing GRASS Provider options.'
+                                )
+                                + "\n"
+                            )
                     elif line.strip():
                         feedback.pushConsoleInfo(line.strip())
 
@@ -486,18 +514,15 @@ class GrassUtils:
         # are usually the output ones. If that is the case runs the output
         # commands again.
         if not grassOutDone and outputCommands:
-            command, grassenv = GrassUtils.prepareGrassExecution(
-                outputCommands)
+            command, grassenv = GrassUtils.prepareGrassExecution(outputCommands)
             # For MS-Windows, we need to hide the console window.
             kw = {}
             if isWindows():
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 si.wShowWindow = subprocess.SW_HIDE
-                kw['startupinfo'] = si
-                if sys.version_info >= (3, 6):
-                    kw['encoding'] = "cp{}".format(
-                        GrassUtils.getWindowsCodePage())
+                kw["startupinfo"] = si
+                kw["encoding"] = f"cp{GrassUtils.getWindowsCodePage()}"
             with subprocess.Popen(
                 command,
                 shell=False,
@@ -506,17 +531,17 @@ class GrassUtils:
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 env=grassenv,
-                **kw
+                **kw,
             ) as proc:
-                for line in iter(lambda: readline_with_recover(proc.stdout),
-                                 ''):
-                    if 'GRASS_INFO_PERCENT' in line:
+                for line in iter(lambda: readline_with_recover(proc.stdout), ""):
+                    if "GRASS_INFO_PERCENT" in line:
                         try:
-                            feedback.setProgress(int(
-                                line[len('GRASS_INFO_PERCENT') + 2:]))
+                            feedback.setProgress(
+                                int(line[len("GRASS_INFO_PERCENT") + 2 :])
+                            )
                         except Exception:
                             pass
-                    if any(l in line for l in ['WARNING', 'ERROR']):
+                    if any(l in line for l in ["WARNING", "ERROR"]):
                         loglines.append(line.strip())
                         feedback.reportError(line.strip())
                     elif line.strip():
@@ -524,8 +549,9 @@ class GrassUtils:
                         feedback.pushConsoleInfo(line.strip())
 
         if ProcessingConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing',
-                                     Qgis.MessageLevel.Info)
+            QgsMessageLog.logMessage(
+                "\n".join(loglines), "Processing", Qgis.MessageLevel.Info
+            )
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
@@ -555,8 +581,8 @@ class GrassUtils:
     @staticmethod
     def addSessionLayers(exportedLayers):
         GrassUtils.sessionLayers = dict(
-            list(GrassUtils.sessionLayers.items()) +
-            list(exportedLayers.items()))
+            list(GrassUtils.sessionLayers.items()) + list(exportedLayers.items())
+        )
 
     @staticmethod
     def checkGrassIsInstalled(ignorePreviousState=False):
@@ -568,14 +594,15 @@ class GrassUtils:
         if GrassUtils.installedVersion() is not None:
             # For Ms-Windows, we check GRASS binaries
             if isWindows():
-                cmdpath = os.path.join(GrassUtils.path, 'bin',
-                                       'r.out.gdal.exe')
+                cmdpath = os.path.join(GrassUtils.path, "bin", "r.out.gdal.exe")
                 if not os.path.exists(cmdpath):
                     return GrassUtils.tr(
                         'The GRASS GIS folder "{}" does not contain a valid set '
-                        'of GRASS modules.\nPlease, check that GRASS is correctly '
-                        'installed and available on your system.'.format(
-                            os.path.join(GrassUtils.path, 'bin')))
+                        "of GRASS modules.\nPlease, check that GRASS is correctly "
+                        "installed and available on your system.".format(
+                            os.path.join(GrassUtils.path, "bin")
+                        )
+                    )
             GrassUtils.isGrassInstalled = True
             return
         # Return error messages
@@ -584,35 +611,39 @@ class GrassUtils:
             if isWindows() or isMac():
                 if GrassUtils.path is None:
                     return GrassUtils.tr(
-                        'Could not locate GRASS GIS folder. Please make '
-                        'sure that GRASS GIS is correctly installed before '
-                        'running GRASS algorithms.')
+                        "Could not locate GRASS GIS folder. Please make "
+                        "sure that GRASS GIS is correctly installed before "
+                        "running GRASS algorithms."
+                    )
                 if GrassUtils.command is None:
                     return GrassUtils.tr(
-                        'GRASS GIS binary {} can\'t be found on this system from a shell. '
-                        'Please install it or configure your PATH {} environment variable.'.format(
-                            '(grass.bat)' if isWindows() else '(grass.sh)',
-                            'or OSGEO4W_ROOT' if isWindows() else ''))
+                        "GRASS GIS binary {} can't be found on this system from a shell. "
+                        "Please install it or configure your PATH {} environment variable.".format(
+                            "(grass.bat)" if isWindows() else "(grass.sh)",
+                            "or OSGEO4W_ROOT" if isWindows() else "",
+                        )
+                    )
             # GNU/Linux
             else:
                 return GrassUtils.tr(
-                    'GRASS can\'t be found on this system from a shell. '
-                    'Please install it or configure your PATH environment variable.')
+                    "GRASS can't be found on this system from a shell. "
+                    "Please install it or configure your PATH environment variable."
+                )
 
     @staticmethod
-    def tr(string, context=''):
-        if context == '':
-            context = 'Grass7Utils'
+    def tr(string, context=""):
+        if context == "":
+            context = "Grass7Utils"
         return QCoreApplication.translate(context, string)
 
     @staticmethod
     def writeCommand(output, command):
         try:
             # Python 2
-            output.write(command.encode('utf8') + '\n')
+            output.write(command.encode("utf8") + "\n")
         except TypeError:
             # Python 3
-            output.write(command + '\n')
+            output.write(command + "\n")
 
     @staticmethod
     def grassHelpPath():
@@ -621,13 +652,15 @@ class GrassUtils:
         if not helpPath:
             if isWindows() or isMac():
                 if GrassUtils.path is not None:
-                    localPath = os.path.join(GrassUtils.path, 'docs/html')
+                    localPath = os.path.join(GrassUtils.path, "docs/html")
                     if os.path.exists(localPath):
                         helpPath = os.path.abspath(localPath)
             else:
-                searchPaths = ['/usr/share/doc/grass-doc/html',
-                               '/opt/grass/docs/html',
-                               '/usr/share/doc/grass/docs/html']
+                searchPaths = [
+                    "/usr/share/doc/grass-doc/html",
+                    "/opt/grass/docs/html",
+                    "/usr/share/doc/grass/docs/html",
+                ]
                 for path in searchPaths:
                     if os.path.exists(path):
                         helpPath = os.path.abspath(path)
@@ -636,15 +669,15 @@ class GrassUtils:
         if helpPath:
             return helpPath
         elif GrassUtils.version:
-            version = GrassUtils.version.replace('.', '')[:2]
-            return 'https://grass.osgeo.org/grass{}/manuals/'.format(version)
+            version = GrassUtils.version.replace(".", "")[:2]
+            return f"https://grass.osgeo.org/grass{version}/manuals/"
         else:
             # GRASS not available!
-            return 'https://grass.osgeo.org/grass-stable/manuals/'
+            return "https://grass.osgeo.org/grass-stable/manuals/"
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
-        # We use the same extensions than GDAL because:
+        # We use the same extensions as GDAL because:
         # - GRASS is also using GDAL for raster imports.
         # - Chances that GRASS is compiled with another version of
         # GDAL than QGIS are very limited!
@@ -658,11 +691,11 @@ class GrassUtils:
         :return: The Gdal short format name for extension.
         """
         ext = os.path.splitext(filename)[1].lower()
-        ext = ext.lstrip('.')
+        ext = ext.lstrip(".")
         if ext:
             supported = GdalUtils.getSupportedRasters()
             for name in list(supported.keys()):
                 exts = supported[name]
                 if ext in exts:
                     return name
-        return 'GTiff'
+        return "GTiff"

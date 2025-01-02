@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemmap.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -361,7 +361,13 @@ The caller takes responsibility for deleting the returned object.
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
- virtual int numberExportLayers() const /Deprecated/;
+
+ virtual int numberExportLayers() const /Deprecated="Since 3.10. "/;
+
+%Docstring
+
+.. deprecated:: 3.10
+%End
 
     virtual void startLayeredExport();
 
@@ -1099,5 +1105,5 @@ QFlags<QgsLayoutItemMap::MapItemFlag> operator|(QgsLayoutItemMap::MapItemFlag f1
  *                                                                      *
  * src/core/layout/qgslayoutitemmap.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

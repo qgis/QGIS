@@ -1363,7 +1363,7 @@ void ASConsole::getFileNames(const string& directory, const vector<string>& wild
 
 	// sort the current entries for fileName
 	if (firstEntry < fileName.size())
-		sort(&fileName[firstEntry], &fileName[fileName.size()]);
+		sort(fileName.begin() + firstEntry, fileName.end());
 
 	// recurse into sub directories
 	// if not doing recursive, subDirectory is empty

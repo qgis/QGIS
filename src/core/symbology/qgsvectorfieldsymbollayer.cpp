@@ -223,6 +223,7 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mLineSymbol )
   {
+    mLineSymbol->setRenderHints( mLineSymbol->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
     mLineSymbol->startRender( context.renderContext(), context.fields() );
   }
 

@@ -37,9 +37,6 @@ class CORE_EXPORT QgsExternalStorage
 {
   public:
 
-    /**
-     * Destructor
-     */
     virtual ~QgsExternalStorage() = default;
 
     /**

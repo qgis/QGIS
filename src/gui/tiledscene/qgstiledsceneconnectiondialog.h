@@ -39,7 +39,6 @@ class QgsTiledSceneConnectionDialog : public QDialog, public Ui::QgsTiledSceneCo
 
   private slots:
     void updateOkButtonState();
-
 };
 
 ///@endcond

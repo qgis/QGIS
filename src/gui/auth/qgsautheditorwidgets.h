@@ -32,7 +32,6 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
     Q_OBJECT
 
   public:
-
     /**
      * Construct a dialog for viewing available authentication method plugins
      * \param parent Parent widget
@@ -59,7 +58,6 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     Q_OBJECT
 
   public:
-
     /**
      * Construct a widget to contain various authentication editors
      * \param parent Parent widget
@@ -95,13 +93,13 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     void eraseAuthenticationDatabase();
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
+    void authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level );
 
     //! Remove master password from wallet
-    void  passwordHelperDelete();
+    void passwordHelperDelete();
 
     //! Store master password into the wallet
-    void  passwordHelperSync();
+    void passwordHelperSync();
 
     //! Toggle password helper (enable/disable)
     void passwordHelperEnableTriggered();
@@ -129,7 +127,6 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     QAction *mActionPasswordHelperLoggingEnable = nullptr;
     QAction *mActionClearAccessCacheNow = nullptr;
     QAction *mActionAutoClearAccessCache = nullptr;
-
 };
 
 #endif // QGSAUTHEDITORWIDGETS_H

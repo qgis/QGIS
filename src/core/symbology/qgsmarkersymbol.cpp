@@ -18,6 +18,9 @@
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainteffect.h"
+#include "qgsgeometrypaintdevice.h"
+#include "qgspainting.h"
+#include "qgsfillsymbol.h"
 
 QgsMarkerSymbol *QgsMarkerSymbol::createSimple( const QVariantMap &properties )
 {
@@ -449,11 +452,15 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, context.expressionContext(), mOpacity * 100 ) * 0.01
                          : mOpacity;
 
-  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, mRenderHints, f );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, renderHints(), f );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
-  if ( layerIdx != -1 )
+  // If we're drawing using symbol levels, we only draw buffers for the bottom most level
+  const bool usingBuffer = ( layerIdx == -1 || layerIdx == 0 ) && mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol()
+                           && !symbolRenderContext()->renderHints().testFlag( Qgis::SymbolRenderHint::ExcludeSymbolBuffers );
+
+  if ( layerIdx != -1 && !usingBuffer )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
@@ -473,11 +480,35 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     return;
   }
 
+  // handle symbol buffers -- we do this by deferring the rendering of the symbol and redirecting
+  // to QPictures, and then using the actual rendered shape from the QPictures to determine the buffer shape.
+  QPainter *originalTargetPainter = nullptr;
+  // this is an array, we need to separate out the symbol layers if we're drawing only one symbol level
+  std::vector< QPicture > picturesForDeferredRendering;
+  std::unique_ptr< QPainter > deferredRenderingPainter;
+  if ( usingBuffer )
+  {
+    originalTargetPainter = context.painter();
+    picturesForDeferredRendering.emplace_back( QPicture() );
+    deferredRenderingPainter = std::make_unique< QPainter >( &picturesForDeferredRendering.front() );
+    context.setPainter( deferredRenderingPainter.get() );
+  }
 
+  int symbolLayerIndex = -1;
   for ( QgsSymbolLayer *symbolLayer : std::as_const( mLayers ) )
   {
+    symbolLayerIndex++;
     if ( context.renderingStopped() )
       break;
+
+    if ( deferredRenderingPainter && layerIdx != -1 && symbolLayerIndex != 0 )
+    {
+      // if we're using deferred rendering along with symbol level drawing, we
+      // start a new picture for each symbol layer drawn
+      deferredRenderingPainter->end();
+      picturesForDeferredRendering.emplace_back( QPicture() );
+      deferredRenderingPainter->begin( &picturesForDeferredRendering.back() );
+    }
 
     if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
@@ -494,11 +525,67 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
       renderUsingLayer( symbolLayer, symbolContext, Qgis::GeometryType::Point, &points );
     }
   }
+
+  // if required, render the calculated buffer below the symbol
+  if ( usingBuffer )
+  {
+    deferredRenderingPainter->end();
+    deferredRenderingPainter.reset();
+
+    QgsGeometryPaintDevice geometryPaintDevice;
+    QPainter geometryPainter( &geometryPaintDevice );
+    // render all the symbol layers onto the geometry painter, so we can calculate a single
+    // buffer for ALL of them
+    for ( const auto &deferredPicture : picturesForDeferredRendering )
+    {
+      QgsPainting::drawPicture( &geometryPainter, QPointF( 0, 0 ), deferredPicture );
+    }
+    geometryPainter.end();
+
+    // retrieve the shape of the rendered symbol
+    const QgsGeometry renderedShape( geometryPaintDevice.geometry().clone() );
+
+    context.setPainter( originalTargetPainter );
+
+    // next, buffer out the rendered shape, and draw!
+    const double bufferSize = context.convertToPainterUnits( mBufferSettings->size(), mBufferSettings->sizeUnit(), mBufferSettings->sizeMapUnitScale() );
+    Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round;
+    switch ( mBufferSettings->joinStyle() )
+    {
+      case Qt::MiterJoin:
+      case Qt::SvgMiterJoin:
+        joinStyle = Qgis::JoinStyle::Miter;
+        break;
+      case Qt::BevelJoin:
+        joinStyle = Qgis::JoinStyle::Bevel;
+        break;
+      case Qt::RoundJoin:
+        joinStyle = Qgis::JoinStyle::Round;
+        break;
+
+      case Qt::MPenJoinStyle:
+        break;
+    }
+
+    const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
+    const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
+    for ( const QList< QPolygonF > &polygon : polygons )
+    {
+      QVector< QPolygonF > rings;
+      for ( int i = 1; i < polygon.size(); ++i )
+        rings << polygon.at( i );
+      mBufferSettings->fillSymbol()->renderPolygon( polygon.value( 0 ), &rings, nullptr, context );
+    }
+
+    // finally, draw the actual rendered symbol on top. If symbol levels are at play then this will ONLY
+    // be the target symbol level, not all of them.
+    QgsPainting::drawPicture( context.painter(), QPointF( 0, 0 ), picturesForDeferredRendering.front() );
+  }
 }
 
 QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature ) const
 {
-  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, mRenderHints, &feature, feature.fields() );
+  QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, renderHints(), &feature, feature.fields() );
 
   QRectF bound;
   const auto constMLayers = mLayers;
@@ -523,14 +610,6 @@ QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const 
 QgsMarkerSymbol *QgsMarkerSymbol::clone() const
 {
   QgsMarkerSymbol *cloneSymbol = new QgsMarkerSymbol( cloneLayers() );
-  cloneSymbol->setOpacity( mOpacity );
-  Q_NOWARN_DEPRECATED_PUSH
-  cloneSymbol->setLayer( mLayer );
-  Q_NOWARN_DEPRECATED_POP
-  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
-  cloneSymbol->setForceRHR( mForceRHR );
-  cloneSymbol->setDataDefinedProperties( dataDefinedProperties() );
-  cloneSymbol->setFlags( mSymbolFlags );
-  cloneSymbol->setAnimationSettings( mAnimationSettings );
+  cloneSymbol->copyCommonProperties( this );
   return cloneSymbol;
 }

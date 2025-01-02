@@ -32,10 +32,8 @@ class QSize;
   */
 class CORE_EXPORT QgsRasterResampler
 {
-#ifdef SIP_RUN
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgsbilinearrasterresampler.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgscubicrasterresampler.h" );
 
 
 #ifdef SIP_RUN
@@ -58,7 +56,7 @@ class CORE_EXPORT QgsRasterResampler
      * The size of the passed destination image should be respected during the resampling
      * process.
      *
-     * \deprecated since QGIS 3.10.1, use the more efficient QgsRasterResamplerV2 interface instead.
+     * \deprecated QGIS 3.10.1. Use the more efficient QgsRasterResamplerV2 interface instead.
      */
     Q_DECL_DEPRECATED virtual void resample( const QImage &srcImage, QImage &dstImage ) = 0 SIP_DEPRECATED;
 

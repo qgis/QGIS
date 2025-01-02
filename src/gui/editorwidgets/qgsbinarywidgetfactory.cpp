@@ -21,7 +21,7 @@
 #include "qgsvectordataprovider.h"
 
 QgsBinaryWidgetFactory::QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar )
-  :  QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
   , mMessageBar( messageBar )
 {
 }
@@ -39,7 +39,7 @@ QgsEditorConfigWidget *QgsBinaryWidgetFactory::configWidget( QgsVectorLayer *vl,
 unsigned int QgsBinaryWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  const QVariant::Type type = field.type();
+  const QMetaType::Type type = field.type();
   // ByteArray fields only
-  return type == QVariant::ByteArray ? 20 : 0;
+  return type == QMetaType::Type::QByteArray ? 20 : 0;
 }

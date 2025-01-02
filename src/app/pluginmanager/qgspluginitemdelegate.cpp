@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspluginitemdelegate.h"
+#include "moc_qgspluginitemdelegate.cpp"
 #include "qgsrendercontext.h"
 #include <QPainter>
 #include <QFont>
@@ -25,7 +26,8 @@
 #include "qgspluginsortfilterproxymodel.h"
 
 
-QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent ) : QStyledItemDelegate( parent ) {}
+QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent ) {}
 
 
 QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -87,12 +89,12 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setPen( option.palette.text().color() );
   }
 
-  if ( ! index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty() )
+  if ( !index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
     painter->setPen( Qt::red );
   }
 
-  if ( ! index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty()
+  if ( !index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty()
        || index.data( PLUGIN_STATUS_ROLE ).toString() == QLatin1String( "upgradeable" )
        || index.data( PLUGIN_STATUS_ROLE ).toString() == QLatin1String( "new" ) )
   {

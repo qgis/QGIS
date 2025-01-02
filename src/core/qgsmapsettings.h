@@ -36,6 +36,7 @@
 #include "qgsmapclippingregion.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgselevationshadingrenderer.h"
+#include "qgsmaskrendersettings.h"
 
 class QPainter;
 
@@ -72,6 +73,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
 /**
  * \ingroup core
  * \brief The QgsMapSettings class contains configuration for rendering of the map.
+ *
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
  * In order to set up QgsMapSettings instance, it is necessary to set at least
@@ -261,6 +263,18 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 
+
+#ifndef SIP_RUN
+    /**
+     * Returns a list of registered map layers with a specified layer type.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    template <typename T>
+    QVector<T> layers() const;
+#endif
+
     /**
      * Sets the list of \a layers to render in the map.
      *
@@ -291,7 +305,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns custom rendering flags. Layers might honour these to alter their rendering.
      * \returns custom flags strings, separated by ';'
      * \see setCustomRenderFlags()
-     * \deprecated use \see customRenderingFlags().
+     * \deprecated QGIS 3.40. Use \see customRenderingFlags().
      */
     Q_DECL_DEPRECATED QString customRenderFlags() const { return mCustomRenderFlags; }
 
@@ -299,7 +313,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \see customRenderFlags()
-     * \deprecated use \see setCustomRenderingFlag() instead.
+     * \deprecated QGIS 3.40. Use \see setCustomRenderingFlag() instead.
      */
     Q_DECL_DEPRECATED void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
@@ -510,7 +524,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /**
-     * Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+     * Computes an *estimated* conversion factor between layer and map units, where ``layerUnits × layerToMapUnits = mapUnits``
      * \param layer The layer
      * \param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      */
@@ -601,10 +615,18 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;
 
-    /* serialization */
-
+    /**
+     * Restore the map settings from a XML \a node.
+     *
+     * \see writeXml()
+     */
     void readXml( QDomNode &node );
 
+    /**
+     * Writes the map settings to an XML \a node.
+     *
+     * \see readXml()
+     */
     void writeXml( QDomNode &node, QDomDocument &doc );
 
     /**
@@ -750,6 +772,33 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \since QGIS 3.10
      */
     const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
+
+    /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during the map render.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    const QgsMaskRenderSettings &maskSettings() const SIP_SKIP { return mMaskRenderSettings; }
+
+    /**
+     * Returns a reference to the mask render settings, which control how masks
+     * are drawn and behave during the map render.
+     *
+     * \see setMaskSettings()
+     * \since QGIS 3.38
+     */
+    QgsMaskRenderSettings &maskSettings() { return mMaskRenderSettings; }
+
+    /**
+     * Sets the mask render \a settings, which control how masks
+     * are drawn and behave during the map render.
+     *
+     * \see maskSettings()
+     * \since QGIS 3.38
+     */
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
 
     /**
      * Adds a rendered feature \a handler to use while rendering the map settings.
@@ -925,6 +974,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     double mFrameRate = -1;
     long long mCurrentFrame = -1;
+
+    QgsMaskRenderSettings mMaskRenderSettings;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

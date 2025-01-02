@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,6 @@ Contains utilities required for geometry checks.
 #include "qgsgeometrycheckerutils.h"
 %End
   public:
-
     class LayerFeature
 {
 %Docstring(signature="appended")
@@ -42,7 +41,6 @@ a set of layers.
 #include "qgsgeometrycheckerutils.h"
 %End
       public:
-
         LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, const QgsGeometryCheckContext *context, bool useMapCrs );
 %Docstring
 Create a new layer/feature combination.
@@ -56,6 +54,7 @@ in ``context``.
 Returns the feature.
 The geometry will not be reprojected regardless of useMapCrs.
 %End
+
 
 
         QString layerId() const;
@@ -110,5 +109,5 @@ Contains a set of layers and feature ids in those layers to pass to a geometry c
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

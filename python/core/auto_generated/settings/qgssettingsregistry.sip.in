@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/settings/qgssettingsregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,8 +19,9 @@ list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`Qgs
 
 .. versionadded:: 3.20
 
-.. deprecated:: QGIS 3.30
-   use :py:func:`QgsSettings.treeRoot()` instead
+.. deprecated:: 3.30
+
+   Use :py:func:`QgsSettings.treeRoot()` instead.
 %End
 
 %TypeHeaderCode
@@ -29,10 +30,6 @@ list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`Qgs
   public:
 
     QgsSettingsRegistry();
-%Docstring
-Constructor for QgsSettingsRegistry.
-%End
-
     virtual ~QgsSettingsRegistry();
 
     QList<const QgsSettingsEntryBase *> settingEntries() const;
@@ -69,13 +66,13 @@ Returns the list of registered child QgsSettingsRegistry.
 Adds ``settingsEntry`` to the registry.
 %End
 
- void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup ) /Deprecated/;
+ void addSettingsEntryGroup( const QgsSettingsEntryGroup *settingsGroup ) /Deprecated="Since 3.30. "/;
 %Docstring
 Adds a group of setting to the registry
 
 .. versionadded:: 3.26
 
-.. deprecated:: QGIS 3.30
+.. deprecated:: 3.30
 %End
 
 };
@@ -85,5 +82,5 @@ Adds a group of setting to the registry
  *                                                                      *
  * src/core/settings/qgssettingsregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsextentwidget.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,6 @@ When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func
 #include "qgsextentwidget.h"
 %End
   public:
-
     enum ExtentState
     {
       OriginalExtent,
@@ -231,12 +230,13 @@ to permit access to the map canvas)
 %End
 
   protected:
-
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
     virtual void dragLeaveEvent( QDragLeaveEvent *event );
 
     virtual void dropEvent( QDropEvent *event );
+
+    virtual void showEvent( QShowEvent *event );
 
 
 };
@@ -246,5 +246,5 @@ to permit access to the map canvas)
  *                                                                      *
  * src/gui/qgsextentwidget.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

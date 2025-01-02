@@ -9,6 +9,25 @@ QgsRecentCoordinateReferenceSystemsModel.RoleAuthId = QgsRecentCoordinateReferen
 QgsRecentCoordinateReferenceSystemsModel.Roles.RoleAuthId = QgsRecentCoordinateReferenceSystemsModel.CustomRole.AuthId
 QgsRecentCoordinateReferenceSystemsModel.RoleAuthId.is_monkey_patched = True
 QgsRecentCoordinateReferenceSystemsModel.RoleAuthId.__doc__ = "CRS authority ID"
-QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = "Custom model roles.\n\n" + '* ``RoleCrs``: ' + QgsRecentCoordinateReferenceSystemsModel.CustomRole.Crs.__doc__ + '\n' + '* ``RoleAuthId``: ' + QgsRecentCoordinateReferenceSystemsModel.CustomRole.AuthId.__doc__
+QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = """Custom model roles.
+
+* ``Crs``: Coordinate reference system
+
+  Available as ``QgsRecentCoordinateReferenceSystemsModel.RoleCrs`` in older QGIS releases.
+
+* ``AuthId``: CRS authority ID
+
+  Available as ``QgsRecentCoordinateReferenceSystemsModel.RoleAuthId`` in older QGIS releases.
+
+
+"""
 # --
 QgsRecentCoordinateReferenceSystemsModel.CustomRole.baseClass = QgsRecentCoordinateReferenceSystemsModel
+try:
+    QgsRecentCoordinateReferenceSystemsModel.__group__ = ['proj']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsRecentCoordinateReferenceSystemsProxyModel.__group__ = ['proj']
+except (NameError, AttributeError):
+    pass

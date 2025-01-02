@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayerproxymodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,7 +39,7 @@ Sets ``filter`` flags which affect how layers are filtered within the model.
 .. seealso:: :py:func:`filters`
 %End
 
- void setFilters( int filters ) /Deprecated/;
+ void setFilters( int filters ) /Deprecated="Since 3.34. Use the flag signature instead."/;
 %Docstring
 Filters according to layer type and/or geometry type.
 
@@ -49,8 +49,9 @@ Filters according to layer type and/or geometry type.
 
 .. versionadded:: 3.34
 
-.. deprecated:: QGIS 3.34
-   use the flag signature instead
+.. deprecated:: 3.34
+
+   Use the flag signature instead.
 %End
 
     const Qgis::LayerFilters &filters() const;
@@ -76,7 +77,7 @@ Returns if the ``layer`` matches the given ``filters``
 .. versionadded:: 3.14
 %End
 
- void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) /Deprecated/;
+ void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) /Deprecated="Since 3.40. Use setLayerAllowList()."/;
 %Docstring
 Sets an allowlist of ``layers`` to include within the model. Only layers
 from this list will be shown.
@@ -87,8 +88,9 @@ An empty list indicates that no filter by allowlist should be performed.
 
 .. seealso:: :py:func:`setExceptedLayerList`
 
-.. deprecated::
-   use :py:func:`~QgsMapLayerProxyModel.setLayerAllowList`
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMapLayerProxyModel.setLayerAllowList`.
 %End
 
     void setLayerAllowlist( const QList<QgsMapLayer *> &layers );
@@ -105,7 +107,7 @@ An empty list indicates that no filter by allowlist should be performed.
 .. versionadded:: 3.14
 %End
 
- QList<QgsMapLayer *> layerWhitelist() /Deprecated/;
+ QList<QgsMapLayer *> layerWhitelist() /Deprecated="Since 3.40. Use layerAllowlist() instead."/;
 %Docstring
 Returns the list of layers which are excluded from the model.
 
@@ -115,8 +117,9 @@ An empty list indicates that no filtering by allowlist should be performed.
 
 .. seealso:: :py:func:`exceptedLayerList`
 
-.. deprecated::
-   use :py:func:`~QgsMapLayerProxyModel.layerAllowlist` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMapLayerProxyModel.layerAllowlist` instead.
 %End
 
     QList<QgsMapLayer *> layerAllowlist();
@@ -226,5 +229,5 @@ specified string will be shown.
  *                                                                      *
  * src/core/qgsmaplayerproxymodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

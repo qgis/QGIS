@@ -26,8 +26,8 @@ QWidget:item:selected
 
 QWebView, QTextBrowser
 {
-    color: #000000;
-    background-color: #ffffff;
+    color: @text;
+    background-color: @itemdarkbackground;
 }
 
 QToolTip
@@ -333,6 +333,11 @@ QToolButton::menu-indicator:disabled
     width: 0.8em;
     height: 1.2em;
 }
+
+QToolBox::tab {
+    color: @text;
+}
+
 QToolBar QToolButton, QToolButton::menu-button
 {
     border-color: rgba(0,0,0,0);
@@ -1247,16 +1252,6 @@ QgsMessageBar QScrollBar::down-arrow:vertical {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
-QgsPropertyOverrideButton, QgsPropertyOverrideButton:hover, QgsPropertyOverrideButton:pressed {
-    background: none;
-    border: 1px solid rgba(0, 0, 0, 0%);
-    padding: 0px;
-}
-
-QgsPropertyOverrideButton:focus {
-    border:1px solid @focusdark;
-}
-
 QListWidget#mOptionsListWidget {
     background-color: @itembackground;
     color: @text;
@@ -1301,4 +1296,12 @@ QgsAttributeFormWidget QComboBox:disabled {
 
 QgsAttributeFormWidget QComboBox::down-arrow:disabled {
      image: none;
+}
+
+QWidget#mCadWidget QLineEdit {
+    color: @textlight;
+}
+
+QWidget#mCadWidget QLineEdit:disabled {
+    color: @text;
 }

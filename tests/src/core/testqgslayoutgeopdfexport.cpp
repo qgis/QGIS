@@ -27,63 +27,62 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutGeoPdfExport : public QgsTest
+class TestQgsLayoutGeospatialPdfExport : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutGeoPdfExport() : QgsTest( QStringLiteral( "GeoPDF Export Tests" ) ) {}
+    TestQgsLayoutGeospatialPdfExport()
+      : QgsTest( QStringLiteral( "Geospatial PDF Export Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testTempFilenames();
     void testCollectingFeatures();
     void skipLayers();
     void layerOrder();
+    void groupOrder();
 };
 
-void TestQgsLayoutGeoPdfExport::initTestCase()
+void TestQgsLayoutGeospatialPdfExport::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
 }
 
-void TestQgsLayoutGeoPdfExport::cleanupTestCase()
+void TestQgsLayoutGeospatialPdfExport::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsLayoutGeoPdfExport::testTempFilenames()
+void TestQgsLayoutGeospatialPdfExport::testTempFilenames()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  QgsLayoutGeospatialPdfExporter geospatialPdfExporter( &l );
 
-  QString outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
+  QString outputFile = geospatialPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
   QVERIFY( outputFile.endsWith( QLatin1String( "test_src.pdf" ) ) );
 
   // test generating temporary file path with slash characters (https://github.com/qgis/QGIS/issues/51480)
-  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test/ src.pdf" ) );
+  outputFile = geospatialPdfExporter.generateTemporaryFilepath( QStringLiteral( "test/ src.pdf" ) );
   QVERIFY( outputFile.endsWith( QLatin1String( "test_ src.pdf" ) ) );
 
-  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test\\ src.pdf" ) );
+  outputFile = geospatialPdfExporter.generateTemporaryFilepath( QStringLiteral( "test\\ src.pdf" ) );
   QVERIFY( outputFile.endsWith( QLatin1String( "test_ src.pdf" ) ) );
 
-  outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test: src.pdf" ) );
+  outputFile = geospatialPdfExporter.generateTemporaryFilepath( QStringLiteral( "test: src.pdf" ) );
   QVERIFY( outputFile.endsWith( QLatin1String( "test_ src.pdf" ) ) );
 }
 
-void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
+void TestQgsLayoutGeospatialPdfExport::testCollectingFeatures()
 {
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( linesLayer->isValid() );
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
-      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
-  QgsVectorLayer *polygonLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
-      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ), QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
   QVERIFY( polygonLayer->isValid() );
   pointsLayer->setDisplayExpression( QStringLiteral( "Staff" ) );
 
@@ -93,19 +92,12 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   p.addMapLayer( polygonLayer );
 
   QgsMapThemeCollection::MapThemeRecord rec;
-  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
-                       << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer )
-                     );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>() << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer ) );
 
   p.mapThemeCollection()->insert( QStringLiteral( "test preset" ), rec );
-  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
-                       << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer )
-                       << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer )
-                     );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>() << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer ) << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer ) );
   p.mapThemeCollection()->insert( QStringLiteral( "test preset2" ), rec );
-  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
-                       << QgsMapThemeCollection::MapThemeLayerRecord( polygonLayer )
-                     );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>() << QgsMapThemeCollection::MapThemeLayerRecord( polygonLayer ) );
   p.mapThemeCollection()->insert( QStringLiteral( "test preset3" ), rec );
 
   QgsLayout l( &p );
@@ -131,19 +123,19 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   map2->setBackgroundEnabled( true );
   l.addLayoutItem( map2 );
 
-  QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  QgsLayoutGeospatialPdfExporter geospatialPdfExporter( &l );
 
   // trigger render
   QgsLayoutExporter exporter( &l );
 
-  const QString outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
+  const QString outputFile = geospatialPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
   QgsLayoutExporter::PdfExportSettings settings;
   settings.writeGeoPdf = true;
   settings.exportMetadata = false;
   exporter.exportToPdf( outputFile, settings );
 
   // check that features were collected
-  QgsFeatureList lineFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
+  QgsFeatureList lineFeatures = geospatialPdfExporter.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 6 );
 
   QgsFeature lineFeature1;
@@ -162,7 +154,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QgsDebugMsgLevel( lineGeometry1.asWkt( 0 ), 1 );
   QCOMPARE( lineGeometry1.asWkt( 0 ), QStringLiteral( "MultiLineString ((281 538, 283 532, 284 530, 285 529, 289 526, 299 520, 310 516, 313 513, 318 508, 319 507, 320 501, 320 498, 322 493, 323 491, 323 486, 324 484, 326 481, 327 478, 331 474, 331 473, 332 470, 332 465, 332 463, 333 459, 334 457, 338 454, 342 452, 345 450, 349 448, 349 445, 349 443, 347 439, 346 438, 345 435, 343 433, 342 432, 341 430, 341 428, 340 426, 340 424, 342 420, 343 418, 343 418, 348 407, 345 402, 343 399, 340 393, 340 389, 335 385, 333 382, 331 378, 331 376, 331 374, 331 372, 331 369, 332 367, 333 364, 334 362, 336 360, 338 357, 341 353, 346 344, 347 343, 350 339, 352 338, 356 333, 358 331, 363 328, 366 325, 370 321, 372 320, 376 317, 380 314, 384 312, 390 307, 392 305, 393 302, 393 299, 393 295, 393 294, 391 291, 388 287, 386 285, 385 283, 385 280, 386 278, 387 274, 388 272, 391 268, 392 267, 394 263, 398 259, 406 255))" ) );
 
-  QgsFeatureList  pointFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
+  QgsFeatureList pointFeatures = geospatialPdfExporter.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 32 );
 
   QgsFeature pointFeature3;
@@ -185,7 +177,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( pointGeometry3.asWkt( 0 ), QStringLiteral( "MultiPolygon (((473 306, 505 306, 505 274, 473 274, 473 306)))" ) );
 
   // check second map
-  QgsFeatureList polyFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
+  QgsFeatureList polyFeatures = geospatialPdfExporter.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 10 );
 
   QgsFeature polyFeature3b;
@@ -205,40 +197,37 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QCOMPARE( polyGeometry3b.asWkt( 0 ), QStringLiteral( "MultiPolygon (((469 306, 469 305, 468 305, 468 305, 467 305, 466 304, 466 304, 466 303, 467 303, 467 302, 468 302, 469 302, 470 302, 470 303, 471 303, 472 303, 473 303, 474 303, 474 303, 475 303, 476 303, 476 303, 478 300, 478 299, 478 299, 478 298, 478 296, 477 296, 476 295, 476 295, 475 294, 474 294, 474 294, 473 295, 472 295, 472 296, 471 296, 470 297, 469 297, 468 297, 466 296, 464 296, 463 296, 462 297, 462 298, 462 298, 461 299, 460 299, 459 300, 458 300, 458 301, 458 301, 458 302, 459 303, 459 303, 458 304, 458 304, 458 305, 458 306, 458 307, 458 308, 458 308, 459 309, 460 309, 460 310, 461 311, 462 311, 462 312, 463 312, 464 312, 465 312, 465 311, 467 310, 467 309, 468 308, 469 307, 469 306)))" ) );
 
   // finalize and test collation
-  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
   details.pageSizeMm = QSizeF( 297, 210 );
   const bool expected = true;
-  QCOMPARE( geoPdfExporter.finalize( QList<QgsAbstractGeoPdfExporter::ComponentLayerDetail>(), outputFile, details ), expected );
-  QVERIFY( geoPdfExporter.errorMessage().isEmpty() );
+  QCOMPARE( geospatialPdfExporter.finalize( QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail>(), outputFile, details ), expected );
+  QVERIFY( geospatialPdfExporter.errorMessage().isEmpty() );
 
-  QgsAbstractGeoPdfExporter::VectorComponentDetail vectorDetail;
-  for ( const auto &it :  geoPdfExporter.mVectorComponents )
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail vectorDetail;
+  for ( const auto &it : geospatialPdfExporter.mVectorComponents )
   {
     if ( it.mapLayerId == linesLayer->id() )
       vectorDetail = it;
   }
 
   // read in as vector
-  std::unique_ptr< QgsVectorLayer > layer1 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsVectorLayer> layer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
   QCOMPARE( layer1->featureCount(), 6L );
-  for ( const auto &it :  geoPdfExporter.mVectorComponents )
+  for ( const auto &it : geospatialPdfExporter.mVectorComponents )
   {
     if ( it.mapLayerId == pointsLayer->id() )
       vectorDetail = it;
   }
-  std::unique_ptr< QgsVectorLayer > layer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsVectorLayer> layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer2->isValid() );
   QCOMPARE( layer2->featureCount(), 32L );
-  for ( const auto &it :  geoPdfExporter.mVectorComponents )
+  for ( const auto &it : geospatialPdfExporter.mVectorComponents )
   {
     if ( it.mapLayerId == polygonLayer->id() )
       vectorDetail = it;
   }
-  std::unique_ptr< QgsVectorLayer > layer3 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsVectorLayer> layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer3->isValid() );
   QCOMPARE( layer3->featureCount(), 10L );
 
@@ -246,7 +235,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   map2->setFollowVisibilityPreset( true );
   map2->setFollowVisibilityPresetName( QStringLiteral( "test preset3" ) );
 
-  QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
+  QgsLayoutGeospatialPdfExporter geospatialPdfExporter2( &l );
   settings = QgsLayoutExporter::PdfExportSettings();
   settings.writeGeoPdf = true;
   settings.exportMetadata = false;
@@ -254,105 +243,97 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   exporter.exportToPdf( outputFile, settings );
 
   // check that features were collected
-  lineFeatures = geoPdfExporter2.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
+  lineFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 0 );
-  lineFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset2" ) ).value( linesLayer->id() );
+  lineFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset2" ) ).value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 6 );
-  lineFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset" ) ).value( linesLayer->id() );
+  lineFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset" ) ).value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 6 );
-  lineFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset3" ) ).value( linesLayer->id() );
+  lineFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset3" ) ).value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 0 );
 
-  pointFeatures = geoPdfExporter2.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
+  pointFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 0 );
-  pointFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset2" ) ).value( pointsLayer->id() );
+  pointFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset2" ) ).value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 15 );
-  pointFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset" ) ).value( pointsLayer->id() );
+  pointFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset" ) ).value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 0 );
-  pointFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset3" ) ).value( pointsLayer->id() );
+  pointFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset3" ) ).value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 0 );
 
-  polyFeatures = geoPdfExporter2.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
+  polyFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 10 );
-  polyFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset2" ) ).value( polygonLayer->id() );
+  polyFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset2" ) ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 0 );
-  polyFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset" ) ).value( polygonLayer->id() );
+  polyFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset" ) ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 0 );
-  polyFeatures = geoPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset3" ) ).value( polygonLayer->id() );
+  polyFeatures = geospatialPdfExporter2.mCollatedFeatures.value( QStringLiteral( "test preset3" ) ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 10 );
 
   // finalize and test collation
-  details = QgsAbstractGeoPdfExporter::ExportDetails();
+  details = QgsAbstractGeospatialPdfExporter::ExportDetails();
   details.pageSizeMm = QSizeF( 297, 210 );
-  QCOMPARE( geoPdfExporter2.finalize( QList<QgsAbstractGeoPdfExporter::ComponentLayerDetail>(), outputFile, details ), expected );
-  QVERIFY( geoPdfExporter2.errorMessage().isEmpty() );
+  QCOMPARE( geospatialPdfExporter2.finalize( QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail>(), outputFile, details ), expected );
+  QVERIFY( geospatialPdfExporter2.errorMessage().isEmpty() );
 
-  vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
-  for ( const auto &it : geoPdfExporter2.mVectorComponents )
+  vectorDetail = QgsAbstractGeospatialPdfExporter::VectorComponentDetail();
+  for ( const auto &it : geospatialPdfExporter2.mVectorComponents )
   {
     if ( it.mapLayerId == linesLayer->id() && it.group == QLatin1String( "test preset2" ) )
       vectorDetail = it;
   }
 
   // read in as vector
-  layer1 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-           QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  layer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
   QCOMPARE( layer1->featureCount(), 6L );
-  vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
-  for ( const auto &it : geoPdfExporter2.mVectorComponents )
+  vectorDetail = QgsAbstractGeospatialPdfExporter::VectorComponentDetail();
+  for ( const auto &it : geospatialPdfExporter2.mVectorComponents )
   {
     if ( it.mapLayerId == linesLayer->id() && it.group == QLatin1String( "test preset" ) )
       vectorDetail = it;
   }
 
   // read in as vector
-  layer1 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-           QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  layer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
   QCOMPARE( layer1->featureCount(), 6L );
-  vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
-  for ( const auto &it :  geoPdfExporter2.mVectorComponents )
+  vectorDetail = QgsAbstractGeospatialPdfExporter::VectorComponentDetail();
+  for ( const auto &it : geospatialPdfExporter2.mVectorComponents )
   {
     if ( it.mapLayerId == pointsLayer->id() && it.group == QLatin1String( "test preset2" ) )
       vectorDetail = it;
   }
-  layer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-           QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer2->isValid() );
   QCOMPARE( layer2->featureCount(), 15L );
-  vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
-  for ( const auto &it :  geoPdfExporter2.mVectorComponents )
+  vectorDetail = QgsAbstractGeospatialPdfExporter::VectorComponentDetail();
+  for ( const auto &it : geospatialPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == polygonLayer->id()  && it.group.isEmpty() )
+    if ( it.mapLayerId == polygonLayer->id() && it.group.isEmpty() )
       vectorDetail = it;
   }
-  layer3 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-           QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer3->isValid() );
   QCOMPARE( layer3->featureCount(), 10L );
-  vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
-  for ( const auto &it :  geoPdfExporter2.mVectorComponents )
+  vectorDetail = QgsAbstractGeospatialPdfExporter::VectorComponentDetail();
+  for ( const auto &it : geospatialPdfExporter2.mVectorComponents )
   {
     if ( it.mapLayerId == polygonLayer->id() && it.group == QLatin1String( "test preset3" ) )
       vectorDetail = it;
   }
-  layer3 = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
-           QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer3->isValid() );
   QCOMPARE( layer3->featureCount(), 10L );
 }
 
-void TestQgsLayoutGeoPdfExport::skipLayers()
+void TestQgsLayoutGeospatialPdfExport::skipLayers()
 {
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( linesLayer->isValid() );
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
-      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
-  QgsVectorLayer *polygonLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
-      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ), QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
   QVERIFY( polygonLayer->isValid() );
   pointsLayer->setDisplayExpression( QStringLiteral( "Staff" ) );
 
@@ -376,36 +357,33 @@ void TestQgsLayoutGeoPdfExport::skipLayers()
   map->setBackgroundEnabled( true );
   l.addLayoutItem( map );
 
-  const QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  const QgsLayoutGeospatialPdfExporter geospatialPdfExporter( &l );
 
   // trigger render
   QgsLayoutExporter exporter( &l );
 
-  const QString outputFile = geoPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
+  const QString outputFile = geospatialPdfExporter.generateTemporaryFilepath( QStringLiteral( "test_src.pdf" ) );
   QgsLayoutExporter::PdfExportSettings settings;
   settings.writeGeoPdf = true;
   settings.exportMetadata = false;
   exporter.exportToPdf( outputFile, settings );
 
   // check that features were collected
-  const QgsFeatureList lineFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
+  const QgsFeatureList lineFeatures = geospatialPdfExporter.mCollatedFeatures.value( QString() ).value( linesLayer->id() );
   QCOMPARE( lineFeatures.count(), 0 ); // should be nothing, layer is set to skip
-  const QgsFeatureList  pointFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
+  const QgsFeatureList pointFeatures = geospatialPdfExporter.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
   QCOMPARE( pointFeatures.count(), 15 ); // should be features, layer was set to export
-  const QgsFeatureList polyFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
+  const QgsFeatureList polyFeatures = geospatialPdfExporter.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 10 ); // should be features, layer did not have any setting set
 }
 
-void TestQgsLayoutGeoPdfExport::layerOrder()
+void TestQgsLayoutGeospatialPdfExport::layerOrder()
 {
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( linesLayer->isValid() );
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
-      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
-  QgsVectorLayer *polygonLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
-      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ), QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
   QVERIFY( polygonLayer->isValid() );
   pointsLayer->setDisplayExpression( QStringLiteral( "Staff" ) );
 
@@ -426,15 +404,36 @@ void TestQgsLayoutGeoPdfExport::layerOrder()
   map->setBackgroundEnabled( true );
   l.addLayoutItem( map );
 
-  const QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  const QgsLayoutGeospatialPdfExporter geospatialPdfExporter( &l );
   // by default we should follow project layer order
-  QCOMPARE( geoPdfExporter.layerOrder(), QStringList() << polygonLayer->id() << pointsLayer->id() << linesLayer->id() );
+  QCOMPARE( geospatialPdfExporter.layerOrder(), QStringList() << polygonLayer->id() << pointsLayer->id() << linesLayer->id() );
 
   // but if a custom order is specified, respected that
   l.setCustomProperty( QStringLiteral( "pdfLayerOrder" ), QStringLiteral( "%1~~~%2" ).arg( linesLayer->id(), polygonLayer->id() ) );
-  const QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
-  QCOMPARE( geoPdfExporter2.layerOrder(), QStringList() << linesLayer->id() << polygonLayer->id() << pointsLayer->id() );
+  const QgsLayoutGeospatialPdfExporter geospatialPdfExporter2( &l );
+  QCOMPARE( geospatialPdfExporter2.layerOrder(), QStringList() << linesLayer->id() << polygonLayer->id() << pointsLayer->id() );
 }
 
-QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )
+void TestQgsLayoutGeospatialPdfExport::groupOrder()
+{
+  QgsProject p;
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+
+  // no group ordering for layout
+  const QgsLayoutGeospatialPdfExporter geospatialPdfExporter( &l );
+  QVERIFY( geospatialPdfExporter.layerTreeGroupOrder().isEmpty() );
+
+  // custom group order is specified, respect that
+  l.setCustomProperty( QStringLiteral( "pdfGroupOrder" ), QStringList { QStringLiteral( "group 1" ), QStringLiteral( "GROUP C" ), QStringLiteral( "group 2" ) } );
+  const QgsLayoutGeospatialPdfExporter geospatialPdfExporter2( &l );
+  QCOMPARE( geospatialPdfExporter2.layerTreeGroupOrder(), QStringList() << QStringLiteral( "group 1" ) << QStringLiteral( "GROUP C" ) << QStringLiteral( "group 2" ) );
+}
+
+QGSTEST_MAIN( TestQgsLayoutGeospatialPdfExport )
 #include "testqgslayoutgeopdfexport.moc"

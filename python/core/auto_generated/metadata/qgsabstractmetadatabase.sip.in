@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/metadata/qgsabstractmetadatabase.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -423,7 +423,7 @@ Sets a date value for the specified date ``type``.
 %Docstring
 Sets state from DOM document.
 
-:param metadataElement: The DOM element corresponding to ``resourceMetadata'' tag
+:param metadataElement: The DOM element corresponding to ``resourceMetadata`` tag
 
 :return: ``True`` if successful
 
@@ -435,7 +435,7 @@ class method in order to read common metadata properties.
 %Docstring
 Stores state in a DOM node.
 
-:param metadataElement: is a DOM element corresponding to ``resourceMetadata'' tag
+:param metadataElement: is a DOM element corresponding to ``resourceMetadata`` tag
 :param document: is a the DOM document being written
 
 :return: ``True`` if successful
@@ -489,5 +489,5 @@ equality of base class members.
  *                                                                      *
  * src/core/metadata/qgsabstractmetadatabase.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

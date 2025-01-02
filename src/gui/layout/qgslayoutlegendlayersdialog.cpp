@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayoutlegendlayersdialog.h"
+#include "moc_qgslayoutlegendlayersdialog.cpp"
 
 #include <QStandardItem>
 #include "qgsmaplayer.h"
@@ -50,9 +51,9 @@ void QgsLayoutLegendLayersDialog::setVisibleLayers( const QList<QgsMapLayer *> &
   mVisibleLayers = layers;
 }
 
-QList< QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
+QList<QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
 {
-  QList< QgsMapLayer * > layers;
+  QList<QgsMapLayer *> layers;
 
   const QModelIndexList selection = listMapLayers->selectionModel()->selectedIndexes();
   for ( const QModelIndex &index : selection )
@@ -75,7 +76,7 @@ void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
   if ( enabled )
     mModel->setLayerAllowlist( mVisibleLayers );
   else
-    mModel->setLayerAllowlist( QList< QgsMapLayer * >() );
+    mModel->setLayerAllowlist( QList<QgsMapLayer *>() );
 }
 
 void QgsLayoutLegendLayersDialog::showHelp()

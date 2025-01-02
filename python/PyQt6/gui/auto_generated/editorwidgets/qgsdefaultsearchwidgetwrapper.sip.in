@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsdefaultsearchwidgetwrapper.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,7 +20,6 @@ Wraps a search widget. Default form is just a :py:class:`QgsLineFilterEdit`
 #include "qgsdefaultsearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDefaultSearchWidgetWrapper
@@ -85,5 +84,5 @@ Returns a pointer to the case sensitivity checkbox in the widget.
  *                                                                      *
  * src/gui/editorwidgets/qgsdefaultsearchwidgetwrapper.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

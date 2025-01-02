@@ -91,6 +91,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
     //! Flag to indicate EPSG:4326 to EPSG:3857 reprojection
     bool mGeographicToWebMercator = false;
 
+    //! Flag to indicate whether the transform has a vertical component
+    bool mHasVerticalComponent = false;
+
     //! QgsCoordinateReferenceSystem of the source (layer) coordinate system
     QgsCoordinateReferenceSystem mSourceCRS;
 

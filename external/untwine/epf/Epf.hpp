@@ -24,6 +24,12 @@
 #include "../untwine/ProgressWriter.hpp"
 #include "../untwine/ThreadPool.hpp"
 
+namespace pdal
+{
+class LasReader;
+class Stage;
+}
+
 namespace untwine
 {
 
@@ -45,9 +51,15 @@ public:
     void run(ProgressWriter& progress);
 
 private:
-    PointCount createFileInfo(const StringList& input, StringList dimNames,
-        std::vector<FileInfo>& fileInfos);
-    void fillMetadata(const pdal::PointLayoutPtr layout);
+    void createFileInfos(const StringList& input, std::vector<FileInfo>& fileInfos);
+    void filterDims(std::vector<FileInfo>& infos, StringList allowedDims);
+    void determineDims(std::vector<FileInfo>& infos, pdal::PointLayout& layout);
+    void determineOffset(const std::vector<FileInfo>& infos);
+    pdal::SpatialReference determineSrs(const std::vector<FileInfo>& infos);
+    std::vector<FileInfo> processLas(pdal::LasReader& reader, FileInfo fi);
+    FileInfo processGeneric(pdal::Stage& reader, FileInfo fi);
+    void calcCreationDay();
+    void fillMetadata(const pdal::PointLayout& layout);
 
     BaseInfo& m_b;
     Grid m_grid;

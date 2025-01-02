@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgshstoreutils.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,5 +40,5 @@ Build a hstore-formatted string from a QVariantMap.
  *                                                                      *
  * src/core/qgshstoreutils.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

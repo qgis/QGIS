@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsrulebasedrenderer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -475,6 +475,8 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
 Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
 %End
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+
     virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 
 
@@ -582,5 +584,5 @@ helper function to convert the size scale and rotation fields present in some ot
  *                                                                      *
  * src/core/symbology/qgsrulebasedrenderer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

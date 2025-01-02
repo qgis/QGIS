@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layertree/qgslayertreemodel.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -234,17 +234,18 @@ A scale <= 0 indicates that no scale filtering is being performed.
 .. seealso:: :py:func:`setLegendFilterByScale`
 %End
 
- void setLegendFilterByMap( const QgsMapSettings *settings ) /Deprecated/;
+ void setLegendFilterByMap( const QgsMapSettings *settings ) /Deprecated="Since 3.32. Use setFilterSettings() instead."/;
 %Docstring
 Force only display of legend nodes which are valid for given map settings.
 Setting ``None`` or invalid map settings will disable the functionality.
 Ownership of map settings pointer does not change, a copy is made.
 
-.. deprecated::
-   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
+.. deprecated:: 3.32
+
+   Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
- void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated/;
+ void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated="Since 3.32. Use setFilterSettings() instead."/;
 %Docstring
 Filter display of legend nodes for given map settings
 
@@ -253,8 +254,9 @@ Filter display of legend nodes for given map settings
 :param polygon: If not empty, this polygon will be used instead of the map extent to filter legend nodes
 :param useExpressions: Whether to use legend node filter expressions
 
-.. deprecated::
-   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
+.. deprecated:: 3.32
+
+   Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
     const QgsMapSettings *legendFilterMapSettings() const;
@@ -408,7 +410,7 @@ Updates model when node's name has changed
 
     void layerFlagsChanged();
 %Docstring
-Emitted when layer flags have changed.
+Triggered when layer flags have changed.
 
 .. versionadded:: 3.18
 %End
@@ -492,5 +494,5 @@ QFlags<QgsLayerTreeModel::Flag> operator|(QgsLayerTreeModel::Flag f1, QFlags<Qgs
  *                                                                      *
  * src/core/layertree/qgslayertreemodel.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

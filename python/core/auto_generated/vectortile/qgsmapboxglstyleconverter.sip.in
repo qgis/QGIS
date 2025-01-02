@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vectortile/qgsmapboxglstyleconverter.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -311,8 +311,8 @@ class QgsMapBoxGlStyleConverter
 Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
 settings.
 
-Conversions are performed by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.convert` with either a JSON map or JSON
-string value, and then retrieving the results by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.renderer` or :py:func:`~QgsMapBoxGlStyleRasterSubLayer.labeling`
+Conversions are performed by calling :py:func:`~convert` with either a JSON map or JSON
+string value, and then retrieving the results by calling :py:func:`~renderer` or :py:func:`~labeling`
 respectively.
 
 .. versionadded:: 3.16
@@ -346,6 +346,7 @@ Constructor for QgsMapBoxGlStyleConverter.
       Numeric,
       Opacity,
       Point,
+      NumericArray,
     };
 
     Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );
@@ -517,10 +518,12 @@ Parses a symbol layer as renderer or labeling.
    This is private API only, and may change in future QGIS versions
 
 :param jsonLayer: symbol layer to parse
-:param rendererStyle: generated QGIS vector tile style
-:param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
-:param labelingStyle: generated QGIS vector tile labeling
 :param context: conversion context
+
+:return: - rendererStyle: generated QGIS vector tile style
+         - hasRenderer: ``True`` if symbol layer generated a renderer style
+         - labelingStyle: generated QGIS vector tile labeling
+         - hasLabeling: ``True`` if symbol layer generated a labeling style
 %End
 
     static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
@@ -535,7 +538,6 @@ Parses a symbol layer as a renderer
 :param jsonLayer: fill layer to parse
 :param context: conversion context
 
-
 :return: - ``True`` if symbol layer was converted to renderer
          - rendererStyle: generated QGIS vector tile style
 %End
@@ -548,7 +550,7 @@ Parses a color value which is interpolated by zoom range.
 :param context: conversion context
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
-         - defaultColor: storage for a reasonable "default" color representing the overall property.
+         - defaultColor: a reasonable "default" color representing the overall property.
 %End
 
     static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber /Out/ = 0 );
@@ -560,7 +562,7 @@ Parses a numeric value which is interpolated by zoom range.
 :param multiplier: optional multiplication factor
 
 :return: - :py:class:`QgsProperty` representing interpolation settings
-         - defaultNumber: storage for a reasonable "default" number representing the overall property.
+         - defaultNumber: a reasonable "default" number representing the overall property.
 %End
 
     static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
@@ -681,6 +683,16 @@ Parses and converts a match function value list.
    This is private API only, and may change in future QGIS versions
 %End
 
+    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+                                      int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+%Docstring
+Parses and converts a match function value list.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
     static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
         int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
 %Docstring
@@ -689,6 +701,8 @@ Interpolates a list which starts with the interpolate function.
 .. warning::
 
    This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.40
 %End
 
     static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
@@ -699,7 +713,8 @@ Converts an expression representing a color to a string (can be color string or 
 :param context: the style conversion context
 
 :return: the QGIS expression string
-         since QGIS 3.22
+
+.. versionadded:: 3.22
 %End
 
     static QColor parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context );
@@ -777,12 +792,22 @@ The ``context`` must have valid sprite definitions and images set via :py:func:`
 prior to conversion.
 %End
 
-    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty );
+    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Retrieves the sprite image with the specified ``name``, taken from the specified ``context`` as a base64 encoded value
 
 The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
 prior to conversion.
+%End
+
+    static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize /Out/, QString &spriteProperty /Out/, QString &spriteSizeProperty /Out/ );
+%Docstring
+Retrieves the sprite image with the specified ``name``, taken from the specified ``context`` as a base64 encoded value
+
+The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
+prior to conversion.
+
+.. versionadded:: 3.40
 %End
 
   private:
@@ -794,5 +819,5 @@ prior to conversion.
  *                                                                      *
  * src/core/vectortile/qgsmapboxglstyleconverter.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

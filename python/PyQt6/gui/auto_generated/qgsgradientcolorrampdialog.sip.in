@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsgradientcolorrampdialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,7 +20,6 @@ A dialog which allows users to modify the properties of a :py:class:`QgsGradient
 #include "qgsgradientcolorrampdialog.h"
 %End
   public:
-
     QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGradientColorRampDialog.
@@ -85,5 +84,5 @@ Sets the end color for the gradient ramp.
  *                                                                      *
  * src/gui/qgsgradientcolorrampdialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

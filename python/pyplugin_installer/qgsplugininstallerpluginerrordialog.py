@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 """
 /***************************************************************************
                            qgsplugininstallerpluginerrordialog.py
@@ -26,10 +25,18 @@
 
 from qgis.PyQt.QtWidgets import QDialog
 
-from .ui_qgsplugininstallerpluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialogBase
+from pathlib import Path
+
+from qgis.PyQt import uic
+
+Ui_QgsPluginInstallerPluginErrorDialogBase, _ = uic.loadUiType(
+    Path(__file__).parent / "qgsplugininstallerpluginerrorbase.ui"
+)
 
 
-class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginErrorDialogBase):
+class QgsPluginInstallerPluginErrorDialog(
+    QDialog, Ui_QgsPluginInstallerPluginErrorDialogBase
+):
     # ----------------------------------------- #
 
     def __init__(self, parent, errorMessage):

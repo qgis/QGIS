@@ -174,7 +174,8 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
   }
 
-  //find first valid feature we can add the ring to
+  //find valid features we can add the ring to
+  bool success = false;
   while ( fit.nextFeature( f ) )
   {
     if ( !f.hasGeometry() )
@@ -193,6 +194,7 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     }
     if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
     {
+      success = true;
       layer->changeGeometry( f.id(), g );
       if ( modifiedFeatureIds )
       {
@@ -206,7 +208,7 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     }
   }
 
-  return addRingReturnCode;
+  return success ? Qgis::GeometryOperationResult::Success : addRingReturnCode;
 }
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
@@ -230,9 +232,10 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, 
   std::unique_ptr<QgsCurve> uniquePtrRing( ring );
   if ( modifiedFeatureId )
   {
-    QgsFeatureIds *modifiedFeatureIds = new QgsFeatureIds;
-    Qgis::GeometryOperationResult result = staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, modifiedFeatureIds, true );
-    *modifiedFeatureId = *modifiedFeatureIds->begin();
+    QgsFeatureIds modifiedFeatureIds;
+    Qgis::GeometryOperationResult result = staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, &modifiedFeatureIds, true );
+    if ( modifiedFeatureId && !modifiedFeatureIds.empty() )
+      *modifiedFeatureId = *modifiedFeatureIds.begin();
     return result;
   }
   return staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, nullptr, true );
@@ -278,7 +281,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSe
     geometry = f.geometry();
   }
 
-  Qgis::GeometryOperationResult errorCode = geometry.addPart( points,  mLayer->geometryType() );
+  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( points,  mLayer->wkbType() );
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() )
@@ -317,7 +320,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
       ring = ring->reversed();
     }
   }
-  Qgis::GeometryOperationResult errorCode = geometry.addPart( ring, mLayer->geometryType() );
+  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( ring, mLayer->wkbType() );
 
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
@@ -444,6 +447,22 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
     topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success )
     {
+      //find largest geometry and give that to the original feature
+      std::function<double( const QgsGeometry & )> size = mLayer->geometryType() == Qgis::GeometryType::Polygon ? &QgsGeometry::area : &QgsGeometry::length;
+      double featureGeomSize = size( featureGeom );
+
+      QVector<QgsGeometry>::iterator largestNewFeature = std::max_element( newGeometries.begin(), newGeometries.end(), [ &size ]( const QgsGeometry & a, const QgsGeometry & b ) -> bool
+      {
+        return size( a ) < size( b );
+      } );
+
+      if ( size( *largestNewFeature ) > featureGeomSize )
+      {
+        QgsGeometry copy = *largestNewFeature;
+        *largestNewFeature = featureGeom;
+        featureGeom = copy;
+      }
+
       //change this geometry
       mLayer->changeGeometry( feat.id(), featureGeom );
 
@@ -866,7 +885,7 @@ bool QgsVectorLayerEditUtils::mergeFeatures( const QgsFeatureId &targetFeatureId
   {
     QVariant val = mergeAttributes.at( i );
 
-    bool isDefaultValue = mLayer->fields().fieldOrigin( i ) == QgsFields::OriginProvider &&
+    bool isDefaultValue = mLayer->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Provider &&
                           mLayer->dataProvider() &&
                           mLayer->dataProvider()->defaultValueClause( mLayer->fields().fieldOriginIndex( i ) ) == val;
 

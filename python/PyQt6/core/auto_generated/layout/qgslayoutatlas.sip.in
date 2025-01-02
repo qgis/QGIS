@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutatlas.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -360,7 +360,7 @@ Refreshes the current atlas feature, by refetching its attributes from the vecto
 Emitted when one of the atlas parameters changes.
 %End
 
-    void toggled( bool );
+    void toggled( bool enabled );
 %Docstring
 Emitted when atlas is enabled or disabled.
 %End
@@ -405,5 +405,5 @@ Emitted when atlas rendering has ended.
  *                                                                      *
  * src/core/layout/qgslayoutatlas.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

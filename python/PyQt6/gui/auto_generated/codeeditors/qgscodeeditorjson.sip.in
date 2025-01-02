@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorjson.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ code autocompletion.
 #include "qgscodeeditorjson.h"
 %End
   public:
-
     QgsCodeEditorJson( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorJson
@@ -35,7 +34,6 @@ Constructor for QgsCodeEditorJson
   protected:
     virtual void initializeLexer();
 
-
 };
 
 /************************************************************************
@@ -43,5 +41,5 @@ Constructor for QgsCodeEditorJson
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorjson.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

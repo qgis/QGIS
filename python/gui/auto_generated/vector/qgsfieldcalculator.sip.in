@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/vector/qgsfieldcalculator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsFieldCalculator: QDialog
+class QgsFieldCalculator : QDialog
 {
 %Docstring(signature="appended")
 
@@ -50,5 +50,5 @@ Returns the field index of the field for which new attribute values were calcula
  *                                                                      *
  * src/gui/vector/qgsfieldcalculator.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

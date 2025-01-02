@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsaccesscontrolfilter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,6 @@ Security can define any (or none) of the following method:
 #include "qgsaccesscontrolfilter.h"
 %End
   public:
-
     QgsAccessControlFilter( const QgsServerInterface *serverInterface );
 %Docstring
 Constructor
@@ -43,10 +42,10 @@ and must be passed to QgsAccessControlFilter instances.
 
     struct LayerPermissions
     {
-      bool canRead;
-      bool canUpdate;
-      bool canInsert;
-      bool canDelete;
+        bool canRead;
+        bool canUpdate;
+        bool canInsert;
+        bool canDelete;
     };
 
     const QgsServerInterface *serverInterface() const;
@@ -118,5 +117,5 @@ typedef QMultiMap<int, QgsAccessControlFilter *> QgsAccessControlFilterMap;
  *                                                                      *
  * src/server/qgsaccesscontrolfilter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

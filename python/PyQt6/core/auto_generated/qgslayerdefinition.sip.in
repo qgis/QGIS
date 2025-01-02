@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgslayerdefinition.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -67,7 +67,7 @@ for control over this setting.
 :param selectedTreeNodes: layer tree nodes to include in the QLR file
 
 :return: - ``True`` if the export was successful
-         - errorMessage: will be set to any error messages generated during the export
+         - errorMessage: any error messages generated during the export
 %End
 
     static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, Qgis::FilePathType pathType, QString &errorMessage /Out/ );
@@ -79,8 +79,7 @@ Exports the selected layer tree nodes to a QLR file.
 :param pathType: specifies whether absolute or relative file paths should be used.
 
 :return: - ``True`` if the export was successful
-         - errorMessage: will be set to any error messages generated during the export
-
+         - errorMessage: any error messages generated during the export
 
 .. versionadded:: 3.22
 %End
@@ -179,5 +178,5 @@ Returns whether the layer associated with the``layerId`` is dependent from anoth
  *                                                                      *
  * src/core/qgslayerdefinition.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

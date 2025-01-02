@@ -18,3 +18,10 @@ QgsLayoutAligner.ResizeWidest = QgsLayoutAligner.Resize.ResizeWidest
 QgsLayoutAligner.ResizeShortest = QgsLayoutAligner.Resize.ResizeShortest
 QgsLayoutAligner.ResizeTallest = QgsLayoutAligner.Resize.ResizeTallest
 QgsLayoutAligner.ResizeToSquare = QgsLayoutAligner.Resize.ResizeToSquare
+try:
+    QgsLayoutAligner.alignItems = staticmethod(QgsLayoutAligner.alignItems)
+    QgsLayoutAligner.distributeItems = staticmethod(QgsLayoutAligner.distributeItems)
+    QgsLayoutAligner.resizeItems = staticmethod(QgsLayoutAligner.resizeItems)
+    QgsLayoutAligner.__group__ = ['layout']
+except (NameError, AttributeError):
+    pass

@@ -49,9 +49,12 @@ QString QgsExtractVerticesAlgorithm::groupId() const
 
 QString QgsExtractVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points representing the vertices in the input geometries. The attributes associated to each point are the same ones associated to the feature that the point belongs to." ) +
-         QStringLiteral( "\n\n" )  +
-         QObject::tr( "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of vertex for original geometry." );
+  return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points representing the vertices in the input geometries. The attributes associated to each point are the same ones associated to the feature that the point belongs to." ) + QStringLiteral( "\n\n" ) + QObject::tr( "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of vertex for original geometry." );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractVerticesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
 }
 
 QString QgsExtractVerticesAlgorithm::outputName() const
@@ -72,15 +75,15 @@ Qgis::ProcessingSourceType QgsExtractVerticesAlgorithm::outputLayerType() const
 QgsFields QgsExtractVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int, QString(), 10, 0 ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QMetaType::Type::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QMetaType::Type::Int, QString(), 10, 0 ) );
   if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
-    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
+    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QMetaType::Type::Int, QString(), 10, 0 ) );
   }
-  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QVariant::Int, QString(), 10, 0 ) );
-  outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double, QString(), 20, 14 ) );
-  outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double, QString(), 20, 14 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QMetaType::Type::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double, QString(), 20, 14 ) );
+  outputFields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double, QString(), 20, 14 ) );
 
   return outputFields;
 }
@@ -112,7 +115,10 @@ QgsFeatureSink::SinkFlags QgsExtractVerticesAlgorithm::sinkFlags() const
 
 bool QgsExtractVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
   mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
   return true;
 }

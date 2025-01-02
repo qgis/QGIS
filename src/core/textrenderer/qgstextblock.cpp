@@ -23,6 +23,34 @@ QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
   mFragments.append( fragment );
 }
 
+QgsTextBlock QgsTextBlock::fromPlainText( const QString &text, const QgsTextCharacterFormat &format )
+{
+  if ( text.contains( '\t' ) )
+  {
+    // split line by tab characters, each tab should be a
+    // fragment by itself
+    QgsTextBlock block;
+    const QStringList tabSplit = text.split( '\t' );
+    int index = 0;
+    for ( const QString &part : tabSplit )
+    {
+      if ( !part.isEmpty() )
+        block.append( QgsTextFragment( part, format ) );
+      if ( index != tabSplit.size() - 1 )
+      {
+        block.append( QgsTextFragment( QString( '\t' ), format ) );
+      }
+
+      index++;
+    }
+    return block;
+  }
+  else
+  {
+    return QgsTextBlock( QgsTextFragment( text, format ) );
+  }
+}
+
 QString QgsTextBlock::toPlainText() const
 {
   QString res;
@@ -33,6 +61,11 @@ QString QgsTextBlock::toPlainText() const
   return res;
 }
 
+void QgsTextBlock::reserve( int count )
+{
+  mFragments.reserve( count );
+}
+
 void QgsTextBlock::append( const QgsTextFragment &fragment )
 {
   mFragments.append( fragment );
@@ -41,6 +74,16 @@ void QgsTextBlock::append( const QgsTextFragment &fragment )
 void QgsTextBlock::append( QgsTextFragment &&fragment )
 {
   mFragments.push_back( fragment );
+}
+
+void QgsTextBlock::insert( int index, const QgsTextFragment &fragment )
+{
+  mFragments.insert( index, fragment );
+}
+
+void QgsTextBlock::insert( int index, QgsTextFragment &&fragment )
+{
+  mFragments.insert( index, fragment );
 }
 
 void QgsTextBlock::clear()
@@ -58,12 +101,23 @@ int QgsTextBlock::size() const
   return mFragments.size();
 }
 
+void QgsTextBlock::setBlockFormat( const QgsTextBlockFormat &format )
+{
+  mBlockFormat = format;
+}
+
 void QgsTextBlock::applyCapitalization( Qgis::Capitalization capitalization )
 {
   for ( QgsTextFragment &fragment : mFragments )
   {
     fragment.applyCapitalization( capitalization );
   }
+}
+
+bool QgsTextBlock::hasBackgrounds() const
+{
+  return mBlockFormat.hasBackground()
+  || std::any_of( mFragments.begin(), mFragments.end(), []( const QgsTextFragment & fragment ) { return fragment.characterFormat().hasBackground(); } );
 }
 
 const QgsTextFragment &QgsTextBlock::at( int index ) const

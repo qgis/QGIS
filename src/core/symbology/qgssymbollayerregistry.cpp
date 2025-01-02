@@ -24,6 +24,7 @@
 #include "qgsmasksymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsinterpolatedlinerenderer.h"
+#include "qgslinearreferencingsymbollayer.h"
 
 QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {
@@ -44,6 +45,8 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
                       QgsLineburstSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FilledLine" ), QObject::tr( "Filled Line" ), Qgis::SymbolType::Line,
                       QgsFilledLineSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "LinearReferencing" ), QObject::tr( "Linear Referencing" ), Qgis::SymbolType::Line,
+                      QgsLinearReferencingSymbolLayer::create ) );
 
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SimpleMarker" ), QObject::tr( "Simple Marker" ), Qgis::SymbolType::Marker,
                       QgsSimpleMarkerSymbolLayer::create, QgsSimpleMarkerSymbolLayer::createFromSld ) );

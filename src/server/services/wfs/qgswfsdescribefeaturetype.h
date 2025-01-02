@@ -43,8 +43,7 @@ namespace QgsWfs
   /**
    * Output WFS  GetCapabilities response
    */
-  void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                                 const QgsServerRequest &request, QgsServerResponse &response );
+  void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
 
 } // namespace QgsWfs
 

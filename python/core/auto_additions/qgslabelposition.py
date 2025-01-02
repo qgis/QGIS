@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/core/labeling/qgslabelposition.h
+try:
+    QgsLabelPosition.__attribute_docs__ = {'featureId': 'ID of feature associated with this label.', 'rotation': 'Rotation of label, in degrees clockwise.', 'labelGeometry': "A polygon geometry representing the label's bounds in map coordinates.\n\n.. versionadded:: 3.4.9", 'width': 'Width of label bounding box, in map units.', 'height': 'Heeght of label bounding box, in map units.', 'layerID': 'ID of associated map layer.', 'labelText': 'String shown in label.', 'labelFont': 'Font which the label is rendered using.', 'upsideDown': '``True`` if label is upside down.', 'isDiagram': '``True`` if label is a diagram.', 'isPinned': '``True`` if label position has been pinned.', 'providerID': 'ID of the associated label provider.', 'isUnplaced': '``True`` if label position corresponds to an unplaced label.\n\n.. versionadded:: 3.10', 'groupedLabelId': 'If non zero, indicates that the label position is part of a group of label positions (i.e. a character in a curved label).\n\nAll other linked positions will share the same groupedLabelId.'}
+    QgsLabelPosition.__group__ = ['labeling']
+except (NameError, AttributeError):
+    pass

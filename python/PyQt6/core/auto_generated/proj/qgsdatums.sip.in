@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgsdatums.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -148,5 +148,5 @@ Contains a list of members of the ensemble.
  *                                                                      *
  * src/core/proj/qgsdatums.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

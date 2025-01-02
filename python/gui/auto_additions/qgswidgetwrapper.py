@@ -9,5 +9,17 @@ QgsWidgetWrapper.DocumentViewerContent.__doc__ = "Document type for external res
 QgsWidgetWrapper.StorageUrl = QgsWidgetWrapper.Property.StorageUrl
 QgsWidgetWrapper.StorageUrl.is_monkey_patched = True
 QgsWidgetWrapper.StorageUrl.__doc__ = "Storage URL for external resource"
-QgsWidgetWrapper.Property.__doc__ = "Data defined properties for different editor widgets.\n\n" + '* ``RootPath``: ' + QgsWidgetWrapper.Property.RootPath.__doc__ + '\n' + '* ``DocumentViewerContent``: ' + QgsWidgetWrapper.Property.DocumentViewerContent.__doc__ + '\n' + '* ``StorageUrl``: ' + QgsWidgetWrapper.Property.StorageUrl.__doc__
+QgsWidgetWrapper.Property.__doc__ = """Data defined properties for different editor widgets.
+
+* ``RootPath``: Root path for external resource
+* ``DocumentViewerContent``: Document type for external resource
+* ``StorageUrl``: Storage URL for external resource
+
+"""
 # --
+try:
+    QgsWidgetWrapper.__attribute_docs__ = {'contextChanged': 'Signal when :py:class:`QgsAttributeEditorContext` mContext changed\n\n.. versionadded:: 3.4\n'}
+    QgsWidgetWrapper.fromWidget = staticmethod(QgsWidgetWrapper.fromWidget)
+    QgsWidgetWrapper.__group__ = ['editorwidgets', 'core']
+except (NameError, AttributeError):
+    pass

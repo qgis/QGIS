@@ -33,13 +33,10 @@
  * \class QgsBufferServerResponse
  * \brief Class defining buffered response
  */
-class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
+class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
 {
   public:
-
     QgsBufferServerResponse();
-
-    //! QgsBufferServerResponse cannot be copied
     QgsBufferServerResponse( const QgsBufferServerResponse & ) = delete;
 
     /**
@@ -90,7 +87,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
      * \param code HHTP return code value
      * \param message An informative error message
      */
-    void sendError( int code,  const QString &message ) override;
+    void sendError( int code, const QString &message ) override;
 
     /**
      * Returns the underlying QIODevice
@@ -140,17 +137,16 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 
 
   private:
-
 #ifdef SIP_RUN
     QgsBufferServerResponse( const QgsBufferServerResponse & ) SIP_FORCE;
 #endif
 
     QMap<QString, QString> mHeaders;
-    QBuffer                mBuffer;
-    QByteArray             mBody;
-    bool                   mFinished = false;
-    bool                   mHeadersSent = false;
-    int                    mStatusCode = 200;
+    QBuffer mBuffer;
+    QByteArray mBody;
+    bool mFinished = false;
+    bool mHeadersSent = false;
+    int mStatusCode = 200;
 };
 
 #endif

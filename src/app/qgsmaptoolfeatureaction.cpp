@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolfeatureaction.h"
+#include "moc_qgsmaptoolfeatureaction.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -148,11 +149,10 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
           featureTitle = FID_TO_STRING( feature.id() );
 
         QAction *featureAction = featureMenu->addAction( featureTitle );
-        connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, feature, point );} );
+        connect( featureAction, &QAction::triggered, this, [=] { doActionForFeature( layer, feature, point ); } );
       }
       QAction *allFeatureAction = featureMenu->addAction( tr( "All Features" ) );
-      connect( allFeatureAction, &QAction::triggered, this, [ = ]
-      {
+      connect( allFeatureAction, &QAction::triggered, this, [=] {
         for ( const QgsFeature &feature : std::as_const( features ) )
         {
           doActionForFeature( layer, feature, point );

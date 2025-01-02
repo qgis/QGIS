@@ -170,7 +170,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
-     * \deprecated Unused, will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED virtual QString helpString() const SIP_HOLDGIL SIP_DEPRECATED;
 
@@ -180,6 +180,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see shortHelpString()
      */
     virtual QString helpUrl() const SIP_HOLDGIL;
+
+    /**
+     * Returns the flags describing algorithm behavior for documentation purposes.
+     *
+     * The default is to return no flags.
+     *
+     * \since QGIS 3.40
+     */
+    virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const SIP_HOLDGIL;
 
     /**
      * Returns an icon for the algorithm.
@@ -461,6 +470,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     void setProvider( QgsProcessingProvider *provider ) SIP_HOLDGIL;
 
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation returns FALSE.
+     *
+     * \return TRUE if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
   protected:
 
     /**
@@ -510,6 +528,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER, bool createOutput = true ) SIP_HOLDGIL;
 
     /**
+     * Same as above addParameter(QgsProcessingParameterDefinition*, bool), but using
+     * a smart pointer for safer use.
+     */
+    bool addParameter( std::unique_ptr<QgsProcessingParameterDefinition> parameterDefinition, bool createOutput = true ) SIP_SKIP;
+
+    /**
      * Removes the parameter with matching \a name from the algorithm, and deletes any existing
      * definition.
      */
@@ -529,6 +553,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see initAlgorithm()
      */
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER ) SIP_HOLDGIL;
+
+    /**
+     * Same as above addOutput(QgsProcessingOutputDefinition*), but using
+     * a smart pointer for safer use.
+     */
+    bool addOutput( std::unique_ptr<QgsProcessingOutputDefinition> outputDefinition ) SIP_SKIP;
 
     /**
      * Prepares the algorithm to run using the specified \a parameters. Algorithms should implement
@@ -916,7 +946,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Evaluates the parameter with matching \a name to a list of fields.
      *
-     * \deprecated use parameterAsStrings() instead.
+     * \deprecated QGIS 3.40. Use parameterAsStrings() instead.
      */
     Q_DECL_DEPRECATED QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_DEPRECATED;
 
@@ -1082,15 +1112,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );
 
-    /**
-     * Checks whether this algorithm supports in-place editing on the given \a layer
-     * Default implementation returns FALSE.
-     *
-     * \return TRUE if the algorithm supports in-place editing
-     * \since QGIS 3.4
-     */
-    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
-
   private:
 
     QgsProcessingProvider *mProvider = nullptr;
@@ -1101,7 +1122,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool mHasPostProcessed = false;
     std::unique_ptr< QgsProcessingContext > mLocalContext;
 
-    bool createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter );
+    bool createAutoOutputForParameter( const QgsProcessingParameterDefinition *parameter );
 
 
     friend class QgsProcessingProvider;
@@ -1143,9 +1164,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 {
   public:
 
-    /**
-      * Constructor for QgsProcessingFeatureBasedAlgorithm.
-      */
     QgsProcessingFeatureBasedAlgorithm() = default;
 
     Qgis::ProcessingAlgorithmFlags flags() const override SIP_HOLDGIL;
@@ -1175,9 +1193,15 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      */
     virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
-  protected:
-
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation for feature based algorithms run some basic compatibility
+     * checks based on the geometry type of the layer.
+     *
+     * \return TRUE if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
     /**
      * Returns the name of the parameter corresponding to the input layer.
@@ -1196,6 +1220,10 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * \since QGIS 3.12
      */
     virtual QString inputParameterDescription() const SIP_HOLDGIL;
+
+  protected:
+
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
     /**
      * Returns the translated, user visible name for any layers created by this algorithm.
@@ -1281,16 +1309,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * source layer. The default implementation requests all attributes and geometry.
      */
     virtual QgsFeatureRequest request() const;
-
-    /**
-     * Checks whether this algorithm supports in-place editing on the given \a layer
-     * Default implementation for feature based algorithms run some basic compatibility
-     * checks based on the geometry type of the layer.
-     *
-     * \return TRUE if the algorithm supports in-place editing
-     * \since QGIS 3.4
-     */
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
     /**
      * Read the source from \a parameters and \a context and set it

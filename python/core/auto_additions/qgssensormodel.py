@@ -2,7 +2,12 @@
 # monkey patching scoped based enum
 QgsSensorModel.Column.Name.__doc__ = "Name"
 QgsSensorModel.Column.LastValue.__doc__ = "Last value"
-QgsSensorModel.Column.__doc__ = "Model columns\n\n" + '* ``Name``: ' + QgsSensorModel.Column.Name.__doc__ + '\n' + '* ``LastValue``: ' + QgsSensorModel.Column.LastValue.__doc__
+QgsSensorModel.Column.__doc__ = """Model columns
+
+* ``Name``: Name
+* ``LastValue``: Last value
+
+"""
 # --
 QgsSensorModel.Role = QgsSensorModel.CustomRole
 # monkey patching scoped based enum
@@ -27,6 +32,26 @@ QgsSensorModel.SensorLastTimestamp.__doc__ = "Sensor timestamp of last captured 
 QgsSensorModel.Sensor = QgsSensorModel.CustomRole.Sensor
 QgsSensorModel.Sensor.is_monkey_patched = True
 QgsSensorModel.Sensor.__doc__ = "Sensor object pointer"
-QgsSensorModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsSensorModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``SensorType``: ' + QgsSensorModel.CustomRole.SensorType.__doc__ + '\n' + '* ``SensorId``: ' + QgsSensorModel.CustomRole.SensorId.__doc__ + '\n' + '* ``SensorName``: ' + QgsSensorModel.CustomRole.SensorName.__doc__ + '\n' + '* ``SensorStatus``: ' + QgsSensorModel.CustomRole.SensorStatus.__doc__ + '\n' + '* ``SensorLastValue``: ' + QgsSensorModel.CustomRole.SensorLastValue.__doc__ + '\n' + '* ``SensorLastTimestamp``: ' + QgsSensorModel.CustomRole.SensorLastTimestamp.__doc__ + '\n' + '* ``Sensor``: ' + QgsSensorModel.CustomRole.Sensor.__doc__
+QgsSensorModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsSensorModel.Role
+
+.. versionadded:: 3.36
+
+* ``SensorType``: Sensor type
+* ``SensorId``: Sensor id
+* ``SensorName``: Sensor name
+* ``SensorStatus``: Sensor status (disconnected, connected, etc.)
+* ``SensorLastValue``: Sensor last captured value
+* ``SensorLastTimestamp``: Sensor timestamp of last captured value
+* ``Sensor``: Sensor object pointer
+
+"""
 # --
 QgsSensorModel.CustomRole.baseClass = QgsSensorModel
+try:
+    QgsSensorModel.__group__ = ['sensor']
+except (NameError, AttributeError):
+    pass

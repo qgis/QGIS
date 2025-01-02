@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgslayerpropertiesdialog.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ Base class for "layer properties" dialogs, containing common utilities for handl
 #include "qgslayerpropertiesdialog.h"
 %End
   public:
-
 
     QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
 %Docstring
@@ -130,7 +129,6 @@ Reloads the default style for the layer.
 %End
 
   protected:
-
     void initialize();
 %Docstring
 Initialize the dialog. Must be called in the subclass constructor
@@ -179,5 +177,5 @@ If it refers to a remote link then a web browser will be opened instead.
  *                                                                      *
  * src/gui/qgslayerpropertiesdialog.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

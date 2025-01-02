@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingtoolboxtreeview.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,10 +26,7 @@ Processing toolbox tree view, showing algorithms and providers in a tree structu
 #include "qgsprocessingtoolboxtreeview.h"
 %End
   public:
-
-    QgsProcessingToolboxTreeView( QWidget *parent /TransferThis/ = 0,
-                                  QgsProcessingRegistry *registry = 0,
-                                  QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+    QgsProcessingToolboxTreeView( QWidget *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxTreeView, with the specified ``parent`` widget.
 
@@ -39,16 +36,24 @@ to associate a registry with the view.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
 level group containing recently used algorithms.
+
+If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
+level group containing favorite algorithms. Since QGIS 3.40
 %End
 
     void setRegistry(
       QgsProcessingRegistry *registry,
-      QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+      QgsProcessingRecentAlgorithmLog *recentLog = 0,
+      QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0
+    );
 %Docstring
 Sets the processing ``registry`` associated with the view.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
 level group containing recently used algorithms.
+
+If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
+level group containing favorite algorithms. Since QGIS 3.40
 %End
 
     void setToolboxProxyModel( QgsProcessingToolboxProxyModel *model /Transfer/ );
@@ -98,7 +103,6 @@ to matching algorithms.
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *event );
 
 
@@ -109,5 +113,5 @@ to matching algorithms.
  *                                                                      *
  * src/gui/processing/qgsprocessingtoolboxtreeview.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

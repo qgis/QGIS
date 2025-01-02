@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgspointcloudquerybuilder.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,9 +24,7 @@ A test function checks that the typed expression is valid.
 #include "qgspointcloudquerybuilder.h"
 %End
   public:
-
-    QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent /TransferThis/ = 0,
-                               Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 This constructor is used when the query builder is called from the
 layer properties dialog
@@ -55,5 +53,5 @@ layer properties dialog
  *                                                                      *
  * src/gui/qgspointcloudquerybuilder.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

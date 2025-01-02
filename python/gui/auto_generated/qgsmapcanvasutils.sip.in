@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmapcanvasutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Utility functions for working with :py:class:`QgsMapCanvas` widgets.
 #include "qgsmapcanvasutils.h"
 %End
   public:
-
     static long zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter );
 %Docstring
 Zooms a map ``canvas`` to features from the specified ``layer`` which match the given ``filter`` expression string.
@@ -54,5 +53,5 @@ out by the canvas.
  *                                                                      *
  * src/gui/qgsmapcanvasutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

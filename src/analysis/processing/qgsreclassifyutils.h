@@ -39,16 +39,13 @@ class QgsRectangle;
  */
 class ANALYSIS_EXPORT QgsReclassifyUtils
 {
-
   public:
-
     /**
      * Represents a single class for a reclassification operation.
      */
     class RasterClass : public QgsRasterRange
     {
       public:
-
         //! Default constructor for an empty class
         RasterClass() = default;
 
@@ -68,13 +65,13 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
     /**
      * Prints a list of classes contained within \a classes to specified \a feedback object.
      */
-    static void reportClasses( const QVector< RasterClass > &classes, QgsProcessingFeedback *feedback );
+    static void reportClasses( const QVector<RasterClass> &classes, QgsProcessingFeedback *feedback );
 
     /**
      * Checks for overlaps in a set of \a classes, reporting any overlapping
      * classes the to specified \a feedback object.
      */
-    static void checkForOverlaps( const QVector< RasterClass > &classes, QgsProcessingFeedback *feedback );
+    static void checkForOverlaps( const QVector<RasterClass> &classes, QgsProcessingFeedback *feedback );
 
     /**
      * Performs a reclassification operation on a raster source \a sourceRaster, reclassifying to the given
@@ -97,15 +94,7 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
      * The \a feedback argument gives an optional processing feedback, for progress reports
      * and cancellation.
      */
-    static void reclassify( const QVector< RasterClass > &classes,
-                            QgsRasterInterface *sourceRaster,
-                            int band,
-                            const QgsRectangle &extent,
-                            int sourceWidthPixels,
-                            int sourceHeightPixels,
-                            QgsRasterDataProvider *destinationRaster,
-                            double destNoDataValue, bool useNoDataForMissingValues,
-                            QgsProcessingFeedback *feedback = nullptr );
+    static void reclassify( const QVector<RasterClass> &classes, QgsRasterInterface *sourceRaster, int band, const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels, QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues, QgsProcessingFeedback *feedback = nullptr );
 
     /**
      * Reclassifies a single \a input value, using the specified list of \a classes.
@@ -116,7 +105,7 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
      * If no matching class was found then \a reclassified will be set to FALSE, and the
      * original \a input value returned unchanged.
      */
-    static double reclassifyValue( const QVector< RasterClass > &classes, double input, bool &reclassified )
+    static double reclassifyValue( const QVector<RasterClass> &classes, double input, bool &reclassified )
     {
       reclassified = false;
       for ( const QgsReclassifyUtils::RasterClass &c : classes )
@@ -129,7 +118,6 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
       }
       return input;
     }
-
 };
 
 Q_DECLARE_TYPEINFO( QgsReclassifyUtils::RasterClass, Q_MOVABLE_TYPE );
@@ -138,5 +126,3 @@ Q_DECLARE_TYPEINFO( QgsReclassifyUtils::RasterClass, Q_MOVABLE_TYPE );
 ///@endcond PRIVATE
 
 #endif // QGSRECLASSIFYUTILS
-
-

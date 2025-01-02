@@ -24,11 +24,10 @@
 #include "qgis_app.h"
 
 //! A dialog to enter a raster calculation expression
-class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase
+class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalcDialogBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for raster calculator dialog
      * \param rasterLayer main raster layer, will be used for default extent and projection
@@ -57,7 +56,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     /**
      * Extract raster layer information from the current project
      * \return a vector of raster entries from the current project
-     * \deprecated since QGIS 3.6 use QgsRasterCalculatorEntry::rasterEntries() instead
+     * \deprecated QGIS 3.6. Use QgsRasterCalculatorEntry::rasterEntries() instead.
      */
     Q_DECL_DEPRECATED QVector<QgsRasterCalculatorEntry> rasterEntries() const SIP_DEPRECATED;
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoututils.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -218,12 +218,13 @@ decoded orientation.
 If the string was correctly decoded, ``ok`` will be set to ``True``.
 %End
 
- static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style ) /Deprecated/;
+ static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style ) /Deprecated="Since 3.40. Use the variant with a QPainter argument instead."/;
 %Docstring
 Extracts the scale factor from an item ``style``.
 
-.. deprecated::
-   Use the variant with a QPainter argument instead
+.. deprecated:: 3.40
+
+   Use the variant with a QPainter argument instead.
 %End
 
     static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style, QPainter *painter );
@@ -275,5 +276,5 @@ Returns a list of predefined scales associated with a ``layout``.
  *                                                                      *
  * src/core/layout/qgslayoututils.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

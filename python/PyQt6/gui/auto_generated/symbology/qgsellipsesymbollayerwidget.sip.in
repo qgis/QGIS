@@ -3,19 +3,18 @@
  *                                                                      *
  * src/gui/symbology/qgsellipsesymbollayerwidget.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
-class QgsEllipseSymbolLayerWidget: QgsSymbolLayerWidget
+class QgsEllipseSymbolLayerWidget : QgsSymbolLayerWidget
 {
 
 %TypeHeaderCode
 #include "qgsellipsesymbollayerwidget.h"
 %End
   public:
-
     QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsEllipseSymbolLayerWidget.
@@ -45,5 +44,5 @@ Creates a new :py:class:`QgsSymbolLayerWidget`.
  *                                                                      *
  * src/gui/symbology/qgsellipsesymbollayerwidget.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

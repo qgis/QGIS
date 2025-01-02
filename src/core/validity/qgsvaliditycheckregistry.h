@@ -42,9 +42,7 @@ class CORE_EXPORT QgsValidityCheckRegistry
 
     ~QgsValidityCheckRegistry();
 
-    //! QgsValidityCheckRegistry cannot be copied.
     QgsValidityCheckRegistry( const QgsValidityCheckRegistry &rh ) = delete;
-    //! QgsValidityCheckRegistry cannot be copied.
     QgsValidityCheckRegistry &operator=( const QgsValidityCheckRegistry &rh ) = delete;
 
     /**

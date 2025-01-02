@@ -43,14 +43,11 @@ class QgsMapLayer;
  */
 class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 {
-#ifdef SIP_RUN
-#include "qgspointcloudlayerelevationproperties.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsvectorlayerelevationproperties.h"
-#include "qgsmeshlayerelevationproperties.h"
-#include "qgstiledscenelayerelevationproperties.h"
-#endif
-
+    //SIP_TYPEHEADER_INCLUDE( "qgspointcloudlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsvectorlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsmeshlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgstiledscenelayerelevationproperties.h" );
     Q_OBJECT
 
 #ifdef SIP_RUN
@@ -92,10 +89,10 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerElevationProperties, Property ) : int
       {
-      ZOffset, //! Z offset
+      ZOffset, //!< Z offset
       ExtrusionHeight, //!< Extrusion height
-      RasterPerBandLowerElevation, //!< Lower elevation for each raster band (since QGIS 3.38)
-      RasterPerBandUpperElevation, //!< Upper elevation for each raster band (since QGIS 3.38)
+      RasterPerBandLowerElevation, //!< Lower elevation for each raster band \since QGIS 3.38
+      RasterPerBandUpperElevation, //!< Upper elevation for each raster band \since QGIS 3.38
     };
     // *INDENT-ON*
 
@@ -172,6 +169,16 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      * May return an infinite range if the extent could not be calculated.
      */
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+    /**
+     * Returns a list of significant elevation/z-values for the specified \a layer, using
+     * the settings defined by this elevation properties object.
+     *
+     * These values will be highlighted in elevation related widgets for the layer.
+     *
+     * \since QGIS 3.38
+     */
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
 
     /**
      * Returns TRUE if the layer should be visible by default in newly created elevation

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layertree/qgscolorramplegendnode.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,8 @@ A legend node which renders a color ramp.
   public:
 
     QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/,
-                            const QString &minimumLabel, const QString &maximumLabel, QObject *parent /TransferThis/ = 0 );
+                            const QString &minimumLabel, const QString &maximumLabel, QObject *parent /TransferThis/ = 0,
+                            const QString &key = QString(), const QString &parentKey = QString() );
 %Docstring
 Constructor for QgsColorRampLegendNode.
 
@@ -32,11 +33,14 @@ Constructor for QgsColorRampLegendNode.
 :param minimumLabel: label text to render for the minimum value in the ramp
 :param maximumLabel: label text to render for the maximum value in the ramp
 :param parent: attach a parent QObject to the legend node.
+:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.40)
+:param parentKey: rule key of parent (since QGIS 3.40)
 %End
 
     QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/,
                             const QgsColorRampLegendNodeSettings &settings, double minimumValue,
-                            double maximumValue, QObject *parent /TransferThis/ = 0 );
+                            double maximumValue, QObject *parent /TransferThis/ = 0,
+                            const QString &key = QString(), const QString &parentKey = QString() );
 %Docstring
 Constructor for QgsColorRampLegendNode.
 
@@ -46,6 +50,8 @@ Constructor for QgsColorRampLegendNode.
 :param minimumValue: value associated with minimum of ramp
 :param maximumValue: value associated with maximum of ramp
 :param parent: attach a parent QObject to the legend node.
+:param key: rule key. optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.40)
+:param parentKey: rule key of parent (since QGIS 3.40)
 %End
 
 
@@ -100,5 +106,5 @@ Sets the node's ``settings``.
  *                                                                      *
  * src/core/layertree/qgscolorramplegendnode.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

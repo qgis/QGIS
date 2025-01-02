@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsgui.h                                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,6 @@ related to GUI classes.
       UseCrsOfFirstLayerAdded,
       UsePresetCrs,
     };
-
 
 
     static QgsGui *instance();
@@ -80,6 +79,13 @@ Returns the global annotation item GUI registry, used for registering the GUI be
 .. versionadded:: 3.22
 %End
 
+    static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() /KeepReference/;
+%Docstring
+Returns the global advanced digitizing tools registry, used for registering advanced digitizing tools.
+
+.. versionadded:: 3.40
+%End
+
     static QgsProcessingGuiRegistry *processingGuiRegistry() /KeepReference/;
 %Docstring
 Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
@@ -106,6 +112,13 @@ Returns the global code editor color scheme registry, used for registering the c
 Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
 
 .. versionadded:: 3.4
+%End
+
+    static QgsProcessingFavoriteAlgorithmManager *processingFavoriteAlgorithmManager();
+%Docstring
+Returns the global Processing favorite algorithm manager, used for tracking favorite Processing algorithms.
+
+.. versionadded:: 3.40
 %End
 
     static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() /KeepReference/;
@@ -237,6 +250,14 @@ Returns the screen at the given global ``point`` (pixel).
 
 
 
+    static bool hasWebEngine();
+%Docstring
+Checks whether QWebEngineView is available to display HTML content.
+
+.. versionadded:: 3.42
+%End
+
+
   signals:
 
     void optionsChanged();
@@ -263,5 +284,5 @@ QFlags<QgsGui::HigFlag> operator|(QgsGui::HigFlag f1, QFlags<QgsGui::HigFlag> f2
  *                                                                      *
  * src/gui/qgsgui.h                                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

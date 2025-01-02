@@ -253,7 +253,7 @@ bool QgsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags ) cons
     return error.isEmpty();
   }
 
-  const QgsGeos geos( this );
+  const QgsGeos geos( this, 0, Qgis::GeosCreationFlags() );
   const bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {
@@ -316,91 +316,121 @@ QgsPoint QgsCurve::childPoint( int index ) const
 
 bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
                                   const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
-                                  QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const
+                                  QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM, bool removeRedundantPoints ) const
 {
   const int length = numPoints();
-
-  if ( length <= 0 )
+  if ( length < 2 )
     return false;
 
   const bool hasZ = is3D();
   const bool hasM = isMeasure();
 
-  // helper functions
-  auto roundVertex = [hSpacing, vSpacing, dSpacing, mSpacing, hasZ, hasM, &srcX, &srcY, &srcZ, &srcM]( QgsPoint & out, int i )
+  outX.reserve( length );
+  outY.reserve( length );
+  if ( hasZ )
+    outZ.reserve( length );
+  if ( hasM )
+    outM.reserve( length );
+
+  const double *xIn = srcX.constData();
+  const double *yIn = srcY.constData();
+  const double *zIn = hasZ ? srcZ.constData() : nullptr;
+  const double *mIn = hasM ? srcM.constData() : nullptr;
+
+  double previousX = 0;
+  double previousY = 0;
+  double previousZ = 0;
+  double previousM = 0;
+  int outSize = 0;
+  for ( int i = 0; i < length; ++i )
   {
-    if ( hSpacing > 0 )
-      out.setX( std::round( srcX.at( i ) / hSpacing ) * hSpacing );
-    else
-      out.setX( srcX.at( i ) );
+    const double currentX = *xIn++;
+    const double currentY = *yIn++;
+    const double currentZ = zIn ? *zIn++ : 0;
+    const double currentM = mIn ? *mIn++ : 0;
 
-    if ( vSpacing > 0 )
-      out.setY( std::round( srcY.at( i ) / vSpacing ) * vSpacing );
-    else
-      out.setY( srcY.at( i ) );
+    const double roundedX = hSpacing > 0 ? ( std::round( currentX / hSpacing ) * hSpacing ) : currentX;
+    const double roundedY = vSpacing > 0 ? ( std::round( currentY / vSpacing ) * vSpacing ) : currentY;
+    const double roundedZ = hasZ && dSpacing > 0 ? ( std::round( currentZ / dSpacing ) * dSpacing ) : currentZ;
+    const double roundedM = hasM && mSpacing > 0 ? ( std::round( currentM / mSpacing ) * mSpacing ) : currentM;
 
-    if ( hasZ )
+    if ( i == 0 )
     {
-      if ( dSpacing > 0 )
-        out.setZ( std::round( srcZ.at( i ) / dSpacing ) * dSpacing );
+      outX.append( roundedX );
+      outY.append( roundedY );
+      if ( hasZ )
+        outZ.append( roundedZ );
+      if ( hasM )
+        outM.append( roundedM );
+      outSize++;
+    }
+    else
+    {
+      const bool isPointEqual = qgsDoubleNear( roundedX, previousX )
+                                && qgsDoubleNear( roundedY, previousY )
+                                && ( !hasZ || dSpacing <= 0 || qgsDoubleNear( roundedZ, previousZ ) )
+                                && ( !hasM || mSpacing <= 0 || qgsDoubleNear( roundedM, previousM ) );
+      if ( isPointEqual )
+        continue;
+
+      // maybe previous point is redundant and is just a midpoint on a straight line -- let's check
+      bool previousPointRedundant = false;
+      if ( removeRedundantPoints && outSize > 1 && !hasZ && !hasM )
+      {
+        previousPointRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( outSize - 1 ),
+                                 outY.at( outSize - 1 ),
+                                 outX.at( outSize - 2 ),
+                                 outY.at( outSize - 2 ),
+                                 roundedX, roundedY ) == 0;
+      }
+      if ( previousPointRedundant )
+      {
+        outX[ outSize - 1 ] = roundedX;
+        outY[ outSize - 1 ] = roundedY;
+      }
       else
-        out.setZ( srcZ.at( i ) );
+      {
+        outX.append( roundedX );
+        outY.append( roundedY );
+        if ( hasZ )
+          outZ.append( roundedZ );
+        if ( hasM )
+          outM.append( roundedM );
+        outSize++;
+      }
     }
 
-    if ( hasM )
+    previousX = roundedX;
+    previousY = roundedY;
+    previousZ = roundedZ;
+    previousM = roundedM;
+  }
+
+  if ( removeRedundantPoints && isClosed() && outSize > 4 && !hasZ && !hasM )
+  {
+    // maybe first/last vertex is redundant, let's try to remove that too
+    const bool firstVertexIsRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( 0 ),
+                                        outY.at( 0 ),
+                                        outX.at( outSize - 2 ),
+                                        outY.at( outSize - 2 ),
+                                        outX.at( 1 ), outY.at( 1 ) ) == 0;
+    if ( firstVertexIsRedundant )
     {
-      if ( mSpacing > 0 )
-        out.setM( std::round( srcM.at( i ) / mSpacing ) * mSpacing );
-      else
-        out.setM( srcM.at( i ) );
-    }
-  };
-
-
-  auto append = [hasZ, hasM, &outX, &outY, &outM, &outZ]( QgsPoint const & point )
-  {
-    outX.append( point.x() );
-
-    outY.append( point.y() );
-
-    if ( hasZ )
-      outZ.append( point.z() );
-
-    if ( hasM )
-      outM.append( point.m() );
-  };
-
-  auto isPointEqual = [dSpacing, mSpacing, hasZ, hasM]( const QgsPoint & a, const QgsPoint & b )
-  {
-    return ( a.x() == b.x() )
-           && ( a.y() == b.y() )
-           && ( !hasZ || dSpacing <= 0 || a.z() == b.z() )
-           && ( !hasM || mSpacing <= 0 || a.m() == b.m() );
-  };
-
-  // temporary values
-  const Qgis::WkbType pointType = QgsWkbTypes::zmType( Qgis::WkbType::Point, hasZ, hasM );
-  QgsPoint last( pointType );
-  QgsPoint current( pointType );
-
-  // Actual code (what does all the work)
-  roundVertex( last, 0 );
-  append( last );
-
-  for ( int i = 1; i < length; ++i )
-  {
-    roundVertex( current, i );
-    if ( !isPointEqual( current, last ) )
-    {
-      append( current );
-      last = current;
+      outX.removeAt( 0 );
+      outY.removeAt( 0 );
+      outX[ outSize - 2 ] = outX.at( 0 );
+      outY[ outSize - 2 ] = outY.at( 0 );
     }
   }
 
-  // if it's not closed, with 2 points you get a correct line
-  // if it is, you need at least 4 (3 + the vertex that closes)
-  if ( outX.length() < 2 || ( isClosed() && outX.length() < 4 ) )
-    return false;
+  // we previously reserved size based on a worst case scenario, let's free
+  // unnecessary memory reservation now
+  outX.squeeze();
+  outY.squeeze();
+  if ( hasZ )
+    outZ.squeeze();
+  if ( hasM )
+    outM.squeeze();
 
-  return true;
+  return outSize >= 4 || ( !isClosed() && outSize >= 2 );
 }

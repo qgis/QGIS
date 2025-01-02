@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckerror.h         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,6 @@ This represents an error reported by a geometry check.
 #include "qgsgeometrycheckerror.h"
 %End
   public:
-
     enum Status
     {
       StatusPending,
@@ -43,12 +42,7 @@ This represents an error reported by a geometry check.
       ValueOther
     };
 
-    QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                           const QgsPointXY &errorLocation,
-                           QgsVertexId vidx = QgsVertexId(),
-                           const QVariant &value = QVariant(),
-                           ValueType valueType = ValueOther );
+    QgsGeometryCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx = QgsVertexId(), const QVariant &value = QVariant(), ValueType valueType = ValueOther );
 %Docstring
 Create a new geometry check error with the parent ``check`` and for the
 ``layerFeature`` pair at the ``errorLocation``. Optionally the vertex can be
@@ -179,16 +173,9 @@ Returns an icon that should be shown for this kind of error.
 
 .. versionadded:: 3.8
 %End
-  protected:
 
-    QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QString &layerId,
-                           QgsFeatureId featureId,
-                           const QgsGeometry &geometry,
-                           const QgsPointXY &errorLocation,
-                           QgsVertexId vidx = QgsVertexId(),
-                           const QVariant &value = QVariant(),
-                           ValueType valueType = ValueOther );
+  protected:
+    QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx = QgsVertexId(), const QVariant &value = QVariant(), ValueType valueType = ValueOther );
 %Docstring
 Create a new geometry check error with the parent ``check`` and for the
 layer with ``layerId`` and ``featureId``.
@@ -209,5 +196,5 @@ its ``value`` Type for additional information.
  *                                                                      *
  * src/analysis/vector/geometry_checker/qgsgeometrycheckerror.h         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

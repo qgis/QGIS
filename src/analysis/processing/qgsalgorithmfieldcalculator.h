@@ -32,9 +32,7 @@
  */
 class QgsFieldCalculatorAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsFieldCalculatorAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -44,6 +42,7 @@ class QgsFieldCalculatorAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
     QgsFieldCalculatorAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
@@ -52,8 +51,7 @@ class QgsFieldCalculatorAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QgsFields mFields;

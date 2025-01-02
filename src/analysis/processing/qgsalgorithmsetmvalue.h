@@ -30,9 +30,7 @@
  */
 class QgsSetMValueAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsSetMValueAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -41,20 +39,18 @@ class QgsSetMValueAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsSetMValueAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *l ) const override;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-    bool supportInPlaceEdit( const QgsMapLayer *l ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     double mMValue = 0.0;
     bool mDynamicMValue = false;
     QgsProperty mMValueProperty;

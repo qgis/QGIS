@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspluginlayer.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -58,6 +58,13 @@ Set source string. This is used for example in layer tree to show tooltip.
     virtual QgsDataProvider *dataProvider();
 
 
+    virtual QIcon icon() const;
+%Docstring
+Returns an icon for the layer.
+
+.. versionadded:: 3.42
+%End
+
   protected:
 };
 
@@ -67,5 +74,5 @@ Set source string. This is used for example in layer tree to show tooltip.
  *                                                                      *
  * src/core/qgspluginlayer.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

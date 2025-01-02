@@ -241,6 +241,22 @@ class CORE_EXPORT QgsProjUtils
      */
     static QList< QgsDatumTransform::GridDetails > gridsUsed( const QString &proj );
 
+    /**
+     * Default QGIS proj log function.
+     *
+     * Uses QgsDebugError or QgsDebugMsgLevel to report errors in debug builds only.
+     */
+    static void proj_logger( void *user_data, int level, const char *message );
+
+    /**
+     * QGIS proj log function which collects errors to a QStringList.
+     *
+     * \warning The user_data argument passed to proj_log_func MUST be a QStringList object,
+     * and must exist for the duration where proj_collecting_logger is used. You MUST reset
+     * the proj_log_func to proj_logger before the user data QStringList is destroyed.
+     */
+    static void proj_collecting_logger( void *user_data, int level, const char *message );
+
 #if 0 // not possible in current Proj 6 API
 
     /**
@@ -293,6 +309,46 @@ class CORE_EXPORT QgsProjContext
 #else
     static QThreadStorage< QgsProjContext * > sProjContext;
 #endif
+};
+
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for temporary swapping to an error-collecting PROJ log function.
+ *
+ * Temporarily sets the PROJ log function to one which collects errors for the lifetime of the object,
+ * before returning it to the default QGIS proj logging function on destruction.
+ *
+ * \note The collecting logger ONLY applies to the current thread.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsScopedProjCollectingLogger
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedProjCollectingLogger.
+     *
+     * PROJ errors will be collected, and can be retrieved by calling errors().
+     */
+    QgsScopedProjCollectingLogger();
+
+    /**
+     * Returns the PROJ logger back to the default QGIS PROJ logger.
+     */
+    ~QgsScopedProjCollectingLogger();
+
+    /**
+     * Returns the (possibly empty) list of collected errors.
+     */
+    QStringList errors() const { return mProjErrors; }
+
+  private:
+
+    QStringList mProjErrors;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjUtils::IdentifyFlags )

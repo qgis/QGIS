@@ -46,7 +46,6 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
      * QgsGui::editorWidgetRegistry().
@@ -95,13 +94,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * \returns A new widget wrapper
      */
-    QgsEditorWidgetWrapper *create( const QString &widgetId,
-                                    QgsVectorLayer *vl,
-                                    int fieldIdx,
-                                    const QVariantMap &config,
-                                    QWidget *editor,
-                                    QWidget *parent SIP_TRANSFERTHIS,
-                                    const QgsAttributeEditorContext &context  SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
+    QgsEditorWidgetWrapper *create( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *editor, QWidget *parent SIP_TRANSFERTHIS, const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
 
     /**
      * Create an attribute editor widget wrapper of the best type for a given field.
@@ -115,18 +108,9 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * \returns A new widget wrapper
      */
-    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl,
-                                    int fieldIdx,
-                                    QWidget *editor,
-                                    QWidget *parent SIP_TRANSFERTHIS,
-                                    const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent SIP_TRANSFERTHIS, const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
 
-    QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId,
-        QgsVectorLayer *vl,
-        int fieldIdx,
-        const QVariantMap &config,
-        QWidget *parent SIP_TRANSFERTHIS,
-        const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
+    QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *parent SIP_TRANSFERTHIS, const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
 
     /**
      * Creates a configuration widget
@@ -184,7 +168,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QString findSuitableWrapper( QWidget *editor, const QString &defaultWidget );
 
     QMap<QString, QgsEditorWidgetFactory *> mWidgetFactories;
-    QMap<const char *, QPair<int, QString> > mFactoriesByType;
+    QMap<const char *, QPair<int, QString>> mFactoriesByType;
     QgsEditorWidgetAutoConf mAutoConf;
     std::unique_ptr<QgsEditorWidgetFactory> mFallbackWidgetFactory = nullptr;
 };

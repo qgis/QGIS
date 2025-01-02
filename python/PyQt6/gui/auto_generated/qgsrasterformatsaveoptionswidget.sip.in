@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/qgsrasterformatsaveoptionswidget.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsRasterFormatSaveOptionsWidget: QWidget
+class QgsRasterFormatSaveOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget to select format-specific raster saving options
@@ -20,7 +20,6 @@ A widget to select format-specific raster saving options
 #include "qgsrasterformatsaveoptionswidget.h"
 %End
   public:
-
     enum Type /BaseType=IntEnum/
     {
       Default,
@@ -30,10 +29,7 @@ A widget to select format-specific raster saving options
       ProfileLineEdit
     };
 
-    QgsRasterFormatSaveOptionsWidget( QWidget *parent /TransferThis/ = 0,
-                                      const QString &format = "GTiff",
-                                      QgsRasterFormatSaveOptionsWidget::Type type = Default,
-                                      const QString &provider = "gdal" );
+    QgsRasterFormatSaveOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &format = "GTiff", QgsRasterFormatSaveOptionsWidget::Type type = Default, const QString &provider = "gdal" );
 
     void setFormat( const QString &format );
 %Docstring
@@ -119,7 +115,11 @@ Reloads profiles list from QGIS settings
 
 
   signals:
+
     void optionsChanged();
+%Docstring
+Emitted when the options configured in the widget are changed.
+%End
 
   private:
     QString settingsKey( QString profile ) const;
@@ -141,5 +141,5 @@ Reloads profiles list from QGIS settings
  *                                                                      *
  * src/gui/qgsrasterformatsaveoptionswidget.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

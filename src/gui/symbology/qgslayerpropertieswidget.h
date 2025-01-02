@@ -35,13 +35,16 @@ class QgsPanelWidget;
 /**
  * \ingroup gui
  * \class QgsLayerPropertiesWidget
+ * \brief A widget which allows configuration of the properties of a single QgsSymbolLayer.
+ *
+ * This widget includes a combobox box for selection of the symbol layer type, and a panel for
+ * showing configuration properties for the selected symbol layer type.
  */
 class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayerPropertiesWidget.
      * \param layer the symbol layer
@@ -76,8 +79,16 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     void emitSignalChanged();
 
   signals:
+
+    /**
+     * Emitted when the symbol layer configuration is changed in the widget.
+     */
     void changed();
-    void changeLayer( QgsSymbolLayer * );
+
+    /**
+     * Emitted when the symbol \a layer is changed in the widget.
+     */
+    void changeLayer( QgsSymbolLayer *layer );
 
   protected:
     void populateLayerTypes();
@@ -104,9 +115,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     void updateProperty();
 
   private:
-
     QgsSymbolWidgetContext mContext;
-
 };
 
 #endif //QGSLAYERPROPERTIESWIDGET_H

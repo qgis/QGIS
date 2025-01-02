@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingparameters.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -247,6 +247,10 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterArea::typeName() )
+      sipType = sipType_QgsProcessingParameterArea;
+    else if ( sipCpp->type() == QgsProcessingParameterVolume::typeName() )
+      sipType = sipType_QgsProcessingParameterVolume;
     else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() )
       sipType = sipType_QgsProcessingParameterDuration;
     else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
@@ -530,7 +534,7 @@ Returns a string version of the parameter input ``value`` (if possible).
 :param context: processing context
 
 :return: - value converted to string
-         - ok: will be set to ``True`` if value could be represented as a string.
+         - ok: ``True`` if value could be represented as a string.
 
 .. seealso:: :py:func:`valueAsStringList`
 
@@ -549,7 +553,7 @@ Returns a string list version of the parameter input ``value`` (if possible).
 :param context: processing context
 
 :return: - value converted to string list
-         - ok: will be set to ``True`` if value could be represented as a string list
+         - ok: ``True`` if value could be represented as a string list
 
 .. seealso:: :py:func:`valueAsString`
 
@@ -800,7 +804,7 @@ A collection of utilities for working with parameters when running a processing 
 Parameters are stored in a QVariantMap and referenced by a unique string key.
 The QVariants in parameters are not usually accessed
 directly, and instead the high level API provided through :py:class:`QgsProcessingParameters`
-:py:func:`~QgsProcessingParameterDefinition.parameterAsString`, :py:func:`~QgsProcessingParameterDefinition.parameterAsDouble` are used instead.
+:py:func:`~parameterAsString`, :py:func:`~parameterAsDouble` are used instead.
 
 Parameters are evaluated using a provided :py:class:`QgsProcessingContext`, allowing
 the evaluation to understand available map layers and expression contexts
@@ -1047,7 +1051,7 @@ This function creates a new object and the caller takes responsibility for delet
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
                                             const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) throw( QgsProcessingException ) /Factory/;
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() )  /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a feature sink.
 
@@ -1136,8 +1140,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :param feedback: feedback object
 
 :return: - path to source layer, or nearly converted compatible layer
-         - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
-
+         - layerName: the target layer name for multi-layer sources (e.g. Geopackage)
 
 .. seealso:: :py:func:`parameterAsCompatibleSourceLayerPath`
 
@@ -1189,9 +1192,12 @@ need to handle deletion of the returned layer.
 Evaluates the parameter with matching ``definition`` to a output layer destination.
 %End
 
-    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, bool testOnly = false );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a output layer destination.
+
+Since QGIS 3.38 the ``testOnly`` argument can be set to ``True`` to evaluate the parameter to an output layer destination for advance testing only. This
+prevents default behavior such as output post-processing which would otherwise occur.
 
 .. versionadded:: 3.4
 %End
@@ -1456,29 +1462,31 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a range of
 .. versionadded:: 3.4
 %End
 
- static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Deprecated/;
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Deprecated="Since 3.40. Use parameterAsStrings() instead."/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of fields.
 
-.. deprecated::
-   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
 %End
 
- static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) /Deprecated/;
+ static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) /Deprecated="Since 3.40. Use parameterAsStrings() instead."/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a list of fields.
 
 .. versionadded:: 3.4
 
-.. deprecated::
-   use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProcessingParameters.parameterAsStrings` instead.
 %End
 
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of strings (e.g. field names or point cloud attributes).
 
-.. versionadded:: 3.32.
+.. versionadded:: 3.32
 %End
 
     static QStringList parameterAsStrings( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
@@ -2199,7 +2207,7 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 %Docstring(signature="appended")
 A numeric parameter for processing algorithms.
 
-For numeric parameters with a :py:func:`~QgsProcessingParameterMultipleLayers.dataType` of Double, the number of decimals places
+For numeric parameters with a :py:func:`~dataType` of Double, the number of decimals places
 shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
 
 .. code-block:: python
@@ -2385,6 +2393,179 @@ Sets the default distance ``unit`` for the parameter.
 
 
 };
+
+
+class QgsProcessingParameterArea : QgsProcessingParameterNumber
+{
+%Docstring(signature="appended")
+A double numeric parameter for area values. Linked to a source layer or CRS parameter
+to determine what units the area values are in.
+
+The number of decimals places shown in a area parameter's widget can be specified by
+setting the parameter's metadata. For example:
+
+.. code-block:: python
+
+       param = QgsProcessingParameterArea( 'VAL', 'Threshold')
+       # only show two decimal places in parameter's widgets, not 6:
+       param.setMetadata( {'widget_wrapper':
+         { 'decimals': 2 }
+       })
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    explicit QgsProcessingParameterArea( const QString &name, const QString &description = QString(),
+                                         const QVariant &defaultValue = QVariant(),
+                                         const QString &parentParameterName = QString(),
+                                         bool optional = false,
+                                         double minValue = 0,
+                                         double maxValue = DBL_MAX );
+%Docstring
+Constructor for QgsProcessingParameterArea.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    virtual QgsProcessingParameterArea *clone() const /Factory/;
+
+
+    virtual QString type() const;
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    QString parentParameterName() const;
+%Docstring
+Returns the name of the parent parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentParameterName`
+%End
+
+    void setParentParameterName( const QString &parentParameterName );
+%Docstring
+Sets the name of the parent layer parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentParameterName`
+%End
+
+    Qgis::AreaUnit defaultUnit() const;
+%Docstring
+Returns the default area unit for the parameter.
+
+.. seealso:: :py:func:`setDefaultUnit`
+%End
+
+    void setDefaultUnit( Qgis::AreaUnit unit );
+%Docstring
+Sets the default area ``unit`` for the parameter.
+
+.. seealso:: :py:func:`defaultUnit`
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+};
+
+
+class QgsProcessingParameterVolume : QgsProcessingParameterNumber
+{
+%Docstring(signature="appended")
+A double numeric parameter for volume values. Linked to a source layer or CRS parameter
+to determine what units the volume values are in.
+
+The number of decimals places shown in a volume parameter's widget can be specified by
+setting the parameter's metadata. For example:
+
+.. code-block:: python
+
+       param = QgsProcessingParameterVolume( 'VAL', 'Threshold')
+       # only show two decimal places in parameter's widgets, not 6:
+       param.setMetadata( {'widget_wrapper':
+         { 'decimals': 2 }
+       })
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    explicit QgsProcessingParameterVolume( const QString &name, const QString &description = QString(),
+                                           const QVariant &defaultValue = QVariant(),
+                                           const QString &parentParameterName = QString(),
+                                           bool optional = false,
+                                           double minValue = 0,
+                                           double maxValue = DBL_MAX );
+%Docstring
+Constructor for QgsProcessingParameterVolume.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    virtual QgsProcessingParameterVolume *clone() const /Factory/;
+
+
+    virtual QString type() const;
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    QString parentParameterName() const;
+%Docstring
+Returns the name of the parent parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentParameterName`
+%End
+
+    void setParentParameterName( const QString &parentParameterName );
+%Docstring
+Sets the name of the parent layer parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentParameterName`
+%End
+
+    Qgis::VolumeUnit defaultUnit() const;
+%Docstring
+Returns the default volume unit for the parameter.
+
+.. seealso:: :py:func:`setDefaultUnit`
+%End
+
+    void setDefaultUnit( Qgis::VolumeUnit unit );
+%Docstring
+Sets the default volume ``unit`` for the parameter.
+
+.. seealso:: :py:func:`defaultUnit`
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+};
+
 
 class QgsProcessingParameterDuration : QgsProcessingParameterNumber
 {
@@ -3326,8 +3507,7 @@ calls :py:func:`QgsProcessingProvider.isSupportedOutputValue()` to test compatib
 :param context: Processing context
 
 :return: - ``True`` if ``value`` is supported.
-         - error: will be set to a descriptive error string
-
+         - error: a descriptive error string
 
 .. versionadded:: 3.14
 %End
@@ -3484,7 +3664,7 @@ created by the algorithm.
 
 .. note::
 
-   Consider using the more flexible QgsProcessingParameterFeatureSink wherever
+   Consider using the more flexible :py:class:`QgsProcessingParameterFeatureSink` wherever
    possible.
 %End
 
@@ -4869,5 +5049,5 @@ Creates a new parameter using the definition from a script code.
  *                                                                      *
  * src/core/processing/qgsprocessingparameters.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

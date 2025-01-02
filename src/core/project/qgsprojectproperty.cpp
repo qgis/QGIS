@@ -35,7 +35,7 @@ void QgsProjectPropertyValue::dump( int tabs ) const
   QString tabString;
   tabString.fill( '\t', tabs );
 
-  if ( QVariant::StringList == mValue.type() )
+  if ( QMetaType::Type::QStringList == mValue.userType() )
   {
     const QStringList sl = mValue.toStringList();
 
@@ -71,7 +71,11 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
   mValue.clear();
 
   // get the type associated with the value first
-  QVariant::Type type = QVariant::nameToType( typeString.toLocal8Bit().constData() );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QMetaType::Type type = static_cast<QMetaType::Type>( QMetaType::type( typeString.toLocal8Bit().constData() ) );
+#else
+  QMetaType::Type type = static_cast<QMetaType::Type>( QMetaType::fromName( typeString.toLocal8Bit().constData() ).id() );
+#endif
 
   // This huge switch is left-over from an earlier incarnation of
   // QgsProject where there was a fine level of granularity for value
@@ -82,23 +86,23 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 
   switch ( type )
   {
-    case QVariant::Invalid:
+    case QMetaType::Type::UnknownType:
       QgsDebugError( QStringLiteral( "invalid value type %1 .. " ).arg( typeString ) );
       return false;
 
-    case QVariant::Map:
+    case QMetaType::Type::QVariantMap:
       QgsDebugError( QStringLiteral( "no support for QVariant::Map" ) );
       return false;
 
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
       QgsDebugError( QStringLiteral( "no support for QVariant::List" ) );
       return false;
 
-    case QVariant::String:
+    case QMetaType::Type::QString:
       mValue = subkeyElement.text();  // no translating necessary
       break;
 
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
     {
       int i = 0;
       QDomNodeList values = keyNode.childNodes();
@@ -125,87 +129,87 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       break;
     }
 
-    case QVariant::Font:
+    case QMetaType::Type::QFont:
       QgsDebugError( QStringLiteral( "no support for QVariant::Font" ) );
       return false;
 
-    case QVariant::Pixmap:
+    case QMetaType::Type::QPixmap:
       QgsDebugError( QStringLiteral( "no support for QVariant::Pixmap" ) );
       return false;
 
-    case QVariant::Brush:
+    case QMetaType::Type::QBrush:
       QgsDebugError( QStringLiteral( "no support for QVariant::Brush" ) );
       return false;
 
-    case QVariant::Rect:
+    case QMetaType::Type::QRect:
       QgsDebugError( QStringLiteral( "no support for QVariant::Rect" ) );
       return false;
 
-    case QVariant::Size:
+    case QMetaType::Type::QSize:
       QgsDebugError( QStringLiteral( "no support for QVariant::Size" ) );
       return false;
 
-    case QVariant::Color:
+    case QMetaType::Type::QColor:
       QgsDebugError( QStringLiteral( "no support for QVariant::Color" ) );
       return false;
 
-    case QVariant::Palette:
+    case QMetaType::Type::QPalette:
       QgsDebugError( QStringLiteral( "no support for QVariant::Palette" ) );
       return false;
 
-    case QVariant::Point:
+    case QMetaType::Type::QPoint:
       QgsDebugError( QStringLiteral( "no support for QVariant::Point" ) );
       return false;
 
-    case QVariant::Image:
+    case QMetaType::Type::QImage:
       QgsDebugError( QStringLiteral( "no support for QVariant::Image" ) );
       return false;
 
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       mValue = QVariant( subkeyElement.text() ).toInt();
       break;
 
-    case QVariant::UInt:
+    case QMetaType::Type::UInt:
       mValue = QVariant( subkeyElement.text() ).toUInt();
       break;
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       mValue = QVariant( subkeyElement.text() ).toBool();
       break;
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       mValue = QVariant( subkeyElement.text() ).toDouble();
       break;
 
-    case QVariant::ByteArray:
+    case QMetaType::Type::QByteArray:
       mValue = QVariant( subkeyElement.text() ).toByteArray();
       break;
 
-    case QVariant::Polygon:
+    case QMetaType::Type::QPolygon:
       QgsDebugError( QStringLiteral( "no support for QVariant::Polygon" ) );
       return false;
 
-    case QVariant::Region:
+    case QMetaType::Type::QRegion:
       QgsDebugError( QStringLiteral( "no support for QVariant::Region" ) );
       return false;
 
-    case QVariant::Bitmap:
+    case QMetaType::Type::QBitmap:
       QgsDebugError( QStringLiteral( "no support for QVariant::Bitmap" ) );
       return false;
 
-    case QVariant::Cursor:
+    case QMetaType::Type::QCursor:
       QgsDebugError( QStringLiteral( "no support for QVariant::Cursor" ) );
       return false;
 
-    case QVariant::BitArray :
+    case QMetaType::Type::QBitArray :
       QgsDebugError( QStringLiteral( "no support for QVariant::BitArray" ) );
       return false;
 
-    case QVariant::KeySequence :
+    case QMetaType::Type::QKeySequence :
       QgsDebugError( QStringLiteral( "no support for QVariant::KeySequence" ) );
       return false;
 
-    case QVariant::Pen :
+    case QMetaType::Type::QPen :
       QgsDebugError( QStringLiteral( "no support for QVariant::Pen" ) );
       return false;
 
@@ -242,7 +246,7 @@ bool QgsProjectPropertyValue::writeXml( QString const &nodeName,
   // create a sequence of repeated elements to cover all the string list
   // members; each value will be in a <value></value> tag.
   // XXX Not the most elegant way to handle string lists?
-  if ( QVariant::StringList == mValue.type() )
+  if ( QMetaType::Type::QStringList == mValue.userType() )
   {
     QStringList sl = mValue.toStringList();
 
@@ -312,7 +316,7 @@ void QgsProjectPropertyKey::dump( int tabs ) const
       {
         QgsProjectPropertyValue *propertyValue = static_cast<QgsProjectPropertyValue *>( i.value() );
 
-        if ( QVariant::StringList == propertyValue->value().type() )
+        if ( QMetaType::Type::QStringList == propertyValue->value().userType() )
         {
           QgsDebugMsgLevel( QStringLiteral( "%1key: <%2>  value:" ).arg( tabString, i.key() ), 4 );
           propertyValue->dump( tabs + 1 );

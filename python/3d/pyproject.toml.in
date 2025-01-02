@@ -2,6 +2,7 @@
 [build-system]
 requires = ["sip >=5.0.0, <7", "PyQt-builder >=1.6, <2"]
 build-backend = "sipbuild.api"
+@sipabi@
 
 # Specify the PEP 566 metadata for the project.
 [tool.sip.metadata]

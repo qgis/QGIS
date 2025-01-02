@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/network/qgsgraph.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,11 +22,7 @@ This class implements a graph edge
 #include "qgsgraph.h"
 %End
   public:
-
     QgsGraphEdge();
-%Docstring
-Constructor for QgsGraphEdge.
-%End
 
     QVariant cost( int strategyIndex ) const;
 %Docstring
@@ -35,7 +31,7 @@ Returns edge cost calculated using specified strategy
 :param strategyIndex: strategy index
 %End
 
-    QVector< QVariant > strategies() const;
+    QVector<QVariant> strategies() const;
 %Docstring
 Returns array of available strategies
 %End
@@ -57,7 +53,7 @@ Returns the index of the vertex at the start of this edge.
 };
 
 
-typedef QList< int > QgsGraphEdgeIds;
+typedef QList<int> QgsGraphEdgeIds;
 
 class QgsGraphVertex
 {
@@ -69,11 +65,7 @@ This class implements a graph vertex
 #include "qgsgraph.h"
 %End
   public:
-
     QgsGraphVertex();
-%Docstring
-Default constructor. It is needed for Qt's container, e.g. QVector
-%End
 
 
     QgsGraphVertex( const QgsPointXY &point );
@@ -113,11 +105,7 @@ Mathematical graph representation
 #include "qgsgraph.h"
 %End
   public:
-
     QgsGraph();
-%Docstring
-Constructor for QgsGraph.
-%End
 
 
     int addVertex( const QgsPointXY &pt );
@@ -125,7 +113,7 @@ Constructor for QgsGraph.
 Add a vertex to the graph
 %End
 
-    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
+    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector<QVariant> &strategies );
 %Docstring
 Add an edge to the graph, going from the ``fromVertexIdx``
 to ``toVertexIdx``.
@@ -278,7 +266,6 @@ Returns whether the vertex of the given index exists.
   protected:
 
 
-
 };
 
 /************************************************************************
@@ -286,5 +273,5 @@ Returns whether the vertex of the given index exists.
  *                                                                      *
  * src/analysis/network/qgsgraph.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

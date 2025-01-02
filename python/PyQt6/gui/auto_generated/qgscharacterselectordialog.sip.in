@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscharacterselectordialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,5 +39,5 @@ If ``initialSelection`` is specified, then that character will be initially sele
  *                                                                      *
  * src/gui/qgscharacterselectordialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

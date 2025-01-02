@@ -30,8 +30,8 @@ class TestQgsMapThemeCollection : public QObject
     TestQgsMapThemeCollection() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void expandedState();
     void checkedState();
@@ -58,16 +58,13 @@ void TestQgsMapThemeCollection::initTestCase()
   QgsApplication::initQgis();
 
   const QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
-  mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                     pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   const QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
-  mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
-                                    polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(), polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   const QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
-  mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
-                                    lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(), lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // rule-based renderer for points layer with two levels of rules
   QgsRuleBasedRenderer::Rule *rule0 = new QgsRuleBasedRenderer::Rule( nullptr );
@@ -125,7 +122,7 @@ void TestQgsMapThemeCollection::expandedState()
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLayerTreeModel->layerLegendNodes( mNodeLayerPoints, true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
   {
-    const QString key = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+    const QString key = legendNode->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     pointLayerRootLegendNodes << key;
   }
   QCOMPARE( pointLayerRootLegendNodes.count(), 4 );
@@ -215,7 +212,7 @@ void TestQgsMapThemeCollection::checkedState()
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLayerTreeModel->layerLegendNodes( mNodeLayerPoints, true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
   {
-    const QString key = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+    const QString key = legendNode->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     pointLayerRootLegendNodes << key;
   }
   QCOMPARE( pointLayerRootLegendNodes.count(), 4 );

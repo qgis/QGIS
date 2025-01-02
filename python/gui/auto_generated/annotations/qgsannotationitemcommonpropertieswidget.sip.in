@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/annotations/qgsannotationitemcommonpropertieswidget.h        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsAnnotationItemCommonPropertiesWidget: QWidget
+class QgsAnnotationItemCommonPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
 
@@ -22,11 +22,11 @@ A widget for configuring common properties for :py:class:`QgsAnnotationItems`
 #include "qgsannotationitemcommonpropertieswidget.h"
 %End
   public:
-
     QgsAnnotationItemCommonPropertiesWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsAnnotationItemCommonPropertiesWidget.
 %End
+    ~QgsAnnotationItemCommonPropertiesWidget();
 
     void setItem( QgsAnnotationItem *item );
 %Docstring
@@ -66,5 +66,5 @@ Emitted when the annotation item definition in the widget is changed by the user
  *                                                                      *
  * src/gui/annotations/qgsannotationitemcommonpropertieswidget.h        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

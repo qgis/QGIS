@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/auth/qgsauthcertificateinfo.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,11 +21,7 @@ Widget for viewing detailed info on a certificate and its hierarchical trust cha
 #include "qgsauthcertificateinfo.h"
 %End
   public:
-
-    explicit QgsAuthCertInfo( const QSslCertificate &cert,
-                              bool manageCertTrust = false,
-                              QWidget *parent /TransferThis/ = 0,
-                              const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+    explicit QgsAuthCertInfo( const QSslCertificate &cert, bool manageCertTrust = false, QWidget *parent /TransferThis/ = 0, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
 Constructor for QgsAuthCertInfo
 %End
@@ -45,11 +41,7 @@ Dialog wrapper for widget displaying detailed info on a certificate and its hier
 #include "qgsauthcertificateinfo.h"
 %End
   public:
-
-    explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
-                                    bool manageCertTrust,
-                                    QWidget *parent /TransferThis/ = 0,
-                                    const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+    explicit QgsAuthCertInfoDialog( const QSslCertificate &cert, bool manageCertTrust, QWidget *parent /TransferThis/ = 0, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
 Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
 
@@ -80,5 +72,5 @@ Whether the trust cache has been rebuilt
  *                                                                      *
  * src/gui/auth/qgsauthcertificateinfo.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

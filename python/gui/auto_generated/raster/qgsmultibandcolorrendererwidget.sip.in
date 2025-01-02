@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/raster/qgsmultibandcolorrendererwidget.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
+class QgsMultiBandColorRendererWidget : QgsRasterRendererWidget
 {
 
 %TypeHeaderCode
@@ -63,5 +63,5 @@ called when new min/max values are loaded
  *                                                                      *
  * src/gui/raster/qgsmultibandcolorrendererwidget.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

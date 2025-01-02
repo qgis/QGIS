@@ -51,9 +51,7 @@ class _3D_EXPORT QgsImageTexture : public Qt3DRender::QPaintedTextureImage
     QImage getImage() const { return mImage; }
 
   private:
-
     QImage mImage;
-
 };
 
 #endif // QGSIMAGETEXTURE_H

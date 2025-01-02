@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturefiltermodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,8 +31,9 @@ The identifier field should be a unique field that can be used to identify indiv
 It is normally set to the primary key of the layer.
 If there are several identifier fields defined, the behavior is not guaranteed
 
-.. deprecated:: QGIS 3.10
-   use identifierFields instead
+.. deprecated:: 3.10
+
+   Use :py:func:`~QgsFeatureFilterModel.identifierFields` instead.
 %End
 
     QStringList identifierFields() const;
@@ -105,5 +106,5 @@ still be available in the model.
  *                                                                      *
  * src/core/qgsfeaturefiltermodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

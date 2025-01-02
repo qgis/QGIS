@@ -44,8 +44,9 @@ def __qcolor_repr__(self: QColor):
 QColor.__repr__ = __qcolor_repr__
 
 if (QT_VERSION < 0x060000):
-  from PyQt5.QtWidgets import QAction as _QAction, QShortcut as _QShortcut
+  from PyQt5.QtWidgets import QAction as _QAction, QActionGroup as _QActionGroup, QShortcut as _QShortcut
   QAction = _QAction
+  QActionGroup = _QActionGroup
   QShortcut = _QShortcut
 
 

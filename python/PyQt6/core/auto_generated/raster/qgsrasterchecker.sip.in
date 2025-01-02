@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterchecker.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -44,5 +44,5 @@ Test using renderer to generate the image to be compared.
  *                                                                      *
  * src/core/raster/qgsrasterchecker.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

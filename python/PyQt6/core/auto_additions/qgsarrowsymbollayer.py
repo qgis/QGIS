@@ -5,3 +5,8 @@ QgsArrowSymbolLayer.HeadDouble = QgsArrowSymbolLayer.HeadType.HeadDouble
 QgsArrowSymbolLayer.ArrowPlain = QgsArrowSymbolLayer.ArrowType.ArrowPlain
 QgsArrowSymbolLayer.ArrowLeftHalf = QgsArrowSymbolLayer.ArrowType.ArrowLeftHalf
 QgsArrowSymbolLayer.ArrowRightHalf = QgsArrowSymbolLayer.ArrowType.ArrowRightHalf
+try:
+    QgsArrowSymbolLayer.create = staticmethod(QgsArrowSymbolLayer.create)
+    QgsArrowSymbolLayer.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass

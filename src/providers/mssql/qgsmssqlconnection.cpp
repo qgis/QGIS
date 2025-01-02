@@ -32,73 +32,73 @@
 bool QgsMssqlConnection::geometryColumnsOnly( const QString &name )
 {
   const QgsSettings settings;
-  return settings.value( "/MSSQL/connections/" + name + "/geometryColumnsOnly", false ).toBool();
+  return settings.value( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/geometryColumnsOnly" ), false ).toBool();
 }
 
 void QgsMssqlConnection::setGeometryColumnsOnly( const QString &name, bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( "/MSSQL/connections/" + name + "/geometryColumnsOnly", enabled );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/geometryColumnsOnly" ), enabled );
 }
 
 bool QgsMssqlConnection::extentInGeometryColumns( const QString &name )
 {
   const QgsSettings settings;
-  return settings.value( "/MSSQL/connections/" + name + "/extentInGeometryColumns", false ).toBool();
+  return settings.value( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/extentInGeometryColumns" ), false ).toBool();
 }
 
 void QgsMssqlConnection::setExtentInGeometryColumns( const QString &name, bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( "/MSSQL/connections/" + name + "/extentInGeometryColumns", enabled );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/extentInGeometryColumns" ), enabled );
 }
 
 bool QgsMssqlConnection::primaryKeyInGeometryColumns( const QString &name )
 {
   const QgsSettings settings;
-  return settings.value( "/MSSQL/connections/" + name + "/primaryKeyInGeometryColumns", false ).toBool();
+  return settings.value( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/primaryKeyInGeometryColumns" ), false ).toBool();
 }
 
 void QgsMssqlConnection::setPrimaryKeyInGeometryColumns( const QString &name, bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( "/MSSQL/connections/" + name + "/primaryKeyInGeometryColumns", enabled );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/primaryKeyInGeometryColumns" ), enabled );
 }
 
 bool QgsMssqlConnection::allowGeometrylessTables( const QString &name )
 {
   const QgsSettings settings;
-  return settings.value( "/MSSQL/connections/" + name + "/allowGeometrylessTables", false ).toBool();
+  return settings.value( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/allowGeometrylessTables" ), false ).toBool();
 }
 
 void QgsMssqlConnection::setAllowGeometrylessTables( const QString &name, bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( "/MSSQL/connections/" + name + "/allowGeometrylessTables", enabled );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/allowGeometrylessTables" ), enabled );
 }
 
 bool QgsMssqlConnection::useEstimatedMetadata( const QString &name )
 {
   const QgsSettings settings;
-  return settings.value( "/MSSQL/connections/" + name + "/estimatedMetadata", false ).toBool();
+  return settings.value( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/estimatedMetadata" ), false ).toBool();
 }
 
 void QgsMssqlConnection::setUseEstimatedMetadata( const QString &name, bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( "/MSSQL/connections/" + name + "/estimatedMetadata", enabled );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/estimatedMetadata" ), enabled );
 }
 
 bool QgsMssqlConnection::isInvalidGeometryHandlingDisabled( const QString &name )
 {
   const QgsSettings settings;
-  return settings.value( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", false ).toBool();
+  return settings.value( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/disableInvalidGeometryHandling" ), false ).toBool();
 }
 
 void QgsMssqlConnection::setInvalidGeometryHandlingDisabled( const QString &name, bool disabled )
 {
   QgsSettings settings;
-  settings.setValue( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", disabled );
+  settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + name + QStringLiteral( "/disableInvalidGeometryHandling" ), disabled );
 }
 
 bool QgsMssqlConnection::dropView( const QString &uri, QString *errorMessage )
@@ -148,8 +148,7 @@ bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
   q.setForwardOnly( true );
   const QString sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
                                "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'" )
-                      .arg( schema,
-                            table );
+                        .arg( schema, table );
   if ( !q.exec( sql ) )
   {
     if ( errorMessage )
@@ -258,8 +257,7 @@ QStringList QgsMssqlConnection::schemas( std::shared_ptr<QgsMssqlDatabase> db, Q
 
 bool QgsMssqlConnection::isSystemSchema( const QString &schema )
 {
-  static const QSet< QString > sSystemSchemas
-  {
+  static const QSet<QString> sSystemSchemas {
     QStringLiteral( "db_owner" ),
     QStringLiteral( "db_securityadmin" ),
     QStringLiteral( "db_accessadmin" ),
@@ -280,13 +278,13 @@ QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
 {
   const QgsSettings settings;
 
-  const QString key = "/MSSQL/connections/" + connName;
+  const QString key = QStringLiteral( "/MSSQL/connections/" ) + connName;
 
-  const QString service = settings.value( key + "/service" ).toString();
-  const QString host = settings.value( key + "/host" ).toString();
-  const QString database = settings.value( key + "/database" ).toString();
-  const QString username = settings.value( key + "/username" ).toString();
-  const QString password = settings.value( key + "/password" ).toString();
+  const QString service = settings.value( key + QStringLiteral( "/service" ) ).toString();
+  const QString host = settings.value( key + QStringLiteral( "/host" ) ).toString();
+  const QString database = settings.value( key + QStringLiteral( "/database" ) ).toString();
+  const QString username = settings.value( key + QStringLiteral( "/username" ) ).toString();
+  const QString password = settings.value( key + QStringLiteral( "/password" ) ).toString();
 
   const bool useGeometryColumns { QgsMssqlConnection::geometryColumnsOnly( connName ) };
   const bool useEstimatedMetadata { QgsMssqlConnection::useEstimatedMetadata( connName ) };
@@ -312,7 +310,7 @@ QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
   {
     const bool saveUsername { settings.value( QStringLiteral( "saveUsername" ) ).toBool() };
     uri.setParam( QStringLiteral( "saveUsername" ), saveUsername ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-    if ( ! saveUsername )
+    if ( !saveUsername )
     {
       uri.setUsername( QString() );
     }
@@ -321,7 +319,7 @@ QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
   {
     const bool savePassword { settings.value( QStringLiteral( "savePassword" ) ).toBool() };
     uri.setParam( QStringLiteral( "savePassword" ), savePassword ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-    if ( ! savePassword )
+    if ( !savePassword )
     {
       uri.setPassword( QString() );
     }
@@ -345,30 +343,29 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // integer types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer" ), QStringLiteral( "bigint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer" ), QStringLiteral( "int" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer" ), QStringLiteral( "smallint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer" ), QStringLiteral( "tinyint" ), QVariant::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer" ), QStringLiteral( "bigint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer" ), QStringLiteral( "int" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer" ), QStringLiteral( "smallint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QMetaType::Type::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QMetaType::Type::Double, 1, 20, 0, 20 )
 
          // floating point
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QVariant::Double )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (double)" ), QStringLiteral( "float" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (real)" ), QStringLiteral( "real" ), QMetaType::Type::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (double)" ), QStringLiteral( "float" ), QMetaType::Type::Double )
 
          // date/time types
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime, -1, -1, -1, -1 )
 
          // string types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QVariant::String, 1, 255 )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QVariant::String )
-         ;
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QMetaType::Type::QString, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QMetaType::Type::QString )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QMetaType::Type::QString );
 }
 
 QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName )
@@ -388,10 +385,10 @@ QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName, co
   {
     const QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
 
-    if ( schemaSettingsVariant.type() == QVariant::Map )
+    if ( schemaSettingsVariant.userType() == QMetaType::Type::QVariantMap )
     {
       const QVariantMap schemaSettings = schemaSettingsVariant.toMap();
-      if ( schemaSettings.contains( database ) && schemaSettings.value( database ).type() == QVariant::StringList )
+      if ( schemaSettings.contains( database ) && schemaSettings.value( database ).userType() == QMetaType::Type::QStringList )
         return schemaSettings.value( database ).toStringList();
     }
   }
@@ -468,4 +465,28 @@ QString QgsMssqlConnection::buildQueryForTables( const QString &connName, bool a
 QString QgsMssqlConnection::buildQueryForTables( const QString &connName )
 {
   return buildQueryForTables( allowGeometrylessTables( connName ), geometryColumnsOnly( connName ), excludedSchemasList( connName ) );
+}
+
+void QgsMssqlConnection::duplicateConnection( const QString &src, const QString &dst )
+{
+  const QString key( QStringLiteral( "/MSSQL/connections/" ) + src );
+  const QString newKey( QStringLiteral( "/MSSQL/connections/" ) + dst );
+
+  QgsSettings settings;
+  settings.setValue( newKey + QStringLiteral( "/service" ), settings.value( key + QStringLiteral( "/service" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/host" ), settings.value( key + QStringLiteral( "/host" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/database" ), settings.value( key + QStringLiteral( "/database" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/username" ), settings.value( key + QStringLiteral( "/username" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/password" ), settings.value( key + QStringLiteral( "/password" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/geometryColumnsOnly" ), settings.value( key + QStringLiteral( "/geometryColumnsOnly" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/extentInGeometryColumns" ), settings.value( key + QStringLiteral( "/extentInGeometryColumns" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/primaryKeyInGeometryColumns" ), settings.value( key + QStringLiteral( "/primaryKeyInGeometryColumns" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/allowGeometrylessTables" ), settings.value( key + QStringLiteral( "/allowGeometrylessTables" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/estimatedMetadata" ), settings.value( key + QStringLiteral( "/estimatedMetadata" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/disableInvalidGeometryHandling" ), settings.value( key + QStringLiteral( "/disableInvalidGeometryHandling" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/schemasFiltering" ), settings.value( key + QStringLiteral( "/schemasFiltering" ) ).toBool() );
+  settings.setValue( newKey + QStringLiteral( "/excludedSchemas" ), settings.value( key + QStringLiteral( "/excludedSchemas" ) ) );
+  settings.sync();
 }

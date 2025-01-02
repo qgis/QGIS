@@ -26,7 +26,7 @@
 #include "testgeometryutils.h"
 #include "testtransformer.h"
 
-class TestQgsCircularString: public QObject
+class TestQgsCircularString : public QObject
 {
     Q_OBJECT
   private slots:
@@ -131,9 +131,7 @@ void TestQgsCircularString::constructorFrom3Points()
   QCOMPARE( cs.xAt( 2 ), 31.0 );
   QCOMPARE( cs.yAt( 2 ), 2.0 );
 
-  cs = QgsCircularString( QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ),
-                          QgsPoint( Qgis::WkbType::PointZ, 21, 22, 23 ),
-                          QgsPoint( Qgis::WkbType::PointZ, 31, 2, 33 ) );
+  cs = QgsCircularString( QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ), QgsPoint( Qgis::WkbType::PointZ, 21, 22, 23 ), QgsPoint( Qgis::WkbType::PointZ, 31, 2, 33 ) );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZ );
   QCOMPARE( cs.numPoints(), 3 );
@@ -148,9 +146,7 @@ void TestQgsCircularString::constructorFrom3Points()
   QCOMPARE( cs.yAt( 2 ), 2.0 );
   QCOMPARE( cs.pointN( 2 ).z(), 33.0 );
 
-  cs = QgsCircularString( QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ),
-                          QgsPoint( Qgis::WkbType::PointM, 21, 22, 0, 23 ),
-                          QgsPoint( Qgis::WkbType::PointM, 31, 2, 0, 33 ) );
+  cs = QgsCircularString( QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ), QgsPoint( Qgis::WkbType::PointM, 21, 22, 0, 23 ), QgsPoint( Qgis::WkbType::PointM, 31, 2, 0, 33 ) );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringM );
   QCOMPARE( cs.numPoints(), 3 );
@@ -165,9 +161,7 @@ void TestQgsCircularString::constructorFrom3Points()
   QCOMPARE( cs.yAt( 2 ), 2.0 );
   QCOMPARE( cs.pointN( 2 ).m(), 33.0 );
 
-  cs = QgsCircularString( QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 31, 2, 33, 34 ) );
+  cs = QgsCircularString( QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ), QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ), QgsPoint( Qgis::WkbType::PointZM, 31, 2, 33, 34 ) );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );
   QCOMPARE( cs.numPoints(), 3 );
@@ -209,9 +203,7 @@ void TestQgsCircularString::constructorFrom2PointsAndCenter()
   QCOMPARE( cs.xAt( 2 ), 31.0 );
   QCOMPARE( cs.yAt( 2 ), 2.0 );
 
-  cs = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ),
-       QgsPoint( Qgis::WkbType::PointZ, 32, 2, 33 ),
-       QgsPoint( Qgis::WkbType::PointZ, 21, 2, 23 ) );
+  cs = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ), QgsPoint( Qgis::WkbType::PointZ, 32, 2, 33 ), QgsPoint( Qgis::WkbType::PointZ, 21, 2, 23 ) );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZ );
   QCOMPARE( cs.numPoints(), 3 );
@@ -225,9 +217,7 @@ void TestQgsCircularString::constructorFrom2PointsAndCenter()
   QCOMPARE( cs.yAt( 2 ), 2.0 );
   QCOMPARE( cs.pointN( 2 ).z(), 33.0 );
 
-  cs = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ),
-       QgsPoint( Qgis::WkbType::PointM, 31, 2, 0, 33 ),
-       QgsPoint( Qgis::WkbType::PointM, 21, 2, 0, 23 ) );
+  cs = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ), QgsPoint( Qgis::WkbType::PointM, 31, 2, 0, 33 ), QgsPoint( Qgis::WkbType::PointM, 21, 2, 0, 23 ) );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringM );
   QCOMPARE( cs.numPoints(), 3 );
@@ -241,9 +231,7 @@ void TestQgsCircularString::constructorFrom2PointsAndCenter()
   QCOMPARE( cs.yAt( 2 ), 2.0 );
   QCOMPARE( cs.pointN( 2 ).m(), 33.0 );
 
-  cs = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ),
-       QgsPoint( Qgis::WkbType::PointZM, 31, 2, 33, 34 ),
-       QgsPoint( Qgis::WkbType::PointZM, 21, 2, 23, 24 ) );
+  cs = QgsCircularString::fromTwoPointsAndCenter( QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ), QgsPoint( Qgis::WkbType::PointZM, 31, 2, 33, 34 ), QgsPoint( Qgis::WkbType::PointZM, 21, 2, 23, 24 ) );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );
   QCOMPARE( cs.numPoints(), 3 );
@@ -307,7 +295,7 @@ void TestQgsCircularString::setPoints()
   QVERIFY( cs.is3D() );
   QVERIFY( !cs.isMeasure() );
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZ );
-  QCOMPARE( cs.wktTypeStr(), QString( "CircularStringZ" ) );
+  QCOMPARE( cs.wktTypeStr(), QString( "CircularString Z" ) );
 
   cs.points( pts );
   QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1.0, 2.0, 3.0 ) );
@@ -318,7 +306,7 @@ void TestQgsCircularString::setPoints()
   QVERIFY( !cs.is3D() );
   QVERIFY( cs.isMeasure() );
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringM );
-  QCOMPARE( cs.wktTypeStr(), QString( "CircularStringM" ) );
+  QCOMPARE( cs.wktTypeStr(), QString( "CircularString M" ) );
 
   cs.points( pts );
   QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1.0, 2.0, 0.0, 3.0 ) );
@@ -329,7 +317,7 @@ void TestQgsCircularString::setPoints()
   QVERIFY( cs.is3D() );
   QVERIFY( cs.isMeasure() );
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );
-  QCOMPARE( cs.wktTypeStr(), QString( "CircularStringZM" ) );
+  QCOMPARE( cs.wktTypeStr(), QString( "CircularString ZM" ) );
   cs.points( pts );
   QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
 }
@@ -354,8 +342,7 @@ void TestQgsCircularString::clear()
 void TestQgsCircularString::setPointsEmpty()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
 
   //setPoints with empty list, should clear linestring
   cs.setPoints( QgsPointSequence() );
@@ -375,12 +362,10 @@ void TestQgsCircularString::setPointsEmpty()
 void TestQgsCircularString::setPointsZM()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
 
   //with z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
 
   QCOMPARE( cs.numPoints(), 2 );
   QVERIFY( cs.is3D() );
@@ -389,12 +374,10 @@ void TestQgsCircularString::setPointsZM()
 
   QgsPointSequence pts;
   cs.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-            << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
 
   //with m
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
-                << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
 
   QCOMPARE( cs.numPoints(), 2 );
   QVERIFY( !cs.is3D() );
@@ -402,12 +385,10 @@ void TestQgsCircularString::setPointsZM()
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringM );
 
   cs.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
-            << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
 
   //with zm
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
 
   QCOMPARE( cs.numPoints(), 2 );
   QVERIFY( cs.is3D() );
@@ -415,15 +396,13 @@ void TestQgsCircularString::setPointsZM()
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );
 
   cs.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
-            << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
 }
 
 void TestQgsCircularString::setPointsMixedDimensionality()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) );
 
   QCOMPARE( cs.numPoints(), 2 );
   QVERIFY( cs.is3D() );
@@ -432,15 +411,13 @@ void TestQgsCircularString::setPointsMixedDimensionality()
 
   QgsPointSequence pts;
   cs.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
-            << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 0, 5 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 0, 5 ) );
 }
 
 void TestQgsCircularString::pointN()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) );
 
   QCOMPARE( cs.pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) );
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 2, 3, 0, 5 ) );
@@ -453,9 +430,7 @@ void TestQgsCircularString::pointN()
 void TestQgsCircularString::gettersSetters()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
-                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) );
 
   QCOMPARE( cs.xAt( 0 ), 1.0 );
   QCOMPARE( cs.xAt( 1 ), 11.0 );
@@ -509,9 +484,7 @@ void TestQgsCircularString::gettersSettersZMWithLine2D()
 {
   //check zAt/setZAt with non-3d linestring
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 )
-                << QgsPoint( Qgis::WkbType::PointM, 21, 22, 0, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) << QgsPoint( Qgis::WkbType::PointM, 21, 22, 0, 24 ) );
 
   //basically we just don't want these to crash
   QVERIFY( std::isnan( cs.pointN( 0 ).z() ) );
@@ -520,9 +493,7 @@ void TestQgsCircularString::gettersSettersZMWithLine2D()
   cs.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 71.0, 2, 63 ) );
 
   //check mAt/setMAt with non-measure linestring
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 12 )
-                << QgsPoint( 21, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
 
   //basically we just don't want these to crash
   QVERIFY( std::isnan( cs.pointN( 0 ).m() ) );
@@ -558,29 +529,21 @@ void TestQgsCircularString::equality()
   QVERIFY( cs1 != cs2 );
 
   QgsCircularString cs3;
-  cs3.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 0 )
-                 << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 0 )
-                 << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 0 ) );
+  cs3.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 0 ) );
 
   QVERIFY( !( cs1 == cs3 ) ); //different dimension
   QVERIFY( cs1 != cs3 );
 
   QgsCircularString cs4;
-  cs4.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 2 )
-                 << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 3 )
-                 << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 4 ) );
+  cs4.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 4 ) );
 
   QVERIFY( !( cs3 == cs4 ) ); //different z coordinates
   QVERIFY( cs3 != cs4 );
 
   QgsCircularString cs5;
-  cs5.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 1 )
-                 << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 2 )
-                 << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 3 ) );
+  cs5.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 3 ) );
   QgsCircularString cs6;
-  cs6.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 11 )
-                 << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 12 )
-                 << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 13 ) );
+  cs6.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 11 ) << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 12 ) << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 13 ) );
 
   QVERIFY( !( cs5 == cs6 ) ); //different m values
   QVERIFY( cs5 != cs6 );
@@ -595,9 +558,7 @@ void TestQgsCircularString::isClosed()
   QVERIFY( !cs.isClosed2D() );
   QVERIFY( !cs.isClosed() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 2 ) << QgsPoint( 11, 22 )
-                << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 2 ) << QgsPoint( 11, 22 ) << QgsPoint( 1, 22 ) );
 
   QVERIFY( !cs.isClosed2D() );
   QVERIFY( !cs.isClosed() );
@@ -606,10 +567,7 @@ void TestQgsCircularString::isClosed()
   QCOMPARE( cs.perimeter(), 0.0 );
 
   //test that m values aren't considered when testing for closedness
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 )
-                << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 ) );
 
   QVERIFY( cs.isClosed2D() );
   QVERIFY( cs.isClosed() );
@@ -631,9 +589,7 @@ void TestQgsCircularString::isClosed()
 void TestQgsCircularString::asQPolygonF()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) );
 
   QPolygonF poly = cs.asQPolygonF();
 
@@ -647,8 +603,7 @@ void TestQgsCircularString::asQPolygonF()
 void TestQgsCircularString::clone()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 2 )
-                << QgsPoint( 11, 22 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 2 ) << QgsPoint( 11, 22 ) << QgsPoint( 1, 22 ) );
   std::unique_ptr<QgsCircularString> cloned( cs.clone() );
 
   QCOMPARE( cloned->numPoints(), 4 );
@@ -664,10 +619,7 @@ void TestQgsCircularString::clone()
   QCOMPARE( cloned->pointN( 3 ), cs.pointN( 3 ) );
 
   //clone with Z/M
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
   cloned.reset( cs.clone() );
 
   QCOMPARE( cloned->numPoints(), 4 );
@@ -693,9 +645,8 @@ void TestQgsCircularString::clone()
 void TestQgsCircularString::segmentize()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
-  std::unique_ptr<QgsLineString> segmentized( static_cast< QgsLineString * >( cs.segmentize() ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
+  std::unique_ptr<QgsLineString> segmentized( static_cast<QgsLineString *>( cs.segmentize() ) );
 
   QCOMPARE( segmentized->numPoints(), 156 );
   QCOMPARE( segmentized->vertexCount(), 156 );
@@ -708,10 +659,8 @@ void TestQgsCircularString::segmentize()
   QCOMPARE( segmentized->pointN( segmentized->numPoints() - 1 ), cs.pointN( cs.numPoints() - 1 ) );
 
   //segmentize with Z/M
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 14 )
-                << QgsPoint( Qgis::WkbType::PointZM, 21, 2, 21, 24 ) );
-  segmentized.reset( static_cast< QgsLineString * >( cs.segmentize() ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 2, 21, 24 ) );
+  segmentized.reset( static_cast<QgsLineString *>( cs.segmentize() ) );
 
   QCOMPARE( segmentized->numPoints(), 156 );
   QCOMPARE( segmentized->vertexCount(), 156 );
@@ -725,7 +674,7 @@ void TestQgsCircularString::segmentize()
 
   //segmentize an empty line
   cs.clear();
-  segmentized.reset( static_cast< QgsLineString * >( cs.segmentize() ) );
+  segmentized.reset( static_cast<QgsLineString *>( cs.segmentize() ) );
 
   QVERIFY( segmentized->isEmpty() );
   QCOMPARE( segmentized->numPoints(), 0 );
@@ -737,10 +686,7 @@ void TestQgsCircularString::segmentize()
 void TestQgsCircularString::toFromWKB()
 {
   QgsCircularString cs1;
-  cs1.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                 << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
-                 << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
-                 << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs1.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
   QByteArray wkb1 = cs1.asWkb();
 
   QCOMPARE( wkb1.size(), cs1.wkbSize() );
@@ -780,10 +726,7 @@ void TestQgsCircularString::toFromWKB()
 void TestQgsCircularString::toFromWKT()
 {
   QgsCircularString cs1;
-  cs1.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                 << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
-                 << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
-                 << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs1.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
   QString wkt = cs1.asWkt();
 
   QVERIFY( !wkt.isEmpty() );
@@ -813,14 +756,10 @@ void TestQgsCircularString::exportImport()
 {
   //asGML2
   QgsCircularString exportLine;
-  exportLine.setPoints( QgsPointSequence() << QgsPoint( 31, 32 )
-                        << QgsPoint( 41, 42 )
-                        << QgsPoint( 51, 52 ) );
+  exportLine.setPoints( QgsPointSequence() << QgsPoint( 31, 32 ) << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
 
   QgsCircularString exportLineFloat;
-  exportLineFloat.setPoints( QgsPointSequence() << QgsPoint( 1 / 3.0, 2 / 3.0 )
-                             << QgsPoint( 1 + 1 / 3.0, 1 + 2 / 3.0 )
-                             << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
+  exportLineFloat.setPoints( QgsPointSequence() << QgsPoint( 1 / 3.0, 2 / 3.0 ) << QgsPoint( 1 + 1 / 3.0, 1 + 2 / 3.0 ) << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
 
   QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">31,32 41,42 51,52</coordinates></LineString>" ) );
@@ -862,9 +801,7 @@ void TestQgsCircularString::length()
   QgsCircularString cs;
   QCOMPARE( cs.length(), 0.0 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
 
   QGSCOMPARENEAR( cs.length(), 26.1433, 0.001 );
 }
@@ -872,9 +809,7 @@ void TestQgsCircularString::length()
 void TestQgsCircularString::startEndPoint()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
 
   QCOMPARE( cs.startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) );
   QCOMPARE( cs.endPoint(), QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
@@ -889,10 +824,8 @@ void TestQgsCircularString::curveToLine()
 {
   //curveToLine - no segmentation required, so should return a clone
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
-  std::unique_ptr<QgsLineString> curveToLine( static_cast< QgsLineString * >( cs.curveToLine() ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  std::unique_ptr<QgsLineString> curveToLine( static_cast<QgsLineString *>( cs.curveToLine() ) );
 
   QCOMPARE( curveToLine->numPoints(), 181 );
   QCOMPARE( curveToLine->wkbType(), Qgis::WkbType::LineStringZM );
@@ -910,9 +843,7 @@ void TestQgsCircularString::points()
 
   QVERIFY( cs.isEmpty() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
   cs.points( points );
 
   QCOMPARE( points.count(), 3 );
@@ -924,13 +855,12 @@ void TestQgsCircularString::points()
 void TestQgsCircularString::crsTransform()
 {
   QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) );// want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 )
-                << QgsPoint( 6474985, -3526584 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 ) << QgsPoint( 6474985, -3526584 ) );
   cs.transform( tr, Qgis::TransformDirection::Forward );
 
   QGSCOMPARENEAR( cs.pointN( 0 ).x(), 175.771, 0.001 );
@@ -944,8 +874,7 @@ void TestQgsCircularString::crsTransform()
 
   //3d CRS transform
   cs = QgsCircularString();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 )
-                << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 3, 4 ) );
   cs.transform( tr, Qgis::TransformDirection::Forward );
 
   QGSCOMPARENEAR( cs.pointN( 0 ).x(), 175.771, 0.001 );
@@ -987,21 +916,18 @@ void TestQgsCircularString::transform()
 {
   QTransform qtr = QTransform::fromScale( 2, 3 );
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
   cs.transform( qtr );
 
   QCOMPARE( cs.pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 2, 6, 3, 4 ) );
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 22, 36, 13, 14 ) );
   QCOMPARE( cs.boundingBox(), QgsRectangle( 2, 6, 22, 36 ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
   cs.transform( QTransform::fromScale( 1, 1 ), 3, 2, 4, 3 );
 
   QCOMPARE( cs.pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 9, 16 ) );
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 11, 12, 29, 46 ) );
-
 }
 
 void TestQgsCircularString::insertVertex()
@@ -1013,8 +939,7 @@ void TestQgsCircularString::insertVertex()
   QCOMPARE( cs.numPoints(), 0 );
 
   //2d line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
 
   QVERIFY( cs.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 4.0, 7.0 ) ) );
 
@@ -1058,9 +983,7 @@ void TestQgsCircularString::insertVertex()
   QCOMPARE( cs.numPoints(), 9 );
 
   //insert 4d vertex in 4d line
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
 
   QVERIFY( cs.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) ) );
 
@@ -1075,8 +998,7 @@ void TestQgsCircularString::insertVertex()
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 101, 102 ) );
 
   //insert 4d vertex in 2d line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
 
   QVERIFY( cs.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointZM, 2, 4, 103, 104 ) ) );
 
@@ -1094,8 +1016,7 @@ void TestQgsCircularString::moveVertex()
   QVERIFY( cs.isEmpty() );
 
   //valid line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
 
   QVERIFY( cs.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( cs.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 16.0, 17.0 ) ) );
@@ -1114,9 +1035,7 @@ void TestQgsCircularString::moveVertex()
   QCOMPARE( cs.pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
 
   //move 4d point in 4d line
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
 
   QVERIFY( cs.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointZM, 6, 7, 12, 13 ) ) );
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 6, 7, 12, 13 ) );
@@ -1126,8 +1045,7 @@ void TestQgsCircularString::moveVertex()
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 34, 35, 12, 13 ) );
 
   //move 4d point in 2d line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
 
   QVERIFY( cs.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( Qgis::WkbType::PointZM, 3, 4, 2, 3 ) ) );
   QCOMPARE( cs.pointN( 0 ), QgsPoint( 3, 4 ) );
@@ -1142,10 +1060,7 @@ void TestQgsCircularString::deleteVertex()
   QVERIFY( cs.isEmpty() );
 
   //valid line
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 )
-                << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
 
   //out of range vertices
   QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, -1 ) ) );
@@ -1167,8 +1082,7 @@ void TestQgsCircularString::deleteVertex()
   QVERIFY( cs.isEmpty() );
 
   //removing a vertex from a 3 point circular string should remove the whole line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
   QCOMPARE( cs.numPoints(), 3 );
 
   cs.deleteVertex( QgsVertexId( 0, 0, 2 ) );
@@ -1179,13 +1093,11 @@ void TestQgsCircularString::reversed()
 {
   //reversed
   QgsCircularString cs;
-  std::unique_ptr< QgsCircularString > reversed( cs.reversed() );
+  std::unique_ptr<QgsCircularString> reversed( cs.reversed() );
 
   QVERIFY( reversed->isEmpty() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
   reversed.reset( cs.reversed() );
 
   QCOMPARE( reversed->numPoints(), 3 );
@@ -1223,8 +1135,7 @@ void TestQgsCircularString::addZValue()
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZ, 11, 12, 2 ) );
 
   //linestring with m
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 4 ) );
 
   QVERIFY( cs.addZValue( 5 ) );
 
@@ -1262,8 +1173,7 @@ void TestQgsCircularString::addMValue()
   QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 2 ) );
 
   //linestring with z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 4 ) );
 
   QVERIFY( cs.addMValue( 5 ) );
 
@@ -1295,8 +1205,7 @@ void TestQgsCircularString::dropZValue()
   QVERIFY( !cs.dropZValue() ); //already dropped
 
   //linestring with m
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
 
   QVERIFY( cs.dropZValue() );
 
@@ -1326,8 +1235,7 @@ void TestQgsCircularString::dropMValue()
   QVERIFY( !cs.dropMValue() ); //already dropped
 
   //linestring with z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
 
   QVERIFY( cs.dropMValue() );
 
@@ -1394,9 +1302,7 @@ void TestQgsCircularString::coordinateSequence()
   QCOMPARE( coords.at( 0 ).count(), 1 );
   QVERIFY( coords.at( 0 ).at( 0 ).isEmpty() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
-                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
   coords = cs.coordinateSequence();
 
   QCOMPARE( coords.count(), 1 );
@@ -1451,8 +1357,7 @@ void TestQgsCircularString::nextVertex()
   QCOMPARE( p, QgsPoint( 11, 12 ) );
 
   // with Z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
 
   v = QgsVertexId( 0, 0, -1 );
   QVERIFY( cs.nextVertex( v, p ) );
@@ -1466,8 +1371,7 @@ void TestQgsCircularString::nextVertex()
   QVERIFY( !cs.nextVertex( v, p ) );
 
   // with M
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) );
 
   v = QgsVertexId( 0, 0, -1 );
   QVERIFY( cs.nextVertex( v, p ) );
@@ -1480,8 +1384,7 @@ void TestQgsCircularString::nextVertex()
   QVERIFY( !cs.nextVertex( v, p ) );
 
   // with ZM
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
 
   v = QgsVertexId( 0, 0, -1 );
   QVERIFY( cs.nextVertex( v, p ) );
@@ -1500,7 +1403,7 @@ void TestQgsCircularString::vertexAtPointAt()
   QgsCircularString cs;
 
   cs.vertexAt( QgsVertexId( 0, 0, -10 ) ); //out of bounds, check for no crash
-  cs.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
+  cs.vertexAt( QgsVertexId( 0, 0, 10 ) );  //out of bounds, check for no crash
 
   QgsPoint p;
   Qgis::VertexType type;
@@ -1508,8 +1411,7 @@ void TestQgsCircularString::vertexAtPointAt()
   QVERIFY( !cs.pointAt( -10, p, type ) );
   QVERIFY( !cs.pointAt( 10, p, type ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
 
   cs.vertexAt( QgsVertexId( 0, 0, -10 ) );
   cs.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
@@ -1530,9 +1432,7 @@ void TestQgsCircularString::vertexAtPointAt()
   QCOMPARE( type, Qgis::VertexType::Segment );
 
   // with Z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 )
-                << QgsPoint( Qgis::WkbType::PointZ, 1, 22, 23 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 22, 23 ) );
 
   QCOMPARE( cs.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) );
   QCOMPARE( cs.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
@@ -1548,9 +1448,7 @@ void TestQgsCircularString::vertexAtPointAt()
   QCOMPARE( type, Qgis::VertexType::Segment );
 
   // with M
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 )
-                << QgsPoint( Qgis::WkbType::PointM, 1, 22, 0, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) << QgsPoint( Qgis::WkbType::PointM, 1, 22, 0, 24 ) );
 
   QCOMPARE( cs.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) );
   QCOMPARE( cs.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) );
@@ -1566,9 +1464,7 @@ void TestQgsCircularString::vertexAtPointAt()
   QCOMPARE( type, Qgis::VertexType::Segment );
 
   // with ZM
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
-                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
-                << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 23, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 23, 24 ) );
 
   QCOMPARE( cs.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
   QCOMPARE( cs.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
@@ -1605,21 +1501,20 @@ void TestQgsCircularString::closestSegment()
   QgsVertexId v;
 
   int leftOf = 0;
-  QgsPoint p( 0, 0 ); // reset all coords to zero
-  ( void )cs.closestSegment( QgsPoint( 1, 2 ), p, v ); //empty line, just want no crash
+  QgsPoint p( 0, 0 );                                   // reset all coords to zero
+  ( void ) cs.closestSegment( QgsPoint( 1, 2 ), p, v ); //empty line, just want no crash
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
   QVERIFY( cs.closestSegment( QgsPoint( 5, 10 ), p, v ) < 0 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 )
-                << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) );
 
   QGSCOMPARENEAR( cs.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf ), 2.0, 0.0001 );
   QCOMPARE( p, QgsPoint( 5, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, -1 );
 
-  QGSCOMPARENEAR( cs.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ),  1.583512, 0.0001 );
+  QGSCOMPARENEAR( cs.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ), 1.583512, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.84, 0.01 );
   QGSCOMPARENEAR( p.y(), 11.49, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
@@ -1650,8 +1545,7 @@ void TestQgsCircularString::closestSegment()
   QCOMPARE( leftOf, 0 );
 
   //clockwise string
-  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 15 )
-                << QgsPoint( 7, 12 ) << QgsPoint( 5, 10 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 15 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 10 ) );
 
   QGSCOMPARENEAR( cs.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf ), 2, 0.0001 );
   QGSCOMPARENEAR( p.x(), 5, 0.01 );
@@ -1659,7 +1553,7 @@ void TestQgsCircularString::closestSegment()
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, 1 );
 
-  QGSCOMPARENEAR( cs.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ),  1.583512, 0.0001 );
+  QGSCOMPARENEAR( cs.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ), 1.583512, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.84, 0.01 );
   QGSCOMPARENEAR( p.y(), 11.49, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
@@ -1703,28 +1597,23 @@ void TestQgsCircularString::sumUpArea()
 
   QCOMPARE( area, 1.0 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 )
-                << QgsPoint( 10, 10 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 10 ) );
   cs.sumUpArea( area );
 
   QCOMPARE( area, 1.0 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) );
   cs.sumUpArea( area );
 
   QGSCOMPARENEAR( area, 4.141593, 0.0001 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 )
-                << QgsPoint( 0, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) << QgsPoint( 0, 2 ) );
   cs.sumUpArea( area );
 
   QGSCOMPARENEAR( area, 7.283185, 0.0001 );
 
   // full circle
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                << QgsPoint( 4, 0 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 0, 0 ) );
   area = 0.0;
   cs.sumUpArea( area );
 
@@ -1740,8 +1629,7 @@ void TestQgsCircularString::boundingBox()
   cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 15 ) );
   QCOMPARE( cs.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10 )
-                << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10 ) << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
   QCOMPARE( cs.boundingBox(), QgsRectangle( -6.125, -10.25, -5, -9 ) );
 
   QByteArray wkbToAppend = cs.asWkb();
@@ -1749,8 +1637,7 @@ void TestQgsCircularString::boundingBox()
   QVERIFY( cs.boundingBox().isNull() );
 
   QgsConstWkbPtr wkbToAppendPtr( wkbToAppend );
-  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 )
-                << QgsPoint( 10, 15 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 15 ) );
 
   QCOMPARE( cs.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
 
@@ -1800,8 +1687,7 @@ void TestQgsCircularString::boundingBox3D()
   QGSCOMPARENEAR( box1.zMinimum(), -2, 0.0001 );
   QGSCOMPARENEAR( box1.zMaximum(), 7, 0.0001 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10, -7.8 )
-                << QgsPoint( -6, -10, 3 ) << QgsPoint( -5.5, -9, 5.2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10, -7.8 ) << QgsPoint( -6, -10, 3 ) << QgsPoint( -5.5, -9, 5.2 ) );
   QgsBox3D box2 = cs.boundingBox3D();
   QGSCOMPARENEAR( box2.xMinimum(), -6.125, 0.001 );
   QGSCOMPARENEAR( box2.xMaximum(), -5, 0.001 );
@@ -1815,8 +1701,7 @@ void TestQgsCircularString::boundingBox3D()
   QVERIFY( cs.boundingBox().isNull() );
 
   QgsConstWkbPtr wkbToAppendPtr( wkbToAppend );
-  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10, -2 )
-                << QgsPoint( 10, 15, 3 ) << QgsPoint( 8, 2, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10, -2 ) << QgsPoint( 10, 15, 3 ) << QgsPoint( 8, 2, 7 ) );
   QgsBox3D box3 = cs.boundingBox3D();
   QGSCOMPARENEAR( box3.xMinimum(), 5, 0.0001 );
   QGSCOMPARENEAR( box3.xMaximum(), 19.1785, 0.0001 );
@@ -1877,15 +1762,15 @@ void TestQgsCircularString::angle()
 {
   QgsCircularString cs;
 
-  ( void )cs.vertexAngle( QgsVertexId() ); //just want no crash
-  ( void )cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
+  ( void ) cs.vertexAngle( QgsVertexId() );          //just want no crash
+  ( void ) cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) );
-  ( void )cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
+  ( void ) cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) );
-  ( void )cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
-  ( void )cs.vertexAngle( QgsVertexId( 0, 0, 1 ) ); //just want no crash, any answer is meaningless
+  ( void ) cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
+  ( void ) cs.vertexAngle( QgsVertexId( 0, 0, 1 ) ); //just want no crash, any answer is meaningless
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
 
@@ -1898,11 +1783,9 @@ void TestQgsCircularString::angle()
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141593, 0.0001 );
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
-  ( void )cs.vertexAngle( QgsVertexId( 0, 0, 20 ) ); // no crash
+  ( void ) cs.vertexAngle( QgsVertexId( 0, 0, 20 ) ); // no crash
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 )
-                << QgsPoint( -1, 3 ) << QgsPoint( 0, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) << QgsPoint( -1, 3 ) << QgsPoint( 0, 4 ) );
 
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0, 0.0001 );
@@ -1910,9 +1793,7 @@ void TestQgsCircularString::angle()
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 0, 0.0001 );
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 1.5708, 0.0001 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 4 )
-                << QgsPoint( -1, 3 ) << QgsPoint( 0, 2 )
-                << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 4 ) << QgsPoint( -1, 3 ) << QgsPoint( 0, 2 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
 
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 4.712389, 0.0001 );
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141592, 0.0001 );
@@ -1921,8 +1802,7 @@ void TestQgsCircularString::angle()
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 4.712389, 0.0001 );
 
   //closed circular string
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
 
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 0, 0.00001 );
   QGSCOMPARENEAR( cs.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141592, 0.00001 );
@@ -1937,7 +1817,7 @@ void TestQgsCircularString::boundary()
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   QgsAbstractGeometry *boundary = cs.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
+  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->pointN( 0 )->x(), 0.0 );
@@ -1947,16 +1827,13 @@ void TestQgsCircularString::boundary()
   delete boundary;
 
   // closed string = no boundary
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 )
-                << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   QVERIFY( !cs.boundary() );
 
   //boundary with z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 )
-                << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 )
-                << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 ) );
   boundary = cs.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
+  mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->pointN( 0 )->wkbType(), Qgis::WkbType::PointZ );
@@ -1964,9 +1841,9 @@ void TestQgsCircularString::boundary()
   QCOMPARE( mpBoundary->pointN( 0 )->y(), 0.0 );
   QCOMPARE( mpBoundary->pointN( 0 )->z(), 10.0 );
   QCOMPARE( mpBoundary->pointN( 1 )->wkbType(), Qgis::WkbType::PointZ );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
+  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
 
   delete boundary;
 }
@@ -1980,9 +1857,7 @@ void TestQgsCircularString::addToPainterPath()
   path.addToPainterPath( pPath );
   QVERIFY( pPath.isEmpty() );
 
-  path.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-                  << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 )
-                  << QgsPoint( Qgis::WkbType::PointZ, 21, 2, 3 ) );
+  path.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) << QgsPoint( Qgis::WkbType::PointZ, 21, 2, 3 ) );
   path.addToPainterPath( pPath );
 
   QGSCOMPARENEAR( pPath.currentPosition().x(), 21.0, 0.01 );
@@ -1991,8 +1866,7 @@ void TestQgsCircularString::addToPainterPath()
 
   // even number of points - should still work
   pPath = QPainterPath();
-  path.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
-                  << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
+  path.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
   path.addToPainterPath( pPath );
 
   QGSCOMPARENEAR( pPath.currentPosition().x(), 11.0, 0.01 );
@@ -2004,7 +1878,7 @@ void TestQgsCircularString::toCurveType()
 {
   QgsCircularString cs;
   cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
-  std::unique_ptr< QgsCurve > curveType( cs.toCurveType() );
+  std::unique_ptr<QgsCurve> curveType( cs.toCurveType() );
 
   QCOMPARE( curveType->wkbType(), Qgis::WkbType::CircularString );
   QCOMPARE( curveType->numPoints(), 3 );
@@ -2021,8 +1895,7 @@ void TestQgsCircularString::segmentLength()
   QCOMPARE( cs.segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
   QCOMPARE( cs.segmentLength( QgsVertexId( 1, 0, 0 ) ), 0.0 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
 
   QCOMPARE( cs.segmentLength( QgsVertexId() ), 0.0 );
   QCOMPARE( cs.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
@@ -2034,8 +1907,7 @@ void TestQgsCircularString::segmentLength()
   QCOMPARE( cs.segmentLength( QgsVertexId( 1, 0, 1 ) ), 0.0 );
   QGSCOMPARENEAR( cs.segmentLength( QgsVertexId( 1, 1, 0 ) ), 31.4159, 0.001 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 )
-                << QgsPoint( 1, 22 ) << QgsPoint( -9, 32 ) << QgsPoint( 1, 42 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) << QgsPoint( -9, 32 ) << QgsPoint( 1, 42 ) );
 
   QCOMPARE( cs.segmentLength( QgsVertexId() ), 0.0 );
   QCOMPARE( cs.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
@@ -2061,15 +1933,12 @@ void TestQgsCircularString::removeDuplicateNodes()
   QVERIFY( !cs.removeDuplicateNodes() );
   QCOMPARE( cs.asWkt(), QStringLiteral( "CircularString (11 2, 11 12, 11 2)" ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 10, 3 )
-                << QgsPoint( 11.01, 1.99 ) << QgsPoint( 9, 3 ) << QgsPoint( 11, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 10, 3 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 9, 3 ) << QgsPoint( 11, 2 ) );
 
   QVERIFY( !cs.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 10 3, 11.01 1.99, 9 3, 11 2)" ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 )
-                << QgsPoint( 11.02, 2.01 ) << QgsPoint( 11, 12 )
-                << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
 
   QVERIFY( !cs.removeDuplicateNodes() );
   QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99)" ) );
@@ -2088,24 +1957,21 @@ void TestQgsCircularString::removeDuplicateNodes()
   QVERIFY( !cs.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11.01 1.99)" ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 )
-                << QgsPoint( 11, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11, 2 ) );
 
   QVERIFY( !cs.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11.01 1.99, 11 2)" ) );
 
   // with z
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 )
-                << QgsPoint( 11.02, 2.01, 3 ) << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 ) << QgsPoint( 11.02, 2.01, 3 ) << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) );
 
   QVERIFY( cs.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularStringZ (11 2 1, 11 12 4, 111 12 5)" ) );
+  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString Z (11 2 1, 11 12 4, 111 12 5)" ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 )
-                << QgsPoint( 11.02, 2.01, 3 ) << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 ) << QgsPoint( 11.02, 2.01, 3 ) << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) );
 
   QVERIFY( !cs.removeDuplicateNodes( 0.02, true ) );
-  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularStringZ (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5)" ) );
+  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString Z (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5)" ) );
 }
 
 void TestQgsCircularString::swapXy()
@@ -2113,48 +1979,40 @@ void TestQgsCircularString::swapXy()
   QgsCircularString cs;
   cs.swapXy(); // no crash
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
-                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
-                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   cs.swapXy();
 
-  QCOMPARE( cs.asWkt(), QStringLiteral( "CircularStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
+  QCOMPARE( cs.asWkt(), QStringLiteral( "CircularString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
 }
 
 void TestQgsCircularString::filterVertices()
 {
   QgsCircularString cs;
-  auto filter = []( const QgsPoint & point )-> bool
-  {
+  auto filter = []( const QgsPoint &point ) -> bool {
     return point.x() < 5;
   };
 
   cs.filterVertices( filter ); // no crash
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
-                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
-                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   cs.filterVertices( filter );
 
-  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularStringZM (1 2 3 4, 4 12 13 14)" ) );
+  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString ZM (1 2 3 4, 4 12 13 14)" ) );
 }
 
 void TestQgsCircularString::transformVertices()
 {
   QgsCircularString cs;
-  auto transform = []( const QgsPoint & point )-> QgsPoint
-  {
+  auto transform = []( const QgsPoint &point ) -> QgsPoint {
     return QgsPoint( point.x() + 2, point.y() + 3, point.z() + 4, point.m() + 7 );
   };
 
   cs.transformVertices( transform ); // no crash
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
-                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
-                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   cs.transformVertices( transform );
 
-  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularStringZM (3 5 7 11, 6 15 17 21, 113 15 27 31)" ) );
+  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString ZM (3 5 7 11, 6 15 17 21, 113 15 27 31)" ) );
 
   // transform using class
   cs = QgsCircularString();
@@ -2162,12 +2020,10 @@ void TestQgsCircularString::transformVertices()
 
   QVERIFY( cs.transform( &transformer ) ); // no crash
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
-                << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
-                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
 
   QVERIFY( cs.transform( &transformer ) );
-  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularStringZM (3 16 8 3, 12 26 18 13, 333 26 28 23)" ) );
+  QCOMPARE( cs.asWkt( 2 ), QStringLiteral( "CircularString ZM (3 16 8 3, 12 26 18 13, 333 26 28 23)" ) );
 
   TestFailTransformer failTransformer;
   QVERIFY( !cs.transform( &failTransformer ) );
@@ -2177,16 +2033,15 @@ void TestQgsCircularString::substring()
 {
   QgsCircularString cs;
 
-  std::unique_ptr< QgsCircularString > substringResult( cs.curveSubstring( 1, 2 ) ); // no crash
+  std::unique_ptr<QgsCircularString> substringResult( cs.curveSubstring( 1, 2 ) ); // no crash
   QVERIFY( substringResult.get() );
   QVERIFY( substringResult->isEmpty() );
 
   // CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14)
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 )
-                << QgsPoint( 11, 1, 3, 4 ) << QgsPoint( 12, 0, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) << QgsPoint( 11, 1, 3, 4 ) << QgsPoint( 12, 0, 13, 14 ) );
 
   substringResult.reset( cs.curveSubstring( 0, 0 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10 0 1 2, 10 0 1 2, 10 0 1 2)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10 0 1 2, 10 0 1 2, 10 0 1 2)" ) );
 
   substringResult.reset( cs.curveSubstring( -1, -0.1 ) );
   QVERIFY( substringResult->isEmpty() );
@@ -2195,68 +2050,61 @@ void TestQgsCircularString::substring()
   QVERIFY( substringResult->isEmpty() );
 
   substringResult.reset( cs.curveSubstring( -1, 1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10 0 1 2, 10.12 0.48 1.64 2.64, 10.46 0.84 2.27 3.27)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10 0 1 2, 10.12 0.48 1.64 2.64, 10.46 0.84 2.27 3.27)" ) );
 
   substringResult.reset( cs.curveSubstring( 1, -1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10.46 0.84 2.27 3.27, 10.46 0.84 2.27 3.27, 10.46 0.84 2.27 3.27)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10.46 0.84 2.27 3.27, 10.46 0.84 2.27 3.27, 10.46 0.84 2.27 3.27)" ) );
 
   substringResult.reset( cs.curveSubstring( -1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14)" ) );
 
   substringResult.reset( cs.curveSubstring( 1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14)" ) );
 
   substringResult.reset( cs.curveSubstring( 1, 20 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14)" ) );
 
   substringResult.reset( cs.curveSubstring( 1, 1.5 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10.46 0.84 2.27 3.27, 10.68 0.95 2.59 3.59, 10.93 1 2.91 3.91)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10.46 0.84 2.27 3.27, 10.68 0.95 2.59 3.59, 10.93 1 2.91 3.91)" ) );
 
   // CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14, 14 -1 13 14, 16 1 23 24 )
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) << QgsPoint( 11, 1, 3, 4 )
-                << QgsPoint( 12, 0, 13, 14 ) << QgsPoint( 14, -1, 13, 14 ) << QgsPoint( 16, 1, 23, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) << QgsPoint( 11, 1, 3, 4 ) << QgsPoint( 12, 0, 13, 14 ) << QgsPoint( 14, -1, 13, 14 ) << QgsPoint( 16, 1, 23, 24 ) );
 
   substringResult.reset( cs.curveSubstring( 1, 1.5 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10.46 0.84 2.27 3.27, 10.68 0.95 2.59 3.59, 10.93 1 2.91 3.91)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10.46 0.84 2.27 3.27, 10.68 0.95 2.59 3.59, 10.93 1 2.91 3.91)" ) );
 
   substringResult.reset( cs.curveSubstring( 1, 10 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14, 14 -1 13 14, 16 1 23 24)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14, 14 -1 13 14, 16 1 23 24)" ) );
 
   substringResult.reset( cs.curveSubstring( 1, 6 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14, 13.1 -0.88 13 14, 14.5 -0.9 14.65 15.65)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10.46 0.84 2.27 3.27, 11.48 0.88 6.18 7.18, 12 0 13 14, 13.1 -0.88 13 14, 14.5 -0.9 14.65 15.65)" ) );
 
   substringResult.reset( cs.curveSubstring( 0, 6 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14, 13.1 -0.88 13 14, 14.5 -0.9 14.65 15.65)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14, 13.1 -0.88 13 14, 14.5 -0.9 14.65 15.65)" ) );
 
   substringResult.reset( cs.curveSubstring( 5, 6 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (13.51 -0.98 13 14, 14.01 -1 13.03 14.03, 14.5 -0.9 14.65 15.65)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (13.51 -0.98 13 14, 14.01 -1 13.03 14.03, 14.5 -0.9 14.65 15.65)" ) );
 
   substringResult.reset( cs.curveSubstring( 5, 1000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (13.51 -0.98 13 14, 15.19 -0.53 17.2 18.2, 16 1 23 24)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (13.51 -0.98 13 14, 15.19 -0.53 17.2 18.2, 16 1 23 24)" ) );
 
   substringResult.reset( cs.curveSubstring( QgsGeometryUtils::distanceToVertex( cs, QgsVertexId( 0, 0, 2 ) ), QgsGeometryUtils::distanceToVertex( cs, QgsVertexId( 0, 0, 4 ) ) ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZM (12 0 13 14, 14.36 -0.94 14.19 15.19, 16 1 23 24)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString ZM (12 0 13 14, 14.36 -0.94 14.19 15.19, 16 1 23 24)" ) );
 
   // CircularStringZ
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1 ) << QgsPoint( 11, 1, 3 ) << QgsPoint( 12, 0, 13 )
-                << QgsPoint( 14, -1, 13 ) << QgsPoint( 16, 1, 23 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1 ) << QgsPoint( 11, 1, 3 ) << QgsPoint( 12, 0, 13 ) << QgsPoint( 14, -1, 13 ) << QgsPoint( 16, 1, 23 ) );
 
   substringResult.reset( cs.curveSubstring( 1, 20 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringZ (10.46 0.84 2.27, 11.48 0.88 6.18, 12 0 13, 14 -1 13, 16 1 23)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString Z (10.46 0.84 2.27, 11.48 0.88 6.18, 12 0 13, 14 -1 13, 16 1 23)" ) );
 
   // CircularStringM
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 1 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 1, 0, 3 )
-                << QgsPoint( Qgis::WkbType::PointM, 12, 0, 0, 13 )
-                << QgsPoint( Qgis::WkbType::PointM, 14, -1, 0, 13 )
-                << QgsPoint( Qgis::WkbType::PointM, 16, 1, 0, 23 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 11, 1, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 12, 0, 0, 13 ) << QgsPoint( Qgis::WkbType::PointM, 14, -1, 0, 13 ) << QgsPoint( Qgis::WkbType::PointM, 16, 1, 0, 23 ) );
   substringResult.reset( cs.curveSubstring( 1, 20 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularStringM (10.46 0.84 2.27, 11.48 0.88 6.18, 12 0 13, 14 -1 13, 16 1 23)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString M (10.46 0.84 2.27, 11.48 0.88 6.18, 12 0 13, 14 -1 13, 16 1 23)" ) );
 
   // CircularString
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0 ) << QgsPoint( 11, 1 )
-                << QgsPoint( 12, 0 ) << QgsPoint( 14, -1 ) << QgsPoint( 16, 1 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0 ) << QgsPoint( 11, 1 ) << QgsPoint( 12, 0 ) << QgsPoint( 14, -1 ) << QgsPoint( 16, 1 ) );
 
   substringResult.reset( cs.curveSubstring( 1, 20 ) );
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString (10.46 0.84, 11.48 0.88, 12 0, 14 -1, 16 1)" ) );
@@ -2266,15 +2114,14 @@ void TestQgsCircularString::interpolate()
 {
   QgsCircularString cs;
 
-  std::unique_ptr< QgsPoint > interpolated( cs.interpolatePoint( 1 ) ); // no crash
+  std::unique_ptr<QgsPoint> interpolated( cs.interpolatePoint( 1 ) ); // no crash
   QVERIFY( !interpolated.get() );
 
   // CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14)
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 )
-                << QgsPoint( 11, 1, 3, 4 ) << QgsPoint( 12, 0, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) << QgsPoint( 11, 1, 3, 4 ) << QgsPoint( 12, 0, 13, 14 ) );
 
   interpolated.reset( cs.interpolatePoint( 0 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (10 0 1 2)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (10 0 1 2)" ) );
 
   interpolated.reset( cs.interpolatePoint( -1 ) );
   QVERIFY( !interpolated.get() );
@@ -2283,53 +2130,46 @@ void TestQgsCircularString::interpolate()
   QVERIFY( !interpolated.get() );
 
   interpolated.reset( cs.interpolatePoint( 1 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (10.46 0.84 2.27 3.27)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (10.46 0.84 2.27 3.27)" ) );
 
   interpolated.reset( cs.interpolatePoint( 1.5 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (10.93 1 2.91 3.91)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (10.93 1 2.91 3.91)" ) );
 
   interpolated.reset( cs.interpolatePoint( cs.length() ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (12 0 13 14)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (12 0 13 14)" ) );
 
   // CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14, 14 -1 13 14, 16 1 23 24 )
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) << QgsPoint( 11, 1, 3, 4 )
-                << QgsPoint( 12, 0, 13, 14 ) << QgsPoint( 14, -1, 13, 14 ) << QgsPoint( 16, 1, 23, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) << QgsPoint( 11, 1, 3, 4 ) << QgsPoint( 12, 0, 13, 14 ) << QgsPoint( 14, -1, 13, 14 ) << QgsPoint( 16, 1, 23, 24 ) );
 
   interpolated.reset( cs.interpolatePoint( 1 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (10.46 0.84 2.27 3.27)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (10.46 0.84 2.27 3.27)" ) );
 
   interpolated.reset( cs.interpolatePoint( 1.5 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (10.93 1 2.91 3.91)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (10.93 1 2.91 3.91)" ) );
 
   interpolated.reset( cs.interpolatePoint( 10 ) );
   QVERIFY( !interpolated.get() );
 
   interpolated.reset( cs.interpolatePoint( 6 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (14.5 -0.9 14.65 15.65)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (14.5 -0.9 14.65 15.65)" ) );
 
   interpolated.reset( cs.interpolatePoint( 5 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZM (13.51 -0.98 13 14)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point ZM (13.51 -0.98 13 14)" ) );
 
   // CircularStringZ
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1 ) << QgsPoint( 11, 1, 3 )
-                << QgsPoint( 12, 0, 13 ) << QgsPoint( 14, -1, 13 ) << QgsPoint( 16, 1, 23 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1 ) << QgsPoint( 11, 1, 3 ) << QgsPoint( 12, 0, 13 ) << QgsPoint( 14, -1, 13 ) << QgsPoint( 16, 1, 23 ) );
 
   interpolated.reset( cs.interpolatePoint( 1 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointZ (10.46 0.84 2.27)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point Z (10.46 0.84 2.27)" ) );
 
   // CircularStringM
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 1 )
-                << QgsPoint( Qgis::WkbType::PointM, 11, 1, 0, 3 )
-                << QgsPoint( Qgis::WkbType::PointM, 12, 0, 0, 13 )
-                << QgsPoint( Qgis::WkbType::PointM, 14, -1, 0, 13 )
-                << QgsPoint( Qgis::WkbType::PointM, 16, 1, 0, 23 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 10, 0, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 11, 1, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 12, 0, 0, 13 ) << QgsPoint( Qgis::WkbType::PointM, 14, -1, 0, 13 ) << QgsPoint( Qgis::WkbType::PointM, 16, 1, 0, 23 ) );
 
   interpolated.reset( cs.interpolatePoint( 1 ) );
-  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "PointM (10.46 0.84 2.27)" ) );
+  QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point M (10.46 0.84 2.27)" ) );
 
   // CircularString
-  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0 ) << QgsPoint( 11, 1 )
-                << QgsPoint( 12, 0 ) << QgsPoint( 14, -1 ) << QgsPoint( 16, 1 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 10, 0 ) << QgsPoint( 11, 1 ) << QgsPoint( 12, 0 ) << QgsPoint( 14, -1 ) << QgsPoint( 16, 1 ) );
 
   interpolated.reset( cs.interpolatePoint( 1 ) );
   QCOMPARE( interpolated->asWkt( 2 ), QStringLiteral( "Point (10.46 0.84)" ) );
@@ -2338,22 +2178,20 @@ void TestQgsCircularString::interpolate()
 void TestQgsCircularString::orientation()
 {
   QgsCircularString cs;
-  ( void )cs.orientation(); // no crash
+  ( void ) cs.orientation(); // no crash
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 )
-                << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
   QCOMPARE( cs.orientation(), Qgis::AngularDirection::Clockwise );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 )
-                << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
   QCOMPARE( cs.orientation(), Qgis::AngularDirection::CounterClockwise );
 }
 
 void TestQgsCircularString::constructorFromArray()
 {
   // test creating circular strings from arrays
-  QVector< double > xx;
-  QVector< double > yy;
+  QVector<double> xx;
+  QVector<double> yy;
   xx << 1 << 2 << 3;
   yy << 11 << 12 << 13;
   QgsCircularString cs( xx, yy );
@@ -2368,8 +2206,8 @@ void TestQgsCircularString::constructorFromArray()
   QCOMPARE( cs.yAt( 2 ), 13.0 );
 
   // unbalanced
-  xx = QVector< double >() << 1 << 2;
-  yy = QVector< double >() << 11 << 12 << 13;
+  xx = QVector<double>() << 1 << 2;
+  yy = QVector<double>() << 11 << 12 << 13;
   cs = QgsCircularString( xx, yy );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
@@ -2379,8 +2217,8 @@ void TestQgsCircularString::constructorFromArray()
   QCOMPARE( cs.xAt( 1 ), 2.0 );
   QCOMPARE( cs.yAt( 1 ), 12.0 );
 
-  xx = QVector< double >() << 1 << 2 << 3;
-  yy = QVector< double >() << 11 << 12;
+  xx = QVector<double>() << 1 << 2 << 3;
+  yy = QVector<double>() << 11 << 12;
   cs = QgsCircularString( xx, yy );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
@@ -2393,12 +2231,12 @@ void TestQgsCircularString::constructorFromArray()
 
 void TestQgsCircularString::constructorFromArrayZ()
 {
-  QVector< double > xx;
-  QVector< double > yy;
-  QVector< double > zz;
-  xx = QVector< double >() << 1 << 2 << 3;
-  yy = QVector< double >() << 11 << 12 << 13;
-  zz = QVector< double >() << 21 << 22 << 23;
+  QVector<double> xx;
+  QVector<double> yy;
+  QVector<double> zz;
+  xx = QVector<double>() << 1 << 2 << 3;
+  yy = QVector<double>() << 11 << 12 << 13;
+  zz = QVector<double>() << 21 << 22 << 23;
   QgsCircularString cs( xx, yy, zz );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZ );
@@ -2414,7 +2252,7 @@ void TestQgsCircularString::constructorFromArrayZ()
   QCOMPARE( cs.pointN( 2 ).z(), 23.0 );
 
   // unbalanced -> z ignored
-  zz = QVector< double >() << 21 << 22;
+  zz = QVector<double>() << 21 << 22;
   cs = QgsCircularString( xx, yy, zz );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
@@ -2427,7 +2265,7 @@ void TestQgsCircularString::constructorFromArrayZ()
   QCOMPARE( cs.yAt( 2 ), 13.0 );
 
   // unbalanced -> z truncated
-  zz = QVector< double >() << 21 << 22 << 23 << 24;
+  zz = QVector<double>() << 21 << 22 << 23 << 24;
   cs = QgsCircularString( xx, yy, zz );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZ );
@@ -2445,13 +2283,13 @@ void TestQgsCircularString::constructorFromArrayZ()
 
 void TestQgsCircularString::constructorFromArrayM()
 {
-  QVector< double > xx;
-  QVector< double > yy;
-  QVector< double > mm;
-  xx = QVector< double >() << 1 << 2 << 3;
-  yy = QVector< double >() << 11 << 12 << 13;
-  mm = QVector< double >() << 21 << 22 << 23;
-  QgsCircularString cs( xx, yy, QVector< double >(), mm );
+  QVector<double> xx;
+  QVector<double> yy;
+  QVector<double> mm;
+  xx = QVector<double>() << 1 << 2 << 3;
+  yy = QVector<double>() << 11 << 12 << 13;
+  mm = QVector<double>() << 21 << 22 << 23;
+  QgsCircularString cs( xx, yy, QVector<double>(), mm );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringM );
   QCOMPARE( cs.numPoints(), 3 );
@@ -2466,8 +2304,8 @@ void TestQgsCircularString::constructorFromArrayM()
   QCOMPARE( cs.pointN( 2 ).m(), 23.0 );
 
   // unbalanced -> m ignored
-  mm = QVector< double >() << 21 << 22;
-  cs = QgsCircularString( xx, yy, QVector< double >(), mm );
+  mm = QVector<double>() << 21 << 22;
+  cs = QgsCircularString( xx, yy, QVector<double>(), mm );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
   QCOMPARE( cs.numPoints(), 3 );
@@ -2479,8 +2317,8 @@ void TestQgsCircularString::constructorFromArrayM()
   QCOMPARE( cs.yAt( 2 ), 13.0 );
 
   // unbalanced -> m truncated
-  mm = QVector< double >() << 21 << 22 << 23 << 24;
-  cs = QgsCircularString( xx, yy, QVector< double >(), mm );
+  mm = QVector<double>() << 21 << 22 << 23 << 24;
+  cs = QgsCircularString( xx, yy, QVector<double>(), mm );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringM );
   QCOMPARE( cs.numPoints(), 3 );
@@ -2497,14 +2335,14 @@ void TestQgsCircularString::constructorFromArrayM()
 
 void TestQgsCircularString::constructorFromArrayZM()
 {
-  QVector< double > xx;
-  QVector< double > yy;
-  QVector< double > zz;
-  QVector< double > mm;
-  xx = QVector< double >() << 1 << 2 << 3;
-  yy = QVector< double >() << 11 << 12 << 13;
-  zz = QVector< double >() << 21 << 22 << 23;
-  mm = QVector< double >() << 31 << 32 << 33;
+  QVector<double> xx;
+  QVector<double> yy;
+  QVector<double> zz;
+  QVector<double> mm;
+  xx = QVector<double>() << 1 << 2 << 3;
+  yy = QVector<double>() << 11 << 12 << 13;
+  zz = QVector<double>() << 21 << 22 << 23;
+  mm = QVector<double>() << 31 << 32 << 33;
   QgsCircularString cs( xx, yy, zz, mm );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );
@@ -2538,9 +2376,7 @@ void TestQgsCircularString::append()
   QVERIFY( cs.isEmpty() );
   QCOMPARE( cs.numPoints(), 0 );
 
-  toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                       << QgsPoint( 11, 12 )
-                       << QgsPoint( 21, 22 ) );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
   cs.append( toAppend.get() );
 
   QVERIFY( !cs.is3D() );
@@ -2557,8 +2393,7 @@ void TestQgsCircularString::append()
 
   //add more points
   toAppend.reset( new QgsCircularString() );
-  toAppend->setPoints( QgsPointSequence() << QgsPoint( 21, 22 )
-                       << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 21, 22 ) << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
   cs.append( toAppend.get() );
 
   QCOMPARE( cs.numPoints(), 5 );
@@ -2574,20 +2409,14 @@ void TestQgsCircularString::append()
   //Make sure there are not duplicate points except start and end point
   cs.clear();
   toAppend.reset( new QgsCircularString() );
-  toAppend->setPoints( QgsPointSequence()
-                       << QgsPoint( 1, 1 )
-                       << QgsPoint( 5, 5 )
-                       << QgsPoint( 10, 1 ) );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 5, 5 ) << QgsPoint( 10, 1 ) );
   cs.append( toAppend.get() );
 
   QCOMPARE( cs.numPoints(), 3 );
   QCOMPARE( cs.vertexCount(), 3 );
 
   toAppend.reset( new QgsCircularString() );
-  toAppend->setPoints( QgsPointSequence()
-                       << QgsPoint( 10, 1 )
-                       << QgsPoint( 5, 2 )
-                       << QgsPoint( 1, 1 ) );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 10, 1 ) << QgsPoint( 5, 2 ) << QgsPoint( 1, 1 ) );
   cs.append( toAppend.get() );
 
   QVERIFY( cs.isClosed() );
@@ -2600,9 +2429,7 @@ void TestQgsCircularString::appendZM()
   //check dimensionality is inherited from append line if initially empty
   QgsCircularString cs;
   std::unique_ptr<QgsCircularString> toAppend( new QgsCircularString() );
-  toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 )
-                       << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 )
-                       << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 ) );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 ) );
   cs.append( toAppend.get() );
 
   QVERIFY( cs.is3D() );
@@ -2617,17 +2444,13 @@ void TestQgsCircularString::appendZM()
 
   //append points with z to non z circular string
   cs.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 31, 32 )
-                << QgsPoint( Qgis::WkbType::Point, 41, 42 )
-                << QgsPoint( Qgis::WkbType::Point, 51, 52 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 31, 32 ) << QgsPoint( Qgis::WkbType::Point, 41, 42 ) << QgsPoint( Qgis::WkbType::Point, 51, 52 ) );
 
   QVERIFY( !cs.is3D() );
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
 
   toAppend.reset( new QgsCircularString() );
-  toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 33, 34 )
-                       << QgsPoint( Qgis::WkbType::PointZM, 141, 142, 43, 44 )
-                       << QgsPoint( Qgis::WkbType::PointZM, 151, 152, 53, 54 ) );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 141, 142, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 151, 152, 53, 54 ) );
   cs.append( toAppend.get() );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
@@ -2639,18 +2462,14 @@ void TestQgsCircularString::appendZM()
 
   //append points without z/m to circularstring with z & m
   cs.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 11, 21 )
-                << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 12, 22 )
-                << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 13, 23 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 11, 21 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 12, 22 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 13, 23 ) );
 
   QVERIFY( cs.is3D() );
   QVERIFY( cs.isMeasure() );
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );
 
   toAppend.reset( new QgsCircularString() );
-  toAppend->setPoints( QgsPointSequence() << QgsPoint( 51, 52 )
-                       << QgsPoint( 141, 142 )
-                       << QgsPoint( 151, 152 ) );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 51, 52 ) << QgsPoint( 141, 142 ) << QgsPoint( 151, 152 ) );
   cs.append( toAppend.get() );
 
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilderdialog.h"
+#include "moc_qgsexpressionbuilderdialog.cpp"
 #include "qgssettings.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
@@ -34,7 +35,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->expressionTree()->loadRecent( mRecentKey );
-  builder->expressionTree()->loadUserExpressions( );
+  builder->expressionTree()->loadUserExpressions();
 
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
@@ -88,20 +89,14 @@ void QgsExpressionBuilderDialog::accept()
 
 void QgsExpressionBuilderDialog::reject()
 {
-
   if ( builder->expressionText() != mInitialText )
   {
-
     QgsSettings settings;
     const bool askToDiscardEditedExpression = settings.value( QStringLiteral( "askToDiscardEditedExpression" ), true, QgsSettings::Gui ).toBool();
 
     if ( askToDiscardEditedExpression )
     {
-      QMessageBox confirmMessage( QMessageBox::Question,
-                                  tr( "Expression was Edited" ),
-                                  tr( "The changes to the expression will be discarded. Would you like to continue?" ),
-                                  QMessageBox::Yes | QMessageBox::No,
-                                  this );
+      QMessageBox confirmMessage( QMessageBox::Question, tr( "Expression was Edited" ), tr( "The changes to the expression will be discarded. Would you like to continue?" ), QMessageBox::Yes | QMessageBox::No, this );
       confirmMessage.setCheckBox( new QCheckBox( tr( "Don't show this message again" ) ) );
       confirmMessage.checkBox()->setChecked( false );
       confirmMessage.button( QMessageBox::Yes )->setText( tr( "Discard changes" ) );

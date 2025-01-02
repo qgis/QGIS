@@ -51,7 +51,6 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
 
     ~QgsColorRampLegendNodeSettings();
 
-    //! Copy constructor
     QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other );
 
     QgsColorRampLegendNodeSettings &operator=( const QgsColorRampLegendNodeSettings &other );

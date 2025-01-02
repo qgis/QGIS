@@ -33,7 +33,8 @@ class QgsAmbientOcclusionBlurEntity : public QgsRenderPassQuad
     Q_OBJECT
   public:
     //! Constructor
-    QgsAmbientOcclusionBlurEntity( Qt3DRender::QTexture2D *texture, QNode *parent = nullptr );
+    QgsAmbientOcclusionBlurEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
+
   private:
     Qt3DRender::QParameter *mAmbientOcclusionFactorTextureParameter = nullptr;
 };

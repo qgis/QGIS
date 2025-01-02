@@ -26,6 +26,7 @@ class QgsSettingsEntryBool;
 class QgsSettingsEntryColor;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
+class QgsSettingsEntryInteger64;
 class QgsSettingsEntryString;
 class QgsSettingsEntryStringList;
 template<class T> class QgsSettingsEntryEnumFlag;
@@ -45,14 +46,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
 
-    /**
-      * Constructor for QgsSettingsRegistryCore.
-      */
     QgsSettingsRegistryCore();
-
-    /**
-     * Destructor for QgsSettingsRegistryCore.
-     */
     virtual ~QgsSettingsRegistryCore();
 
 #ifndef SIP_RUN
@@ -171,6 +165,15 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry whether layer are loading in parallel
     static const QgsSettingsEntryBool *settingsLayerParallelLoading;
+
+    //! Settings entry network cache directory
+    static const QgsSettingsEntryString *settingsNetworkCacheDirectory;
+
+    //! Settings entry network cache directory
+    static const QgsSettingsEntryInteger64 *settingsNetworkCacheSize;
+
+    //! Settings entry autosize columns by default when opening attribute table
+    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
 
   private:
     friend class QgsApplication;

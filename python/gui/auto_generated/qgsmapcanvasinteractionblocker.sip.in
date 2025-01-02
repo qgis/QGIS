@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmapcanvasinteractionblocker.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ An interface for objects which block interactions with a :py:class:`QgsMapCanvas
 #include "qgsmapcanvasinteractionblocker.h"
 %End
   public:
-
     enum class Interaction
     {
       MapPanOnSingleClick,
@@ -33,7 +32,6 @@ An interface for objects which block interactions with a :py:class:`QgsMapCanvas
 %Docstring
 Returns ``True`` if the specified ``interaction`` should be blocked.
 %End
-
 };
 
 /************************************************************************
@@ -41,5 +39,5 @@ Returns ``True`` if the specified ``interaction`` should be blocked.
  *                                                                      *
  * src/gui/qgsmapcanvasinteractionblocker.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

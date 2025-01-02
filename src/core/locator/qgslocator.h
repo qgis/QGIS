@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * Returns a map of prefix to filter, for all registered filters
      * with valid prefixes.
      * \see filters()
-     * \deprecated since QGIS 3.2 use filters() instead
+     * \deprecated QGIS 3.2. Use filters() instead.
      */
     Q_DECL_DEPRECATED QMap<QString, QgsLocatorFilter *> prefixedFilters() const;
 

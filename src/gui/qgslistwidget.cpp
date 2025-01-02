@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgslistwidget.h"
+#include "moc_qgslistwidget.cpp"
+#include "qgsvariantutils.h"
 
-QgsListWidget::QgsListWidget( QVariant::Type subType, QWidget *parent )
+QgsListWidget::QgsListWidget( QMetaType::Type subType, QWidget *parent )
   : QgsTableWidgetBase( parent )
   , mModel( subType, this )
-  , mSubType( subType )
 {
   init( &mModel );
 }
@@ -37,9 +38,8 @@ void QgsListWidget::setReadOnly( bool readOnly )
 
 
 ///@cond PRIVATE
-QgsListModel::QgsListModel( QVariant::Type subType, QObject *parent ) :
-  QAbstractTableModel( parent ),
-  mSubType( subType )
+QgsListModel::QgsListModel( QMetaType::Type subType, QObject *parent )
+  : QAbstractTableModel( parent ), mSubType( subType )
 {
 }
 
@@ -67,7 +67,8 @@ bool QgsListModel::valid() const
   for ( QVariantList::const_iterator it = mLines.constBegin(); it != mLines.constEnd(); ++it )
   {
     QVariant cur = *it;
-    if ( !cur.convert( mSubType ) ) return false;
+    if ( !cur.convert( mSubType ) )
+      return false;
   }
   return true;
 }
@@ -95,12 +96,9 @@ QVariant QgsListModel::headerData( int section, Qt::Orientation orientation, int
 
 QVariant QgsListModel::data( const QModelIndex &index, int role ) const
 {
-  if ( index.row() < 0 ||
-       index.row() >= mLines.count() ||
-       ( role != Qt::DisplayRole && role != Qt::EditRole ) ||
-       index.column() != 0 )
+  if ( index.row() < 0 || index.row() >= mLines.count() || ( role != Qt::DisplayRole && role != Qt::EditRole ) || index.column() != 0 )
   {
-    return QVariant( mSubType );
+    return QgsVariantUtils::createNullVariant( mSubType );
   }
   return mLines.at( index.row() );
 }
@@ -110,8 +108,7 @@ bool QgsListModel::setData( const QModelIndex &index, const QVariant &value, int
   if ( mReadOnly )
     return false;
 
-  if ( index.row() < 0 || index.row() >= mLines.count() ||
-       index.column() != 0 || role != Qt::EditRole )
+  if ( index.row() < 0 || index.row() >= mLines.count() || index.column() != 0 || role != Qt::EditRole )
   {
     return false;
   }
@@ -137,7 +134,7 @@ bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
   {
-    mLines.insert( position, QVariant( mSubType ) );
+    mLines.insert( position, QgsVariantUtils::createNullVariant( mSubType ) );
   }
   endInsertRows();
   return true;

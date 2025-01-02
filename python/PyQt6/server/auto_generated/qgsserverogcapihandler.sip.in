@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverogcapihandler.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -67,10 +67,6 @@ Optionally, override:
        def parameters(self, context):
            return [QgsServerQueryStringParameter("value1", True, QgsServerQueryStringParameter.Type.Double, "a double value")]
 
-
-
-
-
 .. versionadded:: 3.10
 %End
 
@@ -78,7 +74,6 @@ Optionally, override:
 #include "qgsserverogcapihandler.h"
 %End
   public:
-
     virtual ~QgsServerOgcApiHandler();
 
 
@@ -142,7 +137,7 @@ The default implementation returns the first content type returned by
 %End
 
 
-    virtual void handleRequest( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException ) /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
+    virtual void handleRequest( const QgsServerApiContext &context ) const  /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
 %Docstring
 Handles the request within its ``context``
 
@@ -152,7 +147,7 @@ extract validated parameters from the request.
 :raises QgsServerApiBadRequestError: if the method encounters any error
 %End
 
-    virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
+    virtual QVariantMap values( const QgsServerApiContext &context ) const;
 %Docstring
 Analyzes the incoming request ``context`` and returns the validated
 parameter map, throws :py:class:`QgsServerApiBadRequestError` in case of errors.
@@ -183,7 +178,7 @@ returns an empty string if there are not matches.
 
 
 
-    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const throw( QgsServerApiBadRequestException );
+    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
 %Docstring
 Writes ``data`` to the ``context`` response stream, content-type is calculated from the ``context`` request,
 optional ``htmlMetadata`` for the HTML templates can be specified and will be added as "metadata" to
@@ -258,7 +253,6 @@ Returns a vector layer from the ``collectionId`` in the given ``context``.
 
 
   protected:
-
     void setContentTypesInt( const QList<int> &contentTypes ) /PyName=setContentTypes/;
 %Docstring
 Set the content types to ``contentTypes``
@@ -272,5 +266,5 @@ Set the content types to ``contentTypes``
  *                                                                      *
  * src/server/qgsserverogcapihandler.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

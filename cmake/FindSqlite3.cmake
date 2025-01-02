@@ -11,13 +11,15 @@
 #    SQLITE3_INCLUDE_DIR
 #    SQLITE3_LIBRARY
 
-
-# FIND_PATH and FIND_LIBRARY normally search standard locations
-# before the specified paths. To search non-standard paths first,
-# FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
-# and then again with no specified paths to search the default
-# locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-# searching for the same item do nothing. 
+# We ensure consistency between the target defined by this file
+# and the official CMake's FindSQLite3.cmake
+# https://cmake.org/cmake/help/latest/module/FindSQLite3.html
+if(SQLITE3_FOUND)
+  if(NOT SQLite3_FOUND OR NOT TARGET SQLite::SQLite3)
+      message(FATAL_ERROR "Unconsistency between SQLite3 dependencies")
+  endif()
+  return()
+endif()
 
 # try to use framework on mac
 # want clean framework path, not unix compatibility path
@@ -37,12 +39,6 @@ IF (APPLE AND NOT QGIS_MAC_DEPS_DIR)
   ENDIF ()
 ENDIF (APPLE AND NOT QGIS_MAC_DEPS_DIR)
 
-# FIND_PATH and FIND_LIBRARY normally search standard locations
-# before the specified paths. To search non-standard paths first,
-# FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
-# and then again with no specified paths to search the default
-# locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-# searching for the same item do nothing.
 FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/sqlite"
@@ -74,3 +70,18 @@ ELSE (SQLITE3_FOUND)
    ENDIF (SQLITE3_FIND_REQUIRED)
 
 ENDIF (SQLITE3_FOUND)
+
+# Create the imported target following the official CMake's FindSQLite3.cmake
+if(SQLITE3_FOUND)
+    set(SQLite3_FOUND TRUE)
+    set(SQLite3_INCLUDE_DIRS ${SQLITE3_INCLUDE_DIR})
+    set(SQLite3_LIBRARIES ${SQLITE3_LIBRARY})
+    if(NOT TARGET SQLite::SQLite3)
+        add_library(SQLite::SQLite3 UNKNOWN IMPORTED)
+        set_target_properties(SQLite::SQLite3 PROPERTIES
+            IMPORTED_LOCATION             "${SQLITE3_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${SQLITE3_INCLUDE_DIR}")
+    else()
+        message(FATAL_ERROR "SQLite::SQLite3 target should not have been defined at this point.")
+    endif()
+endif()

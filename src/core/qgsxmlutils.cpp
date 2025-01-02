@@ -144,15 +144,15 @@ QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle &rect, QDomDocument 
 QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc )
 {
   QDomElement element = doc.createElement( QStringLiteral( "Option" ) );
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Invalid:
+    case QMetaType::Type::UnknownType:
     {
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invalid" ) );
       break;
     }
 
-    case QVariant::Map:
+    case QMetaType::Type::QVariantMap:
     {
       const QVariantMap map = value.toMap();
 
@@ -166,7 +166,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       break;
     }
 
-    case QVariant::List:
+    case QMetaType::Type::QVariantList:
     {
       const QVariantList list = value.toList();
 
@@ -180,7 +180,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       break;
     }
 
-    case QVariant::StringList:
+    case QMetaType::Type::QStringList:
     {
       const QStringList list = value.toStringList();
 
@@ -194,92 +194,96 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       break;
     }
 
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Bool:
-    case QVariant::Double:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-    case QVariant::String:
-      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::Bool:
+    case QMetaType::Type::Double:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::QString:
+      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( static_cast<QMetaType::Type>( value.userType() ) ) );
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
       break;
 
-    case QVariant::Char:
-      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
+    case QMetaType::Type::QChar:
+      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( static_cast<QMetaType::Type>( value.userType() ) ) );
       element.setAttribute( QStringLiteral( "value" ), QgsVariantUtils::isNull( value ) ? QString() : QString( value.toChar() ) );
       break;
 
-    case QVariant::Color:
+    case QMetaType::Type::QColor:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "color" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsColorUtils::colorToString( value.value< QColor >() ) : QString() );
       break;
 
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "datetime" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QDateTime >().isValid() ? value.toDateTime().toString( Qt::ISODate ) : QString() );
       break;
 
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QDate >().isValid() ? value.toDate().toString( Qt::ISODate ) : QString() );
       break;
 
-    case QVariant::Time:
+    case QMetaType::Type::QTime:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QTime >().isValid() ? value.toTime().toString( Qt::ISODate ) : QString() );
       break;
 
-    case QVariant::UserType:
-    {
-      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+    default:
+
+      if ( value.userType() == qMetaTypeId<QgsProperty>() )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProperty" ) );
         const QDomElement propertyElem = QgsXmlUtils::writeVariant( value.value< QgsProperty >().toVariant(), doc );
         element.appendChild( propertyElem );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
+      else if ( value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsCoordinateReferenceSystem" ) );
         const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
         crs.writeXml( element, doc );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+      else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsGeometry" ) );
         const QgsGeometry geom = value.value< QgsGeometry >();
         element.setAttribute( QStringLiteral( "value" ), geom.asWkt() );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
+      else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsProcessingOutputLayerDefinition >().toVariant(), doc );
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
+      else if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsProcessingFeatureSourceDefinition >().toVariant(), doc );
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingFeatureSourceDefinition" ) );
         break;
       }
-      else if ( value.userType() == QMetaType::type( "QgsRemappingSinkDefinition" ) )
+      else if ( value.userType() == qMetaTypeId<QgsRemappingSinkDefinition>() )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsRemappingSinkDefinition >().toVariant(), doc );
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsRemappingSinkDefinition" ) );
         break;
       }
-      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported user variant type %1" ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
-      break;
-    }
-
-    default:
-      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported variant type %1" ).arg( QVariant::typeToName( value.type() ) ).toLocal8Bit() );
+      else
+      {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported %1variant type %2" )
+                    .arg( value.userType() >= QMetaType::Type::User ? "user " : QString() ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
+#else
+        Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported %1variant type %2" )
+                    .arg( value.userType() >= QMetaType::Type::User ? "user " : QString() ).arg( value.metaType().name() ).toLocal8Bit() );
+#endif
+      }
       break;
   }
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/plot/qgsplottoolpan.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ Plot tool for panning/zoom/navigating plots.
 #include "qgsplottoolpan.h"
 %End
   public:
-
     QgsPlotToolPan( QgsPlotCanvas *canvas );
 %Docstring
 Constructor for QgsPlotToolPan, with the associated ``canvas``.
@@ -46,5 +45,5 @@ Constructor for QgsPlotToolPan, with the associated ``canvas``.
  *                                                                      *
  * src/gui/plot/qgsplottoolpan.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

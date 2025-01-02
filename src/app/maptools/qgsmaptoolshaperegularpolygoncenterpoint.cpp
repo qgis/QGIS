@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygoncenterpoint.h"
+#include "moc_qgsmaptoolshaperegularpolygoncenterpoint.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
@@ -55,7 +56,6 @@ QgsMapToolShapeRegularPolygonCenterPoint::~QgsMapToolShapeRegularPolygonCenterPo
 
 bool QgsMapToolShapeRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
-
   const QgsPoint point = mParentTool->mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )

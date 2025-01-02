@@ -105,7 +105,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
   QgsBlockingNetworkRequest::ErrorCode errCode;
   if ( pszPostFields )
   {
-    if ( pszCustomRequest == nullptr || EQUAL( pszCustomRequest, "POST" ) )
+    if ( !pszCustomRequest || EQUAL( pszCustomRequest, "POST" ) )
     {
       errCode = blockingRequest.post( request,
                                       QByteArray::fromStdString( pszPostFields ),
@@ -126,9 +126,9 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
   }
   else
   {
-    if ( pszCustomRequest == nullptr || EQUAL( pszCustomRequest, "GET" ) )
+    if ( !pszCustomRequest || EQUAL( pszCustomRequest, "GET" ) )
     {
-      errCode = blockingRequest.get( request, forceRefresh, pThis->mFeedback );
+      errCode = blockingRequest.get( request, forceRefresh, pThis->mFeedback, QgsBlockingNetworkRequest::RequestFlag::EmptyResponseIsValid );
     }
     else if ( EQUAL( pszCustomRequest, "HEAD" ) )
     {

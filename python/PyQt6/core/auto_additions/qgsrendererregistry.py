@@ -14,3 +14,15 @@ QgsRendererAbstractMetadata.LayerType.__bool__ = lambda flag: bool(_force_int(fl
 QgsRendererAbstractMetadata.LayerType.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsRendererAbstractMetadata.LayerType.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsRendererAbstractMetadata.LayerType.__or__ = lambda flag1, flag2: QgsRendererAbstractMetadata.LayerType(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsRendererAbstractMetadata.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsRendererMetadata.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsRendererRegistry.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass

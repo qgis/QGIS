@@ -95,7 +95,7 @@ class QgsSensorManager;
  * \brief Encapsulates a QGIS project, including sets of map layers and their styles,
  * layouts, annotations, canvases, etc.
  *
- * QgsProject is available both as a singleton (QgsProject::instance()) and for use as
+ * QgsProject is available both as a singleton (QgsProject.instance()) and for use as
  * standalone objects. The QGIS project singleton always gives access to the canonical project reference
  * open within the main QGIS application.
  *
@@ -124,6 +124,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( Qgis::DistanceUnit distanceUnits READ distanceUnits WRITE setDistanceUnits NOTIFY distanceUnitsChanged )
     Q_PROPERTY( Qgis::AreaUnit areaUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
     Q_PROPERTY( QgsProjectDisplaySettings *displaySettings READ displaySettings CONSTANT )
+    Q_PROPERTY( Qgis::TransactionMode transactionMode READ transactionMode WRITE setTransactionMode NOTIFY transactionModeChanged )
 
   public:
 
@@ -161,7 +162,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Create a new QgsProject.
      *
-     * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
+     * Most of the time you want to use QgsProject.instance() instead as many components of QGIS work with the singleton.
      *
      * Since QGIS 3.26.1 the \a capabilities argument specifies optional capabilities which can be selectively
      * enabled for the project. These affect the QgsProject object for its entire lifetime.
@@ -313,7 +314,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * replacements that are aware of the fact that projects may be saved in other project storages.
      *
      * \see fileName()
-     * \deprecated since QGIS 3.2 use absoluteFilePath(), baseName() or lastModifiedTime() instead
+     * \deprecated QGIS 3.2. Use absoluteFilePath(), baseName() or lastModifiedTime() instead.
      */
     Q_DECL_DEPRECATED QFileInfo fileInfo() const SIP_DEPRECATED;
 
@@ -1000,19 +1001,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      */
     Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QStringList &layerIds );
 
     /**
      * Gets the list of layers which currently should not be taken into account on map identification
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      */
     Q_DECL_DEPRECATED QStringList nonIdentifiableLayers() const;
 
@@ -1021,7 +1022,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * all tables that originate from the same database are synchronized and executed in a server side
      * transaction.
      *
-     * \deprecated QGIS 3.26 use transactionMode instead
+     * \deprecated QGIS 3.26. Use transactionMode() instead.
      */
     Q_DECL_DEPRECATED bool autoTransaction() const SIP_DEPRECATED;
 
@@ -1032,7 +1033,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \warning Make sure that this is only called when all layers are not in edit mode.
      *
-     * \deprecated QGIS 3.26 use setTransactionMode instead
+     * \deprecated QGIS 3.26. Use setTransactionMode() instead.
      */
     Q_DECL_DEPRECATED void setAutoTransaction( bool autoTransaction ) SIP_DEPRECATED;
 
@@ -1083,14 +1084,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
      *
-     * \deprecated Test whether the flags() method returns the Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide flag instead.
+     * \deprecated QGIS 3.40. Test whether the flags() method returns the Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide flag instead.
      */
     Q_DECL_DEPRECATED bool evaluateDefaultValues() const SIP_DEPRECATED;
 
     /**
      * Defines if default values should be evaluated on provider side when requested and not when committed.
      *
-     * \deprecated use setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) instead.
+     * \deprecated QGIS 3.40. Use setFlag( Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) instead.
      */
     Q_DECL_DEPRECATED void setEvaluateDefaultValues( bool evaluateDefaultValues ) SIP_DEPRECATED;
 
@@ -1112,6 +1113,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Sets the list of layers with which intersections should be avoided.
      * Only used if the avoid intersection mode is set to advanced.
+     * Line and point layers will not be added.
      *
      */
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
@@ -1249,7 +1251,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * ### Example
      *
-     *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
+     *     QVector<QgsVectorLayer*> vectorLayers = QgsProject.instance()->layers<QgsVectorLayer*>();
      *
      * \note not available in Python bindings
      * \see mapLayers()
@@ -1469,7 +1471,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param trust TRUE to trust the project, FALSE otherwise
      *
-     * \deprecated Use setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics ) instead.
+     * \deprecated QGIS 3.40. Use setFlag( Qgis::ProjectFlag::TrustStoredLayerStatistics ) instead.
      */
     Q_DECL_DEPRECATED void setTrustLayerMetadata( bool trust ) SIP_DEPRECATED;
 
@@ -1481,7 +1483,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * unicity is not checked for views and materialized views with Postgres
      * provider.
      *
-     * \deprecated Test whether the flags() method returns the Qgis::ProjectFlag::TrustStoredLayerStatistics flag instead.
+     * \deprecated QGIS 3.40. Test whether the flags() method returns the Qgis::ProjectFlag::TrustStoredLayerStatistics flag instead.
      */
     Q_DECL_DEPRECATED bool trustLayerMetadata() const SIP_DEPRECATED;
 
@@ -1563,7 +1565,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated since QGIS 3.4 use QgsMapLayer::flags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::flags() instead.
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED QSet<QgsMapLayer *> requiredLayers() const;
@@ -1573,7 +1575,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
-     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
+     * \deprecated QGIS 3.4. Use QgsMapLayer::setFlags() instead.
      * \since QGIS 3.2
      */
     Q_DECL_DEPRECATED void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
@@ -1627,7 +1629,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapScales()
      * \see mapScalesChanged()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED void setMapScales( const QVector<double> &scales ) SIP_DEPRECATED;
 
@@ -1640,7 +1642,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setMapScales()
      * \see mapScalesChanged()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED QVector<double> mapScales() const SIP_DEPRECATED;
 
@@ -1650,7 +1652,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see useProjectScales()
      * \see setMapScales()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED void setUseProjectScales( bool enabled ) SIP_DEPRECATED;
 
@@ -1660,7 +1662,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see setUseProjectScales()
      * \see mapScales()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED bool useProjectScales() const SIP_DEPRECATED;
 
@@ -1670,16 +1672,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void generateTsFile( const QString &locale );
 
-    /**
-     * Translates the project with QTranslator and qm file
-     * \returns the result string (in case there is no QTranslator loaded the sourceText)
-     *
-     * \param context describing layer etc.
-     * \param sourceText is the identifier of this text
-     * \param disambiguation it's the disambiguation
-     * \param n if -1 uses the appropriate form
-     * \since QGIS 3.4
-     */
     QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const override;
 
     /**
@@ -1707,11 +1699,31 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
 
+    /**
+     * Loads python expression functions stored in the currrent project
+     * \param force Whether to check enablePythonEmbedded setting (default) or not.
+     * \returns Whether the project functions were loaded or not.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    bool loadFunctionsFromProject( bool force = false ) SIP_SKIP;
+
+    /**
+      * Unloads python expression functions stored in the current project
+      * and reloads local functions from the user profile.
+      *
+      * \note not available in Python bindings
+      * \since QGIS 3.40
+      */
+    void cleanFunctionsFromProject() SIP_SKIP;
+
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -1738,17 +1750,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a project is being read.
      */
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &document );
 
     /**
      * Emitted when a project is being read. And passing the /a context
      */
-    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+    void readProjectWithContext( const QDomDocument &document, QgsReadWriteContext &context );
 
     /**
      * Emitted when the project is being written.
      */
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument &document );
 
     /**
      * Emitted after the basic initialization of a layer from the project
@@ -1778,9 +1790,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when an old project file is read.
      *
-     * \deprecated use readVersionMismatchOccurred() instead.
+     * \deprecated QGIS 3.40. Use readVersionMismatchOccurred() instead.
      */
-    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString & ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void oldProjectVersionWarning( const QString &warning ) SIP_DEPRECATED;
 
     /**
      * Emitted when a project is read and the version of QGIS used to save
@@ -1814,7 +1826,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted when the list of layer which are excluded from map identification changes
-     * \deprecated since QGIS 3.4
+     * \deprecated QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
@@ -1920,6 +1932,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when datum transforms stored in the project are not available locally.
      */
     void missingDatumTransforms( const QStringList &missingTransforms );
+
+    /**
+     * Emitted when the transaction mode has changed.
+     * \since QGIS 3.38
+     */
+    void transactionModeChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a
@@ -2115,7 +2133,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see mapScales()
      * \see setMapScales()
      *
-     * \deprecated Use viewSettings() instead
+     * \deprecated QGIS 3.40. Use viewSettings() instead.
      */
     Q_DECL_DEPRECATED void mapScalesChanged() SIP_DEPRECATED;
 
@@ -2522,10 +2540,7 @@ class CORE_EXPORT QgsProjectDirtyBlocker
       mProject->mDirtyBlockCount++;
     }
 
-    //! QgsProjectDirtyBlocker cannot be copied
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other ) = delete;
-
-    //! QgsProjectDirtyBlocker cannot be copied
     QgsProjectDirtyBlocker &operator=( const QgsProjectDirtyBlocker &other ) = delete;
 
     ~QgsProjectDirtyBlocker()
@@ -2569,8 +2584,28 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
   private:
 
     QHash< QString, QColor > mColors;
-
 };
+
+class GetNamedProjectColorObject : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedProjectColorObject( const QgsProject *project );
+
+    /**
+     * Optimized constructor for GetNamedProjectColor when a list of map is already available
+     * and does not need to be read from a project.
+     */
+    GetNamedProjectColorObject( const QHash< QString, QColor > &colors );
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+
+    QHash< QString, QColor > mColors;
+};
+
+
 
 class GetSensorData : public QgsScopedExpressionFunction
 {

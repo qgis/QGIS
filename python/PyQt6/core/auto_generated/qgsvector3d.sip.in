@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsvector3d.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -84,6 +84,8 @@ Sets vector coordinates
 
     QgsVector3D operator-( const QgsVector3D &other ) const /HoldGIL/;
 
+    const QgsVector3D operator-() const /HoldGIL/;
+
     QgsVector3D operator *( const double factor ) const /HoldGIL/;
 
     QgsVector3D operator /( const double factor ) const /HoldGIL/;
@@ -147,5 +149,5 @@ Converts the current object to QVector3D
  *                                                                      *
  * src/core/qgsvector3d.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

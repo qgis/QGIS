@@ -4,7 +4,6 @@
 set(QGIS_PROCESS_SRCS
   main.cpp
   qgsprocess.cpp
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
 )
 
 if (UNIX AND NOT ANDROID)

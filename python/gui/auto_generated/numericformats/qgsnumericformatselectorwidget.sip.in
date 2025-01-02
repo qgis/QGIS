@@ -3,9 +3,8 @@
  *                                                                      *
  * src/gui/numericformats/qgsnumericformatselectorwidget.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -22,7 +21,6 @@ A widget which allows choice of numeric formats and the properties of them.
 #include "qgsnumericformatselectorwidget.h"
 %End
   public:
-
     QgsNumericFormatSelectorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsNumericFormatSelectorWidget with the specified ``parent`` widget.
@@ -42,6 +40,16 @@ Returns a new format object representing the settings currently configured in th
 The caller takes ownership of the returned object.
 %End
 
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context ``generator`` class that will be used to retrieve
+an expression context for the widget when required.
+
+Ownership is not transferred, and the ``generator`` must exist for the lifetime of this widget.
+
+.. versionadded:: 3.40
+%End
+
   signals:
 
     void changed();
@@ -51,10 +59,55 @@ Emitted whenever the format configured55 in the widget is changed.
 
 };
 
+
+class QgsNumericFormatSelectorDialog : QDialog
+{
+%Docstring(signature="appended")
+A simple dialog for customizing a numeric format.
+
+.. seealso:: :py:class:`QgsNumericFormatSelectorWidget`
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatselectorwidget.h"
+%End
+  public:
+    QgsNumericFormatSelectorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor for QgsNumericFormatSelectorDialog.
+
+:param parent: parent widget
+:param flags: window flags for dialog
+%End
+
+    void setFormat( const QgsNumericFormat *format );
+%Docstring
+Sets the format to show in the dialog.
+%End
+
+    QgsNumericFormat *format() const /TransferBack/;
+%Docstring
+Returns a new format object representing the settings currently configured in the dialog.
+
+The caller takes ownership of the returned object.
+%End
+
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context ``generator`` class that will be used to retrieve
+an expression context for the dialog when required.
+
+Ownership is not transferred, and the ``generator`` must exist for the lifetime of this dialog.
+%End
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/numericformats/qgsnumericformatselectorwidget.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

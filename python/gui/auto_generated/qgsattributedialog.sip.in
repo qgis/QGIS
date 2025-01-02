@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsattributedialog.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,7 +17,6 @@ class QgsAttributeDialog : QDialog, QgsMapLayerActionContextGenerator
 #include "qgsattributedialog.h"
 %End
   public:
-
     QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 %Docstring
 Create an attribute dialog for a given layer and feature
@@ -75,6 +74,9 @@ Intercept window activate/deactivate events to show/hide the highlighted feature
 :return: The same as the parent QDialog
 %End
 
+    virtual void showEvent( QShowEvent *event );
+
+
     void setExtraContextScope( QgsExpressionContextScope *extraScope /Transfer/ );
 %Docstring
 Sets ``extraScope`` as an additional expression context scope to be used
@@ -104,5 +106,5 @@ Show the dialog non-blocking. Reparents this dialog to be a child of the dialog 
  *                                                                      *
  * src/gui/qgsattributedialog.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

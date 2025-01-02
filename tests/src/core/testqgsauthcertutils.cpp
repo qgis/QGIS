@@ -14,22 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsauthmanager.h"
 #include "qgstest.h"
+#include "qgsapplication.h"
+#include "qgsauthcrypto.h"
+#include "qgsauthcertutils.h"
+
 #include <QObject>
 #include <QSslKey>
 #include <QString>
 #include <QStringList>
 
-#include "qgsapplication.h"
-#include "qgsauthcrypto.h"
-#include "qgsauthcertutils.h"
-#include "qgslogger.h"
-
 /**
  * \ingroup UnitTests
  * Unit tests for QgsAuthCertUtils static functions
  */
-class TestQgsAuthCertUtils: public QObject
+class TestQgsAuthCertUtils : public QObject
 {
     Q_OBJECT
 
@@ -52,6 +52,7 @@ void TestQgsAuthCertUtils::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsApplication::authManager()->ensureInitialized();
   if ( QgsAuthCrypto::isDisabled() )
     QSKIP( "QCA's qca-ossl plugin is missing, skipping test case", SkipAll );
 }

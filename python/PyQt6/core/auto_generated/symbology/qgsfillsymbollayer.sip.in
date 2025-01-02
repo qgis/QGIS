@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsfillsymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -14,6 +14,9 @@
 
 class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+Renders polygons using a single fill and stroke color.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
@@ -41,24 +44,19 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
-
     virtual void stopRender( QgsSymbolRenderContext &context );
-
 
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-
     virtual QVariantMap properties() const;
-
 
     virtual QgsSimpleFillSymbolLayer *clone() const /Factory/;
 
-
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
-
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -68,7 +66,6 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QColor strokeColor() const;
     virtual void setStrokeColor( const QColor &strokeColor );
-
     virtual QColor fillColor() const;
     virtual void setFillColor( const QColor &color );
 
@@ -197,6 +194,9 @@ Returns the map unit scale for the fill's offset.
 
 class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+A fill symbol layer which draws a smooth color gradient over a polygon.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
@@ -224,6 +224,8 @@ Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map 
 Caller takes ownership of the returned symbol layer.
 %End
 
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual QString layerType() const;
 
@@ -497,6 +499,8 @@ Caller takes ownership of the returned symbol layer.
 
 
     virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -915,6 +919,8 @@ Used internally when reading/writing symbols.
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
+
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual void startRender( QgsSymbolRenderContext &context );
@@ -1132,7 +1138,7 @@ If the height is 0 then the height will be calculated automatically based on the
 .. versionadded:: 3.36
 %End
 
- void setWidthUnit( Qgis::RenderUnit unit ) /Deprecated/;
+ void setWidthUnit( Qgis::RenderUnit unit ) /Deprecated="Since 3.40. Use setSizeUnit() instead."/;
 %Docstring
 Sets the ``unit`` for the image's width.
 
@@ -1142,8 +1148,9 @@ Sets the ``unit`` for the image's width.
 
 .. seealso:: :py:func:`setWidthMapUnitScale`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.setSizeUnit` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.setSizeUnit` instead.
 %End
 
     void setSizeUnit( Qgis::RenderUnit unit );
@@ -1159,7 +1166,7 @@ Sets the ``unit`` for the image's width and height.
 .. versionadded:: 3.36
 %End
 
- Qgis::RenderUnit widthUnit() const /Deprecated/;
+ Qgis::RenderUnit widthUnit() const /Deprecated="Since 3.40. Use sizeUnit() instead."/;
 %Docstring
 Returns the units for the image's width.
 
@@ -1169,8 +1176,9 @@ Returns the units for the image's width.
 
 .. seealso:: :py:func:`widthMapUnitScale`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.sizeUnit` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.sizeUnit` instead.
 %End
 
     Qgis::RenderUnit sizeUnit() const;
@@ -1188,7 +1196,7 @@ Returns the units for the image's width and height.
 .. versionadded:: 3.36
 %End
 
- void setWidthMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
+ void setWidthMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated="Since 3.40. Use setSizeMapUnitScale() instead."/;
 %Docstring
 Sets the map unit ``scale`` for the image's width.
 
@@ -1198,8 +1206,9 @@ Sets the map unit ``scale`` for the image's width.
 
 .. seealso:: :py:func:`setWidthUnit`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.setSizeMapUnitScale` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.setSizeMapUnitScale` instead.
 %End
 
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
@@ -1217,7 +1226,7 @@ Sets the map unit ``scale`` for the image's width and height.
 .. versionadded:: 3.36
 %End
 
- const QgsMapUnitScale &widthMapUnitScale() const /Deprecated/;
+ const QgsMapUnitScale &widthMapUnitScale() const /Deprecated="Since 3.40. Use sizeMapUnitScale() instead."/;
 %Docstring
 Returns the map unit scale for the image's width.
 
@@ -1227,8 +1236,9 @@ Returns the map unit scale for the image's width.
 
 .. seealso:: :py:func:`widthUnit`
 
-.. deprecated::
-   use :py:func:`~QgsRasterFillSymbolLayer.sizeMapUnitScale` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterFillSymbolLayer.sizeMapUnitScale` instead.
 %End
 
     const QgsMapUnitScale &sizeMapUnitScale() const;
@@ -2718,6 +2728,10 @@ Returns the map scale for the density area.
 
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 {
+%Docstring(signature="appended")
+
+A fill symbol layer which renders a marker symbol at the centroid of a polygon geometry.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
@@ -2846,5 +2860,5 @@ Sets whether point markers should be ``clipped`` to the current part boundary on
  *                                                                      *
  * src/core/symbology/qgsfillsymbollayer.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

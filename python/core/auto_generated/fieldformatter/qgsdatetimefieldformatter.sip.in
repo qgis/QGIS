@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,9 +29,6 @@ the field configuration.
     static QString DATETIME_DISPLAY_FORMAT; //! Date time display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
 
     QgsDateTimeFieldFormatter();
-%Docstring
-Default constructor of field formatter for a date time field.
-%End
 
     virtual QString id() const;
 
@@ -39,7 +36,7 @@ Default constructor of field formatter for a date time field.
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
 
-    static QString defaultFormat( QVariant::Type type );
+    static QString defaultFormat( QMetaType::Type type );
 %Docstring
 Gets the default format in function of the type.
 The type is expected to be one of
@@ -49,7 +46,21 @@ The type is expected to be one of
 - QVariant.Time
 %End
 
-    static QString defaultDisplayFormat( QVariant::Type type );
+ static QString defaultFormat( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+%Docstring
+Gets the default format in function of the type.
+The type is expected to be one of
+
+- QVariant.DateTime
+- QVariant.Date
+- QVariant.Time
+
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
+%End
+
+    static QString defaultDisplayFormat( QMetaType::Type type );
 %Docstring
 Gets the default display format in function of the type.
 The type is expected to be one of
@@ -61,6 +72,22 @@ The type is expected to be one of
 .. versionadded:: 3.30
 %End
 
+ static QString defaultDisplayFormat( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+%Docstring
+Gets the default display format in function of the type.
+The type is expected to be one of
+
+- QVariant.DateTime
+- QVariant.Date
+- QVariant.Time
+
+.. versionadded:: 3.30
+
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
+%End
+
 };
 
 /************************************************************************
@@ -68,5 +95,5 @@ The type is expected to be one of
  *                                                                      *
  * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -22,7 +22,7 @@
 #include <QIcon>
 
 class QgsPathResolver;
-class QgsVectorLayer;
+class QgsMapLayer;
 class QgsCalloutWidget SIP_EXTERNAL;
 class QgsCallout;
 class QDomElement;
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
      *
      * Ownership of the widget is transferred to the caller.
      */
-    virtual QgsCalloutWidget *createCalloutWidget( QgsVectorLayer * );
+    virtual QgsCalloutWidget *createCalloutWidget( QgsMapLayer * );
 
   protected:
     QString mName;
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
 };
 
 typedef QgsCallout *( *QgsCalloutCreateFunc )( const QVariantMap &, const QgsReadWriteContext & ) SIP_SKIP;
-typedef QgsCalloutWidget *( *QgsCalloutWidgetFunc )( QgsVectorLayer * ) SIP_SKIP;
+typedef QgsCalloutWidget *( *QgsCalloutWidgetFunc )( QgsMapLayer * ) SIP_SKIP;
 
 /**
  * \ingroup core
@@ -122,15 +122,15 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
     {}
 
     //! \note not available in Python bindings
-    QgsCalloutCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsCalloutCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsCalloutWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsCalloutWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsCalloutWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsCalloutWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
 
     QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) override SIP_FACTORY;
-    QgsCalloutWidget *createCalloutWidget( QgsVectorLayer *vl ) override SIP_FACTORY;
+    QgsCalloutWidget *createCalloutWidget( QgsMapLayer *vl ) override SIP_FACTORY;
 
   protected:
     QgsCalloutCreateFunc mCreateFunc;
@@ -159,9 +159,7 @@ class CORE_EXPORT QgsCalloutRegistry
     QgsCalloutRegistry();
     ~QgsCalloutRegistry();
 
-    //! QgsCalloutRegistry cannot be copied.
     QgsCalloutRegistry( const QgsCalloutRegistry &rh ) = delete;
-    //! QgsCalloutRegistry cannot be copied.
     QgsCalloutRegistry &operator=( const QgsCalloutRegistry &rh ) = delete;
 
     /**

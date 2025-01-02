@@ -12,5 +12,32 @@ QgsEditFormConfig.Alias.__doc__ = "Alias"
 QgsEditFormConfig.Editable = QgsEditFormConfig.DataDefinedProperty.Editable
 QgsEditFormConfig.Editable.is_monkey_patched = True
 QgsEditFormConfig.Editable.__doc__ = "Editable state \n.. versionadded:: 3.30"
-QgsEditFormConfig.DataDefinedProperty.__doc__ = "Data defined properties.\nForm data defined overrides are stored in a property collection\nand they can be retrieved using the indexes specified in this\nenum.\n\n.. versionadded:: 3.14\n\n" + '* ``NoProperty``: ' + QgsEditFormConfig.DataDefinedProperty.NoProperty.__doc__ + '\n' + '* ``AllProperties``: ' + QgsEditFormConfig.DataDefinedProperty.AllProperties.__doc__ + '\n' + '* ``Alias``: ' + QgsEditFormConfig.DataDefinedProperty.Alias.__doc__ + '\n' + '* ``Editable``: ' + QgsEditFormConfig.DataDefinedProperty.Editable.__doc__
+QgsEditFormConfig.DataDefinedProperty.__doc__ = """Data defined properties.
+Form data defined overrides are stored in a property collection
+and they can be retrieved using the indexes specified in this
+enum.
+
+.. versionadded:: 3.14
+
+* ``NoProperty``: No property
+* ``AllProperties``: All properties for item
+* ``Alias``: Alias
+* ``Editable``: Editable state
+
+  .. versionadded:: 3.30
+
+
+"""
 # --
+try:
+    QgsEditFormConfig.__group__ = ['editform']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEditFormConfig.GroupData.__group__ = ['editform']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsEditFormConfig.TabData.__group__ = ['editform']
+except (NameError, AttributeError):
+    pass

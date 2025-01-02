@@ -27,7 +27,6 @@
 #define SIP_NO_FILE
 
 class QgsEptPointCloudIndex;
-class QgsRemoteEptPointCloudIndex;
 
 class QgsEptProvider: public QgsPointCloudDataProvider
 {
@@ -35,7 +34,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
   public:
     QgsEptProvider( const QString &uri,
                     const QgsDataProvider::ProviderOptions &providerOptions,
-                    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                    Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsEptProvider();
 
@@ -64,7 +63,7 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     QgsEptProviderMetadata();
     QIcon icon() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    QgsEptProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsEptProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     int priorityForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;

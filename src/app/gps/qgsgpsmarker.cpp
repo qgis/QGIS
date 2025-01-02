@@ -17,6 +17,7 @@
 #include <QObject>
 
 #include "qgsgpsmarker.h"
+#include "moc_qgsgpsmarker.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"
@@ -75,8 +76,8 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
 
 void QgsGpsMarker::setMarkerRotation( double rotation )
 {
-  QgsMarkerSymbol *renderedMarker = qgis::down_cast< QgsMarkerSymbol *>( symbol() );
-  if ( !settingRotateLocationMarker->value( ) )
+  QgsMarkerSymbol *renderedMarker = qgis::down_cast<QgsMarkerSymbol *>( symbol() );
+  if ( !settingRotateLocationMarker->value() )
   {
     renderedMarker->setAngle( mMarkerSymbol->angle() );
   }
@@ -94,6 +95,6 @@ void QgsGpsMarker::updateMarkerSymbol()
   symbolDoc.setContent( defaultSymbol );
   const QDomElement markerElement = symbolDoc.documentElement();
   mMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( markerElement, QgsReadWriteContext() ) );
-  setSymbol( std::unique_ptr< QgsMarkerSymbol >( mMarkerSymbol->clone() ) );
+  setSymbol( std::unique_ptr<QgsMarkerSymbol>( mMarkerSymbol->clone() ) );
   updateSize();
 }

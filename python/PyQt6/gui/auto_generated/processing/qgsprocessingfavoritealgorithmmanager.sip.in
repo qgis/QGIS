@@ -1,0 +1,90 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingfavoritealgorithmmanager.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingFavoriteAlgorithmManager : QObject
+{
+%Docstring(signature="appended")
+A manager for tracking favorite Processing algorithms.
+
+:py:class:`QgsProcessingFavoriteAlgorithmManager` is not usually directly created, instead
+use the instance accessible through :py:func:`QgsGui.processingFavoriteAlgorithmManager()`.
+
+The favorite algorithms are saved and restored via :py:class:`QgsSettings`.
+
+.. note::
+
+   Not stable API
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingfavoritealgorithmmanager.h"
+%End
+  public:
+    QgsProcessingFavoriteAlgorithmManager( QObject *parent = 0 );
+%Docstring
+Constructor for QgsProcessingFavoriteAlgorithmManager, with the specified
+``parent`` object.
+%End
+
+    QStringList favoriteAlgorithmIds() const;
+%Docstring
+Returns a list of the IDs of favorite Processing algorithms.
+%End
+
+    void add( const QString &id );
+%Docstring
+Adds the algorithm with matching ``id`` to the favorite algorithms list.
+
+If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal
+will be emitted.
+%End
+
+    void remove( const QString &id );
+%Docstring
+Removes the algorithm with matching ``id`` from the favorite algorithms list.
+
+If this changes the list of favorite algorithm IDs then the :py:func:`~QgsProcessingFavoriteAlgorithmManager.changed` signal
+will be emitted.
+%End
+
+    void clear();
+%Docstring
+Clears list of favorite Processing algorithms
+%End
+
+    bool isFavorite( const QString &id );
+%Docstring
+Returns ``True`` if the algorithm with matching ``id`` is in a favorite list.
+%End
+
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the list of favorite algorithms is changed, e.g. when
+a new algorithm ID is added to the list or an existing algorithm ID
+is removed from the list.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingfavoritealgorithmmanager.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

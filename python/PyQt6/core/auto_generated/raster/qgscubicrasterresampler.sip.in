@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgscubicrasterresampler.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,16 +22,20 @@ Cubic Raster Resampler.
   public:
 
     QgsCubicRasterResampler();
-%Docstring
-Constructor for QgsCubicRasterResampler.
-%End
     virtual QgsCubicRasterResampler *clone() const /Factory/;
 
 
     virtual QImage resampleV2( const QImage &source, const QSize &size );
 
- virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
 
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated="Since 3.12. Use resampleV2() instead."/;
+
+%Docstring
+
+.. deprecated:: 3.12
+
+   Use :py:func:`~QgsCubicRasterResampler.resampleV2` instead.
+%End
     virtual QString type() const;
 
     virtual int tileBufferPixels() const;
@@ -43,5 +47,5 @@ Constructor for QgsCubicRasterResampler.
  *                                                                      *
  * src/core/raster/qgscubicrasterresampler.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

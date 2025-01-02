@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsquerybuilder.h"
+#include "moc_qgsquerybuilder.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -35,8 +36,7 @@
 
 // constructor used when the query builder must make its own
 // connection to the database
-QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
-                                  QWidget *parent, Qt::WindowFlags fl )
+QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
   , mPreviousFieldRow( -1 )
   , mLayer( layer )
@@ -93,7 +93,34 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   connect( layer, &QgsVectorLayer::subsetStringChanged, this, &QgsQueryBuilder::layerSubsetStringChanged );
   layerSubsetStringChanged();
 
-  lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
+  QString subsetStringDialect;
+  QString subsetStringHelpUrl;
+
+  if ( QgsDataProvider *provider = layer->dataProvider() )
+  {
+    lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), provider->name() ) );
+    subsetStringDialect = provider->subsetStringDialect();
+    subsetStringHelpUrl = provider->subsetStringHelpUrl();
+  }
+  else
+  {
+    lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), layer->providerType() ) );
+  }
+
+  if ( !subsetStringDialect.isEmpty() && !subsetStringHelpUrl.isEmpty() )
+  {
+    lblProviderFilterInfo->setOpenExternalLinks( true );
+    lblProviderFilterInfo->setText( tr( "Enter a <a href=\"%1\">%2</a> to filter the layer" ).arg( subsetStringHelpUrl ).arg( subsetStringDialect ) );
+  }
+  else if ( !subsetStringDialect.isEmpty() )
+  {
+    lblProviderFilterInfo->setText( tr( "Enter a %1 to filter the layer" ).arg( subsetStringDialect ) );
+  }
+  else
+  {
+    lblProviderFilterInfo->hide();
+  }
+
   mTxtSql->setText( mOrigSubsetString );
 
   mFilterLineEdit->setShowSearchIcon( true );
@@ -148,9 +175,9 @@ void QgsQueryBuilder::fillValues( const QString &field, int limit )
     QString value;
     if ( QgsVariantUtils::isNull( var ) )
       value = nullValue;
-    else if ( var.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+    else if ( var.userType() == QMetaType::Type::QDate && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
       value = var.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
-    else if ( var.type() == QVariant::List || var.type() == QVariant::StringList )
+    else if ( var.userType() == QMetaType::Type::QVariantList || var.userType() == QMetaType::Type::QStringList )
     {
       const QVariantList list = var.toList();
       for ( const QVariant &val : list )
@@ -183,7 +210,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   }
 
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString(), 25 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString(), 25 );
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
@@ -206,7 +233,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   }
 
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString(), -1 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString(), -1 );
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
@@ -229,30 +256,21 @@ void QgsQueryBuilder::test()
     // Check for errors
     if ( featureCount < 0 )
     {
-      QMessageBox::warning( this,
-                            tr( "Query Result" ),
-                            tr( "An error occurred when executing the query, please check the expression syntax." ) );
+      QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query, please check the expression syntax." ) );
     }
     else
     {
-      QMessageBox::information( this,
-                                tr( "Query Result" ),
-                                tr( "The where clause returned %n row(s).", "returned test rows", featureCount ) );
+      QMessageBox::information( this, tr( "Query Result" ), tr( "The where clause returned %n row(s).", "returned test rows", featureCount ) );
     }
   }
   else if ( mLayer->dataProvider()->hasErrors() )
   {
-    QMessageBox::warning( this,
-                          tr( "Query Result" ),
-                          tr( "An error occurred when executing the query." )
-                          + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
+    QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query." ) + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
     mLayer->dataProvider()->clearErrors();
   }
   else
   {
-    QMessageBox::warning( this,
-                          tr( "Query Result" ),
-                          tr( "An error occurred when executing the query." ) );
+    QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query." ) );
   }
 }
 
@@ -265,10 +283,7 @@ void QgsQueryBuilder::accept()
       //error in query - show the problem
       if ( mLayer->dataProvider()->hasErrors() )
       {
-        QMessageBox::warning( this,
-                              tr( "Query Result" ),
-                              tr( "An error occurred when executing the query." )
-                              + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
+        QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred when executing the query." ) + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
         mLayer->dataProvider()->clearErrors();
       }
       else
@@ -359,7 +374,7 @@ void QgsQueryBuilder::lstFields_clicked( const QModelIndex &index )
 
 void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( '\"' + mModelFields->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString() + '\"' );
+  mTxtSql->insertText( '\"' + mModelFields->data( index, static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString() + '\"' );
   mTxtSql->setFocus();
 }
 
@@ -368,9 +383,9 @@ void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
   const QVariant value = index.data( Qt::UserRole + 1 );
   if ( QgsVariantUtils::isNull( value ) )
     mTxtSql->insertText( QStringLiteral( "NULL" ) );
-  else if ( value.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+  else if ( value.userType() == QMetaType::Type::QDate && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
     mTxtSql->insertText( '\'' + value.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) ) + '\'' );
-  else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong || value.type() == QVariant::Bool )
+  else if ( value.userType() == QMetaType::Type::Int || value.userType() == QMetaType::Type::Double || value.userType() == QMetaType::Type::LongLong || value.userType() == QMetaType::Type::Bool )
     mTxtSql->insertText( value.toString() );
   else
     mTxtSql->insertText( '\'' + value.toString().replace( '\'', QLatin1String( "''" ) ) + '\'' );
@@ -468,7 +483,7 @@ bool QgsQueryBuilder::saveQueryToFile( const QString &subset )
   if ( !saveFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QMessageBox::critical( nullptr, tr( "Save Query to File" ), tr( "Could not open file for writing." ) );
-    return false ;
+    return false;
   }
 
   QDomDocument xmlDoc;

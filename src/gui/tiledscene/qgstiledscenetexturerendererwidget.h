@@ -30,7 +30,7 @@ class QgsTiledSceneRenderer;
 
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsTiledSceneTextureRendererWidget: public QgsTiledSceneRendererWidget, private Ui::QgsTiledSceneTextureRendererWidgetBase
+class GUI_EXPORT QgsTiledSceneTextureRendererWidget : public QgsTiledSceneRendererWidget, private Ui::QgsTiledSceneTextureRendererWidgetBase
 {
     Q_OBJECT
 
@@ -48,7 +48,6 @@ class GUI_EXPORT QgsTiledSceneTextureRendererWidget: public QgsTiledSceneRendere
     void setFromRenderer( const QgsTiledSceneRenderer *r );
 
     bool mBlockChangedSignal = false;
-
 };
 
 ///@endcond

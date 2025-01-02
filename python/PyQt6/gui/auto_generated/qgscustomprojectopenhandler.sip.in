@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscustomprojectopenhandler.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,7 +28,6 @@ implementation, and then implement :py:func:`~handleProjectOpen` to open the ass
 #include "qgscustomprojectopenhandler.h"
 %End
   public:
-
     virtual bool handleProjectOpen( const QString &file ) = 0;
 %Docstring
 Called when the specified project ``file`` has been opened within QGIS. If ``True``
@@ -66,5 +65,5 @@ Returns a custom icon used to represent this handler.
  *                                                                      *
  * src/gui/qgscustomprojectopenhandler.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

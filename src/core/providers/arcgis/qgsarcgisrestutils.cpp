@@ -14,8 +14,10 @@
 ***************************************************************************/
 
 #include "qgsarcgisrestutils.h"
+#include "moc_qgsarcgisrestutils.cpp"
 #include "qgsfields.h"
 #include "qgslogger.h"
+#include "qgspropertytransformer.h"
 #include "qgsrectangle.h"
 #include "qgspallabeling.h"
 #include "qgssymbol.h"
@@ -42,39 +44,47 @@
 #include "qgsfillsymbol.h"
 #include "qgsvariantutils.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgscolorrampimpl.h"
 
 #include <QRegularExpression>
 #include <QUrl>
+#include "qgsclassificationcustom.h"
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationfixedinterval.h"
+#include "qgsclassificationjenks.h"
+#include "qgsclassificationquantile.h"
+#include "qgsclassificationstandarddeviation.h"
+#include "qgsgraduatedsymbolrenderer.h"
 
-QVariant::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
+QMetaType::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
   if ( esriFieldType == QLatin1String( "esriFieldTypeInteger" ) )
-    return QVariant::LongLong;
+    return QMetaType::Type::LongLong;
   if ( esriFieldType == QLatin1String( "esriFieldTypeSmallInteger" ) )
-    return QVariant::Int;
+    return QMetaType::Type::Int;
   if ( esriFieldType == QLatin1String( "esriFieldTypeDouble" ) )
-    return QVariant::Double;
+    return QMetaType::Type::Double;
   if ( esriFieldType == QLatin1String( "esriFieldTypeSingle" ) )
-    return QVariant::Double;
+    return QMetaType::Type::Double;
   if ( esriFieldType == QLatin1String( "esriFieldTypeString" ) )
-    return QVariant::String;
+    return QMetaType::Type::QString;
   if ( esriFieldType == QLatin1String( "esriFieldTypeDate" ) )
-    return QVariant::DateTime;
+    return QMetaType::Type::QDateTime;
   if ( esriFieldType == QLatin1String( "esriFieldTypeGeometry" ) )
-    return QVariant::Invalid; // Geometry column should not appear as field
+    return QMetaType::Type::UnknownType; // Geometry column should not appear as field
   if ( esriFieldType == QLatin1String( "esriFieldTypeOID" ) )
-    return QVariant::LongLong;
+    return QMetaType::Type::LongLong;
   if ( esriFieldType == QLatin1String( "esriFieldTypeBlob" ) )
-    return QVariant::ByteArray;
+    return QMetaType::Type::QByteArray;
   if ( esriFieldType == QLatin1String( "esriFieldTypeGlobalID" ) )
-    return QVariant::String;
+    return QMetaType::Type::QString;
   if ( esriFieldType == QLatin1String( "esriFieldTypeRaster" ) )
-    return QVariant::ByteArray;
+    return QMetaType::Type::QByteArray;
   if ( esriFieldType == QLatin1String( "esriFieldTypeGUID" ) )
-    return QVariant::String;
+    return QMetaType::Type::QString;
   if ( esriFieldType == QLatin1String( "esriFieldTypeXML" ) )
-    return QVariant::String;
-  return QVariant::Invalid;
+    return QMetaType::Type::QString;
+  return QMetaType::Type::UnknownType;
 }
 
 Qgis::WkbType QgsArcGisRestUtils::convertGeometryType( const QString &esriGeometryType )
@@ -191,7 +201,7 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
   int curveListIndex = 0;
   for ( const QVariant &curveData : curvesList )
   {
-    if ( curveData.type() == QVariant::List )
+    if ( curveData.userType() == QMetaType::Type::QVariantList )
     {
       const QVariantList coordList = curveData.toList();
       const int nCoords = coordList.size();
@@ -217,7 +227,7 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
         *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
       }
     }
-    else if ( curveData.type() == QVariant::Map )
+    else if ( curveData.userType() == QMetaType::Type::QVariantMap )
     {
       // The last point of the linestring is the start point of this circular string
       QgsPoint lastLineStringPoint;
@@ -563,8 +573,7 @@ QgsSymbol *QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
   }
   else if ( type == QLatin1String( "esriTS" ) )
   {
-    // text symbol - not supported
-    return nullptr;
+    return parseEsriTextMarkerSymbolJson( symbolData ).release();
   }
   return nullptr;
 }
@@ -748,6 +757,83 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
   return symbol;
 }
 
+std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJson( const QVariantMap &symbolData )
+{
+  QgsSymbolLayerList layers;
+
+  const QString fontFamily = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "family" ) ).toString();
+
+  const QString chr = symbolData.value( QStringLiteral( "text" ) ).toString();
+
+  const double pointSize = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "size" ) ).toDouble();
+
+  const QColor color = convertColor( symbolData.value( QStringLiteral( "color" ) ) );
+
+  const double esriAngle = symbolData.value( QStringLiteral( "angle" ) ).toDouble();
+
+  const double angle = 90.0 - esriAngle;
+
+  std::unique_ptr< QgsFontMarkerSymbolLayer > markerLayer = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, chr, pointSize, color, angle );
+
+  QColor strokeColor = convertColor( symbolData.value( QStringLiteral( "borderLineColor" ) ) );
+  markerLayer->setStrokeColor( strokeColor );
+
+  double borderLineSize = symbolData.value( QStringLiteral( "borderLineSize" ) ).toDouble();
+  markerLayer->setStrokeWidth( borderLineSize );
+
+  const QString fontStyle = symbolData.value( QStringLiteral( "font" ) ).toMap().value( QStringLiteral( "style" ) ).toString();
+  markerLayer->setFontStyle( fontStyle );
+
+  double xOffset = symbolData.value( QStringLiteral( "xoffset" ) ).toDouble();
+  double yOffset = symbolData.value( QStringLiteral( "yoffset" ) ).toDouble();
+
+  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
+
+  markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
+  markerLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
+
+  QgsMarkerSymbolLayer::HorizontalAnchorPoint hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::HCenter;
+  QgsMarkerSymbolLayer::VerticalAnchorPoint vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::VCenter;
+
+  QString horizontalAnchorPoint = symbolData.value( QStringLiteral( "horizontalAlignment" ) ).toString();
+  QString verticalAnchorPoint = symbolData.value( QStringLiteral( "verticalAlignment" ) ).toString();
+
+  if ( horizontalAnchorPoint == QString( "center" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::HCenter;
+  }
+  else if ( horizontalAnchorPoint == QString( "left" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left;
+  }
+  else if ( horizontalAnchorPoint == QString( "right" ) )
+  {
+    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Right;
+  }
+
+  if ( verticalAnchorPoint == QString( "center" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::VCenter;
+  }
+  else if ( verticalAnchorPoint == QString( "top" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Top;
+  }
+  else if ( verticalAnchorPoint == QString( "bottom" ) )
+  {
+    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom;
+  }
+
+  markerLayer->setHorizontalAnchorPoint( hAlign );
+  markerLayer->setVerticalAnchorPoint( vAlign );
+
+  layers.append( markerLayer.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
+  return symbol;
+}
+
 QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVariantList &labelingData )
 {
   if ( labelingData.empty() )
@@ -768,47 +854,47 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVari
     if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveCenter" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Above;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Above );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowCenter" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Below;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Below );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterCenter" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Over;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveLeft" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowLeft" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::BelowLeft;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowLeft );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterLeft" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Left;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Left );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveRight" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowRight" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowRight );
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterRight" ) )
     {
       settings->placement = Qgis::LabelPlacement::OverPoint;
-      settings->quadOffset = Qgis::LabelQuadrantPosition::Right;
+      settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Right );
     }
     else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) ||
               placement == QLatin1String( "esriServerLinePlacementAboveStart" ) ||
@@ -945,8 +1031,157 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
   }
   else if ( type == QLatin1String( "classBreaks" ) )
   {
-    // currently unsupported
-    return nullptr;
+    const QString attrName = rendererData.value( QStringLiteral( "field" ) ).toString();
+
+    const QVariantList classBreakInfos = rendererData.value( QStringLiteral( "classBreakInfos" ) ).toList();
+    const QVariantMap authoringInfo = rendererData.value( QStringLiteral( "authoringInfo" ) ).toMap();
+    QVariantMap symbolData;
+
+    QString esriMode = authoringInfo.value( QStringLiteral( "classificationMethod" ) ).toString();
+    if ( esriMode.isEmpty() )
+    {
+      esriMode = rendererData.value( QStringLiteral( "classificationMethod" ) ).toString();
+    }
+
+    if ( !classBreakInfos.isEmpty() )
+    {
+      symbolData = classBreakInfos.at( 0 ).toMap().value( QStringLiteral( "symbol" ) ).toMap();
+    }
+    std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+    if ( !symbol )
+      return nullptr;
+
+    const double transparency = rendererData.value( QStringLiteral( "transparency" ) ).toDouble();
+    const double opacity = ( 100.0 - transparency ) / 100.0;
+    symbol->setOpacity( opacity );
+
+    const QVariantList visualVariablesData = rendererData.value( QStringLiteral( "visualVariables" ) ).toList();
+
+    for ( const QVariant &visualVariable : visualVariablesData )
+    {
+      const QVariantMap visualVariableData = visualVariable.toMap();
+      const QString variableType = visualVariableData.value( QStringLiteral( "type" ) ).toString();
+      if ( variableType == QLatin1String( "sizeInfo" ) )
+      {
+        continue;
+      }
+      else if ( variableType == QLatin1String( "colorInfo" ) )
+      {
+        const QVariantList stops = visualVariableData.value( QStringLiteral( "stops" ) ).toList();
+        if ( stops.size() < 2 )
+          continue;
+
+        // layer has continuous coloring, so convert to a symbol using color ramp assistant
+        bool ok = false;
+        const double minValue = stops.front().toMap().value( QStringLiteral( "value" ) ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        const QColor minColor = convertColor( stops.front().toMap().value( QStringLiteral( "color" ) ) );
+
+        const double maxValue = stops.back().toMap().value( QStringLiteral( "value" ) ).toDouble( &ok );
+        if ( !ok )
+          continue;
+        const QColor maxColor = convertColor( stops.back().toMap().value( QStringLiteral( "color" ) ) );
+
+        QgsGradientStopsList gradientStops;
+        for ( int i = 1; i < stops.size() - 1; ++i )
+        {
+          const QVariantMap stopData = stops.at( i ).toMap();
+          const double breakpoint = stopData.value( QStringLiteral( "value" ) ).toDouble();
+          const double scaledBreakpoint = ( breakpoint - minValue ) / ( maxValue - minValue );
+          const QColor fillColor = convertColor( stopData.value( QStringLiteral( "color" ) ) );
+
+          gradientStops.append( QgsGradientStop( scaledBreakpoint, fillColor ) );
+        }
+
+        std::unique_ptr< QgsGradientColorRamp > colorRamp = std::make_unique< QgsGradientColorRamp >(
+              minColor, maxColor, false, gradientStops
+            );
+
+        QgsProperty colorProperty = QgsProperty::fromField( attrName );
+        colorProperty.setTransformer(
+          new QgsColorRampTransformer( minValue, maxValue, colorRamp.release() )
+        );
+        for ( int layer = 0; layer < symbol->symbolLayerCount(); ++layer )
+        {
+          symbol->symbolLayer( layer )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, colorProperty );
+        }
+
+        std::unique_ptr< QgsSingleSymbolRenderer > singleSymbolRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
+
+        return singleSymbolRenderer.release();
+      }
+      else
+      {
+        QgsDebugError( QStringLiteral( "ESRI visualVariable type %1 is not currently supported" ).arg( variableType ) );
+      }
+    }
+
+    double lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
+
+    std::unique_ptr< QgsGraduatedSymbolRenderer > graduatedRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( attrName );
+
+    graduatedRenderer->setSourceSymbol( symbol.release() );
+
+    if ( esriMode == QLatin1String( "esriClassifyDefinedInterval" ) )
+    {
+      QgsClassificationFixedInterval *method = new QgsClassificationFixedInterval();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyEqualInterval" ) )
+    {
+      QgsClassificationEqualInterval *method = new QgsClassificationEqualInterval();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyGeometricalInterval" ) )
+    {
+      QgsClassificationCustom *method = new QgsClassificationCustom();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyManual" ) )
+    {
+      QgsClassificationCustom *method = new QgsClassificationCustom();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyNaturalBreaks" ) )
+    {
+      QgsClassificationJenks *method = new QgsClassificationJenks();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyQuantile" ) )
+    {
+      QgsClassificationQuantile *method = new QgsClassificationQuantile();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( esriMode == QLatin1String( "esriClassifyStandardDeviation" ) )
+    {
+      QgsClassificationStandardDeviation *method = new QgsClassificationStandardDeviation();
+      graduatedRenderer->setClassificationMethod( method );
+    }
+    else if ( !esriMode.isEmpty() )
+    {
+      QgsDebugError( QStringLiteral( "ESRI classification mode %1 is not currently supported" ).arg( esriMode ) );
+    }
+
+    for ( const QVariant &classBreakInfo : classBreakInfos )
+    {
+      const QVariantMap symbolData = classBreakInfo.toMap().value( QStringLiteral( "symbol" ) ).toMap();
+      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+      double classMaxValue = classBreakInfo.toMap().value( QStringLiteral( "classMaxValue" ) ).toDouble();
+      const QString label = classBreakInfo.toMap().value( QStringLiteral( "label" ) ).toString();
+
+      QgsRendererRange range;
+
+      range.setLowerValue( lastValue );
+      range.setUpperValue( classMaxValue );
+      range.setLabel( label );
+      range.setSymbol( symbol.release() );
+
+      lastValue = classMaxValue;
+      graduatedRenderer->addClass( range );
+    }
+
+    return graduatedRenderer.release();
   }
   else if ( type == QLatin1String( "heatmap" ) )
   {
@@ -1606,28 +1841,28 @@ QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const 
   return res;
 }
 
-QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context )
+QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, QMetaType::Type expectedType, const QgsArcGisRestContext &context )
 {
   if ( QgsVariantUtils::isNull( variant ) )
     return QVariant();
 
   switch ( expectedType )
   {
-    case QVariant::String:
+    case QMetaType::Type::QString:
     {
       const QString escaped = variant.toString().replace( '\\', QLatin1String( "\\\\" ) ).replace( '"', QLatin1String( "\\\"" ) );
       return QString( QUrl::toPercentEncoding( escaped, "'" ) );
     }
 
-    case QVariant::DateTime:
-    case QVariant::Date:
+    case QMetaType::Type::QDateTime:
+    case QMetaType::Type::QDate:
     {
-      switch ( variant.type() )
+      switch ( variant.userType() )
       {
-        case QVariant::DateTime:
+        case QMetaType::Type::QDateTime:
           return variant.toDateTime().toMSecsSinceEpoch();
 
-        case QVariant::Date:
+        case QMetaType::Type::QDate:
           // for date values, assume start of day -- the REST api requires datetime values only, not plain dates
           if ( context.timeZone().isValid() )
             return QDateTime( variant.toDate(), QTime( 0, 0, 0 ), context.timeZone() ).toMSecsSinceEpoch();
@@ -1652,28 +1887,28 @@ QVariantMap QgsArcGisRestUtils::fieldDefinitionToJson( const QgsField &field )
   QString fieldType;
   switch ( field.type() )
   {
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       fieldType = QStringLiteral( "esriFieldTypeInteger" );
       break;
 
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       fieldType = QStringLiteral( "esriFieldTypeSmallInteger" );
       break;
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       fieldType = QStringLiteral( "esriFieldTypeDouble" );
       break;
 
-    case QVariant::String:
+    case QMetaType::Type::QString:
       fieldType = QStringLiteral( "esriFieldTypeString" );
       break;
 
-    case QVariant::DateTime:
-    case QVariant::Date:
+    case QMetaType::Type::QDateTime:
+    case QMetaType::Type::QDate:
       fieldType = QStringLiteral( "esriFieldTypeDate" );
       break;
 
-    case QVariant::ByteArray:
+    case QMetaType::Type::QByteArray:
       fieldType = QStringLiteral( "esriFieldTypeBlob" );
       break;
 

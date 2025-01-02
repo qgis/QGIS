@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/annotations/qgsannotation.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -144,24 +144,26 @@ the relative percentage for the position compared to the map width and height.
 .. seealso:: :py:func:`relativePosition`
 %End
 
- void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated/;
+ void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated="Since 3.40. Use setFrameOffsetFromReferencePointMm() instead."/;
 %Docstring
 Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.setFrameOffsetFromReferencePointMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.setFrameOffsetFromReferencePointMm` instead.
 %End
 
- QPointF frameOffsetFromReferencePoint() const /Deprecated/;
+ QPointF frameOffsetFromReferencePoint() const /Deprecated="Since 3.40. Use frameOffsetFromReferencePointMm() instead."/;
 %Docstring
 Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.frameOffsetFromReferencePointMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.frameOffsetFromReferencePointMm` instead.
 %End
 
     void setFrameOffsetFromReferencePointMm( QPointF offset );
@@ -182,26 +184,28 @@ Returns the annotation's frame's offset (in millimeters) from the :py:func:`~Qgs
 .. versionadded:: 3.4.8
 %End
 
- void setFrameSize( QSizeF size ) /Deprecated/;
+ void setFrameSize( QSizeF size ) /Deprecated="Since 3.40. Use setFrameSizeMm() instead."/;
 %Docstring
 Sets the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSize`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.setFrameSizeMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.setFrameSizeMm` instead.
 %End
 
- QSizeF frameSize() const /Deprecated/;
+ QSizeF frameSize() const /Deprecated="Since 3.40. Use frameSizeMm() instead."/;
 %Docstring
 Returns the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSize`
 
-.. deprecated::
-   use :py:func:`~QgsAnnotation.frameSizeMm` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotation.frameSizeMm` instead.
 %End
 
     void setFrameSizeMm( QSizeF size );
@@ -407,5 +411,5 @@ to assist with creating copies.
  *                                                                      *
  * src/core/annotations/qgsannotation.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

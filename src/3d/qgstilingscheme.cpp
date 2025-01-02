@@ -15,7 +15,7 @@
 
 #include "qgstilingscheme.h"
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgsrectangle.h"
 
 QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs )
@@ -55,7 +55,7 @@ QgsRectangle QgsTilingScheme::tileToExtent( const QgsChunkNodeId &nodeId ) const
 
 void QgsTilingScheme::extentToTile( const QgsRectangle &extent, int &x, int &y, int &z ) const
 {
-  x = y = z = 0;  // start with root tile
+  x = y = z = 0; // start with root tile
   while ( true )
   {
     // try to see if any child tile fully contains our extent - if so, go deeper
@@ -81,7 +81,7 @@ void QgsTilingScheme::extentToTile( const QgsRectangle &extent, int &x, int &y, 
     }
     else
     {
-      return;  // cannot go deeper
+      return; // cannot go deeper
     }
     z++;
   }

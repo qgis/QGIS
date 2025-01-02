@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerelevationproperties.h"
+#include "moc_qgsmaplayerelevationproperties.cpp"
 #include <mutex>
 
 
@@ -76,6 +77,11 @@ bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, 
 QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
 {
   return QgsDoubleRange();
+}
+
+QList<double> QgsMapLayerElevationProperties::significantZValues( QgsMapLayer * ) const
+{
+  return {};
 }
 
 bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() const

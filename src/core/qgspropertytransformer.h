@@ -71,9 +71,6 @@ class CORE_EXPORT QgsCurveTransform
 
     ~QgsCurveTransform();
 
-    /**
-     * Copy constructor
-     */
     QgsCurveTransform( const QgsCurveTransform &other );
 
     QgsCurveTransform &operator=( const QgsCurveTransform &other );
@@ -204,9 +201,6 @@ class CORE_EXPORT QgsPropertyTransformer
      */
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
 
-    /**
-     * Copy constructor.
-     */
     QgsPropertyTransformer( const QgsPropertyTransformer &other );
     QgsPropertyTransformer &operator=( const QgsPropertyTransformer &other );
 
@@ -300,14 +294,9 @@ class CORE_EXPORT QgsPropertyTransformer
     /**
      * Attempts to parse an expression into a corresponding property transformer.
      * \param expression expression to parse
-     * \param baseExpression will be set to the component of the source expression which
-     * is used to calculate the input to the property transformer. This will be set to an
-     * empty string if a field reference is the transformer input.
-     * \param fieldName will be set to a field name which is used to calculate the input
-     * to the property transformer. This will be set to an
-     * empty string if an expression is the transformer input.
-     * \returns corresponding property transformer, or NULLPTR if expression could not
-     * be parsed to a transformer.
+     * \param baseExpression will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
+     * \param fieldName will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
+     * \returns corresponding property transformer, or NULLPTR if expression could not be parsed to a transformer.
      */
     static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
@@ -376,7 +365,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
      * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
+    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Calculates the size corresponding to a specific \a input value.
@@ -495,16 +484,11 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
      * \param expression expression to parse
-     * \param baseExpression will be set to the component of the source expression which
-     * is used to calculate the input to the property transformer. This will be set to an
-     * empty string if a field reference is the transformer input.
-     * \param fieldName will be set to a field name which is used to calculate the input
-     * to the property transformer. This will be set to an
-     * empty string if an expression is the transformer input.
-     * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not
-     * be parsed to a size scale transformer.
+     * \param baseExpression will be set to the component of the source expression which is used to calculate the input to the property transformer. This will be set to an empty string if a field reference is the transformer input.
+     * \param fieldName will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
+     * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not be parsed to a size scale transformer.
      */
-    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
+    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Calculates the size corresponding to a specific value.
@@ -618,9 +602,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
                              const QColor &nullColor = QColor( 0, 0, 0, 0 ),
                              const QString &rampName = QString() );
 
-    //! Copy constructor
     QgsColorRampTransformer( const QgsColorRampTransformer &other );
-
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     Type transformerType() const override { return ColorRampTransformer; }

@@ -25,10 +25,6 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
   - [Documentation](#documentation)
   - [Help and support channels](#help-and-support-channels)
 - [Get involved with the community](#get-involved-with-the-community)
-  - [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
-  - [New features and enhancements](#new-features-and-enhancements)
-  - [Translations](#translations)
-  - [Other ways to contribute](#other-ways-to-contribute)
 
 ## Features
 
@@ -164,12 +160,12 @@ For installation of QGIS Server, see its [getting started documentation](https:/
 
 ### Documentation
 
-A range of [documentation](https://qgis.org/en/docs/index.html) is available. This includes:
+A range of [documentation](https://qgis.org/resources/hub/#documentation) is available. This includes:
 
 - [Training Manual](https://docs.qgis.org/latest/en/docs/training_manual/index.html)
 - [QGIS User Guide](https://docs.qgis.org/latest/en/docs/user_manual/index.html)
 - [QGIS Server Guide](https://docs.qgis.org/latest/en/docs/server_manual/index.html)
-- [Visual Changelog](https://qgis.org/en/site/forusers/visualchangelogs.html)
+- [Visual Changelog](https://qgis.org/project/visual-changelogs/)
 - [Documentation Guidelines](https://docs.qgis.org/latest/en/docs/documentation_guidelines/index.html)
 - [QGIS Python (PyQGIS) Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/index.html)
 - [QGIS Python (PyQGIS) API](https://qgis.org/pyqgis/)
@@ -183,39 +179,12 @@ There are several channels where you can find help and support for QGIS:
 - Using the [QGIS community site](https://qgis.org)
 - Joining the [qgis-users mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
 - Chatting with other users real-time. *Please wait around for a response to your question as many folks on the channel are doing other things and it may take a while for them to notice your question. The following paths all take you to the same chat room:*
-    - Using an IRC client and joining the [#qgis](https://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.
-    - Using a Matrix client and joining the [#qgis:matrix.org](https://matrix.to/#/#qgis:matrix.org) room.
-    - Using [Gitter](https://gitter.im/qgis/QGIS) chat.
+    - Using an IRC client and joining the
+      [#qgis](https://web.libera.chat/?channels=#qgis) channel on irc.libera.chat.
+    - Using a Matrix client and joining the [#qgis:osgeo.org](https://matrix.to/#/#qgis:osgeo.org) room.
  - At the [GIS stackexchange](https://gis.stackexchange.com/) or [r/QGIS reddit](https://www.reddit.com/r/QGIS/), which are not maintained by the QGIS team, but where the QGIS and broader GIS community provides lots of advice
-- [Other support channels](https://qgis.org/en/site/forusers/support.html)
+- [Other support channels](https://qgis.org/resources/support/)
 
 ## Get involved with the community
 
-### Bug reporting and bug fixing
-
-You can help us **by submitting bug reports or fixing bugs** in the [QGIS bug tracker](https://github.com/qgis/QGIS/issues/).
-
-### New features and enhancements
-
-If you wish to contribute patches you can:
-
-1. [fork the project](https://help.github.com/forking/)
-1. make your changes
-1. commit to your repository
-1. and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
-
- The development team can then review your contribution and commit it upstream as appropriate.
-
-If you commit a new feature, add `[FEATURE]` to your commit message AND give a clear description of the new feature. The label `Needs documentation` will be added by maintainers and will automatically create an issue on the QGIS-Documentation repo, where you or others should write documentation about it.
-
-For large-scale changes, you can open a [QEP (QGIS Enhancement Proposal)](https://github.com/qgis/QGIS-Enhancement-Proposals). QEPs are used in the process of creating and discussing new enhancements or policy for QGIS.
-
-### Translations
-
-Please help translate QGIS to your language. At this moment about forty languages are already available in the Desktop user interface and about eighty languages are available in transifex ready to be translated.
-
-The [translation](https://qgis.org/en/site/getinvolved/translate.html) process is managed by the [Translation Team](https://qgis.org/en/site/getinvolved/governance/governance.html#gui-translation) and all the activities are done under the [Transifex](https://www.transifex.com/qgis/) platform.
-
-### Other ways to contribute
-
-If you are not a developer, there are many other possibilities that do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/en/site/getinvolved/index.html).
+[Contribution guidelines for this project](CONTRIBUTING.md)

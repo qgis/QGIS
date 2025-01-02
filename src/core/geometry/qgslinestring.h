@@ -293,14 +293,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
 
     /**
      * Returns a new linestring from a QPolygonF \a polygon input.
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromQPolygonF( const QPolygonF &polygon );
 #ifndef SIP_RUN
   private:
     bool fuzzyHelper( double epsilon,
@@ -954,7 +954,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool isEmpty() const override SIP_HOLDGIL;
     int indexOf( const QgsPoint &point ) const final;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
-    QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     bool isClosed() const override SIP_HOLDGIL;
     bool isClosed2D() const override SIP_HOLDGIL;
@@ -972,6 +972,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QPolygonF asQPolygonF() const override;
 
+    QgsLineString *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
@@ -989,6 +990,16 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #ifndef SIP_RUN
     std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
 #endif
+
+    /**
+     * Divides the linestring into parts that don't share any points or lines.
+     *
+     * This method throws away Z and M coordinates.
+     *
+     * The ownership of returned pointers is transferred to the caller.
+     * \since QGIS 3.40
+     */
+    QVector<QgsLineString *> splitToDisjointXYParts() const SIP_FACTORY;
 
     /**
      * Returns the length in 3D world of the line string.
@@ -1067,7 +1078,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      */
-    inline static const QgsLineString *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsLineString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString )
         return static_cast<const QgsLineString *>( geom );
@@ -1173,10 +1184,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Calculates the minimal 3D bounding box for the geometry.
-     * Deprecated: use calculateBoundingBox3D instead
      * \see calculateBoundingBox()
      * \since QGIS 3.26
-     * \deprecated since QGIS 3.34
+     * \deprecated QGIS 3.34 use calculateBoundingBox3D() instead
      */
     Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
 
@@ -1193,7 +1203,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.36
      */
-    QgsLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
 
     /**
      * Returns a copy of this line with all missing (NaN) m values interpolated
@@ -1205,9 +1215,36 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * should be used during interpolation. This option is only considered for lines
      * with z values.
      *
+     * \see lineLocatePointByM()
      * \since QGIS 3.38
      */
-    QgsLineString *interpolateM( bool use3DDistance = true ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > interpolateM( bool use3DDistance = true ) const;
+
+    /**
+     * Attempts to locate a point on the linestring by m value.
+     *
+     * This method will linearly interpolate along line segments to find the point which corresponds to the specified m value.
+     *
+     * If the linestring contains sections with constant m values matching \a m, then the interpolated point will be located
+     * at the center of these sections.
+     *
+     * Any missing (NaN) values in the linestring will be linearly interpolated from the
+     * m values of surrounding vertices (see interpolateM()).
+     *
+     * \param m target m value
+     * \param x interpolated x coordinate
+     * \param y interpolated y coordinate
+     * \param z interpolated z coordinate (for 3D lines only)
+     * \param distanceFromStart calculated distance from the start of the linestring to the located point
+     * \param use3DDistance controls whether 2D or 3D distances between vertices should be used during interpolation. This option is only considered for lines with z values.
+     *
+     * \returns TRUE if a matching point was found, or FALSE if it could not be found
+     *
+     * \see interpolateM()
+     *
+     * \since QGIS 3.40
+     */
+    bool lineLocatePointByM( double m, double &x SIP_OUT, double &y SIP_OUT, double &z SIP_OUT, double &distanceFromStart SIP_OUT, bool use3DDistance = true ) const;
 
   protected:
 
@@ -1231,6 +1268,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       mWkbType = type;
       importVerticesFromWkb( wkb );
     }
+
+    bool lineLocatePointByMPrivate( double m, double &x, double &y, double &z, double &distanceFromStart, bool use3DDistance, bool haveInterpolatedM ) const;
 
     friend class QgsPolygon;
     friend class QgsTriangle;

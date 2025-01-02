@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsapplicationexitblockerinterface.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,7 @@ unsaved changes which should be saved or discarded before allowing QGIS to exit.
 :py:class:`QgsApplicationExitBlockerInterface` are registered via the iface object:
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -47,7 +47,6 @@ Example
 #include "qgsapplicationexitblockerinterface.h"
 %End
   public:
-
     virtual ~QgsApplicationExitBlockerInterface();
 
     virtual bool allowExit() = 0;
@@ -73,5 +72,5 @@ wishes to prevent the application from exiting.
  *                                                                      *
  * src/gui/qgsapplicationexitblockerinterface.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

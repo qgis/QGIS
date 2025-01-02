@@ -19,32 +19,34 @@ from pathlib import Path
 
 
 def main(description_folder: str, output_file: str):
-    from .parsed_description import (
-        ParsedDescription
-    )
+    from .parsed_description import ParsedDescription
 
     algorithms = []
     folder = Path(description_folder)
-    for description_file in folder.glob('*.txt'):
+    for description_file in folder.glob("*.txt"):
 
         description = ParsedDescription.parse_description_file(
-            description_file, translate=False)
+            description_file, translate=False
+        )
 
         ext_path = description_file.parents[1].joinpath(
-            'ext', description.name.replace('.', '_') + '.py')
+            "ext", description.name.replace(".", "_") + ".py"
+        )
         if ext_path.exists():
-            description.ext_path = description.name.replace('.', '_')
+            description.ext_path = description.name.replace(".", "_")
 
         algorithms.append(description.as_dict())
 
     Path(output_file).parent.mkdir(parents=True, exist_ok=True)
-    with open(output_file, 'wt', encoding='utf8') as f_out:
+    with open(output_file, "w", encoding="utf8") as f_out:
         f_out.write(json.dumps(algorithms, indent=2))
 
 
-parser = argparse.ArgumentParser(description="Parses GRASS .txt algorithm "
-                                             "description files and builds "
-                                             "aggregated .json description")
+parser = argparse.ArgumentParser(
+    description="Parses GRASS .txt algorithm "
+    "description files and builds "
+    "aggregated .json description"
+)
 
 parser.add_argument("input", help="Path to the description directory")
 parser.add_argument("output", help="Path to the output algorithms.json file")

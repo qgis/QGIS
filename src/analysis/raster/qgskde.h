@@ -38,14 +38,13 @@ class QgsFeature;
 class ANALYSIS_EXPORT QgsKernelDensityEstimation
 {
   public:
-
     //! Kernel shape type
     enum KernelShape
     {
-      KernelQuartic = 0, //!< Quartic kernel
-      KernelTriangular, //!< Triangular kernel
-      KernelUniform, //!< Uniform (flat) kernel
-      KernelTriweight, //!< Triweight kernel
+      KernelQuartic = 0,  //!< Quartic kernel
+      KernelTriangular,   //!< Triangular kernel
+      KernelUniform,      //!< Uniform (flat) kernel
+      KernelTriweight,    //!< Triweight kernel
       KernelEpanechnikov, //!< Epanechnikov kernel
     };
 
@@ -53,45 +52,45 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     enum OutputValues
     {
       OutputRaw = 0, //!< Output the raw KDE values
-      OutputScaled, //!< Output mathematically correct scaled values
+      OutputScaled,  //!< Output mathematically correct scaled values
     };
 
     //! Result of operation
     enum Result
     {
-      Success, //!< Operation completed successfully
-      DriverError, //!< Could not open the driver for the specified format
+      Success,           //!< Operation completed successfully
+      DriverError,       //!< Could not open the driver for the specified format
       InvalidParameters, //!< Input parameters were not valid
       FileCreationError, //!< Error creating output file
-      RasterIoError, //!< Error writing to raster
+      RasterIoError,     //!< Error writing to raster
     };
 
     //! KDE parameters
     struct Parameters
     {
-      //! Point feature source
-      QgsFeatureSource *source = nullptr;
+        //! Point feature source
+        QgsFeatureSource *source = nullptr;
 
-      //! Fixed radius, in map units
-      double radius;
+        //! Fixed radius, in map units
+        double radius;
 
-      //! Field for radius, or empty if using a fixed radius
-      QString radiusField;
+        //! Field for radius, or empty if using a fixed radius
+        QString radiusField;
 
-      //! Field name for weighting field, or empty if not using weights
-      QString weightField;
+        //! Field name for weighting field, or empty if not using weights
+        QString weightField;
 
-      //! Size of pixel in output file
-      double pixelSize;
+        //! Size of pixel in output file
+        double pixelSize;
 
-      //! Kernel shape
-      QgsKernelDensityEstimation::KernelShape shape;
+        //! Kernel shape
+        QgsKernelDensityEstimation::KernelShape shape;
 
-      //! Decay ratio (Triangular kernels only)
-      double decayRatio;
+        //! Decay ratio (Triangular kernels only)
+        double decayRatio;
 
-      //! Type of output value
-      QgsKernelDensityEstimation::OutputValues outputValues;
+        //! Type of output value
+        QgsKernelDensityEstimation::OutputValues outputValues;
     };
 
     /**
@@ -100,9 +99,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
      */
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
 
-    //! QgsKernelDensityEstimation cannot be copied.
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other ) = delete;
-    //! QgsKernelDensityEstimation cannot be copied.
     QgsKernelDensityEstimation &operator=( const QgsKernelDensityEstimation &other ) = delete;
 
     /**
@@ -134,7 +131,6 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     Result finalise();
 
   private:
-
     //! Calculate the value given to a point width a given distance for a specified kernel shape
     double calculateKernelValue( double distance, double bandwidth, KernelShape shape, OutputValues outputType ) const;
     //! Uniform kernel function

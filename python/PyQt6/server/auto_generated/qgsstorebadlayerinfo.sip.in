@@ -3,13 +3,13 @@
  *                                                                      *
  * src/server/qgsstorebadlayerinfo.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsStoreBadLayerInfo: QgsProjectBadLayerHandler
+class QgsStoreBadLayerInfo : QgsProjectBadLayerHandler
 {
 %Docstring(signature="appended")
 Stores layer ids of bad layers
@@ -21,7 +21,6 @@ Stores layer ids of bad layers
 #include "qgsstorebadlayerinfo.h"
 %End
   public:
-
     QgsStoreBadLayerInfo();
 %Docstring
 Default constructor
@@ -55,5 +54,5 @@ Returns names of bad layers with ids.
  *                                                                      *
  * src/server/qgsstorebadlayerinfo.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

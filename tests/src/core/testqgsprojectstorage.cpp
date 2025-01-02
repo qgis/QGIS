@@ -28,10 +28,10 @@ class TestQgsProjectStorage : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void testMemoryStorage();
     void testSupportedUri();
@@ -174,7 +174,7 @@ void TestQgsProjectStorage::testMemoryStorage()
   const int fldCnt0 = layer1->fields().count();
   QgsAuxiliaryLayer *layerAux = prj1.auxiliaryStorage()->createAuxiliaryLayer( layer1->fields().at( 0 ), layer1 );
   layer1->setAuxiliaryLayer( layerAux );
-  layerAux->addAttribute( QgsField( "fld_aux", QVariant::Int ) );
+  layerAux->addAttribute( QgsField( "fld_aux", QMetaType::Type::Int ) );
   layerAux->commitChanges();
   QCOMPARE( fldCnt0, 6 );
   QCOMPARE( layer1->fields().count(), 7 );

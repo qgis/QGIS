@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitem.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,6 @@ The ``viewScaleFactor`` gives the current view zoom (scale factor). It can be
 used to scale render graphics so that they always appear a constant size,
 regardless of the current view zoom.
 %End
-
 
 
     QgsRenderContext &renderContext();
@@ -182,6 +181,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoMarginRight,
       UndoSetId,
       UndoRotation,
+      UndoExportLayerName,
       UndoShapeStyle,
       UndoShapeCornerRadius,
       UndoNodeMove,
@@ -432,7 +432,7 @@ Sets the item's parent ``group``.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 %Docstring
-Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+Returns the behavior of this item during exporting to layered exports (e.g. SVG or geospatial PDF).
 
 .. seealso:: :py:func:`numberExportLayers`
 
@@ -441,7 +441,7 @@ Returns the behavior of this item during exporting to layered exports (e.g. SVG)
 .. versionadded:: 3.10
 %End
 
- virtual int numberExportLayers() const /Deprecated/;
+ virtual int numberExportLayers() const /Deprecated="Since 3.40. Use nextExportPart() and exportLayerBehavior() instead."/;
 %Docstring
 Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
 Returns 0 if this item is to be placed on the same layer as the previous item,
@@ -454,7 +454,8 @@ their rendering to determine which layer should be drawn.
 
 .. seealso:: :py:func:`exportLayerDetails`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsLayoutItem.nextExportPart` and :py:func:`~QgsLayoutItem.exportLayerBehavior` instead.
 %End
 
@@ -502,6 +503,8 @@ Moves to the next export part for a multi-layered export item, during a multi-la
       double opacity;
 
       QString mapTheme;
+
+      QString groupName;
     };
 
     virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
@@ -1378,5 +1381,5 @@ QFlags<QgsLayoutItem::Flag> operator|(QgsLayoutItem::Flag f1, QFlags<QgsLayoutIt
  *                                                                      *
  * src/core/layout/qgslayoutitem.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

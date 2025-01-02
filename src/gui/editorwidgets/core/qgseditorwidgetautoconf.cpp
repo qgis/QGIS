@@ -24,7 +24,7 @@
  * \note not available in Python bindings
  * \since QGIS 3.0
  */
-class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
+class FromFactoriesPlugin : public QgsEditorWidgetAutoConfPlugin
 {
   public:
     QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
@@ -62,7 +62,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
  * \note not available in Python bindings
  * \since QGIS 3.0
  */
-class FromDbTablePlugin: public QgsEditorWidgetAutoConfPlugin
+class FromDbTablePlugin : public QgsEditorWidgetAutoConfPlugin
 {
   public:
     QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
@@ -94,8 +94,7 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
   const int fieldIndex = vl->fields().indexFromName( fieldName );
   if ( fieldIndex >= 0 )
   {
-
-    if ( vl->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider )
+    if ( vl->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Provider )
     {
       // important check - for provider fields, we CANNOT use auto configured widgets if the field
       // uses a default value clause - otherwise the widget will obliterate the default value clause

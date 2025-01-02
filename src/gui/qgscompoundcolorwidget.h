@@ -20,6 +20,7 @@
 #include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QgsScreenHelper;
 
@@ -32,16 +33,14 @@ class QgsScreenHelper;
 
 class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::QgsCompoundColorWidgetBase
 {
-
     Q_OBJECT
 
   public:
-
     //! Widget layout
     enum Layout
     {
       LayoutDefault = 0, //!< Use the default (rectangular) layout
-      LayoutVertical, //!< Use a narrower, vertically stacked layout
+      LayoutVertical,    //!< Use a narrower, vertically stacked layout
     };
 
     /**
@@ -66,6 +65,14 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * \param allowOpacity set to FALSE to disable opacity modification
      */
     void setAllowOpacity( bool allowOpacity );
+
+    /**
+     * Sets whether color model is editable or not
+     * \param colorModelEditable set to FALSE to disable color model modification
+     * Defaults to TRUE.
+     * \since QGIS 3.40
+     */
+    void setColorModelEditable( bool colorModelEditable );
 
     /**
      * Sets whether the widget's color has been "discarded" and the selected color should not
@@ -133,7 +140,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void setPreviousColor( const QColor &color );
 
   protected:
-
     void hideEvent( QHideEvent *e ) override;
 
     void mousePressEvent( QMouseEvent *e ) override;
@@ -146,12 +152,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   private slots:
 
-    void mHueRadio_toggled( bool checked );
-    void mSaturationRadio_toggled( bool checked );
-    void mValueRadio_toggled( bool checked );
-    void mRedRadio_toggled( bool checked );
-    void mGreenRadio_toggled( bool checked );
-    void mBlueRadio_toggled( bool checked );
+    void onColorButtonGroupToggled( int, bool checked );
 
     void mAddColorToSchemeButton_clicked();
 
@@ -167,13 +168,22 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void mSampleButton_clicked();
     void mTabWidget_currentChanged( int index );
 
-  private slots:
-
     void mActionShowInButtons_toggled( bool state );
 
-  private:
+    /**
+     * Internal color setter. Set \a color without changing current color model (RGB or CMYK),
+     * contrary to public setColor()
+     */
+    void _setColor( const QColor &color );
 
+  private:
     static QScreen *findScreenAt( QPoint pos );
+
+    /**
+     * Helper method to update current widget display with current component according to
+     * color model and selected color component radio button
+     */
+    void updateComponent();
 
     QgsScreenHelper *mScreenHelper = nullptr;
 
@@ -184,6 +194,11 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     bool mPickingColor = false;
 
     bool mDiscarded = false;
+
+    QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> mRgbRadios;
+    QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> mCmykRadios;
+    QButtonGroup *mCmykGroup = nullptr;
+    QButtonGroup *mRgbGroup = nullptr;
 
     /**
      * Saves all widget settings
@@ -224,6 +239,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     //! Updates the state of actions for the current selected scheme
     void updateActionsForCurrentScheme();
+
+    friend class TestQgsCompoundColorWidget;
 };
 
 #endif // QGSCOMPOUNDCOLORWIDGET_H

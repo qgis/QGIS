@@ -3,13 +3,16 @@
  *                                                                      *
  * src/core/symbology/qgs25drenderer.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 class Qgs25DRenderer : QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+A vector renderer which represents 3D features in an isometric view.
+%End
 
 %TypeHeaderCode
 #include "qgs25drenderer.h"
@@ -26,6 +29,7 @@ Create a new 2.5D renderer from XML
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
+    virtual Qgis::FeatureRendererFlags flags() const;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
@@ -118,5 +122,5 @@ Enable or disable the shadow
  *                                                                      *
  * src/core/symbology/qgs25drenderer.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

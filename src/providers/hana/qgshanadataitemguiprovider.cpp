@@ -17,18 +17,22 @@
 #include "qgshanaconnection.h"
 #include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
+#include "moc_qgshanadataitemguiprovider.cpp"
 #include "qgshananewconnection.h"
 #include "qgshanaprovider.h"
 #include "qgshanaproviderconnection.h"
 #include "qgshanasourceselect.h"
 #include "qgshanautils.h"
 #include "qgsnewnamedialog.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 
 void QgsHanaDataItemGuiProvider::populateContextMenu(
-  QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
+  QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context
+)
 {
   if ( QgsHanaRootItem *rootItem = qobject_cast<QgsHanaRootItem *>( item ) )
   {
@@ -49,8 +53,15 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Remove Connection" ), this );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
+    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
+    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+    menu->addAction( actionDuplicate );
+
+    const QList<QgsHanaConnectionItem *> hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
+    QAction *actionDelete = new QAction( hanaConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [hanaConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( hanaConnectionItems, []( const QString &connectionName ) { QgsHanaSettings::removeConnection( connectionName ); }, context );
+    } );
     menu->addAction( actionDelete );
 
     menu->addSeparator();
@@ -81,7 +92,7 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     menu->addMenu( maintainMenu );
   }
 
-  if ( QgsHanaLayerItem *layerItem = qobject_cast< QgsHanaLayerItem * >( item ) )
+  if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
     if ( !layerInfo.isView )
@@ -104,9 +115,7 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
     const QString layerName = QStringLiteral( "%1.%2" ).arg( layerInfo.schemaName, layerInfo.tableName );
     const QString caption = tr( layerInfo.isView ? "Delete View" : "Delete Table" );
-    if ( QMessageBox::question( nullptr, caption,
-                                tr( "Are you sure you want to delete '%1'?" ).arg( layerName ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::question( nullptr, caption, tr( "Are you sure you want to delete '%1'?" ).arg( layerName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return false;
 
     QString errorMsg;
@@ -148,7 +157,8 @@ bool QgsHanaDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiCo
 }
 
 bool QgsHanaDataItemGuiProvider::handleDrop(
-  QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
+  QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction
+)
 {
   if ( QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
   {
@@ -195,17 +205,22 @@ void QgsHanaDataItemGuiProvider::editConnection( QgsDataItem *item )
   }
 }
 
-void QgsHanaDataItemGuiProvider::deleteConnection( QgsDataItem *item )
+void QgsHanaDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, tr( "Remove Connection" ),
-                              tr( "Are you sure you want to remove the connection to %1?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+  const QString connectionName = item->name();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
+  const QStringList connections = settings.childGroups();
+  settings.endGroup();
 
-  QgsHanaSettings::removeConnection( item->name() );
-  // the parent should be updated
+  const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
+
+  QgsHanaSettings::duplicateConnection( connectionName, newConnectionName );
+
   if ( item->parent() )
+  {
     item->parent()->refreshConnections();
+  }
 }
 
 void QgsHanaDataItemGuiProvider::refreshConnection( QgsDataItem *item )
@@ -235,8 +250,7 @@ void QgsHanaDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataItemGui
 
   if ( errorMsg.isEmpty() )
   {
-    notify( tr( "New Schema" ), tr( "Schema '%1' created successfully." ).arg( schemaName ),
-            context, Qgis::MessageLevel::Success );
+    notify( tr( "New Schema" ), tr( "Schema '%1' created successfully." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
 
     item->refresh();
     // the parent should be updated
@@ -245,8 +259,7 @@ void QgsHanaDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataItemGui
   }
   else
   {
-    notify( tr( "New Schema" ), tr( "Unable to create schema '%1'\n%2" ).arg( schemaName, errorMsg ),
-            context, Qgis::MessageLevel::Warning );
+    notify( tr( "New Schema" ), tr( "Unable to create schema '%1'\n%2" ).arg( schemaName, errorMsg ), context, Qgis::MessageLevel::Warning );
   }
 }
 
@@ -261,9 +274,7 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
     const auto tables = providerConn.tables( schemaName );
     if ( tables.empty() )
     {
-      if ( QMessageBox::question( nullptr, caption,
-                                  tr( "Are you sure you want to delete '%1'?" ).arg( schemaName ),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      if ( QMessageBox::question( nullptr, caption, tr( "Are you sure you want to delete '%1'?" ).arg( schemaName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
         return;
     }
     else
@@ -282,9 +293,7 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
         }
       }
 
-      if ( QMessageBox::question( nullptr, caption,
-                                  tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaName, tableNames ),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      if ( QMessageBox::question( nullptr, caption, tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaName, tableNames ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
         return;
     }
 
@@ -297,15 +306,13 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
 
   if ( errorMsg.isEmpty() )
   {
-    notify( caption, tr( "Schema '%1' deleted successfully." ).arg( schemaName ),
-            context, Qgis::MessageLevel::Success );
+    notify( caption, tr( "Schema '%1' deleted successfully." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
     if ( schemaItem->parent() )
       schemaItem->parent()->refresh();
   }
   else
   {
-    notify( caption, tr( "Unable to delete schema '%1'\n%2" ).arg( schemaName, errorMsg ),
-            context, Qgis::MessageLevel::Warning );
+    notify( caption, tr( "Unable to delete schema '%1'\n%2" ).arg( schemaName, errorMsg ), context, Qgis::MessageLevel::Warning );
   }
 }
 
@@ -332,15 +339,13 @@ void QgsHanaDataItemGuiProvider::renameSchema( QgsHanaSchemaItem *schemaItem, Qg
 
   if ( errorMsg.isEmpty() )
   {
-    notify( caption, tr( "Schema '%1' renamed successfully to '%2'." ).arg( schemaName, newSchemaName ),
-            context, Qgis::MessageLevel::Success );
+    notify( caption, tr( "Schema '%1' renamed successfully to '%2'." ).arg( schemaName, newSchemaName ), context, Qgis::MessageLevel::Success );
     if ( schemaItem->parent() )
       schemaItem->parent()->refresh();
   }
   else
   {
-    notify( caption, tr( "Unable to rename schema '%1'\n%2" ).arg( schemaName, errorMsg ),
-            context, Qgis::MessageLevel::Warning );
+    notify( caption, tr( "Unable to rename schema '%1'\n%2" ).arg( schemaName, errorMsg ), context, Qgis::MessageLevel::Warning );
   }
 }
 
@@ -367,14 +372,12 @@ void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDa
 
   if ( errorMsg.isEmpty() )
   {
-    notify( caption, tr( "'%1' renamed successfully to '%2'." ).arg( layerInfo.tableName, newLayerName ),
-            context, Qgis::MessageLevel::Success );
+    notify( caption, tr( "'%1' renamed successfully to '%2'." ).arg( layerInfo.tableName, newLayerName ), context, Qgis::MessageLevel::Success );
     if ( layerItem->parent() )
       layerItem->parent()->refresh();
   }
   else
   {
-    notify( caption, tr( "Unable to rename '%1'\n%2" ).arg( layerInfo.tableName, errorMsg ),
-            context, Qgis::MessageLevel::Warning );
+    notify( caption, tr( "Unable to rename '%1'\n%2" ).arg( layerInfo.tableName, errorMsg ), context, Qgis::MessageLevel::Warning );
   }
 }

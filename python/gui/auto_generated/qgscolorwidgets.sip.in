@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscolorwidgets.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ set to a color with an ambiguous hue (e.g., black or white shades).
 #include "qgscolorwidgets.h"
 %End
   public:
-
     enum ColorComponent
     {
       Multiple,
@@ -33,7 +32,18 @@ set to a color with an ambiguous hue (e.g., black or white shades).
       Hue,
       Saturation,
       Value,
-      Alpha
+      Alpha,
+      Cyan,
+      Magenta,
+      Yellow,
+      Black
+    };
+
+    enum class ComponentUnit
+    {
+      Scaled0to255,
+      Percent,
+      Degree
     };
 
     QgsColorWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = Multiple );
@@ -62,7 +72,7 @@ Returns the color component which the widget controls
 .. seealso:: :py:func:`setComponent`
 %End
 
-    int componentValue() const;
+ int componentValue() const /Deprecated="Since 3.40. Use componentValueF() instead."/;
 %Docstring
 Returns the current value of the widget's color component
 
@@ -72,6 +82,24 @@ Returns the current value of the widget's color component
 .. seealso:: :py:func:`setComponentValue`
 
 .. seealso:: :py:func:`component`
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsColorWidget.componentValueF` instead.
+%End
+
+    float componentValueF() const;
+%Docstring
+Returns the current value of the widget's color component
+
+:return: value of color component, or -1 if widget has multiple components or an invalid color
+         set
+
+.. seealso:: :py:func:`setComponentValueF`
+
+.. seealso:: :py:func:`component`
+
+.. versionadded:: 3.40
 %End
 
     static QPixmap createDragIcon( const QColor &color );
@@ -80,6 +108,12 @@ Create an icon for dragging colors
 
 :param color: for icon
 %End
+
+    static ComponentUnit componentUnit( ColorComponent component );
+%Docstring
+Returns color ``component`` unit
+%End
+
 
   public slots:
 
@@ -102,12 +136,12 @@ Sets the color component which the widget controls
 .. seealso:: :py:func:`component`
 %End
 
-    virtual void setComponentValue( int value );
+ virtual void setComponentValue( int value ) /Deprecated="Since 3.40. Use setComponentValueF() instead."/;
 %Docstring
 Alters the widget's color by setting the value for the widget's color component
 
-:param value: value for widget's color component. This value is automatically
-              clipped to the range of valid values for the color component.
+:param value: value for widget's color component in the range between 0 and the value returned by :py:func:`~QgsColorWidget.componentRange`.
+              This value is automatically clipped to the range of valid values for the color component.
 
 .. seealso:: :py:func:`componentValue`
 
@@ -117,6 +151,29 @@ Alters the widget's color by setting the value for the widget's color component
 
    this method has no effect if the widget is set to the QgsColorWidget.Multiple
    component
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsColorWidget.setComponentValueF` instead.
+%End
+
+    virtual void setComponentValueF( float value );
+%Docstring
+Alters the widget's color by setting the value for the widget's color component
+
+:param value: value for widget's color component in the range 0.0-1.0.
+              This value is automatically clipped to the range 0.0-1.0.
+
+.. seealso:: :py:func:`componentValue`
+
+.. seealso:: :py:func:`setComponent`
+
+.. note::
+
+   this method has no effect if the widget is set to the QgsColorWidget.Multiple
+   component
+
+.. versionadded:: 3.40
 %End
 
   signals:
@@ -137,7 +194,6 @@ Emitted when mouse hovers over widget.
 
 
 
-
     int componentRange() const;
 %Docstring
 Returns the range of valid values for the color widget's component
@@ -145,41 +201,100 @@ Returns the range of valid values for the color widget's component
 :return: maximum value allowed for color component, or -1 if widget has multiple components
 %End
 
-    int componentRange( ColorComponent component ) const;
+    static int componentRange( ColorComponent component );
 %Docstring
 Returns the range of valid values a color component
 
 :return: maximum value allowed for color component
 %End
 
-    int componentValue( ColorComponent component ) const;
+ int componentValue( ColorComponent component ) const /Deprecated="Since 3.40. Use componentValueF() instead."/;
 %Docstring
 Returns the value of a component of the widget's current color. This method correctly
 handles hue values when the color has an ambiguous hue (e.g., black or white shades)
 
 :param component: color component to return
 
-:return: value of color component, or -1 if widget has an invalid color set
+:return: value of color component in the range between 0 and the value returned by :py:func:`~QgsColorWidget.componentRange`,
+         or -1 if widget has an invalid color set
 
 .. seealso:: :py:func:`hue`
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsColorWidget.componentValueF` instead.
 %End
 
-    int hue() const;
+    float componentValueF( ColorComponent component ) const;
+%Docstring
+Returns the value of a component of the widget's current color. This method correctly
+handles hue values when the color has an ambiguous hue (e.g., black or white shades)
+
+:param component: color component to return
+
+:return: value of color component in the range 0-1.0, or -1 if widget has an invalid color set
+
+.. seealso:: :py:func:`hue`
+
+.. versionadded:: 3.40
+%End
+
+ int hue() const /Deprecated="Since 3.40. Use hueF() instead."/;
 %Docstring
 Returns the hue for the widget. This may differ from the hue for the QColor returned by :py:func:`~QgsColorWidget.color`,
 as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
 
-:return: explicitly set hue for widget
+:return: explicitly set hue for widget in the range 0-359
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsColorWidget.hueF` instead.
 %End
 
-    void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) const;
+    float hueF() const;
+%Docstring
+Returns the hue for the widget. This may differ from the hue for the QColor returned by :py:func:`~QgsColorWidget.color`,
+as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
+
+:return: explicitly set hue for widget in the range 0-1.0
+
+.. versionadded:: 3.40
+%End
+
+ static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) /Deprecated="Since 3.40. Use alterColorF() instead."/;
 %Docstring
 Alters a color by modifying the value of a specific color component
 
 :param color: color to alter
 :param component: color component to alter
-:param newValue: new value of color component. Values are automatically clipped to a
+:param newValue: new value of color component in the range between 0 and the value returned by :py:func:`~QgsColorWidget.componentRange`. Values are automatically clipped to a
                  valid range for the color component.
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsColorWidget.alterColorF` instead.
+%End
+
+    static void alterColorF( QColor &color, QgsColorWidget::ColorComponent component, float newValue );
+%Docstring
+Alters a color by modifying the value of a specific color component
+
+:param color: color to alter
+:param component: color component to alter
+:param newValue: new value of color component in the range between 0 and the value returned by :py:func:`~QgsColorWidget.componentRange`. Values are automatically clipped to
+                 range 0.0-1.0
+
+.. versionadded:: 3.40
+%End
+
+    QColor::Spec colorSpec() const;
+%Docstring
+Returns color widget type of color, either RGB, HSV, CMYK, or Invalid if this component value is Multiple or Alpha
+%End
+
+    static QColor::Spec colorSpec( QgsColorWidget::ColorComponent component );
+%Docstring
+Returns ``component`` type of color, either RGB, HSV, CMYK, or Invalid if ``component`` value is Multiple or Alpha
 %End
 
     static const QPixmap &transparentBackground();
@@ -201,11 +316,12 @@ Generates a checkboard pattern pixmap for use as a background to transparent col
 
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
+
 };
 
 
 
-class QgsColorWidgetAction: QWidgetAction
+class QgsColorWidgetAction : QWidgetAction
 {
 %Docstring(signature="appended")
 An action containing a color widget, which can be embedded into a menu.
@@ -217,7 +333,6 @@ An action containing a color widget, which can be embedded into a menu.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color widget action.
@@ -265,7 +380,6 @@ Emitted when a color has been selected from the widget
 
 
 
-
 class QgsColorWheel : QgsColorWidget
 {
 %Docstring(signature="appended")
@@ -277,7 +391,6 @@ inner rotating triangle which allows for saturation and value selection.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorWheel( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructs a new color wheel widget.
@@ -298,7 +411,6 @@ Constructs a new color wheel widget.
 
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );
@@ -324,7 +436,6 @@ axis.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorBox( QWidget *parent /TransferThis/ = 0, ColorComponent component = Value );
 %Docstring
 Construct a new color box widget.
@@ -350,7 +461,6 @@ Construct a new color box widget.
 
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );
@@ -375,16 +485,13 @@ its length by a single color component (e.g., varying saturation from 0 to 100%)
 #include "qgscolorwidgets.h"
 %End
   public:
-
     enum Orientation
     {
       Horizontal,
       Vertical
     };
 
-    QgsColorRampWidget( QWidget *parent /TransferThis/ = 0,
-                        ColorComponent component = QgsColorWidget::Red,
-                        Orientation orientation = QgsColorRampWidget::Horizontal );
+    QgsColorRampWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = QgsColorWidget::Red, Orientation orientation = QgsColorRampWidget::Horizontal );
 %Docstring
 Construct a new color ramp widget.
 
@@ -461,15 +568,27 @@ Sets the size for drawing the triangular markers on the ramp
 
   signals:
 
-    void valueChanged( int value );
+ void valueChanged( int value ) /Deprecated="Since 3.40. Use valueChangedF() instead."/;
 %Docstring
 Emitted when the widget's color component value changes
 
-:param value: new value of color component
+:param value: new value of color component in the range between 0 and the value returned by :py:func:`~QgsColorRampWidget.componentRange`
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsColorRampWidget.valueChangedF` instead.
+%End
+
+    void valueChangedF( float value );
+%Docstring
+Emitted when the widget's color component value changes
+
+:param value: new value of color component in the range 0.0-1.0
+
+.. versionadded:: 3.40
 %End
 
   protected:
-
     virtual void mouseMoveEvent( QMouseEvent *event );
 
     virtual void wheelEvent( QWheelEvent *event );
@@ -495,7 +614,6 @@ A composite horizontal color ramp widget and associated spinbox for manual value
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorSliderWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = QgsColorWidget::Red );
 %Docstring
 Construct a new color slider widget.
@@ -506,7 +624,7 @@ Construct a new color slider widget.
 
     virtual void setComponent( ColorComponent component );
 
-    virtual void setComponentValue( int value );
+    virtual void setComponentValueF( float value );
 
     virtual void setColor( const QColor &color, bool emitSignals = false );
 
@@ -526,7 +644,6 @@ of colors.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     enum ColorTextFormat
     {
       HexRgb,
@@ -571,7 +688,6 @@ A preview box which displays one or two colors as swatches.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorPreviewWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color preview widget.
@@ -611,7 +727,6 @@ Sets the second color for the widget
 %End
 
   protected:
-
     virtual void mousePressEvent( QMouseEvent *e );
 
 
@@ -628,5 +743,5 @@ Sets the second color for the widget
  *                                                                      *
  * src/gui/qgscolorwidgets.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

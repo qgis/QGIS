@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmediawidget.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ The :py:class:`QgsMediaWidget` class creates a widget for playing back audio and
 #include "qgsmediawidget.h"
 %End
   public:
-
     enum Mode
     {
       Audio,
@@ -81,5 +80,5 @@ Returns the QMediaPlayer object.
  *                                                                      *
  * src/gui/qgsmediawidget.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

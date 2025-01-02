@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgselevationmap.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -14,8 +14,10 @@ class QgsElevationMap
 {
 %Docstring(signature="appended")
 Stores digital elevation model in a raster image which may get updated
-as a part of map layer rendering process. Afterwards the elevations can
-be used for post-processing effects of the rendered color map image.
+as a part of map layer rendering process.
+
+Afterwards the elevations can be used for post-processing effects of the
+rendered color map image.
 
 Elevations are encoded as colors in QImage, thanks to this it is not
 only possible to set elevation for each pixel, but also to use QPainter
@@ -33,9 +35,6 @@ in meters.
   public:
 
     QgsElevationMap();
-%Docstring
-Default constructor
-%End
 
     explicit QgsElevationMap( const QSize &size, float devicePixelRatio = 1.0 );
 %Docstring
@@ -53,9 +52,6 @@ The image must have ARGB32 format and obtained by the :py:func:`~QgsElevationMap
 %End
 
     QgsElevationMap( const QgsElevationMap &other );
-%Docstring
-Copy constructor
-%End
 
     void applyEyeDomeLighting( QImage &image, int distance, float strength, float rendererScale ) const;
 %Docstring
@@ -152,5 +148,5 @@ Returns the no data value for the elevation map
  *                                                                      *
  * src/core/qgselevationmap.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

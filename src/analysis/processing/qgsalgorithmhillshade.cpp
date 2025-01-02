@@ -61,12 +61,9 @@ QgsHillshadeAlgorithm *QgsHillshadeAlgorithm::createInstance() const
 void QgsHillshadeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Elevation layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "Z_FACTOR" ), QObject::tr( "Z factor" ),
-                Qgis::ProcessingNumberParameterType::Double, 1, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "AZIMUTH" ), QObject::tr( "Azimuth (horizontal angle)" ),
-                Qgis::ProcessingNumberParameterType::Double, 300, false, 0, 360 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "V_ANGLE" ), QObject::tr( "Vertical angle" ),
-                Qgis::ProcessingNumberParameterType::Double, 40, false, 0, 90 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "Z_FACTOR" ), QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "AZIMUTH" ), QObject::tr( "Azimuth (horizontal angle)" ), Qgis::ProcessingNumberParameterType::Double, 300, false, 0, 360 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "V_ANGLE" ), QObject::tr( "Vertical angle" ), Qgis::ProcessingNumberParameterType::Double, 40, false, 0, 90 ) );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Hillshade" ) ) );
 }

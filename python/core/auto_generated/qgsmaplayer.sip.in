@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayer.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -209,7 +209,6 @@ the layer is owned by a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`).
 
    This method should not be called on layers which already belong to a :py:class:`QgsProject` or :py:class:`QgsMapLayerStore`.
 
-
 .. seealso:: :py:func:`id`
 
 .. seealso:: :py:func:`idChanged`
@@ -237,132 +236,155 @@ Returns the layer's data provider, it may be ``None``.
 %End
 
 
- void setShortName( const QString &shortName ) /Deprecated/;
+    QgsProviderMetadata *providerMetadata() const;
+%Docstring
+Returns the layer data provider's metadata, it may be ``None``.
+
+.. versionadded:: 3.40
+%End
+
+ void setShortName( const QString &shortName ) /Deprecated="Since 3.38. Use serverProperties()->setShortName() instead."/;
 %Docstring
 Sets the short name of the layer used by QGIS Server to identify the layer.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setShortName` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setShortName` instead.
 %End
 
- QString shortName() const /Deprecated/;
+ QString shortName() const /Deprecated="Since 3.38. Use serverProperties()->shortName() instead."/;
 %Docstring
 Returns the short name of the layer used by QGIS Server to identify the layer.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.shortName` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.shortName` instead.
 %End
 
- void setTitle( const QString &title ) /Deprecated/;
+ void setTitle( const QString &title ) /Deprecated="Since 3.38. Use serverProperties()->setTitle() instead."/;
 %Docstring
 Sets the title of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setTitle` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setTitle` instead.
 %End
 
- QString title() const /Deprecated/;
+ QString title() const /Deprecated="Since 3.38. Use serverProperties()->title() instead."/;
 %Docstring
 Returns the title of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.title` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.title` instead.
 %End
 
- void setAbstract( const QString &abstract ) /Deprecated/;
+ void setAbstract( const QString &abstract ) /Deprecated="Since 3.38. Use serverProperties()->setAbstract() instead."/;
 %Docstring
 Sets the abstract of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAbstract` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAbstract` instead.
 %End
 
- QString abstract() const /Deprecated/;
+ QString abstract() const /Deprecated="Since 3.38. Use serverProperties()->abstract() instead."/;
 %Docstring
 Returns the abstract of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.abstract` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.abstract` instead.
 %End
 
- void setKeywordList( const QString &keywords ) /Deprecated/;
+ void setKeywordList( const QString &keywords ) /Deprecated="Since 3.38. Use serverProperties()->setKeywordList() instead."/;
 %Docstring
 Sets the keyword list of the layerused by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setKeywordList` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setKeywordList` instead.
 %End
 
- QString keywordList() const /Deprecated/;
+ QString keywordList() const /Deprecated="Since 3.38. Use serverProperties()->keywordList() instead."/;
 %Docstring
 Returns the keyword list of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.keywordList` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.keywordList` instead.
 %End
 
- void setDataUrl( const QString &dataUrl ) /Deprecated/;
+ void setDataUrl( const QString &dataUrl ) /Deprecated="Since 3.38. Use serverProperties()->setDataUrl() instead."/;
 %Docstring
 Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrl` instead.
 %End
 
- QString dataUrl() const /Deprecated/;
+ QString dataUrl() const /Deprecated="Since 3.38. Use serverProperties()->dataUrl() instead."/;
 %Docstring
 Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrl` instead.
 %End
 
- void setDataUrlFormat( const QString &dataUrlFormat ) /Deprecated/;
+ void setDataUrlFormat( const QString &dataUrlFormat ) /Deprecated="Since 3.38. Use serverProperties()->setDataUrlFormat() instead."/;
 %Docstring
 Sets the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrlFormat` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrlFormat` instead.
 %End
 
- QString dataUrlFormat() const /Deprecated/;
+ QString dataUrlFormat() const /Deprecated="Since 3.38. Use serverProperties()->dataUrlFormat() instead."/;
 %Docstring
 Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrlFormat` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrlFormat` instead.
 %End
 
- void setAttribution( const QString &attrib ) /Deprecated/;
+ void setAttribution( const QString &attrib ) /Deprecated="Since 3.38. Use serverProperties()->setAttribution() instead."/;
 %Docstring
 Sets the attribution of the layerused by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttribution` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttribution` instead.
 %End
 
- QString attribution() const /Deprecated/;
+ QString attribution() const /Deprecated="Since 3.38. Use serverProperties()->attribution() instead."/;
 %Docstring
 Returns the attribution of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attribution` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attribution` instead.
 %End
 
- void setAttributionUrl( const QString &attribUrl ) /Deprecated/;
+ void setAttributionUrl( const QString &attribUrl ) /Deprecated="Since 3.38. Use serverProperties()->setAttributionUrl() instead."/;
 %Docstring
 Sets the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttributionUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttributionUrl` instead.
 %End
 
- QString attributionUrl() const /Deprecated/;
+ QString attributionUrl() const /Deprecated="Since 3.38. Use serverProperties()->attributionUrl() instead."/;
 %Docstring
 Returns the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attributionUrl` instead.
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attributionUrl` instead.
 %End
 
 
@@ -372,7 +394,7 @@ Returns QGIS Server Properties for the map layer
 
 .. versionadded:: 3.22
 %End
- void setMetadataUrl( const QString &metaUrl ) /Deprecated/;
+ void setMetadataUrl( const QString &metaUrl ) /Deprecated="Since 3.22. "/;
 %Docstring
 Sets the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
@@ -381,10 +403,10 @@ Since QGIS 3.22, it edits the first metadata URL link.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
- QString metadataUrl() const /Deprecated/;
+ QString metadataUrl() const /Deprecated="Since 3.22. "/;
 %Docstring
 Returns the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
@@ -395,10 +417,10 @@ Since QGIS 3.22, it returns the first metadata URL link.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
- void setMetadataUrlType( const QString &metaUrlType ) /Deprecated/;
+ void setMetadataUrlType( const QString &metaUrlType ) /Deprecated="Since 3.22. "/;
 %Docstring
 Set the metadata type of the layer
 used by QGIS Server in GetCapabilities request
@@ -407,10 +429,10 @@ Since QGIS 3.22, it edits the first metadata URL type.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
- QString metadataUrlType() const /Deprecated/;
+ QString metadataUrlType() const /Deprecated="Since 3.22. "/;
 %Docstring
 Returns the metadata type of the layer
 used by QGIS Server in GetCapabilities request.
@@ -421,10 +443,10 @@ Since QGIS 3.22, it returns the first metadata URL type.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
- void setMetadataUrlFormat( const QString &metaUrlFormat ) /Deprecated/;
+ void setMetadataUrlFormat( const QString &metaUrlFormat ) /Deprecated="Since 3.22. "/;
 %Docstring
 Sets the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
@@ -433,10 +455,10 @@ Since QGIS 3.22, it edits the first metadata URL format.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
- QString metadataUrlFormat() const /Deprecated/;
+ QString metadataUrlFormat() const /Deprecated="Since 3.22. "/;
 %Docstring
 Returns the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
@@ -447,7 +469,7 @@ Since QGIS 3.22, it returns the first metadata URL format.
 
 .. seealso:: :py:func:`serverProperties`
 
-.. deprecated:: QGIS 3.22
+.. deprecated:: 3.22
 %End
 
     void setBlendMode( QPainter::CompositionMode blendMode );
@@ -644,14 +666,15 @@ or layer with temporary data (as temporary mesh layer dataset)
 %Docstring
 Sets state from DOM document
 
-:param layerElement: The DOM element corresponding to ``maplayer'' tag
+:param layerElement: The DOM element corresponding to ``maplayer`` tag
 :param context: writing context (e.g. for conversion between relative and absolute paths)
 :param flags: optional argument which can be used to control layer reading behavior.
 :param preloadedProvider: optional preloaded data provider that will be used as data provider for this layer, takes ownership (since QGIS 3.32)
-\note
 
-The DOM node corresponds to a DOM document project file XML element read
-by :py:class:`QgsProject`.
+.. note::
+
+   The DOM node corresponds to a DOM document project file XML element read
+   by :py:class:`QgsProject`.
 
 This, in turn, calls :py:func:`~QgsMapLayer.readXml` (and then :py:func:`~QgsMapLayer.readSymbology`), which is overridable
 by sub-classes so that they can read their own specific state from the given DOM node.
@@ -665,13 +688,14 @@ Invoked by :py:func:`QgsProject.read()`.
 %Docstring
 Stores state in DOM node
 
-:param layerElement: is a DOM element corresponding to ``maplayer'' tag
+:param layerElement: is a DOM element corresponding to ``maplayer`` tag
 :param document: is a the DOM document being written
 :param context: reading context (e.g. for conversion between relative and absolute paths)
-\note
 
-The DOM node corresponds to a DOM document project file XML element to be
-written by :py:class:`QgsProject`.
+.. note::
+
+   The DOM node corresponds to a DOM document project file XML element to be
+   written by :py:class:`QgsProject`.
 
 This, in turn, calls :py:func:`~QgsMapLayer.writeXml` (and then writeSymbology), which is over-rideable
 by sub-classes so that they can write their own specific state to the given DOM node.
@@ -728,12 +752,12 @@ Read all custom properties from layer. Properties are stored in a map and saved 
 %Docstring
 Lists all the style in db split into related to the layer and not related to
 
-:param ids: the list in which will be stored the style db ids
-:param names: the list in which will be stored the style names
 
 :return: - the number of styles related to current layer (-1 on not implemented)
+         - ids: the list in which will be stored the style db ids
+         - names: the list in which will be stored the style names
          - descriptions: the list in which will be stored the style descriptions
-         - msgError: will be set to a descriptive error message if any occurs
+         - msgError: a descriptive error message if any occurs
 
 .. note::
 
@@ -752,7 +776,7 @@ Deletes a style from the database
 :param styleId: the provider's layer_styles table id of the style to delete
 
 :return: - ``True`` in case of success
-         - msgError: will be set to a descriptive error message if any occurs
+         - msgError: a descriptive error message if any occurs
 %End
 
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
@@ -766,7 +790,6 @@ Saves named and sld style of the layer to the style table in the db.
 :param description: A description of the style
 :param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
 :param uiFileContent:
-:param msgError: will be set to a descriptive error message if any occurs
 :param categories: the style categories to be saved.
 
 .. note::
@@ -776,17 +799,25 @@ Saves named and sld style of the layer to the style table in the db.
    Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
    Use :py:func:`QgsProviderRegistry.styleExists()` to test in advance if a style already exists and handle this appropriately
    in your client code.
+
+:return: a descriptive error message if any occurs
 %End
 
+
+
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb,
-                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+                                    Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
 %Docstring
 Loads a named style from file/local db/datasource db
 
 :param theURI: the URI of the style or the URI of the layer
-:param resultFlag: will be set to ``True`` if a named style is correctly loaded
 :param loadFromLocalDb: if ``True`` forces to load from local db instead of datasource one
 :param categories: the style categories to be loaded.
+:param flags: flags controlling how the style should be loaded (since QGIS 3.38)
+
+:return: - status message, which may indicate success or contain an error message
+         - resultFlag: ``True`` if a named style is correctly loaded
 %End
 
 
@@ -844,7 +875,6 @@ The returned CRS will be invalid if the layer has no vertical CRS.
 
 .. seealso:: :py:func:`setVerticalCrs`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -868,7 +898,6 @@ on the returned value to determine the type of CRS returned by this method.
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`crs3DChanged`
-
 
 .. versionadded:: 3.38
 %End
@@ -901,15 +930,12 @@ The :py:func:`~QgsMapLayer.verticalCrsChanged` signal will be raised if the vert
 
 :param crs: the vertical CRS
 
-
 :return: - ``True`` if vertical CRS was successfully set
-         - errorMessage: will be set to a descriptive message if the vertical CRS could not be set
-
+         - errorMessage: a descriptive message if the vertical CRS could not be set
 
 .. seealso:: :py:func:`verticalCrs`
 
 .. seealso:: :py:func:`setCrs`
-
 
 .. versionadded:: 3.38
 %End
@@ -953,7 +979,7 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default metadata.
+         - resultFlag: a reference to a flag that ``False`` if we did not manage to save the default metadata.
 %End
 
     QString saveNamedMetadata( const QString &uri, bool &resultFlag );
@@ -973,21 +999,23 @@ record in the users style table in their personal qgis.db)
 :return: a QString with any status messages
 %End
 
+
     virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag /Out/ );
 %Docstring
 Retrieve a named metadata for this layer if one
 exists (either as a .qmd file on disk or as a
 record in the users style table in their personal qgis.db)
 
-:param uri: - the file name or other URI for the
+:param uri: the file name or other URI for the
             metadata file. First an attempt will be made to see if this
             is a file and load that, if that fails the qgis.db metadata
             table will be consulted to see if there is a metadata who's
             key matches the URI.
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default metadata.
+         - resultFlag: a reference to a flag that ``False`` if we did not manage to load the default metadata.
 %End
+
 
     virtual QString loadDefaultMetadata( bool &resultFlag );
 %Docstring
@@ -1035,6 +1063,7 @@ record in the users style table in their personal qgis.db)
 .. seealso:: :py:func:`saveNamedStyle`
 %End
 
+
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
 %Docstring
 Retrieve the default style for this layer if one
@@ -1043,26 +1072,28 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default style.
+         - resultFlag: a reference to a flag that ``False`` if we did not manage to load the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 %End
 
-    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
 %Docstring
 Retrieve a named style for this layer if one
 exists (either as a .qml file on disk or as a
 record in the users style table in their personal qgis.db)
 
-:param uri: - the file name or other URI for the
+:param uri: the file name or other URI for the
             style file. First an attempt will be made to see if this
             is a file and load that, if that fails the qgis.db styles
             table will be consulted to see if there is a style who's
             key matches the URI.
 :param categories: the style categories to be loaded.
+:param flags: flags controlling how the style should be loaded (since QGIS 3.38)
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to load the default style.
+         - resultFlag: a reference to a flag that ``False`` if we did not manage to load the default style.
 
 .. seealso:: :py:func:`loadDefaultStyle`
 %End
@@ -1075,7 +1106,7 @@ Retrieve a named style for this layer from a sqlite database.
 :param uri: uri for table
 
 :return: - ``True`` if style was successfully loaded
-         - qml: will be set to QML style content from database
+         - qml: QML style content from database
 %End
 
     virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg /Out/,
@@ -1084,11 +1115,10 @@ Retrieve a named style for this layer from a sqlite database.
 Import the properties of this layer from a QDomDocument
 
 :param doc: source QDomDocument
-:param errorMsg: this QString will be initialized on error
-                 during the execution of readSymbology
 :param categories: the style categories to import
 
-:return: ``True`` on success
+:return: - ``True`` on success
+         - errorMsg: this QString will be initialized on error during the execution of readSymbology
 %End
 
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, const QgsReadWriteContext &context = QgsReadWriteContext(),
@@ -1097,10 +1127,11 @@ Import the properties of this layer from a QDomDocument
 Export the properties of this layer as named style in a QDomDocument
 
 :param doc: the target QDomDocument
-:param errorMsg: this QString will be initialized on error
 :param context: read write context
 :param categories: the style categories to export
                    during the execution of writeSymbology
+
+:return: this QString will be initialized on error
 %End
 
 
@@ -1136,14 +1167,14 @@ record in the users style table in their personal qgis.db)
 :param categories: the style categories to be saved (since QGIS 3.26)
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
+         - resultFlag: a reference to a flag that ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 
 .. seealso:: :py:func:`saveNamedStyle`
 %End
 
- virtual QString saveDefaultStyle( bool &resultFlag /Out/ ) /Deprecated/;
+ virtual QString saveDefaultStyle( bool &resultFlag /Out/ ) /Deprecated="Since 3.26. "/;
 %Docstring
 Save the properties of this layer as the default style
 (either as a .qml file on disk or as a
@@ -1151,13 +1182,13 @@ record in the users style table in their personal qgis.db)
 
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
+         - resultFlag: a reference to a flag that ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
 
 .. seealso:: :py:func:`saveNamedStyle`
 
-.. deprecated:: QGIS 3.26
+.. deprecated:: 3.26
 %End
 
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/, StyleCategories categories = AllStyleCategories );
@@ -1174,7 +1205,7 @@ record in the users style table in their personal qgis.db)
 :param categories: the style categories to be saved.
 
 :return: - a QString with any status messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
+         - resultFlag: a reference to a flag that ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`saveDefaultStyle`
 %End
@@ -1201,7 +1232,7 @@ Saves the properties of this layer to an SLD format file.
 :param exportContext: SLD export context
 
 :return: - a string with any status or error messages
-         - resultFlag: a reference to a flag that will be set to ``False`` if the SLD file could not be generated
+         - resultFlag: a reference to a flag that ``False`` if the SLD file could not be generated
 
 .. seealso:: :py:func:`loadSldStyle`
 
@@ -1296,7 +1327,7 @@ Write just the symbology information for the layer into the document
 %End
 
 
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName = QString(), const QString &provider = QString(), bool loadDefaultStyleFlag = false );
 %Docstring
 Updates the data source of the layer.
 
@@ -1304,11 +1335,12 @@ The ``dataSource`` argument must specify the new data source string for the laye
 the specified data ``provider`` in use. See :py:class:`QgsDataSourceUri` and the documentation for the various :py:class:`QgsMapLayer`
 subclasses for further details on data source strings.
 
-The ``baseName`` argument specifies the user-visible name to use for the layer. (See :py:func:`~QgsMapLayer.name` or :py:func:`~QgsMapLayer.setName`).
+The ``baseName`` argument specifies the user-visible name to use for the layer. (See :py:func:`~QgsMapLayer.name` or :py:func:`~QgsMapLayer.setName`). If not
+specified, then the current name will be left unchanged (since QGIS 3.40).
 
 The ``provider`` argument is used to specify the unique key of the data provider to use for
 the layer. This must match one of the values returned by :py:func:`QgsProviderRegistry.instance()`->:py:func:`~QgsMapLayer.providerList`.
-(See :py:func:`~QgsMapLayer.providerType`).
+(See :py:func:`~QgsMapLayer.providerType`). If not specified, then the current data provider will be used (since QGIS 3.40).
 
 If ``loadDefaultStyleFlag`` is set to ``True`` then the layer's existing style will be reset to the default
 for the data source.
@@ -1364,7 +1396,7 @@ be retrieved by calling :py:func:`~QgsMapLayer.error`.
 .. versionadded:: 3.6
 %End
 
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags );
 %Docstring
 Updates the data source of the layer.
 
@@ -1527,7 +1559,7 @@ Returns whether scale based visibility is enabled for the layer.
 .. seealso:: :py:func:`isInScaleRange`
 %End
 
- bool hasAutoRefreshEnabled() const /Deprecated/;
+ bool hasAutoRefreshEnabled() const /Deprecated="Since 3.40. Use autoRefreshMode() instead."/;
 %Docstring
 Returns ``True`` if auto refresh is enabled for the layer.
 
@@ -1535,8 +1567,9 @@ Returns ``True`` if auto refresh is enabled for the layer.
 
 .. seealso:: :py:func:`setAutoRefreshEnabled`
 
-.. deprecated::
-   use :py:func:`~QgsMapLayer.autoRefreshMode` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsMapLayer.autoRefreshMode` instead.
 %End
 
     Qgis::AutoRefreshMode autoRefreshMode() const;
@@ -1574,7 +1607,7 @@ canvas must be refreshed separately in order to view the refreshed layer.
 .. seealso:: :py:func:`setAutoRefreshEnabled`
 %End
 
- void setAutoRefreshEnabled( bool enabled ) /Deprecated/;
+ void setAutoRefreshEnabled( bool enabled ) /Deprecated="Since 3.40. Use setAutoRefreshMode() instead."/;
 %Docstring
 Sets whether auto refresh is enabled for the layer.
 
@@ -1582,7 +1615,8 @@ Sets whether auto refresh is enabled for the layer.
 
 .. seealso:: :py:func:`setAutoRefreshInterval`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsMapLayer.setAutoRefreshMode` instead.
 %End
 
@@ -1762,10 +1796,10 @@ Returns true if map tips are enabled for this layer
 .. versionadded:: 3.32
 %End
 
-    static QgsDataProvider::ReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
+    static Qgis::DataProviderReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
 %Docstring
 Returns provider read flag deduced from layer read flags ``layerReadFlags`` and a dom node ``layerNode``
-that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by :py:class:`QgsProject`).
+that describes a layer (corresponding to ``maplayer`` tag in a DOM document project file read by :py:class:`QgsProject`).
 This static method is used when loading a project.
 
 .. versionadded:: 3.32
@@ -2295,7 +2329,7 @@ happens.
 Checks whether a new set of dependencies will introduce a cycle
 this method is now deprecated and always return ``False``, because circular dependencies are now correctly managed.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
 
@@ -2324,5 +2358,5 @@ QFlags<QgsMapLayer::ReadFlag> operator|(QgsMapLayer::ReadFlag f1, QFlags<QgsMapL
  *                                                                      *
  * src/core/qgsmaplayer.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

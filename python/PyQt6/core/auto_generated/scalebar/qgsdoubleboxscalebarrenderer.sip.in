@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/scalebar/qgsdoubleboxscalebarrenderer.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,9 +20,6 @@ Double box with alternating colors.
   public:
 
     QgsDoubleBoxScaleBarRenderer();
-%Docstring
-Constructor for QgsDoubleBoxScaleBarRenderer.
-%End
 
     virtual QString id() const;
 
@@ -46,5 +43,5 @@ Constructor for QgsDoubleBoxScaleBarRenderer.
  *                                                                      *
  * src/core/scalebar/qgsdoubleboxscalebarrenderer.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

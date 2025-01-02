@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     /**
      * Set where the new layers should be inserted - can be used to follow current selection.
      * By default it is root group with zero index.
-     * \deprecated since QGIS 3.10 use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead
+     * \deprecated QGIS 3.10. Use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead.
      */
     Q_DECL_DEPRECATED void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) SIP_DEPRECATED;
 

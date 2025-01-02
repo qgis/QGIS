@@ -41,7 +41,6 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     Q_OBJECT
 
   public:
-
     enum Page
     {
       Database,
@@ -53,9 +52,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     };
 
     //! Constructor
-    QgsGrassNewMapset( QgisInterface *iface,
-                       QgsGrassPlugin *plugin,
-                       QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsGrassNewMapset( QgisInterface *iface, QgsGrassPlugin *plugin, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
     ~QgsGrassNewMapset();
@@ -170,6 +167,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
     //! Sets error line
     void setError( QLabel *line, const QString &err = QString() );
+
   private:
     //! Gets current gisdbase
     QString gisdbase() const;
@@ -195,6 +193,8 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     struct Cell_head mCellHead;
     struct Key_Value *mProjInfo = nullptr;
     struct Key_Value *mProjUnits = nullptr;
+    QString mProjSrid;
+    QString mProjWkt;
 
     //! Previous page
     int mPreviousPage = -1;

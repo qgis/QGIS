@@ -31,8 +31,9 @@ class QTextCodec;
  * \class QgsNetworkContentFetcher
  * \ingroup core
  * \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
- * and converting the content to standard formats. Url redirects are automatically
- * handled.
+ * and converting the content to standard formats.
+ *
+ * URL redirects are automatically handled.
  * \see QgsNetworkContentFetcherTask
 */
 class CORE_EXPORT QgsNetworkContentFetcher : public QObject
@@ -41,9 +42,6 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 
   public:
 
-    /**
-     * Constructor for QgsNetworkContentFetcher.
-     */
     QgsNetworkContentFetcher() = default;
 
     ~QgsNetworkContentFetcher() override;

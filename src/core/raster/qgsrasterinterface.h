@@ -134,26 +134,23 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
  */
 class CORE_EXPORT QgsRasterInterface
 {
-#ifdef SIP_RUN
 // QgsRasterInterface subclasses
-#include <qgsbrightnesscontrastfilter.h>
-#include <qgshuesaturationfilter.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasternuller.h>
-#include <qgsrasterprojector.h>
-#include <qgsrasterrenderer.h>
-#include <qgsrasterresamplefilter.h>
-
+    //SIP_TYPEHEADER_INCLUDE( "qgsbrightnesscontrastfilter.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgshuesaturationfilter.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterdataprovider.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasternuller.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterprojector.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterresamplefilter.h" );
 // QgsRasterRenderer subclasses
-#include <qgshillshaderenderer.h>
-#include <qgsmultibandcolorrenderer.h>
-#include <qgspalettedrasterrenderer.h>
-#include <qgssinglebandcolordatarenderer.h>
-#include <qgssinglebandgrayrenderer.h>
-#include <qgssinglebandpseudocolorrenderer.h>
-#include <qgsrastersinglecolorrenderer.h>
-#include <qgsrastercontourrenderer.h>
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgshillshaderenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsmultibandcolorrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgspalettedrasterrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandcolordatarenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandgrayrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandpseudocolorrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrastersinglecolorrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrastercontourrenderer.h" );
 
 
 #ifdef SIP_RUN
@@ -204,21 +201,6 @@ class CORE_EXPORT QgsRasterInterface
     Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
   public:
-    //! If you add to this, please also add to capabilitiesString()
-    enum Capability SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoCapabilities   = 0,
-      Size             = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create           = 1 << 2, //!< Create new datasets
-      Remove           = 1 << 3, //!< Delete datasets
-      BuildPyramids    = 1 << 4, //!< Supports building of pyramids (overviews)
-      Identify         = 1 << 5, //!< At least one identify format supported
-      IdentifyValue    = 1 << 6, //!< Numerical values
-      IdentifyText     = 1 << 7, //!< WMS text
-      IdentifyHtml     = 1 << 8, //!< WMS HTML
-      IdentifyFeature  = 1 << 9, //!< WMS GML -> feature
-      Prefetch         = 1 << 10, //!< Allow prefetching of out-of-view images
-    };
 
     QgsRasterInterface( QgsRasterInterface *input = nullptr );
 
@@ -227,16 +209,20 @@ class CORE_EXPORT QgsRasterInterface
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
-    //! Returns a bitmask containing the supported capabilities
-    virtual int capabilities() const
-    {
-      return QgsRasterInterface::NoCapabilities;
-    }
+    // TODO QGIS 4.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
+    // (which inherits this class)
 
     /**
-     *  Returns the raster interface capabilities in friendly format.
+     * Returns the capabilities supported by the interface.
      */
-    QString capabilitiesString() const;
+    virtual Qgis::RasterInterfaceCapabilities capabilities() const;
+
+    /**
+     * Returns the raster interface capabilities in friendly format.
+     *
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     */
+    Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 
     //! Returns data type for the band specified by number
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
@@ -274,6 +260,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Returns the name of the color interpretation for the specified \a bandNumber.
+     * It is translated since QGIS 3.40
      *
      * \since QGIS 3.18
      */
@@ -343,7 +330,7 @@ class CORE_EXPORT QgsRasterInterface
      * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
      * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * \param feedback optional feedback object
-     * \deprecated Use Qgis::RasterBandStatistic instead of int for \a stats argument
+     * \deprecated QGIS 3.40. Use Qgis::RasterBandStatistic instead of int for \a stats argument.
      */
     Q_DECL_DEPRECATED QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) SIP_DEPRECATED;
 
@@ -364,7 +351,7 @@ class CORE_EXPORT QgsRasterInterface
      * \brief Returns TRUE if histogram is available (cached, already calculated).
      * The parameters are the same as in bandStatistics()
      * \returns TRUE if statistics are available (ready to use)
-     * \deprecated Use Qgis::RasterBandStatistic instead of int for \a stats argument
+     * \deprecated QGIS 3.40. Use Qgis::RasterBandStatistic instead of int for \a stats argument.
      */
     Q_DECL_DEPRECATED bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) SIP_DEPRECATED;
 
@@ -595,7 +582,7 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Fill in statistics defaults if not specified
-     * \deprecated Use Qgis::RasterBandStatistic instead of int for \a stats argument
+     * \deprecated QGIS 3.40. Use Qgis::RasterBandStatistic instead of int for \a stats argument.
      */
     Q_DECL_DEPRECATED void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const SIP_DEPRECATED;
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsprojectgpssettings.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -245,5 +245,5 @@ not be automatically saved.
  *                                                                      *
  * src/core/project/qgsprojectgpssettings.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

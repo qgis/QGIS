@@ -47,9 +47,6 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
 
     ~QgsLayerTreeFilterSettings();
 
-    /**
-     * Copy constructor.
-     */
     QgsLayerTreeFilterSettings( const QgsLayerTreeFilterSettings &other );
 
     QgsLayerTreeFilterSettings &operator=( const QgsLayerTreeFilterSettings &other );

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterdrawer.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,14 +21,15 @@ The drawing pipe for raster layers.
 %End
   public:
 
- QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget ) /Deprecated/;
+ QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget ) /Deprecated="Since 3.28. Use the constructor without the ``dpiTarget`` argument instead, as DPI is now handled by the draw() method which accepts a QgsRenderContext."/;
 %Docstring
 The QgsRasterDrawer constructor.
 
 :param iterator: the raster iterator to fetch data from
 :param dpiTarget: the target dpi (dots per inch) to be taken into consideration when rendering
 
-.. deprecated:: QGIS 3.28.
+.. deprecated:: 3.28
+
    Use the constructor without the ``dpiTarget`` argument instead, as DPI is now handled by the :py:func:`~QgsRasterDrawer.draw` method which accepts a :py:class:`QgsRenderContext`.
 %End
 
@@ -70,5 +71,5 @@ Draws raster data.
  *                                                                      *
  * src/core/raster/qgsrasterdrawer.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

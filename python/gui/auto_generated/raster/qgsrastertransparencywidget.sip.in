@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrastertransparencywidget.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Widget to control a layers transparency and related options
 #include "qgsrastertransparencywidget.h"
 %End
   public:
-
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 Widget to control a layers transparency and related options
@@ -44,6 +43,8 @@ Returns the (possibly None) map pixel selector tool.
 .. versionadded:: 3.22
 %End
 
+
+
   public slots:
 
 
@@ -60,12 +61,11 @@ Apply any changes on the widget to the set layer.
 
   protected:
 
-
 };
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/raster/qgsrastertransparencywidget.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

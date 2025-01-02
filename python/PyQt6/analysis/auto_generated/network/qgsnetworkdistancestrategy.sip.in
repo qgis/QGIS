@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/network/qgsnetworkdistancestrategy.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,5 +28,5 @@ used for finding shortest path between two points.
  *                                                                      *
  * src/analysis/network/qgsnetworkdistancestrategy.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

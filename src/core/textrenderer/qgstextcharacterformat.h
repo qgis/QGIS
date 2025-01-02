@@ -22,6 +22,8 @@
 
 #include <QFont>
 #include <QColor>
+#include <QSizeF>
+#include <QBrush>
 
 class QTextCharFormat;
 class QgsRenderContext;
@@ -42,9 +44,6 @@ class CORE_EXPORT QgsTextCharacterFormat
 {
   public:
 
-    /**
-     * Constructor for QgsTextCharacterFormat.
-     */
     QgsTextCharacterFormat() = default;
 
     /**
@@ -97,6 +96,9 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Returns the font point size, or -1 if the font size is not set
      * and should be inherited.
      *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPercentageSize()
      * \see setFontPointSize()
      * \since QGIS 3.28
      */
@@ -108,10 +110,37 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Set \a size to -1 if the font size is not set
      * and should be inherited.
      *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
      * \see fontPointSize()
+     * \see setFontPercentageSize()
      * \since QGIS 3.28
      */
     void setFontPointSize( double size );
+
+    /**
+     * Returns the font percentage size (as fraction of inherited font size), or -1 if the font size percentage is not set.
+     *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPointSize()
+     * \see setFontPercentageSize()
+     * \since QGIS 3.40
+     */
+    double fontPercentageSize() const;
+
+    /**
+     * Sets  the font percentage \a size (as fraction of inherited font size).
+     *
+     * Set \a size to -1 if the font percentange size is not set.
+     *
+     * \note A format should have either fontPointSize() or fontPercentageSize() set, not both.
+     *
+     * \see fontPercentageSize()
+     * \see setFontPointSize()
+     * \since QGIS 3.40
+     */
+    void setFontPercentageSize( double size );
 
     /**
      * Returns the font family name, or an empty string if the
@@ -151,6 +180,22 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \since QGIS 3.28
      */
     void setFontWeight( int fontWeight );
+
+    /**
+     * Returns the font word spacing, in points, or NaN if word spacing is not set and should be inherited.
+     *
+     * \see setWordSpacing()
+     * \since QGIS 3.40
+     */
+    double wordSpacing() const;
+
+    /**
+     * Sets the font word \a spacing, in points, or NaN if word spacing is not set and should be inherited.
+     *
+     * \see wordSpacing()
+     * \since QGIS 3.40
+     */
+    void setWordSpacing( double spacing );
 
     /**
      * Returns whether the format has italic enabled.
@@ -211,6 +256,54 @@ class CORE_EXPORT QgsTextCharacterFormat
     void setOverline( BooleanValue enabled );
 
     /**
+     * Returns the path to the image to render, if the format applies to a document image fragment.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see imageSize()
+     * \see setImagePath()
+     *
+     * \since QGIS 3.40
+     */
+    QString imagePath() const;
+
+    /**
+     * Sets the \a path to the image to render, if the format applies to a document image fragment.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see setImageSize()
+     * \see imagePath()
+     *
+     * \since QGIS 3.40
+     */
+    void setImagePath( const QString &path );
+
+    /**
+     * Returns the image size, if the format applies to a document image fragment.
+     *
+     * The image size is always considered to be in Qgis::RenderUnit::Points.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see imagePath()
+     * \see setImageSize()
+     *
+     * \since QGIS 3.40
+     */
+    QSizeF imageSize() const;
+
+    /**
+     * Sets the image \a size, if the format applies to a document image fragment.
+     *
+     * The image size is always considered to be in Qgis::RenderUnit::Points.
+     *
+     * \see QgsTextFragment::isImage()
+     * \see setImagePath()
+     * \see imageSize()
+     *
+     * \since QGIS 3.40
+     */
+    void setImageSize( const QSizeF &size );
+
+    /**
      * Returns TRUE if the format has an explicit vertical alignment set.
      *
      * If FALSE is returned then the vertical alignment will be inherited.
@@ -259,11 +352,61 @@ class CORE_EXPORT QgsTextCharacterFormat
     void setVerticalAlignment( Qgis::TextCharacterVerticalAlignment alignment ) { mVerticalAlign = alignment; }
 
     /**
+     * Returns TRUE if the fragment has a background set.
+     *
+     * \see backgroundBrush()
+     * \since QGIS 3.42
+     */
+    bool hasBackground() const;
+
+    /**
+     * Returns the brush used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundImagePath() set.
+     *
+     * \see hasBackground()
+     * \see setBackgroundBrush()
+     * \since QGIS 3.42
+     */
+    QBrush backgroundBrush() const;
+
+    /**
+     * Sets the \a brush used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundImagePath() set.
+     *
+     * \see backgroundBrush()
+     * \since QGIS 3.42
+     */
+    void setBackgroundBrush( const QBrush &brush );
+
+    /**
+     * Returns the path for the image to be used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see hasBackground()
+     * \see setBackgroundImagePath()
+     * \since QGIS 3.42
+     */
+    QString backgroundImagePath() const;
+
+    /**
+     * Sets the \a path for the image to be used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see backgroundImagePath()
+     * \since QGIS 3.42
+     */
+    void setBackgroundImagePath( const QString &path );
+
+    /**
      * Updates the specified \a font in place, applying character formatting options which
      * are applicable on a font level when rendered in the given \a context.
      *
      * The optional \a scaleFactor parameter can specify a font size scaling factor. It is recommended to set this to
-     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually calculations
+     * QgsTextRenderer::calculateScaleFactorForFormat() and then manually calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      */
@@ -276,14 +419,23 @@ class CORE_EXPORT QgsTextCharacterFormat
     QString mStyleName;
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
+    double mFontPercentageSize = -1;
     QString mFontFamily;
+    double mWordSpacing = std::numeric_limits< double >::quiet_NaN();
 
     bool mHasVerticalAlignSet = false;
     Qgis::TextCharacterVerticalAlignment mVerticalAlign = Qgis::TextCharacterVerticalAlignment::Normal;
 
+    QString mImagePath;
+    QSizeF mImageSize;
+
     BooleanValue mStrikethrough = BooleanValue::NotSet;
     BooleanValue mUnderline = BooleanValue::NotSet;
     BooleanValue mOverline = BooleanValue::NotSet;
+
+    QBrush mBackgroundBrush;
+    QString mBackgroundPath;
+
 };
 
 #endif // QGSTEXTCHARACTERFORMAT_H

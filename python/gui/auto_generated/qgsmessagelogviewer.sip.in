@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/qgsmessagelogviewer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsMessageLogViewer: QDialog
+class QgsMessageLogViewer : QDialog
 {
 %Docstring(signature="appended")
 A generic dialog widget for displaying QGIS log messages.
@@ -20,7 +20,6 @@ A generic dialog widget for displaying QGIS log messages.
 #include "qgsmessagelogviewer.h"
 %End
   public:
-
     QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Create a new message log viewer. The viewer will automatically connect to the system's
@@ -49,5 +48,5 @@ Logs a ``message`` to the viewer.
  *                                                                      *
  * src/gui/qgsmessagelogviewer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

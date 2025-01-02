@@ -52,11 +52,11 @@ QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
   }
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsGeometryCollection &QgsGeometryCollection::operator=( const QgsGeometryCollection &c )
 {
   if ( &c != this )
   {
-    clearCache();
     QgsAbstractGeometry::operator=( c );
     int nGeoms = c.mGeometries.size();
     mGeometries.resize( nGeoms );
@@ -92,13 +92,13 @@ void QgsGeometryCollection::clear()
   clearCache(); //set bounding box invalid
 }
 
-QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   std::unique_ptr<QgsGeometryCollection> result;
 
   for ( auto geom : mGeometries )
   {
-    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) };
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) };
     if ( gridified )
     {
       if ( !result )
@@ -229,6 +229,13 @@ bool QgsGeometryCollection::addGeometry( QgsAbstractGeometry *g )
   return true;
 }
 
+bool QgsGeometryCollection::addGeometries( const QVector<QgsAbstractGeometry *> &geometries )
+{
+  mGeometries.append( geometries );
+  clearCache(); //set bounding box invalid
+  return true;
+}
+
 bool QgsGeometryCollection::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g )
@@ -253,6 +260,14 @@ bool QgsGeometryCollection::removeGeometry( int nr )
   mGeometries.remove( nr );
   clearCache(); //set bounding box invalid
   return true;
+}
+
+QVector<QgsAbstractGeometry *> QgsGeometryCollection::takeGeometries()
+{
+  QVector< QgsAbstractGeometry * > results = mGeometries;
+  mGeometries.clear();
+  clearCache();
+  return results;
 }
 
 void QgsGeometryCollection::normalize()
@@ -871,7 +886,7 @@ bool QgsGeometryCollection::isValid( QString &error, Qgis::GeometryValidityFlags
     return error.isEmpty();
   }
 
-  QgsGeos geos( this, /* tolerance = */ 0, /* allowInvalidSubGeom = */ false );
+  QgsGeos geos( this, /* precision = */ 0, /* flags = */ Qgis::GeosCreationFlag::RejectOnInvalidSubGeometry );
   bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {
@@ -1057,6 +1072,17 @@ const QgsAbstractGeometry *QgsGeometryCollection::simplifiedTypeRef() const
     return mGeometries.at( 0 )->simplifiedTypeRef();
   else
     return this;
+}
+
+QgsGeometryCollection *QgsGeometryCollection::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsGeometryCollection > res = std::make_unique< QgsGeometryCollection >();
+  res->reserve( mGeometries.size() );
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    res->addGeometry( mGeometries.at( i )->simplifyByDistance( tolerance ) );
+  }
+  return res.release();
 }
 
 bool QgsGeometryCollection::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )

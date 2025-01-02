@@ -15,3 +15,13 @@ QgsEllipseSymbolLayer.Pentagon = QgsEllipseSymbolLayer.Shape.Pentagon
 QgsEllipseSymbolLayer.Hexagon = QgsEllipseSymbolLayer.Shape.Hexagon
 QgsEllipseSymbolLayer.Octagon = QgsEllipseSymbolLayer.Shape.Octagon
 QgsEllipseSymbolLayer.Star = QgsEllipseSymbolLayer.Shape.Star
+try:
+    QgsEllipseSymbolLayer.availableShapes = staticmethod(QgsEllipseSymbolLayer.availableShapes)
+    QgsEllipseSymbolLayer.shapeIsFilled = staticmethod(QgsEllipseSymbolLayer.shapeIsFilled)
+    QgsEllipseSymbolLayer.create = staticmethod(QgsEllipseSymbolLayer.create)
+    QgsEllipseSymbolLayer.createFromSld = staticmethod(QgsEllipseSymbolLayer.createFromSld)
+    QgsEllipseSymbolLayer.decodeShape = staticmethod(QgsEllipseSymbolLayer.decodeShape)
+    QgsEllipseSymbolLayer.encodeShape = staticmethod(QgsEllipseSymbolLayer.encodeShape)
+    QgsEllipseSymbolLayer.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass

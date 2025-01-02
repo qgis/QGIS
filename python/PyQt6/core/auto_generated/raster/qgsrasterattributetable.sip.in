@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterattributetable.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -52,7 +52,7 @@ The UsageInformation class represents information about a field usage.
 
         bool maybeClass;
 
-        QList<QVariant::Type> allowedTypes;
+        QList<QMetaType::Type> allowedTypes;
     };
 
     class Field
@@ -68,9 +68,18 @@ The Field class represents a Raster Attribute Table field, including its name, u
 %End
       public:
 
-        Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type );
+        Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QMetaType::Type type );
 %Docstring
 Creates a new Field with ``name``, ``type`` and ``usage``.
+%End
+
+ Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+%Docstring
+Creates a new Field with ``name``, ``type`` and ``usage``.
+
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
         bool isColor( ) const;
@@ -85,7 +94,7 @@ Returns ``True`` if the field carries a color ramp component information (RedMin
 
         QString name;
         Qgis::RasterAttributeTableFieldUsage usage;
-        QVariant::Type type;
+        QMetaType::Type type;
     };
 
     class MinMaxClass
@@ -250,9 +259,18 @@ Inserts a new ``field`` at ``position``, optionally reporting any error in ``err
    Out of range position is automatically clamped to a valid value.
 %End
 
-    bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
+    bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+ bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+%Docstring
+Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+.. deprecated:: 3.38
+
+   Use the method with a QMetaType.Type argument instead.
 %End
 
     bool insertColor( int position, QString *errorMessage /Out/ = 0 );
@@ -270,6 +288,11 @@ Change the usage of the field at index ``fieldIndex`` to ``usage`` with checks f
     bool insertRamp( int position, QString *errorMessage /Out/ = 0 );
 %Docstring
 Create RGBA minimum and maximum fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage /Out/ = 0 );
+%Docstring
+Creates a new field from ``name``, ``usage`` and ``type`` and appends it to the fields, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
     bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
@@ -336,7 +359,7 @@ Returns a field by name or a default constructed field with empty name if the fi
 :param name: of the field
 
 :return: - the matching field or a default constructed one.
-         - ok: will be set to ``True`` if the field was found.
+         - ok: ``True`` if the field was found.
 %End
 
     const QList<QgsRasterAttributeTable::Field> fieldsByUsage( const Qgis::RasterAttributeTableFieldUsage fieldUsage ) const;
@@ -408,6 +431,11 @@ If the attribute table does not have any value field (and hence is not valid),
 the current data are returned without any change.
 %End
 
+    static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QMetaType::Type type );
+%Docstring
+Try to determine the field usage from its ``name`` and ``type``.
+%End
+
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 %Docstring
 Try to determine the field usage from its ``name`` and ``type``.
@@ -440,7 +468,7 @@ Creates a new Raster Attribute Table from a raster layer, the renderer must be P
 
 :param rasterLayer: raster layer
 
-:return: - NULL in case of errors or unsupported renderer.
+:return: - ``None`` in case of errors or unsupported renderer.
          - bandNumber: band number
 %End
 
@@ -462,5 +490,5 @@ Returns information about supported Raster Attribute Table usages.
  *                                                                      *
  * src/core/raster/qgsrasterattributetable.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

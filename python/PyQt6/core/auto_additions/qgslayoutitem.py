@@ -21,6 +21,7 @@ QgsLayoutItem.UndoMarginBottom = QgsLayoutItem.UndoCommand.UndoMarginBottom
 QgsLayoutItem.UndoMarginRight = QgsLayoutItem.UndoCommand.UndoMarginRight
 QgsLayoutItem.UndoSetId = QgsLayoutItem.UndoCommand.UndoSetId
 QgsLayoutItem.UndoRotation = QgsLayoutItem.UndoCommand.UndoRotation
+QgsLayoutItem.UndoExportLayerName = QgsLayoutItem.UndoCommand.UndoExportLayerName
 QgsLayoutItem.UndoShapeStyle = QgsLayoutItem.UndoCommand.UndoShapeStyle
 QgsLayoutItem.UndoShapeCornerRadius = QgsLayoutItem.UndoCommand.UndoShapeCornerRadius
 QgsLayoutItem.UndoNodeMove = QgsLayoutItem.UndoCommand.UndoNodeMove
@@ -126,3 +127,21 @@ QgsLayoutItem.Flag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsLayoutItem.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsLayoutItem.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsLayoutItem.Flag.__or__ = lambda flag1, flag2: QgsLayoutItem.Flag(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsLayoutItem.ExportLayerDetail.__attribute_docs__ = {'name': 'User-friendly name for the export layer', 'mapLayerId': 'Associated map layer ID, or an empty string if this export layer is not associated with a map layer', 'compositionMode': 'Associated composition mode if this layer is associated with a map layer\n\n.. versionadded:: 3.14', 'opacity': 'Associated opacity, if this layer is associated with a map layer\n\n.. versionadded:: 3.14', 'mapTheme': 'Associated map theme, or an empty string if this export layer does not need to be associated with a map theme', 'groupName': 'Associated group name, if this layer is associated with an export group.\n\n.. versionadded:: 3.40'}
+    QgsLayoutItem.ExportLayerDetail.__doc__ = """Contains details of a particular export layer relating to a layout item.
+
+.. versionadded:: 3.10"""
+    QgsLayoutItem.ExportLayerDetail.__group__ = ['layout']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLayoutItem.__attribute_docs__ = {'frameChanged': "Emitted if the item's frame style changes.\n", 'lockChanged': "Emitted if the item's lock status changes.\n\n.. seealso:: :py:func:`isLocked`\n\n.. seealso:: :py:func:`setLocked`\n", 'rotationChanged': 'Emitted on item rotation change.\n', 'sizePositionChanged': "Emitted when the item's size or position changes.\n", 'backgroundTaskCountChanged': 'Emitted whenever the number of background tasks an item is executing changes.\n\n.. versionadded:: 3.10\n', 'clipPathChanged': "Emitted when the item's clipping path has changed.\n\n.. seealso:: :py:func:`clipPath`\n\n.. versionadded:: 3.16\n"}
+    QgsLayoutItem.__signal_arguments__ = {'rotationChanged': ['newRotation: float'], 'backgroundTaskCountChanged': ['count: int']}
+    QgsLayoutItem.__group__ = ['layout']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLayoutItemRenderContext.__group__ = ['layout']
+except (NameError, AttributeError):
+    pass

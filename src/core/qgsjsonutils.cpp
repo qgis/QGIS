@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsjsonutils.h"
+#include "moc_qgsjsonutils.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsogrutils.h"
 #include "qgsgeometry.h"
@@ -170,7 +171,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
         QVariant val = feature.attributes().at( i );
 
-        if ( mLayer )
+        if ( mUseFieldFormatters && mLayer )
         {
           const QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
           const QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
@@ -199,7 +200,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     // related attributes
     if ( mLayer && mIncludeRelatedAttributes )
     {
-      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
+      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() ); // skip-keyword-check
       for ( const auto &relation : std::as_const( relations ) )
       {
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
@@ -222,7 +223,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
           QgsFeature relatedFet;
           while ( it.nextFeature( relatedFet ) )
           {
-            relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches );
+            relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches, mUseFieldFormatters );
           }
         }
         properties[ relation.name().toStdString() ] = relatedFeatureAttributes;
@@ -286,25 +287,25 @@ QString QgsJsonUtils::encodeValue( const QVariant &value )
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "null" );
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return value.toBool() ? "true" : "false";
 
-    case QVariant::StringList:
-    case QVariant::List:
-    case QVariant::Map:
+    case QMetaType::Type::QStringList:
+    case QMetaType::Type::QVariantList:
+    case QMetaType::Type::QVariantMap:
       return QString::fromUtf8( QJsonDocument::fromVariant( value ).toJson( QJsonDocument::Compact ) );
 
     default:
-    case QVariant::String:
+    case QMetaType::Type::QString:
       QString v = value.toString()
                   .replace( '\\', QLatin1String( "\\\\" ) )
                   .replace( '"', QLatin1String( "\\\"" ) )
@@ -342,7 +343,7 @@ QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLaye
   return attrs.prepend( '{' ).append( '}' );
 }
 
-QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type )
+QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type )
 {
   QString errorMessage;
   QVariantList result;
@@ -381,11 +382,11 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
       else if ( item.is_null() )
       {
         // Fallback to int
-        v = QVariant( type == QVariant::Type::Invalid ? QVariant::Type::Int : type );
+        v = QgsVariantUtils::createNullVariant( type == QMetaType::Type::UnknownType ? QMetaType::Type::Int : type );
       }
 
       // If a destination type was specified (it's not invalid), try to convert
-      if ( type != QVariant::Invalid )
+      if ( type != QMetaType::Type::UnknownType )
       {
         if ( ! v.convert( static_cast<int>( type ) ) )
         {
@@ -409,6 +410,11 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
   }
 
   return result;
+}
+
+QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type )
+{
+  return parseArray( json, QgsVariantUtils::variantTypeToMetaType( type ) );
 }
 
 std::unique_ptr< QgsPoint> parsePointFromGeoJson( const json &coords )
@@ -721,7 +727,7 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
     return nullptr;
   }
   json j;
-  if ( val.type() == QVariant::Type::Map )
+  if ( val.userType() == QMetaType::Type::QVariantMap )
   {
     const QVariantMap &vMap = val.toMap();
     json jMap = json::object();
@@ -731,7 +737,7 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
     }
     j = jMap;
   }
-  else if ( val.type() == QVariant::Type::List || val.type() == QVariant::Type::StringList )
+  else if ( val.userType() == QMetaType::Type::QVariantList || val.userType() == QMetaType::Type::QStringList )
   {
     const QVariantList &vList = val.toList();
     json jList = json::array();
@@ -896,7 +902,7 @@ QVariant QgsJsonUtils::parseJson( const QString &jsonString )
   return parseJson( jsonString.toStdString() );
 }
 
-json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
+json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches, bool useFieldFormatters )
 {
   QgsFields fields = feature.fields();
   json attrs;
@@ -904,7 +910,7 @@ json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsV
   {
     QVariant val = feature.attributes().at( i );
 
-    if ( layer )
+    if ( layer && useFieldFormatters )
     {
       QgsEditorWidgetSetup setup = layer->fields().at( i ).editorWidgetSetup();
       QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );

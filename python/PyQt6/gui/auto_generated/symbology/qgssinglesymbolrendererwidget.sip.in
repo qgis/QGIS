@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssinglesymbolrendererwidget.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,7 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 
 
   protected:
-    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+    virtual void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled );
 
 
 };
@@ -41,5 +41,5 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
  *                                                                      *
  * src/gui/symbology/qgssinglesymbolrendererwidget.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

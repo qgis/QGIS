@@ -68,8 +68,6 @@ class QgsAppMapTools
       Annotation, // Unused
       FormAnnotation,
       HtmlAnnotation,
-      SvgAnnotation,
-      TextAnnotation,
       PinLabels,
       ShowHideLabels,
       MoveLabel,
@@ -94,24 +92,23 @@ class QgsAppMapTools
     /**
      * Returns the specified \a tool.
      */
-    template <class ToolType> ToolType *mapTool( Tool tool )
+    template<class ToolType> ToolType *mapTool( Tool tool )
     {
       QgsMapTool *t = mapTool( tool );
-      return qobject_cast< ToolType * >( t );
+      return qobject_cast<ToolType *>( t );
     }
 
     /**
      * Returns a list of all QgsMapToolCapture derived tools.
      */
-    QList< QgsMapToolCapture * > captureTools() const;
+    QList<QgsMapToolCapture *> captureTools() const;
 
   private:
-
-    QHash< Tool, QPointer< QgsMapTool > > mTools;
+    QHash<Tool, QPointer<QgsMapTool>> mTools;
 
     // Disable copying as we have pointer members.
     QgsAppMapTools( const QgsAppMapTools & ) = delete;
-    QgsAppMapTools &operator= ( const QgsAppMapTools & ) = delete;
+    QgsAppMapTools &operator=( const QgsAppMapTools & ) = delete;
 };
 
 #endif // QGSAPPMAPTOOLS_H

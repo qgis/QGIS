@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsrange.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -146,7 +146,7 @@ typedef QgsRange<double> QgsRangedoubleBase;
 class QgsDoubleRange : QgsRangedoubleBase
 {
 %Docstring(signature="appended")
-QgsRange which stores a range of double values.
+:py:class:`QgsRange` which stores a range of double values.
 
 .. seealso:: :py:class:`QgsIntRange`
 
@@ -439,5 +439,5 @@ typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
  *                                                                      *
  * src/core/qgsrange.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

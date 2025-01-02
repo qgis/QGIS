@@ -111,7 +111,7 @@ for f in $MODIFIED; do
   (( i++ )) || true
 
   case "$f" in
-  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py|*.mm)
+  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.mm)
     ;;
 
   *)
@@ -119,13 +119,15 @@ for f in $MODIFIED; do
     ;;
   esac
 
-  m=$f.$REV.prepare
-
-  cp "$f" "$m"
-  ASTYLEPROGRESS=" [$i/$N]" astyle.sh "$f"
-  if diff -u "$m" "$f" >>"$ASTYLEDIFF"; then
-    # no difference found
-    rm "$m"
+  # only run astyle on sipified directories, others are handled by clang-format (see .pre-commit-config.yaml)
+	if [[ $f =~ ^src/(core) ]]; then
+    m=$f.$REV.prepare
+    cp "$f" "$m"
+    ASTYLEPROGRESS=" [$i/$N]" astyle.sh "$f"
+    if diff -u "$m" "$f" >>"$ASTYLEDIFF"; then
+      # no difference found
+      rm "$m"
+    fi
   fi
 done
 
@@ -150,7 +152,7 @@ true > "$SIPIFYDIFF"
 for root_dir in python python/PyQt6; do
 
   if [[ $root_dir == "python/PyQt6" ]]; then
-    IS_QT6="--qt6"
+    IS_QT6="-qt6"
   fi
 
   for f in $MODIFIED; do
@@ -167,7 +169,7 @@ for root_dir in python python/PyQt6; do
           touch $root_dir/"$sip_file"
         fi
         cp $root_dir/"$sip_file" "$m"
-        "${TOPLEVEL}"/scripts/sipify.pl $IS_QT6 -s $m -p $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
+        "${TOPLEVEL}"/scripts/sipify.py $IS_QT6 -sip_output $m -python_output $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
         # only replace sip files if they have changed
         if ! diff -u $root_dir/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
           echo "$root_dir/$sip_file is not up to date"

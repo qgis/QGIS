@@ -3,6 +3,8 @@ usr/lib/python*/*-packages/qgis/*.py*
 usr/lib/python*/*-packages/qgis/PyQt/*
 usr/lib/python*/*-packages/qgis/processing/*
 usr/lib/python*/*-packages/qgis/testing/*
+usr/lib/python*/*-packages/qgis/gui/additions/*
 usr/lib/python*/*-packages/qgis/core/additions/*
 usr/lib/python*/*-packages/qgis/core/contextmanagers.py
+usr/lib/python*/*-packages/qgis/*/*.yaml
 usr/share/qgis/python/*

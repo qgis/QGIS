@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/effects/qgstransformeffect.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,9 +31,6 @@ Creates a new QgsTransformEffect effect from a properties string map.
 %End
 
     QgsTransformEffect();
-%Docstring
-Constructor for QgsTransformEffect.
-%End
 
     virtual QString type() const;
     virtual QVariantMap properties() const;
@@ -322,5 +319,5 @@ Returns whether transform will be reflected along the y-axis
  *                                                                      *
  * src/core/effects/qgstransformeffect.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

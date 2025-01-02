@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgspointclusterrenderer.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,6 +21,8 @@ A renderer that automatically clusters points with the same geographic position.
   public:
 
     QgsPointClusterRenderer();
+
+    virtual Qgis::FeatureRendererFlags flags() const;
 
     virtual QgsPointClusterRenderer *clone() const /Factory/;
 
@@ -75,5 +77,5 @@ Creates a QgsPointClusterRenderer from an existing renderer.
  *                                                                      *
  * src/core/symbology/qgspointclusterrenderer.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

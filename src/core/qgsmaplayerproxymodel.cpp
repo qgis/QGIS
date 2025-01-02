@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsmaplayerproxymodel.h"
+#include "moc_qgsmaplayerproxymodel.cpp"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
@@ -115,7 +116,7 @@ void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList &ids )
   const auto constIds = ids;
   for ( const QString &id : constIds )
   {
-    QgsMapLayer *l = QgsProject::instance()->mapLayer( id );
+    QgsMapLayer *l = QgsProject::instance()->mapLayer( id ); // skip-keyword-check
     if ( l )
       mExceptList << l;
   }

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsarchive.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,14 +22,8 @@ Class allowing to manage the zip/unzip actions
   public:
 
     QgsArchive();
-%Docstring
-Constructor
-%End
 
     QgsArchive( const QgsArchive &other );
-%Docstring
-Copy constructor
-%End
 
 
     virtual ~QgsArchive();
@@ -142,5 +136,5 @@ there's none
  *                                                                      *
  * src/core/qgsarchive.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

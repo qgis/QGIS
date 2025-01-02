@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsexternalstoragefilewidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,7 +29,6 @@ and stores it to a given external storage backend if defined
       sipType = NULL;
 %End
   public:
-
     explicit QgsExternalStorageFileWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
@@ -89,6 +88,8 @@ Set ``urlExpression`` expression, which once evaluated, provide the URL used to 
 documents. This is used only if an external storage has been defined
 
 .. seealso:: :py:func:`setStorageType`
+
+.. seealso:: :py:func:`externalStorage`
 
 .. versionadded:: 3.22
 %End
@@ -159,7 +160,6 @@ It defines the variable containing the user selected file name
 
 
   protected:
-
     virtual void updateLayout();
 
 
@@ -184,5 +184,5 @@ Add file widget specific scope to expression context
  *                                                                      *
  * src/gui/qgsexternalstoragefilewidget.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/qgskeyvaluewidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsKeyValueWidget: QgsTableWidgetBase
+class QgsKeyValueWidget : QgsTableWidgetBase
 {
 %Docstring(signature="appended")
 Widget allowing to edit a QVariantMap, using a table.
@@ -20,7 +20,6 @@ Widget allowing to edit a QVariantMap, using a table.
 #include "qgskeyvaluewidget.h"
 %End
   public:
-
     explicit QgsKeyValueWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor.
@@ -42,6 +41,7 @@ Gets the edit value.
 
     virtual void setReadOnly( bool readOnly );
 
+
 };
 
 
@@ -50,5 +50,5 @@ Gets the edit value.
  *                                                                      *
  * src/gui/qgskeyvaluewidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

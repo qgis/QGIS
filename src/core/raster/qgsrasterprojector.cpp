@@ -19,6 +19,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
+#include "moc_qgsrasterprojector.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 
@@ -123,8 +124,8 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
       // result by not requesting at the maximum resolution and then doing nearest
       // resampling here. A real fix would be to do resampling during reprojection
       // however.
-      if ( !( provider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
-           ( provider->capabilities() & QgsRasterDataProvider::Size ) )
+      if ( !( provider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) &&
+           ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
       {
         mMaxSrcXRes = provider->extent().width() / provider->xSize();
         mMaxSrcYRes = provider->extent().height() / provider->ySize();
@@ -845,7 +846,8 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   }
 
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, pd.srcExtent(), pd.srcCols(), pd.srcRows(), feedback ) );
-  if ( !inputBlock || inputBlock->isEmpty() )
+  const QgsRasterBlock *input = inputBlock.get();
+  if ( !input || input->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
     return new QgsRasterBlock();
@@ -853,19 +855,21 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
 
   const qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
-  if ( inputBlock->hasNoDataValue() )
+  std::unique_ptr< QgsRasterBlock > outputBlock = std::make_unique< QgsRasterBlock >( input->dataType(), width, height );
+  QgsRasterBlock *output = outputBlock.get();
+
+  if ( input->hasNoDataValue() )
   {
-    outputBlock->setNoDataValue( inputBlock->noDataValue() );
+    output->setNoDataValue( input->noDataValue() );
   }
-  if ( !outputBlock->isValid() )
+  if ( !output->isValid() )
   {
     QgsDebugError( QStringLiteral( "Cannot create block" ) );
     return outputBlock.release();
   }
 
   // set output to no data, it should be fast
-  outputBlock->setIsNoData();
+  output->setIsNoData();
 
   // No data: because isNoData()/setIsNoData() is slow with respect to simple memcpy,
   // we use if only if necessary:
@@ -877,9 +881,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
 
   // To copy no data values stored in bitmaps we have to use isNoData()/setIsNoData(),
   // we cannot fill output block with no data because we use memcpy for data, not setValue().
-  const bool doNoData = !QgsRasterBlock::typeIsNumeric( inputBlock->dataType() ) && inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
-
-  outputBlock->setIsNoData();
+  const bool doNoData = !QgsRasterBlock::typeIsNumeric( input->dataType() ) && input->hasNoData() && !input->hasNoDataValue();
 
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
@@ -894,15 +896,14 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       const qgssize srcIndex = static_cast< qgssize >( srcRow ) * pd.srcCols() + srcCol;
 
       // isNoData() may be slow so we check doNoData first
-      if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
+      if ( doNoData && input->isNoData( srcRow, srcCol ) )
       {
-        outputBlock->setIsNoData( i, j );
         continue;
       }
 
       const qgssize destIndex = static_cast< qgssize >( i ) * width + j;
-      char *srcBits = inputBlock->bits( srcIndex );
-      char *destBits = outputBlock->bits( destIndex );
+      const char *srcBits = input->constBits( srcIndex );
+      char *destBits = output->bits( destIndex );
       if ( !srcBits )
       {
         // QgsDebugError( QStringLiteral( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
@@ -914,7 +915,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
         continue;
       }
       memcpy( destBits, srcBits, pixelSize );
-      outputBlock->setIsData( i, j );
+      output->setIsData( i, j );
     }
   }
 

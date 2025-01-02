@@ -349,9 +349,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     QgsMapBoxGlStyleConverter();
 
-    //! QgsMapBoxGlStyleConverter cannot be copied
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other ) = delete;
-    //! QgsMapBoxGlStyleConverter cannot be copied
     QgsMapBoxGlStyleConverter &operator=( const QgsMapBoxGlStyleConverter &other ) = delete;
 
     ~QgsMapBoxGlStyleConverter();
@@ -373,6 +371,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
       Numeric, //!< Numeric property (e.g. line width, text size)
       Opacity, //!< Opacity property
       Point, //!< Point/offset property
+      NumericArray, //!< Numeric array for dash arrays or such
     };
     Q_ENUM( PropertyType )
 
@@ -672,9 +671,19 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
                                        int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
 
     /**
+     * Parses and converts a match function value list.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+                                      int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
+
+    /**
      * Interpolates a list which starts with the interpolate function.
      *
      * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \since QGIS 3.40
      */
     static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
         int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
@@ -684,7 +693,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param colorExpression the color expression
      * \param context the style conversion context
      * \returns the QGIS expression string
-     * since QGIS 3.22
+     * \since QGIS 3.22
      */
     static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
 
@@ -756,7 +765,23 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
      * prior to conversion.
      */
-    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty );
+    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
+    {
+      QSize spriteSize;
+      QString spriteProperty;
+      QString spriteSizeProperty;
+      return retrieveSpriteAsBase64WithProperties( value, context, spriteSize, spriteProperty, spriteSizeProperty );
+    }
+
+    /**
+     * Retrieves the sprite image with the specified \a name, taken from the specified \a context as a base64 encoded value
+     *
+     * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
+     * prior to conversion.
+     *
+     * \since QGIS 3.40
+     */
+    static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize SIP_OUT, QString &spriteProperty SIP_OUT, QString &spriteSizeProperty SIP_OUT );
 
   private:
 

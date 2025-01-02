@@ -43,11 +43,12 @@ class TestQgis : public QgsTest
     Q_ENUM( TestEnum )
 
   public:
-    TestQgis() : QgsTest( QStringLiteral( "Qgis Tests" ) ) {}
+    TestQgis()
+      : QgsTest( QStringLiteral( "Qgis Tests" ) ) {}
 
   private slots:
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
+    void init() {}    // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void permissiveToDouble();
     void permissiveToInt();
@@ -153,7 +154,6 @@ void TestQgis::permissiveToLongLong()
   result = qgsPermissiveToLongLong( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
-
 }
 
 void TestQgis::doubleToString()
@@ -191,7 +191,7 @@ void TestQgis::doubleToString()
 
 void TestQgis::signalBlocker()
 {
-  std::unique_ptr< QCheckBox > checkbox( new QCheckBox() );
+  std::unique_ptr<QCheckBox> checkbox( new QCheckBox() );
 
   QSignalSpy spy( checkbox.get(), &QCheckBox::toggled );
 
@@ -203,7 +203,7 @@ void TestQgis::signalBlocker()
 
   //block signals
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
+    QgsSignalBlocker<QCheckBox> blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
 
     checkbox->setChecked( false );
@@ -224,7 +224,7 @@ void TestQgis::signalBlocker()
   // now check that initial blocking state is restored when QgsSignalBlocker goes out of scope
   checkbox->blockSignals( true );
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
+    QgsSignalBlocker<QCheckBox> blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
   }
   // initial blocked state should be restored
@@ -233,10 +233,10 @@ void TestQgis::signalBlocker()
 
   // nested signal blockers
   {
-    QgsSignalBlocker< QCheckBox > blocker( checkbox.get() );
+    QgsSignalBlocker<QCheckBox> blocker( checkbox.get() );
     QVERIFY( checkbox->signalsBlocked() );
     {
-      QgsSignalBlocker< QCheckBox > blocker2( checkbox.get() );
+      QgsSignalBlocker<QCheckBox> blocker2( checkbox.get() );
       QVERIFY( checkbox->signalsBlocked() );
     }
     QVERIFY( checkbox->signalsBlocked() );
@@ -269,10 +269,10 @@ void TestQgis::qVariantCompare_data()
 
   QTest::newRow( "invalid to value" ) << QVariant() << QVariant( 2 ) << true << false;
   QTest::newRow( "invalid to value 2" ) << QVariant( 2 ) << QVariant() << false << true;
-  QTest::newRow( "invalid to null" ) << QVariant() << QVariant( QVariant::String ) << true << false;
-  QTest::newRow( "invalid to null2 " ) << QVariant( QVariant::String ) << QVariant() << false << true;
-  QTest::newRow( "null to value" ) <<  QVariant( QVariant::String ) << QVariant( "a" ) << true << false;
-  QTest::newRow( "null to value 2" ) << QVariant( "a" ) << QVariant( QVariant::String ) << false << true;
+  QTest::newRow( "invalid to null" ) << QVariant() << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << true << false;
+  QTest::newRow( "invalid to null2 " ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QVariant() << false << true;
+  QTest::newRow( "null to value" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QVariant( "a" ) << true << false;
+  QTest::newRow( "null to value 2" ) << QVariant( "a" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << false << true;
 
   QTest::newRow( "int" ) << QVariant( 1 ) << QVariant( 2 ) << true << false;
   QTest::newRow( "int 2" ) << QVariant( 1 ) << QVariant( -2 ) << false << true;
@@ -332,9 +332,9 @@ void TestQgis::testNanCompatibleEquals_data()
   QTest::addColumn<double>( "rhs" );
   QTest::addColumn<bool>( "expected" );
 
-  QTest::newRow( "both nan" ) << std::numeric_limits< double >::quiet_NaN() << std::numeric_limits< double >::quiet_NaN() << true;
-  QTest::newRow( "first is nan" ) << std::numeric_limits< double >::quiet_NaN() << 5.0 << false;
-  QTest::newRow( "second is nan" ) << 5.0 << std::numeric_limits< double >::quiet_NaN() << false;
+  QTest::newRow( "both nan" ) << std::numeric_limits<double>::quiet_NaN() << std::numeric_limits<double>::quiet_NaN() << true;
+  QTest::newRow( "first is nan" ) << std::numeric_limits<double>::quiet_NaN() << 5.0 << false;
+  QTest::newRow( "second is nan" ) << 5.0 << std::numeric_limits<double>::quiet_NaN() << false;
   QTest::newRow( "two numbers, not equal" ) << 5.0 << 6.0 << false;
   QTest::newRow( "two numbers, equal" ) << 5.0 << 5.0 << true;
 }
@@ -352,7 +352,6 @@ void TestQgis::testNanCompatibleEquals()
 class ConstTester
 {
   public:
-
     void doSomething()
     {
       mVal = 1;
@@ -405,7 +404,6 @@ void TestQgis::testQgsRound()
 
 void TestQgis::testQgsVariantEqual()
 {
-
   // Invalid
   QVERIFY( qgsVariantEqual( QVariant(), QVariant() ) );
   QVERIFY( QVariant() == QVariant() );
@@ -419,27 +417,27 @@ void TestQgis::testQgsVariantEqual()
 
   // This is what we actually wanted to fix with qgsVariantEqual
   // zero != NULL
-  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QVariant( QVariant::Int ) ) );
-  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QVariant( QVariant::Double ) ) );
-  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QVariant( QVariant::Int ) ) );
-  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QVariant( QVariant::Double ) ) );
-  QVERIFY( QVariant( 0 ) == QVariant( QVariant::Int ) );
+  QVERIFY( !qgsVariantEqual( QVariant( 0 ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+  QVERIFY( !qgsVariantEqual( QVariant( 0 ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( !qgsVariantEqual( QVariant( 0.0f ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+  QVERIFY( !qgsVariantEqual( QVariant( 0.0f ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( QVariant( 0 ) == QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
 
   // NULL identities
-  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
-  QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
-  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Double ) ) );
-  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::String ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Double ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ), QgsVariantUtils::createNullVariant( QMetaType::Type::Double ) ) );
+  QVERIFY( qgsVariantEqual( QgsVariantUtils::createNullVariant( QMetaType::Type::Int ), QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) ) );
 
   // NULL should not be equal to invalid
-  QVERIFY( !qgsVariantEqual( QVariant(), QVariant( QVariant::Int ) ) );
+  QVERIFY( !qgsVariantEqual( QVariant(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
 }
 
 void TestQgis::testQgsEnumMapList()
 {
-  QCOMPARE( qgsEnumList<TestEnum>(), QList<TestEnum>( {TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3} ) );
-  QCOMPARE( qgsEnumMap<TestEnum>().keys(), QList<TestEnum>( {TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3} ) );
-  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( {QStringLiteral( "TestEnum1" ), QStringLiteral( "TestEnum2" ), QStringLiteral( "TestEnum3" ) } ) );
+  QCOMPARE( qgsEnumList<TestEnum>(), QList<TestEnum>( { TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3 } ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().keys(), QList<TestEnum>( { TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3 } ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( { QStringLiteral( "TestEnum1" ), QStringLiteral( "TestEnum2" ), QStringLiteral( "TestEnum3" ) } ) );
 }
 
 
@@ -449,7 +447,7 @@ void TestQgis::testQgsEnumValueToKey()
   QgsMapLayerModel::CustomRole value = QgsMapLayerModel::CustomRole::Layer;
   QgsMapLayerModel::CustomRole badValue = static_cast<QgsMapLayerModel::CustomRole>( -1 );
   QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::CustomRole>();
-  QVERIFY( !metaEnum.valueToKey( static_cast< int >( badValue ) ) );
+  QVERIFY( !metaEnum.valueToKey( static_cast<int>( badValue ) ) );
   QCOMPARE( qgsEnumValueToKey( value, &ok ), QStringLiteral( "Layer" ) );
   QCOMPARE( ok, true );
   QCOMPARE( qgsEnumValueToKey( badValue, &ok ), QString() );
@@ -467,13 +465,13 @@ void TestQgis::testQgsEnumKeyToValue()
   QCOMPARE( ok, false );
 
   // try with int values as string keys
-  QCOMPARE( qgsEnumKeyToValue( QString::number( static_cast< int >( QgsMapLayerModel::CustomRole::Additional ) ), defaultValue, true, &ok ), QgsMapLayerModel::CustomRole::Additional );
+  QCOMPARE( qgsEnumKeyToValue( QString::number( static_cast<int>( QgsMapLayerModel::CustomRole::Additional ) ), defaultValue, true, &ok ), QgsMapLayerModel::CustomRole::Additional );
   QCOMPARE( ok, true );
-  QCOMPARE( qgsEnumKeyToValue( QString::number( static_cast< int >( QgsMapLayerModel::CustomRole::Additional ) ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( qgsEnumKeyToValue( QString::number( static_cast<int>( QgsMapLayerModel::CustomRole::Additional ) ), defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
   // also try with an invalid int value
   QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::CustomRole>();
-  int invalidValue = static_cast< int >( defaultValue ) + 7894563;
+  int invalidValue = static_cast<int>( defaultValue ) + 7894563;
   QVERIFY( !metaEnum.valueToKey( invalidValue ) );
   QCOMPARE( qgsEnumKeyToValue( QString::number( invalidValue ), defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
@@ -536,7 +534,7 @@ void TestQgis::testQMapQVariantList()
 
 void TestQgis::testQgsMapJoin()
 {
-  QMap< QString, int> map;
+  QMap<QString, int> map;
 
   map.insert( "tutu", 3 );
   map.insert( "titi", 4 );

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgsgpsdetector.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -76,12 +76,13 @@ Call :py:func:`~QgsGpsDetector.takeConnection` to take ownership of the detected
 .. versionadded:: 3.38
 %End
 
- void detected( QgsGpsConnection *connection ) /Deprecated/;
+ void detected( QgsGpsConnection *connection ) /Deprecated="Since 3.40. This signal is dangerous and extremely unsafe! It is recommended to instead set the ``useUnsafeSignals`` parameter to ``False`` in the QgsGpsDetector constructor and use the safe connectionDetected() signal instead."/;
 %Docstring
 Emitted when the GPS connection has been detected. A single connection must listen for this signal and
 immediately take ownership of the ``connection`` object.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    This signal is dangerous and extremely unsafe! It is recommended to instead set the ``useUnsafeSignals`` parameter to ``False`` in the QgsGpsDetector constructor and use the safe :py:func:`~QgsGpsDetector.connectionDetected` signal instead.
 %End
 
@@ -97,5 +98,5 @@ Emitted when the detector could not find a valid GPS connection.
  *                                                                      *
  * src/core/gps/qgsgpsdetector.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

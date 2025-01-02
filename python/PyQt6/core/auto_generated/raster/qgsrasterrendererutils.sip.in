@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterrendererutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,7 @@ Utility functions for raster renderers.
   public:
 
     static bool parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items /Out/,
-                                   QgsColorRampShader::Type &type /Out/,
+                                   Qgis::ShaderInterpolationMethod &type /Out/,
                                    QStringList &errors /Out/ );
 %Docstring
 Parses an exported color map file at the specified ``path`` and extracts the stored color ramp ``items``
@@ -34,7 +34,7 @@ Returns ``True`` if the parsing was successful. If not, a list of ``errors`` wil
 .. seealso:: :py:func:`saveColorMapFile`
 %End
 
-    static bool saveColorMapFile( const QString &path, const QList<QgsColorRampShader::ColorRampItem> &items, QgsColorRampShader::Type type );
+    static bool saveColorMapFile( const QString &path, const QList<QgsColorRampShader::ColorRampItem> &items, Qgis::ShaderInterpolationMethod type );
 %Docstring
 Exports a list of color ramp ``items`` and ramp shader ``type`` to a color map file at the specified
 ``path``.
@@ -50,5 +50,5 @@ Returns ``True`` if the save was successful.
  *                                                                      *
  * src/core/raster/qgsrasterrendererutils.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

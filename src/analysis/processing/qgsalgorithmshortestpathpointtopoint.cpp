@@ -54,7 +54,7 @@ void QgsShortestPathPointToPointAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest path" ), Qgis::ProcessingSourceType::VectorLine ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > maxEndPointDistanceFromNetwork = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "POINT_TOLERANCE" ), QObject::tr( "Maximum point distance from network" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> maxEndPointDistanceFromNetwork = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "POINT_TOLERANCE" ), QObject::tr( "Maximum point distance from network" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 );
   maxEndPointDistanceFromNetwork->setFlags( maxEndPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
   maxEndPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the start and end points to the network layer. If either point is further from the network than this distance an error will be raised." ) );
   addParameter( maxEndPointDistanceFromNetwork.release() );
@@ -67,12 +67,12 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   loadCommonParams( parameters, context, feedback );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "start" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "end" ), QVariant::String ) );
-  fields.append( QgsField( QStringLiteral( "cost" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "end" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "cost" ), QMetaType::Type::Double ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::LineString, mNetwork->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::LineString, mNetwork->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -80,7 +80,7 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   const QgsPointXY endPoint = parameterAsPoint( parameters, QStringLiteral( "END_POINT" ), context, mNetwork->sourceCrs() );
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
-  QVector< QgsPointXY > snappedPoints;
+  QVector<QgsPointXY> snappedPoints;
   mDirector->makeGraph( mBuilder.get(), { startPoint, endPoint }, snappedPoints, feedback );
   const QgsPointXY snappedStartPoint = snappedPoints[0];
   const QgsPointXY snappedEndPoint = snappedPoints[1];
@@ -90,13 +90,31 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   {
     const double pointDistanceThreshold = parameterAsDouble( parameters, QStringLiteral( "POINT_TOLERANCE" ), context );
 
-    const double distanceStartPointToNetwork = mBuilder->distanceArea()->measureLine( startPoint, snappedStartPoint );
+    double distanceStartPointToNetwork = 0;
+    try
+    {
+      distanceStartPointToNetwork = mBuilder->distanceArea()->measureLine( startPoint, snappedStartPoint );
+    }
+    catch ( QgsCsException & )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+    }
+
     if ( distanceStartPointToNetwork > pointDistanceThreshold )
     {
       throw QgsProcessingException( QObject::tr( "Start point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distanceStartPointToNetwork ).arg( pointDistanceThreshold ) );
     }
 
-    const double distanceEndPointToNetwork = mBuilder->distanceArea()->measureLine( endPoint, snappedEndPoint );
+    double distanceEndPointToNetwork = 0;
+    try
+    {
+      distanceEndPointToNetwork = mBuilder->distanceArea()->measureLine( endPoint, snappedEndPoint );
+    }
+    catch ( QgsCsException & )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while calculating length" ) );
+    }
+
     if ( distanceEndPointToNetwork > pointDistanceThreshold )
     {
       throw QgsProcessingException( QObject::tr( "End point is too far from the network layer (%1, maximum permitted is %2)" ).arg( distanceEndPointToNetwork ).arg( pointDistanceThreshold ) );
@@ -104,13 +122,13 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   }
 
   feedback->pushInfo( QObject::tr( "Calculating shortest path…" ) );
-  std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
+  std::unique_ptr<QgsGraph> graph( mBuilder->takeGraph() );
 
   const int idxStart = graph->findVertex( snappedStartPoint );
   int idxEnd = graph->findVertex( snappedEndPoint );
 
-  QVector< int > tree;
-  QVector< double > costs;
+  QVector<int> tree;
+  QVector<double> costs;
   QgsGraphAnalyzer::dijkstra( graph.get(), idxStart, 0, &tree, &costs );
 
   if ( tree.at( idxEnd ) == -1 )
@@ -137,6 +155,8 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   feat.setAttributes( attributes );
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+
+  sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

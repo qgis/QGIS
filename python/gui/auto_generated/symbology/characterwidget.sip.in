@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/characterwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ users to select an individual character.
 #include "characterwidget.h"
 %End
   public:
-
     CharacterWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for CharacterWidget.
@@ -126,5 +125,5 @@ Emitted when a character is selected in the widget.
  *                                                                      *
  * src/gui/symbology/characterwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

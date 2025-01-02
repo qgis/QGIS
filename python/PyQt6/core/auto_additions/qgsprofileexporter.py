@@ -6,6 +6,23 @@ QgsProfileExporterTask.ExportResult.DeviceError.__doc__ = "Could not open output
 QgsProfileExporterTask.ExportResult.DxfExportFailed.__doc__ = "Generic error when outputting to DXF"
 QgsProfileExporterTask.ExportResult.LayerExportFailed.__doc__ = "Generic error when outputting to files"
 QgsProfileExporterTask.ExportResult.Canceled.__doc__ = "Export was canceled"
-QgsProfileExporterTask.ExportResult.__doc__ = "Results of exporting the profile.\n\n" + '* ``Success``: ' + QgsProfileExporterTask.ExportResult.Success.__doc__ + '\n' + '* ``Empty``: ' + QgsProfileExporterTask.ExportResult.Empty.__doc__ + '\n' + '* ``DeviceError``: ' + QgsProfileExporterTask.ExportResult.DeviceError.__doc__ + '\n' + '* ``DxfExportFailed``: ' + QgsProfileExporterTask.ExportResult.DxfExportFailed.__doc__ + '\n' + '* ``LayerExportFailed``: ' + QgsProfileExporterTask.ExportResult.LayerExportFailed.__doc__ + '\n' + '* ``Canceled``: ' + QgsProfileExporterTask.ExportResult.Canceled.__doc__
+QgsProfileExporterTask.ExportResult.__doc__ = """Results of exporting the profile.
+
+* ``Success``: Successful export
+* ``Empty``: Results were empty
+* ``DeviceError``: Could not open output file device
+* ``DxfExportFailed``: Generic error when outputting to DXF
+* ``LayerExportFailed``: Generic error when outputting to files
+* ``Canceled``: Export was canceled
+
+"""
 # --
 QgsProfileExporterTask.ExportResult.baseClass = QgsProfileExporterTask
+try:
+    QgsProfileExporter.__group__ = ['elevation']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsProfileExporterTask.__group__ = ['elevation']
+except (NameError, AttributeError):
+    pass

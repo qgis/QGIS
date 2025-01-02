@@ -49,7 +49,6 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-
     QgsOptionsProxyModel( QObject *parent );
 
     void setPageHidden( int page, bool hidden );
@@ -58,7 +57,7 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
-    QMap< int, bool > mHiddenPages;
+    QMap<int, bool> mHiddenPages;
 };
 ///@endcond
 #endif
@@ -74,8 +73,8 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
  *
  * To use:
  *
- * # Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
- * # In source file for dialog, inherit this class instead of QDialog, then in constructor:
+ * - Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+ * - In source file for dialog, inherit this class instead of QDialog, then in constructor:
  *   ...
  *   setupUi( this ); // set up .ui file objects
  *   initOptionsBase( FALSE ); // set up this class to use .ui objects, optionally restoring base ui
@@ -88,7 +87,6 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
@@ -133,7 +131,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * Determine if the options list is in icon only mode
      */
-    bool iconOnly() {return mIconOnly;}
+    bool iconOnly() { return mIconOnly; }
 
     /**
      * Sets the dialog \a page (by object name) to show.
@@ -218,7 +216,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     QStandardItem *createItem( const QString &name, const QString &tooltip, const QString &icon ) SIP_SKIP;
 
-    QList< QPair< QgsOptionsDialogHighlightWidget *, int > > mRegisteredSearchWidgets;
+    QList<QPair<QgsOptionsDialogHighlightWidget *, int>> mRegisteredSearchWidgets;
 
     QString mOptsKey;
     bool mInit = false;
@@ -239,9 +237,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     bool mDelSettings = false;
 
   private:
-
     void setListToItemAtIndex( int index );
-
 };
 
 #endif // QGSOPTIONSDIALOGBASE_H

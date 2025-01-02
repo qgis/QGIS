@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsblendmodecombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ A combobox which lets the user select blend modes from a predefined list
 #include "qgsblendmodecombobox.h"
 %End
   public:
-
     QgsBlendModeComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBlendModeComboBox
@@ -73,7 +72,6 @@ set of circumstances.
 Populates the blend mode combo box, and sets up mapping for
 blend modes to combo box indexes
 %End
-
 };
 
 /************************************************************************
@@ -81,5 +79,5 @@ blend modes to combo box indexes
  *                                                                      *
  * src/gui/qgsblendmodecombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -50,8 +50,8 @@ class QgsFieldPrivate : public QSharedData
   public:
 
     QgsFieldPrivate( const QString &name = QString(),
-                     QVariant::Type type = QVariant::Invalid,
-                     QVariant::Type subType = QVariant::Invalid,
+                     QMetaType::Type type = QMetaType::Type::UnknownType,
+                     QMetaType::Type subType = QMetaType::Type::UnknownType,
                      const QString &typeName = QString(),
                      int len = 0,
                      int prec = 0,
@@ -109,10 +109,10 @@ class QgsFieldPrivate : public QSharedData
     QString name;
 
     //! Variant type
-    QVariant::Type type;
+    QMetaType::Type type;
 
     //! If the variant is a collection, its element's type
-    QVariant::Type subType;
+    QMetaType::Type subType;
 
     //! Type name from provider
     QString typeName;

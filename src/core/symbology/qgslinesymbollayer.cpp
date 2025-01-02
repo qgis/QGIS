@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslinesymbollayer.h"
-#include "qgscurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
@@ -230,6 +229,11 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
 QString QgsSimpleLineSymbolLayer::layerType() const
 {
   return QStringLiteral( "SimpleLine" );
+}
+
+Qgis::SymbolLayerFlags QgsSimpleLineSymbolLayer::flags() const
+{
+  return QgsLineSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
 }
 
 void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
@@ -451,7 +455,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
   std::unique_ptr< QgsScopedQPainterState > painterState;
   if ( points.size() <= 2 &&
-       ( context.renderContext().vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::AntialiasingSimplification ) &&
+       ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification ) &&
        QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) &&
        ( p->renderHints() & QPainter::Antialiasing ) )
   {
@@ -1536,8 +1540,10 @@ bool QgsTemplatedLineSymbolLayerBase::canCauseArtifactsBetweenAdjacentTiles() co
          || ( mPlacements & Qgis::MarkerLinePlacement::SegmentCenter );
 }
 
-void QgsTemplatedLineSymbolLayerBase::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+void QgsTemplatedLineSymbolLayerBase::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
 {
+  installMasks( context, true );
+
   mRenderingFeature = true;
   mHasRenderedFirstPart = false;
 }
@@ -1546,7 +1552,10 @@ void QgsTemplatedLineSymbolLayerBase::stopFeatureRender( const QgsFeature &featu
 {
   mRenderingFeature = false;
   if ( mPlaceOnEveryPart  || !( mPlacements & Qgis::MarkerLinePlacement::LastVertex ) )
+  {
+    removeMasks( context, true );
     return;
+  }
 
   const double prevOpacity = subSymbol()->opacity();
   subSymbol()->setOpacity( prevOpacity * mFeatureSymbolOpacity );
@@ -1555,6 +1564,8 @@ void QgsTemplatedLineSymbolLayerBase::stopFeatureRender( const QgsFeature &featu
   renderSymbol( mFinalVertex, &feature, context, -1, mCurrentFeatureIsSelected );
   mFeatureSymbolOpacity = 1;
   subSymbol()->setOpacity( prevOpacity );
+
+  removeMasks( context, true );
 }
 
 void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const
@@ -2464,7 +2475,7 @@ QColor QgsMarkerLineSymbolLayer::color() const
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol;
   if ( rotateSymbols() )
     hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mMarker->setRenderHints( hints );
@@ -2790,7 +2801,7 @@ QString QgsHashedLineSymbolLayer::layerType() const
 void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol;
   if ( rotateSymbols() )
     hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mHashSymbol->setRenderHints( hints );
@@ -3413,7 +3424,7 @@ QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
 void QgsRasterLineSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
 {
   const QVariantMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
-  if ( it != properties.end() && it.value().type() == QVariant::String )
+  if ( it != properties.end() && it.value().userType() == QMetaType::Type::QString )
   {
     if ( saving )
       it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
@@ -3430,6 +3441,11 @@ void QgsRasterLineSymbolLayer::setPath( const QString &path )
 QString QgsRasterLineSymbolLayer::layerType() const
 {
   return QStringLiteral( "RasterLine" );
+}
+
+Qgis::SymbolLayerFlags QgsRasterLineSymbolLayer::flags() const
+{
+  return QgsAbstractBrushedLineSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
 }
 
 void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
@@ -3677,6 +3693,11 @@ QString QgsLineburstSymbolLayer::layerType() const
   return QStringLiteral( "Lineburst" );
 }
 
+Qgis::SymbolLayerFlags QgsLineburstSymbolLayer::flags() const
+{
+  return QgsAbstractBrushedLineSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsLineburstSymbolLayer::startRender( QgsSymbolRenderContext & )
 {
 }
@@ -3870,6 +3891,7 @@ void QgsFilledLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mFill )
   {
+    mFill->setRenderHints( mFill->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
     mFill->startRender( context.renderContext(), context.fields() );
   }
 }
@@ -4100,4 +4122,3 @@ Qgis::RenderUnit QgsFilledLineSymbolLayer::outputUnit() const
   }
   return Qgis::RenderUnit::Unknown;
 }
-

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolchangelabelproperties.h"
+#include "moc_qgsmaptoolchangelabelproperties.cpp"
 #include "qgslabelpropertydialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
@@ -104,15 +105,7 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
       labeltext = mCurrentLabel.pos.labelText;
     }
 
-    QgsLabelPropertyDialog d( mCurrentLabel.pos.layerID,
-                              mCurrentLabel.pos.providerID,
-                              mCurrentLabel.pos.featureId,
-                              mCurrentLabel.pos.labelFont,
-                              labeltext,
-                              mCurrentLabel.pos.isPinned,
-                              mCurrentLabel.settings,
-                              mCanvas,
-                              nullptr );
+    QgsLabelPropertyDialog d( mCurrentLabel.pos.layerID, mCurrentLabel.pos.providerID, mCurrentLabel.pos.featureId, mCurrentLabel.pos.labelFont, labeltext, mCurrentLabel.pos.isPinned, mCurrentLabel.settings, mCanvas, nullptr );
     d.setMapCanvas( canvas() );
 
     connect( &d, &QgsLabelPropertyDialog::applied, this, &QgsMapToolChangeLabelProperties::dialogPropertiesApplied );
@@ -143,7 +136,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &chang
       bool needsEdit = false;
       for ( auto it = changes.constBegin(); it != changes.constEnd(); ++it )
       {
-        if ( vlayer->fields().fieldOrigin( it.key() ) != QgsFields::OriginJoin )
+        if ( vlayer->fields().fieldOrigin( it.key() ) != Qgis::FieldOrigin::Join )
         {
           needsEdit = true;
           break;
@@ -184,4 +177,3 @@ void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
 
   applyChanges( dlg->changedProperties() );
 }
-

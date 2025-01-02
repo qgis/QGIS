@@ -45,7 +45,7 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
     /**
      * Saves the default style when appropriate button is pressed
      *
-     * \deprecated use saveStyleAsDefault() instead.
+     * \deprecated QGIS 3.40. Use saveStyleAsDefault() instead.
      */
     Q_DECL_DEPRECATED void saveDefaultStyle() SIP_DEPRECATED;
 
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
     /**
      * Saves a style when appriate button is pressed
      *
-     * \deprecated use saveStyleToFile() instead.
+     * \deprecated QGIS 3.40. Use saveStyleToFile() instead.
      */
     Q_DECL_DEPRECATED void saveStyleAs() SIP_DEPRECATED;
 
@@ -87,7 +87,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
-
 };
 
 #endif // QGSVECTORTILELAYERPROPERTIES_H

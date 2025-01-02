@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsogrfilesourcewidget.h"
+#include "moc_qgsogrfilesourcewidget.cpp"
 ///@cond PRIVATE
 
 #include "qgsproviderregistry.h"
-#include "ogr/qgsogrhelperfunctions.h"
+#include "qgsgdalguiutils.h"
 #include "qgsfilewidget.h"
 
 #include <QHBoxLayout>

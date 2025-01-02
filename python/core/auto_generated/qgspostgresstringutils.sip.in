@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspostgresstringutils.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -50,5 +50,5 @@ Build a postgres array like formatted list in a string from a QVariantList
  *                                                                      *
  * src/core/qgspostgresstringutils.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

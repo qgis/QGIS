@@ -16,6 +16,7 @@
 
 #include "qgis.h"
 #include "qgsmesheditor.h"
+#include "moc_qgsmesheditor.cpp"
 #include "qgsmeshdataprovider.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
@@ -1124,7 +1125,7 @@ void QgsMeshLayerUndoCommandRemoveVerticesFillHoles::redo()
     if ( initialVertexCount == mVerticesToRemoveIndexes.count() )
       setObsolete( true );
 
-    if ( mRemainingVerticesPointer != nullptr )
+    if ( mRemainingVerticesPointer )
       *mRemainingVerticesPointer = mVerticesToRemoveIndexes;
 
     mRemainingVerticesPointer = nullptr;

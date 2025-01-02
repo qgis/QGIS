@@ -114,7 +114,6 @@ class CORE_EXPORT QgsMeshCalcNode
      */
     QgsMeshCalcNode( const QString &datasetGroupName );
 
-    //! Destructor
     ~QgsMeshCalcNode();
 
     //! Returns type of node

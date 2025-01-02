@@ -25,6 +25,7 @@
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolidentifyaction.h"
+#include "moc_qgsmaptoolidentifyaction.cpp"
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
@@ -73,8 +74,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
 
     connect( mResultsDialog.data(), static_cast<void ( QgsIdentifyResultsDialog::* )( QgsRasterLayer * )>( &QgsIdentifyResultsDialog::formatChanged ), this, &QgsMapToolIdentify::formatChanged );
     connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::copyToClipboard, this, &QgsMapToolIdentifyAction::handleCopyToClipboard );
-    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this]
-    {
+    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this] {
       mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
     } );
   }
@@ -222,7 +222,7 @@ void QgsMapToolIdentifyAction::clearResults()
 void QgsMapToolIdentifyAction::showResultsForFeature( QgsVectorLayer *vlayer, QgsFeatureId fid, const QgsPoint &pt )
 {
   const QgsFeature feature = vlayer->getFeature( fid );
-  const QMap< QString, QString > derivedAttributes = derivedAttributesForPoint( pt );
+  const QMap<QString, QString> derivedAttributes = derivedAttributesForPoint( pt );
   // TODO: private in QgsMapToolIdentify
   //derivedAttributes.unite( featureDerivedAttributes( feature, vlayer, QgsPointXY( pt ) ) );
 
@@ -279,7 +279,16 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
   if ( mSelectionHandler->keyReleaseEvent( e ) )
     return;
 
-  QgsMapTool::keyReleaseEvent( e );
+  switch ( e->key() )
+  {
+    case Qt::Key_Escape:
+    {
+      clearResults();
+      return;
+    }
+  }
+
+  QgsMapToolIdentify::keyReleaseEvent( e );
 }
 
 void QgsMapToolIdentifyAction::showIdentifyResults( const QList<IdentifyResult> &identifyResults )

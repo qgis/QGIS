@@ -51,12 +51,12 @@ class QgsSettingsEntryInteger;
 
 class QgsAbstractLabelProvider;
 class QgsRenderContext;
+class QgsAbstractLabelingEngineRule;
 
 namespace pal
 {
   class Layer;
   class LabelPosition;
-  class PalStat;
   class Problem;
   class PointSet;
 
@@ -92,16 +92,10 @@ namespace pal
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPolygons;
 
-      /**
-       * \brief Create an new pal instance
-       */
       Pal();
-
       ~Pal();
 
-      //! Pal cannot be copied.
       Pal( const Pal &other ) = delete;
-      //! Pal cannot be copied.
       Pal &operator=( const Pal &other ) = delete;
 
       /**
@@ -139,6 +133,17 @@ namespace pal
        * boundary, which will be used to detect whether a label is visible (or partially visible) in
        * the rendered map. This may differ from \a extent in the case of rotated or non-rectangular
        * maps.
+       *
+       * This method:
+       *
+       * - preprocesses features, eg merging connected lines, chopping features at repeat distances
+       * - creates label candidates for every feature
+       * - purges candidates outside the map extent (respecting whether partial labels should be shown at the map boundary)
+       * - creates default fallback candidates for features with no valid candidates
+       * - collects obstacles
+       * - calculates candidate costs
+       * - calculates overlaps/conflicts
+       * - eliminates hard conflicts (forbidden placement)
        */
       std::unique_ptr< Problem > extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary, QgsRenderContext &context );
 
@@ -253,9 +258,30 @@ namespace pal
        */
       bool candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const;
 
+      /**
+       * Sets rules which the labeling solution must satisfy.
+       *
+       * Ownership of the rules are not transferred to the engine, and it is the caller's responsibility
+       * to ensure that the lifetime of the rules exceeds that of the pal job.
+       *
+       * \see rules()
+       * \since QGIS 3.40
+       */
+      void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
+
+      /**
+       * Returns the rules which the labeling solution must satisify.
+       *
+       * \see setRules()
+       * \since QGIS 3.40
+       */
+      QList< QgsAbstractLabelingEngineRule * > rules() const { return mRules; }
+
     private:
 
       std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
+
+      QList< QgsAbstractLabelingEngineRule * > mRules;
 
       QMutex mMutex;
 

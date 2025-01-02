@@ -1,0 +1,305 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgspolyhedralsurface.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPolyhedralSurface: QgsSurface
+{
+%Docstring(signature="appended")
+Polyhedral surface geometry type.
+
+A polyhedral surface is a collection of polygons which share common boundary segments.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgspolyhedralsurface.h"
+%End
+  public:
+    QgsPolyhedralSurface();
+    QgsPolyhedralSurface( const QgsPolyhedralSurface &p );
+
+
+    QgsPolyhedralSurface( const QgsMultiPolygon *multiPolygon );
+%Docstring
+Creates a polyhedral surface from a multiPolygon.
+%End
+
+
+
+  public:
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual bool operator==( const QgsAbstractGeometry &other ) const;
+
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const;
+
+    ~QgsPolyhedralSurface();
+
+    virtual QString geometryType() const /HoldGIL/;
+
+    int dimension() const final /HoldGIL/;
+    virtual QgsPolyhedralSurface *clone() const /Factory/;
+
+    virtual void clear();
+
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual bool fromWkt( const QString &wkt );
+
+
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
+
+
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QString asWkt( int precision = 17 ) const;
+
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QString asKml( int precision = 17 ) const;
+
+    virtual void normalize() /HoldGIL/;
+
+
+    virtual double area() const /HoldGIL/;
+
+    virtual double perimeter() const /HoldGIL/;
+
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+    virtual QgsPolyhedralSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
+
+    virtual QgsPolyhedralSurface *simplifyByDistance( double tolerance ) const /Factory/;
+
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+
+
+    int numPatches() const /HoldGIL/;
+%Docstring
+Returns the number of patches contained with the polyhedral surface.
+
+.. seealso:: :py:func:`patchN`
+%End
+
+
+    SIP_PYOBJECT patchN( int i ) /HoldGIL,TypeHint="QgsPolygon"/;
+%Docstring
+Retrieves a patch from the polyhedral surface. The first patch has index 0.
+
+:raises IndexError: if no patch with the specified index exists.
+
+.. seealso:: :py:func:`numPatches`
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPatches() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( const_cast< QgsPolygon * >( sipCpp->patchN( a0 ) ), sipType_QgsPolygon, NULL );
+    }
+%End
+
+    virtual void setPatches( const QVector<QgsPolygon *> &patches /Transfer/ );
+%Docstring
+Sets all patches, transferring ownership to the polyhedral surface.
+%End
+
+    virtual void addPatch( QgsPolygon *patch /Transfer/ );
+%Docstring
+Adds a patch to the geometry, transferring ownership to the polyhedral surface.
+%End
+
+
+    bool removePatch( int ringIndex );
+%Docstring
+Removes a patch from the polyhedral surface. The first patch has index 0.
+The corresponding patch is removed from the polyhedral surface and deleted.
+
+:raises IndexError: if no patch with the specified index exists.
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numPatches() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return PyBool_FromLong( sipCpp->removePatch( a0 ) );
+    }
+%End
+
+    virtual QPainterPath asQPainterPath() const;
+
+    virtual void draw( QPainter &p ) const;
+
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
+
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
+
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
+    virtual bool deleteVertex( QgsVertexId position );
+
+
+    virtual QgsCoordinateSequence coordinateSequence() const;
+
+    virtual int nCoordinates() const;
+
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
+    virtual bool isEmpty() const /HoldGIL/;
+
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
+
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
+
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
+
+    bool hasCurvedSegments() const final;
+
+    virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
+%Docstring
+Returns a geometry without curves. Caller takes ownership
+
+:param tolerance: segmentation tolerance
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+%End
+
+    virtual double vertexAngle( QgsVertexId vertex ) const;
+
+%Docstring
+Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+
+:param vertex: the vertex id
+
+:return: rotation in radians, clockwise from north
+%End
+
+    virtual int vertexCount( int part = 0, int ring = 0 ) const;
+
+    virtual int ringCount( int part = 0 ) const /HoldGIL/;
+
+    virtual int partCount() const /HoldGIL/;
+
+    virtual QgsPoint vertexAt( QgsVertexId id ) const;
+
+    virtual double segmentLength( QgsVertexId startVertex ) const;
+
+
+    virtual bool addZValue( double zValue = 0 );
+
+    virtual bool addMValue( double mValue = 0 );
+
+    virtual bool dropZValue();
+
+    virtual bool dropMValue();
+
+    virtual void swapXy();
+
+
+    virtual QgsMultiSurface *toCurveType() const /Factory/;
+
+
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+
+    QgsMultiPolygon *toMultiPolygon() const /Factory/;
+%Docstring
+Converts a polyhedral surface to a multipolygon.
+Caller takes ownership.
+%End
+
+
+    virtual QgsPolyhedralSurface *createEmptyWithSameType() const /Factory/;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsPolyhedralSurface: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    int __len__() const;
+%Docstring
+Returns the number of patches within the polyhedral surface.
+%End
+%MethodCode
+    sipRes = sipCpp->numPatches();
+%End
+
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsPolygon"/;
+%Docstring
+Returns the geometry at the specified ``index``.
+
+Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
+corresponds to the last geometry in the collection.
+
+:raises IndexError: if no geometry with the specified ``index`` exists.
+%End
+%MethodCode
+    const int count = sipCpp->numPatches();
+    if ( a0 < -count || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else if ( a0 >= 0 )
+    {
+      return sipConvertFromType( sipCpp->patchN( a0 ), sipType_QgsPolygon, NULL );
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->patchN( count + a0 ), sipType_QgsPolygon, NULL );
+    }
+%End
+
+  protected:
+
+    virtual int childCount() const;
+
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
+    virtual int compareToSameClass( const QgsAbstractGeometry *other ) const;
+
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgspolyhedralsurface.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

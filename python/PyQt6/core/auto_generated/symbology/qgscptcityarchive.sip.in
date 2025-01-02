@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgscptcityarchive.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,6 +13,9 @@
 
 class QgsCptCityArchive
 {
+%Docstring(signature="appended")
+Represents a CPT City color scheme.
+%End
 
 %TypeHeaderCode
 #include "qgscptcityarchive.h"
@@ -34,7 +37,10 @@ class QgsCptCityArchive
     static QMap< QString, QString > copyingInfo( const QString &fileName );
     static QMap< QString, QString > description( const QString &fileName );
 
-    bool isEmpty();
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if archive is empty
+%End
     QString archiveName() const;
     static void initArchives( bool loadAll = false );
     static void initArchive( const QString &archiveName, const QString &archiveBaseDir );
@@ -75,32 +81,85 @@ Base class for all items in the model
     bool hasChildren();
 
     int rowCount();
+
     virtual int leafCount() const;
+%Docstring
+Returns the total count of "leaf" items (all children which are end nodes).
+%End
 
 
     virtual void refresh();
 
     virtual QVector<QgsCptCityDataItem *> createChildren();
+%Docstring
+Returns a vector of children items.
+%End
 
     virtual void populate();
+%Docstring
+Populates children using children vector created by :py:func:`~QgsCptCityDataItem.createChildren`.
+%End
+
     bool isPopulated();
+%Docstring
+Returns ``True`` if the item is already populated.
+%End
 
     virtual void addChildItem( QgsCptCityDataItem *child /Transfer/, bool refresh = false );
+%Docstring
+Inserts a new ``child`` using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals.
+
+The ``refresh`` argument will refresh the populated item by emitting signals to the model.
+%End
 
     virtual void deleteChildItem( QgsCptCityDataItem *child );
+%Docstring
+Removes and deletes a child ``item``, signals to browser are emitted.
+%End
 
     virtual QgsCptCityDataItem *removeChildItem( QgsCptCityDataItem *child ) /TransferBack/;
+%Docstring
+Removes a ``child`` item but doesn't delete it, signals to browser are emitted.
+
+:return: pointer to the removed item or ``None`` if no such item was found
+%End
 
     virtual bool equal( const QgsCptCityDataItem *other );
+%Docstring
+Returns ``True`` if this item is equal to an ``other`` item.
+%End
 
-    virtual QWidget *paramWidget() /Factory/;
+ virtual QWidget *paramWidget() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
+%Docstring
 
-    virtual bool acceptDrop();
+.. deprecated:: 3.40
 
-    virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ );
+   Is unused and will be removed in QGIS 4.0.
+%End
+
+ virtual bool acceptDrop() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
+%Docstring
+Returns ``True`` if the item accepts drag & dropped layers - e.g. for import.
+
+.. deprecated:: 3.40
+
+   Is unused and will be removed in QGIS 4.0.
+%End
+
+ virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
+%Docstring
+Tries to process the ``data`` dropped on this item.
+
+.. deprecated:: 3.40
+
+   Is unused and will be removed in QGIS 4.0.
+%End
 
 
     static int findItem( QVector<QgsCptCityDataItem *> items, QgsCptCityDataItem *item );
+%Docstring
+Finds a child index in vector of items using '==' operator.
+%End
 
 
     Type type() const;
@@ -125,10 +184,50 @@ Base class for all items in the model
 
 
   signals:
+
     void beginInsertItems( QgsCptCityDataItem *parent, int first, int last );
+%Docstring
+Emitted before child items are added to this item.
+
+This signal *must* be followed by :py:func:`~QgsCptCityDataItem.endInsertItems`.
+
+:param parent: the parent item having children added
+:param first: index of first child item to be added
+:param last: index last child item, after the addition has occurred
+
+.. seealso:: :py:func:`endInsertItems`
+%End
+
     void endInsertItems();
+%Docstring
+Emitted after child items have been added to this data item.
+
+This signal will always be preceded by :py:func:`~QgsCptCityDataItem.beginInsertItems`.
+
+.. seealso:: :py:func:`beginInsertItems`
+%End
+
     void beginRemoveItems( QgsCptCityDataItem *parent, int first, int last );
+%Docstring
+Emitted before child items are removed from this data item.
+
+This signal *must* be followed by :py:func:`~QgsCptCityDataItem.endRemoveItems`.
+
+:param parent: the parent item having children removed
+:param first: index of first child item to be removed
+:param last: index of the last child item to be removed
+
+.. seealso:: :py:func:`endRemoveItems`
+%End
+
     void endRemoveItems();
+%Docstring
+Emitted after child items have been removed from this data item.
+
+This signal will always be preceded by :py:func:`~QgsCptCityDataItem.beginRemoveItems`.
+
+.. seealso:: :py:func:`beginRemoveItems`
+%End
 };
 
 class QgsCptCityColorRampItem : QgsCptCityDataItem
@@ -260,6 +359,9 @@ An "All ramps item", which contains all items in a flat hierarchy
 
 class QgsCptCityBrowserModel : QAbstractItemModel
 {
+%Docstring(signature="appended")
+A custom item model for display of CPT City color palettes.
+%End
 
 %TypeHeaderCode
 #include "qgscptcityarchive.h"
@@ -296,22 +398,28 @@ class QgsCptCityBrowserModel : QAbstractItemModel
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
 
-
-
-
     QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;
 %Docstring
-virtual bool dropMimeData( const QMimeData * data, Qt.DropAction action, int row, int column, const QModelIndex & parent ); */
+Returns the data item corresponding to the given index.
 %End
 
     virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
 
     void reload();
+%Docstring
+Reload the whole model
+%End
 
     void refresh( const QString &path );
+%Docstring
+Refresh the item specified by ``path``
+%End
 
     void refresh( const QModelIndex &index = QModelIndex() );
+%Docstring
+Refresh item children
+%End
 
     QModelIndex findPath( const QString &path );
 %Docstring
@@ -324,8 +432,6 @@ Returns index of a path
 
     virtual void fetchMore( const QModelIndex &parent );
 
-
-  signals:
 
   public slots:
 
@@ -347,5 +453,5 @@ Returns index of a path
  *                                                                      *
  * src/core/symbology/qgscptcityarchive.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

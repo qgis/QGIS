@@ -26,6 +26,7 @@
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -165,6 +166,16 @@ void QgsMergedFeatureRenderer::startRender( QgsRenderContext &context, const Qgs
   }
 }
 
+Qgis::FeatureRendererFlags QgsMergedFeatureRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  if ( mSubRenderer )
+  {
+    res = mSubRenderer->flags();
+  }
+  return res;
+}
+
 bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   if ( !context.painter() || !mSubRenderer )
@@ -231,6 +242,20 @@ bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRend
     return false;
   }
   QgsGeometry geom = feature.geometry();
+
+  // Simplify the geometry, if needed.
+  if ( context.vectorSimplifyMethod().forceLocalOptimization() )
+  {
+    const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
+    const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(),
+        context.vectorSimplifyMethod().simplifyAlgorithm() );
+
+    QgsGeometry simplified( simplifier.simplify( geom ) );
+    if ( !simplified.isEmpty() )
+    {
+      geom = simplified;
+    }
+  }
 
   QgsCoordinateTransform xform = context.coordinateTransform();
   if ( xform.isValid() )
@@ -366,7 +391,11 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
     if ( feat.hasGeometry() )
     {
       mContext.expressionContext().setFeature( feat );
+      const bool prevSimplify = context.vectorSimplifyMethod().forceLocalOptimization();
+      // we've already simplified, no need to re-do simplification
+      mContext.vectorSimplifyMethod().setForceLocalOptimization( false );
       mSubRenderer->renderFeature( feat, mContext );
+      mContext.vectorSimplifyMethod().setForceLocalOptimization( prevSimplify );
     }
   }
 

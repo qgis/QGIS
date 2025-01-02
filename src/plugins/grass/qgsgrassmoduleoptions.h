@@ -54,7 +54,8 @@ class QgsGrassModuleOptions
     //! Constructor
     QgsGrassModuleOptions(
       QgsGrassTools *tools, QgsGrassModule *module,
-      QgisInterface *iface, bool direct );
+      QgisInterface *iface, bool direct
+    );
 
     virtual ~QgsGrassModuleOptions() = default;
 
@@ -64,7 +65,7 @@ class QgsGrassModuleOptions
     //! Check if output exists
     // return empty list
     // return list of existing output maps
-    virtual QStringList checkOutput() { return QStringList() ; }
+    virtual QStringList checkOutput() { return QStringList(); }
 
     //! Freeze output maps used in QGIS
     // freeze / thaw output layers
@@ -72,15 +73,21 @@ class QgsGrassModuleOptions
 
     //! Check if option is ready
     //  Returns empty string or error message
-    virtual QStringList ready() { return QStringList() ; }
+    virtual QStringList ready() { return QStringList(); }
 
     //! Gets list of current output maps
     virtual QStringList output( int type )
-    { Q_UNUSED( type ) return QStringList(); }
+    {
+      Q_UNUSED( type )
+      return QStringList();
+    }
 
     //! Has any output
     virtual bool hasOutput( int type )
-    { Q_UNUSED( type ) return true; }
+    {
+      Q_UNUSED( type )
+      return true;
+    }
 
     //! Has raster input or output
     virtual bool usesRegion() { return false; }
@@ -91,16 +98,21 @@ class QgsGrassModuleOptions
     //! Check region
     // return empty list
     // return list of input maps (both raster and vector) outside region
-    virtual QStringList checkRegion() { return QStringList() ; }
+    virtual QStringList checkRegion() { return QStringList(); }
 
     //! Gets region covering all input maps
     // \param all true all input maps
     // \param all false only the mas which were switched on
     virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
-    { Q_UNUSED( window ) Q_UNUSED( crs ); Q_UNUSED( all ); return false; }
+    {
+      Q_UNUSED( window )
+      Q_UNUSED( crs );
+      Q_UNUSED( all );
+      return false;
+    }
 
     //! Flag names
-    virtual QStringList flagNames() { return QStringList() ; }
+    virtual QStringList flagNames() { return QStringList(); }
 
     QStringList errors() const { return mErrors; }
 
@@ -138,7 +150,7 @@ class QgsGrassModuleOptions
  *  \brief Widget with GRASS standard options.
  *
  */
-class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOptions
+class QgsGrassModuleStandardOptions : public QWidget, public QgsGrassModuleOptions
 {
     Q_OBJECT
 
@@ -148,7 +160,8 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
       QString xname, QDomElement confDocElem,
-      bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+      bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags()
+    );
 
     //! Gets module options as list of arguments for QProcess
     QStringList arguments() override;
@@ -177,10 +190,9 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     void switchAdvanced();
 
   private:
-
     /**
      * Read and parse module options (--interface-description).
-     * \param errors - list to which possible errors are added
+     * \param errors list to which possible errors are added
      */
     QDomDocument readInterfaceDescription( const QString &xname, QStringList &errors );
 

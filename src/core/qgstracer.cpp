@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstracer.h"
+#include "moc_qgstracer.cpp"
 
 
 #include "qgsfeatureiterator.h"
@@ -559,6 +560,19 @@ bool QgsTracer::initGraph()
     // GEOSNode_r may throw an exception
     geos::unique_ptr allGeomGeos( QgsGeos::asGeos( allGeom ) );
     geos::unique_ptr allNoded( GEOSNode_r( QgsGeosContext::get(), allGeomGeos.get() ) );
+
+    if ( mAddPointsOnIntersections )
+    {
+      mIntersections = QgsGeometry();
+    }
+    else
+    {
+      geos::unique_ptr allPoints( GEOSGeom_extractUniquePoints_r( QgsGeosContext::get(), allGeomGeos.get() ) );
+      geos::unique_ptr nodedPoints( GEOSGeom_extractUniquePoints_r( QgsGeosContext::get(), allNoded.get() ) );
+      geos::unique_ptr intersectionNodes( GEOSDifference_r( QgsGeosContext::get(), nodedPoints.get(), allPoints.get() ) );
+      mIntersections = QgsGeos::geometryFromGeos( intersectionNodes.release() );
+    }
+
     timeNodingCall = t2a.elapsed();
 
     QgsGeometry noded = QgsGeos::geometryFromGeos( allNoded.release() );
@@ -768,6 +782,33 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
   Q_UNUSED( tPath )
   QgsDebugMsgLevel( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ), 2 );
 
+  if ( points.size() > 2 && !mIntersections.isEmpty() )
+  {
+    QVector<QgsPointXY> noInts;
+    noInts.reserve( points.size() );
+    noInts.append( points.first() );
+    for ( auto it = std::next( points.begin() ), end = std::prev( points.end() ); it != end; ++it )
+    {
+      if ( mIntersections.contains( it->x(), it->y() ) )
+      {
+        // we skip points that are on a straight segment and were not on the original geometries
+        QgsPointXY nearest;
+        if ( 0 == it->sqrDistToSegment( std::prev( it )->x(),
+                                        std::prev( it )->y(),
+                                        std::next( it )->x(),
+                                        std::next( it )->y(),
+                                        nearest, 1E-12 ) )
+        {
+          continue;
+        }
+      }
+      noInts << *it;
+    }
+    noInts.append( points.last() );
+    points = noInts;
+    QgsDebugMsgLevel( QStringLiteral( "intersection point removal timing: %1 ms" ).arg( t2.elapsed() - tPath ), 2 );
+  }
+
   resetGraph( *mGraph );
 
   if ( !points.isEmpty() && mOffset != 0 )
@@ -812,4 +853,13 @@ bool QgsTracer::isPointSnapped( const QgsPointXY &pt )
   int lineVertexAfter;
   int e = point2edge( *mGraph, pt, lineVertexAfter );
   return e != -1;
+}
+
+void QgsTracer::setAddPointsOnIntersectionsEnabled( bool enable )
+{
+  if ( enable == mAddPointsOnIntersections )
+    return;
+
+  mAddPointsOnIntersections = enable;
+  invalidateGraph();
 }

@@ -63,15 +63,15 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opASIN,
       opACOS,
       opATAN,
-      opEQ,         // =
-      opNE,         //!=
-      opGT,         // >
-      opLT,         // <
-      opGE,         // >=
-      opLE,         // <=
+      opEQ, // =
+      opNE, //!=
+      opGT, // >
+      opLT, // <
+      opGE, // >=
+      opLE, // <=
       opAND,
       opOR,
-      opSIGN,       // change sign
+      opSIGN, // change sign
       opLOG,
       opLOG10,
       opABS,
@@ -80,29 +80,32 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opNONE,
     };
 
-    /**
-     * Constructor for QgsRasterCalcNode.
-     */
     QgsRasterCalcNode() = default;
 
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
     //!Constructor for the tFunction type
-    QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs );
+    QgsRasterCalcNode( QString functionName, QVector<QgsRasterCalcNode *> functionArgs );
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
-    //! QgsRasterCalcNode cannot be copied
     QgsRasterCalcNode( const QgsRasterCalcNode &rh ) = delete;
-    //! QgsRasterCalcNode cannot be copied
     QgsRasterCalcNode &operator=( const QgsRasterCalcNode &rh ) = delete;
 
     Type type() const { return mType; }
 
     //set left node
-    void setLeft( QgsRasterCalcNode *left ) { delete mLeft; mLeft = left; }
-    void setRight( QgsRasterCalcNode *right ) { delete mRight; mRight = right; }
+    void setLeft( QgsRasterCalcNode *left )
+    {
+      delete mLeft;
+      mLeft = left;
+    }
+    void setRight( QgsRasterCalcNode *right )
+    {
+      delete mRight;
+      mRight = right;
+    }
 
     /**
      * Calculates result of raster calculation (might be real matrix or single number).
@@ -112,7 +115,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * calculate entire result
      * \note not available in Python bindings
      */
-    bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const SIP_SKIP;
+    bool calculate( QMap<QString, QgsRasterBlock *> &rasterData, QgsRasterMatrix &result, int row = -1 ) const SIP_SKIP;
 
     /**
      * Returns a string representation of the expression
@@ -134,13 +137,13 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * It uses QgsRasterCalcNode::cleanRasterReferences
      * \note since QGIS 3.22
      */
-    QStringList referencedLayerNames( );
+    QStringList referencedLayerNames() const;
 
     /**
      * Returns a list of raster layer references that are addressed in the formula, without quotation marks.
      * \note since QGIS 3.22
      */
-    QStringList cleanRasterReferences();
+    QStringList cleanRasterReferences() const;
 
   private:
 #ifdef SIP_RUN
@@ -151,7 +154,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * Calculates result of raster calculation when tFunct type is used
      * \since QGIS 3.22
      */
-    QgsRasterMatrix evaluateFunction( const std::vector< std::unique_ptr< QgsRasterMatrix > > &matrixVector, QgsRasterMatrix &result ) const;
+    QgsRasterMatrix evaluateFunction( const std::vector<std::unique_ptr<QgsRasterMatrix>> &matrixVector, QgsRasterMatrix &result ) const;
 
     Type mType = tNumber;
     QgsRasterCalcNode *mLeft = nullptr;
@@ -162,7 +165,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     Operator mOperator = opNONE;
     //added for the conditional statement
     QString mFunctionName;
-    QVector <QgsRasterCalcNode *> mFunctionArgs;
+    QVector<QgsRasterCalcNode *> mFunctionArgs;
 };
 
 

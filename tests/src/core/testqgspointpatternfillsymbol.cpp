@@ -49,11 +49,12 @@ class TestQgsPointPatternFillSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsPointPatternFillSymbol() : QgsTest( QStringLiteral( "Point Pattern Fill Tests" ) ) {}
+    TestQgsPointPatternFillSymbol()
+      : QgsTest( QStringLiteral( "Point Pattern Fill Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void pointPatternFillSymbol();
     void pointPatternFillSymbolVector();
@@ -77,7 +78,7 @@ class TestQgsPointPatternFillSymbol : public QgsTest
     void pointPatternAngleViewport();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
 
     bool imageCheck( const QString &type, QgsVectorLayer *layer = nullptr );
     QgsMapSettings mMapSettings;
@@ -106,16 +107,16 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer *>() << mpPolysLayer
+  );
 
   //setup symbol
   mPointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -125,7 +126,6 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   mpPolysLayer->setRenderer( mSymbolRenderer );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-
 }
 void TestQgsPointPatternFillSymbol::cleanupTestCase()
 {
@@ -195,11 +195,11 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   layer->setSimplifyMethod( simplifyMethod );
 
   //setup gradient fill
@@ -221,11 +221,11 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   layer->setSimplifyMethod( simplifyMethod );
 
   //setup gradient fill
@@ -355,7 +355,7 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -379,7 +379,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -403,7 +403,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -427,7 +427,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -452,7 +452,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedWithOpacity()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -482,7 +482,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedWithOpacity()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -509,7 +509,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -538,7 +538,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -555,9 +555,9 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
   pointPatternFill->setSubSymbol( pointSymbol );
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 10 );
-  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::RandomOffsetX ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 5 else 10 end" ) ) );
-  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::RandomOffsetY ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 3 else 6 end" ) ) );
-  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::RandomSeed ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 1 else 2 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast<int>( QgsSymbolLayer::Property::RandomOffsetX ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 5 else 10 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast<int>( QgsSymbolLayer::Property::RandomOffsetY ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 3 else 6 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast<int>( QgsSymbolLayer::Property::RandomSeed ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 1 else 2 end" ) ) );
 
   const bool res = imageCheck( "symbol_pointfill_data_defined_random_offset", layer.get() );
   QVERIFY( res );
@@ -565,7 +565,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngle()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -590,7 +590,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngle()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -608,7 +608,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 6 );
   pointPatternFill->setAngle( 25 );
-  pointPatternFill->dataDefinedProperties().setProperty( static_cast < int >( QgsSymbolLayer::Property::Angle ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then -10 else 25 end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( static_cast<int>( QgsSymbolLayer::Property::Angle ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then -10 else 25 end" ) ) );
 
   const bool res = imageCheck( "symbol_pointfill_data_defined_angle", layer.get() );
   QVERIFY( res );
@@ -616,7 +616,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngleViewport()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -650,7 +650,7 @@ bool TestQgsPointPatternFillSymbol::imageCheck( const QString &testType, QgsVect
   if ( !layer )
     layer = mpPolysLayer;
 
-  mMapSettings.setLayers( {layer } );
+  mMapSettings.setLayers( { layer } );
 
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

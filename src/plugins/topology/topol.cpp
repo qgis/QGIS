@@ -29,6 +29,7 @@
 #include <QMenu>
 
 #include "topol.h"
+#include "moc_topol.cpp"
 #include "checkDock.h"
 
 static const QString sName = QObject::tr( "Topology Checker" );
@@ -47,7 +48,7 @@ static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyCh
 /**
  * Constructor for the plugin. The plugin is passed a pointer
  * an interface object that provides access to exposed functions in QGIS.
- * \param theQGisInterface - Pointer to the QGIS interface object
+ * \param theQGisInterface Pointer to the QGIS interface object
  */
 Topol::Topol( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )

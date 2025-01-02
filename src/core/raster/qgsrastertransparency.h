@@ -35,9 +35,6 @@ class CORE_EXPORT QgsRasterTransparency
 
   public:
 
-    /**
-     * Constructor for QgsRasterTransparency.
-     */
     QgsRasterTransparency() = default;
 
     /**
@@ -53,13 +50,19 @@ class CORE_EXPORT QgsRasterTransparency
       * \param green green pixel value
       * \param blue blue pixel value
       * \param opacity opacity for pixel, between 0 and 1.0
+      * \param fuzzyToleranceRed (since QGIS 3.40) allows specifying a tolerance for the red color component, where the pixel's red component can deviate from values specified here by a maximum of this tolerance amount
+      * \param fuzzyToleranceGreen (since QGIS 3.40) allows specifying a tolerance for the green color component, where the pixel's green component can deviate from values specified here by a maximum of this tolerance amount
+      * \param fuzzyToleranceBlue (since QGIS 3.40) allows specifying a tolerance for the blue color component, where the pixel's blue component can deviate from values specified here by a maximum of this tolerance amount
       * \since QGIS 3.38
       */
-      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0 )
+      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon(), double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon(), double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon() )
         : red( red )
         , green( green )
         , blue( blue )
         , opacity( opacity )
+        , fuzzyToleranceRed( fuzzyToleranceRed )
+        , fuzzyToleranceGreen( fuzzyToleranceGreen )
+        , fuzzyToleranceBlue( fuzzyToleranceBlue )
       {}
 
       /**
@@ -84,12 +87,54 @@ class CORE_EXPORT QgsRasterTransparency
       */
       double opacity = 0;
 
+      /**
+      * Fuzzy tolerance for red values.
+      *
+      * If non zero, the pixel's red component can deviate from values specified in this object by a maximum of this tolerance amount.
+      *
+      * \since QGIS 3.40
+      */
+#ifndef SIP_RUN
+      double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon();
+#else
+      double fuzzyToleranceRed;
+#endif
+
+      /**
+      * Fuzzy tolerance for green values.
+      *
+      * If non zero, the pixel's green component can deviate from values specified in this object by a maximum of this tolerance amount.
+      *
+      * \since QGIS 3.40
+      */
+#ifndef SIP_RUN
+      double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon();
+#else
+      double fuzzyToleranceGreen;
+#endif
+
+      /**
+      * Fuzzy tolerance for blue values.
+      *
+      * If non zero, the pixel's blue component can deviate from values specified in this object by a maximum of this tolerance amount.
+      *
+      * \since QGIS 3.40
+      */
+#ifndef SIP_RUN
+      double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon();
+#else
+      double fuzzyToleranceBlue;
+#endif
+
       bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
       {
         return qgsDoubleNear( red, other.red )
                && qgsDoubleNear( green, other.green )
                && qgsDoubleNear( blue, other.blue )
-               && qgsDoubleNear( opacity, other.opacity );
+               && qgsDoubleNear( opacity, other.opacity )
+               && qgsDoubleNear( fuzzyToleranceRed, other.fuzzyToleranceRed )
+               && qgsDoubleNear( fuzzyToleranceGreen, other.fuzzyToleranceGreen )
+               && qgsDoubleNear( fuzzyToleranceBlue, other.fuzzyToleranceBlue );
       }
       bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
       {
@@ -99,7 +144,11 @@ class CORE_EXPORT QgsRasterTransparency
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();
       % MethodCode
-      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+      QString str;
+      if ( !qgsDoubleNear( sipCpp->fuzzyToleranceRed, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceGreen, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceBlue, 0 ) )
+        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5, %6, %7>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyToleranceRed ).arg( sipCpp->fuzzyToleranceGreen ).arg( sipCpp->fuzzyToleranceBlue );
+      else
+        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
       % End
 #endif
@@ -227,7 +276,7 @@ class CORE_EXPORT QgsRasterTransparency
      * \param value the needle to search for in the transparency hay stack
      * \param globalTransparency the overall transparency level for the layer
      *
-     * \deprecated use opacityForValue() instead.
+     * \deprecated QGIS 3.40. Use opacityForValue() instead.
     */
     Q_DECL_DEPRECATED int alphaValue( double value, int globalTransparency = 255 ) const SIP_DEPRECATED;
 
@@ -251,7 +300,7 @@ class CORE_EXPORT QgsRasterTransparency
      * \param blueValue the green portion of the needle to search for in the transparency hay stack
      * \param globalTransparency the overall transparency level for the layer
      *
-     * \deprecated use opacityForRgbValues() instead.
+     * \deprecated QGIS 3.40. Use opacityForRgbValues() instead.
     */
     Q_DECL_DEPRECATED int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const SIP_DEPRECATED;
 

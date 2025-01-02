@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexiftools.h"
+#include "moc_qgsexiftools.cpp"
 #include "qgspoint.h"
 
 #include <exiv2/exiv2.hpp>
@@ -23,10 +24,21 @@
 #include <QFileInfo>
 #include <QTime>
 
-double readRationale( const Exiv2::Value &value, long n = 0 )
+double readRational( const Exiv2::Value &value, long n = 0 )
 {
   const Exiv2::Rational rational = value.toRational( n );
-  return static_cast< double >( rational.first ) / rational.second;
+  const auto numerator = rational.first;
+  const auto denominator = rational.second;
+  double res = 0;
+  if ( value.typeId() == Exiv2::unsignedRational )
+  {
+    res = static_cast< double >( static_cast<uint32_t>( numerator ) ) / static_cast<uint32_t>( denominator );
+  }
+  else
+  {
+    res = static_cast< double >( numerator ) / denominator;
+  }
+  return res;
 };
 
 double readCoordinate( const Exiv2::Value &value )
@@ -35,7 +47,7 @@ double readCoordinate( const Exiv2::Value &value )
   double div = 1;
   for ( int i = 0; i < 3; i++ )
   {
-    res += readRationale( value, i ) / div;
+    res += readRational( value, i ) / div;
     div *= 60;
   }
   return res;
@@ -114,7 +126,7 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
       {
         if ( it->count() == 1 )
         {
-          val = QVariant::fromValue( readRationale( it->value() ) );
+          val = QVariant::fromValue( readRational( it->value() ) );
         }
         else
         {
@@ -154,9 +166,10 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
     const QStringList parts = QString::fromStdString( it->toString() ).split( QRegularExpression( QStringLiteral( "\\s+" ) ) );
     if ( parts.size() == 3 )
     {
-      const int hour = readRationale( it->value(), 0 );
-      const int minute = readRationale( it->value(), 1 );
-      const int second = readRationale( it->value(), 2 );
+      const int hour = std::max( 0, std::min( 23, static_cast< int >( readRational( it->value(), 0 ) ) ) );
+      const int minute = std::max( 0, std::min( 59, static_cast< int >( readRational( it->value(), 1 ) ) ) );
+      const int second = std::max( 0, std::min( 59, static_cast< int >( readRational( it->value(), 2 ) ) ) );
+
       val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" )
                                  .arg( QString::number( hour ).rightJustified( 2, '0' ) )
                                  .arg( QString::number( minute ).rightJustified( 2, '0' ) )
@@ -238,7 +251,7 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
       {
         if ( it->count() == 1 )
         {
-          val = QVariant::fromValue( readRationale( it->value() ) );
+          val = QVariant::fromValue( readRational( it->value() ) );
         }
         else
         {
@@ -408,7 +421,7 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
     const Exiv2::ExifData::iterator itElevRefVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSAltitudeRef" ) );
     if ( itElevVal != exifData.end() )
     {
-      double elev = readRationale( itElevVal->value() );
+      double elev = readRational( itElevVal->value() );
       if ( itElevRefVal != exifData.end() )
       {
         const QString elevRef = QString::fromStdString( itElevRefVal->value().toString() );
@@ -489,7 +502,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
       actualValueIsUShort = true;
       actualValue = value;
     }
-    else if ( value.type() == QVariant::DateTime )
+    else if ( value.userType() == QMetaType::Type::QDateTime )
     {
       const QDateTime dateTime = value.toDateTime();
       if ( tag == QLatin1String( "Exif.Image.DateTime" ) ||
@@ -504,7 +517,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         actualValue = dateTime.toString( Qt::ISODate );
       }
     }
-    else if ( value.type() == QVariant::Date )
+    else if ( value.userType() == QMetaType::Type::QDate )
     {
       const QDate date = value.toDate();
       if ( tag == QLatin1String( "Exif.GPSInfo.GPSDateStamp" ) )
@@ -516,7 +529,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         actualValue = date.toString( QStringLiteral( "yyyy-MM-dd" ) );
       }
     }
-    else if ( value.type() == QVariant::Time )
+    else if ( value.userType() == QMetaType::Type::QTime )
     {
       const QTime time = value.toTime();
       if ( tag == QLatin1String( "Exif.GPSInfo.GPSTimeStamp" ) )
@@ -548,8 +561,8 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         exifData[tag.toStdString()] = static_cast<ushort>( actualValue.toLongLong() );
       }
     }
-    else if ( actualValue.type() == QVariant::Int ||
-              actualValue.type() == QVariant::LongLong )
+    else if ( actualValue.userType() == QMetaType::Type::Int ||
+              actualValue.userType() == QMetaType::Type::LongLong )
     {
       if ( isXmp )
       {
@@ -562,8 +575,8 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         exifData[tag.toStdString()] = static_cast<uint32_t>( actualValue.toLongLong() );
       }
     }
-    else if ( actualValue.type() == QVariant::UInt ||
-              actualValue.type() ==  QVariant::ULongLong )
+    else if ( actualValue.userType() == QMetaType::Type::UInt ||
+              actualValue.userType() ==  QMetaType::Type::ULongLong )
     {
       if ( isXmp )
       {
@@ -576,7 +589,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         exifData[tag.toStdString()] = static_cast<int32_t>( actualValue.toULongLong() );
       }
     }
-    else if ( actualValue.type() == QVariant::Double )
+    else if ( actualValue.userType() == QMetaType::Type::Double )
     {
       if ( isXmp )
       {

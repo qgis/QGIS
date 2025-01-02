@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscoordinatenumericformat.h"
+#include "moc_qgscoordinatenumericformat.cpp"
 #include "qgis.h"
 #include "qgscoordinateformatter.h"
 
@@ -23,21 +24,24 @@
 #include <iomanip>
 
 ///@cond PRIVATE
-struct formatter : std::numpunct<wchar_t>
+namespace QgsGeographicCoordinateNumericFormat_ns
 {
-  formatter( QChar thousands, bool showThousands, QChar decimal )
-    : mThousands( thousands.unicode() )
-    , mDecimal( decimal.unicode() )
-    , mShowThousands( showThousands )
-  {}
-  wchar_t do_decimal_point() const override { return mDecimal; }
-  wchar_t do_thousands_sep() const override { return mThousands; }
-  std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
+  struct formatter : std::numpunct<wchar_t>
+  {
+    formatter( QChar thousands, bool showThousands, QChar decimal )
+      : mThousands( thousands.unicode() )
+      , mDecimal( decimal.unicode() )
+      , mShowThousands( showThousands )
+    {}
+    wchar_t do_decimal_point() const override { return mDecimal; }
+    wchar_t do_thousands_sep() const override { return mThousands; }
+    std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
 
-  wchar_t mThousands;
-  wchar_t mDecimal;
-  bool mShowThousands = true;
-};
+    wchar_t mThousands;
+    wchar_t mDecimal;
+    bool mShowThousands = true;
+  };
+}
 ///@endcond
 
 QgsGeographicCoordinateNumericFormat::QgsGeographicCoordinateNumericFormat()
@@ -68,7 +72,7 @@ QString QgsGeographicCoordinateNumericFormat::formatDouble( double value, const 
 {
   const QChar decimal = decimalSeparator().isNull() ? context.decimalSeparator() : decimalSeparator();
   std::basic_stringstream<wchar_t> os;
-  os.imbue( std::locale( os.getloc(), new formatter( thousandsSeparator().isNull() ? context.thousandsSeparator() : thousandsSeparator(),
+  os.imbue( std::locale( os.getloc(), new QgsGeographicCoordinateNumericFormat_ns::formatter( thousandsSeparator().isNull() ? context.thousandsSeparator() : thousandsSeparator(),
                          false,
                          decimal ) ) );
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgspalettedrendererwidget.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -12,14 +12,13 @@
 
 
 
-class QgsPalettedRendererWidget: QgsRasterRendererWidget
+class QgsPalettedRendererWidget : QgsRasterRendererWidget
 {
 
 %TypeHeaderCode
 #include "qgspalettedrendererwidget.h"
 %End
   public:
-
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsPalettedRendererWidget();
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
@@ -39,5 +38,5 @@ Sets the widget state from the specified renderer.
  *                                                                      *
  * src/gui/raster/qgspalettedrendererwidget.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthidentcertedit.h"
+#include "moc_qgsauthidentcertedit.cpp"
 #include "ui_qgsauthidentcertedit.h"
 
 #include "qgsapplication.h"
@@ -85,14 +86,12 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
       QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
       if ( org.isEmpty() )
         org = tr( "Organization not defined" );
-      idents.insert( QStringLiteral( "%1 (%2)" ).arg( QgsAuthCertUtils::resolvedCertName( cert ), org ),
-                     QgsAuthCertUtils::shaHexForCert( cert ) );
+      idents.insert( QStringLiteral( "%1 (%2)" ).arg( QgsAuthCertUtils::resolvedCertName( cert ), org ), QgsAuthCertUtils::shaHexForCert( cert ) );
     }
     QgsStringMap::const_iterator it = idents.constBegin();
     for ( ; it != idents.constEnd(); ++it )
     {
-      cmbIdentityCert->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ),
-                                it.key(), it.value() );
+      cmbIdentityCert->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ), it.key(), it.value() );
     }
   }
 }

@@ -22,20 +22,17 @@ class QgsWcsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "WCS" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
-    static void deleteConnection( QgsDataItem *item );
+    static void duplicateConnection( QgsDataItem *item );
     static void refreshConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 #endif // QGSWCSDATAITEMGUIPROVIDER_H

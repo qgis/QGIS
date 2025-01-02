@@ -34,9 +34,6 @@ class CORE_EXPORT QgsFieldFormatterContext
 {
   public:
 
-    /**
-     * Constructor
-     */
     QgsFieldFormatterContext() = default;
 
     /**
@@ -72,9 +69,6 @@ class CORE_EXPORT QgsFieldFormatter
 {
   public:
 
-    /**
-      * Default constructor
-      */
     QgsFieldFormatter() = default;
 
     virtual ~QgsFieldFormatter() = default;

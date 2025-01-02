@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationreferencewidget.h"
+#include "moc_qgsrelationreferencewidget.cpp"
 
 #include <QPushButton>
 #include <QDialog>
@@ -313,7 +314,7 @@ QVariant QgsRelationReferenceWidget::foreignKey() const
 {
   QVariantList fkeys;
   if ( fkeys.isEmpty() )
-    return QVariant( QVariant::Int );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
   else
     return fkeys.at( 0 );
 }
@@ -420,7 +421,7 @@ void QgsRelationReferenceWidget::init()
         QVariantList uniqueValues = qgis::setToList( mReferencedLayer->uniqueValues( idx ) );
         cb->addItem( mReferencedLayer->attributeDisplayName( idx ) );
         QVariant nullValue = QgsApplication::nullRepresentation();
-        cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
+        cb->addItem( nullValue.toString(), QgsVariantUtils::createNullVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
         std::sort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
         const auto constUniqueValues = uniqueValues;
@@ -443,8 +444,8 @@ void QgsRelationReferenceWidget::init()
 
         QgsFeature ft;
         QgsFeatureIterator fit = mFilterExpression.isEmpty()
-                                 ? mReferencedLayer->getFeatures()
-                                 : mReferencedLayer->getFeatures( mFilterExpression );
+                                   ? mReferencedLayer->getFeatures()
+                                   : mReferencedLayer->getFeatures( mFilterExpression );
         while ( fit.nextFeature( ft ) )
         {
           const int count = std::min( mFilterComboBoxes.count(), mFilterFields.count() );
@@ -477,7 +478,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setIdentifierFields( mReferencedFields );
     mComboBox->setFetchLimit( mFetchLimit );
 
-    if ( ! mFilterExpression.isEmpty() )
+    if ( !mFilterExpression.isEmpty() )
       mComboBox->setFilterExpression( mFilterExpression );
 
     QVariant nullValue = QgsApplication::nullRepresentation();
@@ -494,6 +495,8 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, &QgsFeatureListComboBox::currentFeatureChanged, this, &QgsRelationReferenceWidget::comboReferenceChanged );
+    // To avoid wrongly signaling a foreign key change, handle model feature found state following feature gathering separately
+    connect( mComboBox, &QgsFeatureListComboBox::currentFeatureFoundChanged, this, &QgsRelationReferenceWidget::comboReferenceFoundChanged );
 
     QApplication::restoreOverrideCursor();
 
@@ -624,6 +627,13 @@ void QgsRelationReferenceWidget::comboReferenceChanged()
   updateAttributeEditorFrame( mFeature );
 
   emitForeignKeysChanged( mComboBox->identifierValues() );
+}
+
+void QgsRelationReferenceWidget::comboReferenceFoundChanged( bool )
+{
+  mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( mFeature );
+  highlightFeature( mFeature );
+  updateAttributeEditorFrame( mFeature );
 }
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature &feature )
@@ -797,7 +807,7 @@ void QgsRelationReferenceWidget::filterChanged()
           QgsAttributeList subset = attrs;
 
           QString expression = filterExpression;
-          if ( ! filterExpression.isEmpty() && ! filtersAttrs.isEmpty() )
+          if ( !expression.isEmpty() && !filtersAttrs.isEmpty() )
             expression += QLatin1String( " AND " );
 
           expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ( " );
@@ -833,7 +843,7 @@ void QgsRelationReferenceWidget::filterChanged()
     }
   }
 
-  if ( ! filterExpression.isEmpty() && ! filters.isEmpty() )
+  if ( !filterExpression.isEmpty() && !filters.isEmpty() )
     filterExpression += QLatin1String( " AND " );
 
   filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ( " );
@@ -874,11 +884,10 @@ void QgsRelationReferenceWidget::addEntry()
 
     QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mReferencingLayer, mFormFeature );
     QString msg = tr( "Link feature to %1 \"%2\" : Digitize the geometry for the new feature on layer %3. Press &lt;ESC&gt; to cancel." )
-                  .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
+                    .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     mMessageBar->pushItem( mMessageBarItem );
   }
-
 }
 
 void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )

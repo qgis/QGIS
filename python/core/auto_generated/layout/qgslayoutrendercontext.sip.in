@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutrendercontext.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,7 +31,8 @@ Stores information relating to the current rendering settings for a layout.
       FlagDisableTiledRasterLayerRenders,
       FlagRenderLabelsByMapLayer,
       FlagLosslessImageRendering,
-      FlagSynchronousLegendGraphics
+      FlagSynchronousLegendGraphics,
+      FlagAlwaysUseGlobalMasks,
     };
     typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 
@@ -184,7 +185,7 @@ whether they will be rendered in layout exports.
 .. seealso:: :py:func:`setPagesVisible`
 %End
 
- void setCurrentExportLayer( int layer = -1 ) /Deprecated/;
+ void setCurrentExportLayer( int layer = -1 ) /Deprecated="Since 3.40. Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart()."/;
 %Docstring
 Sets the current item ``layer`` to draw while exporting. :py:class:`QgsLayoutItem` subclasses
 which support multi-layer SVG exports must check the :py:func:`~QgsLayoutRenderContext.currentExportLayer`
@@ -194,11 +195,12 @@ If ``layer`` is -1, all item layers will be rendered.
 
 .. seealso:: :py:func:`currentExportLayer`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
- int currentExportLayer() const /Deprecated/;
+ int currentExportLayer() const /Deprecated="Since 3.40. Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart()."/;
 %Docstring
 Returns the current item layer to draw while exporting. :py:class:`QgsLayoutItem` subclasses
 which support multi-layer SVG exports must check this
@@ -208,7 +210,8 @@ If ``layer`` is -1, all item layers should be rendered.
 
 .. seealso:: :py:func:`setCurrentExportLayer`
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
@@ -248,7 +251,6 @@ The default is to use no simplification.
 
 .. seealso:: :py:func:`simplifyMethod`
 
-
 .. versionadded:: 3.10
 %End
 
@@ -267,6 +269,27 @@ The default is to use no simplification.
 .. seealso:: :py:func:`setSimplifyMethod`
 
 .. versionadded:: 3.10
+%End
+
+
+    QgsMaskRenderSettings &maskSettings();
+%Docstring
+Returns a reference to the mask render settings, which control how masks
+are drawn and behave during map renders.
+
+.. seealso:: :py:func:`setMaskSettings`
+
+.. versionadded:: 3.38
+%End
+
+    void setMaskSettings( const QgsMaskRenderSettings &settings );
+%Docstring
+Sets the mask render ``settings``, which control how masks
+are drawn and behave during map renders.
+
+.. seealso:: :py:func:`maskSettings`
+
+.. versionadded:: 3.38
 %End
 
     QStringList exportThemes() const;
@@ -314,7 +337,7 @@ Returns the current list of predefined scales for use with the layout.
 
     QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-Returns the possibly NULL feature filter provider.
+Returns the (possibly ``None``) feature filter provider.
 
 A feature filter provider for filtering visible features or attributes.
 It is currently used by QGIS Server Access Control Plugins.
@@ -366,5 +389,5 @@ Emitted when the list of predefined scales changes.
  *                                                                      *
  * src/core/layout/qgslayoutrendercontext.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

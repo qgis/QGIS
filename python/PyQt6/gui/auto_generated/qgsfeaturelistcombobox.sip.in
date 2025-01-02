@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfeaturelistcombobox.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ and whenever text is typed into the combobox, the completer and popup will adjus
 #include "qgsfeaturelistcombobox.h"
 %End
   public:
-
     QgsFeatureListComboBox( QWidget *parent = 0 );
 %Docstring
 Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
@@ -77,12 +76,12 @@ An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
 %End
 
- QVariant identifierValue() const /Deprecated/;
+ QVariant identifierValue() const /Deprecated="Since 3.10. "/;
 %Docstring
 The identifier value of the currently selected feature. A value from the
 identifierField.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     QVariantList identifierValues() const;
@@ -94,13 +93,14 @@ identifierField.
 %End
 
 
- void setIdentifierValue( const QVariant &identifierValue ) /Deprecated/;
+ void setIdentifierValue( const QVariant &identifierValue ) /Deprecated="Since 3.10. Use setIdentifierValues."/;
 %Docstring
 The identifier value of the currently selected feature. A value from the
 identifierField.
 
-.. deprecated:: QGIS 3.10
-   use setIdentifierValues
+.. deprecated:: 3.10
+
+   Use setIdentifierValues.
 %End
 
     void setIdentifierValues( const QVariantList &identifierValues );
@@ -149,12 +149,12 @@ If set to 0, no limit is applied when fetching
 .. versionadded:: 3.32
 %End
 
- QString identifierField() const /Deprecated/;
+ QString identifierField() const /Deprecated="Since 3.10. "/;
 %Docstring
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     QStringList identifierFields() const;
@@ -165,12 +165,12 @@ Normally the primary key of the layer.
 .. versionadded:: 3.10
 %End
 
- void setIdentifierField( const QString &identifierField ) /Deprecated/;
+ void setIdentifierField( const QString &identifierField ) /Deprecated="Since 3.10. "/;
 %Docstring
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
     void setIdentifierFields( const QStringList &identifierFields );
@@ -242,8 +242,14 @@ Emitted when the current feature changes
 .. versionadded:: 3.16.5
 %End
 
-};
+    void currentFeatureFoundChanged( bool found );
+%Docstring
+Emitted when the feature picker model changes its feature ``found`` state
 
+.. versionadded:: 3.38
+%End
+
+};
 
 
 /************************************************************************
@@ -251,5 +257,5 @@ Emitted when the current feature changes
  *                                                                      *
  * src/gui/qgsfeaturelistcombobox.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

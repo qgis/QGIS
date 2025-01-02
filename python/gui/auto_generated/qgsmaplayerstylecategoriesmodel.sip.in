@@ -1,0 +1,92 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaplayerstylecategoriesmodel.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapLayerStyleCategoriesModel : QAbstractListModel
+{
+%Docstring(signature="appended")
+Model for layer style categories
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerstylecategoriesmodel.h"
+%End
+  public:
+    enum class Role
+    {
+      NameRole,
+    };
+
+    explicit QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent = 0 );
+%Docstring
+Constructor for QgsMapLayerStyleCategoriesModel, for the specified layer ``type``.
+%End
+
+    void setCategories( QgsMapLayer::StyleCategories categories );
+%Docstring
+Reset the model data
+%End
+
+    QgsMapLayer::StyleCategories categories() const;
+%Docstring
+Returns the categories as defined in the model
+%End
+
+    void setShowAllCategories( bool showAll );
+%Docstring
+Defines if the model should list the AllStyleCategories entry
+%End
+
+    virtual int rowCount( const QModelIndex & = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex & = QModelIndex() ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+    virtual Qt::ItemFlags flags( const QModelIndex & ) const;
+
+
+};
+
+class QgsCategoryDisplayLabelDelegate : QItemDelegate
+{
+%Docstring(signature="appended")
+A label delegate being able to display html encoded content
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerstylecategoriesmodel.h"
+%End
+  public:
+    explicit QgsCategoryDisplayLabelDelegate( QObject *parent = 0 );
+%Docstring
+constructor
+%End
+
+  protected:
+    virtual void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text ) const;
+
+    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaplayerstylecategoriesmodel.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

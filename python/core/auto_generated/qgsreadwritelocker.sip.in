@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsreadwritelocker.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -67,5 +67,5 @@ Equivalent to doing ``changeMode( QgsReadWriteLocker.Unlock );``
  *                                                                      *
  * src/core/qgsreadwritelocker.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

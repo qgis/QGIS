@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layertree/qgslayertreeview.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,7 +25,6 @@ private layers and text filtering.
 #include "qgslayertreeview.h"
 %End
   public:
-
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 %Docstring
 Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent``
@@ -65,7 +64,6 @@ Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
 %End
 
   protected:
-
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 
@@ -99,7 +97,6 @@ with a set of default actions that can be used when building context menu.
       sipType = 0;
 %End
   public:
-
     explicit QgsLayerTreeView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayerTreeView
@@ -213,6 +210,17 @@ Convenience methods which sets the visible state of the specified map ``layer``.
 .. seealso:: :py:func:`QgsLayerTreeNode.setItemVisibilityChecked`
 
 .. versionadded:: 3.10
+%End
+
+    void setCurrentNode( QgsLayerTreeNode *node );
+%Docstring
+Sets the currently selected ``node``.
+
+If ``node`` is ``None`` then all nodes will be deselected.
+
+.. seealso:: :py:func:`currentNode`
+
+.. versionadded:: 3.40
 %End
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -471,7 +479,7 @@ Allows customization of the menu.
 class QgsLayerTreeViewMenuProvider
 {
 %Docstring(signature="appended")
-Implementation of this interface can be implemented to allow QgsLayerTreeView
+Implementation of this interface can be implemented to allow :py:class:`QgsLayerTreeView`
 instance to provide custom context menus (opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayerTreeView`
@@ -495,5 +503,5 @@ Returns a newly created menu instance (or ``None`` on error)
  *                                                                      *
  * src/gui/layertree/qgslayertreeview.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/qgsencodingfiledialog.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsEncodingFileDialog: QFileDialog
+class QgsEncodingFileDialog : QFileDialog
 {
 %Docstring(signature="appended")
 A file dialog which lets the user select the preferred encoding type for a data provider.
@@ -19,10 +19,7 @@ A file dialog which lets the user select the preferred encoding type for a data 
 #include "qgsencodingfiledialog.h"
 %End
   public:
-
-    QgsEncodingFileDialog( QWidget *parent /TransferThis/ = 0,
-                           const QString &caption = QString(), const QString &directory = QString(),
-                           const QString &filter = QString(), const QString &encoding = QString() );
+    QgsEncodingFileDialog( QWidget *parent /TransferThis/ = 0, const QString &caption = QString(), const QString &directory = QString(), const QString &filter = QString(), const QString &encoding = QString() );
 %Docstring
 Constructor for QgsEncodingFileDialog
 %End
@@ -46,7 +43,7 @@ Returns ``True`` if the user clicked 'Cancel All'
 
 };
 
-class QgsEncodingSelectionDialog: QDialog
+class QgsEncodingSelectionDialog : QDialog
 {
 %Docstring(signature="appended")
 A dialog which presents the user with a choice of file encodings.
@@ -56,10 +53,7 @@ A dialog which presents the user with a choice of file encodings.
 #include "qgsencodingfiledialog.h"
 %End
   public:
-
-    QgsEncodingSelectionDialog( QWidget *parent /TransferThis/ = 0,
-                                const QString &caption = QString(), const QString &encoding = QString(),
-                                Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsEncodingSelectionDialog( QWidget *parent /TransferThis/ = 0, const QString &caption = QString(), const QString &encoding = QString(), Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsEncodingSelectionDialog.
 
@@ -89,5 +83,5 @@ see :py:func:`~QgsEncodingSelectionDialog.encoding`
  *                                                                      *
  * src/gui/qgsencodingfiledialog.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

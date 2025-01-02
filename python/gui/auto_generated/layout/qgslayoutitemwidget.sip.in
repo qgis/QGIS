@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/layout/qgslayoutitemwidget.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsLayoutConfigObject: QObject
+class QgsLayoutConfigObject : QObject
 {
 %Docstring(signature="appended")
 
@@ -25,7 +25,6 @@ inherit from :py:class:`QgsLayoutItemBaseWidget` (rather then directly working w
 #include "qgslayoutitemwidget.h"
 %End
   public:
-
     QgsLayoutConfigObject( QWidget *parent /TransferThis/, QgsLayoutObject *layoutObject );
 %Docstring
 Constructor for QgsLayoutConfigObject, linked with the specified ``layoutObject``.
@@ -55,7 +54,7 @@ Returns the atlas for the layout, if available
 
 };
 
-class QgsLayoutItemBaseWidget: QgsPanelWidget
+class QgsLayoutItemBaseWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 
@@ -67,7 +66,6 @@ this base class.
 #include "qgslayoutitemwidget.h"
 %End
   public:
-
     QgsLayoutItemBaseWidget( QWidget *parent /TransferThis/, QgsLayoutObject *layoutObject );
 %Docstring
 Constructor for QgsLayoutItemBaseWidget, linked with the specified ``layoutObject``.
@@ -112,7 +110,6 @@ Sets the master layout associated with the item.
 %End
 
   protected:
-
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );
 %Docstring
 Registers a data defined ``button``, setting up its initial value, connections and description.
@@ -148,7 +145,7 @@ Returns the atlas for the layout (if available)
 };
 
 
-class QgsLayoutItemPropertiesWidget: QWidget
+class QgsLayoutItemPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget for controlling the common properties of layout items (e.g. position and size, background, stroke, frame).
@@ -159,7 +156,6 @@ This widget can be embedded into other layout item widgets.
 #include "qgslayoutitemwidget.h"
 %End
   public:
-
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
 %Docstring
 Constructs a QgsLayoutItemPropertiesWidget with a ``parent`` and for the given layout ``item``.
@@ -217,5 +213,5 @@ Sets data defined button state to match item
  *                                                                      *
  * src/gui/layout/qgslayoutitemwidget.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssymbolrendercontext.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -49,34 +49,38 @@ Sets the original value variable value for data defined symbology
               before any data defined overrides have been applied.
 %End
 
- Qgis::RenderUnit outputUnit() const /Deprecated/;
+ Qgis::RenderUnit outputUnit() const /Deprecated="Since 3.40. No longer used and will be removed in QGIS 4.0."/;
 %Docstring
 Returns the output unit for the context.
 
-.. deprecated::
-   No longer used and will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   No longer used and will be removed in QGIS 4.0.
 %End
 
- void setOutputUnit( Qgis::RenderUnit u ) /Deprecated/;
+ void setOutputUnit( Qgis::RenderUnit u ) /Deprecated="Since 3.40. No longer used and will be removed in QGIS 4.0."/;
 %Docstring
 Sets the output unit for the context.
 
-.. deprecated::
-   No longer used and will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   No longer used and will be removed in QGIS 4.0.
 %End
 
- QgsMapUnitScale mapUnitScale() const /Deprecated/;
+ QgsMapUnitScale mapUnitScale() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
- void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
+ void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated::
-   Will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
     qreal opacity() const;
@@ -118,11 +122,28 @@ Returns the rendering hint flags for the symbol.
 .. seealso:: :py:func:`setRenderHints`
 %End
 
+    bool forceVectorRendering() const;
+%Docstring
+Returns ``True`` if symbol must be rendered using vector methods, and optimisations
+like pre-rendered images must be disabled.
+
+.. versionadded:: 3.40
+%End
+
     void setRenderHints( Qgis::SymbolRenderHints hints );
 %Docstring
 Sets rendering hint flags for the symbol.
 
 .. seealso:: :py:func:`renderHints`
+%End
+
+    void setRenderHint( Qgis::SymbolRenderHint hint, bool enabled = true );
+%Docstring
+Sets a rendering ``hint`` flag for the symbol.
+
+.. seealso:: :py:func:`renderHints`
+
+.. versionadded:: 3.40
 %End
 
     void setFeature( const QgsFeature *f );
@@ -176,17 +197,19 @@ Part number of current geometry
 Sets the part number of current geometry
 %End
 
- double outputLineWidth( double width ) const /Deprecated/;
+ double outputLineWidth( double width ) const /Deprecated="Since 3.40. Use the size conversion methods in QgsRenderContext instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the size conversion methods in :py:class:`QgsRenderContext` instead.
 %End
 
- double outputPixelSize( double size ) const /Deprecated/;
+ double outputPixelSize( double size ) const /Deprecated="Since 3.40. Use the size conversion methods in QgsRenderContext instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the size conversion methods in :py:class:`QgsRenderContext` instead.
 %End
 
@@ -236,5 +259,5 @@ Sets the symbol patch ``shape``, to use if rendering symbol preview icons.
  *                                                                      *
  * src/core/symbology/qgssymbolrendercontext.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

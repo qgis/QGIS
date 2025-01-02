@@ -212,7 +212,7 @@ float arrows()
     ivec2 size=textureSize(arrowsGridTexture,0);
 
     float posX=(fs_in.worldPosition.x-arrowsMinCorner.x)/arrowsSpacing+0.5;
-    float posY=(-fs_in.worldPosition.z+arrowsMinCorner.y)/arrowsSpacing+0.5;
+    float posY=(fs_in.worldPosition.y+arrowsMinCorner.y)/arrowsSpacing+0.5;
     int gridPosX=int(posX);
     int gridPosY=int(posY);
 

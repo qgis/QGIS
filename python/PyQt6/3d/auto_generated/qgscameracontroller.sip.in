@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgscameracontroller.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,17 +17,12 @@ class QgsCameraController : QObject
 {
 %Docstring(signature="appended")
 Object that controls camera movement based on user input
-
-.. note::
-
-   Not available in Python bindings
 %End
 
 %TypeHeaderCode
 #include "qgscameracontroller.h"
 %End
   public:
-
     ~QgsCameraController();
 
 
@@ -187,6 +182,15 @@ preventing it from being instead handled by parents of the 3D window before
 the controller ever receives it.
 %End
 
+    void setOrigin( const QgsVector3D &origin );
+%Docstring
+Reacts to the shift of origin of the scene, updating camera pose and
+any other member variables so that the origin stays at the same position
+relative to other entities.
+
+.. versionadded:: 3.42
+%End
+
   public slots:
 
     void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
@@ -249,5 +253,5 @@ Emitted when the camera rotation center changes
  *                                                                      *
  * src/3d/qgscameracontroller.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

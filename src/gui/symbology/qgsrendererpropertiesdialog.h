@@ -45,7 +45,6 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRendererPropertiesDialog.
      * \param layer associated layer
@@ -133,16 +132,14 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     void syncToLayer();
 
   protected:
-
     /**
-     * Connect the given slot to the value changed event for the set of widgets
-     * Each widget is checked for type and the common type of signal is connected
-     * to the slot.
+     * Connect the value changed event for the set of widgets to
+     * widgetChanged signal. Each widget is checked for type and
+     * the common type of signal is connected to widgetChanged.
      *
      * \param widgets The list of widgets to check.
-     * \param slot The slot to connect to the signals.
      */
-    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+    void connectValueChanged( const QList<QWidget *> &widgets );
 
     // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent *event ) override;
@@ -160,7 +157,6 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     QgsFeatureRequest::OrderBy mOrderBy;
 
   private:
-
     static void initRendererWidgetFunctions();
 
     bool mDockMode = false;

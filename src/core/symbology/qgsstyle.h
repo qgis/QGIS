@@ -78,79 +78,6 @@ typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
  */
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
-// enumerators representing sqlite DB columns
-
-/**
- * Columns available in the Symbols table.
- */
-enum SymbolTable
-{
-  SymbolId, //!< Symbol ID
-  SymbolName, //!< Symbol Name
-  SymbolXML, //!< Symbol definition (as XML)
-  SymbolFavoriteId, //!< Symbol is favorite flag
-};
-
-/**
- * Columns available in the Tags table.
- */
-enum TagTable
-{
-  TagId, //!< Tag ID
-  TagName, //!< Tag name
-};
-
-/**
- * Columns available in the tag to symbol table.
- */
-enum TagmapTable
-{
-  TagmapTagId, //!< Tag ID
-  TagmapSymbolId, //!< Symbol ID
-};
-
-/**
- * Columns available in the color ramp table.
- */
-enum ColorrampTable
-{
-  ColorrampId, //!< Color ramp ID
-  ColorrampName, //!< Color ramp name
-  ColorrampXML, //!< Color ramp definition (as XML)
-  ColorrampFavoriteId, //!< Color ramp is favorite flag
-};
-
-/**
- * Columns available in the text format table.
- */
-enum TextFormatTable
-{
-  TextFormatId, //!< Text format ID
-  TextFormatName, //!< Text format name
-  TextFormatXML, //!< Text format definition (as XML)
-  TextFormatFavoriteId, //!< Text format is favorite flag
-};
-
-/**
- * Columns available in the label settings table.
- */
-enum LabelSettingsTable
-{
-  LabelSettingsId, //!< Label settings ID
-  LabelSettingsName, //!< Label settings name
-  LabelSettingsXML, //!< Label settings definition (as XML)
-  LabelSettingsFavoriteId, //!< Label settings is favorite flag
-};
-
-/**
- * Columns available in the smart group table.
- */
-enum SmartgroupTable
-{
-  SmartgroupId, //!< Smart group ID
-  SmartgroupName, //!< Smart group name
-  SmartgroupXML, //!< Smart group definition (as XML)
-};
 
 /**
  * \ingroup core
@@ -163,6 +90,99 @@ class CORE_EXPORT QgsStyle : public QObject
   public:
 
     /**
+     * Columns available in the Symbols table.
+     *
+     * \since QGIS 3.40. Prior to 3.40 this was available as SymbolTable.
+     */
+    enum class SymbolTableColumn : int
+    {
+      Id, //!< Symbol ID
+      Name, //!< Symbol Name
+      XML, //!< Symbol definition (as XML)
+      FavoriteId, //!< Symbol is favorite flag
+    };
+    Q_ENUM( SymbolTableColumn )
+
+    /**
+     * Columns available in the Tags table.
+     *
+     * \since QGIS 3.40. Prior to 3.40 this was available as TagTable.
+    */
+    enum class TagTableColumn : int
+    {
+      Id, //!< Tag ID
+      Name, //!< Tag name
+    };
+    Q_ENUM( TagTableColumn )
+
+    /**
+     * Columns available in the tag to symbol table.
+     *
+     * \since QGIS 3.40. Prior to 3.40 this was available as TagmapTable.
+    */
+    enum class TagmapTableColumn : int
+    {
+      TagId, //!< Tag ID
+      SymbolId, //!< Symbol ID
+    };
+    Q_ENUM( TagmapTableColumn )
+
+    /**
+     * Columns available in the color ramp table.
+     *
+     * \since QGIS 3.40. Prior to 3.40 this was available as ColorrampTable.
+    */
+    enum class ColorRampTableColumn : int
+    {
+      Id, //!< Color ramp ID
+      Name, //!< Color ramp name
+      XML, //!< Color ramp definition (as XML)
+      FavoriteId, //!< Color ramp is favorite flag
+    };
+    Q_ENUM( ColorRampTableColumn )
+
+    /**
+     * Columns available in the text format table.
+     *
+     * \since QGIS 3.40. Prior to 3.40 this was available as TextFormatTable.
+    */
+    enum class TextFormatTableColumn : int
+    {
+      Id, //!< Text format ID
+      Name, //!< Text format name
+      XML, //!< Text format definition (as XML)
+      FavoriteId, //!< Text format is favorite flag
+    };
+    Q_ENUM( TextFormatTableColumn )
+
+    /**
+     * Columns available in the label settings table.
+     *
+     * \since QGIS 3.40. Prior to 3.40 this was available as LabelSettingsTable.
+    */
+    enum class LabelSettingsTableColumn : int
+    {
+      Id, //!< Label settings ID
+      Name, //!< Label settings name
+      XML, //!< Label settings definition (as XML)
+      FavoriteId, //!< Label settings is favorite flag
+    };
+    Q_ENUM( LabelSettingsTableColumn )
+
+    /**
+     * Columns available in the smart group table.
+     *
+     * \since QGIS 3.40. Prior to 3.40 this was available as SmartgroupTable.
+    */
+    enum class SmartGroupTableColumn : int
+    {
+      Id, //!< Smart group ID
+      Name, //!< Smart group name
+      XML, //!< Smart group definition (as XML)
+    };
+    Q_ENUM( SmartGroupTableColumn )
+
+    /**
      * Constructor for QgsStyle, with the specified \a parent object.
      */
     QgsStyle( QObject *parent SIP_TRANSFERTHIS = nullptr );
@@ -173,7 +193,11 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  The enumerator is used for identifying the entity being operated on when generic
      *  database functions are being run.
-     *  \sa rename(), remove(), symbolsOfFavorite(), symbolsWithTag(), symbolsOfSmartgroup()
+     *  \see rename()
+     *  \see remove()
+     *  \see symbolsOfFavorite()
+     *  \see symbolsWithTag()
+     *  \see symbolsOfSmartgroup()
      */
     enum StyleEntity
     {
@@ -183,8 +207,8 @@ class CORE_EXPORT QgsStyle : public QObject
       SmartgroupEntity, //!< Smart groups
       TextFormatEntity, //!< Text formats
       LabelSettingsEntity, //!< Label settings
-      LegendPatchShapeEntity, //!< Legend patch shape (since QGIS 3.14)
-      Symbol3DEntity, //!< 3D symbol entity (since QGIS 3.14)
+      LegendPatchShapeEntity, //!< Legend patch shape \since QGIS 3.14
+      Symbol3DEntity, //!< 3D symbol entity \since QGIS 3.14
     };
 
     /**
@@ -878,7 +902,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see load()
      * \see errorString()
      *
-     * \deprecated This function has no effect.
+     * \deprecated QGIS 3.40. This function has no effect.
      */
     Q_DECL_DEPRECATED bool save( const QString &filename = QString() ) SIP_DEPRECATED;
 

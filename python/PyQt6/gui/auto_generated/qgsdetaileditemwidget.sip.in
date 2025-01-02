@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdetaileditemwidget.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,13 +22,13 @@ A widget renderer for detailed item views.
 #include "qgsdetaileditemwidget.h"
 %End
   public:
-
     QgsDetailedItemWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDetailedItemWidget
 %End
     void setData( const QgsDetailedItemData &data );
     void setChecked( bool flag );
+
 };
 
 /************************************************************************
@@ -36,5 +36,5 @@ Constructor for QgsDetailedItemWidget
  *                                                                      *
  * src/gui/qgsdetaileditemwidget.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

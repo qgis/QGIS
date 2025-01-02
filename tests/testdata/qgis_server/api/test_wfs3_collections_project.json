@@ -30,18 +30,18 @@ Content-Type: application/json
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json",
-          "rel": "item",
-          "title": "A test vector layer èé as GeoJSON",
+          "rel": "items",
+          "title": "A test wfs vector layer èé as GeoJSON",
           "type": "application/geo+json"
         },
         {
           "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html",
-          "rel": "item",
-          "title": "A test vector layer èé as HTML",
+          "rel": "items",
+          "title": "A test wfs vector layer èé as HTML",
           "type": "text/html"
         }
       ],
-      "title": "A test vector layer èé"
+      "title": "A test wfs vector layer èé"
     },
     {
       "crs": [
@@ -71,13 +71,13 @@ Content-Type: application/json
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/items.json",
-          "rel": "item",
+          "rel": "items",
           "title": "A Layer1 with a short name as GeoJSON",
           "type": "application/geo+json"
         },
         {
           "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/items.html",
-          "rel": "item",
+          "rel": "items",
           "title": "A Layer1 with a short name as HTML",
           "type": "text/html"
         }
@@ -112,13 +112,13 @@ Content-Type: application/json
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/items.json",
-          "rel": "item",
+          "rel": "items",
           "title": "A test vector layer exclude attrs as GeoJSON",
           "type": "application/geo+json"
         },
         {
           "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/items.html",
-          "rel": "item",
+          "rel": "items",
           "title": "A test vector layer exclude attrs as HTML",
           "type": "text/html"
         }
@@ -153,13 +153,13 @@ Content-Type: application/json
       "links": [
         {
           "href": "http://server.qgis.org/wfs3/collections/fields_alias/items.json",
-          "rel": "item",
+          "rel": "items",
           "title": "A test vector layer with aliases as GeoJSON",
           "type": "application/geo+json"
         },
         {
           "href": "http://server.qgis.org/wfs3/collections/fields_alias/items.html",
-          "rel": "item",
+          "rel": "items",
           "title": "A test vector layer with aliases as HTML",
           "type": "text/html"
         }

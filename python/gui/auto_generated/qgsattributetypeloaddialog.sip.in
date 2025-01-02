@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/qgsattributetypeloaddialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsAttributeTypeLoadDialog: QDialog
+class QgsAttributeTypeLoadDialog : QDialog
 {
 
 %TypeHeaderCode
@@ -54,5 +54,5 @@ Returns ``True`` if the "Add NULL value" checkbox has been checked.
  *                                                                      *
  * src/gui/qgsattributetypeloaddialog.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

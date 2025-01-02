@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilesourceregistry.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProfileSourceRegistry
+{
+%Docstring(signature="appended")
+Registry of profile sources used by :py:class:`QgsProfilePlotRenderer`
+
+:py:class:`QgsProfileSourceRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.profileSourceRegistry()`.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsprofilesourceregistry.h"
+%End
+  public:
+
+    QgsProfileSourceRegistry();
+%Docstring
+Constructor - creates a registry of profile sources
+%End
+
+    ~QgsProfileSourceRegistry();
+
+    QList< QgsAbstractProfileSource * > profileSources() const;
+%Docstring
+Returns a list of registered profile sources
+%End
+
+    void registerProfileSource( QgsAbstractProfileSource *source /Transfer/ );
+%Docstring
+Registers a profile ``source`` and takes ownership of it
+%End
+
+    void unregisterProfileSource( QgsAbstractProfileSource *source );
+%Docstring
+Unregisters a profile ``source`` and destroys its instance
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilesourceregistry.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

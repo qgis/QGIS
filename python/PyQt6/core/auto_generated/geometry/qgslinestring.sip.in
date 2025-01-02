@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgslinestring.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -245,7 +245,7 @@ Constructs a linestring with a single segment from ``p1`` to ``p2``.
 .. versionadded:: 3.2
 %End
 
-    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) /Factory/;
+    static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
 %Docstring
 Returns a new linestring created by segmentizing the bezier curve between ``start`` and ``end``, with
 the specified control points.
@@ -257,7 +257,7 @@ Any z or m values present in the input coordinates will be interpolated along wi
 .. versionadded:: 3.10
 %End
 
-    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static std::unique_ptr< QgsLineString > fromQPolygonF( const QPolygonF &polygon );
 %Docstring
 Returns a new linestring from a QPolygonF ``polygon`` input.
 
@@ -594,7 +594,7 @@ segment in the line.
     int indexOf( const QgsPoint &point ) const final;
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
-    virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+    virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
@@ -619,6 +619,8 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
     virtual QPolygonF asQPolygonF() const;
 
 
+    virtual QgsLineString *simplifyByDistance( double tolerance ) const /Factory/;
+
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
     virtual bool fromWkt( const QString &wkt );
@@ -640,6 +642,17 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
     virtual double length() const /HoldGIL/;
 
 
+
+    QVector<QgsLineString *> splitToDisjointXYParts() const /Factory/;
+%Docstring
+Divides the linestring into parts that don't share any points or lines.
+
+This method throws away Z and M coordinates.
+
+The ownership of returned pointers is transferred to the caller.
+
+.. versionadded:: 3.40
+%End
 
     double length3D() const /HoldGIL/;
 %Docstring
@@ -675,7 +688,7 @@ of the curve.
     virtual void draw( QPainter &p ) const;
 
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  throw( QgsCsException );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
@@ -716,7 +729,7 @@ Please note that the sum will be negative if the points are defined in clockwise
 Therefore, if you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
 since otherwise a bug can be introduced (such as the bug fixed for github issue 49578)
 
-.. seealso:: :py:func:`https`
+.. seealso:: https://en.wikipedia.org/wiki/Shoelace_formula#Triangle_formula
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
@@ -841,16 +854,17 @@ corresponds to the last point in the line.
 %End
 
 
- QgsBox3D calculateBoundingBox3d() const /Deprecated/;
+ QgsBox3D calculateBoundingBox3d() const /Deprecated="Since 3.34. use calculateBoundingBox3D() instead"/;
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
-Deprecated: use calculateBoundingBox3D instead
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
 .. versionadded:: 3.26
 
-.. deprecated:: QGIS 3.34
+.. deprecated:: 3.34
+
+   use :py:func:`~QgsLineString.calculateBoundingBox3D` instead
 %End
 
     virtual QgsBox3D calculateBoundingBox3D() const;
@@ -863,7 +877,7 @@ Calculates the minimal 3D bounding box for the geometry.
 .. versionadded:: 3.34
 %End
 
-    QgsLineString *measuredLine( double start, double end ) const /Factory/;
+    std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
 %Docstring
 Re-write the measure ordinate (or add one, if it isn't already there) interpolating
 the measure between the supplied ``start`` and ``end`` values.
@@ -871,7 +885,7 @@ the measure between the supplied ``start`` and ``end`` values.
 .. versionadded:: 3.36
 %End
 
-    QgsLineString *interpolateM( bool use3DDistance = true ) const /Factory/;
+    std::unique_ptr< QgsLineString > interpolateM( bool use3DDistance = true ) const;
 %Docstring
 Returns a copy of this line with all missing (NaN) m values interpolated
 from m values of surrounding vertices.
@@ -882,7 +896,35 @@ The ``use3DDistance`` controls whether 2D or 3D distances between vertices
 should be used during interpolation. This option is only considered for lines
 with z values.
 
+.. seealso:: :py:func:`lineLocatePointByM`
+
 .. versionadded:: 3.38
+%End
+
+    bool lineLocatePointByM( double m, double &x /Out/, double &y /Out/, double &z /Out/, double &distanceFromStart /Out/, bool use3DDistance = true ) const;
+%Docstring
+Attempts to locate a point on the linestring by m value.
+
+This method will linearly interpolate along line segments to find the point which corresponds to the specified m value.
+
+If the linestring contains sections with constant m values matching ``m``, then the interpolated point will be located
+at the center of these sections.
+
+Any missing (NaN) values in the linestring will be linearly interpolated from the
+m values of surrounding vertices (see :py:func:`~QgsLineString.interpolateM`).
+
+:param m: target m value
+:param use3DDistance: controls whether 2D or 3D distances between vertices should be used during interpolation. This option is only considered for lines with z values.
+
+:return: - ``True`` if a matching point was found, or ``False`` if it could not be found
+         - x: interpolated x coordinate
+         - y: interpolated y coordinate
+         - z: interpolated z coordinate (for 3D lines only)
+         - distanceFromStart: calculated distance from the start of the linestring to the located point
+
+.. seealso:: :py:func:`interpolateM`
+
+.. versionadded:: 3.40
 %End
 
   protected:
@@ -897,5 +939,5 @@ with z values.
  *                                                                      *
  * src/core/geometry/qgslinestring.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

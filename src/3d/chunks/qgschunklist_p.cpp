@@ -15,7 +15,7 @@
 
 #include "qgschunklist_p.h"
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 
 ///@cond PRIVATE
 
@@ -41,7 +41,7 @@ void QgsChunkList::insertEntry( QgsChunkListEntry *entry, QgsChunkListEntry *nex
   else
   {
     entry->next = next;
-    if ( next == nullptr )
+    if ( !next )
     {
       entry->prev = mTail;
       mTail->next = entry;
@@ -53,7 +53,7 @@ void QgsChunkList::insertEntry( QgsChunkListEntry *entry, QgsChunkListEntry *nex
       next->prev = entry;
     }
     if ( next == mHead )
-      mHead = entry;   // update head if "entry" we was head before
+      mHead = entry; // update head if "entry" we was head before
   }
   ++mCount;
 }
@@ -123,7 +123,7 @@ void QgsChunkList::insertLast( QgsChunkListEntry *entry )
 
 bool QgsChunkList::isEmpty() const
 {
-  return mHead == nullptr;
+  return !mHead;
 }
 
 /// @endcond

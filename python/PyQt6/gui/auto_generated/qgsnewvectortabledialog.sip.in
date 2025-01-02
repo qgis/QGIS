@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsnewvectortabledialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,6 @@ The actual creation of the table is delegated to the connections API method
 #include "qgsnewvectortabledialog.h"
 %End
   public:
-
     QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsNewVectorTableDialog constructor
@@ -96,8 +95,7 @@ Sets the fields to ``fields``
 
     bool createSpatialIndex();
 %Docstring
-Returns ``True`` if spatialindex checkbox is checked
-@return
+Returns ``True`` if spatialindex checkbox is checked.
 %End
 
     QStringList validationErrors() const;
@@ -114,11 +112,10 @@ Returns the validation errors or an empty list if the dialog is valid
 
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/qgsnewvectortabledialog.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

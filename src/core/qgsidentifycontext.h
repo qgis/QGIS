@@ -32,7 +32,6 @@ class CORE_EXPORT QgsIdentifyContext
 {
   public:
 
-    //! Constructor for QgsIdentifyContext
     QgsIdentifyContext() = default;
 
     /**

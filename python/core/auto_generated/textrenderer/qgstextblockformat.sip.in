@@ -1,0 +1,264 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextblockformat.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTextBlockFormat
+{
+%Docstring(signature="appended")
+Stores information relating to individual block formatting.
+
+These options encapsulate formatting options which override the default
+settings from a :py:class:`QgsTextFormat` for individual text blocks.
+
+.. warning::
+
+   This API is not considered stable and may change in future QGIS versions.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgstextblockformat.h"
+%End
+  public:
+
+    QgsTextBlockFormat();
+
+    QgsTextBlockFormat( const QTextBlockFormat &format );
+%Docstring
+Constructor for QgsTextBlockFormat, based on the specified QTextBlockFormat ``format``.
+%End
+
+    enum class BooleanValue
+    {
+      NotSet,
+      SetTrue,
+      SetFalse,
+    };
+
+    void overrideWith( const QgsTextBlockFormat &other );
+%Docstring
+Override all the default/unset properties of the current block format
+with the settings from another format.
+
+This will replace any default/unset existing settings with the
+settings from ``other``.
+
+Any settings which are default/unset in ``other`` will be left unchanged.
+
+:param other: The format to override with.
+%End
+
+    bool hasHorizontalAlignmentSet() const;
+%Docstring
+Returns ``True`` if the format has an explicit horizontal alignment set.
+
+If ``False`` is returned then the horizontal alignment will be inherited.
+
+.. seealso:: :py:func:`setHasHorizontalAlignmentSet`
+
+.. seealso:: :py:func:`horizontalAlignment`
+%End
+
+    void setHasHorizontalAlignmentSet( bool set );
+%Docstring
+Sets whether the format has an explicit horizontal alignment ``set``.
+
+If ``set`` is ``False`` then the horizontal alignment will be inherited.
+
+.. seealso:: :py:func:`hasHorizontalAlignmentSet`
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+%End
+
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+%Docstring
+Returns the format horizontal alignment.
+
+This property is only respected if :py:func:`~QgsTextBlockFormat.hasHorizontalAlignmentSet` is ``True``.
+
+.. seealso:: :py:func:`hasHorizontalAlignmentSet`
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+%End
+
+    void setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment );
+%Docstring
+Sets the format horizontal ``alignment``.
+
+This property is only respected if :py:func:`~QgsTextBlockFormat.hasHorizontalAlignmentSet` is ``True``.
+
+.. seealso:: :py:func:`hasHorizontalAlignmentSet`
+
+.. seealso:: :py:func:`horizontalAlignment`
+%End
+
+    double lineHeight() const;
+%Docstring
+Returns the line height in points, or NaN if the line height is not set
+and should be auto calculated.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeightPercentage`
+
+.. seealso:: :py:func:`setLineHeight`
+
+.. versionadded:: 3.42
+%End
+
+    void setLineHeight( double height );
+%Docstring
+Sets the font line ``height``, in points.
+
+Set ``height`` to NaN if the line height is not set
+and should be auto calculated.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeight`
+
+.. seealso:: :py:func:`setLineHeightPercentage`
+
+.. versionadded:: 3.42
+%End
+
+    double lineHeightPercentage() const;
+%Docstring
+Returns the line height percentage size (as fraction of font size from 0.0 to 1.0), or NaN if the line height percentage is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeight`
+
+.. seealso:: :py:func:`setLineHeightPercentage`
+
+.. versionadded:: 3.42
+%End
+
+    void setLineHeightPercentage( double height );
+%Docstring
+Sets the line height percentage ``height`` (as fraction of font size from 0.0 to 1.0).
+
+Set ``height`` to NaN if the line height percentange is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeightPercentage`
+
+.. seealso:: :py:func:`setLineHeight`
+
+.. versionadded:: 3.42
+%End
+
+    QgsMargins margins() const;
+%Docstring
+Returns the block margins, in points.
+
+.. seealso:: :py:func:`setMargins`
+
+.. versionadded:: 3.42
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the block margins, in points.
+
+.. seealso:: :py:func:`margins`
+
+.. versionadded:: 3.42
+%End
+
+    bool hasBackground() const;
+%Docstring
+Returns ``True`` if the block has a background set.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QBrush backgroundBrush() const;
+%Docstring
+Returns the brush used for rendering the background of the block.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundBrush( const QBrush &brush );
+%Docstring
+Sets the ``brush`` used for rendering the background of the block.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QString backgroundImagePath() const;
+%Docstring
+Returns the path for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundImagePath`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundImagePath( const QString &path );
+%Docstring
+Sets the ``path`` for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`backgroundImagePath`
+
+.. versionadded:: 3.42
+%End
+
+    void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
+%Docstring
+Updates the specified ``font`` in place, applying block formatting options which
+are applicable on a font level when rendered in the given ``context``.
+
+The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually calculations
+based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+at small font sizes.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgstextblockformat.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

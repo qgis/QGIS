@@ -52,16 +52,19 @@ QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points "
                       "representing specific vertices in the input geometries. For instance, this algorithm "
                       "can be used to extract the first or last vertices in the geometry. The attributes associated "
-                      "to each point are the same ones associated to the feature that the point belongs to." ) +
-         QStringLiteral( "\n\n" )  +
-         QObject::tr( "The vertex indices parameter accepts a comma separated string specifying the indices of the "
-                      "vertices to extract. The first vertex corresponds to an index of 0, the second vertex has an "
-                      "index of 1, etc. Negative indices can be used to find vertices at the end of the geometry, "
-                      "e.g., an index of -1 corresponds to the last vertex, -2 corresponds to the second last vertex, etc." ) +
-         QStringLiteral( "\n\n" )  +
-         QObject::tr( "Additional fields are added to the points indicating the specific vertex position (e.g., 0, -1, etc), "
-                      "the original vertex index, the vertex’s part and its index within the part (as well as its ring for "
-                      "polygons), distance along the original geometry and bisector angle of vertex for the original geometry." );
+                      "to each point are the same ones associated to the feature that the point belongs to." )
+         + QStringLiteral( "\n\n" ) + QObject::tr( "The vertex indices parameter accepts a comma separated string specifying the indices of the "
+                                                   "vertices to extract. The first vertex corresponds to an index of 0, the second vertex has an "
+                                                   "index of 1, etc. Negative indices can be used to find vertices at the end of the geometry, "
+                                                   "e.g., an index of -1 corresponds to the last vertex, -2 corresponds to the second last vertex, etc." )
+         + QStringLiteral( "\n\n" ) + QObject::tr( "Additional fields are added to the points indicating the specific vertex position (e.g., 0, -1, etc), "
+                                                   "the original vertex index, the vertex’s part and its index within the part (as well as its ring for "
+                                                   "polygons), distance along the original geometry and bisector angle of vertex for the original geometry." );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractSpecificVerticesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
 }
 
 QString QgsExtractSpecificVerticesAlgorithm::outputName() const
@@ -82,16 +85,16 @@ Qgis::ProcessingSourceType QgsExtractSpecificVerticesAlgorithm::outputLayerType(
 QgsFields QgsExtractSpecificVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "vertex_pos" ), QVariant::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_pos" ), QMetaType::Type::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QMetaType::Type::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QMetaType::Type::Int ) );
   if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
-    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int ) );
+    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QMetaType::Type::Int ) );
   }
-  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QVariant::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
-  outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QMetaType::Type::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
+  outputFields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double ) );
 
   return outputFields;
 }
@@ -128,7 +131,10 @@ void QgsExtractSpecificVerticesAlgorithm::initParameters( const QVariantMap & )
 
 bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
   mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
 
   const QString verticesString = parameterAsString( parameters, QStringLiteral( "VERTICES" ), context );

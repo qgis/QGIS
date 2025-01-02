@@ -36,7 +36,6 @@
 class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-
     QString group() const final;
     QString groupId() const final;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
@@ -44,7 +43,6 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
-
     /**
      * Adds common algorithm parameters.
      */
@@ -58,16 +56,15 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Loads point from the feature source for further processing.
      */
-    void loadPoints( QgsFeatureSource *source, QVector< QgsPointXY > &points, QHash< int, QgsAttributes > &attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    void loadPoints( QgsFeatureSource *source, QVector<QgsPointXY> &points, QHash<int, QgsAttributes> &attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
-    std::unique_ptr< QgsFeatureSource > mNetwork;
+    std::unique_ptr<QgsFeatureSource> mNetwork;
     QgsVectorLayerDirector *mDirector = nullptr;
-    std::unique_ptr< QgsGraphBuilder > mBuilder;
-    std::unique_ptr< QgsGraph > mGraph;
+    std::unique_ptr<QgsGraphBuilder> mBuilder;
+    std::unique_ptr<QgsGraph> mGraph;
     double mMultiplier = 1;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMNETWORKANALYSISBASE_H
-

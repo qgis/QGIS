@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/plot/qgsplot.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,9 +29,6 @@ Base class for plot/chart/graphs.
   public:
 
     QgsPlot();
-%Docstring
-Constructor for QgsPlot.
-%End
 
     virtual ~QgsPlot();
 
@@ -236,7 +233,7 @@ class Qgs2DPlot : QgsPlot
 Base class for 2-dimensional plot/chart/graphs.
 
 The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
-can implement the :py:func:`~QgsPlotAxis.renderContent` method to render their actual plot content.
+can implement the :py:func:`~renderContent` method to render their actual plot content.
 
 .. warning::
 
@@ -260,9 +257,6 @@ Constructor for Qgs2DPlot.
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
-%Docstring
-Qgs2DPlot cannot be copied
-%End
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
@@ -492,5 +486,5 @@ Returns the default fill symbol to use for the chart area border.
  *                                                                      *
  * src/core/plot/qgsplot.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "moc_qgsmapthemecollection.cpp"
 
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )
@@ -443,121 +444,10 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
   QDomElement visPresetElem = visPresetsElem.firstChildElement( QStringLiteral( "visibility-preset" ) );
   while ( !visPresetElem.isNull() )
   {
-    QHash<QString, MapThemeLayerRecord> layerRecords; // key = layer ID
-
-    bool expandedStateInfo = false;
-    if ( visPresetElem.hasAttribute( QStringLiteral( "has-expanded-info" ) ) )
-      expandedStateInfo = visPresetElem.attribute( QStringLiteral( "has-expanded-info" ) ).toInt();
-
-    bool checkedStateInfo = false;
-    if ( visPresetElem.hasAttribute( QStringLiteral( "has-checked-group-info" ) ) )
-      checkedStateInfo = visPresetElem.attribute( QStringLiteral( "has-checked-group-info" ) ).toInt();
-
     QString presetName = visPresetElem.attribute( QStringLiteral( "name" ) );
-    QDomElement visPresetLayerElem = visPresetElem.firstChildElement( QStringLiteral( "layer" ) );
-    while ( !visPresetLayerElem.isNull() )
-    {
-      QString layerID = visPresetLayerElem.attribute( QStringLiteral( "id" ) );
-      if ( QgsMapLayer *layer = mProject->mapLayer( layerID ) )
-      {
-        layerRecords[layerID] = MapThemeLayerRecord( layer );
-        layerRecords[layerID].isVisible = visPresetLayerElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
-
-        if ( visPresetLayerElem.hasAttribute( QStringLiteral( "style" ) ) )
-        {
-          layerRecords[layerID].usingCurrentStyle = true;
-          layerRecords[layerID].currentStyle = visPresetLayerElem.attribute( QStringLiteral( "style" ) );
-        }
-
-        if ( visPresetLayerElem.hasAttribute( QStringLiteral( "expanded" ) ) )
-          layerRecords[layerID].expandedLayerNode = visPresetLayerElem.attribute( QStringLiteral( "expanded" ) ).toInt();
-      }
-      visPresetLayerElem = visPresetLayerElem.nextSiblingElement( QStringLiteral( "layer" ) );
-    }
-
-    QDomElement checkedLegendNodesElem = visPresetElem.firstChildElement( QStringLiteral( "checked-legend-nodes" ) );
-    while ( !checkedLegendNodesElem.isNull() )
-    {
-      QSet<QString> checkedLegendNodes;
-
-      QDomElement checkedLegendNodeElem = checkedLegendNodesElem.firstChildElement( QStringLiteral( "checked-legend-node" ) );
-      while ( !checkedLegendNodeElem.isNull() )
-      {
-        checkedLegendNodes << checkedLegendNodeElem.attribute( QStringLiteral( "id" ) );
-        checkedLegendNodeElem = checkedLegendNodeElem.nextSiblingElement( QStringLiteral( "checked-legend-node" ) );
-      }
-
-      QString layerID = checkedLegendNodesElem.attribute( QStringLiteral( "id" ) );
-      if ( mProject->mapLayer( layerID ) ) // only use valid IDs
-      {
-        layerRecords[layerID].usingLegendItems = true;
-        layerRecords[layerID].checkedLegendItems = checkedLegendNodes;
-      }
-      checkedLegendNodesElem = checkedLegendNodesElem.nextSiblingElement( QStringLiteral( "checked-legend-nodes" ) );
-    }
-
-    QSet<QString> expandedGroupNodes;
-    if ( expandedStateInfo )
-    {
-      // expanded state of legend nodes
-      QDomElement expandedLegendNodesElem = visPresetElem.firstChildElement( QStringLiteral( "expanded-legend-nodes" ) );
-      while ( !expandedLegendNodesElem.isNull() )
-      {
-        QSet<QString> expandedLegendNodes;
-
-        QDomElement expandedLegendNodeElem = expandedLegendNodesElem.firstChildElement( QStringLiteral( "expanded-legend-node" ) );
-        while ( !expandedLegendNodeElem.isNull() )
-        {
-          expandedLegendNodes << expandedLegendNodeElem.attribute( QStringLiteral( "id" ) );
-          expandedLegendNodeElem = expandedLegendNodeElem.nextSiblingElement( QStringLiteral( "expanded-legend-node" ) );
-        }
-
-        QString layerID = expandedLegendNodesElem.attribute( QStringLiteral( "id" ) );
-        if ( mProject->mapLayer( layerID ) ) // only use valid IDs
-        {
-          layerRecords[layerID].expandedLegendItems = expandedLegendNodes;
-        }
-        expandedLegendNodesElem = expandedLegendNodesElem.nextSiblingElement( QStringLiteral( "expanded-legend-nodes" ) );
-      }
-
-      // expanded state of group nodes
-      QDomElement expandedGroupNodesElem = visPresetElem.firstChildElement( QStringLiteral( "expanded-group-nodes" ) );
-      if ( !expandedGroupNodesElem.isNull() )
-      {
-        QDomElement expandedGroupNodeElem = expandedGroupNodesElem.firstChildElement( QStringLiteral( "expanded-group-node" ) );
-        while ( !expandedGroupNodeElem.isNull() )
-        {
-          expandedGroupNodes << expandedGroupNodeElem.attribute( QStringLiteral( "id" ) );
-          expandedGroupNodeElem = expandedGroupNodeElem.nextSiblingElement( QStringLiteral( "expanded-group-node" ) );
-        }
-      }
-    }
-
-    QSet<QString> checkedGroupNodes;
-    if ( checkedStateInfo )
-    {
-      // expanded state of legend nodes
-      QDomElement checkedGroupNodesElem = visPresetElem.firstChildElement( QStringLiteral( "checked-group-nodes" ) );
-      if ( !checkedGroupNodesElem.isNull() )
-      {
-        QDomElement checkedGroupNodeElem = checkedGroupNodesElem.firstChildElement( QStringLiteral( "checked-group-node" ) );
-        while ( !checkedGroupNodeElem.isNull() )
-        {
-          checkedGroupNodes << checkedGroupNodeElem.attribute( QStringLiteral( "id" ) );
-          checkedGroupNodeElem = checkedGroupNodeElem.nextSiblingElement( QStringLiteral( "checked-group-node" ) );
-        }
-      }
-    }
-
-    MapThemeRecord rec;
-    rec.setLayerRecords( layerRecords.values() );
-    rec.setHasExpandedStateInfo( expandedStateInfo );
-    rec.setExpandedGroupNodes( expandedGroupNodes );
-    rec.setHasCheckedStateInfo( checkedStateInfo );
-    rec.setCheckedGroupNodes( checkedGroupNodes );
+    QgsMapThemeCollection::MapThemeRecord rec = QgsMapThemeCollection::MapThemeRecord::readXml( visPresetElem, mProject );
     mMapThemes.insert( presetName, rec );
     emit mapThemeChanged( presetName );
-
     visPresetElem = visPresetElem.nextSiblingElement( QStringLiteral( "visibility-preset" ) );
   }
 
@@ -565,7 +455,7 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
   emit mapThemesChanged();
 }
 
-void QgsMapThemeCollection::writeXml( QDomDocument &doc )
+void QgsMapThemeCollection::writeXml( QDomDocument &doc ) const
 {
   QDomElement visPresetsElem = doc.createElement( QStringLiteral( "visibility-presets" ) );
 
@@ -577,77 +467,9 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
   {
     const MapThemeRecord &rec = mMapThemes.value( grpName );
     QDomElement visPresetElem = doc.createElement( QStringLiteral( "visibility-preset" ) );
+
     visPresetElem.setAttribute( QStringLiteral( "name" ), grpName );
-    if ( rec.hasExpandedStateInfo() )
-      visPresetElem.setAttribute( QStringLiteral( "has-expanded-info" ), QStringLiteral( "1" ) );
-    if ( rec.hasCheckedStateInfo() )
-      visPresetElem.setAttribute( QStringLiteral( "has-checked-group-info" ), QStringLiteral( "1" ) );
-    for ( const MapThemeLayerRecord &layerRec : std::as_const( rec.mLayerRecords ) )
-    {
-      if ( !layerRec.layer() )
-        continue;
-      QString layerID = layerRec.layer()->id();
-      QDomElement layerElem = doc.createElement( QStringLiteral( "layer" ) );
-      layerElem.setAttribute( QStringLiteral( "id" ), layerID );
-      layerElem.setAttribute( QStringLiteral( "visible" ), layerRec.isVisible ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-      if ( layerRec.usingCurrentStyle )
-        layerElem.setAttribute( QStringLiteral( "style" ), layerRec.currentStyle );
-      visPresetElem.appendChild( layerElem );
-
-      if ( layerRec.usingLegendItems )
-      {
-        QDomElement checkedLegendNodesElem = doc.createElement( QStringLiteral( "checked-legend-nodes" ) );
-        checkedLegendNodesElem.setAttribute( QStringLiteral( "id" ), layerID );
-        for ( const QString &checkedLegendNode : std::as_const( layerRec.checkedLegendItems ) )
-        {
-          QDomElement checkedLegendNodeElem = doc.createElement( QStringLiteral( "checked-legend-node" ) );
-          checkedLegendNodeElem.setAttribute( QStringLiteral( "id" ), checkedLegendNode );
-          checkedLegendNodesElem.appendChild( checkedLegendNodeElem );
-        }
-        visPresetElem.appendChild( checkedLegendNodesElem );
-      }
-
-      if ( rec.hasExpandedStateInfo() )
-      {
-        layerElem.setAttribute( QStringLiteral( "expanded" ), layerRec.expandedLayerNode ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-
-        QDomElement expandedLegendNodesElem = doc.createElement( QStringLiteral( "expanded-legend-nodes" ) );
-        expandedLegendNodesElem.setAttribute( QStringLiteral( "id" ), layerID );
-        for ( const QString &expandedLegendNode : std::as_const( layerRec.expandedLegendItems ) )
-        {
-          QDomElement expandedLegendNodeElem = doc.createElement( QStringLiteral( "expanded-legend-node" ) );
-          expandedLegendNodeElem.setAttribute( QStringLiteral( "id" ), expandedLegendNode );
-          expandedLegendNodesElem.appendChild( expandedLegendNodeElem );
-        }
-        visPresetElem.appendChild( expandedLegendNodesElem );
-      }
-    }
-
-    if ( rec.hasCheckedStateInfo() )
-    {
-      QDomElement checkedGroupElems = doc.createElement( QStringLiteral( "checked-group-nodes" ) );
-      const QSet<QString> checkedGroupNodes = rec.checkedGroupNodes();
-      for ( const QString &groupId : checkedGroupNodes )
-      {
-        QDomElement checkedGroupElem = doc.createElement( QStringLiteral( "checked-group-node" ) );
-        checkedGroupElem.setAttribute( QStringLiteral( "id" ), groupId );
-        checkedGroupElems.appendChild( checkedGroupElem );
-      }
-      visPresetElem.appendChild( checkedGroupElems );
-    }
-
-    if ( rec.hasExpandedStateInfo() )
-    {
-      QDomElement expandedGroupElems = doc.createElement( QStringLiteral( "expanded-group-nodes" ) );
-      const QSet<QString> expandedGroupNodes = rec.expandedGroupNodes();
-      for ( const QString &groupId : expandedGroupNodes )
-      {
-        QDomElement expandedGroupElem = doc.createElement( QStringLiteral( "expanded-group-node" ) );
-        expandedGroupElem.setAttribute( QStringLiteral( "id" ), groupId );
-        expandedGroupElems.appendChild( expandedGroupElem );
-      }
-      visPresetElem.appendChild( expandedGroupElems );
-    }
+    rec.writeXml( visPresetElem, doc );
 
     visPresetsElem.appendChild( visPresetElem );
   }
@@ -738,6 +560,197 @@ QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeColl
       validSet.insert( lLayer, layerRec );
   }
   return validSet;
+}
+
+QgsMapThemeCollection::MapThemeRecord QgsMapThemeCollection::MapThemeRecord::readXml( const QDomElement &element, const QgsProject *project )
+{
+  QHash<QString, MapThemeLayerRecord> layerRecords; // key = layer ID
+
+  bool expandedStateInfo = false;
+  if ( element.hasAttribute( QStringLiteral( "has-expanded-info" ) ) )
+    expandedStateInfo = element.attribute( QStringLiteral( "has-expanded-info" ) ).toInt();
+
+  bool checkedStateInfo = false;
+  if ( element.hasAttribute( QStringLiteral( "has-checked-group-info" ) ) )
+    checkedStateInfo = element.attribute( QStringLiteral( "has-checked-group-info" ) ).toInt();
+
+  QDomElement visPresetLayerElem = element.firstChildElement( QStringLiteral( "layer" ) );
+  while ( !visPresetLayerElem.isNull() )
+  {
+    QString layerID = visPresetLayerElem.attribute( QStringLiteral( "id" ) );
+    if ( QgsMapLayer *layer = project->mapLayer( layerID ) )
+    {
+      layerRecords[layerID] = MapThemeLayerRecord( layer );
+      layerRecords[layerID].isVisible = visPresetLayerElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
+
+      if ( visPresetLayerElem.hasAttribute( QStringLiteral( "style" ) ) )
+      {
+        layerRecords[layerID].usingCurrentStyle = true;
+        layerRecords[layerID].currentStyle = visPresetLayerElem.attribute( QStringLiteral( "style" ) );
+      }
+
+      if ( visPresetLayerElem.hasAttribute( QStringLiteral( "expanded" ) ) )
+        layerRecords[layerID].expandedLayerNode = visPresetLayerElem.attribute( QStringLiteral( "expanded" ) ).toInt();
+    }
+    visPresetLayerElem = visPresetLayerElem.nextSiblingElement( QStringLiteral( "layer" ) );
+  }
+
+  QDomElement checkedLegendNodesElem = element.firstChildElement( QStringLiteral( "checked-legend-nodes" ) );
+  while ( !checkedLegendNodesElem.isNull() )
+  {
+    QSet<QString> checkedLegendNodes;
+
+    QDomElement checkedLegendNodeElem = checkedLegendNodesElem.firstChildElement( QStringLiteral( "checked-legend-node" ) );
+    while ( !checkedLegendNodeElem.isNull() )
+    {
+      checkedLegendNodes << checkedLegendNodeElem.attribute( QStringLiteral( "id" ) );
+      checkedLegendNodeElem = checkedLegendNodeElem.nextSiblingElement( QStringLiteral( "checked-legend-node" ) );
+    }
+
+    QString layerID = checkedLegendNodesElem.attribute( QStringLiteral( "id" ) );
+    if ( project->mapLayer( layerID ) ) // only use valid IDs
+    {
+      layerRecords[layerID].usingLegendItems = true;
+      layerRecords[layerID].checkedLegendItems = checkedLegendNodes;
+    }
+    checkedLegendNodesElem = checkedLegendNodesElem.nextSiblingElement( QStringLiteral( "checked-legend-nodes" ) );
+  }
+
+  QSet<QString> expandedGroupNodes;
+  if ( expandedStateInfo )
+  {
+    // expanded state of legend nodes
+    QDomElement expandedLegendNodesElem = element.firstChildElement( QStringLiteral( "expanded-legend-nodes" ) );
+    while ( !expandedLegendNodesElem.isNull() )
+    {
+      QSet<QString> expandedLegendNodes;
+
+      QDomElement expandedLegendNodeElem = expandedLegendNodesElem.firstChildElement( QStringLiteral( "expanded-legend-node" ) );
+      while ( !expandedLegendNodeElem.isNull() )
+      {
+        expandedLegendNodes << expandedLegendNodeElem.attribute( QStringLiteral( "id" ) );
+        expandedLegendNodeElem = expandedLegendNodeElem.nextSiblingElement( QStringLiteral( "expanded-legend-node" ) );
+      }
+
+      QString layerID = expandedLegendNodesElem.attribute( QStringLiteral( "id" ) );
+      if ( project->mapLayer( layerID ) ) // only use valid IDs
+      {
+        layerRecords[layerID].expandedLegendItems = expandedLegendNodes;
+      }
+      expandedLegendNodesElem = expandedLegendNodesElem.nextSiblingElement( QStringLiteral( "expanded-legend-nodes" ) );
+    }
+
+    // expanded state of group nodes
+    QDomElement expandedGroupNodesElem = element.firstChildElement( QStringLiteral( "expanded-group-nodes" ) );
+    if ( !expandedGroupNodesElem.isNull() )
+    {
+      QDomElement expandedGroupNodeElem = expandedGroupNodesElem.firstChildElement( QStringLiteral( "expanded-group-node" ) );
+      while ( !expandedGroupNodeElem.isNull() )
+      {
+        expandedGroupNodes << expandedGroupNodeElem.attribute( QStringLiteral( "id" ) );
+        expandedGroupNodeElem = expandedGroupNodeElem.nextSiblingElement( QStringLiteral( "expanded-group-node" ) );
+      }
+    }
+  }
+
+  QSet<QString> checkedGroupNodes;
+  if ( checkedStateInfo )
+  {
+    // expanded state of legend nodes
+    QDomElement checkedGroupNodesElem = element.firstChildElement( QStringLiteral( "checked-group-nodes" ) );
+    if ( !checkedGroupNodesElem.isNull() )
+    {
+      QDomElement checkedGroupNodeElem = checkedGroupNodesElem.firstChildElement( QStringLiteral( "checked-group-node" ) );
+      while ( !checkedGroupNodeElem.isNull() )
+      {
+        checkedGroupNodes << checkedGroupNodeElem.attribute( QStringLiteral( "id" ) );
+        checkedGroupNodeElem = checkedGroupNodeElem.nextSiblingElement( QStringLiteral( "checked-group-node" ) );
+      }
+    }
+  }
+
+  MapThemeRecord rec;
+  rec.setLayerRecords( layerRecords.values() );
+  rec.setHasExpandedStateInfo( expandedStateInfo );
+  rec.setExpandedGroupNodes( expandedGroupNodes );
+  rec.setHasCheckedStateInfo( checkedStateInfo );
+  rec.setCheckedGroupNodes( checkedGroupNodes );
+
+  return rec;
+}
+
+void QgsMapThemeCollection::MapThemeRecord::writeXml( QDomElement element, QDomDocument &document ) const
+{
+  if ( hasExpandedStateInfo() )
+    element.setAttribute( QStringLiteral( "has-expanded-info" ), QStringLiteral( "1" ) );
+  if ( hasCheckedStateInfo() )
+    element.setAttribute( QStringLiteral( "has-checked-group-info" ), QStringLiteral( "1" ) );
+  for ( const MapThemeLayerRecord &layerRec : std::as_const( mLayerRecords ) )
+  {
+    if ( !layerRec.layer() )
+      continue;
+    QString layerID = layerRec.layer()->id();
+    QDomElement layerElem = document.createElement( QStringLiteral( "layer" ) );
+    layerElem.setAttribute( QStringLiteral( "id" ), layerID );
+    layerElem.setAttribute( QStringLiteral( "visible" ), layerRec.isVisible ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    if ( layerRec.usingCurrentStyle )
+      layerElem.setAttribute( QStringLiteral( "style" ), layerRec.currentStyle );
+    element.appendChild( layerElem );
+
+    if ( layerRec.usingLegendItems )
+    {
+      QDomElement checkedLegendNodesElem = document.createElement( QStringLiteral( "checked-legend-nodes" ) );
+      checkedLegendNodesElem.setAttribute( QStringLiteral( "id" ), layerID );
+      for ( const QString &checkedLegendNode : std::as_const( layerRec.checkedLegendItems ) )
+      {
+        QDomElement checkedLegendNodeElem = document.createElement( QStringLiteral( "checked-legend-node" ) );
+        checkedLegendNodeElem.setAttribute( QStringLiteral( "id" ), checkedLegendNode );
+        checkedLegendNodesElem.appendChild( checkedLegendNodeElem );
+      }
+      element.appendChild( checkedLegendNodesElem );
+    }
+
+    if ( hasExpandedStateInfo() )
+    {
+      layerElem.setAttribute( QStringLiteral( "expanded" ), layerRec.expandedLayerNode ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
+      QDomElement expandedLegendNodesElem = document.createElement( QStringLiteral( "expanded-legend-nodes" ) );
+      expandedLegendNodesElem.setAttribute( QStringLiteral( "id" ), layerID );
+      for ( const QString &expandedLegendNode : std::as_const( layerRec.expandedLegendItems ) )
+      {
+        QDomElement expandedLegendNodeElem = document.createElement( QStringLiteral( "expanded-legend-node" ) );
+        expandedLegendNodeElem.setAttribute( QStringLiteral( "id" ), expandedLegendNode );
+        expandedLegendNodesElem.appendChild( expandedLegendNodeElem );
+      }
+      element.appendChild( expandedLegendNodesElem );
+    }
+  }
+
+  if ( hasCheckedStateInfo() )
+  {
+    QDomElement checkedGroupElems = document.createElement( QStringLiteral( "checked-group-nodes" ) );
+    const QSet<QString> _checkedGroupNodes = checkedGroupNodes();
+    for ( const QString &groupId : _checkedGroupNodes )
+    {
+      QDomElement checkedGroupElem = document.createElement( QStringLiteral( "checked-group-node" ) );
+      checkedGroupElem.setAttribute( QStringLiteral( "id" ), groupId );
+      checkedGroupElems.appendChild( checkedGroupElem );
+    }
+    element.appendChild( checkedGroupElems );
+  }
+
+  if ( hasExpandedStateInfo() )
+  {
+    QDomElement expandedGroupElems = document.createElement( QStringLiteral( "expanded-group-nodes" ) );
+    const QSet<QString> _expandedGroupNodes = expandedGroupNodes();
+    for ( const QString &groupId : _expandedGroupNodes )
+    {
+      QDomElement expandedGroupElem = document.createElement( QStringLiteral( "expanded-group-node" ) );
+      expandedGroupElem.setAttribute( QStringLiteral( "id" ), groupId );
+      expandedGroupElems.appendChild( expandedGroupElem );
+    }
+    element.appendChild( expandedGroupElems );
+  }
 }
 
 void QgsMapThemeCollection::MapThemeLayerRecord::setLayer( QgsMapLayer *layer )

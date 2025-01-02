@@ -664,7 +664,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -732,7 +732,7 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
     if ( extraNodesPerSegment < 0 )
     {
       // distance mode
-      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x2, y2, x1, y1 ) / distance );
+      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ) / distance );
       if ( extraNodesThisSegment >= 1 )
         multiplier = 1.0 / ( extraNodesThisSegment + 1 );
     }
@@ -823,7 +823,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -859,7 +859,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -1230,6 +1230,7 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
   QgsTessellator t( bounds, false, false, false, true );
+  t.setOutputZUp( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {
@@ -1285,14 +1286,14 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
       return QVector< QgsPointXY >();
 
     const float aX = *it++;
+    const float aY = *it++;
     ( void )it++; // z
-    const float aY = -( *it++ );
     const float bX = *it++;
+    const float bY = *it++;
     ( void )it++; // z
-    const float bY = -( *it++ );
     const float cX = *it++;
+    const float cY = *it++;
     ( void )it++; // z
-    const float cY = -( *it++ );
 
     const double area = QgsGeometryUtilsBase::triangleArea( aX, aY, bX, bY, cX, cY );
     totalArea += area;
@@ -1338,11 +1339,11 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 
     // get triangle
     const double aX = triangleData.at( triangleIndex * 9 ) + bounds.xMinimum();
-    const double aY = -triangleData.at( triangleIndex * 9 + 2 ) + bounds.yMinimum();
+    const double aY = triangleData.at( triangleIndex * 9 + 1 ) + bounds.yMinimum();
     const double bX = triangleData.at( triangleIndex * 9 + 3 ) + bounds.xMinimum();
-    const double bY = -triangleData.at( triangleIndex * 9 + 5 ) + bounds.yMinimum();
+    const double bY = triangleData.at( triangleIndex * 9 + 4 ) + bounds.yMinimum();
     const double cX = triangleData.at( triangleIndex * 9 + 6 ) + bounds.xMinimum();
-    const double cY = -triangleData.at( triangleIndex * 9 + 8 ) + bounds.yMinimum();
+    const double cY = triangleData.at( triangleIndex * 9 + 7 ) + bounds.yMinimum();
     QgsGeometryUtilsBase::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
 
     QgsPointXY candidate( x, y );
@@ -1786,7 +1787,7 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2090,7 +2091,7 @@ QgsGeometry QgsInternalGeometryEngine::triangularWaves( double wavelength, doubl
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2133,7 +2134,7 @@ QgsGeometry QgsInternalGeometryEngine::triangularWavesRandomized( double minimum
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2386,7 +2387,7 @@ QgsGeometry QgsInternalGeometryEngine::squareWaves( double wavelength, double am
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2429,7 +2430,7 @@ QgsGeometry QgsInternalGeometryEngine::squareWavesRandomized( double minimumWave
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2802,7 +2803,7 @@ QgsGeometry QgsInternalGeometryEngine::roundWaves( double wavelength, double amp
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -2845,7 +2846,7 @@ QgsGeometry QgsInternalGeometryEngine::roundWavesRandomized( double minimumWavel
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
     for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
-      first.addPart( g );
+      first.addPartV2( g );
     }
     return first;
   }
@@ -3161,13 +3162,13 @@ QgsGeometry QgsInternalGeometryEngine::applyDashPattern( const QVector<double> &
       {
         for ( int j = 0; j < collection->numGeometries(); ++j )
         {
-          first.addPart( collection->geometryN( j )->clone() );
+          first.addPartV2( collection->geometryN( j )->clone() );
         }
         delete collection;
       }
       else
       {
-        first.addPart( g );
+        first.addPartV2( g );
       }
     }
     return first;

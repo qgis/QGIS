@@ -220,13 +220,11 @@ class CORE_EXPORT QgsLineSegment2D
 
     // TODO c++20 - replace with = default
 
-    //! Equality operator
     bool operator==( const QgsLineSegment2D &other ) const SIP_HOLDGIL
     {
       return mStart == other.mStart && mEnd == other.mEnd;
     }
 
-    //! Inequality operator
     bool operator!=( const QgsLineSegment2D &other ) const SIP_HOLDGIL
     {
       return mStart != other.mStart || mEnd != other.mEnd;

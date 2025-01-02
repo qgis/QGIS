@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgssinglebandgrayrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,18 +43,20 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
 
- int grayBand() const /Deprecated/;
+ int grayBand() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsSingleBandGrayRenderer.inputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandGrayRenderer.inputBand` instead.
 %End
 
- void setGrayBand( int band ) /Deprecated/;
+ void setGrayBand( int band ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
 %Docstring
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsSingleBandGrayRenderer.setInputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandGrayRenderer.setInputBand` instead.
 %End
 
     virtual int inputBand() const;
@@ -105,6 +107,7 @@ Ownership of ``settings`` is transferred.
 .. versionadded:: 3.18
 %End
 
+
   private:
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
     const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & );
@@ -115,5 +118,5 @@ Ownership of ``settings`` is transferred.
  *                                                                      *
  * src/core/raster/qgssinglebandgrayrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

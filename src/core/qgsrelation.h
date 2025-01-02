@@ -37,6 +37,8 @@ class QgsPolymorphicRelation;
 /**
  * \ingroup core
  * \class QgsRelation
+ *
+ * \brief Represents a relationship between two vector layers.
  */
 class CORE_EXPORT QgsRelation
 {
@@ -231,7 +233,8 @@ class CORE_EXPORT QgsRelation
      *
      * \param feature A feature from the referencing (child) layer
      *
-     * \returns A request the referenced feature
+     * \returns The referenced (parent) feature, or an invalid feature if no matching feature
+     * was found
      */
     QgsFeature getReferencedFeature( const QgsFeature &feature ) const;
 
@@ -329,6 +332,12 @@ class CORE_EXPORT QgsRelation
      * \returns A list of attributes
      */
     QgsAttributeList referencingFields() const;
+
+    /**
+     * Returns TRUE if none of the referencing fields has a NOT NULL constraint.
+     * \since QGIS 3.28
+     */
+    bool referencingFieldsAllowNull() const;
 
     /**
      * Returns the validity of this relation. Don't use the information if it's not valid.

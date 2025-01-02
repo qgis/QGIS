@@ -44,7 +44,6 @@ class CORE_EXPORT QgsCPLHTTPFetchOverrider
     //! Installs the redirection for the current thread
     explicit QgsCPLHTTPFetchOverrider( const QString &authCfg = QString(), QgsFeedback *feedback = nullptr );
 
-    //! Destructor
     ~QgsCPLHTTPFetchOverrider();
 
     //! Define attribute that must be forwarded to the actual QNetworkRequest

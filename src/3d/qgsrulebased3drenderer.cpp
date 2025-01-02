@@ -20,10 +20,7 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
+#include "qgsfeature3dhandler_p.h"
 #include "qgsrulebasedchunkloader_p.h"
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
@@ -265,12 +262,12 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
 }
 
 
-void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
 {
   if ( mSymbol )
   {
     QgsFeature3DHandler *handler = handlers[this];
-    if ( !handler->prepare( context, attributeNames ) )
+    if ( !handler->prepare( context, attributeNames, chunkOrigin ) )
     {
       handlers.remove( this );
       delete handler;
@@ -286,7 +283,7 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   // call recursively
   for ( Rule *rule : std::as_const( mChildren ) )
   {
-    rule->prepare( context, attributeNames, handlers );
+    rule->prepare( context, attributeNames, chunkOrigin, handlers );
   }
 }
 
@@ -341,7 +338,7 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
 
 bool QgsRuleBased3DRenderer::Rule::isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const
 {
-  if ( ! mFilter || mElseRule )
+  if ( !mFilter || mElseRule )
     return true;
 
   context.expressionContext().setFeature( f );
@@ -381,7 +378,7 @@ QgsRuleBased3DRenderer *QgsRuleBased3DRenderer::clone() const
   return r;
 }
 
-Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
+Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( Qgs3DMapSettings *map ) const
 {
   QgsVectorLayer *vl = layer();
 
@@ -396,7 +393,7 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
   constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
 
-  return new QgsRuleBasedChunkedEntity( vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mRootRule, map );
+  return new QgsRuleBasedChunkedEntity( map, vl, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), mRootRule );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

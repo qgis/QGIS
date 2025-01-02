@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsconnectionregistry.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -34,7 +34,7 @@ Constructor for QgsConnectionRegistry.
 %End
 
 
-    QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
+    QgsAbstractProviderConnection *createConnection( const QString &name )  /Factory/;
 %Docstring
 Creates a new connection by loading the connection with the given ``id`` from the settings.
 
@@ -57,5 +57,5 @@ Ownership is transferred to the caller.
  *                                                                      *
  * src/core/qgsconnectionregistry.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

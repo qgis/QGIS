@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/diagram/qgsstackeddiagram.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsStackedDiagram : QgsDiagram /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+A diagram composed of several subdiagrams, located side by side.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsstackeddiagram.h"
+%End
+  public:
+
+    QgsStackedDiagram();
+
+    virtual QgsStackedDiagram *clone() const /Factory/;
+
+
+    void subDiagramPosition( QPointF &newPos, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramSettings &subSettings );
+%Docstring
+Calculates the position for the next subdiagram, updating the ``newPos`` object.
+
+:param newPos: out: position of the previous diagram
+:param c: renderer context
+:param s: stacked diagram settings
+:param subSettings: previous subdiagram settings
+%End
+
+    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position );
+
+
+    virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s );
+
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is );
+
+    virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
+
+    virtual QString diagramName() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/diagram/qgsstackeddiagram.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

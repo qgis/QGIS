@@ -19,6 +19,7 @@
 #include "qgsattributedialog.h"
 #include "qgsdistancearea.h"
 #include "qgsfeatureaction.h"
+#include "moc_qgsfeatureaction.cpp"
 #include "qgslogger.h"
 #include "qgshighlight.h"
 #include "qgsproject.h"
@@ -72,7 +73,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
 #else
   dialog->setWindowFlags( dialog->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint );
-  if ( ! dialog->parent() )
+  if ( !dialog->parent() )
     dialog->setWindowFlag( Qt::WindowStaysOnTopHint );
 #endif
 
@@ -173,7 +174,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr< QgsExpressionContextScope > scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight )
+QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal, std::unique_ptr<QgsExpressionContextScope> scope, bool hideParent, std::unique_ptr<QgsHighlight> highlight )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return AddFeatureResult::LayerStateError;
@@ -190,12 +191,12 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
     {
       initialAttributeValues.insert( idx, defaultAttributes.value( idx ) );
     }
-    else if ( ( reuseAllLastValues || mLayer->editFormConfig().reuseLastValue( idx ) ) && sLastUsedValues()->contains( mLayer ) && ( *sLastUsedValues() )[ mLayer ].contains( idx ) )
+    else if ( ( reuseAllLastValues || mLayer->editFormConfig().reuseLastValue( idx ) ) && sLastUsedValues()->contains( mLayer ) && ( *sLastUsedValues() )[mLayer].contains( idx ) )
     {
       // Only set initial attribute value if it's different from the default clause or we may trigger
       // unique constraint checks for no reason, see https://github.com/qgis/QGIS/issues/42909
-      if ( mLayer->dataProvider() && mLayer->dataProvider()->defaultValueClause( idx ) != ( *sLastUsedValues() )[ mLayer ][idx] )
-        initialAttributeValues.insert( idx, ( *sLastUsedValues() )[ mLayer ][idx] );
+      if ( mLayer->dataProvider() && mLayer->dataProvider()->defaultValueClause( idx ) != ( *sLastUsedValues() )[mLayer][idx] )
+        initialAttributeValues.insert( idx, ( *sLastUsedValues() )[mLayer][idx] );
     }
   }
 
@@ -203,10 +204,11 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
   // values and field constraints
   QgsExpressionContext context = mLayer->createExpressionContext();
   if ( scope )
+  {
     context.appendScope( scope.release() );
+  }
 
-  const QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues,
-                                &context );
+  const QgsFeature newFeature = QgsVectorLayerUtils::createFeature( mLayer, mFeature->geometry(), initialAttributeValues, &context );
   *mFeature = newFeature;
 
   //show the dialog to enter attribute values
@@ -320,11 +322,11 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     const QgsAttributes newValues = feature.attributes();
-    QgsAttributeMap origValues = ( *sLastUsedValues() )[ mLayer ];
+    QgsAttributeMap origValues = ( *sLastUsedValues() )[mLayer];
     if ( origValues[idx] != newValues.at( idx ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Saving %1 for %2" ).arg( ( *sLastUsedValues() )[ mLayer ][idx].toString() ).arg( idx ), 2 );
-      ( *sLastUsedValues() )[ mLayer ][idx] = newValues.at( idx );
+      QgsDebugMsgLevel( QStringLiteral( "Saving %1 for %2" ).arg( ( *sLastUsedValues() )[mLayer][idx].toString() ).arg( idx ), 2 );
+      ( *sLastUsedValues() )[mLayer][idx] = newValues.at( idx );
     }
   }
 }

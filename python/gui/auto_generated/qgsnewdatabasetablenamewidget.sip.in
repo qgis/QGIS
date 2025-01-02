@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsnewdatabasetablenamewidget.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,14 +32,11 @@ getters.
 #include "qgsnewdatabasetablenamewidget.h"
 %End
   public:
-
-    explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = 0,
-                                            const QStringList &providersFilter = QStringList(),
-                                            QWidget *parent = 0 );
+    explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = 0, const QStringList &providersFilter = QStringList(), QWidget *parent = 0 );
 %Docstring
 Constructs a new QgsNewDatabaseTableNameWidget
 
-:param browserModel: an existing browser model (typically from app), if NULL an instance will be created
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
 :param providersFilter: optional white list of data provider keys that should be
                         shown in the widget, if not specified all providers data items with database
                         capabilities will be shown
@@ -136,7 +133,7 @@ Emitted when the OK/accept button is clicked.
 };
 
 
-class QgsNewDatabaseTableNameDialog: QDialog
+class QgsNewDatabaseTableNameDialog : QDialog
 {
 %Docstring(signature="appended")
 :py:class:`QgsNewDatabaseTableNameDialog` is a dialog which allows selection of a DB schema and a new table name.
@@ -157,14 +154,11 @@ getters.
 #include "qgsnewdatabasetablenamewidget.h"
 %End
   public:
-
-    explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = 0,
-                                            const QStringList &providersFilter = QStringList(),
-                                            QWidget *parent = 0 );
+    explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = 0, const QStringList &providersFilter = QStringList(), QWidget *parent = 0 );
 %Docstring
 Constructs a new QgsNewDatabaseTableNameDialog
 
-:param browserModel: an existing browser model (typically from app), if NULL an instance will be created
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
 :param providersFilter: optional white list of data provider keys that should be
                         shown in the widget, if not specified all providers data items with database
                         capabilities will be shown
@@ -208,5 +202,5 @@ Returns the validation error or an empty string is the widget status is valid
  *                                                                      *
  * src/gui/qgsnewdatabasetablenamewidget.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

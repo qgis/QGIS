@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmeshlayerelevationproperties.h"
+#include "moc_qgsmeshlayerelevationproperties.cpp"
 #include "qgsmeshlayer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
@@ -257,6 +258,43 @@ QgsDoubleRange QgsMeshLayerElevationProperties::calculateZRange( QgsMapLayer * )
     case Qgis::MeshElevationMode::FromVertices:
       // TODO -- determine actual z range from mesh statistics
       return QgsDoubleRange();
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QList<double> QgsMeshLayerElevationProperties::significantZValues( QgsMapLayer * ) const
+{
+  switch ( mMode )
+  {
+    case Qgis::MeshElevationMode::FixedElevationRange:
+    {
+      if ( !mFixedRange.isInfinite() && mFixedRange.lower() != mFixedRange.upper() )
+        return { mFixedRange.lower(), mFixedRange.upper() };
+      else if ( !mFixedRange.isInfinite() )
+        return { mFixedRange.lower() };
+
+      return {};
+    }
+
+    case Qgis::MeshElevationMode::FixedRangePerGroup:
+    {
+      QList< double > res;
+      for ( auto it = mRangePerGroup.constBegin(); it != mRangePerGroup.constEnd(); ++it )
+      {
+        if ( it.value().isInfinite() )
+          continue;
+
+        if ( !res.contains( it.value().lower( ) ) )
+          res.append( it.value().lower() );
+        if ( !res.contains( it.value().upper( ) ) )
+          res.append( it.value().upper() );
+      }
+      std::sort( res.begin(), res.end() );
+      return res;
+    }
+
+    case Qgis::MeshElevationMode::FromVertices:
+      return {};
   }
   BUILTIN_UNREACHABLE
 }

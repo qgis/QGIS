@@ -54,13 +54,12 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
  * the capabilities cache. A method to read the environment
  * variables set in the main FCGI loop is also available.
  * Plugins can add listeners (instances of QgsServerFilter) with
- * a certain priority through the registerFilter( QgsServerFilter* , int) method.
+ * a certain priority through the registerFilter() method.
  *
  */
 class SERVER_EXPORT QgsServerInterface
 {
   public:
-
     //! Constructor
     QgsServerInterface() SIP_SKIP;
 

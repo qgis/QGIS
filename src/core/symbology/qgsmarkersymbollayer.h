@@ -215,6 +215,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     // reimplemented from base classes
 
     QString layerType() const override;
+    Qgis::SymbolLayerFlags flags() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
@@ -495,6 +496,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
                              Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsSvgMarkerSymbolLayer( const QgsSvgMarkerSymbolLayer &other ) SIP_SKIP;
 
     ~QgsSvgMarkerSymbolLayer() override;
 
@@ -513,18 +515,13 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
+    Qgis::SymbolLayerFlags flags() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
-
     QVariantMap properties() const override;
     bool usesMapUnits() const override;
-
     QgsSvgMarkerSymbolLayer *clone() const override SIP_FACTORY;
-
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
 
     /**
@@ -570,7 +567,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Returns the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
-     * \see setFixedAspectRatio() QgsSvgCache
+     * \see setFixedAspectRatio()
+     * \see QgsSvgCache
      */
     double fixedAspectRatio() const { return mFixedAspectRatio; }
 
@@ -578,7 +576,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Set the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
      * \param ratio Fixed Aspect Ratio
-     * \see fixedAspectRatio() QgsSvgCache
+     * \see fixedAspectRatio()
+     * \see QgsSvgCache
      */
     void setFixedAspectRatio( double ratio ) { mFixedAspectRatio = ratio; }
 
@@ -705,7 +704,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
+    Qgis::SymbolLayerFlags flags() const override;
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
@@ -777,7 +776,8 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Returns the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
-     * \see setFixedAspectRatio() QgsSvgCache
+     * \see setFixedAspectRatio()
+     * \see QgsSvgCache
      */
     double fixedAspectRatio() const { return mFixedAspectRatio; }
 
@@ -785,7 +785,8 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Set the marker aspect ratio between width and height to be used in rendering,
      * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
      * \param ratio Fixed Aspect Ratio
-     * \see fixedAspectRatio() QgsSvgCache
+     * \see fixedAspectRatio()
+     * \see QgsSvgCache
      */
     void setFixedAspectRatio( double ratio ) { mFixedAspectRatio = ratio; }
 
@@ -885,6 +886,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
+    Qgis::SymbolLayerFlags flags() const override;
 
     void startRender( QgsSymbolRenderContext &context ) override;
 
@@ -1090,7 +1092,7 @@ class CORE_EXPORT QgsAnimatedMarkerSymbolLayer : public QgsRasterMarkerSymbolLay
     /**
      * Creates an animated marker symbol layer from a string map of \a properties.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     // implemented from base classes
 

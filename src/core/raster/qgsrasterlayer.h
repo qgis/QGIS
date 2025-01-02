@@ -35,7 +35,6 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterviewport.h"
-#include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
 #include "qgsabstractprofilesource.h"
 
@@ -50,6 +49,8 @@ class QgsHueSaturationFilter;
 class QgsRasterLayerElevationProperties;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;
+class QgsRasterMinMaxOrigin;
+class QgsAbstractRasterLayerLabeling;
 
 class QImage;
 class QPixmap;
@@ -96,13 +97,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
 
     //! \brief Default enhancement limits for single band raster
-    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit SINGLE_BAND_MIN_MAX_LIMITS;
 
     //! \brief Default enhancement limits for multiple band raster of type Byte
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
 
     //! \brief Default enhancement limits for multiple band raster of type different from Byte
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
 
     //! \brief Constructor. Provider is not set.
     QgsRasterLayer();
@@ -200,7 +201,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     /**
      * Set the data provider.
-     * \deprecated Use the version with ProviderOptions instead.
+     * \deprecated QGIS 3.40. Use the version with ProviderOptions instead.
      */
     Q_DECL_DEPRECATED void setDataProvider( const QString &provider ) SIP_DEPRECATED;
 
@@ -211,7 +212,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * \param flags provider flags since QGIS 3.16
      * \since QGIS 3.2
      */
-    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /**
      * Returns the raster layer type (which is a read only property).
@@ -343,7 +344,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     /**
      * Returns a list with classification items (Text and color).
      *
-     * \deprecated use QgsRasterRenderer::createLegendNodes() instead.
+     * \deprecated QGIS 3.40. Use QgsRasterRenderer::createLegendNodes() instead.
      */
     Q_DECL_DEPRECATED QgsLegendColorList legendSymbologyItems() const SIP_DEPRECATED;
 
@@ -392,7 +393,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *  \param generateLookupTableFlag Generate lookup table.
     */
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
                                  const QgsRectangle &extent = QgsRectangle(),
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
@@ -402,12 +403,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *  \note not available in Python bindings
      */
     void refreshContrastEnhancement( const QgsRectangle &extent ) SIP_SKIP;
-
-    /**
-     * \brief Refresh renderer with new extent, if needed
-     *  \note not available in Python bindings
-     */
-    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /**
      * Returns the string (typically sql) used to define a subset of the layer.
@@ -432,7 +427,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
-      QgsRasterMinMaxOrigin::Limits &myLimits ) const SIP_SKIP;
+      Qgis::RasterRangeLimit &myLimits ) const SIP_SKIP;
 
     //! Sets the default contrast enhancement
     void setDefaultContrastEnhancement();
@@ -449,6 +444,60 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     void setSubLayerVisibility( const QString &name, bool vis ) override;
     QDateTime timestamp() const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
+    /**
+     * Returns whether the layer contains labels which are enabled and should be drawn.
+     * \returns TRUE if layer contains enabled labels
+     *
+     * \see setLabelsEnabled()
+     * \see labeling()
+     * \since QGIS 3.42
+     */
+    bool labelsEnabled() const;
+
+    /**
+     * Sets whether labels should be \a enabled for the layer.
+     *
+     * \note Labels will only be rendered if labelsEnabled() is TRUE and a labeling
+     * object is returned by labeling().
+     *
+     * \see labelsEnabled()
+     * \see labeling()
+     * \since QGIS 3.42
+     */
+    void setLabelsEnabled( bool enabled );
+
+    /**
+     * Access to const labeling configuration. May be NULLPTR if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
+     *
+     * \see labelsEnabled()
+     * \see setLabelsEnabled()
+     * \see setLabeling()
+     *
+     * \since QGIS 3.42
+     */
+    const QgsAbstractRasterLayerLabeling *labeling() const SIP_SKIP;
+
+    /**
+     * Access to labeling configuration. May be NULLPTR if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
+     *
+     * \see labelsEnabled()
+     * \see setLabeling()
+     *
+     * \since QGIS 3.42
+     */
+    QgsAbstractRasterLayerLabeling *labeling();
+
+    /**
+     * Sets labeling configuration. Takes ownership of the object.
+     *
+     * \see labeling()
+     *
+     * \since QGIS 3.42
+     */
+    void setLabeling( QgsAbstractRasterLayerLabeling *labeling SIP_TRANSFER );
 
     /**
      * Writes the symbology of the layer into the document provided in SLD 1.0.0 format
@@ -473,6 +522,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
+
+    /**
+     * Compute the \a min \a max values along \a band according to MinMaxOrigin parameters \a mmo
+     * and \a extent.
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    void computeMinMax( int band,
+                        const QgsRasterMinMaxOrigin &mmo,
+                        Qgis::RasterRangeLimit limits,
+                        const QgsRectangle &extent,
+                        int sampleSize,
+                        double &min, double &max ) SIP_SKIP;
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -518,21 +581,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     void setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle );
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 QgsRasterMinMaxOrigin::Limits limits,
+                                 Qgis::RasterRangeLimit limits,
                                  const QgsRectangle &extent,
                                  int sampleSize,
                                  bool generateLookupTableFlag,
                                  QgsRasterRenderer *rasterRenderer );
-
-    //! Refresh renderer
-    void refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
-
-    void computeMinMax( int band,
-                        const QgsRasterMinMaxOrigin &mmo,
-                        QgsRasterMinMaxOrigin::Limits limits,
-                        const QgsRectangle &extent,
-                        int sampleSize,
-                        double &min, double &max );
 
     /**
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only
@@ -545,7 +598,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * \see dataSourceChanged()
      * \since QGIS 3.20
      */
-    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
     /**
      * Writes the paths to the external raster attribute table files associated with the raster bands.
@@ -576,6 +629,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QgsRasterLayerElevationProperties *mElevationProperties = nullptr;
 
+    //! True if labels are enabled
+    bool mLabelsEnabled = false;
+
+    //! Labeling configuration
+    std::unique_ptr< QgsAbstractRasterLayerLabeling > mLabeling;
+
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;
 
@@ -584,9 +643,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     Qgis::RasterLayerType mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
 
     std::unique_ptr< QgsRasterPipe > mPipe;
-
-    //! To save computations and possible infinite cycle of notifications
-    QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;

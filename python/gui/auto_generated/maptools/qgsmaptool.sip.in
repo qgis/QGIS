@@ -1,0 +1,382 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptool.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+%ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add these includes to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsmaptoolzoom.h>
+#include <qgsmaptoolpan.h>
+#include <qgsmaptoolemitpoint.h>
+#include <qgsmaptoolidentify.h>
+#include <qgsmaptooldigitizefeature.h>
+#include <qgsmaptoolextent.h>
+#include <qgsmaptoolidentifyfeature.h>
+#include <qgsmaptoolcapture.h>
+#include <qgsmaptooladvanceddigitizing.h>
+#include <qgsmaptooledit.h>
+%End
+
+class QgsMapTool : QObject
+{
+%Docstring(signature="appended")
+Abstract base class for all map tools.
+Map tools are user interactive tools for manipulating the
+map canvas. For example map pan and zoom features are
+implemented as map tools.
+%End
+
+%TypeHeaderCode
+#include "qgsmaptool.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsMapToolZoom *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolZoom;
+    else if ( dynamic_cast<QgsMapToolPan *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolPan;
+    else if ( dynamic_cast<QgsMapToolEmitPoint *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolEmitPoint;
+    else if ( dynamic_cast<QgsMapToolExtent *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolExtent;
+    else if ( dynamic_cast<QgsMapToolIdentifyFeature *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolIdentifyFeature;
+    else if ( dynamic_cast<QgsMapToolIdentify *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolIdentify;
+    else if ( dynamic_cast<QgsMapToolDigitizeFeature *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolDigitizeFeature;
+    else if ( dynamic_cast<QgsMapToolCapture *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolCapture;
+    else if ( dynamic_cast<QgsMapToolAdvancedDigitizing *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolAdvancedDigitizing;
+    else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolEdit;
+    else if ( sipCpp->inherits( "QgsMapTool" ) ) // e.g. map tools from QGIS app library, which aren't exposed to SIP
+      sipType = sipType_QgsMapTool;
+    else
+      sipType = nullptr;
+%End
+  public:
+    enum Flag
+    {
+      Transient,
+      EditTool,
+      AllowZoomRect,
+      ShowContextMenu,
+    };
+    typedef QFlags<QgsMapTool::Flag> Flags;
+
+
+    virtual Flags flags() const;
+%Docstring
+Returns the flags for the map tool.
+%End
+
+    ~QgsMapTool();
+
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse move event for overriding. Default implementation does nothing.
+%End
+
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse double-click event for overriding. Default implementation does nothing.
+%End
+
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse press event for overriding. Default implementation does nothing.
+%End
+
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+%Docstring
+Mouse release event for overriding. Default implementation does nothing.
+%End
+
+    virtual void wheelEvent( QWheelEvent *e );
+%Docstring
+Mouse wheel event for overriding. Default implementation does nothing.
+%End
+
+    virtual void keyPressEvent( QKeyEvent *e );
+%Docstring
+Key event for overriding. Default implementation does nothing.
+%End
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+%Docstring
+Key event for overriding. Default implementation does nothing.
+%End
+
+    virtual bool gestureEvent( QGestureEvent *e );
+%Docstring
+gesture event for overriding. Default implementation does nothing.
+%End
+
+    virtual bool canvasToolTipEvent( QHelpEvent *e );
+%Docstring
+Tooltip event for overriding. Default implementation does nothing.
+Returns whether the event was handled by the tool and should not be propagated further.
+
+.. versionadded:: 3.22
+%End
+
+    void setAction( QAction *action );
+%Docstring
+Use this to associate a QAction to this maptool. Then when the setMapTool
+method of mapcanvas is called the action state will be set to on.
+Usually this will cause e.g. a toolbutton to appear pressed in and
+the previously used toolbutton to pop out.
+%End
+
+    QAction *action();
+%Docstring
+Returns associated action with map tool or ``None`` if no action is associated
+%End
+
+    bool isActive() const;
+%Docstring
+Returns if the current map tool active on the map canvas
+
+.. versionadded:: 3.4
+%End
+
+    void setButton( QAbstractButton *button );
+%Docstring
+Use this to associate a button to this maptool. It has the same meaning
+as :py:func:`~QgsMapTool.setAction` function except it works with a button instead of an QAction.
+%End
+
+    QAbstractButton *button();
+%Docstring
+Returns associated button with map tool or ``None`` if no button is associated
+%End
+
+    virtual void setCursor( const QCursor &cursor );
+%Docstring
+Sets a user defined cursor
+%End
+
+    virtual void activate();
+%Docstring
+called when set as currently active map tool
+%End
+
+    virtual void deactivate();
+%Docstring
+called when map tool is being deactivated
+%End
+
+    virtual void reactivate();
+%Docstring
+Called when the map tool is being activated while it is already active.
+
+The default implementation emits the reactivated () signal.
+
+.. versionadded:: 3.32
+%End
+
+    virtual void clean();
+%Docstring
+convenient method to clean members
+%End
+
+    QgsMapCanvas *canvas() const;
+%Docstring
+returns pointer to the tool's map canvas
+%End
+
+    QString toolName();
+%Docstring
+Emit map tool changed with the old tool
+
+.. seealso:: :py:func:`setToolName`
+%End
+
+    static double searchRadiusMM();
+%Docstring
+Gets search radius in mm. Used by identify, tip etc.
+The values is currently set in identify tool options (move somewhere else?)
+and defaults to :py:class:`Qgis`.DEFAULT_SEARCH_RADIUS_MM.
+%End
+
+    static double searchRadiusMU( const QgsRenderContext &context );
+%Docstring
+Gets search radius in map units for given context. Used by identify, tip etc.
+The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
+%End
+
+    static double searchRadiusMU( QgsMapCanvas *canvas );
+%Docstring
+Gets search radius in map units for given canvas. Used by identify, tip etc.
+The values is calculated from :py:func:`~QgsMapTool.searchRadiusMM`.
+%End
+
+    virtual void populateContextMenu( QMenu *menu );
+%Docstring
+Allows the tool to populate and customize the given ``menu``,
+prior to showing it in response to a right-mouse button click.
+
+``menu`` will be initially populated with a set of default, generic actions.
+Any new actions added to the menu should be correctly parented to ``menu``.
+
+The default implementation does nothing.
+
+.. note::
+
+   The context menu is only shown when the ShowContextMenu flag
+   is present in :py:func:`~QgsMapTool.flags`.
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event );
+%Docstring
+Allows the tool to populate and customize the given ``menu``,
+prior to showing it in response to a right-mouse button click.
+
+``menu`` will be initially populated with a set of default, generic actions.
+Any new actions added to the menu should be correctly parented to ``menu``.
+
+A pointer to the map mouse ``event`` can be provided to allow particular behavior depending on the map tool.
+
+This method can return true to inform the caller that the menu was effectively populated.
+
+The default implementation does nothing and returns false.
+
+.. note::
+
+   The context menu is only shown when the ShowContextMenu flag
+   is present in :py:func:`~QgsMapTool.flags`.
+
+.. versionadded:: 3.18
+%End
+
+    QgsPointXY toMapCoordinates( QPoint point );
+%Docstring
+Transforms a ``point`` from screen coordinates to map coordinates.
+%End
+
+  signals:
+    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
+%Docstring
+emit a message
+%End
+
+    void messageDiscarded();
+%Docstring
+emit signal to clear previous message
+%End
+
+    void activated();
+%Docstring
+signal emitted once the map tool is activated
+%End
+
+    void deactivated();
+%Docstring
+signal emitted once the map tool is deactivated
+%End
+
+    void reactivated();
+%Docstring
+
+.. versionadded:: 3.32
+%End
+
+  protected:
+    QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
+%Docstring
+Constructor takes a map canvas as a parameter.
+%End
+
+    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toLayerCoordinatesV2/;
+%Docstring
+Transforms a ``point`` from map coordinates to ``layer`` coordinates.
+
+.. note::
+
+   This method is available in the Python bindings as toLayerCoordinatesV2.
+%End
+
+    QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
+%Docstring
+Transforms a ``point`` from screen coordinates to ``layer`` coordinates.
+%End
+
+    QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
+%Docstring
+Transforms a ``point`` from map coordinates to ``layer`` coordinates.
+%End
+
+    QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
+%Docstring
+Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is different in case reprojection is used).
+%End
+
+    QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toMapCoordinatesV2/;
+%Docstring
+Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is different in case reprojection is used).
+
+.. note::
+
+   This method is available in the Python bindings as toMapCoordinatesV2.
+%End
+
+    QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
+%Docstring
+Transforms a ``rect`` from map coordinates to ``layer`` coordinates.
+%End
+
+    QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
+%Docstring
+Transforms a ``point`` from map coordinates to screen coordinates.
+%End
+
+    QgsMapLayer *layer( const QString &id );
+%Docstring
+Returns the map layer with the matching ID, or ``None`` if no layers could be found.
+
+This method searches both layers associated with the map canvas (see :py:func:`QgsMapCanvas.layers()`)
+and layers from the :py:class:`QgsProject` associated with the canvas. It can be used to resolve layer IDs to
+layers which may be visible in the canvas, but not associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.22
+%End
+
+    void setToolName( const QString &name );
+%Docstring
+Sets the tool's ``name``.
+
+.. seealso:: :py:func:`toolName`
+
+.. versionadded:: 3.20
+%End
+
+
+
+
+
+
+};
+
+QFlags<QgsMapTool::Flag> operator|(QgsMapTool::Flag f1, QFlags<QgsMapTool::Flag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptool.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

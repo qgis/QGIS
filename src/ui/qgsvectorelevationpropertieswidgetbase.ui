@@ -27,6 +27,75 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Vertical Reference System</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QgsStackedWidget" name="mVerticalCrsStackedWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <widget class="QWidget" name="mCrsPageDisabled">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mCrsDisabledLabel">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="mCrsPageEnabled"/>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vertical reference systems are supported for vector layers by:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Elevation profiles&lt;/li&gt;
+&lt;li&gt;Identify tool results&lt;/li&gt;
+&lt;li&gt;3D map views (when 3D view has a vertical reference system set)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;i&gt;Other tools or plugins may ignore the vertical reference system, and care should be taken to validate results accordingly.&lt;/i&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="mElevationGroupBox">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
@@ -40,28 +109,11 @@
      <property name="syncGroup" stdset="0">
       <string notr="true">vectorgeneral</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0,0">
-      <item row="2" column="0">
-       <widget class="QLabel" name="mLabelScale">
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
+      <item row="3" column="3">
+       <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
         <property name="text">
-         <string>Scale</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QLabel" name="mLabelClampingExplanation">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="mOffsetLabel">
-        <property name="text">
-         <string>Offset</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -78,13 +130,30 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="mOffsetLabel">
+        <property name="text">
+         <string>Offset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QLabel" name="mLabelClampingExplanation">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="1" colspan="2">
        <widget class="QgsDoubleSpinBox" name="mScaleZSpinBox">
         <property name="decimals">
          <number>6</number>
         </property>
         <property name="minimum">
-         <double>0.000000000000000</double>
+         <double>-99999999999.000000000000000</double>
         </property>
         <property name="maximum">
          <double>99999999999.000000000000000</double>
@@ -94,10 +163,10 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
-       <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
+      <item row="2" column="0">
+       <widget class="QLabel" name="mLabelScale">
         <property name="text">
-         <string>…</string>
+         <string>Scale</string>
         </property>
        </widget>
       </item>
@@ -537,9 +606,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
@@ -547,9 +616,15 @@
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

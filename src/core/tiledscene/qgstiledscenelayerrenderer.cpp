@@ -18,6 +18,8 @@
 
 #include "qgstiledscenelayerrenderer.h"
 #include "qgscurve.h"
+#include "qgslogger.h"
+#include "qgsquantizedmeshtiles.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenelayer.h"
 #include "qgsfeedback.h"
@@ -34,6 +36,7 @@
 #include "qgsapplication.h"
 
 #include <QMatrix4x4>
+#include <qglobal.h>
 
 #define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
@@ -150,10 +153,20 @@ QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
   const double maximumErrorPixels = context->convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );
   // calculate width in meters across the middle of the map
   const double mapYCenter = 0.5 * ( mapExtent.yMinimum() + mapExtent.yMaximum() );
-  const double mapWidthMeters = context->distanceArea().measureLine(
-                                  QgsPointXY( mapExtent.xMinimum(), mapYCenter ),
-                                  QgsPointXY( mapExtent.xMaximum(), mapYCenter )
-                                );
+  double mapWidthMeters = 0;
+  try
+  {
+    mapWidthMeters = context->distanceArea().measureLine(
+                       QgsPointXY( mapExtent.xMinimum(), mapYCenter ),
+                       QgsPointXY( mapExtent.xMaximum(), mapYCenter )
+                     );
+  }
+  catch ( QgsCsException & )
+  {
+    // TODO report errors to user
+    QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+  }
+
   const double mapMetersPerPixel = mapWidthMeters / context->outputSize().width();
   const double maximumErrorInMeters = maximumErrorPixels * mapMetersPerPixel;
 
@@ -374,84 +387,121 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     return false;
 
   const QByteArray tileContent = mIndex.retrieveContent( contentUri, feedback() );
-  const QgsCesiumUtils::TileContents content = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
-  if ( content.gltf.isEmpty() )
-  {
+  // When the operation is canceled, retrieveContent() will silently return an empty array
+  if ( feedback()->isCanceled() )
     return false;
-  }
 
   tinygltf::Model model;
-  QString gltfErrors;
-  QString gltfWarnings;
+  QgsVector3D centerOffset;
   mCurrentModelId++;
-  const bool res = QgsGltfUtils::loadGltfModel( content.gltf, model, &gltfErrors, &gltfWarnings );
-  if ( res )
+  // TODO: Somehow de-hardcode this switch?
+  const auto &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
+  if ( format == QLatin1String( "quantizedmesh" ) )
   {
-    const QgsVector3D tileTranslationEcef = content.rtcCenter + QgsGltfUtils::extractTileTranslation( model,
-                                            static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ) );
-
-    bool sceneOk = false;
-    const std::size_t sceneIndex = QgsGltfUtils::sourceSceneForModel( model, sceneOk );
-    if ( !sceneOk )
+    try
     {
-      const QString error = QObject::tr( "No scenes found in model" );
-      mErrors.append( error );
-      QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, error ) );
+      QgsQuantizedMeshTile qmTile( tileContent );
+      qmTile.removeDegenerateTriangles();
+      model = qmTile.toGltf();
     }
-    else
+    catch ( QgsQuantizedMeshParsingException &ex )
     {
-      const tinygltf::Scene &scene = model.scenes[sceneIndex];
+      QgsDebugError( QStringLiteral( "Failed to parse tile from '%1'" ).arg( contentUri ) );
+      return false;
+    }
+  }
+  else if ( format == QLatin1String( "cesiumtiles" ) )
+  {
+    const QgsCesiumUtils::TileContents content = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
+    if ( content.gltf.isEmpty() )
+    {
+      return false;
+    }
+    centerOffset = content.rtcCenter;
 
-      std::function< void( int nodeIndex, const QMatrix4x4 &transform ) > traverseNode;
-      traverseNode = [&model, &context, &tileTranslationEcef, &tile, &contentUri, &traverseNode, this]( int nodeIndex, const QMatrix4x4 & parentTransform )
+    QString gltfErrors;
+    QString gltfWarnings;
+    const bool res = QgsGltfUtils::loadGltfModel( content.gltf, model,
+                     &gltfErrors, &gltfWarnings );
+    if ( !gltfErrors.isEmpty() )
+    {
+      if ( !mErrors.contains( gltfErrors ) )
+        mErrors.append( gltfErrors );
+      QgsDebugError( QStringLiteral( "Error raised reading %1: %2" )
+                     .arg( contentUri, gltfErrors ) );
+    }
+    if ( !gltfWarnings.isEmpty() )
+    {
+      QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" )
+                     .arg( contentUri, gltfWarnings ) );
+    }
+    if ( !res ) return false;
+  }
+  else
+    return false;
+
+  const QgsVector3D tileTranslationEcef =
+    centerOffset +
+    QgsGltfUtils::extractTileTranslation(
+      model,
+      static_cast<Qgis::Axis>( tile.metadata()
+                               .value( QStringLiteral( "gltfUpAxis" ),
+                                       static_cast<int>( Qgis::Axis::Y ) )
+                               .toInt() ) );
+
+  bool sceneOk = false;
+  const std::size_t sceneIndex =
+    QgsGltfUtils::sourceSceneForModel( model, sceneOk );
+  if ( !sceneOk )
+  {
+    const QString error = QObject::tr( "No scenes found in model" );
+    mErrors.append( error );
+    QgsDebugError(
+      QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, error ) );
+  }
+  else
+  {
+    const tinygltf::Scene &scene = model.scenes[sceneIndex];
+
+    std::function< void( int nodeIndex, const QMatrix4x4 &transform ) > traverseNode;
+    traverseNode = [&model, &context, &tileTranslationEcef, &tile, &contentUri, &traverseNode, this]( int nodeIndex, const QMatrix4x4 & parentTransform )
+    {
+      const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
+      std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
+
+      if ( !parentTransform.isIdentity() )
       {
-        const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
-        std::unique_ptr< QMatrix4x4 > gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
-
-        if ( !parentTransform.isIdentity() )
+        if ( gltfLocalTransform )
+          *gltfLocalTransform = parentTransform * *gltfLocalTransform;
+        else
         {
-          if ( gltfLocalTransform )
-            *gltfLocalTransform = parentTransform * *gltfLocalTransform;
-          else
-          {
-            gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
-          }
+          gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
         }
-
-        if ( gltfNode.mesh >= 0 )
-        {
-          const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
-
-          for ( const tinygltf::Primitive &primitive : mesh.primitives )
-          {
-            if ( context.renderContext().renderingStopped() )
-              break;
-
-            renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
-          }
-        }
-
-        for ( int childNode : gltfNode.children )
-        {
-          traverseNode( childNode, gltfLocalTransform ? *gltfLocalTransform : QMatrix4x4() );
-        }
-      };
-
-      for ( int nodeIndex : scene.nodes )
-      {
-        traverseNode( nodeIndex, QMatrix4x4() );
       }
+
+      if ( gltfNode.mesh >= 0 )
+      {
+        const tinygltf::Mesh &mesh = model.meshes[gltfNode.mesh];
+
+        for ( const tinygltf::Primitive &primitive : mesh.primitives )
+        {
+          if ( context.renderContext().renderingStopped() )
+            break;
+
+          renderPrimitive( model, primitive, tile, tileTranslationEcef, gltfLocalTransform.get(), contentUri, context );
+        }
+      }
+
+      for ( int childNode : gltfNode.children )
+      {
+        traverseNode( childNode, gltfLocalTransform ? *gltfLocalTransform : QMatrix4x4() );
+      }
+    };
+
+    for ( int nodeIndex : scene.nodes )
+    {
+      traverseNode( nodeIndex, QMatrix4x4() );
     }
-  }
-  else if ( !gltfErrors.isEmpty() )
-  {
-    if ( !mErrors.contains( gltfErrors ) )
-      mErrors.append( gltfErrors );
-    QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, gltfErrors ) );
-  }
-  if ( !gltfWarnings.isEmpty() )
-  {
-    QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" ).arg( contentUri, gltfWarnings ) );
   }
   return true;
 }
@@ -550,7 +600,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
   QVector< float > texturePointX;
   QVector< float > texturePointY;
   QPair< int, int > textureId{ -1, -1 };
-  if ( needsTextures )
+  if ( needsTextures && primitive.material != -1 )
   {
     const tinygltf::Material &material = model.materials[primitive.material];
     const tinygltf::PbrMetallicRoughness &pbr = material.pbrMetallicRoughness;

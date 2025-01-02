@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingoutputdestinationwidget.h            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,7 +25,6 @@ A widget which allows users to select the destination path for an output style P
 #include "qgsprocessingoutputdestinationwidget.h"
 %End
   public:
-
     QgsProcessingLayerOutputDestinationWidget( const QgsProcessingDestinationParameter *parameter, bool defaultSelection, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingLayerOutputDestinationWidget, associated with the specified ``parameter``.
@@ -87,8 +86,8 @@ Emitted whenever the "skip output" option is toggled in the widget.
 %Docstring
 Emitted whenever the destination value is changed in the widget.
 %End
-  protected:
 
+  protected:
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
     virtual void dragLeaveEvent( QDragLeaveEvent *event );
@@ -104,5 +103,5 @@ Emitted whenever the destination value is changed in the widget.
  *                                                                      *
  * src/gui/processing/qgsprocessingoutputdestinationwidget.h            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -22,12 +22,12 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
+#include "moc_qgsgeometrychecker.cpp"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
-
 
 
 QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context, const QMap<QString, QgsFeaturePool *> &featurePools )
@@ -149,7 +149,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = it.value();
     QgsFeaturePool *featurePool = mFeaturePools[it.key()];
-    QgsCoordinateTransform t( featurePool->layer()->crs(), mContext->mapCrs, QgsProject::instance() );
+    QgsCoordinateTransform t( featurePool->crs(), mContext->mapCrs, QgsProject::instance() );
     t.setBallparkTransformsAreAppropriate( true );
     for ( auto layerChangeIt = layerChanges.constBegin(); layerChangeIt != layerChanges.constEnd(); ++layerChangeIt )
     {
@@ -189,7 +189,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( auto it = mFeaturePools.constBegin(); it != mFeaturePools.constEnd(); it++ )
   {
     QgsFeaturePool *featurePool = it.value();
-    QgsCoordinateTransform t( mContext->mapCrs, featurePool->layer()->crs(), QgsProject::instance() );
+    QgsCoordinateTransform t( mContext->mapCrs, featurePool->crs(), QgsProject::instance() );
     recheckAreaFeatures[it.key()] = featurePool->getIntersects( t.transform( recheckArea ) );
   }
 
@@ -247,16 +247,14 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     }
 
     // If no match is found and the error is not fixed or obsolete, set it to obsolete if...
-    if ( err->status() < QgsGeometryCheckError::StatusFixed &&
-         (
+    if ( err->status() < QgsGeometryCheckError::StatusFixed && (
            // changes weren't handled
            !handled ||
            // or if it is a FeatureNodeCheck or FeatureCheck error whose feature was rechecked
            ( err->check()->checkType() <= QgsGeometryCheck::FeatureCheck && recheckFeatures[err->layerId()].contains( err->featureId() ) ) ||
            // or if it is a LayerCheck error within the rechecked area
            ( err->check()->checkType() == QgsGeometryCheck::LayerCheck && recheckArea.contains( err->affectedAreaBBox() ) )
-         )
-       )
+         ) )
     {
       err->setObsolete();
       emit errorUpdated( err, err->status() != oldStatus );

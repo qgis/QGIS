@@ -243,42 +243,386 @@ QgsSymbolLayer.PropertyDashPatternOffset.__doc__ = "Dash pattern offset,"
 QgsSymbolLayer.PropertyTrimStart = QgsSymbolLayer.Property.TrimStart
 QgsSymbolLayer.Property.PropertyTrimStart = QgsSymbolLayer.Property.TrimStart
 QgsSymbolLayer.PropertyTrimStart.is_monkey_patched = True
-QgsSymbolLayer.PropertyTrimStart.__doc__ = "Trim distance from start of line (since QGIS 3.20)"
+QgsSymbolLayer.PropertyTrimStart.__doc__ = "Trim distance from start of line \n.. versionadded:: 3.20"
 QgsSymbolLayer.PropertyTrimEnd = QgsSymbolLayer.Property.TrimEnd
 QgsSymbolLayer.Property.PropertyTrimEnd = QgsSymbolLayer.Property.TrimEnd
 QgsSymbolLayer.PropertyTrimEnd.is_monkey_patched = True
-QgsSymbolLayer.PropertyTrimEnd.__doc__ = "Trim distance from end of line (since QGIS 3.20)"
+QgsSymbolLayer.PropertyTrimEnd.__doc__ = "Trim distance from end of line \n.. versionadded:: 3.20"
 QgsSymbolLayer.PropertyLineStartWidthValue = QgsSymbolLayer.Property.LineStartWidthValue
 QgsSymbolLayer.Property.PropertyLineStartWidthValue = QgsSymbolLayer.Property.LineStartWidthValue
 QgsSymbolLayer.PropertyLineStartWidthValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineStartWidthValue.__doc__ = "Start line width for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineStartWidthValue.__doc__ = "Start line width for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyLineEndWidthValue = QgsSymbolLayer.Property.LineEndWidthValue
 QgsSymbolLayer.Property.PropertyLineEndWidthValue = QgsSymbolLayer.Property.LineEndWidthValue
 QgsSymbolLayer.PropertyLineEndWidthValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineEndWidthValue.__doc__ = "End line width for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineEndWidthValue.__doc__ = "End line width for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyLineStartColorValue = QgsSymbolLayer.Property.LineStartColorValue
 QgsSymbolLayer.Property.PropertyLineStartColorValue = QgsSymbolLayer.Property.LineStartColorValue
 QgsSymbolLayer.PropertyLineStartColorValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineStartColorValue.__doc__ = "Start line color for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineStartColorValue.__doc__ = "Start line color for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyLineEndColorValue = QgsSymbolLayer.Property.LineEndColorValue
 QgsSymbolLayer.Property.PropertyLineEndColorValue = QgsSymbolLayer.Property.LineEndColorValue
 QgsSymbolLayer.PropertyLineEndColorValue.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineEndColorValue.__doc__ = "End line color for interpolated line renderer (since QGIS 3.22)"
+QgsSymbolLayer.PropertyLineEndColorValue.__doc__ = "End line color for interpolated line renderer \n.. versionadded:: 3.22"
 QgsSymbolLayer.PropertyMarkerClipping = QgsSymbolLayer.Property.MarkerClipping
 QgsSymbolLayer.Property.PropertyMarkerClipping = QgsSymbolLayer.Property.MarkerClipping
 QgsSymbolLayer.PropertyMarkerClipping.is_monkey_patched = True
-QgsSymbolLayer.PropertyMarkerClipping.__doc__ = "Marker clipping mode (since QGIS 3.24)"
+QgsSymbolLayer.PropertyMarkerClipping.__doc__ = "Marker clipping mode \n.. versionadded:: 3.24"
 QgsSymbolLayer.PropertyRandomOffsetX = QgsSymbolLayer.Property.RandomOffsetX
 QgsSymbolLayer.Property.PropertyRandomOffsetX = QgsSymbolLayer.Property.RandomOffsetX
 QgsSymbolLayer.PropertyRandomOffsetX.is_monkey_patched = True
-QgsSymbolLayer.PropertyRandomOffsetX.__doc__ = "Random offset X (since QGIS 3.24)"
+QgsSymbolLayer.PropertyRandomOffsetX.__doc__ = "Random offset X \n.. versionadded:: 3.24"
 QgsSymbolLayer.PropertyRandomOffsetY = QgsSymbolLayer.Property.RandomOffsetY
 QgsSymbolLayer.Property.PropertyRandomOffsetY = QgsSymbolLayer.Property.RandomOffsetY
 QgsSymbolLayer.PropertyRandomOffsetY.is_monkey_patched = True
-QgsSymbolLayer.PropertyRandomOffsetY.__doc__ = "Random offset Y (since QGIS 3.24)"
+QgsSymbolLayer.PropertyRandomOffsetY.__doc__ = "Random offset Y \n.. versionadded:: 3.24"
 QgsSymbolLayer.PropertyLineClipping = QgsSymbolLayer.Property.LineClipping
 QgsSymbolLayer.Property.PropertyLineClipping = QgsSymbolLayer.Property.LineClipping
 QgsSymbolLayer.PropertyLineClipping.is_monkey_patched = True
-QgsSymbolLayer.PropertyLineClipping.__doc__ = "Line clipping mode (since QGIS 3.24)"
-QgsSymbolLayer.Property.__doc__ = "Data definable properties.\n\n" + '* ``PropertySize``: ' + QgsSymbolLayer.Property.Size.__doc__ + '\n' + '* ``PropertyAngle``: ' + QgsSymbolLayer.Property.Angle.__doc__ + '\n' + '* ``PropertyName``: ' + QgsSymbolLayer.Property.Name.__doc__ + '\n' + '* ``PropertyFillColor``: ' + QgsSymbolLayer.Property.FillColor.__doc__ + '\n' + '* ``PropertyStrokeColor``: ' + QgsSymbolLayer.Property.StrokeColor.__doc__ + '\n' + '* ``PropertyStrokeWidth``: ' + QgsSymbolLayer.Property.StrokeWidth.__doc__ + '\n' + '* ``PropertyStrokeStyle``: ' + QgsSymbolLayer.Property.StrokeStyle.__doc__ + '\n' + '* ``PropertyOffset``: ' + QgsSymbolLayer.Property.Offset.__doc__ + '\n' + '* ``PropertyCharacter``: ' + QgsSymbolLayer.Property.Character.__doc__ + '\n' + '* ``PropertyWidth``: ' + QgsSymbolLayer.Property.Width.__doc__ + '\n' + '* ``PropertyHeight``: ' + QgsSymbolLayer.Property.Height.__doc__ + '\n' + '* ``PropertyPreserveAspectRatio``: ' + QgsSymbolLayer.Property.PreserveAspectRatio.__doc__ + '\n' + '* ``PropertyFillStyle``: ' + QgsSymbolLayer.Property.FillStyle.__doc__ + '\n' + '* ``PropertyJoinStyle``: ' + QgsSymbolLayer.Property.JoinStyle.__doc__ + '\n' + '* ``PropertySecondaryColor``: ' + QgsSymbolLayer.Property.SecondaryColor.__doc__ + '\n' + '* ``PropertyLineAngle``: ' + QgsSymbolLayer.Property.LineAngle.__doc__ + '\n' + '* ``PropertyLineDistance``: ' + QgsSymbolLayer.Property.LineDistance.__doc__ + '\n' + '* ``PropertyGradientType``: ' + QgsSymbolLayer.Property.GradientType.__doc__ + '\n' + '* ``PropertyCoordinateMode``: ' + QgsSymbolLayer.Property.CoordinateMode.__doc__ + '\n' + '* ``PropertyGradientSpread``: ' + QgsSymbolLayer.Property.GradientSpread.__doc__ + '\n' + '* ``PropertyGradientReference1X``: ' + QgsSymbolLayer.Property.GradientReference1X.__doc__ + '\n' + '* ``PropertyGradientReference1Y``: ' + QgsSymbolLayer.Property.GradientReference1Y.__doc__ + '\n' + '* ``PropertyGradientReference2X``: ' + QgsSymbolLayer.Property.GradientReference2X.__doc__ + '\n' + '* ``PropertyGradientReference2Y``: ' + QgsSymbolLayer.Property.GradientReference2Y.__doc__ + '\n' + '* ``PropertyGradientReference1IsCentroid``: ' + QgsSymbolLayer.Property.GradientReference1IsCentroid.__doc__ + '\n' + '* ``PropertyGradientReference2IsCentroid``: ' + QgsSymbolLayer.Property.GradientReference2IsCentroid.__doc__ + '\n' + '* ``PropertyBlurRadius``: ' + QgsSymbolLayer.Property.BlurRadius.__doc__ + '\n' + '* ``PropertyShapeburstUseWholeShape``: ' + QgsSymbolLayer.Property.ShapeburstUseWholeShape.__doc__ + '\n' + '* ``PropertyShapeburstMaxDistance``: ' + QgsSymbolLayer.Property.ShapeburstMaxDistance.__doc__ + '\n' + '* ``PropertyShapeburstIgnoreRings``: ' + QgsSymbolLayer.Property.ShapeburstIgnoreRings.__doc__ + '\n' + '* ``PropertyFile``: ' + QgsSymbolLayer.Property.File.__doc__ + '\n' + '* ``PropertyDistanceX``: ' + QgsSymbolLayer.Property.DistanceX.__doc__ + '\n' + '* ``PropertyDistanceY``: ' + QgsSymbolLayer.Property.DistanceY.__doc__ + '\n' + '* ``PropertyDisplacementX``: ' + QgsSymbolLayer.Property.DisplacementX.__doc__ + '\n' + '* ``PropertyDisplacementY``: ' + QgsSymbolLayer.Property.DisplacementY.__doc__ + '\n' + '* ``PropertyOpacity``: ' + QgsSymbolLayer.Property.Opacity.__doc__ + '\n' + '* ``PropertyCustomDash``: ' + QgsSymbolLayer.Property.CustomDash.__doc__ + '\n' + '* ``PropertyCapStyle``: ' + QgsSymbolLayer.Property.CapStyle.__doc__ + '\n' + '* ``PropertyPlacement``: ' + QgsSymbolLayer.Property.Placement.__doc__ + '\n' + '* ``PropertyInterval``: ' + QgsSymbolLayer.Property.Interval.__doc__ + '\n' + '* ``PropertyOffsetAlongLine``: ' + QgsSymbolLayer.Property.OffsetAlongLine.__doc__ + '\n' + '* ``PropertyAverageAngleLength``: ' + QgsSymbolLayer.Property.AverageAngleLength.__doc__ + '\n' + '* ``PropertyHorizontalAnchor``: ' + QgsSymbolLayer.Property.HorizontalAnchor.__doc__ + '\n' + '* ``PropertyVerticalAnchor``: ' + QgsSymbolLayer.Property.VerticalAnchor.__doc__ + '\n' + '* ``PropertyLayerEnabled``: ' + QgsSymbolLayer.Property.LayerEnabled.__doc__ + '\n' + '* ``PropertyArrowWidth``: ' + QgsSymbolLayer.Property.ArrowWidth.__doc__ + '\n' + '* ``PropertyArrowStartWidth``: ' + QgsSymbolLayer.Property.ArrowStartWidth.__doc__ + '\n' + '* ``PropertyArrowHeadLength``: ' + QgsSymbolLayer.Property.ArrowHeadLength.__doc__ + '\n' + '* ``PropertyArrowHeadThickness``: ' + QgsSymbolLayer.Property.ArrowHeadThickness.__doc__ + '\n' + '* ``PropertyArrowHeadType``: ' + QgsSymbolLayer.Property.ArrowHeadType.__doc__ + '\n' + '* ``PropertyArrowType``: ' + QgsSymbolLayer.Property.ArrowType.__doc__ + '\n' + '* ``PropertyOffsetX``: ' + QgsSymbolLayer.Property.OffsetX.__doc__ + '\n' + '* ``PropertyOffsetY``: ' + QgsSymbolLayer.Property.OffsetY.__doc__ + '\n' + '* ``PropertyPointCount``: ' + QgsSymbolLayer.Property.PointCount.__doc__ + '\n' + '* ``PropertyRandomSeed``: ' + QgsSymbolLayer.Property.RandomSeed.__doc__ + '\n' + '* ``PropertyClipPoints``: ' + QgsSymbolLayer.Property.ClipPoints.__doc__ + '\n' + '* ``PropertyDensityArea``: ' + QgsSymbolLayer.Property.DensityArea.__doc__ + '\n' + '* ``PropertyFontFamily``: ' + QgsSymbolLayer.Property.FontFamily.__doc__ + '\n' + '* ``PropertyFontStyle``: ' + QgsSymbolLayer.Property.FontStyle.__doc__ + '\n' + '* ``PropertyDashPatternOffset``: ' + QgsSymbolLayer.Property.DashPatternOffset.__doc__ + '\n' + '* ``PropertyTrimStart``: ' + QgsSymbolLayer.Property.TrimStart.__doc__ + '\n' + '* ``PropertyTrimEnd``: ' + QgsSymbolLayer.Property.TrimEnd.__doc__ + '\n' + '* ``PropertyLineStartWidthValue``: ' + QgsSymbolLayer.Property.LineStartWidthValue.__doc__ + '\n' + '* ``PropertyLineEndWidthValue``: ' + QgsSymbolLayer.Property.LineEndWidthValue.__doc__ + '\n' + '* ``PropertyLineStartColorValue``: ' + QgsSymbolLayer.Property.LineStartColorValue.__doc__ + '\n' + '* ``PropertyLineEndColorValue``: ' + QgsSymbolLayer.Property.LineEndColorValue.__doc__ + '\n' + '* ``PropertyMarkerClipping``: ' + QgsSymbolLayer.Property.MarkerClipping.__doc__ + '\n' + '* ``PropertyRandomOffsetX``: ' + QgsSymbolLayer.Property.RandomOffsetX.__doc__ + '\n' + '* ``PropertyRandomOffsetY``: ' + QgsSymbolLayer.Property.RandomOffsetY.__doc__ + '\n' + '* ``PropertyLineClipping``: ' + QgsSymbolLayer.Property.LineClipping.__doc__
+QgsSymbolLayer.PropertyLineClipping.__doc__ = "Line clipping mode \n.. versionadded:: 3.24"
+QgsSymbolLayer.SkipMultiples = QgsSymbolLayer.Property.SkipMultiples
+QgsSymbolLayer.SkipMultiples.is_monkey_patched = True
+QgsSymbolLayer.SkipMultiples.__doc__ = "Skip multiples of \n.. versionadded:: 3.40"
+QgsSymbolLayer.ShowMarker = QgsSymbolLayer.Property.ShowMarker
+QgsSymbolLayer.ShowMarker.is_monkey_patched = True
+QgsSymbolLayer.ShowMarker.__doc__ = "Show markers \n.. versionadded:: 3.40"
+QgsSymbolLayer.Property.__doc__ = """Data definable properties.
+
+* ``Size``: Symbol size
+
+  Available as ``QgsSymbolLayer.PropertySize`` in older QGIS releases.
+
+* ``Angle``: Symbol angle
+
+  Available as ``QgsSymbolLayer.PropertyAngle`` in older QGIS releases.
+
+* ``Name``: Name, eg shape name for simple markers
+
+  Available as ``QgsSymbolLayer.PropertyName`` in older QGIS releases.
+
+* ``FillColor``: Fill color
+
+  Available as ``QgsSymbolLayer.PropertyFillColor`` in older QGIS releases.
+
+* ``StrokeColor``: Stroke color
+
+  Available as ``QgsSymbolLayer.PropertyStrokeColor`` in older QGIS releases.
+
+* ``StrokeWidth``: Stroke width
+
+  Available as ``QgsSymbolLayer.PropertyStrokeWidth`` in older QGIS releases.
+
+* ``StrokeStyle``: Stroke style (eg solid, dashed)
+
+  Available as ``QgsSymbolLayer.PropertyStrokeStyle`` in older QGIS releases.
+
+* ``Offset``: Symbol offset
+
+  Available as ``QgsSymbolLayer.PropertyOffset`` in older QGIS releases.
+
+* ``Character``: Character, eg for font marker symbol layers
+
+  Available as ``QgsSymbolLayer.PropertyCharacter`` in older QGIS releases.
+
+* ``Width``: Symbol width
+
+  Available as ``QgsSymbolLayer.PropertyWidth`` in older QGIS releases.
+
+* ``Height``: Symbol height
+
+  Available as ``QgsSymbolLayer.PropertyHeight`` in older QGIS releases.
+
+* ``PreserveAspectRatio``: Preserve aspect ratio between width and height
+
+  Available as ``QgsSymbolLayer.PropertyPreserveAspectRatio`` in older QGIS releases.
+
+* ``FillStyle``: Fill style (eg solid, dots)
+
+  Available as ``QgsSymbolLayer.PropertyFillStyle`` in older QGIS releases.
+
+* ``JoinStyle``: Line join style
+
+  Available as ``QgsSymbolLayer.PropertyJoinStyle`` in older QGIS releases.
+
+* ``SecondaryColor``: Secondary color (eg for gradient fills)
+
+  Available as ``QgsSymbolLayer.PropertySecondaryColor`` in older QGIS releases.
+
+* ``LineAngle``: Line angle, or angle of hash lines for hash line symbols
+
+  Available as ``QgsSymbolLayer.PropertyLineAngle`` in older QGIS releases.
+
+* ``LineDistance``: Distance between lines, or length of lines for hash line symbols
+
+  Available as ``QgsSymbolLayer.PropertyLineDistance`` in older QGIS releases.
+
+* ``GradientType``: Gradient fill type
+
+  Available as ``QgsSymbolLayer.PropertyGradientType`` in older QGIS releases.
+
+* ``CoordinateMode``: Gradient coordinate mode
+
+  Available as ``QgsSymbolLayer.PropertyCoordinateMode`` in older QGIS releases.
+
+* ``GradientSpread``: Gradient spread mode
+
+  Available as ``QgsSymbolLayer.PropertyGradientSpread`` in older QGIS releases.
+
+* ``GradientReference1X``: Gradient reference point 1 x
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference1X`` in older QGIS releases.
+
+* ``GradientReference1Y``: Gradient reference point 1 y
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference1Y`` in older QGIS releases.
+
+* ``GradientReference2X``: Gradient reference point 2 x
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference2X`` in older QGIS releases.
+
+* ``GradientReference2Y``: Gradient reference point 2 y
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference2Y`` in older QGIS releases.
+
+* ``GradientReference1IsCentroid``: Gradient reference point 1 is centroid
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference1IsCentroid`` in older QGIS releases.
+
+* ``GradientReference2IsCentroid``: Gradient reference point 2 is centroid
+
+  Available as ``QgsSymbolLayer.PropertyGradientReference2IsCentroid`` in older QGIS releases.
+
+* ``BlurRadius``: Shapeburst blur radius
+
+  Available as ``QgsSymbolLayer.PropertyBlurRadius`` in older QGIS releases.
+
+* ``ShapeburstUseWholeShape``: Shapeburst use whole shape
+
+  Available as ``QgsSymbolLayer.PropertyShapeburstUseWholeShape`` in older QGIS releases.
+
+* ``ShapeburstMaxDistance``: Shapeburst fill from edge distance
+
+  Available as ``QgsSymbolLayer.PropertyShapeburstMaxDistance`` in older QGIS releases.
+
+* ``ShapeburstIgnoreRings``: Shapeburst ignore rings
+
+  Available as ``QgsSymbolLayer.PropertyShapeburstIgnoreRings`` in older QGIS releases.
+
+* ``File``: Filename, eg for svg files
+
+  Available as ``QgsSymbolLayer.PropertyFile`` in older QGIS releases.
+
+* ``DistanceX``: Horizontal distance between points
+
+  Available as ``QgsSymbolLayer.PropertyDistanceX`` in older QGIS releases.
+
+* ``DistanceY``: Vertical distance between points
+
+  Available as ``QgsSymbolLayer.PropertyDistanceY`` in older QGIS releases.
+
+* ``DisplacementX``: Horizontal displacement
+
+  Available as ``QgsSymbolLayer.PropertyDisplacementX`` in older QGIS releases.
+
+* ``DisplacementY``: Vertical displacement
+
+  Available as ``QgsSymbolLayer.PropertyDisplacementY`` in older QGIS releases.
+
+* ``Opacity``: Opacity
+
+  Available as ``QgsSymbolLayer.PropertyOpacity`` in older QGIS releases.
+
+* ``CustomDash``: Custom dash pattern
+
+  Available as ``QgsSymbolLayer.PropertyCustomDash`` in older QGIS releases.
+
+* ``CapStyle``: Line cap style
+
+  Available as ``QgsSymbolLayer.PropertyCapStyle`` in older QGIS releases.
+
+* ``Placement``: Line marker placement
+
+  Available as ``QgsSymbolLayer.PropertyPlacement`` in older QGIS releases.
+
+* ``Interval``: Line marker interval
+
+  Available as ``QgsSymbolLayer.PropertyInterval`` in older QGIS releases.
+
+* ``OffsetAlongLine``: Offset along line
+
+  Available as ``QgsSymbolLayer.PropertyOffsetAlongLine`` in older QGIS releases.
+
+* ``AverageAngleLength``: Length to average symbol angles over
+
+  Available as ``QgsSymbolLayer.PropertyAverageAngleLength`` in older QGIS releases.
+
+* ``HorizontalAnchor``: Horizontal anchor point
+
+  Available as ``QgsSymbolLayer.PropertyHorizontalAnchor`` in older QGIS releases.
+
+* ``VerticalAnchor``: Vertical anchor point
+
+  Available as ``QgsSymbolLayer.PropertyVerticalAnchor`` in older QGIS releases.
+
+* ``LayerEnabled``: Whether symbol layer is enabled
+
+  Available as ``QgsSymbolLayer.PropertyLayerEnabled`` in older QGIS releases.
+
+* ``ArrowWidth``: Arrow tail width
+
+  Available as ``QgsSymbolLayer.PropertyArrowWidth`` in older QGIS releases.
+
+* ``ArrowStartWidth``: Arrow tail start width
+
+  Available as ``QgsSymbolLayer.PropertyArrowStartWidth`` in older QGIS releases.
+
+* ``ArrowHeadLength``: Arrow head length
+
+  Available as ``QgsSymbolLayer.PropertyArrowHeadLength`` in older QGIS releases.
+
+* ``ArrowHeadThickness``: Arrow head thickness
+
+  Available as ``QgsSymbolLayer.PropertyArrowHeadThickness`` in older QGIS releases.
+
+* ``ArrowHeadType``: Arrow head type
+
+  Available as ``QgsSymbolLayer.PropertyArrowHeadType`` in older QGIS releases.
+
+* ``ArrowType``: Arrow type
+
+  Available as ``QgsSymbolLayer.PropertyArrowType`` in older QGIS releases.
+
+* ``OffsetX``: Horizontal offset
+
+  Available as ``QgsSymbolLayer.PropertyOffsetX`` in older QGIS releases.
+
+* ``OffsetY``: Vertical offset
+
+  Available as ``QgsSymbolLayer.PropertyOffsetY`` in older QGIS releases.
+
+* ``PointCount``: Point count
+
+  Available as ``QgsSymbolLayer.PropertyPointCount`` in older QGIS releases.
+
+* ``RandomSeed``: Random number seed
+
+  Available as ``QgsSymbolLayer.PropertyRandomSeed`` in older QGIS releases.
+
+* ``ClipPoints``: Whether markers should be clipped to polygon boundaries
+
+  Available as ``QgsSymbolLayer.PropertyClipPoints`` in older QGIS releases.
+
+* ``DensityArea``: Density area
+
+  Available as ``QgsSymbolLayer.PropertyDensityArea`` in older QGIS releases.
+
+* ``FontFamily``: Font family
+
+  Available as ``QgsSymbolLayer.PropertyFontFamily`` in older QGIS releases.
+
+* ``FontStyle``: Font style
+
+  Available as ``QgsSymbolLayer.PropertyFontStyle`` in older QGIS releases.
+
+* ``DashPatternOffset``: Dash pattern offset,
+
+  Available as ``QgsSymbolLayer.PropertyDashPatternOffset`` in older QGIS releases.
+
+* ``TrimStart``: Trim distance from start of line
+
+  .. versionadded:: 3.20
+
+
+  Available as ``QgsSymbolLayer.PropertyTrimStart`` in older QGIS releases.
+
+* ``TrimEnd``: Trim distance from end of line
+
+  .. versionadded:: 3.20
+
+
+  Available as ``QgsSymbolLayer.PropertyTrimEnd`` in older QGIS releases.
+
+* ``LineStartWidthValue``: Start line width for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+
+  Available as ``QgsSymbolLayer.PropertyLineStartWidthValue`` in older QGIS releases.
+
+* ``LineEndWidthValue``: End line width for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+
+  Available as ``QgsSymbolLayer.PropertyLineEndWidthValue`` in older QGIS releases.
+
+* ``LineStartColorValue``: Start line color for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+
+  Available as ``QgsSymbolLayer.PropertyLineStartColorValue`` in older QGIS releases.
+
+* ``LineEndColorValue``: End line color for interpolated line renderer
+
+  .. versionadded:: 3.22
+
+
+  Available as ``QgsSymbolLayer.PropertyLineEndColorValue`` in older QGIS releases.
+
+* ``MarkerClipping``: Marker clipping mode
+
+  .. versionadded:: 3.24
+
+
+  Available as ``QgsSymbolLayer.PropertyMarkerClipping`` in older QGIS releases.
+
+* ``RandomOffsetX``: Random offset X
+
+  .. versionadded:: 3.24
+
+
+  Available as ``QgsSymbolLayer.PropertyRandomOffsetX`` in older QGIS releases.
+
+* ``RandomOffsetY``: Random offset Y
+
+  .. versionadded:: 3.24
+
+
+  Available as ``QgsSymbolLayer.PropertyRandomOffsetY`` in older QGIS releases.
+
+* ``LineClipping``: Line clipping mode
+
+  .. versionadded:: 3.24
+
+
+  Available as ``QgsSymbolLayer.PropertyLineClipping`` in older QGIS releases.
+
+* ``SkipMultiples``: Skip multiples of
+
+  .. versionadded:: 3.40
+
+* ``ShowMarker``: Show markers
+
+  .. versionadded:: 3.40
+
+
+"""
 # --
+try:
+    QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
+    QgsMarkerSymbolLayer.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsSymbolLayer.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLineSymbolLayer.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsFillSymbolLayer.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass

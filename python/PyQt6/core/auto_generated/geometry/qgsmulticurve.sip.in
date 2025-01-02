@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsmulticurve.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -59,7 +59,11 @@ Returns the curve with the specified ``index``.
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
+    virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries /Transfer/ );
+
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
+    virtual QgsMultiCurve *simplifyByDistance( double tolerance ) const /Factory/;
 
 
     QgsMultiCurve *reversed() const /Factory/;
@@ -91,5 +95,5 @@ Returns a copy of the multi curve, where each component curve has had its line d
  *                                                                      *
  * src/core/geometry/qgsmulticurve.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

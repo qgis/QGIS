@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/symbols/qgspointcloud3dsymbol.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,6 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
-
     enum RenderingStyle
     {
       // Do not render anything
@@ -43,9 +42,6 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
     };
 
     QgsPointCloud3DSymbol();
-%Docstring
-Constructor for QgsPointCloud3DSymbol
-%End
     ~QgsPointCloud3DSymbol();
 
     virtual QString type() const;
@@ -190,9 +186,6 @@ class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsSingleColorPointCloud3DSymbol();
-%Docstring
-Constructor for QgsSingleColorPointCloud3DSymbol
-%End
 
     virtual QString symbolType() const;
 
@@ -241,9 +234,6 @@ class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsColorRampPointCloud3DSymbol();
-%Docstring
-Constructor for QgsColorRampPointCloud3DSymbol
-%End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -302,6 +292,8 @@ Returns the maximum value used when classifying colors in the color ramp shader
 Sets the minimum and maximum values used when classifying colors in the color ramp shader
 
 .. seealso:: :py:func:`colorRampShaderMin`
+
+.. seealso:: :py:func:`colorRampShaderMax`
 %End
 
     virtual unsigned int byteStride();
@@ -326,9 +318,6 @@ class QgsRgbPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsRgbPointCloud3DSymbol();
-%Docstring
-Constructor for :py:class:`QgsRGBPointCloud3DSymbol`
-%End
 
 
 
@@ -507,9 +496,6 @@ class QgsClassificationPointCloud3DSymbol : QgsPointCloud3DSymbol
 %End
   public:
     QgsClassificationPointCloud3DSymbol();
-%Docstring
-Constructor for QgsClassificationPointCloud3DSymbol
-%End
 
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -554,6 +540,8 @@ Sets the list of categories of the classification
 Gets the list of categories of the classification that should not be rendered
 
 .. seealso:: :py:func:`categoriesList`
+
+.. seealso:: :py:func:`setCategoriesList`
 %End
 
     virtual unsigned int byteStride();
@@ -565,5 +553,5 @@ Gets the list of categories of the classification that should not be rendered
  *                                                                      *
  * src/3d/symbols/qgspointcloud3dsymbol.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

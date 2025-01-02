@@ -500,13 +500,16 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:basicstatisticsforfields
+  - algorithm: native:basicstatisticsforfields
     name: Basic statistics for numeric fields
     params:
     - name: multipolys.gml
       type: vector
     - 'Bfloatval'
     results:
+      OUTPUT:
+        name: expected/statistics_float.gml
+        type: vector
       OUTPUT_HTML_FILE:
         name: basic_statistics_numeric_float.html
         type: regex
@@ -529,13 +532,16 @@ tests:
           - 'NULL \(missing\) values: 1'
           - 'Interquartile Range \(IQR\): 0.123'
 
-  - algorithm: qgis:basicstatisticsforfields
+  - algorithm: native:basicstatisticsforfields
     name: Basic statistics for text fields
     params:
     - name: multipolys.gml
       type: vector
     - 'Bname'
     results:
+      OUTPUT:
+        name: expected/statistics_text.gml
+        type: vector
       OUTPUT_HTML_FILE:
         name: expected/basic_statistics_string.html
         type: regex
@@ -2443,6 +2449,8 @@ tests:
         - name
         - name_2
         compare:
+          geometry:
+            precision: 8
           fields:
             fid: skip
             fid_2: skip
@@ -2463,6 +2471,8 @@ tests:
         type: vector
         pk: [ name, pre_name ]
         compare:
+          geometry:
+            precision: 8
           fields:
             fid: skip
             pre_fid: skip
@@ -2485,6 +2495,8 @@ tests:
         name: expected/line_intersection_partial_fields.gml
         type: vector
         compare:
+          geometry:
+            precision: 8
           fields:
             fid: skip
 

@@ -19,3 +19,14 @@ QgsServerOgcApi.JSON = QgsServerOgcApi.ContentType.JSON
 QgsServerOgcApi.HTML = QgsServerOgcApi.ContentType.HTML
 QgsServerOgcApi.XML = QgsServerOgcApi.ContentType.XML
 QgsServerOgcApi.ContentType.baseClass = QgsServerOgcApi
+try:
+    QgsServerOgcApi.sanitizeUrl = staticmethod(QgsServerOgcApi.sanitizeUrl)
+    QgsServerOgcApi.relToString = staticmethod(QgsServerOgcApi.relToString)
+    QgsServerOgcApi.contentTypeToString = staticmethod(QgsServerOgcApi.contentTypeToString)
+    QgsServerOgcApi.contentTypeToStdString = staticmethod(QgsServerOgcApi.contentTypeToStdString)
+    QgsServerOgcApi.contentTypeToExtension = staticmethod(QgsServerOgcApi.contentTypeToExtension)
+    QgsServerOgcApi.contenTypeFromExtension = staticmethod(QgsServerOgcApi.contenTypeFromExtension)
+    QgsServerOgcApi.contentTypeFromExtension = staticmethod(QgsServerOgcApi.contentTypeFromExtension)
+    QgsServerOgcApi.mimeType = staticmethod(QgsServerOgcApi.mimeType)
+except (NameError, AttributeError):
+    pass

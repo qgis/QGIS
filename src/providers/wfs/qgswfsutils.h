@@ -29,11 +29,9 @@ class QgsWFSUtils
     //! Returns namespace prefix (or an empty string if there is no prefix)
     static QString nameSpacePrefix( const QString &tname );
 
-    static inline bool isCompatibleType( QVariant::Type a, QVariant::Type b )
+    static inline bool isCompatibleType( QMetaType::Type a, QMetaType::Type b )
     {
-      return a == b ||
-             ( a == QVariant::StringList && b == QVariant::List ) ||
-             ( a == QVariant::List && b == QVariant::StringList );
+      return a == b || ( a == QMetaType::Type::QStringList && b == QMetaType::Type::QVariantList ) || ( a == QMetaType::Type::QVariantList && b == QMetaType::Type::QStringList );
     }
 };
 

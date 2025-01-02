@@ -20,6 +20,7 @@
 
 #include "qgsapplication.h"
 #include "qgsfieldexpressionwidget.h"
+#include "moc_qgsfieldexpressionwidget.cpp"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsdistancearea.h"
@@ -57,7 +58,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   connect( mCombo->lineEdit(), &QLineEdit::textEdited, this, &QgsFieldExpressionWidget::expressionEdited );
   connect( mCombo->lineEdit(), &QLineEdit::editingFinished, this, &QgsFieldExpressionWidget::expressionEditingFinished );
-  connect( mCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsFieldExpressionWidget::currentFieldChanged );
+  connect( mCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsFieldExpressionWidget::currentFieldChanged );
   connect( mButton, &QAbstractButton::clicked, this, &QgsFieldExpressionWidget::editExpression );
   connect( mFieldProxyModel, &QAbstractItemModel::modelAboutToBeReset, this, &QgsFieldExpressionWidget::beforeResetModel );
   connect( mFieldProxyModel, &QAbstractItemModel::modelReset, this, &QgsFieldExpressionWidget::afterResetModel );
@@ -162,7 +163,7 @@ void QgsFieldExpressionWidget::registerExpressionContextGenerator( const QgsExpr
   mExpressionContextGenerator = generator;
 }
 
-void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant> > &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
 {
   mCustomPreviewLabel = label;
   mCustomChoices = choices;
@@ -171,7 +172,7 @@ void QgsFieldExpressionWidget::setCustomPreviewGenerator( const QString &label, 
 
 void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
   if ( mFieldProxyModel->sourceFieldModel()->layer() )
     disconnect( mFieldProxyModel->sourceFieldModel()->layer(), &QgsVectorLayer::updatedFields, this, &QgsFieldExpressionWidget::reloadLayer );
@@ -391,7 +392,8 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
       currentField( &isExpression, &isValid );
     }
     QFont font = mCombo->lineEdit()->font();
-    font.setItalic( isExpression );
+    font.setFamily( ( QgsCodeEditor::getMonospaceFont() ).family() );
+    font.setItalic( false );
     mCombo->lineEdit()->setFont( font );
 
     if ( isExpression && !isValid )

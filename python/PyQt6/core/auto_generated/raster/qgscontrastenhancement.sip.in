@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgscontrastenhancement.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -75,7 +75,7 @@ Returns the minimum value for the contrast enhancement range.
 
     int enhanceContrast( double value );
 %Docstring
-Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
+Applies the contrast enhancement to a ``value``. Return values are 0 - 255, -1 means the pixel was clipped and should not be displayed.
 %End
 
     bool isValueInDisplayableRange( double value );
@@ -147,5 +147,5 @@ of ContrastEnhancement parameters to support sld:Histogram or sld:GammaValue
  *                                                                      *
  * src/core/raster/qgscontrastenhancement.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

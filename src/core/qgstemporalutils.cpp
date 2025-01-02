@@ -131,7 +131,8 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     fileName.replace( token, frameNoPaddedLeft );
     const QString path = QDir( settings.outputDirectory ).filePath( fileName );
 
-    QImage img = QImage( ms.outputSize(), ms.outputImageFormat() );
+    QImage img = QImage( ms.outputSize() * ms.devicePixelRatio(), ms.outputImageFormat() );
+    img.setDevicePixelRatio( ms.devicePixelRatio() );
     img.setDotsPerMeterX( 1000 * ms.outputDpi() / 25.4 );
     img.setDotsPerMeterY( 1000 * ms.outputDpi() / 25.4 );
     img.fill( ms.backgroundColor().rgb() );

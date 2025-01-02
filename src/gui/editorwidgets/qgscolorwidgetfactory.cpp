@@ -37,8 +37,8 @@ QgsEditorConfigWidget *QgsColorWidgetFactory::configWidget( QgsVectorLayer *vl, 
 unsigned int QgsColorWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  const QVariant::Type type = field.type();
-  if ( type == QVariant::Color )
+  const QMetaType::Type type = field.type();
+  if ( type == QMetaType::Type::QColor )
   {
     return 20;
   }

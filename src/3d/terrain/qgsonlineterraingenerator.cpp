@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsonlineterraingenerator.h"
+#include "moc_qgsonlineterraingenerator.cpp"
 
 #include "qgsdemterraintileloader_p.h"
 
@@ -49,45 +50,18 @@ QgsRectangle QgsOnlineTerrainGenerator::rootChunkExtent() const
   return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
-float QgsOnlineTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
+float QgsOnlineTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
 {
-  Q_UNUSED( map )
+  Q_UNUSED( context )
   if ( mHeightMapGenerator )
     return mHeightMapGenerator->heightAt( x, y );
   else
     return 0;
 }
 
-void QgsOnlineTerrainGenerator::writeXml( QDomElement &elem ) const
+QgsTerrainGenerator *QgsOnlineTerrainGenerator::create()
 {
-  const QgsRectangle r = mExtent;
-  QDomElement elemExtent = elem.ownerDocument().createElement( QStringLiteral( "extent" ) );
-  elemExtent.setAttribute( QStringLiteral( "xmin" ), QString::number( r.xMinimum() ) );
-  elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
-  elemExtent.setAttribute( QStringLiteral( "ymin" ), QString::number( r.yMinimum() ) );
-  elemExtent.setAttribute( QStringLiteral( "ymax" ), QString::number( r.yMaximum() ) );
-  elem.appendChild( elemExtent );
-
-  elem.setAttribute( QStringLiteral( "resolution" ), mResolution );
-  elem.setAttribute( QStringLiteral( "skirt-height" ), mSkirtHeight );
-
-  // crs is not read/written - it should be the same as destination crs of the map
-}
-
-void QgsOnlineTerrainGenerator::readXml( const QDomElement &elem )
-{
-  mResolution = elem.attribute( QStringLiteral( "resolution" ) ).toInt();
-  mSkirtHeight = elem.attribute( QStringLiteral( "skirt-height" ) ).toFloat();
-
-  const QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
-  const double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
-  const double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
-  const double ymin = elemExtent.attribute( QStringLiteral( "ymin" ) ).toDouble();
-  const double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
-
-  setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
-
-  // crs is not read/written - it should be the same as destination crs of the map
+  return new QgsOnlineTerrainGenerator();
 }
 
 void QgsOnlineTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )

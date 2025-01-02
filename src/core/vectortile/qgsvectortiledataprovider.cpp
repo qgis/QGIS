@@ -14,17 +14,23 @@
  ***************************************************************************/
 
 #include "qgsvectortiledataprovider.h"
+#include "moc_qgsvectortiledataprovider.cpp"
 #include "qgsthreadingutils.h"
-#include "qgsreadwritelocker.h"
 #include "qgsvectortileloader.h"
 
 #include <QNetworkRequest>
 #include <QImage>
 
+
+int QgsVectorTileDataProvider::DATA_COLUMN = QNetworkRequest::User + 1;
+int QgsVectorTileDataProvider::DATA_ROW = QNetworkRequest::User + 2;
+int QgsVectorTileDataProvider::DATA_ZOOM = QNetworkRequest::User + 3;
+int QgsVectorTileDataProvider::DATA_SOURCE_ID = QNetworkRequest::User + 4;
+
 QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   const QString &uri,
   const ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , mShared( new QgsVectorTileDataProviderSharedData )
 {}
@@ -70,11 +76,11 @@ bool QgsVectorTileDataProvider::supportsAsync() const
   return false;
 }
 
-QNetworkRequest QgsVectorTileDataProvider::tileRequest( const QgsTileMatrixSet &, const QgsTileXYZ &, Qgis::RendererUsage ) const
+QList<QNetworkRequest> QgsVectorTileDataProvider::tileRequests( const QgsTileMatrixSet &, const QgsTileXYZ &, Qgis::RendererUsage ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QNetworkRequest();
+  return QList<QNetworkRequest>();
 }
 
 QVariantMap QgsVectorTileDataProvider::styleDefinition() const

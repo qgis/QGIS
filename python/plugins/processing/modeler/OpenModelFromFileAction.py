@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'February 2018'
-__copyright__ = '(C) 2018, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "February 2018"
+__copyright__ = "(C) 2018, Nyall Dawson"
 
 import os
 from qgis.PyQt.QtWidgets import QFileDialog
@@ -34,21 +34,28 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class OpenModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate('OpenModelFromFileAction', 'Open Existing Model…')
-        self.group = self.tr('Tools')
+        self.name = QCoreApplication.translate(
+            "OpenModelFromFileAction", "Open Existing Model…"
+        )
+        self.group = self.tr("Tools")
 
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
         settings = QgsSettings()
-        lastDir = settings.value('Processing/lastModelsDir', QDir.homePath())
-        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
-                                                                self.tr('Open Model', 'AddModelFromFileAction'), lastDir,
-                                                                self.tr('Processing models (*.model3 *.MODEL3)', 'AddModelFromFileAction'))
+        lastDir = settings.value("Processing/lastModelsDir", QDir.homePath())
+        filename, selected_filter = QFileDialog.getOpenFileName(
+            self.toolbox,
+            self.tr("Open Model", "AddModelFromFileAction"),
+            lastDir,
+            self.tr("Processing models (*.model3 *.MODEL3)", "AddModelFromFileAction"),
+        )
         if filename:
-            settings.setValue('Processing/lastModelsDir',
-                              QFileInfo(filename).absoluteDir().absolutePath())
+            settings.setValue(
+                "Processing/lastModelsDir",
+                QFileInfo(filename).absoluteDir().absolutePath(),
+            )
 
             dlg = ModelerDialog.create()
             dlg.loadModel(filename)

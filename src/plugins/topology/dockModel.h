@@ -30,13 +30,17 @@ class DockModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
-     * \param errorList reference to the ErrorList where errors will be stored
      * \param parent parent object
      */
-    DockModel( ErrorList &errorList, QObject *parent );
+    DockModel( QObject *parent = nullptr );
+
+    /**
+     * \param errorList reference to the ErrorList where errors will be stored
+     * \since QGIS 3.38
+     */
+    void setErrors( const ErrorList &errorList );
 
     /**
      * Returns header data
@@ -86,13 +90,8 @@ class DockModel : public QAbstractTableModel
      */
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
-    /**
-     * Resets the model
-     */
-    void resetModel();
-
   private:
-    ErrorList &mErrorlist;
+    ErrorList mErrorlist;
     QList<QString> mHeader;
 };
 
@@ -101,15 +100,18 @@ class DockFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
-     * \param errorList reference to the ErrorList where errors will be stored
      * \param parent parent object
      */
-    DockFilterModel( ErrorList &errorList, QObject *parent );
+    DockFilterModel( QObject *parent = nullptr );
 
     ~DockFilterModel() = default;
+
+    /**
+     * \param errorList reference to the ErrorList where errors will be stored
+     */
+    void setErrors( const ErrorList &errorList );
 
     /**
      * Reloads the model data between indices
@@ -118,15 +120,8 @@ class DockFilterModel : public QSortFilterProxyModel
      */
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
-    /**
-     * Resets the model
-     */
-    void resetModel();
-
   private:
-
     DockModel *mDockModel = nullptr;
-
 };
 
 #endif

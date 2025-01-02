@@ -46,7 +46,6 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
         , group( group )
       {}
 
-      //! Constructor for ValueRelationItem
       ValueRelationItem() = default;
 
       QVariant key;
@@ -155,7 +154,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
     static bool expressionIsUsable( const QString &expression, const QgsFeature &feature, const QgsFeature &parentFeature = QgsFeature() );
 
     /**
-     * Returns the (possibly NULL) layer from the widget's \a config and \a project
+     * Returns the (possibly NULLPTR) layer from the widget's \a config and \a project
      * \since QGIS 3.8
      */
     static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );

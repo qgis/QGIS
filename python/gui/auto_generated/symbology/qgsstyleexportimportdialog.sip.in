@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgsstyleexportimportdialog.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,7 +18,6 @@ class QgsStyleExportImportDialog : QDialog
 #include "qgsstyleexportimportdialog.h"
 %End
   public:
-
     enum Mode
     {
       Export,
@@ -124,5 +123,5 @@ deselectSmartgroup deselects all symbols from a smart group
  *                                                                      *
  * src/gui/symbology/qgsstyleexportimportdialog.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

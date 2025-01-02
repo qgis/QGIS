@@ -34,7 +34,6 @@ class QgsGoochMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Goo
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) override;
     QgsAbstractMaterialSettings *settings() override;
-
 };
 
 #endif // QGSGOOCHMATERIALWIDGET_H

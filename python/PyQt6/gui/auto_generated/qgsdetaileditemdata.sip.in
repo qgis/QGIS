@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdetaileditemdata.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,11 +20,7 @@ This class is the data only representation of a
 #include "qgsdetaileditemdata.h"
 %End
   public:
-
     QgsDetailedItemData();
-%Docstring
-Constructor for QgsDetailedItemData.
-%End
 
     void setTitle( const QString &title );
 %Docstring
@@ -152,5 +148,5 @@ Returns ``True`` if the item will be rendered using a widget.
  *                                                                      *
  * src/gui/qgsdetaileditemdata.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

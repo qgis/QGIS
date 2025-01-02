@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgspointdistancerenderer.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,6 +15,7 @@ class QgsPointDistanceRenderer: QgsFeatureRenderer
 {
 %Docstring(signature="appended")
 An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
+
 :py:class:`QgsPointDistanceRenderer` handles calculation of point clusters using a distance based threshold.
 Subclasses must implement :py:func:`~drawGroup` to handle the rendering of individual point clusters
 in the desired style.
@@ -64,7 +65,7 @@ Constructor for QgsPointDistanceRenderer.
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
@@ -313,5 +314,5 @@ Draws a group of clustered points.
  *                                                                      *
  * src/core/symbology/qgspointdistancerenderer.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

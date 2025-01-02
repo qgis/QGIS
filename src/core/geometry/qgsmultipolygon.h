@@ -36,6 +36,23 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      */
     QgsMultiPolygon() SIP_HOLDGIL;
 
+    /**
+     * Constructor for a multipolygon containing the specified \a polygons.
+     *
+     * The \a polygons will be internally cloned.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiPolygon( const QList< QgsPolygon > &polygons ) SIP_HOLDGIL;
+
+    /**
+     * Constructor for a multipolygon containing the specified \a polygons.
+     *
+     * Ownership of the \a polygons will be transferred to the multipolygon.
+     *
+     * \since QGIS 3.38
+     */
+    QgsMultiPolygon( const QList< QgsPolygon * > &polygons SIP_TRANSFER ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -88,7 +105,9 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision  = 17 ) const override SIP_SKIP;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) final;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
+    QgsMultiPolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
     /**
      * Returns the geometry converted to the more generic curve type QgsMultiSurface
@@ -105,7 +124,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      */
-    inline static const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPolygon )
         return static_cast<const QgsMultiPolygon *>( geom );

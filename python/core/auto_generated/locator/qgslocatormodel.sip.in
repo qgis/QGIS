@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/locator/qgslocatormodel.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,6 +25,7 @@ in order to ensure correct sorting of results by priority and match level.
   public:
 
     static const int NoGroup;
+    static const int UnorderedGroup;
 
 
     enum class CustomRole
@@ -35,6 +36,8 @@ in order to ensure correct sorting of results by priority and match level.
       ResultScore,
       ResultFilterName,
       ResultFilterGroupSorting,
+      ResultFilterGroupTitle,
+      ResultFilterGroupScore,
       ResultActions,
     };
 
@@ -82,14 +85,14 @@ Adds a new ``result`` to the model.
 class QgsLocatorAutomaticModel : QgsLocatorModel
 {
 %Docstring(signature="appended")
-A QgsLocatorModel which has is associated directly with a
+A :py:class:`QgsLocatorModel` which has is associated directly with a
 :py:class:`QgsLocator`, and is automatically populated with results
 from locator searches.
 
-Use this QgsLocatorModel subclass when you want the connections
+Use this :py:class:`QgsLocatorModel` subclass when you want the connections
 between a :py:class:`QgsLocator` and the model to be automatically created
 for you. If more flexibility in model behavior is required,
-use the base QgsLocatorModel class instead and setup the
+use the base :py:class:`QgsLocatorModel` class instead and setup the
 connections manually.
 
 Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
@@ -160,5 +163,5 @@ Constructor for QgsLocatorProxyModel, with the specified ``parent`` object.
  *                                                                      *
  * src/core/locator/qgslocatormodel.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmetadatawidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ A wizard to edit metadata on a map layer.
 #include "qgsmetadatawidget.h"
 %End
   public:
-
     enum Mode /BaseType=IntEnum/
     {
       LayerMetadata,
@@ -120,14 +119,14 @@ Returns a list of licences available by default in the wizard.
 %Docstring
 Returns a list of link types available by default in the wizard.
 
-.. seealso:: :py:func:`https`
+.. seealso:: https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
 %End
 
     static QStringList parseMimeTypes();
 %Docstring
 Returns a list of MIME types available by default in the wizard.
 
-.. seealso:: :py:func:`https`
+.. seealso:: https://fr.wikipedia.org/wiki/Type_MIME
 %End
 
     static QMap<QString, QString> parseTypes();
@@ -184,5 +183,5 @@ Emitted when the ``title`` field is changed.
  *                                                                      *
  * src/gui/qgsmetadatawidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/inputcontroller/qgs2dgamepadcontroller.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,14 +31,13 @@ Represents a gamepad device used for controlling a 2D map.
 #include "qgs2dgamepadcontroller.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast< QgsGamepad2DMapController * >( sipCpp ) )
+    if ( qobject_cast<QgsGamepad2DMapController *>( sipCpp ) )
 
       sipType = sipType_QgsGamepad2DMapController;
     else
       sipType = nullptr;
 %End
   public:
-
     QgsGamepad2DMapController( int gamepadDeviceId, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGamepad2DMapController, with the specified ``gamepadDeviceId`` and ``parent`` object.
@@ -349,5 +348,5 @@ Emitted when the state of the guide button is changed.
  *                                                                      *
  * src/gui/inputcontroller/qgs2dgamepadcontroller.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

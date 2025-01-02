@@ -40,15 +40,17 @@ class TestQgsPointCloud3DRendering : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsPointCloud3DRendering() : QgsTest( QStringLiteral( "Point Cloud 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
+    TestQgsPointCloud3DRendering()
+      : QgsTest( QStringLiteral( "Point Cloud 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testSync3DRendererTo2DRenderer();
     void testDisableSync3DRendererTo2DRenderer();
 
     void testPointCloudSingleColor();
+    void testPointCloudSingleColorClipping();
     void testPointCloudAttributeByRamp();
     void testPointCloudClassification();
     void testPointCloudClassificationOverridePointSizes();
@@ -58,10 +60,8 @@ class TestQgsPointCloud3DRendering : public QgsTest
 
 
   private:
-
     std::unique_ptr<QgsProject> mProject;
     QgsPointCloudLayer *mLayer;
-
 };
 
 //runs before all tests
@@ -220,23 +220,23 @@ void TestQgsPointCloud3DRendering::testDisableSync3DRendererTo2DRenderer()
 
   {
     mLayer->setRenderer( colorramp2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
     QVERIFY( r3D );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
   }
   {
     mLayer->setRenderer( rgb2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
     QVERIFY( r3D );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
   }
   {
     mLayer->setRenderer( classification2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
     QVERIFY( r3D );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
   }
 }
@@ -276,6 +276,57 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
   QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
+void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
+{
+  const QgsRectangle fullExtent = mLayer->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayer );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  QgsSingleColorPointCloud3DSymbol *symbol = new QgsSingleColorPointCloud3DSymbol();
+  symbol->setSingleColor( QColor( 255, 0, 0 ) );
+  symbol->setPointSize( 10 );
+
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+  renderer->setSymbol( symbol );
+  mLayer->setRenderer3D( renderer );
+
+  scene->cameraController()->resetView( 90 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, -0.5, 0, 1.0 )
+                                         << QVector4D( 0.5, 0.866025, 0, 0.5 );
+  scene->enableClipping( clipPlanesEquations );
+
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor_clipping", "pointcloud_3d_singlecolor_clipping", img, QString(), 80, QSize( 0, 0 ), 15 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img2, QString(), 80, QSize( 0, 0 ), 15 );
+}
 
 void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
 {
@@ -313,7 +364,7 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
   // find a better fix in the future.
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_colorramp", "pointcloud_3d_colorramp", img, QString(), 80, QSize( 0, 0 ), 15 );
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_colorramp", "pointcloud_3d_colorramp", img, QString(), 100, QSize( 0, 0 ), 15 );
 }
 
 void TestQgsPointCloud3DRendering::testPointCloudClassification()
@@ -350,7 +401,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
   // find a better fix in the future.
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_classification", "pointcloud_3d_classification", img, QString(), 80, QSize( 0, 0 ), 15 );
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_classification", "pointcloud_3d_classification", img, QString(), 100, QSize( 0, 0 ), 15 );
 }
 
 void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSizes()
@@ -373,8 +424,8 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
   symbol->setAttribute( QStringLiteral( "Classification" ) );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
-  categories[ 2 ].setPointSize( 4 );
-  categories[ 5 ].setPointSize( 7 );
+  categories[2].setPointSize( 4 );
+  categories[5].setPointSize( 7 );
   symbol->setCategoriesList( categories );
   symbol->setPointSize( 10 );
 
@@ -427,16 +478,15 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
   // find a better fix in the future.
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_classification", "pointcloud_3d_filtered_classification", img, QString(), 80, QSize( 0, 0 ), 15 );
-
   mLayer->setSubsetString( "" );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_classification", "pointcloud_3d_filtered_classification", img, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
 void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
 {
   const QgsRectangle fullExtent = mLayer->extent();
-  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
-                                      fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
+  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(), fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );

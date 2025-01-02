@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectortileloader.h"
+#include "moc_qgsvectortileloader.cpp"
 #include "qgslogger.h"
 #include "qgsvectortileutils.h"
 #include "qgsapplication.h"
@@ -67,7 +68,9 @@ void QgsVectorTileLoader::downloadBlocking()
     return; // nothing to do
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Starting event loop with %1 requests" ).arg( mReplies.count() ), 2 );
+  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
+  Q_UNUSED( repliesCount )
+  QgsDebugMsgLevel( QStringLiteral( "Starting event loop with %1 requests" ).arg( repliesCount ), 2 );
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
@@ -78,20 +81,25 @@ void QgsVectorTileLoader::downloadBlocking()
 
 void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrixSet &tileMatrixSet, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage )
 {
-  QNetworkRequest request = provider->tileRequest( tileMatrixSet, id, usage );
+  const QList<QNetworkRequest> requests = provider->tileRequests( tileMatrixSet, id, usage );
 
-  QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
-  connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
-  mReplies << reply;
+  for ( const QNetworkRequest &request : requests )
+  {
+    QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
+    connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
+    mReplies[id].append( reply );
+  }
 }
 
 void QgsVectorTileLoader::tileReplyFinished()
 {
   QgsTileDownloadManagerReply *reply = qobject_cast<QgsTileDownloadManagerReply *>( sender() );
 
-  int reqX = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
-  int reqY = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toInt();
-  int reqZ = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ) ).toInt();
+  int reqX = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_COLUMN ) ).toInt();
+  int reqY = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_ROW ) ).toInt();
+  int reqZ = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_ZOOM ) ).toInt();
+  QString sourceId = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_SOURCE_ID ) ).toString();
+
   QgsTileXYZ tileID( reqX, reqY, reqZ );
 
   if ( reply->error() == QNetworkReply::NoError )
@@ -100,10 +108,15 @@ void QgsVectorTileLoader::tileReplyFinished()
 
     QgsDebugMsgLevel( QStringLiteral( "Tile download successful: " ) + tileID.toString(), 2 );
     QByteArray rawData = reply->data();
-    mReplies.removeOne( reply );
+    mReplies[tileID].removeOne( reply );
+    mPendingRawData[tileID][sourceId] = rawData;
     reply->deleteLater();
 
-    emit tileRequestFinished( QgsVectorTileRawData( tileID, rawData ) );
+    if ( mReplies[tileID].count() == 0 )
+    {
+      mReplies.remove( tileID );
+      emit tileRequestFinished( QgsVectorTileRawData( tileID, mPendingRawData.take( tileID ) ) );
+    }
   }
   else
   {
@@ -116,10 +129,14 @@ void QgsVectorTileLoader::tileReplyFinished()
     }
 
     QgsDebugError( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
-    mReplies.removeOne( reply );
+    mReplies[tileID].removeOne( reply );
     reply->deleteLater();
 
-    emit tileRequestFinished( QgsVectorTileRawData( tileID, QByteArray() ) );
+    if ( mReplies[tileID].count() == 0 )
+    {
+      mReplies.remove( tileID );
+      emit tileRequestFinished( QgsVectorTileRawData( tileID ) );
+    }
   }
 
   if ( mReplies.isEmpty() )
@@ -131,8 +148,12 @@ void QgsVectorTileLoader::tileReplyFinished()
 
 void QgsVectorTileLoader::canceled()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( mReplies.count() ), 2 );
-  qDeleteAll( mReplies );
+  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
+  Q_UNUSED( repliesCount )
+  QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( repliesCount ), 2 );
+  QHash<QgsTileXYZ, QList<QgsTileDownloadManagerReply *>>::iterator it = mReplies.begin();
+  for ( ; it != mReplies.end(); ++it )
+    qDeleteAll( it.value() );
   mReplies.clear();
 
   // stop blocking download

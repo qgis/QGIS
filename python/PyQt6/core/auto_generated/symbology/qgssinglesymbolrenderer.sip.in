@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssinglesymbolrenderer.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,6 +24,8 @@ The same ``symbol`` will be used to render every feature. Ownership
 of ``symbol`` is transferred to the renderer.
 %End
     ~QgsSingleSymbolRenderer();
+
+    virtual Qgis::FeatureRendererFlags flags() const;
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
@@ -130,5 +132,5 @@ Will return ``None`` if the functionality is disabled.
  *                                                                      *
  * src/core/symbology/qgssinglesymbolrenderer.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

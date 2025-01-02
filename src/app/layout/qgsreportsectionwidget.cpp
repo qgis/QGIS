@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportsectionwidget.h"
+#include "moc_qgsreportsectionwidget.cpp"
 #include "qgsreport.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
@@ -57,7 +58,7 @@ void QgsReportSectionWidget::editHeader()
 {
   if ( !mSection->header() )
   {
-    std::unique_ptr< QgsLayout > header = std::make_unique< QgsLayout >( mSection->project() );
+    std::unique_ptr<QgsLayout> header = std::make_unique<QgsLayout>( mSection->project() );
     header->initializeDefaults();
     mSection->setHeader( header.release() );
   }
@@ -74,7 +75,7 @@ void QgsReportSectionWidget::editFooter()
 {
   if ( !mSection->footer() )
   {
-    std::unique_ptr< QgsLayout > footer = std::make_unique< QgsLayout >( mSection->project() );
+    std::unique_ptr<QgsLayout> footer = std::make_unique<QgsLayout>( mSection->project() );
     footer->initializeDefaults();
     mSection->setFooter( footer.release() );
   }
@@ -86,4 +87,3 @@ void QgsReportSectionWidget::editFooter()
     mOrganizer->setEditedSection( mSection );
   }
 }
-

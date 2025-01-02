@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsrichtexteditor.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,10 +26,34 @@ and retrieving and setting the documents via HTML formatted strings.
 #include "qgsrichtexteditor.h"
 %End
   public:
+    enum class Mode
+    {
+      QTextDocument,
+      QgsTextRenderer,
+      PlainText,
+    };
 
     QgsRichTextEditor( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsRichTextEditor, with the specified ``parent`` widget.
+%End
+
+    Mode mode() const;
+%Docstring
+Returns the widget's mode, which defines which formatting options are exposed in the widget.
+
+.. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.40
+%End
+
+    void setMode( Mode mode );
+%Docstring
+Sets the widget's ``mode``, which defines which formatting options are exposed in the widget.
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.40
 %End
 
     QString toPlainText() const;
@@ -44,6 +68,13 @@ Returns the widget's content as a plain text string.
 Returns the widget's content as a HTML string.
 
 .. seealso:: :py:func:`toPlainText`
+%End
+
+    QTextEdit *textEdit();
+%Docstring
+Returns the widget's QTextEditor control.
+
+.. versionadded:: 3.40
 %End
 
     QTextDocument *document();
@@ -95,11 +126,10 @@ Emitted when the text contents are changed.
 };
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/qgsrichtexteditor.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

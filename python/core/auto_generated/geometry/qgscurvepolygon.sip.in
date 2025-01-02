@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgscurvepolygon.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -60,15 +60,21 @@ Curve polygon geometry type
 
     void normalize() final /HoldGIL/;
 
+    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
+%Docstring
+Gets a polygon representation of this surface.
+Ownership is transferred to the caller.
+%End
+
     virtual double area() const /HoldGIL/;
 
     virtual double perimeter() const /HoldGIL/;
 
-    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
-
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
-    virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+    virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
+
+    virtual QgsCurvePolygon *simplifyByDistance( double tolerance ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
@@ -348,5 +354,5 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
  *                                                                      *
  * src/core/geometry/qgscurvepolygon.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

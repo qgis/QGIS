@@ -38,9 +38,6 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     static QString DATE_DISPLAY_FORMAT; //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
     static QString DATETIME_DISPLAY_FORMAT; //! Date time display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
 
-    /**
-      * Default constructor of field formatter for a date time field.
-      */
     QgsDateTimeFieldFormatter() = default;
 
     QString id() const override;
@@ -55,7 +52,19 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      * - QVariant::Date
      * - QVariant::Time
      */
-    static QString defaultFormat( QVariant::Type type );
+    static QString defaultFormat( QMetaType::Type type );
+
+    /**
+     * Gets the default format in function of the type.
+     * The type is expected to be one of
+     *
+     * - QVariant::DateTime
+     * - QVariant::Date
+     * - QVariant::Time
+     *
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED static QString defaultFormat( QVariant::Type type ) SIP_DEPRECATED;
 
     /**
      * Gets the default display format in function of the type.
@@ -67,7 +76,20 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      *
      * \since QGIS 3.30
      */
-    static QString defaultDisplayFormat( QVariant::Type type );
+    static QString defaultDisplayFormat( QMetaType::Type type );
+
+    /**
+     * Gets the default display format in function of the type.
+     * The type is expected to be one of
+     *
+     * - QVariant::DateTime
+     * - QVariant::Date
+     * - QVariant::Time
+     *
+     * \since QGIS 3.30
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED static QString defaultDisplayFormat( QVariant::Type type ) SIP_DEPRECATED;
 
     /**
      * Adjusts the date time display formats according to locale.

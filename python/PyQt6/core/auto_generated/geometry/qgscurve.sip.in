@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgscurve.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,9 +22,6 @@ Abstract base class for curved geometry type
   public:
 
     QgsCurve();
-%Docstring
-Constructor for QgsCurve.
-%End
 
     virtual bool equals( const QgsCurve &other ) const = 0;
 %Docstring
@@ -147,8 +144,8 @@ Returns the point and vertex id of a point within the curve.
 :param node: node number, where the first node is 0
 
 :return: - ``True`` if node exists within the curve
-         - point: will be set to point at corresponding node in the curve
-         - type: will be set to the vertex type of the node
+         - point: point at corresponding node in the curve
+         - type: the vertex type of the node
 %End
 
     virtual int indexOf( const QgsPoint &point ) const = 0;
@@ -322,7 +319,6 @@ Scrolls the curve vertices so that they start with the vertex at the given index
    The ``firstVertexIndex`` must correspond to a segment vertex and not a curve point or the result
    is undefined.
 
-
 .. versionadded:: 3.20
 %End
 
@@ -347,5 +343,5 @@ Scrolls the curve vertices so that they start with the vertex at the given index
  *                                                                      *
  * src/core/geometry/qgscurve.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

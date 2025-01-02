@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "moc_qgsskyboxrenderingsettingswidget.cpp"
 
 #include <QCheckBox>
 #include <QLineEdit>
@@ -47,18 +48,18 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
 
   panoramicTextureImageSource->setSource( skyboxSettings.panoramicTexturePath() );
   QMap<QString, QString> cubeMapFaces = skyboxSettings.cubeMapFacesPaths();
-  posXImageSource->setSource( cubeMapFaces[ QStringLiteral( "posX" ) ] );
-  posYImageSource->setSource( cubeMapFaces[ QStringLiteral( "posY" ) ] );
-  posZImageSource->setSource( cubeMapFaces[ QStringLiteral( "posZ" ) ] );
-  negXImageSource->setSource( cubeMapFaces[ QStringLiteral( "negX" ) ] );
-  negYImageSource->setSource( cubeMapFaces[ QStringLiteral( "negY" ) ] );
-  negZImageSource->setSource( cubeMapFaces[ QStringLiteral( "negZ" ) ] );
+  posXImageSource->setSource( cubeMapFaces[QStringLiteral( "posX" )] );
+  posYImageSource->setSource( cubeMapFaces[QStringLiteral( "posY" )] );
+  posZImageSource->setSource( cubeMapFaces[QStringLiteral( "posZ" )] );
+  negXImageSource->setSource( cubeMapFaces[QStringLiteral( "negX" )] );
+  negYImageSource->setSource( cubeMapFaces[QStringLiteral( "negY" )] );
+  negZImageSource->setSource( cubeMapFaces[QStringLiteral( "negZ" )] );
 }
 
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 {
   QgsSkyboxSettings settings;
-  settings.setSkyboxType( static_cast< QgsSkyboxEntity::SkyboxType >( skyboxTypeComboBox->currentIndex() ) );
+  settings.setSkyboxType( static_cast<QgsSkyboxEntity::SkyboxType>( skyboxTypeComboBox->currentIndex() ) );
   settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posX" ), posXImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posY" ), posYImageSource->source() );
@@ -71,7 +72,7 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 
 void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
 {
-  const QgsSkyboxEntity::SkyboxType type = static_cast< QgsSkyboxEntity::SkyboxType >( skyboxTypeComboBox->currentIndex() );
+  const QgsSkyboxEntity::SkyboxType type = static_cast<QgsSkyboxEntity::SkyboxType>( skyboxTypeComboBox->currentIndex() );
   const bool isPanoramic = type == QgsSkyboxEntity::PanoramicSkybox;
   const bool isDistinctFaces = type == QgsSkyboxEntity::DistinctTexturesSkybox;
 
@@ -90,5 +91,4 @@ void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
   posYImageSource->setVisible( isDistinctFaces );
   posZImageSourceLabel->setVisible( isDistinctFaces );
   posZImageSource->setVisible( isDistinctFaces );
-
 }

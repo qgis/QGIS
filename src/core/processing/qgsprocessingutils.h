@@ -395,7 +395,7 @@ class CORE_EXPORT QgsProcessingUtils
     /**
      * Combines the extent of several map \a layers. If specified, the target \a crs
      * will be used to transform the layer's extent to the desired output reference system.
-     * \deprecated Use version with QgsProcessingContext argument instead
+     * \deprecated QGIS 3.40. Use version with QgsProcessingContext argument instead.
      */
     Q_DECL_DEPRECATED static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) SIP_DEPRECATED;
 
@@ -665,7 +665,7 @@ class CORE_EXPORT QgsProcessingUtils
      * then the layer at this file path will be loaded.
      * The caller takes responsibility for deleting the returned map layer.
      *
-     * \deprecated use mapLayerFromString() that takes QgsCoordinateTransformContext as an argument instead
+     * \deprecated QGIS 3.40. Use mapLayerFromString() that takes QgsCoordinateTransformContext as an argument instead.
      */
     Q_DECL_DEPRECATED static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = LayerHint::UnknownType ) SIP_DEPRECATED ;
 
@@ -797,6 +797,18 @@ class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
      */
     QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink = false );
     ~QgsProcessingFeatureSink() override;
+
+    /**
+     * Finalizes the sink, flushing any buffered features to the destination.
+     *
+     * \warning All algorithms which use feature sinks should explicitly call finalize() prior to destroying the sink!
+     *
+     * \throws QgsProcessingException if an error occurs while finalizing the sink
+     *
+     * \since QGIS 3.42
+     */
+    void finalize() override SIP_THROW( QgsProcessingException );
+
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;

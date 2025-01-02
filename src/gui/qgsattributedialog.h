@@ -40,7 +40,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
     Q_OBJECT
 
   public:
-
     /**
      * Create an attribute dialog for a given layer and feature
      *
@@ -96,6 +95,8 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
      */
     bool event( QEvent *e ) override;
 
+    void showEvent( QShowEvent *event ) override;
+
     /**
      * Sets \a extraScope as an additional expression context scope to be used
      * for calculations in this form.
@@ -119,17 +120,12 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
     QgsHighlight *mHighlight = nullptr;
-    int mFormNr;
-    bool mShowDialogButtons;
     QString mReturnvarname;
     QgsAttributeForm *mAttributeForm = nullptr;
     QgsFeature *mOwnedFeature = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
-
-    // true if this dialog is editable
-    bool mEditable;
 
     QgsActionMenu *mMenu;
     QMenuBar *mMenuBar = nullptr;

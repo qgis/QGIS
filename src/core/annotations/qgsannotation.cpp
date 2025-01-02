@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsannotation.h"
+#include "moc_qgsannotation.cpp"
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
@@ -24,11 +25,10 @@
 #include "qgssymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgspainting.h"
 
 #include <QPen>
 #include <QPainter>
-
-Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 QgsAnnotation::QgsAnnotation( QObject *parent )
   : QObject( parent )
@@ -329,7 +329,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   }
 
   mContentsMargins = QgsMargins::fromString( annotationElem.attribute( QStringLiteral( "contentsMargin" ) ) );
-  const double dpiScale = 25.4 / qt_defaultDpiX();
+  const double dpiScale = 25.4 / QgsPainting::qtDefaultDpiX();
   if ( annotationElem.hasAttribute( QStringLiteral( "frameWidthMM" ) ) )
     mFrameSize.setWidth( annotationElem.attribute( QStringLiteral( "frameWidthMM" ), QStringLiteral( "5" ) ).toDouble() );
   else
@@ -352,7 +352,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   mVisible = annotationElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
   if ( annotationElem.hasAttribute( QStringLiteral( "mapLayer" ) ) )
   {
-    mMapLayer = QgsProject::instance()->mapLayer( annotationElem.attribute( QStringLiteral( "mapLayer" ) ) );
+    mMapLayer = QgsProject::instance()->mapLayer( annotationElem.attribute( QStringLiteral( "mapLayer" ) ) ); // skip-keyword-check
   }
 
   //marker symbol

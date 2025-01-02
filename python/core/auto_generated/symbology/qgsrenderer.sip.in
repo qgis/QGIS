@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsrenderer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -47,6 +47,9 @@ typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
 
 class QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+Abstract base class for all 2D vector feature renderers.
+%End
 
 %TypeHeaderCode
 #include "qgsrenderer.h"
@@ -136,7 +139,6 @@ be followed by a corresponding call to :py:func:`~QgsFeatureRenderer.stopRender`
 :param fields: The fields available for rendering
 
 .. seealso:: :py:func:`stopRender`
-
 
 .. warning::
 
@@ -260,6 +262,13 @@ E.g. if you only want to deal with visible features:
          skip_the_curren_feature()
 %End
 
+    virtual Qgis::FeatureRendererFlags flags() const;
+%Docstring
+Returns flags associated with the renderer.
+
+.. versionadded:: 3.40
+%End
+
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 %Docstring
 Returns list of symbols used by the renderer.
@@ -359,11 +368,9 @@ the features displayed using that key.
 :param layer: associated vector layer
 
 :return: - QGIS expression string for matching features with the specified key
-         - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
-
+         - ok: ``True`` if legend key was successfully converted to a filter expression
 
 .. seealso:: :py:func:`legendKeys`
-
 
 .. versionadded:: 3.26
 %End
@@ -497,7 +504,6 @@ Sets the renderer's property collection, used for data defined overrides.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
-
 .. versionadded:: 3.38
 %End
 
@@ -624,6 +630,17 @@ Currently clones
 .. versionadded:: 3.22
 %End
 
+    double maximumExtentBuffer( QgsRenderContext &context ) const;
+%Docstring
+Returns the maximum extent buffer found in this renderer's symbols.
+
+.. note::
+
+   Returns 0 if the renderer doesn't have any symbols.
+
+.. versionadded:: 3.42
+%End
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -705,5 +722,5 @@ QFlags<QgsFeatureRenderer::Capability> operator|(QgsFeatureRenderer::Capability 
  *                                                                      *
  * src/core/symbology/qgsrenderer.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

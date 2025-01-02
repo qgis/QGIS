@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeatureiterator.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -148,7 +148,6 @@ features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on
 
 :raises QgsCsException: if the rect cannot be transformed from the destination CRS.
 
-
 .. versionadded:: 3.22
 %End
 
@@ -272,7 +271,7 @@ Will return if this iterator is valid.
 An invalid iterator was probably introduced by a failed attempt to acquire a connection
 or is a default constructed iterator.
 
-.. seealso:: :py:func:`isClosed`
+.. seealso:: :py:func:`isClosed` to check if the iterator successfully completed and returned all the features.
 %End
 
     bool isClosed() const;
@@ -306,5 +305,5 @@ This indicates that there is something wrong with the expression compiler.
  *                                                                      *
  * src/core/qgsfeatureiterator.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

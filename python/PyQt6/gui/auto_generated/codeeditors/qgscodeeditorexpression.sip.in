@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorexpression.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -45,7 +45,6 @@ Field names will be added to the API.
 %End
 
   protected:
-
     virtual void initializeLexer();
 
 
@@ -57,5 +56,5 @@ Field names will be added to the API.
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorexpression.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

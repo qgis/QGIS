@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutmodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -96,7 +96,7 @@ Returns the QModelIndex corresponding to a :py:class:`QgsLayoutItem` ``item`` an
 class QgsLayoutProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-Allows for filtering a QgsLayoutModel by item type.
+Allows for filtering a :py:class:`QgsLayoutModel` by item type.
 %End
 
 %TypeHeaderCode
@@ -213,5 +213,5 @@ Returns ``None`` if no flag based filtering is occurring.
  *                                                                      *
  * src/core/layout/qgslayoutmodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

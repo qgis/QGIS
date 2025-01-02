@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -35,9 +35,6 @@ Contains mainly the QMap with :py:class:`QgsVectorLayer` and :py:class:`QgsFeatu
       public:
 
         QgsDuplicateFeatureContext();
-%Docstring
-Constructor for QgsDuplicateFeatureContext
-%End
 
         QList<QgsVectorLayer *> layers() const;
 %Docstring
@@ -394,5 +391,5 @@ first available.
  *                                                                      *
  * src/core/vector/qgsvectorlayerutils.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

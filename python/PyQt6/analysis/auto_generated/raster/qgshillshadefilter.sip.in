@@ -3,13 +3,13 @@
  *                                                                      *
  * src/analysis/raster/qgshillshadefilter.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsHillshadeFilter: QgsDerivativeFilter
+class QgsHillshadeFilter : QgsDerivativeFilter
 {
 %Docstring(signature="appended")
 A hillshade filter.
@@ -19,12 +19,10 @@ A hillshade filter.
 #include "qgshillshadefilter.h"
 %End
   public:
-    QgsHillshadeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth = 300,
-                        double lightAngle = 40 );
+    QgsHillshadeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth = 300, double lightAngle = 40 );
 
-     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
-                                 float *x12, float *x22, float *x32,
-                                 float *x13, float *x23, float *x33 );
+    virtual float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );
+
 
     float lightAzimuth() const;
     void setLightAzimuth( float azimuth );
@@ -38,5 +36,5 @@ A hillshade filter.
  *                                                                      *
  * src/analysis/raster/qgshillshadefilter.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsbrowsertreeview.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,7 +32,6 @@ The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tre
       sipType = nullptr;
 %End
   public:
-
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserTreeView
@@ -78,7 +77,6 @@ Since QGIS 3.38 the ``selectPath`` argument can be used to automatically select 
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *event );
 
 
@@ -93,5 +91,5 @@ Since QGIS 3.38 the ``selectPath`` argument can be used to automatically select 
  *                                                                      *
  * src/gui/qgsbrowsertreeview.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

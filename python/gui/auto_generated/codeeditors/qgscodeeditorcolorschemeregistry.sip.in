@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorcolorschemeregistry.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ A registry of color schemes for use in :py:class:`QgsCodeEditor` widgets.
 #include "qgscodeeditorcolorschemeregistry.h"
 %End
   public:
-
     QgsCodeEditorColorSchemeRegistry();
 %Docstring
 Constructor for a color scheme registry.
@@ -63,5 +62,5 @@ If the specified scheme ``id`` does not exist then the default scheme will be re
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditorcolorschemeregistry.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

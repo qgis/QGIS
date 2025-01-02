@@ -80,11 +80,11 @@ QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   mValidityFailureReason = p.mValidityFailureReason;
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
 {
   if ( &p != this )
   {
-    clearCache();
     QgsSurface::operator=( p );
     if ( p.mExteriorRing )
     {
@@ -305,13 +305,16 @@ QString QgsCurvePolygon::asWkt( int precision ) const
     }
     for ( const QgsCurve *curve : mInteriorRings )
     {
-      QString childWkt = curve->asWkt( precision );
-      if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+      if ( !curve->isEmpty() )
       {
-        // Type names of linear geometries are omitted
-        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+        QString childWkt = curve->asWkt( precision );
+        if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+        {
+          // Type names of linear geometries are omitted
+          childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+        }
+        wkt += childWkt + ',';
       }
-      wkt += childWkt + ',';
     }
     if ( wkt.endsWith( ',' ) )
     {
@@ -356,24 +359,36 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
   if ( isEmpty() )
     return elemCurvePolygon;
 
-  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
-  QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns, axisOrder );
-  if ( curveElem.tagName() == QLatin1String( "LineString" ) )
+  const auto exportRing = [&doc, precision, &ns, axisOrder]( const QgsCurve * ring )
   {
-    curveElem.setTagName( QStringLiteral( "LinearRing" ) );
-  }
-  elemExterior.appendChild( curveElem );
+    QDomElement ringElem = ring->asGml3( doc, precision, ns, axisOrder );
+    if ( ringElem.tagName() == QLatin1String( "LineString" ) )
+    {
+      ringElem.setTagName( QStringLiteral( "LinearRing" ) );
+    }
+    else if ( ringElem.tagName() == QLatin1String( "CompositeCurve" ) )
+    {
+      ringElem.setTagName( QStringLiteral( "Ring" ) );
+    }
+    else if ( ringElem.tagName() == QLatin1String( "Curve" ) )
+    {
+      QDomElement ringElemNew = doc.createElementNS( ns, QStringLiteral( "Ring" ) );
+      QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
+      ringElemNew.appendChild( curveMemberElem );
+      curveMemberElem.appendChild( ringElem );
+      ringElem = std::move( ringElemNew );
+    }
+    return ringElem;
+  };
+
+  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
+  elemExterior.appendChild( exportRing( exteriorRing() ) );
   elemCurvePolygon.appendChild( elemExterior );
 
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
-    QDomElement innerRing = interiorRing( i )->asGml3( doc, precision, ns, axisOrder );
-    if ( innerRing.tagName() == QLatin1String( "LineString" ) )
-    {
-      innerRing.setTagName( QStringLiteral( "LinearRing" ) );
-    }
-    elemInterior.appendChild( innerRing );
+    elemInterior.appendChild( exportRing( interiorRing( i ) ) );
     elemCurvePolygon.appendChild( elemInterior );
   }
   return elemCurvePolygon;
@@ -539,7 +554,7 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
   }
 }
 
-QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
   if ( !mExteriorRing )
     return nullptr;
@@ -548,7 +563,7 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
   std::unique_ptr< QgsCurvePolygon > polygon( createEmptyWithSameType() );
 
   // exterior ring
-  auto exterior = std::unique_ptr<QgsCurve> { static_cast< QgsCurve *>( mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) };
+  auto exterior = std::unique_ptr<QgsCurve> { static_cast< QgsCurve *>( mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) };
 
   if ( !exterior )
     return nullptr;
@@ -561,7 +576,7 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
     if ( !interior )
       continue;
 
-    QgsCurve *gridifiedInterior = static_cast< QgsCurve * >( interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) );
+    QgsCurve *gridifiedInterior = static_cast< QgsCurve * >( interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) );
 
     if ( !gridifiedInterior )
       continue;
@@ -571,6 +586,37 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
 
   return polygon.release();
 
+}
+
+QgsCurvePolygon *QgsCurvePolygon::simplifyByDistance( double tolerance ) const
+{
+  if ( !mExteriorRing )
+    return nullptr;
+
+  // exterior ring
+  std::unique_ptr< QgsAbstractGeometry > exterior( mExteriorRing->simplifyByDistance( tolerance ) );
+  if ( !qgsgeometry_cast< QgsLineString * >( exterior.get() ) )
+    return nullptr;
+
+  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >( qgis::down_cast< QgsLineString * >( exterior.release() ) );
+
+  //interior rings
+  for ( const QgsCurve *interior : mInteriorRings )
+  {
+    if ( !interior )
+      continue;
+
+    std::unique_ptr< QgsAbstractGeometry > simplifiedRing( interior->simplifyByDistance( tolerance ) );
+    if ( !simplifiedRing )
+      return nullptr;
+
+    if ( !qgsgeometry_cast< QgsLineString * >( simplifiedRing.get() ) )
+      return nullptr;
+
+    polygon->mInteriorRings.append( qgis::down_cast< QgsLineString * >( simplifiedRing.release() ) );
+  }
+
+  return polygon.release();
 }
 
 bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )

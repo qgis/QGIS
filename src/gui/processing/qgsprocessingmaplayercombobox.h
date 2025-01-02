@@ -44,7 +44,6 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */
@@ -123,7 +122,6 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     void valueChanged();
 
   protected:
-
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
@@ -137,7 +135,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     void browseForLayer();
 
   private:
-    std::unique_ptr< QgsProcessingParameterDefinition > mParameter;
+    std::unique_ptr<QgsProcessingParameterDefinition> mParameter;
     QgsMapLayerComboBox *mCombo = nullptr;
     QToolButton *mSelectButton = nullptr;
     QToolButton *mIterateButton = nullptr;
@@ -148,7 +146,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     QString mFilterExpression;
     bool mIsOverridingDefaultGeometryCheck = false;
     Qgis::InvalidGeometryCheck mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
-    QPointer< QgsMapLayer> mPrevLayer;
+    QPointer<QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;

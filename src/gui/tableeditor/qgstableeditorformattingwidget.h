@@ -42,7 +42,6 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorFormattingWidget with the specified \a parent widget.
      */
@@ -135,6 +134,12 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
     void setCellProperty( const QgsProperty &property );
 
     /**
+     * Set the layer to be used for in the expression editor context.
+     * \since QGIS 3.30
+     */
+    void setLayer( QgsMapLayer *layer );
+
+    /**
      * Register an expression context generator class that will be used to retrieve
      * an expression context for the widget when required.
      * \since QGIS 3.16
@@ -196,11 +201,9 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
     void cellPropertyChanged( const QgsProperty &property );
 
   private:
-
-    std::unique_ptr< QgsNumericFormat > mNumericFormat;
+    std::unique_ptr<QgsNumericFormat> mNumericFormat;
     int mBlockSignals = 0;
     QgsExpressionContextGenerator *mContextGenerator = nullptr;
-
 };
 
 #endif // QGSTABLEEDITORFORMATTINGWIDGET_H

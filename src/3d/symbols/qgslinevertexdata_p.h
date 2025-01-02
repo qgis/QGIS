@@ -33,17 +33,18 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
+#include "qgs3drendercontext.h"
 
 
 namespace Qt3DCore
 {
   class QNode;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   class QGeometry;
 #endif
-}
+} // namespace Qt3DCore
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 namespace Qt3DRender
 {
   class QGeometry;
@@ -51,7 +52,6 @@ namespace Qt3DRender
 #endif
 
 class QgsLineString;
-class Qgs3DMapSettings;
 
 
 /**
@@ -63,38 +63,40 @@ class Qgs3DMapSettings;
  *
  * It is expected that client code:
  *
- * # calls init()
- * # calls addLineString() many times
- * # calls createGeometry()
+ * - calls init()
+ * - calls addLineString() many times
+ * - calls createGeometry()
+ *
  */
 struct QgsLineVertexData
 {
-  QVector<QVector3D> vertices;
-  QVector<unsigned int> indexes;
-  QByteArray materialDataDefined;
+    QVector<QVector3D> vertices;
+    QVector<unsigned int> indexes;
+    QByteArray materialDataDefined;
 
-  bool withAdjacency = false;  //!< Whether line strip with adjacency primitive will be used
+    bool withAdjacency = false; //!< Whether line strip with adjacency primitive will be used
 
-  // extra info to calculate elevation
-  Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
-  Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
-  float baseHeight = 0;
-  const Qgs3DMapSettings *mapSettings = nullptr;
+    // extra info to calculate elevation
+    Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
+    Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
+    float baseHeight = 0;
+    Qgs3DRenderContext renderContext; // used for altitude clamping
+    QgsVector3D origin;               // all coordinates are relative to this origin (e.g. center of the chunk)
 
-  QgsLineVertexData();
+    QgsLineVertexData();
 
-  void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DMapSettings *map );
+    void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DRenderContext &renderContext, const QgsVector3D &chunkOrigin );
 
-  QByteArray createVertexBuffer();
-  QByteArray createIndexBuffer();
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
+    QByteArray createVertexBuffer();
+    QByteArray createIndexBuffer();
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+    Qt3DRender::QGeometry *createGeometry( Qt3DCore::QNode *parent );
 #else
-  Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
+    Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
 #endif
 
-  void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
-  void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );
+    void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
+    void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );
 };
 
 /// @endcond

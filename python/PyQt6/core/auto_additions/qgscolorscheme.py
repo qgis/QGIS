@@ -13,3 +13,8 @@ QgsColorScheme.SchemeFlag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsColorScheme.SchemeFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsColorScheme.SchemeFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsColorScheme.SchemeFlag.__or__ = lambda flag1, flag2: QgsColorScheme.SchemeFlag(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsRecentColorScheme.addRecentColor = staticmethod(QgsRecentColorScheme.addRecentColor)
+    QgsRecentColorScheme.lastUsedColor = staticmethod(QgsRecentColorScheme.lastUsedColor)
+except (NameError, AttributeError):
+    pass

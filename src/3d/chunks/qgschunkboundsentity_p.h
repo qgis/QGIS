@@ -29,22 +29,8 @@
 
 #include <Qt3DCore/QEntity>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QGeometry>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QGeometry>
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-#include <QVector3D>
-#include <Qt3DRender/QGeometryRenderer>
-
 class QgsAABB;
-class AABBMesh;
+class Qgs3DWiredMesh;
 
 #define SIP_NO_FILE
 
@@ -66,48 +52,7 @@ class QgsChunkBoundsEntity : public Qt3DCore::QEntity
     void setBoxes( const QList<QgsAABB> &bboxes );
 
   private:
-    AABBMesh *mAabbMesh = nullptr;
-};
-
-
-class LineMeshGeometry : public Qt3DQGeometry
-{
-    Q_OBJECT
-
-  public:
-    LineMeshGeometry( Qt3DCore::QNode *parent = nullptr );
-
-    int vertexCount()
-    {
-      return mVertexCount;
-    }
-
-    void setVertices( const QList<QVector3D> &vertices );
-
-  private:
-    Qt3DQAttribute *mPositionAttribute = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-#else
-    Qt3DCore::QBuffer *mVertexBuffer = nullptr;
-#endif
-    int mVertexCount = 0;
-
-};
-
-
-//! Geometry renderer for axis aligned bounding boxes - draws a box edges as lines
-class AABBMesh : public Qt3DRender::QGeometryRenderer
-{
-    Q_OBJECT
-
-  public:
-    AABBMesh( Qt3DCore::QNode *parent = nullptr );
-
-    void setBoxes( const QList<QgsAABB> &bboxes );
-
-  private:
-    LineMeshGeometry *mLineMeshGeo = nullptr;
+    Qgs3DWiredMesh *mAabbMesh = nullptr;
 };
 
 /// @endcond

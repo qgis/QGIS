@@ -128,10 +128,10 @@ QString QgsPostgresStringUtils::buildArray( const QVariantList &list )
   for ( const QVariant &v : std::as_const( list ) )
   {
     // Convert to proper type
-    switch ( v.type() )
+    switch ( v.userType() )
     {
-      case QVariant::Type::Int:
-      case QVariant::Type::LongLong:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::LongLong:
         sl.push_back( v.toString() );
         break;
       default:

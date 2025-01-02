@@ -3,9 +3,8 @@
  *                                                                      *
  * src/core/annotations/qgsannotationlayer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -121,13 +120,24 @@ The optional ``feedback`` argument can be used to cancel the search early.
 .. versionadded:: 3.22
 %End
 
-    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+ Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) /Deprecated="Since 3.40. Use applyEditV2() instead."/;
 %Docstring
 Applies an edit ``operation`` to the layer.
 
 Returns ``True`` if the operation was successfully applied.
 
-.. versionadded:: 3.22
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAnnotationLayer.applyEditV2` instead.
+%End
+
+    Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
+%Docstring
+Applies an edit ``operation`` to the layer.
+
+Returns ``True`` if the operation was successfully applied.
+
+.. versionadded:: 3.40
 %End
 
     virtual Qgis::MapLayerProperties properties() const;
@@ -160,6 +170,8 @@ Returns ``True`` if the operation was successfully applied.
 
     virtual QString htmlMetadata() const;
 
+    virtual void resolveReferences( QgsProject *project );
+
 
     QgsPaintEffect *paintEffect() const;
 %Docstring
@@ -181,6 +193,26 @@ Ownership is transferred to the renderer.
 .. versionadded:: 3.22
 %End
 
+    QgsMapLayer *linkedVisibilityLayer();
+%Docstring
+Returns a linked layer, where the items in this annotation layer
+will only be visible when the linked layer is also visible.
+
+.. seealso:: :py:func:`setLinkedVisibilityLayer`
+
+.. versionadded:: 3.40
+%End
+
+    void setLinkedVisibilityLayer( QgsMapLayer *layer );
+%Docstring
+Sets a linked ``layer``, where the items in this annotation layer
+will only be visible when the linked layer is also visible.
+
+.. seealso:: :py:func:`linkedVisibilityLayer`
+
+.. versionadded:: 3.40
+%End
+
 };
 
 
@@ -189,5 +221,5 @@ Ownership is transferred to the renderer.
  *                                                                      *
  * src/core/annotations/qgsannotationlayer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/effects/qgsblureffect.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,9 +38,6 @@ Creates a new QgsBlurEffect effect from a properties string map.
 %End
 
     QgsBlurEffect();
-%Docstring
-Constructor for QgsBlurEffect.
-%End
 
     virtual QString type() const;
     virtual QVariantMap properties() const;
@@ -215,5 +212,5 @@ Returns the blend mode for the effect
  *                                                                      *
  * src/core/effects/qgsblureffect.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

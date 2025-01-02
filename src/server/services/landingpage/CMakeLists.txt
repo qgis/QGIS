@@ -2,7 +2,6 @@
 # Files
 
 set (LANDINGPAGE_SRCS
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgslandingpage.cpp
   qgslandingpageutils.cpp

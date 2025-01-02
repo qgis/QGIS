@@ -34,21 +34,20 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     Q_OBJECT
 
   public:
-
     /**
      * Available dialog options.
      */
     enum class Option : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Symbology = 1, //!< Show symbology options
+      Symbology = 1,           //!< Show symbology options
       DestinationCrs = 1 << 2, //!< Show destination CRS (reprojection) option
-      Fields = 1 << 3, //!< Show field customization group
-      AddToCanvas = 1 << 4, //!< Show add to map option
-      SelectedOnly = 1 << 5, //!< Show selected features only option
-      GeometryType = 1 << 6, //!< Show geometry group
-      Extent = 1 << 7, //!< Show extent group
-      Metadata = 1 << 8, //!< Show metadata options
-      AllOptions = ~0 //!< Show all options
+      Fields = 1 << 3,         //!< Show field customization group
+      AddToCanvas = 1 << 4,    //!< Show add to map option
+      SelectedOnly = 1 << 5,   //!< Show selected features only option
+      GeometryType = 1 << 6,   //!< Show geometry group
+      Extent = 1 << 7,         //!< Show extent group
+      Metadata = 1 << 8,       //!< Show metadata options
+      AllOptions = ~0          //!< Show all options
     };
     Q_ENUM( Option )
 
@@ -61,7 +60,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      *
-     * \deprecated since QGIS 3.14 - will be removed in QGIS 4.0
+     * \deprecated QGIS 3.14. Will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() ) SIP_SKIP;
 
@@ -264,7 +263,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void mAttributeTable_itemChanged( QTableWidgetItem *item );
 
   private:
-
     enum class ColumnIndex : int
     {
       Name = 0,
@@ -274,7 +272,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     };
 
     void setup();
-    QList< QPair< QLabel *, QWidget * > > createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options );
+    QList<QPair<QLabel *, QWidget *>> createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options );
 
     QgsCoordinateReferenceSystem mSelectedCrs;
 

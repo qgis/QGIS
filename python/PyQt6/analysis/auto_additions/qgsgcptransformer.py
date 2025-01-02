@@ -8,6 +8,24 @@ QgsGcpTransformerInterface.TransformMethod.PolynomialOrder3.__doc__ = "Polynomia
 QgsGcpTransformerInterface.TransformMethod.ThinPlateSpline.__doc__ = "Thin plate splines"
 QgsGcpTransformerInterface.TransformMethod.Projective.__doc__ = "Projective"
 QgsGcpTransformerInterface.TransformMethod.InvalidTransform.__doc__ = "Invalid transform"
-QgsGcpTransformerInterface.TransformMethod.__doc__ = "Available transformation methods.\n\n" + '* ``Linear``: ' + QgsGcpTransformerInterface.TransformMethod.Linear.__doc__ + '\n' + '* ``Helmert``: ' + QgsGcpTransformerInterface.TransformMethod.Helmert.__doc__ + '\n' + '* ``PolynomialOrder1``: ' + QgsGcpTransformerInterface.TransformMethod.PolynomialOrder1.__doc__ + '\n' + '* ``PolynomialOrder2``: ' + QgsGcpTransformerInterface.TransformMethod.PolynomialOrder2.__doc__ + '\n' + '* ``PolynomialOrder3``: ' + QgsGcpTransformerInterface.TransformMethod.PolynomialOrder3.__doc__ + '\n' + '* ``ThinPlateSpline``: ' + QgsGcpTransformerInterface.TransformMethod.ThinPlateSpline.__doc__ + '\n' + '* ``Projective``: ' + QgsGcpTransformerInterface.TransformMethod.Projective.__doc__ + '\n' + '* ``InvalidTransform``: ' + QgsGcpTransformerInterface.TransformMethod.InvalidTransform.__doc__
+QgsGcpTransformerInterface.TransformMethod.__doc__ = """Available transformation methods.
+
+* ``Linear``: Linear transform
+* ``Helmert``: Helmert transform
+* ``PolynomialOrder1``: Polynomial order 1
+* ``PolynomialOrder2``: Polyonmial order 2
+* ``PolynomialOrder3``: Polynomial order
+* ``ThinPlateSpline``: Thin plate splines
+* ``Projective``: Projective
+* ``InvalidTransform``: Invalid transform
+
+"""
 # --
 QgsGcpTransformerInterface.TransformMethod.baseClass = QgsGcpTransformerInterface
+try:
+    QgsGcpTransformerInterface.methodToString = staticmethod(QgsGcpTransformerInterface.methodToString)
+    QgsGcpTransformerInterface.create = staticmethod(QgsGcpTransformerInterface.create)
+    QgsGcpTransformerInterface.createFromParameters = staticmethod(QgsGcpTransformerInterface.createFromParameters)
+    QgsGcpTransformerInterface.__group__ = ['georeferencing']
+except (NameError, AttributeError):
+    pass

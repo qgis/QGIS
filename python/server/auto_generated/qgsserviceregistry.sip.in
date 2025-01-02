@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserviceregistry.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,12 +28,7 @@ will call 'delete'  on cleanup
 #include "qgsserviceregistry.h"
 %End
   public:
-
     QgsServiceRegistry();
-%Docstring
-Constructor
-%End
-
     ~QgsServiceRegistry();
 
     QgsService *getService( const QString &name, const QString &version = QString() );
@@ -127,11 +122,10 @@ Clean up registered service and unregister modules
 
 };
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/server/qgsserviceregistry.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

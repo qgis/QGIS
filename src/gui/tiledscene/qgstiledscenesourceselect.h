@@ -39,15 +39,13 @@ class QgsTiledSceneSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
   public:
     //! Constructor
-    QgsTiledSceneSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsTiledSceneSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
     //! Determines the layers the user selected
     void addButtonClicked() override;
 
   private slots:
 
-    //! Opens the create connection dialog to build a new connection
-    void btnNewCesium3DTiles_clicked();
     //! Opens a dialog to edit an existing connection
     void btnEdit_clicked();
     //! Deletes the selected connection
@@ -62,6 +60,8 @@ class QgsTiledSceneSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     void showHelp();
 
   private:
+    //! Opens the create connection dialog to build a new connection
+    void newConnection( QString provider );
     void populateConnectionList();
     void setConnectionListPosition();
 };

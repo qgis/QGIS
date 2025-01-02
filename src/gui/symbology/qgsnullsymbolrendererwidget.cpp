@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnullsymbolrendererwidget.h"
+#include "moc_qgsnullsymbolrendererwidget.cpp"
 
 #include "qgsnullsymbolrenderer.h"
 #include "qgssymbol.h"
@@ -33,7 +34,7 @@ QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer,
   }
   if ( !mRenderer )
   {
-    mRenderer = std::make_unique< QgsNullSymbolRenderer >();
+    mRenderer = std::make_unique<QgsNullSymbolRenderer>();
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }

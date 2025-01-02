@@ -78,7 +78,7 @@ class CORE_EXPORT QgsRasterAttributeTable
         bool maybeClass = false;
 
         //! Usage allowed types
-        QList<QVariant::Type> allowedTypes;
+        QList<QMetaType::Type> allowedTypes;
     };
 
     /**
@@ -94,7 +94,13 @@ class CORE_EXPORT QgsRasterAttributeTable
         /**
          * Creates a new Field with \a name, \a type and \a usage.
          */
-        Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ): name( name ), usage( usage ), type( type ) {}
+        Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QMetaType::Type type ): name( name ), usage( usage ), type( type ) {}
+
+        /**
+         * Creates a new Field with \a name, \a type and \a usage.
+         * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+         */
+      Q_DECL_DEPRECATED Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ) SIP_DEPRECATED: Field( name, usage, QgsVariantUtils::variantTypeToMetaType( type ) ) {}
 
         /**
          * Returns TRUE if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
@@ -108,7 +114,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
         QString name;
         Qgis::RasterAttributeTableFieldUsage usage;
-        QVariant::Type type;
+        QMetaType::Type type;
     };
 
     /**
@@ -246,7 +252,13 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Creates a new field from \a name, \a usage and \a type and inserts it at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
-    bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
+    bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Creates a new field from \a name, \a usage and \a type and inserts it at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr ) SIP_DEPRECATED;
 
     /**
      * Create RGBA fields and inserts them at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
@@ -263,6 +275,11 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Create RGBA minimum and maximum fields and inserts them at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool insertRamp( int position, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Creates a new field from \a name, \a usage and \a type and appends it to the fields, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
+    bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QMetaType::Type type, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Creates a new field from \a name, \a usage and \a type and appends it to the fields, optionally reporting any error in \a errorMessage, returns TRUE on success.
@@ -389,6 +406,11 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Try to determine the field usage from its \a name and \a type.
      */
+    static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QMetaType::Type type );
+
+    /**
+     * Try to determine the field usage from its \a name and \a type.
+     */
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 
     /**
@@ -414,7 +436,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Creates a new Raster Attribute Table from a raster layer, the renderer must be Paletted or SingleBandPseudoColor, optionally reporting the raster band from which the attribute table was created.
      * \param rasterLayer raster layer
      * \param bandNumber band number
-     * \returns NULL in case of errors or unsupported renderer.
+     * \returns NULLPTR in case of errors or unsupported renderer.
      */
     static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber SIP_OUT = nullptr ) SIP_FACTORY;
 

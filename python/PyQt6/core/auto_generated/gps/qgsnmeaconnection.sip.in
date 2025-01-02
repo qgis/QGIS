@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgsnmeaconnection.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -71,10 +71,6 @@ process HDT sentence
 %Docstring
 process HCHDG sentence
 %End
-    void processHchdtSentence( const char *data, int len );
-%Docstring
-process HCHDT sentence
-%End
 };
 
 /************************************************************************
@@ -82,5 +78,5 @@ process HCHDT sentence
  *                                                                      *
  * src/core/gps/qgsnmeaconnection.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

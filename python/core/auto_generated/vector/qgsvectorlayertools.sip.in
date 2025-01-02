@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectorlayertools.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,7 +28,7 @@ in your application.
     QgsVectorLayerTools();
 
 
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const = 0;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const;
 %Docstring
 This method should/will be called, whenever a new feature will be added to the layer
 
@@ -41,6 +41,29 @@ This method should/will be called, whenever a new feature will be added to the l
 
 :return: - ``True`` in case of success, ``False`` if the operation failed/was aborted
          - feature: Updated feature after adding will be written back to this
+
+.. note::
+
+   addFeature or addFeatureV2 must be overwritten when implementing a class inheriting from QgsVectorLayerTools
+%End
+
+    virtual bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0, const QgsVectorLayerToolsContext &context = QgsVectorLayerToolsContext() ) const;
+%Docstring
+This method should/will be called, whenever a new feature will be added to the layer
+
+:param layer: The layer to which the feature should be added
+:param defaultValues: Default values for the feature to add
+:param defaultGeometry: A default geometry to add to the feature
+:param context: A context object to be used for e.g. to calculate feature expression-based values (since QGIS 3.38)
+
+:return: - ``True`` in case of success, ``False`` if the operation failed/was aborted
+         - feature: Updated feature after adding will be written back to this
+
+.. note::
+
+   addFeature or addFeatureV2 must be overwritten when implementing a class inheriting from QgsVectorLayerTools
+
+.. versionadded:: 3.38
 %End
 
 
@@ -135,5 +158,5 @@ Returns the project to be used by operations when needed.
  *                                                                      *
  * src/core/vector/qgsvectorlayertools.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

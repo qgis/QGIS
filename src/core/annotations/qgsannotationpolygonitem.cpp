@@ -97,7 +97,7 @@ bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &doc
   return true;
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
+QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
   QList< QgsAnnotationItemNode > res;
 
@@ -124,7 +124,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
   return res;
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
@@ -168,7 +168,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEdit( Qgs
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
@@ -197,6 +197,11 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
       break;
   }
   return nullptr;
+}
+
+Qgis::AnnotationItemFlags QgsAnnotationPolygonItem::flags() const
+{
+  return Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()

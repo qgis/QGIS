@@ -8,8 +8,11 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-            integrity="sha384-o/2yZuJZWGJ4s/adjxVW71R+EO/LyCwdQfP5UWSgX/w87iiTXuvDZaejd3TsN7mf"
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H"
+            crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@3.0.2/Control.FullScreen.css"
+            integrity="sha384-PALxxXbG28eiE9bT7yKmsbjd4Ta3qKMLlzsrp6G+05f4Nltt4ktlg1l7e4RPeNEa"
             crossorigin=""/>
     <link rel="stylesheet" href="/wfs3/static/style.css" />
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -24,15 +27,15 @@
 
     <link rel="self" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9.html" title="Feature collection as HTML" type="text/html">
 
-    <link rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json" title="A test vector layer èé items as GEOJSON" type="application/geo+json">
+    <link rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json" title="A test wfs vector layer èé items as GEOJSON" type="application/geo+json">
 
-    <link rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html" title="A test vector layer èé items as HTML" type="text/html">
+    <link rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html" title="A test wfs vector layer èé items as HTML" type="text/html">
 
-    <link rel="describedBy" href="http://server.qgis.org/?request=DescribeFeatureType&typenames=testlayer%20èé&service=WFS&version=2.0" title="Schema for A test vector layer èé" type="application/xml">
+    <link rel="describedBy" href="http://server.qgis.org/?request=DescribeFeatureType&typenames=testlayer%20èé&service=WFS&version=2.0" title="Schema for A test wfs vector layer èé" type="application/xml">
 
 
 
-    <title>A test vector layer èé</title>
+    <title>A test wfs vector layer èé</title>
   </head>
   <body>
   <nav class="navbar navbar-light bg-light navbar-expand-sm">
@@ -45,7 +48,7 @@
                   <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/collections/" >Collections</a></li>
               
                   <li class="breadcrumb-item active">
-                     A test vector layer èé
+                     A test wfs vector layer èé
                   </li>
               </ol>
               <ul class="list-unstyled list-separated m-0 p-0 text-muted">
@@ -64,7 +67,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <h1><a title="View items of: A test vector layer èé" href="
+        <h1><a title="View items of: A test wfs vector layer èé" href="
         
         
         
@@ -76,7 +79,7 @@
         
         
         
-        ">A test vector layer èé</a></h1>
+        ">A test wfs vector layer èé</a></h1>
         <h3>Available CRSs</h3>
         <ul>
         
@@ -110,15 +113,15 @@
                 
             
                 
-                <li><a rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json">A test vector layer èé items as GEOJSON</a></li>
+                <li><a rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.json">A test wfs vector layer èé items as GEOJSON</a></li>
                 
             
                 
-                <li><a rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html">A test vector layer èé items as HTML</a></li>
+                <li><a rel="items" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html">A test wfs vector layer èé items as HTML</a></li>
                 
             
                 
-                <li><a rel="describedBy" href="http://server.qgis.org/?request=DescribeFeatureType&typenames=testlayer%20èé&service=WFS&version=2.0">Schema for A test vector layer èé</a></li>
+                <li><a rel="describedBy" href="http://server.qgis.org/?request=DescribeFeatureType&typenames=testlayer%20èé&service=WFS&version=2.0">Schema for A test wfs vector layer èé</a></li>
                 
             
             </ul>
@@ -132,6 +135,10 @@
         jQuery( document ).ready(function( $ ) {
             var map = L.map( 'mapid', { attributionControl: false } ).setView( [0, 0], 13 );
             L.control.attribution( {  prefix: false } ).addTo( map );
+            L.control.fullscreen({
+                title: 'Enter fullscreen',
+                titleCancel: 'Exit fullscreen',
+            }).addTo(map);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map)
@@ -173,8 +180,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-       integrity="sha384-okbbMvvx/qfQkmiQKfd5VifbKZ/W8p1qIsWvE1ROPUfHWsDcC8/BnHohF7vPg2T6"
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+       integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
+       crossorigin=""></script>
+     <script src="https://unpkg.com/leaflet.fullscreen@3.0.2/Control.FullScreen.js"
+       integrity="sha384-l0YxV5zMlsDoa/OatH90j4WDu9eFcFTMBjn1+AZN39VXC/k+uKAu3RTciIg3Te2t"
        crossorigin=""></script>
     <script>
       jQuery('.jref').jsonFormatter();

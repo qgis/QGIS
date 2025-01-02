@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsdatabaseschemaitem.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -45,13 +45,6 @@ The optional ``providerKey`` string can be used to specify the key for the :py:c
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 
-    static QIcon iconDataCollection();
-%Docstring
-Returns the standard browser data collection icon.
-
-.. seealso:: :py:func:`iconDir`
-%End
-
 };
 
 
@@ -61,5 +54,5 @@ Returns the standard browser data collection icon.
  *                                                                      *
  * src/core/browser/qgsdatabaseschemaitem.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

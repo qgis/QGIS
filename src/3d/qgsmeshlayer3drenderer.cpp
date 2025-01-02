@@ -21,6 +21,8 @@
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
 #include "qgsmesh3dentity_p.h"
+#include "qgs3drendercontext.h"
+#include "qgs3dmapsettings.h"
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "mesh" ) )
@@ -44,7 +46,7 @@ QgsMeshLayer3DRenderer::QgsMeshLayer3DRenderer( QgsMesh3DSymbol *s )
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRenderer::clone() const
 {
-  QgsMeshLayer3DRenderer *r = new QgsMeshLayer3DRenderer( mSymbol ? ( QgsMesh3DSymbol * )mSymbol->clone() : nullptr );
+  QgsMeshLayer3DRenderer *r = new QgsMeshLayer3DRenderer( mSymbol ? ( QgsMesh3DSymbol * ) mSymbol->clone() : nullptr );
   r->mLayerRef = mLayerRef;
   return r;
 }
@@ -69,15 +71,14 @@ const QgsMesh3DSymbol *QgsMeshLayer3DRenderer::symbol() const
   return mSymbol.get();
 }
 
-Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
+Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( Qgs3DMapSettings *map ) const
 {
   QgsMeshLayer *meshLayer = layer();
 
   if ( !meshLayer || !meshLayer->dataProvider() )
     return nullptr;
 
-  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) ||
-       !mSymbol->isEnabled() )
+  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) || !mSymbol->isEnabled() )
   {
     // 3D not implemented for 1D meshes
     return nullptr;
@@ -88,10 +89,10 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
 
   Qt3DCore::QEntity *entity = nullptr;
 
-  const QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
+  const QgsCoordinateTransform coordTrans( meshLayer->crs(), map->crs(), map->transformContext() );
   meshLayer->updateTriangularMesh( coordTrans );
   const QgsTriangularMesh triangularMesh = *meshLayer->triangularMeshByLodIndex( mSymbol->levelOfDetailIndex() );
-  QgsMeshDataset3DEntity *meshEntity = new QgsMeshDataset3DEntity( map, triangularMesh, meshLayer, mSymbol.get() );
+  QgsMeshDataset3DEntity *meshEntity = new QgsMeshDataset3DEntity( Qgs3DRenderContext::fromMapSettings( map ), triangularMesh, meshLayer, mSymbol.get() );
   meshEntity->build();
   entity = meshEntity;
 

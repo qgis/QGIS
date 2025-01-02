@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerserverproperties.h"
+#include "moc_qgsmaplayerserverproperties.cpp"
 #include "qgsmaplayer.h"
 #include "vector/qgsvectorlayer.h"
 
@@ -228,13 +229,13 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
   properties->setAttributionUrl( mAttributionUrl );
 }
 
-void QgsMapLayerServerProperties::reset()
+void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
 {
   QgsServerMetadataUrlProperties::reset();
   QgsServerWmsDimensionProperties::reset();
 }
 
-void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node )
+void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node ) // cppcheck-suppress duplInheritedMember
 {
   QgsServerMetadataUrlProperties::readXml( layer_node );
   QgsServerWmsDimensionProperties::readXml( layer_node );
@@ -251,6 +252,7 @@ void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node )
   if ( !titleElem.isNull() )
   {
     mTitle = titleElem.text();
+    mWfsTitle = titleElem.attribute( QStringLiteral( "wfs" ) );
   }
 
   //abstract
@@ -289,7 +291,7 @@ void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node )
   }
 }
 
-void QgsMapLayerServerProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
+void QgsMapLayerServerProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const // cppcheck-suppress duplInheritedMember
 {
   QgsServerMetadataUrlProperties::writeXml( layer_node, document );
   QgsServerWmsDimensionProperties::writeXml( layer_node, document );

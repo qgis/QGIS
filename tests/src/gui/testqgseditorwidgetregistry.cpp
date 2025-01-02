@@ -20,11 +20,11 @@
 #include "qgsrelationmanager.h"
 #include "qgsgui.h"
 
-class TestQgsEditorWidgetRegistry: public QObject
+class TestQgsEditorWidgetRegistry : public QObject
 {
     Q_OBJECT
 
-    class DummyPlugin: public QgsEditorWidgetAutoConfPlugin
+    class DummyPlugin : public QgsEditorWidgetAutoConfPlugin
     {
       public:
         QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
@@ -119,23 +119,23 @@ class TestQgsEditorWidgetRegistry: public QObject
     void referencedLayers()
     {
       //build two layers
-      QgsVectorLayer vl1( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=name:string&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
-      QgsVectorLayer vl2( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
-      QgsProject::instance()->addMapLayer( &vl1, false, false );
-      QgsProject::instance()->addMapLayer( &vl2, false, false );
+      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=name:string&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+      QgsProject::instance()->addMapLayer( vl1 );
+      QgsProject::instance()->addMapLayer( vl2 );
 
       //create a relation between them
       QgsRelation relation;
       relation.setId( QStringLiteral( "vl1->vl2" ) );
       relation.setName( QStringLiteral( "vl1->vl2" ) );
-      relation.setReferencingLayer( vl1.id() );
-      relation.setReferencedLayer( vl2.id() );
+      relation.setReferencingLayer( vl1->id() );
+      relation.setReferencedLayer( vl2->id() );
       relation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
       QVERIFY( relation.isValid() );
       QgsProject::instance()->relationManager()->addRelation( relation );
 
       //check the guessed editor widget type for vl1.fk is RelationReference
-      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( &vl1, QStringLiteral( "fk" ) );
+      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vl1, QStringLiteral( "fk" ) );
       QCOMPARE( setup.type(), QString( "RelationReference" ) );
       QCOMPARE( setup.config(), QVariantMap() );
     }
@@ -148,7 +148,6 @@ class TestQgsEditorWidgetRegistry: public QObject
     }
 
   private:
-
     static void checkSimple( const QString &dataType, const QString &widgetType )
     {
       const QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:" + dataType, QStringLiteral( "vl" ), QStringLiteral( "memory" ) );

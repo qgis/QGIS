@@ -35,6 +35,16 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &label
   mCenterSymbol.reset( new QgsMarkerSymbol() );
 }
 
+Qgis::FeatureRendererFlags QgsPointDisplacementRenderer::flags() const
+{
+  Qgis::FeatureRendererFlags res;
+  if ( mCenterSymbol && mCenterSymbol->flags().testFlag( Qgis::SymbolFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+  if ( mRenderer && mRenderer->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) )
+    res.setFlag( Qgis::FeatureRendererFlag::AffectsLabeling );
+  return res;
+}
+
 QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::clone() const
 {
   QgsPointDisplacementRenderer *r = new QgsPointDisplacementRenderer( mLabelAttributeName );
@@ -492,8 +502,6 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
     pointRenderer->setTolerance( clusterRenderer->tolerance() );
     pointRenderer->setToleranceUnit( clusterRenderer->toleranceUnit() );
     pointRenderer->setToleranceMapUnitScale( clusterRenderer->toleranceMapUnitScale() );
-    if ( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol() )
-      pointRenderer->setCenterSymbol( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol()->clone() );
     renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }

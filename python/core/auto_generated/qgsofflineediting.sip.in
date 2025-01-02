@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsofflineediting.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -12,6 +12,9 @@
 
 class QgsOfflineEditing : QObject
 {
+%Docstring(signature="appended")
+Handles logic relating to synchronizing online and offline copies of layer data.
+%End
 
 %TypeHeaderCode
 #include "qgsofflineediting.h"
@@ -112,5 +115,5 @@ Emitted when a warning needs to be displayed.
  *                                                                      *
  * src/core/qgsofflineediting.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

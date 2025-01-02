@@ -59,7 +59,7 @@ QgsDelaunayTriangulationAlgorithm *QgsDelaunayTriangulationAlgorithm::createInst
 
 void QgsDelaunayTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
   std::unique_ptr<QgsProcessingParameterNumber> toleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   toleranceParam->setHelp( QObject::tr( "Specifies an optional snapping tolerance which can be used to improve the robustness of the triangulation" ) );
   addParameter( toleranceParam.release() );
@@ -69,7 +69,7 @@ void QgsDelaunayTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
@@ -82,17 +82,17 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
   QgsFields fields;
   if ( addAttributes )
   {
-    fields.append( QgsField( QStringLiteral( "POINTA" ), QVariant::LongLong ) );
-    fields.append( QgsField( QStringLiteral( "POINTB" ), QVariant::LongLong ) );
-    fields.append( QgsField( QStringLiteral( "POINTC" ), QVariant::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "POINTA" ), QMetaType::Type::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "POINTB" ), QMetaType::Type::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "POINTC" ), QMetaType::Type::LongLong ) );
   }
   else
   {
-    fields.append( QgsField( QStringLiteral( "id" ), QVariant::LongLong ) );
+    fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
   }
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -103,8 +103,7 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
   long long i = 0;
   const double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
 
-  const QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
-  {
+  const QgsSpatialIndex index( it, [&]( const QgsFeature &f ) -> bool {
     i++;
     if ( feedback->isCanceled() )
       return false;
@@ -120,22 +119,21 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
       const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        allPoints.addPart( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::GeometryType::Point );
+        allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::WkbType::Point );
       }
     }
     else
     {
-      allPoints.addPart( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::GeometryType::Point );
+      allPoints.addPartV2( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::WkbType::Point );
     }
 
-    return true;
-  }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   const QgsGeometry triangulation = allPoints.delaunayTriangulation( tolerance );
 
   if ( !triangulation.isEmpty() )
   {
-    const QVector< QgsGeometry > collection = triangulation.asGeometryCollection();
+    const QVector<QgsGeometry> collection = triangulation.asGeometryCollection();
     for ( int i = 0; i < collection.length(); i++ )
     {
       if ( feedback->isCanceled() )
@@ -144,10 +142,10 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
       }
       QgsFeature f;
       f.setFields( fields );
-      f.setGeometry( collection[ i ] );
+      f.setGeometry( collection[i] );
       if ( addAttributes )
       {
-        const QList< QgsFeatureId > nearest = index.nearestNeighbor( collection[i], 3 );
+        const QList<QgsFeatureId> nearest = index.nearestNeighbor( collection[i], 3 );
         QgsAttributes attrs;
         for ( int j = 0; j < 3; j++ )
         {
@@ -165,6 +163,8 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
       feedback->setProgress( 50 + i * step );
     }
   }
+
+  sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

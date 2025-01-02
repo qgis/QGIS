@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/symbols/qgspoint3dsymbol.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,9 +32,6 @@ Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSy
 %End
 
     QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
-%Docstring
-Copy Constructor for QgsPoint3DSymbol
-%End
 
     ~QgsPoint3DSymbol();
 
@@ -53,7 +50,7 @@ Caller takes ownership of the returned symbol.
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
@@ -105,6 +102,8 @@ In most cases callers should use :py:func:`~QgsPoint3DSymbol.shapeProperty` inst
 correctly handle default values when a property has not been
 explicitly set.
 
+.. seealso:: :py:func:`setShapeProperties` for a description of available properties.
+
 .. seealso:: :py:func:`shapeProperty`
 %End
 
@@ -115,12 +114,63 @@ Returns the value for a specific shape ``property``.
 This method accounts for default property values for the symbol's :py:func:`~QgsPoint3DSymbol.shape`,
 used when the property has not been explicitly set.
 
+.. seealso:: :py:func:`setShapeProperties` for a description of available properties.
+
 .. versionadded:: 3.36
 %End
 
     void setShapeProperties( const QVariantMap &properties );
 %Docstring
-Sets a key-value dictionary of point shape properties
+Sets a key-value dictionary of point shape ``properties``.
+
+The available properties depend on the point :py:func:`~QgsPoint3DSymbol.shape`.
+
+Cylinders (:py:class:`Qgis`.Point3DShape.Cylinder)
+--------------------------------------------------------------------
+
+- ``radius``
+- ``length``
+
+Spheres (:py:class:`Qgis`.Point3DShape.Sphere)
+----------------------------------------------------------------
+
+- ``radius``
+
+Cones (:py:class:`Qgis`.Point3DShape.Cone)
+------------------------------------------------------------
+
+- ``length``
+- ``topRadius``
+- ``bottomRadius``
+
+Cubes (:py:class:`Qgis`.Point3DShape.Cube)
+------------------------------------------------------------
+
+- ``size``
+
+Torus (:py:class:`Qgis`.Point3DShape.Torus)
+-------------------------------------------------------------
+
+- ``radius``
+- ``minorRadius``
+
+Flat Planes (:py:class:`Qgis`.Point3DShape.Plane)
+-------------------------------------------------------------------
+
+- ``size``
+
+Extruded Text (:py:class:`Qgis`.Point3DShape.ExtrudedText)
+----------------------------------------------------------------------------
+
+- ``depth``
+- ``text`` (string)
+
+Models (:py:class:`Qgis`.Point3DShape.Model)
+--------------------------------------------------------------
+
+- ``model`` (path to model file)
+
+.. seealso:: :py:func:`shapeProperty`
 %End
 
     QgsMarkerSymbol *billboardSymbol() const;
@@ -141,10 +191,11 @@ Returns transform for individual objects represented by the symbol
 Sets transform for individual objects represented by the symbol
 %End
 
-    QMatrix4x4 billboardTransform() const;
+    float billboardHeight() const;
 %Docstring
-Returns transform for billboards
+Returns how much the billboard should be elevated upwards
 %End
+
 
   private:
     QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
@@ -156,5 +207,5 @@ Returns transform for billboards
  *                                                                      *
  * src/3d/symbols/qgspoint3dsymbol.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

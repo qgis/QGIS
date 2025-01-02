@@ -51,7 +51,11 @@ std::vector<std::string> directoryList(const std::string& dir)
         fs::directory_iterator end;
         while (it != end)
         {
+#ifndef __MINGW32__
             files.push_back(untwine::fromNative(it->path()));
+#else
+            files.push_back(untwine::fromNative(it->path().string()));
+#endif
             it++;
         }
     }

@@ -45,11 +45,9 @@ class QgsScreenHelper;
  */
 class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsElevationProfileCanvas, with the specified \a parent widget.
      */
@@ -106,14 +104,14 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \see layers()
      */
-    void setLayers( const QList< QgsMapLayer * > &layers );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Returns the list of layers included in the profile.
      *
      * \see setLayers()
      */
-    QList< QgsMapLayer * > layers() const;
+    QList<QgsMapLayer *> layers() const;
 
     /**
      * Sets the \a crs associated with the canvas' map coordinates.
@@ -310,7 +308,6 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void refineResults();
 
   private:
-
     void updateChartFromPalette();
     QgsProfileSnapContext snapContext() const;
     QgsProfileIdentifyContext identifyContext() const;
@@ -338,7 +335,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QTimer *mDeferredRedrawTimer = nullptr;
     bool mDeferredRedrawScheduled = false;
 
-    std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr<QgsCurve> mProfileCurve;
     double mTolerance = 0;
 
     bool mFirstDrawOccurred = false;

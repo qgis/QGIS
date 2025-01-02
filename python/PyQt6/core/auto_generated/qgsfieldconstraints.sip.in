@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfieldconstraints.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -72,7 +72,8 @@ is not present on this field.
     ConstraintStrength constraintStrength( Constraint constraint ) const;
 %Docstring
 Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
-is not present on this field.
+is not present on this field. If the strength is not set returns ConstraintStrengthNotSet
+for anything but ConstraintExpression which returns ConstraintStrengthHard.
 
 .. seealso:: :py:func:`constraints`
 
@@ -169,5 +170,5 @@ QFlags<QgsFieldConstraints::Constraint> operator|(QgsFieldConstraints::Constrain
  *                                                                      *
  * src/core/qgsfieldconstraints.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

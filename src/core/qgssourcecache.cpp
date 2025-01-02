@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssourcecache.h"
+#include "moc_qgssourcecache.cpp"
 #include "qgsabstractcontentcache_p.h"
 
 #include "qgis.h"

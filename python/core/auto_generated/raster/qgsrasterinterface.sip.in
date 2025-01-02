@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterinterface.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -109,24 +109,21 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 
 %TypeHeaderCode
 #include "qgsrasterinterface.h"
-// QgsRasterInterface subclasses
-#include <qgsbrightnesscontrastfilter.h>
-#include <qgshuesaturationfilter.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasternuller.h>
-#include <qgsrasterprojector.h>
-#include <qgsrasterrenderer.h>
-#include <qgsrasterresamplefilter.h>
-
-// QgsRasterRenderer subclasses
-#include <qgshillshaderenderer.h>
-#include <qgsmultibandcolorrenderer.h>
-#include <qgspalettedrasterrenderer.h>
-#include <qgssinglebandcolordatarenderer.h>
-#include <qgssinglebandgrayrenderer.h>
-#include <qgssinglebandpseudocolorrenderer.h>
-#include <qgsrastersinglecolorrenderer.h>
-#include <qgsrastercontourrenderer.h>
+#include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasternuller.h"
+#include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgshillshaderenderer.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgssinglebandcolordatarenderer.h"
+#include "qgssinglebandgrayrenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsrastersinglecolorrenderer.h"
+#include "qgsrastercontourrenderer.h"
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
@@ -171,20 +168,6 @@ Base class for processing filters like renderers, reprojector, resampler etc.
       sipType = 0;
 %End
   public:
-    enum Capability
-    {
-      NoCapabilities,
-      Size,
-      Create,
-      Remove,
-      BuildPyramids,
-      Identify,
-      IdentifyValue,
-      IdentifyText,
-      IdentifyHtml,
-      IdentifyFeature,
-      Prefetch,
-    };
 
     QgsRasterInterface( QgsRasterInterface *input = 0 );
 
@@ -195,14 +178,19 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 Clone itself, create deep copy
 %End
 
-    virtual int capabilities() const;
+
+    virtual Qgis::RasterInterfaceCapabilities capabilities() const;
 %Docstring
-Returns a bitmask containing the supported capabilities
+Returns the capabilities supported by the interface.
 %End
 
-    QString capabilitiesString() const;
+ QString capabilitiesString() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Returns the raster interface capabilities in friendly format.
+
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0.
 %End
 
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
@@ -253,6 +241,7 @@ helper function to create zero padded band names
     virtual QString colorInterpretationName( int bandNumber ) const;
 %Docstring
 Returns the name of the color interpretation for the specified ``bandNumber``.
+It is translated since QGIS 3.40
 
 .. versionadded:: 3.18
 %End
@@ -306,7 +295,7 @@ It may be used to get info about original data, e.g. resolution to decide
 resampling etc.
 %End
 
- QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
+ QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Returns the band statistics.
 
@@ -316,8 +305,9 @@ Returns the band statistics.
 :param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
 :param feedback: optional feedback object
 
-.. deprecated::
-   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument
+.. deprecated:: 3.40
+
+   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument.
 %End
 
     virtual QgsRasterBandStats bandStatistics( int bandNo,
@@ -334,15 +324,16 @@ Returns the band statistics.
 :param feedback: optional feedback object
 %End
 
- bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated/;
+ bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Returns ``True`` if histogram is available (cached, already calculated).
 The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
 
 :return: ``True`` if statistics are available (ready to use)
 
-.. deprecated::
-   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument
+.. deprecated:: 3.40
+
+   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument.
 %End
 
     virtual bool hasStatistics( int bandNo,
@@ -547,12 +538,13 @@ Fill in histogram defaults if not specified
 #endif
 %End
 
- void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const /Deprecated/;
+ void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Fill in statistics defaults if not specified
 
-.. deprecated::
-   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument
+.. deprecated:: 3.40
+
+   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument.
 %End
 
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
@@ -573,5 +565,5 @@ Fill in statistics defaults if not specified
  *                                                                      *
  * src/core/raster/qgsrasterinterface.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

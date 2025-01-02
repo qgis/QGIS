@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layertree/qgslayertreefilterproxymodel.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -61,6 +61,24 @@ Rerturns the layer tree model
 Sets the layer tree model
 %End
 
+    bool showPrivateLayers() const;
+%Docstring
+Returns if private layers are shown.
+
+Defaults to ``True``.
+
+.. versionadded:: 3.40
+%End
+
+    void setShowPrivateLayers( bool showPrivate );
+%Docstring
+Determines if private layers are shown.
+
+Defaults to ``True``.
+
+.. versionadded:: 3.40
+%End
+
     void setFilters( Qgis::LayerFilters filters );
 %Docstring
 Defines the type layers (vector, raster, etc) shown in the tree
@@ -77,6 +95,13 @@ If the list is empty, all types are shown.
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+    bool nodeShown( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns ``True`` if the specified ``node`` will be shown in the model.
+
+.. versionadded:: 3.40
+%End
 
   public slots:
     virtual void setFilterText( const QString &filterText = QString() );
@@ -105,5 +130,5 @@ This will set if the layer is checked or not
  *                                                                      *
  * src/core/layertree/qgslayertreefilterproxymodel.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

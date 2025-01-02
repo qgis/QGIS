@@ -61,6 +61,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     ~QgsVectorLayerRenderer() override;
     QgsFeedback *feedback() const override;
     bool forceRasterRender() const override;
+    Qgis::MapLayerRendererFlags flags() const override;
 
     /**
      * Returns the feature renderer.

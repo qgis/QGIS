@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsoracletransaction.h"
+#include "moc_qgsoracletransaction.cpp"
 ///@cond PRIVATE
 
 #include "qgslogger.h"
@@ -28,7 +29,6 @@ QgsOracleTransaction::QgsOracleTransaction( const QString &connString )
   : QgsTransaction( connString )
 
 {
-
 }
 
 QgsOracleTransaction::~QgsOracleTransaction()
@@ -83,7 +83,7 @@ bool QgsOracleTransaction::executeSql( const QString &sql, QString &errorMsg, bo
 
   QgsDatabaseQueryLogWrapper logWrapper { sql, mConnString, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
   const bool res = mConn->exec( sql, true, &errorMsg );
-  if ( ! errorMsg.isEmpty() )
+  if ( !errorMsg.isEmpty() )
   {
     logWrapper.setError( errorMsg );
   }

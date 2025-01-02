@@ -34,7 +34,7 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input, int tileOverlap
   }
 }
 
-QgsRectangle QgsRasterIterator::subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth, int &subRegionHeight, int &subRegionLeft, int &subRegionTop )
+QgsRectangle QgsRasterIterator::subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth, int &subRegionHeight, int &subRegionLeft, int &subRegionTop, int resamplingFactor )
 {
   const double xRes = rasterExtent.width() / rasterWidth;
   const double yRes = rasterExtent.height() / rasterHeight;
@@ -62,8 +62,20 @@ QgsRectangle QgsRasterIterator::subRegion( const QgsRectangle &rasterExtent, int
     right = static_cast< int >( std::ceil( ( subRegion.xMaximum() - rasterExtent.xMinimum() ) / xRes ) - 1 );
   }
 
+  if ( resamplingFactor > 1 )
+  {
+    // Round up the starting boundaries to resampling grid
+    left = ( ( left + resamplingFactor - 1 ) / resamplingFactor ) * resamplingFactor;
+    top = ( ( top + resamplingFactor - 1 ) / resamplingFactor ) * resamplingFactor;
+
+    // Round down the ending boundaries to resampling grid
+    right = ( right / resamplingFactor ) * resamplingFactor - 1;
+    bottom = ( bottom / resamplingFactor ) * resamplingFactor - 1;
+  }
+
   subRegionWidth = right - left + 1;
   subRegionHeight = bottom - top + 1;
+
   subRegionLeft = left;
   subRegionTop = top;
 
@@ -93,6 +105,9 @@ void QgsRasterIterator::startRasterRead( int bandNumber, qgssize nCols, qgssize 
   pInfo.currentCol = 0;
   pInfo.currentRow = 0;
   mRasterPartInfos.insert( bandNumber, pInfo );
+
+  mNumberBlocksWidth = static_cast< int >( std::ceil( static_cast< double >( nCols ) / mMaximumTileWidth ) );
+  mNumberBlocksHeight = static_cast< int >( std::ceil( static_cast< double >( nRows ) / mMaximumTileHeight ) );
 }
 
 bool QgsRasterIterator::next( int bandNumber, int &columns, int &rows, int &topLeftColumn, int &topLeftRow, QgsRectangle &blockExtent )
@@ -166,11 +181,19 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   }
 
   //read data block
-
   tileTopLeftColumn = pInfo.currentCol;
   tileTopLeftRow = pInfo.currentRow;
+
   tileColumns = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - tileTopLeftColumn ) );
   tileRows = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - tileTopLeftRow ) );
+
+  if ( mSnapToPixelFactor > 1 )
+  {
+    // Round down tile dimensions to snap factor
+    tileColumns = ( tileColumns / mSnapToPixelFactor ) * mSnapToPixelFactor;
+    tileRows = ( tileRows / mSnapToPixelFactor ) * mSnapToPixelFactor;
+  }
+
   const qgssize tileRight = tileTopLeftColumn + tileColumns;
   const qgssize tileBottom = tileTopLeftRow + tileRows;
 
@@ -181,6 +204,15 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
 
   nCols = blockRight - blockLeft;
   nRows = blockBottom - blockTop;
+
+  if ( mSnapToPixelFactor > 1 )
+  {
+    // Ensure overlap dimensions are also multiples of snap factor
+    nCols = ( nCols / mSnapToPixelFactor ) * mSnapToPixelFactor;
+    nRows = ( nRows / mSnapToPixelFactor ) * mSnapToPixelFactor;
+    if ( nCols == 0 || nRows == 0 )
+      return false;
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
 
@@ -219,6 +251,17 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
 void QgsRasterIterator::stopRasterRead( int bandNumber )
 {
   removePartInfo( bandNumber );
+}
+
+double QgsRasterIterator::progress( int bandNumber ) const
+{
+  const auto partIt = mRasterPartInfos.find( bandNumber );
+  if ( partIt == mRasterPartInfos.constEnd() )
+  {
+    return 0;
+  }
+
+  return ( ( static_cast< double >( partIt->currentRow ) / static_cast< double >( mMaximumTileHeight ) ) * mNumberBlocksWidth + static_cast< double >( partIt->currentCol ) / static_cast< double >( mMaximumTileWidth ) ) / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
 }
 
 void QgsRasterIterator::removePartInfo( int bandNumber )

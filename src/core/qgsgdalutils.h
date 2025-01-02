@@ -22,7 +22,72 @@
 #include <gdal.h>
 
 #include "qgsogrutils.h"
-#include "qgsrasterdataprovider.h"
+
+class QgsRasterBlock;
+
+/**
+ * \ingroup core
+ * \class QgsGdalOption
+ * \brief Encapsulates the definition of a GDAL configuration option.
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsGdalOption
+{
+  public:
+
+    /**
+     * Option types
+     */
+    enum class Type
+    {
+      Invalid, //!< Invalid option
+      Select, //!< Selection option
+      Boolean, //!< Boolean option
+      Text, //!< Text option
+      Int, //!< Integer option
+      Double, //!< Double option
+    };
+
+    //! Option name
+    QString name;
+
+    //! Option type
+    Type type = Type::Invalid;
+
+    //! Option description
+    QString description;
+
+    //! Available choices, for Select options
+    QStringList options;
+
+    //! Default value
+    QVariant defaultValue;
+
+    //! Minimum acceptable value
+    QVariant minimum;
+
+    //! Maximum acceptable value
+    QVariant maximum;
+
+    //! Option scope
+    QString scope;
+
+    /**
+     * Creates a QgsGdalOption from an XML \a node.
+     *
+     * Returns an invalid option if the node could not be interpreted
+     * as a GDAL option.
+     */
+    static QgsGdalOption fromXmlNode( const CPLXMLNode *node );
+
+    /**
+     * Returns a list of all GDAL options from an XML \a node.
+     */
+    static QList< QgsGdalOption > optionsFromXml( const CPLXMLNode *node );
+};
+
 
 /**
  * \ingroup core
@@ -189,7 +254,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.30
      */
-    static GDALResampleAlg gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method );
+    static GDALResampleAlg gdalResamplingAlgorithm( Qgis::RasterResamplingMethod method );
 
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables
@@ -236,6 +301,27 @@ class CORE_EXPORT QgsGdalUtils
     static QStringList vsiArchivePrefixes();
 
     /**
+     * Encapsulates details for a GDAL VSI network file system.
+     *
+     * \since QGIS 3.40
+     */
+    struct VsiNetworkFileSystemDetails
+    {
+      //! VSI handler identifier, eg "vsis3"
+      QString identifier;
+
+      //! Translated, user-friendly name.
+      QString name;
+    };
+
+    /**
+     * Returns a list of available GDAL VSI network file systems.
+     *
+     * \since QGIS 3.40
+     */
+    static QList< VsiNetworkFileSystemDetails > vsiNetworkFileSystems();
+
+    /**
      * Returns TRUE if \a prefix is a supported archive style container prefix (e.g. "/vsizip/").
      *
      * \since QGIS 3.32
@@ -257,12 +343,38 @@ class CORE_EXPORT QgsGdalUtils
     static bool isVsiArchiveFileExtension( const QString &extension );
 
     /**
+     * Returns the VSI handler type for a given VSI \a prefix.
+     *
+     * \since QGIS 3.40
+     */
+    static Qgis::VsiHandlerType vsiHandlerType( const QString &prefix );
+
+    /**
+     * Attempts to apply VSI credential \a options.
+     *
+     * This method uses GDAL's VSISetPathSpecificOption, which will overrwrite any existing
+     * options for the same VSI \a prefix and \a path.
+     *
+     * Returns TRUE if the options could be applied.
+     *
+     * \since QGIS 3.40
+     */
+    static bool applyVsiCredentialOptions( const QString &prefix, const QString &path, const QVariantMap &options );
+
+    /**
      * Returns TRUE if the VRT file at the specified path is a VRT matching
      * the given layer \a type.
      *
      * \since QGIS 3.22
      */
     static bool vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type );
+
+    /**
+     * Returns the URL for the GDAL documentation for the specified \a driver.
+     *
+     * \since QGIS 3.40
+     */
+    static QString gdalDocumentationUrlForDriver( GDALDriverH hDriver );
 
     friend class TestQgsGdalUtils;
 };

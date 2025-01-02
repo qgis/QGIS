@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/actions/qgsaction.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,11 +22,8 @@ Utility class that encapsulates an action based on vector attributes.
   public:
 
     QgsAction();
-%Docstring
-Default constructor
-%End
 
-    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &command, bool capture = false);
+    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &command, bool capture = false );
 %Docstring
 Create a new QgsAction
 
@@ -36,7 +33,7 @@ Create a new QgsAction
 :param capture: If this is set to ``True``, the output will be captured when an action is run
 %End
 
-    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString());
+    QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
 %Docstring
 Create a new QgsAction
 
@@ -50,7 +47,7 @@ Create a new QgsAction
 :param notificationMessage: A particular message which reception will trigger the action
 %End
 
-    QgsAction( const QUuid &id, Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString());
+    QgsAction( const QUuid &id, Qgis::AttributeActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
 %Docstring
 Create a new QgsAction
 
@@ -206,5 +203,5 @@ Sets the action ``command``.
  *                                                                      *
  * src/core/actions/qgsaction.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

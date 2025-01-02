@@ -22,6 +22,7 @@
 #include <QImage>
 
 #include "qgsappscreenshots.h"
+#include "moc_qgsappscreenshots.cpp"
 
 #include "qgsvectorlayerproperties.h"
 #include "qgsvectorlayer.h"
@@ -62,10 +63,7 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   mLineLayer->addJoin( join );
 
   // add layers to project
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>()
-                                        << mLineLayer
-                                        << mPolygonLayer
-                                        << mRasterLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLineLayer << mPolygonLayer << mRasterLayer );
 }
 
 QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect crop, bool gradient )
@@ -93,10 +91,7 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
     if ( !geom.isEmpty() )
     {
       const qreal dpr = scr->devicePixelRatio();
-      pixmap = pixmap.copy( static_cast<int>( geom.x() * dpr ),
-                            static_cast<int>( geom.y() * dpr ),
-                            static_cast<int>( geom.width() * dpr ),
-                            static_cast<int>( geom.height() * dpr ) );
+      pixmap = pixmap.copy( static_cast<int>( geom.x() * dpr ), static_cast<int>( geom.y() * dpr ), static_cast<int>( geom.width() * dpr ), static_cast<int>( geom.height() * dpr ) );
     }
   }
 
@@ -114,10 +109,7 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
   if ( !crop.isEmpty() )
   {
     const qreal dpr = scr->devicePixelRatio();
-    crop = QRect( static_cast<int>( crop.x() * dpr ),
-                  static_cast<int>( crop.y() * dpr ),
-                  static_cast<int>( crop.width() * dpr ),
-                  static_cast<int>( crop.height() * dpr ) );
+    crop = QRect( static_cast<int>( crop.x() * dpr ), static_cast<int>( crop.y() * dpr ), static_cast<int>( crop.width() * dpr ), static_cast<int>( crop.height() * dpr ) );
     pixmap = pixmap.copy( crop );
   }
 
@@ -153,7 +145,7 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, co
   }
 
   const QDir directory( topDirectory.absolutePath() + "/" + folder );
-  const QString fileName =  directory.absolutePath() + "/" + name + ".png";
+  const QString fileName = directory.absolutePath() + "/" + name + ".png";
   if ( !directory.exists() )
   {
     if ( !topDirectory.mkpath( folder ) )
@@ -276,8 +268,7 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), mPolygonLayer, QgisApp::instance() );
   dlg->show();
   dlg->mOptionsListWidget->setCurrentRow( 2 );
-  Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
-            == QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) ).pixmap( 24, 24 ).toImage() );
+  Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage() == QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) ).pixmap( 24, 24 ).toImage() );
   const int idx = dlg->mRendererDialog->cboRenderers->findData( QLatin1String( "25dRenderer" ) );
   Q_ASSERT( idx >= 0 );
   dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
@@ -320,9 +311,8 @@ void QgsAppScreenShots::takeGlobalOptions()
   // advanced settings
   dlg->mOptionsStackedWidget->setCurrentIndex( dlg->mOptionsStackedWidget->count() - 1 );
   QCoreApplication::processEvents();
-  Q_ASSERT( dlg->mOptTreeView->currentIndex().data( Qt::DecorationRole ).value< QIcon >().pixmap( 24, 24 ).toImage()
-            == QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ).pixmap( 24, 24 ).toImage() );
-  QWidget *editor = dlg->findChild< QWidget * >( QStringLiteral( "mAdvancedSettingsEditor" ) );
+  Q_ASSERT( dlg->mOptTreeView->currentIndex().data( Qt::DecorationRole ).value<QIcon>().pixmap( 24, 24 ).toImage() == QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ).pixmap( 24, 24 ).toImage() );
+  QWidget *editor = dlg->findChild<QWidget *>( QStringLiteral( "mAdvancedSettingsEditor" ) );
   if ( editor )
     editor->show();
   QCoreApplication::processEvents();

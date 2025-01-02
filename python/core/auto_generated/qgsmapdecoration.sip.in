@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmapdecoration.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,9 +22,6 @@ Interface for map decorations.
   public:
 
     QgsMapDecoration();
-%Docstring
-Constructor for QgsMapDecoration.
-%End
 
     virtual ~QgsMapDecoration();
 
@@ -64,5 +61,5 @@ Sets the map decoration display ``name``.
  *                                                                      *
  * src/core/qgsmapdecoration.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

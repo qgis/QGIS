@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsrectangle.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,6 +25,9 @@ Examples are storing a layer extent or the current view extent of a map
 %TypeHeaderCode
 #include "qgsrectangle.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
 
     QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
@@ -53,9 +56,6 @@ The rectangle is NOT normalized after construction.
 %End
 
     QgsRectangle( const QgsRectangle &other ) /HoldGIL/;
-%Docstring
-Copy constructor
-%End
 
     ~QgsRectangle();
 
@@ -120,13 +120,14 @@ A null rectangle is also empty by definition.
 .. versionadded:: 3.34
 %End
 
- void setMinimal() /Deprecated/;
+ void setMinimal() /Deprecated="Since 3.34. Will be removed in QGIS 4.0. Use setNull()."/;
 %Docstring
 Set a rectangle so that min corner is at max
 and max corner is at min. It is NOT normalized.
 
-.. deprecated:: QGIS 3.34
-   - will be removed in QGIS 4.0. Use :py:func:`~QgsRectangle.setNull`.
+.. deprecated:: 3.34
+
+   Will be removed in QGIS 4.0. Use :py:func:`~QgsRectangle.setNull`.
 %End
 
     double xMaximum() const /HoldGIL/;
@@ -392,5 +393,5 @@ the specified ``spacing`` between the grid lines.
  *                                                                      *
  * src/core/geometry/qgsrectangle.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

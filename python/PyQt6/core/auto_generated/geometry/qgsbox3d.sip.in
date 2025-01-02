@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsbox3d.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -36,7 +36,7 @@ extent of a geometry or collection of geometries.
 
   public:
 
-    QgsBox3D( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
+    QgsBox3D( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, QgsVector3D, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
 %Docstring
 Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates. If ``normalize`` is ``False`` then
 the normalization step will not be applied automatically.
@@ -85,6 +85,30 @@ the normalization step will not be applied automatically.
         }
       }
     }
+    else if ( sipCanConvertToType( a0, sipType_QgsVector3D, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsVector3D, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    {
+      int state;
+      sipIsErr = 0;
+
+      QgsVector3D *corner1 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a0, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( corner1, sipType_QgsVector3D, state );
+      }
+      else
+      {
+        QgsVector3D *corner2 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a1, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+        if ( sipIsErr )
+        {
+          sipReleaseType( corner2, sipType_QgsVector3D, state );
+        }
+        else
+        {
+          bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
+          sipCpp = new QgsBox3D( *corner1, *corner2, n );
+        }
+      }
+    }
     else if (
       ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
       ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
@@ -108,6 +132,13 @@ the normalization step will not be applied automatically.
       PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
       sipIsErr = 1;
     }
+%End
+
+    void set( double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, bool normalize = true );
+%Docstring
+Sets the box from a set of (x,y,z) minimum and maximum coordinates.
+
+.. versionadded:: 3.40
 %End
 
     void setXMinimum( double x ) /HoldGIL/;
@@ -264,6 +295,13 @@ Returns the center of the box as a vector.
 .. versionadded:: 3.34
 %End
 
+    double area() const /HoldGIL/;
+%Docstring
+Returns the area of the box.
+
+.. versionadded:: 3.40
+%End
+
     double volume() const /HoldGIL/;
 %Docstring
 Returns the volume of the box.
@@ -363,6 +401,13 @@ Scale the rectangle around a center coordinates.
 .. versionadded:: 3.26
 %End
 
+    void grow( double delta );
+%Docstring
+Grows the box in place by the specified amount in all dimensions.
+
+.. versionadded:: 3.42
+%End
+
     bool isNull() const /HoldGIL/;
 %Docstring
 Test if the box is null (holding no spatial information).
@@ -426,5 +471,5 @@ Returns an array of all box corners as 3D vectors.
  *                                                                      *
  * src/core/geometry/qgsbox3d.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

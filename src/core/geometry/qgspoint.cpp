@@ -17,10 +17,10 @@
 
 
 #include "qgspoint.h"
+#include "moc_qgspoint.cpp"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
-#include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgsgeometrytransformer.h"
 #include "qgsbox3d.h"
@@ -107,7 +107,7 @@ QgsPoint *QgsPoint::clone() const
   return new QgsPoint( *this );
 }
 
-QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool ) const
 {
   // helper function
   auto gridifyValue = []( double value, double spacing, bool extraCondition = true ) -> double
@@ -126,6 +126,11 @@ QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpa
 
   // return the new object
   return new QgsPoint( mWkbType, x, y, z, m );
+}
+
+QgsPoint *QgsPoint::simplifyByDistance( double ) const
+{
+  return clone();
 }
 
 bool QgsPoint::removeDuplicateNodes( double, bool )

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsidentifymenu.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -14,7 +14,7 @@ class QgsIdentifyMenu : QMenu
 {
 %Docstring(signature="appended")
 The QgsIdentifyMenu class builds a menu to be used with identify results (:py:class:`QgsMapToolIdentify`).
-It is customizable and can display attribute actions (:py:class:`QgsAction`) as well as map layer actions (\see QgsMapLayerAction).
+It is customizable and can display attribute actions (:py:class:`QgsAction`) as well as map layer actions (:py:class:`QgsMapLayerAction`).
 It can also embed custom map layer actions, defined for this menu exclusively.
 If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsMapToolIdentify.identifyMenu()` and can be customized in the map tool sub-class.
 %End
@@ -31,22 +31,19 @@ If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsM
 
     struct ActionData
     {
-      ActionData();
-%Docstring
-Constructor for ActionData
-%End
+        ActionData();
 
-      ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
+        ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
 
-      ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
+        ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
 
-      bool mIsValid;
-      bool mAllResults;
-      bool mIsExternalAction;
-      QgsMapLayer *mLayer;
-      QgsFeatureId mFeatureId;
-      QgsIdentifyMenu::MenuLevel mLevel;
-      QgsMapLayerAction *mMapLayerAction;
+        bool mIsValid;
+        bool mAllResults;
+        bool mIsExternalAction;
+        QgsMapLayer *mLayer;
+        QgsFeatureId mFeatureId;
+        QgsIdentifyMenu::MenuLevel mLevel;
+        QgsMapLayerAction *mMapLayerAction;
     };
 
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
@@ -157,11 +154,12 @@ exec
 :param pos: the position where the menu will be executed
 %End
 
- static void styleHighlight( QgsHighlight *highlight ) /Deprecated/;
+ static void styleHighlight( QgsHighlight *highlight ) /Deprecated="Since 3.40. Use QgsHighlight.applyDefaultStyle() instead."/;
 %Docstring
 Applies style from the settings to the highlight
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`QgsHighlight.applyDefaultStyle()` instead.
 %End
 
@@ -177,5 +175,5 @@ Applies style from the settings to the highlight
  *                                                                      *
  * src/gui/qgsidentifymenu.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

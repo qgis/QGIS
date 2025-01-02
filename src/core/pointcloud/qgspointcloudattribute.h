@@ -55,7 +55,6 @@ class CORE_EXPORT QgsPointCloudAttribute
       Double, //!< Double 8 bytes
     };
 
-    //! Ctor
     QgsPointCloudAttribute();
     //! Ctor
     QgsPointCloudAttribute( const QString &name, DataType type );
@@ -78,7 +77,7 @@ class CORE_EXPORT QgsPointCloudAttribute
      *
      * \see type()
      */
-    QVariant::Type variantType() const;
+    QMetaType::Type variantType() const;
 
     /**
      * Returns the type to use when displaying this field.
@@ -141,7 +140,7 @@ class CORE_EXPORT QgsPointCloudAttribute
 class CORE_EXPORT QgsPointCloudAttributeCollection
 {
   public:
-    //! Ctor
+
     QgsPointCloudAttributeCollection();
     //! Ctor with given attributes
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );

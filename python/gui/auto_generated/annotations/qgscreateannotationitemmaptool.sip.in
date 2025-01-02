@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/annotations/qgscreateannotationitemmaptool.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,7 +28,6 @@ whenever this signal is emitted.
 #include "qgscreateannotationitemmaptool.h"
 %End
   public:
-
     QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent = 0 );
 %Docstring
 Constructor for QgsCreateAnnotationItemMapToolHandler, with the specified ``parent`` object.
@@ -73,8 +72,8 @@ class QgsCreateAnnotationItemMapToolInterface
 
 An interface for map tools which create annotation items.
 
-Clients should connect to the map tool's :py:func:`~QgsCreateAnnotationItemMapToolHandler.itemCreated` signal, and call the
-:py:func:`~QgsCreateAnnotationItemMapToolHandler.takeCreatedItem` implementation to take ownership of the newly created item
+Clients should connect to the map tool's :py:func:`~itemCreated` signal, and call the
+:py:func:`~takeCreatedItem` implementation to take ownership of the newly created item
 whenever this signal is emitted.
 
 .. versionadded:: 3.22
@@ -87,7 +86,7 @@ whenever this signal is emitted.
 
     virtual ~QgsCreateAnnotationItemMapToolInterface();
 
-    virtual QgsCreateAnnotationItemMapToolHandler *handler() = 0;
+    virtual QgsCreateAnnotationItemMapToolHandler *handler() const = 0;
 %Docstring
 Returns the handler object for the map tool.
 %End
@@ -103,5 +102,5 @@ Returns a reference to the associated map tool.
  *                                                                      *
  * src/gui/annotations/qgscreateannotationitemmaptool.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

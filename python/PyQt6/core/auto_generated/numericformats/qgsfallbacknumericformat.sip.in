@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/numericformats/qgsfallbacknumericformat.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,9 +21,6 @@ A basic numeric formatter which returns a simple text representation of a value.
   public:
 
     QgsFallbackNumericFormat();
-%Docstring
-Default constructor
-%End
     virtual QString id() const;
 
     virtual QString visibleName() const;
@@ -45,5 +42,5 @@ Default constructor
  *                                                                      *
  * src/core/numericformats/qgsfallbacknumericformat.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

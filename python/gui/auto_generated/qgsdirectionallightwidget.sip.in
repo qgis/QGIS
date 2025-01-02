@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdirectionallightwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -58,6 +58,7 @@ Sets whether the azimut can be changed, for example, when using multidirectional
 %Docstring
 Emitted when the direction is changed
 %End
+
 };
 
 /************************************************************************
@@ -65,5 +66,5 @@ Emitted when the direction is changed
  *                                                                      *
  * src/gui/qgsdirectionallightwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

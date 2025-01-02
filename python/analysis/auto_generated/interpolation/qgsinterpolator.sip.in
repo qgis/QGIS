@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/interpolation/qgsinterpolator.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,21 +17,17 @@
 
 struct QgsInterpolatorVertexData
 {
-
-  QgsInterpolatorVertexData( double x, double y, double z );
+    QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
-Constructor for :py:class:`QgsInterpolatorVertexData` with the specified
+Constructor for QgsInterpolatorVertexData with the specified
 ``x``, ``y``, and ``z`` coordinate.
 %End
 
-  QgsInterpolatorVertexData();
-%Docstring
-Constructor for :py:class:`QgsInterpolatorVertexData`
-%End
+    QgsInterpolatorVertexData();
 
-  double x;
-  double y;
-  double z;
+    double x;
+    double y;
+    double z;
 };
 
 class QgsInterpolator
@@ -48,7 +44,6 @@ can be an attribute or the z-coordinates in case of 3D types.
 #include "qgsinterpolator.h"
 %End
   public:
-
     enum SourceType
     {
       SourcePoints,
@@ -73,12 +68,12 @@ can be an attribute or the z-coordinates in case of 3D types.
 
     struct LayerData
     {
-      QgsFeatureSource *source;
-      QgsInterpolator::ValueSource valueSource;
-      int interpolationAttribute;
-      QgsInterpolator::SourceType sourceType;
+        QgsFeatureSource *source;
+        QgsInterpolator::ValueSource valueSource;
+        int interpolationAttribute;
+        QgsInterpolator::SourceType sourceType;
 
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
@@ -99,7 +94,6 @@ Calculates interpolation value for map coordinates x, y
 
 
   protected:
-
     Result cacheBaseData( QgsFeedback *feedback = 0 );
 %Docstring
 Caches the vertex and value data from the provider. All the vertex data
@@ -121,5 +115,5 @@ progress reports from the cache operation.
  *                                                                      *
  * src/analysis/interpolation/qgsinterpolator.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

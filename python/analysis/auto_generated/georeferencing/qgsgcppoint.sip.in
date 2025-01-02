@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/georeferencing/qgsgcppoint.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,15 +21,13 @@ Contains properties of a ground control point (GCP).
 #include "qgsgcppoint.h"
 %End
   public:
-
     enum class PointType
     {
       Source,
       Destination,
     };
 
-    QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint,
-                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
+    QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
 %Docstring
 Constructor for QgsGcpPoint.
 
@@ -115,5 +113,5 @@ Sets whether the point is currently enabled.
  *                                                                      *
  * src/analysis/georeferencing/qgsgcppoint.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

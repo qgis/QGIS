@@ -45,7 +45,6 @@ class CORE_EXPORT QgsCalloutPosition
       , providerID( providerId )
     {}
 
-    //! Constructor for QgsCalloutPosition
     QgsCalloutPosition() = default;
 
     /**

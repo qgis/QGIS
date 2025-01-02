@@ -85,9 +85,9 @@ QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QSt
 
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
     {
-      std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
+      std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
 
       QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemPolygonMember.appendChild( polygon->asGml2( doc, precision, ns, axisOrder ) );
@@ -124,10 +124,10 @@ json QgsMultiSurface::asJsonObject( int precision ) const
   json polygons( json::array( ) );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
-    if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
     {
       json coordinates( json::array( ) );
-      std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
+      std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
@@ -175,6 +175,39 @@ bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
+bool QgsMultiSurface::addGeometries( const QVector<QgsAbstractGeometry *> &geometries )
+{
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( !qgsgeometry_cast<QgsSurface *>( g ) )
+    {
+      qDeleteAll( geometries );
+      return false;
+    }
+  }
+
+  if ( mGeometries.empty() && !geometries.empty() )
+  {
+    setZMTypeFromSubGeometry( geometries.at( 0 ), Qgis::WkbType::MultiSurface );
+  }
+  mGeometries.reserve( mGeometries.size() + geometries.size() );
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( is3D() && !g->is3D() )
+      g->addZValue();
+    else if ( !is3D() && g->is3D() )
+      g->dropZValue();
+    if ( isMeasure() && !g->isMeasure() )
+      g->addMValue();
+    else if ( !isMeasure() && g->isMeasure() )
+      g->dropMValue();
+    mGeometries.append( g );
+  }
+
+  clearCache();
+  return true;
+}
+
 bool QgsMultiSurface::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g || !qgsgeometry_cast< QgsSurface * >( g ) )
@@ -202,4 +235,15 @@ QgsAbstractGeometry *QgsMultiSurface::boundary() const
     return nullptr;
   }
   return multiCurve.release();
+}
+
+QgsMultiSurface *QgsMultiSurface::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsMultiSurface > res = std::make_unique< QgsMultiSurface >();
+  res->reserve( mGeometries.size() );
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    res->addGeometry( mGeometries.at( i )->simplifyByDistance( tolerance ) );
+  }
+  return res.release();
 }

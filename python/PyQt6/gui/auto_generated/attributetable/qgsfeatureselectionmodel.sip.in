@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsfeatureselectionmodel.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -97,5 +97,5 @@ Select features on this table. Is to be used in favor of the stock select method
  *                                                                      *
  * src/gui/attributetable/qgsfeatureselectionmodel.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

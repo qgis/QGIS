@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/models/qgsmodelarrowitem.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,15 +27,13 @@ A link arrow item for use in the model designer.
 #include "qgsmodelarrowitem.h"
 %End
   public:
-
     enum Marker
     {
       Circle,
       ArrowHead,
     };
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
@@ -43,8 +41,7 @@ The arrow will link ``startItem`` to ``endItem``, joining the specified ``startE
 to ``endEdge`` and ``endIndex``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
@@ -52,8 +49,7 @@ The arrow will link ``startItem`` to ``endItem``, joining the specified ``startE
 to an automatic point on ``endItem``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
@@ -61,8 +57,7 @@ The arrow will link ``startItem`` to ``endItem``, joining an automatic point on 
 ``endEdge`` and ``endIndex``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
@@ -92,5 +87,5 @@ Updates the cached path linking the two items.
  *                                                                      *
  * src/gui/processing/models/qgsmodelarrowitem.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

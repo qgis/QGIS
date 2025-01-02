@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsunittypes.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -61,7 +61,7 @@ Decodes a unit type from a ``string``.
 :param string: string to decode
 
 :return: - decoded unit type
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnitType`
 
@@ -93,7 +93,7 @@ Decodes a distance unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -123,7 +123,7 @@ Converts a translated string to a distance unit.
 :param string: string representing a distance unit
 
 :return: - the distance unit
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -162,7 +162,7 @@ Decodes an areal unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -192,7 +192,7 @@ Converts a translated string to an areal unit.
 :param string: string representing an areal unit
 
 :return: - the area unit
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 %End
@@ -246,7 +246,7 @@ Decodes a temporal unit from a ``string``.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 
@@ -278,7 +278,7 @@ Converts a translated ``string`` to a temporal unit.
 :param string: string representing a volume unit
 
 :return: - the temporal unit
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 
@@ -331,7 +331,7 @@ Decodes a volume unit from a ``string``.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 
@@ -363,7 +363,7 @@ Converts a translated ``string`` to a volume unit.
 :param string: string representing a volume unit
 
 :return: - the volume unit
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`toString`
 
@@ -423,7 +423,7 @@ Decodes an angular unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -523,7 +523,7 @@ Decodes a render unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -563,7 +563,7 @@ Decodes a layout unit from a string.
 :param string: string to decode
 
 :return: - decoded units
-         - ok: boolean, will be set to ``True`` if string was converted successfully
+         - ok: boolean, ``True`` if string was converted successfully
 
 .. seealso:: :py:func:`encodeUnit`
 %End
@@ -590,5 +590,5 @@ Returns a translated string representing a layout ``unit``.
  *                                                                      *
  * src/core/qgsunittypes.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

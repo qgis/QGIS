@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfieldcombobox.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,7 +25,6 @@ If expression must be used, :py:class:`QgsFieldExpressionWidget` shall be used i
 #include "qgsfieldcombobox.h"
 %End
   public:
-
     explicit QgsFieldComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsFieldComboBox creates a combo box to display the fields of a layer.
@@ -122,5 +121,5 @@ setField sets the currently selected field
  *                                                                      *
  * src/gui/qgsfieldcombobox.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

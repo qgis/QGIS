@@ -2,7 +2,6 @@
 # Files
 
 set (WFS3_SRCS
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
   qgswfs3.cpp
   qgswfs3handlers.cpp
@@ -15,10 +14,6 @@ add_library (wfs3 MODULE ${WFS3_SRCS})
 
 # require c++17
 target_compile_features(wfs3 PRIVATE cxx_std_17)
-
-include_directories(SYSTEM
-  ${POSTGRES_INCLUDE_DIR}
-)
 
 include_directories(
 

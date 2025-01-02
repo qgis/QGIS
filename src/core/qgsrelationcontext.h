@@ -47,14 +47,7 @@ class CORE_EXPORT QgsRelationContext
 
     ~QgsRelationContext();
 
-    /**
-     * Copy constructor
-     */
     QgsRelationContext( const QgsRelationContext &other );
-
-    /**
-     * Assignment operator
-     */
     QgsRelationContext &operator=( const QgsRelationContext &other );
 
   private:

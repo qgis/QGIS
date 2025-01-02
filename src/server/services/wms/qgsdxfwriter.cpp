@@ -22,9 +22,7 @@ email                : david dot marteau at 3liz dot com
 
 namespace QgsWms
 {
-  void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project,
-                   const QgsWmsRequest &request,
-                   QgsServerResponse &response )
+  void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
   {
     // prepare render context
     QgsWmsRenderContext context( project, serverIface );

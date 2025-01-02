@@ -17,8 +17,10 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
+#include <QTimer>
 
 #include "qgsdoublespinbox.h"
+#include "moc_qgsdoublespinbox.cpp"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -40,16 +42,21 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   : QDoubleSpinBox( parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
+  connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsDoubleSpinBox::returnPressed );
 
   // By default, group separator is off
   setLineEdit( mLineEdit );
 
   const QSize msz = minimumSizeHint();
-  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
-                  std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
+  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2, std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsDoubleSpinBox::clear );
-  connect( this, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
+  connect( this, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
+
+  mLastEditTimer = new QTimer( this );
+  mLastEditTimer->setSingleShot( true );
+  mLastEditTimer->setInterval( 1000 );
+  connect( mLastEditTimer, &QTimer::timeout, this, &QgsDoubleSpinBox::onLastEditTimeout );
 }
 
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
@@ -97,6 +104,12 @@ void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
   setSingleStep( step );
 }
 
+void QgsDoubleSpinBox::focusOutEvent( QFocusEvent *event )
+{
+  QDoubleSpinBox::focusOutEvent( event );
+  onLastEditTimeout();
+}
+
 void QgsDoubleSpinBox::timerEvent( QTimerEvent *event )
 {
   // Process all events, which may include a mouse release event
@@ -114,9 +127,45 @@ void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
   QDoubleSpinBox::paintEvent( event );
 }
 
+void QgsDoubleSpinBox::stepBy( int steps )
+{
+  const bool wasNull = mShowClearButton && value() == clearValue();
+  if ( wasNull && minimum() < 0 && maximum() > 0 && !( specialValueText().isEmpty() || specialValueText() == SPECIAL_TEXT_WHEN_EMPTY ) )
+  {
+    // value is currently null, and range allows both positive and negative numbers
+    // in this case we DON'T do the default step, as that would add one step to the NULL value,
+    // which is usually the minimum acceptable value... so the user will get a very large negative number!
+    // Instead, treat the initial value as 0 instead, and then perform the step.
+    whileBlocking( this )->setValue( 0 );
+  }
+  QDoubleSpinBox::stepBy( steps );
+}
+
+int QgsDoubleSpinBox::editingTimeoutInterval() const
+{
+  return mLastEditTimer->interval();
+}
+
+void QgsDoubleSpinBox::setEditingTimeoutInterval( int timeout )
+{
+  mLastEditTimer->setInterval( timeout );
+}
+
 void QgsDoubleSpinBox::changed( double value )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
+  mLastEditTimer->start();
+}
+
+void QgsDoubleSpinBox::onLastEditTimeout()
+{
+  mLastEditTimer->stop();
+  const double currentValue = value();
+  if ( std::isnan( mLastEditTimeoutValue ) || mLastEditTimeoutValue != currentValue )
+  {
+    mLastEditTimeoutValue = currentValue;
+    emit editingTimeout( mLastEditTimeoutValue );
+  }
 }
 
 void QgsDoubleSpinBox::clear()
@@ -265,4 +314,9 @@ bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
     return false;
   }
   return value != clearValue();
+}
+
+bool QgsDoubleSpinBox::isCleared() const
+{
+  return value() == clearValue();
 }

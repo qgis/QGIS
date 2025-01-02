@@ -1,0 +1,23 @@
+{
+  "name": "line_locate_m",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the distance along a linestring corresponding to the first matching interpolated M value.",
+  "arguments": [{
+    "arg": "geometry",
+    "description": "a linestring geometry"
+  }, {
+    "arg": "m",
+    "description": "an M value"
+  }, {
+    "arg": "use_3d_distance",
+    "optional": true,
+    "default": "false",
+    "description": "controls whether 2D or 3D distances between vertices should be used during interpolation (this option is only considered for lines with z values)"
+  }],
+  "examples": [{
+    "expression": "line_locate_m(geometry:=geom_from_wkt('LineStringM(0 0 0, 10 10 10)'),m:=5)",
+    "returns": "7.07106"
+  }],
+  "tags": ["distance", "linestring", "interpolated", "corresponding", "along"]
+}

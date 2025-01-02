@@ -27,6 +27,7 @@ class QgsMarkerSymbol;
 /**
  * \ingroup core
  * \class QgsGeometryGeneratorSymbolLayer
+ * \brief A symbol layer subclass which alters rendered feature shapes through the use of QGIS expressions.
  */
 class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 {

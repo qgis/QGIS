@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutobject.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,7 +17,7 @@ A base class for objects which belong to a layout.
 
 %TypeHeaderCode
 #include "qgslayoutobject.h"
-#include <qgslayoutitem.h>
+#include "qgslayoutitem.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
@@ -384,5 +384,5 @@ Sets object properties from a DOM element
  *                                                                      *
  * src/core/layout/qgslayoutobject.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

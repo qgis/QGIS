@@ -37,9 +37,6 @@ class CORE_EXPORT QgsRasterBandStats
 {
   public:
 
-    /**
-     * Constructor for QgsRasterBandStats.
-     */
     QgsRasterBandStats() = default;
 
     //! Compares region, size etc. not collected statistics

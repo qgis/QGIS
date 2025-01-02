@@ -15,6 +15,7 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsogrprovidermetadata.h"
+#include "moc_qgsogrprovidermetadata.cpp"
 #include "qgsogrprovider.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsmessagelog.h"
@@ -33,6 +34,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
 
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include <QFileInfo>
 #include <QFile>
@@ -47,7 +49,7 @@ email                : nyall dot dawson at gmail dot com
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "OGR data provider" )
 
 QgsDataProvider *QgsOgrProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
+    Qgis::DataProviderReadFlags flags )
 {
   return new QgsOgrProvider( uri, options, flags );
 }
@@ -139,6 +141,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
   QString geometryType;
   QString uniqueGeometryType;
   QStringList openOptions;
+  QVariantMap credentialOptions;
   QString databaseName;
   QString authcfg;
 
@@ -179,6 +182,8 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     const thread_local QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
     const thread_local QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
     const thread_local QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
+    const thread_local QRegularExpression credentialOptionRegex( QStringLiteral( "\\|credential:([^|]*)" ) );
+    const thread_local QRegularExpression credentialOptionKeyValueRegex( QStringLiteral( "(.*?)=(.*)" ) );
 
     // we first try to split off the geometry type component, if that's present. That's a known quantity which
     // will never be more than a-z characters
@@ -219,6 +224,24 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
       if ( match.hasMatch() )
       {
         openOptions << match.captured( 1 );
+        path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+      }
+      else
+      {
+        break;
+      }
+    }
+
+    while ( true )
+    {
+      const QRegularExpressionMatch match = credentialOptionRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        const QRegularExpressionMatch keyValueMatch = credentialOptionKeyValueRegex.match( match.captured( 1 ) );
+        if ( keyValueMatch.hasMatch() )
+        {
+          credentialOptions.insert( keyValueMatch.captured( 1 ), keyValueMatch.captured( 2 ) );
+        }
         path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
       }
       else
@@ -275,6 +298,8 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
     uriComponents.insert( QStringLiteral( "databaseName" ), databaseName );
   if ( !openOptions.isEmpty() )
     uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+  if ( !credentialOptions.isEmpty() )
+    uriComponents.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
   if ( !vsiPrefix.isEmpty() )
     uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
   if ( !vsiSuffix.isEmpty() )
@@ -307,6 +332,16 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
     uri += QLatin1String( "|option:" );
     uri += openOption;
   }
+
+  const QVariantMap credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
+  {
+    if ( !it.value().toString().isEmpty() )
+    {
+      uri += QStringLiteral( "|credential:%1=%2" ).arg( it.key(), it.value().toString() );
+    }
+  }
+
   if ( !subset.isEmpty() )
     uri += QStringLiteral( "|subset=%1" ).arg( subset );
   if ( !authcfg.isEmpty() )
@@ -347,13 +382,15 @@ static QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri, bool upd
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
   QStringList openOptions;
+  QVariantMap credentialOptions;
   filePath = QgsOgrProviderUtils::analyzeURI( uri,
              isSubLayer,
              layerIndex,
              layerName,
              subsetString,
              ogrGeometryType,
-             openOptions );
+             openOptions,
+             credentialOptions );
 
   if ( updateMode )
   {
@@ -551,7 +588,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
           if ( f )
           {
             bool ok = false;
-            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
+            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, nullptr, &ok );
             if ( ok )
             {
               existingRowId = res.toInt( &ok );
@@ -598,7 +635,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
             if ( f )
             {
               bool ok = false;
-              QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
+              QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, nullptr, &ok );
               if ( !ok )
               {
                 return false;
@@ -660,7 +697,7 @@ QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connSt
   auto ds = QgsOgrProviderUtils::getAlreadyOpenedDataset( connString );
   if ( !ds )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
+    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is not currently opened" ).arg( connString ),
                                QObject::tr( "OGR" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
@@ -764,7 +801,8 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   }
 
   if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
-       && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+       && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+       && QgsGdalUtils::isVsiArchivePrefix( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() ) )
   {
     // get list of files inside archive file
     QgsDebugMsgLevel( QStringLiteral( "Open file %1 with gdal vsi" ).arg( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ), 3 );
@@ -817,6 +855,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
                          ? pathInfo.suffix().toLower()
                          : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
   bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
+  const Qgis::VsiHandlerType vsiHandlerType = QgsGdalUtils::vsiHandlerType( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() );
 
   bool forceDeepScanDir = false;
   if ( pathInfo.isDir() && !isOgrSupportedDirectory )
@@ -825,13 +864,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     forceDeepScanDir = it.hasNext();
   }
 
-  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) && !forceDeepScanDir )
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() || vsiHandlerType == Qgis::VsiHandlerType::Cloud ) && !forceDeepScanDir )
   {
     // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
     const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
 
     // allow only normal files or supported directories to continue
-    if ( !isOgrSupportedDirectory && !pathInfo.isFile() )
+    if ( !isOgrSupportedDirectory && !pathInfo.isFile() && vsiHandlerType != Qgis::VsiHandlerType::Cloud )
       return {};
 
     if ( !fileExtensions.contains( suffix ) && !dirExtensions.contains( suffix ) )
@@ -914,6 +953,18 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     firstLayerUriParts.insert( QStringLiteral( "vsiPrefix" ), uriParts.value( QStringLiteral( "vsiPrefix" ) ) );
   if ( !uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
     firstLayerUriParts.insert( QStringLiteral( "vsiSuffix" ), uriParts.value( QStringLiteral( "vsiSuffix" ) ) );
+
+  const QVariantMap credentialOptions = uriParts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  if ( !credentialOptions.isEmpty() && !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
+  {
+    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*)/" ) );
+    const QRegularExpressionMatch bucketMatch = bucketRx.match( uriParts.value( QStringLiteral( "path" ) ).toString() );
+    if ( bucketMatch.hasMatch() )
+    {
+      QgsGdalUtils::applyVsiCredentialOptions( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString(), bucketMatch.captured( 1 ), credentialOptions );
+    }
+  }
+
   firstLayerUriParts.insert( QStringLiteral( "path" ), uriParts.value( QStringLiteral( "path" ) ) );
 
   CPLPushErrorHandler( CPLQuietErrorHandler );
@@ -963,7 +1014,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
                                                errCause,
                                                // do not check timestamp beyond the first
                                                // layer
-                                               firstLayer == nullptr );
+                                               !firstLayer );
         if ( !layer )
           continue;
       }
@@ -1203,5 +1254,8 @@ QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabi
 {
   return FileBasedUris | SaveLayerMetadata;
 }
+
+#undef TEXT_PROVIDER_KEY
+#undef TEXT_PROVIDER_DESCRIPTION
 
 ///@endcond

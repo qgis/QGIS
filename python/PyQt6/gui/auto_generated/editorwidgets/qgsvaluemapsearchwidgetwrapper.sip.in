@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsvaluemapsearchwidgetwrapper.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ It will be used as a search widget and produces expression to look for in the la
 #include "qgsvaluemapsearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsValueMapSearchWidgetWrapper
@@ -63,5 +62,5 @@ Constructor for QgsValueMapSearchWidgetWrapper
  *                                                                      *
  * src/gui/editorwidgets/qgsvaluemapsearchwidgetwrapper.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

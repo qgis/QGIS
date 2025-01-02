@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstaskmanager.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -16,8 +16,9 @@ typedef QList< QgsTask * > QgsTaskList;
 class QgsTask : QObject
 {
 %Docstring(signature="appended")
-Abstract base class for long running background tasks. Tasks can be controlled directly,
-or added to a :py:class:`QgsTaskManager` for automatic management.
+Abstract base class for long running background tasks.
+
+Tasks can be controlled directly, or added to a :py:class:`QgsTaskManager` for automatic management.
 
 Derived classes should implement the process they want to execute in the background
 within the :py:func:`~run` method. This method will be called when the
@@ -306,8 +307,9 @@ QFlags<QgsTask::Flag> operator|(QgsTask::Flag f1, QFlags<QgsTask::Flag> f2);
 class QgsTaskManager : QObject
 {
 %Docstring(signature="appended")
-Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
-or accessed via :py:func:`QgsApplication.taskManager()`.
+Task manager for managing a set of long-running :py:class:`QgsTask` tasks.
+
+This class can be created directly, or accessed via :py:func:`QgsApplication.taskManager()`.
 %End
 
 %TypeHeaderCode
@@ -520,10 +522,51 @@ reports or re-open a related dialog.
 
 };
 
+class QgsTaskWithSerialSubTasks : QgsTask
+{
+%Docstring(signature="appended")
+Task that is composed of sub-tasks to be executed in a serial way,
+which may be useful for example to add several layers in a single target
+dataset which does not support concurrent updates.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgstaskmanager.h"
+%End
+  public:
+    QgsTaskWithSerialSubTasks( const QString &desc = QString() );
+%Docstring
+Constructor
+%End
+    ~QgsTaskWithSerialSubTasks();
+
+    void addSubTask( QgsTask *subTask /Transfer/ );
+%Docstring
+Add a subtask and transfer its ownership
+
+The parent task must be added to a :py:class:`QgsTaskManager` for subtasks to be utilized.
+Subtasks should not be added manually to a :py:class:`QgsTaskManager`, rather, only the parent
+task should be added to the manager.
+
+For now, subtasks can *NOT* be nested.
+%End
+
+    virtual void cancel();
+
+
+  protected:
+
+
+    virtual bool run();
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/core/qgstaskmanager.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

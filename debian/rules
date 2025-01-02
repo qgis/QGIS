@@ -43,7 +43,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye bookworm jammy kinetic lunar mantic noble"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bookworm jammy kinetic lunar mantic noble oracular"))
 	DISTRIBUTION := sid
 endif
 
@@ -81,6 +81,7 @@ PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L[
 CMAKE_OPTS := \
 	-G Ninja \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
+	-DWITH_INTERNAL_NLOHMANN_JSON=OFF \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
@@ -100,16 +101,11 @@ CMAKE_OPTS := \
 	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
 	-DWITH_HANA=TRUE \
 	-DWITH_EPT=TRUE \
-	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS"
+	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
+	-DPUSH_TO_CDASH=TRUE
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
-endif
-
-ifneq (,$(findstring $(DISTRIBUTION),"jammy bullseye"))
-	CMAKE_OPTS += -DWITH_PDAL=TRUE
-else
-	CMAKE_OPTS += -DWITH_PDAL=FALSE
 endif
 
 ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
@@ -119,7 +115,7 @@ ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar mantic noble"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar mantic noble oracular"))
 	CMAKE_OPTS += -DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 
@@ -161,7 +157,7 @@ endif
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DENABLE_TESTS=FALSE
 else
-	CMAKE_OPTS += -DENABLE_TESTS=TRUE -DDART_TESTING_TIMEOUT=60 -DPUSH_TO_CDASH=TRUE
+	CMAKE_OPTS += -DENABLE_TESTS=TRUE -DDART_TESTING_TIMEOUT=60
 endif
 
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
@@ -199,6 +195,16 @@ endif
 # - remove remaining comments
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
+
+ifneq (,$(findstring $(DISTRIBUTION),"jammy"))
+	CONTROL_EXPRESSIONS += pdal
+	CMAKE_OPTS += -DWITH_PDAL=TRUE
+else ifneq (,$(findstring -noble-ubuntugis-,$(DEB_BUILD_NAME)))
+	CONTROL_EXPRESSIONS += pdal
+	CMAKE_OPTS += -DWITH_PDAL=TRUE
+else
+	CMAKE_OPTS += -DWITH_PDAL=FALSE
+endif
 
 ifneq (,$(WITH_APIDOC))
 CONTROL_EXPRESSIONS += apidoc
@@ -346,11 +352,9 @@ endif
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
-ifeq (,$(findstring $(DISTRIBUTION),"bullseye"))
 	mkdir -p $(CURDIR)/debian/libqgis-dev
 	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
 	find $(CURDIR)/debian/tmp/ -depth -empty -type d -delete
-endif
 
 override_dh_missing:
 	dh_missing --fail-missing
@@ -372,9 +376,6 @@ override_dh_installmime:
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
-ifneq (,$(findstring $(DISTRIBUTION),"bullseye"))
-	dh_sip3 -ppython3-qgis
-endif
 
 override_dh_compress:
 	dh_compress --exclude=pdf

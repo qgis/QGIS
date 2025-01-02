@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgspresetcolorrampdialog.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ A widget which allows users to modify the properties of a :py:class:`QgsPresetSc
 #include "qgspresetcolorrampdialog.h"
 %End
   public:
-
     QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPresetColorRampWidget.
@@ -63,7 +62,6 @@ A dialog which allows users to modify the properties of a :py:class:`QgsPresetSc
 #include "qgspresetcolorrampdialog.h"
 %End
   public:
-
     QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPresetColorRampDialog.
@@ -109,5 +107,5 @@ Emitted when the dialog settings change
  *                                                                      *
  * src/gui/qgspresetcolorrampdialog.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

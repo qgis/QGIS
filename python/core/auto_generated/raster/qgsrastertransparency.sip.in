@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrastertransparency.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,14 +21,11 @@ transparent when rendering rasters.
   public:
 
     QgsRasterTransparency();
-%Docstring
-Constructor for QgsRasterTransparency.
-%End
 
     struct TransparentThreeValuePixel
     {
 
-      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0 );
+      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * DBL_EPSILON, double fuzzyToleranceGreen = 4 * DBL_EPSILON, double fuzzyToleranceBlue = 4 * DBL_EPSILON );
 %Docstring
 Constructor for TransparentThreeValuePixel.
 
@@ -36,6 +33,9 @@ Constructor for TransparentThreeValuePixel.
 :param green: green pixel value
 :param blue: blue pixel value
 :param opacity: opacity for pixel, between 0 and 1.0
+:param fuzzyToleranceRed: (since QGIS 3.40) allows specifying a tolerance for the red color component, where the pixel's red component can deviate from values specified here by a maximum of this tolerance amount
+:param fuzzyToleranceGreen: (since QGIS 3.40) allows specifying a tolerance for the green color component, where the pixel's green component can deviate from values specified here by a maximum of this tolerance amount
+:param fuzzyToleranceBlue: (since QGIS 3.40) allows specifying a tolerance for the blue color component, where the pixel's blue component can deviate from values specified here by a maximum of this tolerance amount
 
 .. versionadded:: 3.38
 %End
@@ -48,12 +48,22 @@ Constructor for TransparentThreeValuePixel.
 
       double opacity;
 
+      double fuzzyToleranceRed;
+
+      double fuzzyToleranceGreen;
+
+      double fuzzyToleranceBlue;
+
       bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
       bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
 
       SIP_PYOBJECT __repr__();
 %MethodCode
-      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+      QString str;
+      if ( !qgsDoubleNear( sipCpp->fuzzyToleranceRed, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceGreen, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceBlue, 0 ) )
+        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5, %6, %7>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyToleranceRed ).arg( sipCpp->fuzzyToleranceGreen ).arg( sipCpp->fuzzyToleranceBlue );
+      else
+        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
     };
@@ -132,7 +142,7 @@ Sets the transparent three value pixel list, replacing the whole existing list.
 .. seealso:: :py:func:`transparentThreeValuePixelList`
 %End
 
- int alphaValue( double value, int globalTransparency = 255 ) const /Deprecated/;
+ int alphaValue( double value, int globalTransparency = 255 ) const /Deprecated="Since 3.40. Use opacityForValue() instead."/;
 %Docstring
 Returns the transparency value for a single ``value`` pixel.
 
@@ -142,8 +152,9 @@ by the stored transparency value.
 :param value: the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
 
-.. deprecated::
-   use :py:func:`~QgsRasterTransparency.opacityForValue` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterTransparency.opacityForValue` instead.
 %End
 
     double opacityForValue( double value ) const;
@@ -156,7 +167,7 @@ the opacity corresponding to the value. Returns 1 if no matches are found.
 .. versionadded:: 3.38
 %End
 
- int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const /Deprecated/;
+ int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const /Deprecated="Since 3.40. Use opacityForRgbValues() instead."/;
 %Docstring
 Returns the transparency value for a RGB pixel.
 
@@ -168,8 +179,9 @@ by the stored transparency value.
 :param blueValue: the green portion of the needle to search for in the transparency hay stack
 :param globalTransparency: the overall transparency level for the layer
 
-.. deprecated::
-   use :py:func:`~QgsRasterTransparency.opacityForRgbValues` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRasterTransparency.opacityForRgbValues` instead.
 %End
 
     double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
@@ -205,5 +217,5 @@ Reads the transparency information from an XML document.
  *                                                                      *
  * src/core/raster/qgsrastertransparency.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

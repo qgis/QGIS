@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestquery.h"
+#include "moc_qgsarcgisrestquery.cpp"
 #include "qgsarcgisrestutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsnetworkaccessmanager.h"
@@ -372,9 +373,9 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
   }
 }
 
-void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, Qgis::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, Qgis::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QgsCoordinateReferenceSystem &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter )
 {
-  const QString authid = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
+  const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() );
 
   bool found = false;
   const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
@@ -417,11 +418,11 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     {
       if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
       {
-        visitor( parentLayerId, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, id, name, description, parentUrl + '/' + id, true, QString(), format );
+        visitor( parentLayerId, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, id, name, description, parentUrl + '/' + id, true, QgsCoordinateReferenceSystem(), format );
       }
       else
       {
-        visitor( parentLayerId, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, id, name, description, parentUrl + '/' + id, false, authid, format );
+        visitor( parentLayerId, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, id, name, description, parentUrl + '/' + id, false, crs, format );
       }
     }
 
@@ -450,11 +451,11 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
 
       if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, true, QString(), format );
+        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, true, QgsCoordinateReferenceSystem(), format );
       }
       else
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, false, authid, format );
+        visitor( parentLayerId, ServiceTypeFilter::Vector, QgsWkbTypes::geometryType( wkbType ), id, name, description, parentUrl + '/' + id, false, crs, format );
       }
     }
   }
@@ -472,11 +473,11 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     {
       if ( !tableInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, true, QString(), format );
+        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, true, QgsCoordinateReferenceSystem(), format );
       }
       else
       {
-        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, false, authid, format );
+        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, false, crs, format );
       }
     }
   }
@@ -486,7 +487,7 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
   {
     const QString name = QStringLiteral( "(%1)" ).arg( QObject::tr( "All layers" ) );
     const QString description = serviceData.value( QStringLiteral( "Comments" ) ).toString();
-    visitor( nullptr, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, authid, format );
+    visitor( nullptr, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format );
   }
 
   // Add root ImageServer as layer
@@ -494,7 +495,7 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
   {
     const QString name = serviceData.value( QStringLiteral( "name" ) ).toString();
     const QString description = serviceData.value( QStringLiteral( "description" ) ).toString();
-    visitor( nullptr, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, authid, format );
+    visitor( nullptr, ServiceTypeFilter::Raster, Qgis::GeometryType::Unknown, nullptr, name, description, parentUrl, false, crs, format );
   }
 }
 

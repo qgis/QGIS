@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     qgsfeature.py
@@ -17,11 +15,17 @@
 ***************************************************************************
 """
 
+from PyQt5.QtCore import QVariant
 
-def mapping_feature(feature):
+
+def _mapping_feature(feature):
     geom = feature.geometry()
-    fields = [field.name() for field in feature.fields()]
-    properties = dict(list(zip(fields, feature.attributes())))
-    return {'type': 'Feature',
-            'properties': properties,
-            'geometry': geom.__geo_interface__}
+    properties = {
+        k: None if (v is None or (isinstance(v, QVariant) and v.isNull())) else v
+        for k, v in feature.attributeMap().items()
+    }
+    return {
+        "type": "Feature",
+        "properties": properties,
+        "geometry": geom.__geo_interface__,
+    }

@@ -34,9 +34,9 @@ class QgsVectorTileDataProvider;
  * \brief This class provides map rendering functionality for vector tile layers.
  * In render() function (assumed to be run in a worker thread) it will:
  *
- * # fetch vector tiles using QgsVectorTileLoader
- * # decode raw tiles into QgsFeature objects using QgsVectorTileDecoder
- * # render tiles using a class derived from QgsVectorTileRenderer
+ * - fetch vector tiles using QgsVectorTileLoader
+ * - decode raw tiles into QgsFeature objects using QgsVectorTileDecoder
+ * - render tiles using a class derived from QgsVectorTileRenderer
  *
  * \since QGIS 3.14
  */
@@ -62,6 +62,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     //! Tile renderer object to do rendering of individual tiles
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
+
+    QPainter::CompositionMode mLayerBlendMode = QPainter::CompositionMode::CompositionMode_SourceOver;
 
     /**
      * Label provider that handles registration of labels.

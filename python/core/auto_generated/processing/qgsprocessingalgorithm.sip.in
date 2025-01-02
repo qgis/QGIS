@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingalgorithm.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -126,7 +126,7 @@ about what the algorithm does and the parameters and outputs associated with it.
 .. seealso:: :py:func:`helpUrl`
 %End
 
- virtual QString helpString() const /HoldGIL,Deprecated/;
+ virtual QString helpString() const /HoldGIL,Deprecated="Since 3.40. Unused, will be removed in QGIS 4.0."/;
 %Docstring
 Returns a localised help string for the algorithm. Algorithm subclasses should implement either
 :py:func:`~QgsProcessingAlgorithm.helpString` or :py:func:`~QgsProcessingAlgorithm.helpUrl`.
@@ -135,8 +135,9 @@ Returns a localised help string for the algorithm. Algorithm subclasses should i
 
 .. seealso:: :py:func:`shortHelpString`
 
-.. deprecated::
-   Unused, will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   Unused, will be removed in QGIS 4.0.
 %End
 
     virtual QString helpUrl() const /HoldGIL/;
@@ -146,6 +147,15 @@ Returns a url pointing to the algorithm's help page.
 .. seealso:: :py:func:`helpString`
 
 .. seealso:: :py:func:`shortHelpString`
+%End
+
+    virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const /HoldGIL/;
+%Docstring
+Returns the flags describing algorithm behavior for documentation purposes.
+
+The default is to return no flags.
+
+.. versionadded:: 3.40
 %End
 
     virtual QIcon icon() const /HoldGIL/;
@@ -432,8 +442,7 @@ Note that some combinations of parameter types and values cannot be represented 
 :param context: processing context
 
 :return: - equivalent qgis_process command
-         - ok: will be set to ``True`` if the command was successfully generated
-
+         - ok: ``True`` if the command was successfully generated
 
 .. versionadded:: 3.24
 %End
@@ -448,6 +457,16 @@ Returns a JSON serializable variant map containing the specified ``parameters`` 
     void setProvider( QgsProcessingProvider *provider ) /HoldGIL/;
 %Docstring
 Associates this algorithm with its provider. No transfer of ownership is involved.
+%End
+
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation returns ``False``.
+
+:return: ``True`` if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
 %End
 
   protected:
@@ -500,6 +519,7 @@ occur.
 .. seealso:: :py:func:`addOutput`
 %End
 
+
     void removeParameter( const QString &name ) /HoldGIL/;
 %Docstring
 Removes the parameter with matching ``name`` from the algorithm, and deletes any existing
@@ -521,6 +541,7 @@ See the notes in :py:func:`~QgsProcessingAlgorithm.addParameter` for a descripti
 
 .. seealso:: :py:func:`initAlgorithm`
 %End
+
 
     virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
@@ -758,8 +779,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :param feedback: feedback object
 
 :return: - path to source layer, or nearly converted compatible layer
-         - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
-
+         - layerName: the target layer name for multi-layer sources (e.g. Geopackage)
 
 .. seealso:: :py:func:`parameterAsCompatibleSourceLayerPath`
 
@@ -915,12 +935,13 @@ Evaluates the parameter with matching ``name`` to a list of files (for :py:class
 Evaluates the parameter with matching ``name`` to a range of values.
 %End
 
- QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Deprecated/;
+ QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Deprecated="Since 3.40. Use parameterAsStrings() instead."/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a list of fields.
 
-.. deprecated::
-   use :py:func:`~QgsProcessingAlgorithm.parameterAsStrings` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsProcessingAlgorithm.parameterAsStrings` instead.
 %End
 
     QStringList parameterAsStrings( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -1099,16 +1120,6 @@ should correspond to the sink parameter name.
 .. versionadded:: 3.22
 %End
 
-    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
-%Docstring
-Checks whether this algorithm supports in-place editing on the given ``layer``
-Default implementation returns ``False``.
-
-:return: ``True`` if the algorithm supports in-place editing
-
-.. versionadded:: 3.4
-%End
-
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };
@@ -1118,7 +1129,7 @@ Default implementation returns ``False``.
 class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
 {
 %Docstring(signature="appended")
-An abstract QgsProcessingAlgorithm base class for processing algorithms which operate "feature-by-feature".
+An abstract :py:class:`QgsProcessingAlgorithm` base class for processing algorithms which operate "feature-by-feature".
 
 Feature based algorithms are algorithms which operate on individual features in isolation. These
 are algorithms where one feature is output for each input feature, and the output feature result
@@ -1142,9 +1153,6 @@ algorithm in "chains", avoiding the need for temporary outputs in multi-step mod
   public:
 
     QgsProcessingFeatureBasedAlgorithm();
-%Docstring
-Constructor for QgsProcessingFeatureBasedAlgorithm.
-%End
 
     virtual Qgis::ProcessingAlgorithmFlags flags() const /HoldGIL/;
 
@@ -1174,10 +1182,17 @@ can break valid model execution - so use with extreme caution, and consider usin
 ``feedback`` to instead report non-fatal processing failures for features instead.
 %End
 
-  protected:
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
 
-    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation for feature based algorithms run some basic compatibility
+checks based on the geometry type of the layer.
 
+:return: ``True`` if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
+%End
 
     virtual QString inputParameterName() const /HoldGIL/;
 %Docstring
@@ -1196,6 +1211,11 @@ By default this is a translated "Input layer" string.
 
 .. versionadded:: 3.12
 %End
+
+  protected:
+
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
+
 
     virtual QString outputName() const = 0 /HoldGIL/;
 %Docstring
@@ -1283,18 +1303,6 @@ Returns the feature request used for fetching features to process from the
 source layer. The default implementation requests all attributes and geometry.
 %End
 
-    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
-
-%Docstring
-Checks whether this algorithm supports in-place editing on the given ``layer``
-Default implementation for feature based algorithms run some basic compatibility
-checks based on the geometry type of the layer.
-
-:return: ``True`` if the algorithm supports in-place editing
-
-.. versionadded:: 3.4
-%End
-
     void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Read the source from ``parameters`` and ``context`` and set it
@@ -1315,5 +1323,5 @@ Read the source from ``parameters`` and ``context`` and set it
  *                                                                      *
  * src/core/processing/qgsprocessingalgorithm.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

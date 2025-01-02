@@ -1,4 +1,4 @@
-%Module(name=qgis._3d,
+%Module(name=qgis._3d_p,
         keyword_arguments="All")
 
 ${DEFAULTDOCSTRINGSIGNATURE}

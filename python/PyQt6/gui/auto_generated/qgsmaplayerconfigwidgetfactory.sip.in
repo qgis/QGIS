@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmaplayerconfigwidgetfactory.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ Factory class for creating custom map layer property pages
 #include "qgsmaplayerconfigwidgetfactory.h"
 %End
   public:
-
     enum class ParentPage /BaseType=IntEnum/
     {
       NoParent,
@@ -27,9 +26,6 @@ Factory class for creating custom map layer property pages
     };
 
     QgsMapLayerConfigWidgetFactory();
-%Docstring
-Constructor
-%End
 
     QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
 %Docstring
@@ -168,5 +164,5 @@ Factory function to create the widget on demand as needed by the dock.
  *                                                                      *
  * src/gui/qgsmaplayerconfigwidgetfactory.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

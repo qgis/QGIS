@@ -67,7 +67,6 @@ namespace QgsWms
   class QgsRenderer
   {
     public:
-
       /**
        * Constructor for QgsRenderer.
        * \param context The rendering context.
@@ -75,9 +74,6 @@ namespace QgsWms
        */
       QgsRenderer( const QgsWmsRenderContext &context );
 
-      /**
-       * Destructor for QgsRenderer.
-       */
       ~QgsRenderer();
 
       /**
@@ -223,8 +219,7 @@ namespace QgsWms
        */
       QgsRenderContext configureDefaultRenderContext( QPainter *painter = nullptr );
 
-      QDomDocument featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
-                                        const QImage *outputImage, const QString &version ) const;
+      QDomDocument featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings, const QImage *outputImage, const QString &version ) const;
 
       /**
        * Appends feature info xml for the layer to the layer element of the
@@ -241,16 +236,7 @@ namespace QgsWms
        * \param filterGeom Geometry for filtering selected features
        * \returns TRUE in case of success
        */
-      bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
-                                       const QgsPointXY *infoPoint,
-                                       int nFeatures,
-                                       QDomDocument &infoDocument,
-                                       QDomElement &layerElement,
-                                       const QgsMapSettings &mapSettings,
-                                       QgsRenderContext &renderContext,
-                                       const QString &version,
-                                       QgsRectangle *featureBBox = nullptr,
-                                       QgsGeometry *filterGeom = nullptr ) const;
+      bool featureInfoFromVectorLayer( QgsVectorLayer *layer, const QgsPointXY *infoPoint, int nFeatures, QDomDocument &infoDocument, QDomElement &layerElement, const QgsMapSettings &mapSettings, QgsRenderContext &renderContext, const QString &version, QgsRectangle *featureBBox = nullptr, QgsGeometry *filterGeom = nullptr ) const;
 
       /**
        * Recursively called to write tab layout groups to XML
@@ -292,13 +278,7 @@ namespace QgsWms
       void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
 
       //! Appends feature info xml for the layer to the layer element of the dom document
-      bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
-                                       const QgsMapSettings &mapSettings,
-                                       const QgsPointXY *infoPoint,
-                                       const QgsRenderContext &renderContext,
-                                       QDomDocument &infoDocument,
-                                       QDomElement &layerElement,
-                                       const QString &version ) const;
+      bool featureInfoFromRasterLayer( QgsRasterLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const;
 
       //! Record which symbols would be used if the map was in the current configuration of renderer. This is useful for content-based legend
       void runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const;
@@ -334,7 +314,8 @@ namespace QgsWms
         const QString &typeName,
         bool withGeom,
         int version,
-        QStringList *attributes = nullptr ) const;
+        QStringList *attributes = nullptr
+      ) const;
 
       //! Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value
       static QString replaceValueMapAndRelation( QgsVectorLayer *vl, int idx, const QVariant &attributeVal );

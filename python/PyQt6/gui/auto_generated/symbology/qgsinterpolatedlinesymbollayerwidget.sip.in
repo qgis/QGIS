@@ -3,11 +3,11 @@
  *                                                                      *
  * src/gui/symbology/qgsinterpolatedlinesymbollayerwidget.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
-class QgsInterpolatedLineSymbolLayerWidget: QgsSymbolLayerWidget
+class QgsInterpolatedLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
 :py:class:`QgsInterpolatedLineSymbolLayerWidget`
@@ -19,7 +19,6 @@ class QgsInterpolatedLineSymbolLayerWidget: QgsSymbolLayerWidget
 #include "qgsinterpolatedlinesymbollayerwidget.h"
 %End
   public:
-
     QgsInterpolatedLineSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -47,5 +46,5 @@ Static creation method
  *                                                                      *
  * src/gui/symbology/qgsinterpolatedlinesymbollayerwidget.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -35,9 +35,6 @@ class CORE_EXPORT QgsMapDecoration
 
   public:
 
-    /**
-     * Constructor for QgsMapDecoration.
-     */
     QgsMapDecoration() = default;
 
     virtual ~QgsMapDecoration() = default;

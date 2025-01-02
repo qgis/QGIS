@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsattributeform.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ class QgsAttributeForm : QWidget
 #include "qgsattributeform.h"
 %End
   public:
-
     enum Mode /BaseType=IntEnum/
     {
       SingleEditMode,
@@ -37,10 +36,7 @@ class QgsAttributeForm : QWidget
       FilterOr,
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl,
-                               const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-                               QWidget *parent /TransferThis/ = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
     const QgsFeature &feature();
@@ -185,7 +181,7 @@ Returns ``True`` if any of the form widgets need feature geometry
 
   signals:
 
- void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated/;
+ void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated="Since 3.0. "/;
 %Docstring
 Notifies about changes of attributes, this signal is not emitted when the value is set
 back to the original one.
@@ -193,8 +189,7 @@ back to the original one.
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
 
-.. deprecated::
-   since 3.0
+.. deprecated:: 3.0
 %End
 
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
@@ -287,8 +282,7 @@ Save all the values from the editors to the layer.
 
 
 :return: - ``True`` if save was successful
-         - error: will be set to an explanatory error message if an error occurs while saving the form.
-
+         - error: an explanatory error message if an error occurs while saving the form.
 
 .. versionadded:: 3.18
 %End
@@ -326,5 +320,5 @@ have filter expressions that depend on the parent form scope.
  *                                                                      *
  * src/gui/qgsattributeform.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

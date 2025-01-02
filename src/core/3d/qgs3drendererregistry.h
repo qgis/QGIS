@@ -67,7 +67,7 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
 class CORE_EXPORT Qgs3DRendererRegistry
 {
   public:
-    //! Creates registry of 3D renderers
+
     Qgs3DRendererRegistry() = default;
 
     ~Qgs3DRendererRegistry();

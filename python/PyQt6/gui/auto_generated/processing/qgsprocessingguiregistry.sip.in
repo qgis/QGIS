@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingguiregistry.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ configuration widgets.
 #include "qgsprocessingguiregistry.h"
 %End
   public:
-
     QgsProcessingGuiRegistry();
 %Docstring
 Constructor. Should never be called manually, is already
@@ -103,9 +102,7 @@ If no factory is registered which handles the given ``parameter``, ``None`` will
 .. versionadded:: 3.4
 %End
 
-    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
-        const QString &childId,
-        const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) /Factory/;
+    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) /Factory/;
 %Docstring
 Creates a new modeler parameter widget for the given ``parameter``. This widget allows
 configuration of the parameter's value when used inside a Processing ``model``.
@@ -125,11 +122,7 @@ handles the given ``parameter``, ``None`` will be returned.
 .. versionadded:: 3.4
 %End
 
-    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type,
-        QgsProcessingContext &context,
-        const QgsProcessingParameterWidgetContext &widgetContext,
-        const QgsProcessingParameterDefinition *definition = 0,
-        const QgsProcessingAlgorithm *algorithm = 0 ) /Factory/;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0 ) /Factory/;
 %Docstring
 Creates a new parameter definition widget allowing for configuration of an instance of
 a specific parameter ``type``.
@@ -159,5 +152,5 @@ it indicates that the parameter type cannot be configured via GUI.
  *                                                                      *
  * src/gui/processing/qgsprocessingguiregistry.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

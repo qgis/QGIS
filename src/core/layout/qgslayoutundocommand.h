@@ -127,9 +127,6 @@ class CORE_EXPORT QgsLayoutUndoObjectInterface
 {
   public:
 
-    /**
-     * Destructor for QgsLayoutUndoObjectInterface.
-     */
     virtual ~QgsLayoutUndoObjectInterface() = default;
 
     /**

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsoracleprojectstoragedialog.h"
+#include "moc_qgsoracleprojectstoragedialog.cpp"
 
 #include "qgsoracleconn.h"
 #include "qgsoracleconnpool.h"
@@ -52,7 +53,7 @@ QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidg
     setWindowTitle( tr( "Load project from Oracle" ) );
   }
 
-  connect( mCboConnection, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateOwners );
+  connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateOwners );
 
   mLblProjectsNotAllowed->setVisible( false );
 
@@ -64,7 +65,7 @@ QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidg
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
   populateProjects();
 
-  connect( mCboOwner, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateProjects );
+  connect( mCboOwner, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateProjects );
   connect( mCboProject, &QComboBox::currentTextChanged, this, &QgsOracleProjectStorageDialog::projectChanged );
 
   projectChanged();
@@ -143,9 +144,7 @@ void QgsOracleProjectStorageDialog::onOK()
   {
     if ( mExistingProjects.contains( mCboProject->currentText() ) )
     {
-      const int res = QMessageBox::question( this, tr( "Overwrite project" ),
-                                             tr( "A project with the same name already exists. Would you like to overwrite it?" ),
-                                             QMessageBox::Yes | QMessageBox::No );
+      const int res = QMessageBox::question( this, tr( "Overwrite project" ), tr( "A project with the same name already exists. Would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
       if ( res != QMessageBox::Yes )
         return;
     }
@@ -161,9 +160,7 @@ void QgsOracleProjectStorageDialog::projectChanged()
 
 void QgsOracleProjectStorageDialog::removeProject()
 {
-  const int res = QMessageBox::question( this, tr( "Remove project" ),
-                                         tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
-                                         QMessageBox::Yes | QMessageBox::No );
+  const int res = QMessageBox::question( this, tr( "Remove project" ), tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ), QMessageBox::Yes | QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
 

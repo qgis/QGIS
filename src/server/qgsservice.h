@@ -43,11 +43,7 @@ class SERVER_EXPORT QgsService
 #endif
 
   public:
-
-    //! Constructor
     QgsService();
-
-    //! Destructor
     virtual ~QgsService() = default;
 
     /**
@@ -63,10 +59,7 @@ class SERVER_EXPORT QgsService
     /**
      * Execute the requests and set result in QgsServerRequest
      */
-    virtual void executeRequest( const QgsServerRequest &request,
-                                 QgsServerResponse &response,
-                                 const QgsProject *project ) = 0;
+    virtual void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) = 0;
 };
 
 #endif
-

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgsrulebased3drenderer.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -57,7 +57,6 @@ Similar to rule-based 2D renderer and rule-based labeling, it allows specificati
 #include "qgsrulebased3drenderer.h"
 %End
   public:
-
     typedef QList<QgsRuleBased3DRenderer::Rule *> RuleList;
     typedef QHash<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
 
@@ -265,5 +264,5 @@ Returns pointer to the root rule
  *                                                                      *
  * src/3d/qgsrulebased3drenderer.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

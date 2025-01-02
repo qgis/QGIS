@@ -25,6 +25,8 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+class QgsGdalCredentialOptionsWidget;
+
 /**
  * \class QgsGdalSourceSelect
  * \brief Dialog to select GDAL supported rasters
@@ -35,10 +37,7 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
 
   public:
     //! Constructor
-    QgsGdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-
-    //! Returns whether the protocol is a cloud type
-    bool isProtocolCloudType();
+    QgsGdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -54,17 +53,21 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
 
   private slots:
     void showHelp();
+    void updateProtocolOptions();
+    void credentialOptionsChanged();
 
   private:
-
     void computeDataSources();
     void clearOpenOptions();
     void fillOpenOptions();
+
     std::vector<QWidget *> mOpenOptionsWidgets;
+    QgsGdalCredentialOptionsWidget *mCredentialsWidget = nullptr;
 
     QString mRasterPath;
     QStringList mDataSources;
     bool mIsOgcApi = false;
+    QVariantMap mCredentialOptions;
 };
 
 ///@endcond

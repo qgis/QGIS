@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingalgorithmdialogbase.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ Base class for processing algorithm dialogs.
 #include "qgsprocessingalgorithmdialogbase.h"
 %End
   public:
-
     enum LogFormat /BaseType=IntEnum/
     {
       FormatPlainText,
@@ -230,7 +229,6 @@ Switches the dialog to the parameters page.
 
 
   protected:
-
     virtual void closeEvent( QCloseEvent *e );
 
 
@@ -403,5 +401,5 @@ Called when an algorithm task has completed.
  *                                                                      *
  * src/gui/processing/qgsprocessingalgorithmdialogbase.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     fromfunction.py
@@ -17,33 +15,44 @@
 ***************************************************************************
 """
 
+import typing as _typing
 from .qgstaskwrapper import QgsTaskWrapper
 from qgis._core import QgsTask
 
 
 @staticmethod
-def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.Flag.AllFlags, **kwargs):
+def _fromFunction(
+    description: str,
+    function: _typing.Callable,
+    *args,
+    on_finished: _typing.Optional[_typing.Callable] = None,
+    flags=QgsTask.Flag.AllFlags,
+    **kwargs
+) -> QgsTask:
     """
     Creates a new QgsTask task from a python function.
 
-    Example:
+    Example
+    -------
 
-    def calculate(task):
-        # pretend this is some complex maths and stuff we want
-        # to run in the background
-        return 5*6
+    .. code-block:: python
 
-    def calculation_finished(exception, value=None):
-        if not exception:
-            iface.messageBar().pushMessage(
-                'the magic number is {}'.format(value))
-        else:
-            iface.messageBar().pushMessage(
-                str(exception))
+        def calculate(task):
+            # pretend this is some complex maths and stuff we want
+            # to run in the background
+            return 5*6
 
-    task = QgsTask.fromFunction('my task', calculate,
-            on_finished=calculation_finished)
-    QgsApplication.taskManager().addTask(task)
+        def calculation_finished(exception, value=None):
+            if not exception:
+                iface.messageBar().pushMessage(
+                    'the magic number is {}'.format(value))
+            else:
+                iface.messageBar().pushMessage(
+                    str(exception))
+
+        task = QgsTask.fromFunction('my task', calculate,
+                on_finished=calculation_finished)
+        QgsApplication.taskManager().addTask(task)
 
     """
 

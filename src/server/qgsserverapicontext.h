@@ -38,7 +38,6 @@ class QgsProject;
 class SERVER_EXPORT QgsServerApiContext
 {
   public:
-
     /**
     * QgsServerApiContext constructor
     *
@@ -49,8 +48,7 @@ class SERVER_EXPORT QgsServerApiContext
     * \param project the project (might be NULL)
     * \param serverInterface the server interface
     */
-    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response,
-                         const QgsProject *project, QgsServerInterface *serverInterface );
+    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface );
 
     /**
      * Returns the server request object
@@ -89,7 +87,7 @@ class SERVER_EXPORT QgsServerApiContext
      * this method will return "/resources/wfs3"
      *
      */
-    const QString matchedPath( ) const;
+    const QString matchedPath() const;
 
     /**
      * Returns the API root path
@@ -107,10 +105,9 @@ class SERVER_EXPORT QgsServerApiContext
      *
      * \since QGIS 3.22
      */
-    QString handlerPath( ) const;
+    QString handlerPath() const;
 
   private:
-
     QString mApiRootPath;
     const QgsServerRequest *mRequest = nullptr;
     QgsServerResponse *mResponse = nullptr;

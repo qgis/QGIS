@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshrenderersettings.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -178,6 +178,34 @@ Returns the stroke width unit used to render edges scalar dataset
 Sets the stroke width unit used to render edges scalar dataset
 
 .. versionadded:: 3.14
+%End
+
+    void setLimits( Qgis::MeshRangeLimit limits );
+%Docstring
+Sets the range limits type for minimum maximum calculation
+
+.. versionadded:: 3.42
+%End
+
+    Qgis::MeshRangeLimit limits() const;
+%Docstring
+Returns the range limits type for minimum maximum calculation
+
+.. versionadded:: 3.42
+%End
+
+    void setExtent( Qgis::MeshRangeExtent extent );
+%Docstring
+Sets the mesh extent for minimum maximum calculation
+
+.. versionadded:: 3.42
+%End
+
+    Qgis::MeshRangeExtent extent() const;
+%Docstring
+Returns the mesh extent for minimum maximum calculation
+
+.. versionadded:: 3.42
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
@@ -467,14 +495,18 @@ Returns the shaft length (in millimeters)
 Sets the shaft length  (in millimeters)
 %End
 
-    Qgis::RenderUnit shaftLengthUnits();
+    Qgis::RenderUnit shaftLengthUnits() const;
 %Docstring
-Sets the units for the shaft length
+Returns the units for the shaft length.
+
+.. seealso:: :py:func:`setShaftLengthUnits`
 %End
 
     void setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit );
 %Docstring
-Returns the units for the shaft length
+Sets the units for the shaft length.
+
+.. seealso:: :py:func:`shaftLengthUnits`
 %End
 
     WindSpeedUnit magnitudeUnits() const;
@@ -885,5 +917,5 @@ Returns whether the group with ``index`` has render settings (scalar or vector)
  *                                                                      *
  * src/core/mesh/qgsmeshrenderersettings.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

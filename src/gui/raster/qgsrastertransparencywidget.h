@@ -39,7 +39,6 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
-
     /**
      * \brief Widget to control a layers transparency and related options
      */
@@ -58,6 +57,24 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
      * \since QGIS 3.22
      */
     QgsMapToolEmitPoint *pixelSelectorTool() const;
+
+    /**
+     * Applies widget settings to a raster \a provider.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.40
+     */
+    void applyToRasterProvider( QgsRasterDataProvider *provider ) SIP_SKIP;
+
+    /**
+     * Applies widget settings to a raster \a renderer.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.40
+     */
+    void applyToRasterRenderer( QgsRasterRenderer *renderer ) SIP_SKIP;
 
   public slots:
 
@@ -80,7 +97,6 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void apply() override;
 
   protected:
-
 #ifndef SIP_RUN
 
     // TODO -- consider moving these to a common raster widget base class
@@ -143,7 +159,29 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
 
-    bool rasterIsMultiBandColor();
+    enum class Mode : int
+    {
+      SingleBand = 0,
+      RgbBands
+    };
+
+    enum class RgbBandTableColumns : int
+    {
+      Red = 0,
+      Green = 1,
+      Blue = 2,
+      Tolerance = 3,
+      Opacity = 4,
+      ColumnCount = Opacity + 1
+    };
+
+    enum class SingleBandTableColumns : int
+    {
+      From = 0,
+      To = 1,
+      Opacity = 2,
+      ColumnCount = Opacity + 1
+    };
 
     //! \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type
     void populateTransparencyTable( QgsRasterRenderer *renderer );
@@ -157,6 +195,8 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void setTransparencyToEdited( int row );
 
     double transparencyCellValue( int row, int column );
+
+    Mode mCurrentMode = Mode::RgbBands;
 
     QgsRasterLayer *mRasterLayer = nullptr;
 

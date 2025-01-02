@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsexpressioncontext.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -74,6 +74,7 @@ class QgsExpressionContextScope
 {
 %Docstring(signature="appended")
 Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
+
 Examples include a project's scope, which could contain information about the current project such as
 the project file's location. :py:class:`QgsExpressionContextScope` can encapsulate both variables (static values)
 and functions(which are calculated only when an expression is evaluated).
@@ -119,9 +120,6 @@ Constructor for QgsExpressionContextScope
 %End
 
     QgsExpressionContextScope( const QgsExpressionContextScope &other );
-%Docstring
-Copy constructor
-%End
 
 
     ~QgsExpressionContextScope();
@@ -474,7 +472,9 @@ class QgsExpressionContext
 {
 %Docstring(signature="appended")
 Expression contexts are used to encapsulate the parameters around which a :py:class:`QgsExpression` should
-be evaluated. :py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
+be evaluated.
+
+:py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
 their evaluated result. A :py:class:`QgsExpressionContext` consists of a stack of :py:class:`QgsExpressionContextScope` objects,
 where scopes added later to the stack will override conflicting variables and functions from scopes
 lower in the stack.
@@ -488,9 +488,6 @@ See :py:class:`QgsExpressionContextUtils` for helper methods for working with :p
   public:
 
     QgsExpressionContext();
-%Docstring
-Constructor for QgsExpressionContext
-%End
 
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes /Transfer/ );
 %Docstring
@@ -499,9 +496,6 @@ Ownership of the scopes is transferred to the stack.
 %End
 
     QgsExpressionContext( const QgsExpressionContext &other );
-%Docstring
-Copy constructor
-%End
 
 
 
@@ -952,6 +946,18 @@ if evaluation should be canceled, if set.
 .. versionadded:: 3.20
 %End
 
+    QString uniqueHash( bool &ok /Out/, const QSet<QString> &variables = QSet<QString>() ) const;
+%Docstring
+Returns a unique hash representing the current state of the context.
+
+:param variables: optional names of a subset of variables to include in the hash. If not specified, all variables will be considered.
+
+:return: - calculated hash
+         - ok: ``True`` if the hash could be generated, or false if e.g. a variable value is of a type which cannot be hashed
+
+.. versionadded:: 3.40
+%End
+
     static const QString EXPR_FIELDS;
     static const QString EXPR_ORIGINAL_VALUE;
     static const QString EXPR_SYMBOL_COLOR;
@@ -972,5 +978,5 @@ if evaluation should be canceled, if set.
  *                                                                      *
  * src/core/qgsexpressioncontext.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

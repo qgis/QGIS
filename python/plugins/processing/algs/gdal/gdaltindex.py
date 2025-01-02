@@ -15,25 +15,27 @@
 ***************************************************************************
 """
 
-__author__ = 'Pedro Venancio'
-__date__ = 'February 2015'
-__copyright__ = '(C) 2015, Pedro Venancio'
+__author__ = "Pedro Venancio"
+__date__ = "February 2015"
+__copyright__ = "(C) 2015, Pedro Venancio"
 
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsMapLayer,
-                       QgsProcessing,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingException,
-                       QgsProcessingParameterCrs,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterString,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingParameterMultipleLayers,
-                       QgsProcessingParameterVectorDestination)
+from qgis.core import (
+    QgsMapLayer,
+    QgsProcessing,
+    QgsProcessingAlgorithm,
+    QgsProcessingException,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterString,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterVectorDestination,
+)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -41,119 +43,160 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class gdaltindex(GdalAlgorithm):
-    LAYERS = 'LAYERS'
-    PATH_FIELD_NAME = 'PATH_FIELD_NAME'
-    ABSOLUTE_PATH = 'ABSOLUTE_PATH'
-    PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
-    TARGET_CRS = 'TARGET_CRS'
-    CRS_FIELD_NAME = 'CRS_FIELD_NAME'
-    CRS_FORMAT = 'CRS_FORMAT'
-    OUTPUT = 'OUTPUT'
+    LAYERS = "LAYERS"
+    PATH_FIELD_NAME = "PATH_FIELD_NAME"
+    ABSOLUTE_PATH = "ABSOLUTE_PATH"
+    PROJ_DIFFERENCE = "PROJ_DIFFERENCE"
+    TARGET_CRS = "TARGET_CRS"
+    CRS_FIELD_NAME = "CRS_FIELD_NAME"
+    CRS_FORMAT = "CRS_FORMAT"
+    OUTPUT = "OUTPUT"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.formats = ((self.tr('Auto'), 'AUTO'),
-                        (self.tr('Well-known text (WKT)'), 'WKT'),
-                        (self.tr('EPSG'), 'EPSG'),
-                        (self.tr('Proj.4'), 'PROJ'))
+        self.formats = (
+            (self.tr("Auto"), "AUTO"),
+            (self.tr("Well-known text (WKT)"), "WKT"),
+            (self.tr("EPSG"), "EPSG"),
+            (self.tr("Proj.4"), "PROJ"),
+        )
 
-        self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
-                                                               self.tr('Input files'),
-                                                               QgsProcessing.SourceType.TypeRaster))
-        self.addParameter(QgsProcessingParameterString(self.PATH_FIELD_NAME,
-                                                       self.tr('Field name to hold the file path to the indexed rasters'),
-                                                       defaultValue='location'))
-        self.addParameter(QgsProcessingParameterBoolean(self.ABSOLUTE_PATH,
-                                                        self.tr('Store absolute path to the indexed rasters'),
-                                                        defaultValue=False))
-        self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
-                                                        self.tr('Skip files with different projection reference'),
-                                                        defaultValue=False))
+        self.addParameter(
+            QgsProcessingParameterMultipleLayers(
+                self.LAYERS, self.tr("Input files"), QgsProcessing.SourceType.TypeRaster
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.PATH_FIELD_NAME,
+                self.tr("Field name to hold the file path to the indexed rasters"),
+                defaultValue="location",
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.ABSOLUTE_PATH,
+                self.tr("Store absolute path to the indexed rasters"),
+                defaultValue=False,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.PROJ_DIFFERENCE,
+                self.tr("Skip files with different projection reference"),
+                defaultValue=False,
+            )
+        )
 
-        target_crs_param = QgsProcessingParameterCrs(self.TARGET_CRS,
-                                                     self.tr('Transform geometries to the given CRS'),
-                                                     optional=True)
-        target_crs_param.setFlags(target_crs_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
+        target_crs_param = QgsProcessingParameterCrs(
+            self.TARGET_CRS,
+            self.tr("Transform geometries to the given CRS"),
+            optional=True,
+        )
+        target_crs_param.setFlags(
+            target_crs_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
         self.addParameter(target_crs_param)
 
-        crs_field_param = QgsProcessingParameterString(self.CRS_FIELD_NAME,
-                                                       self.tr('The name of the field to store the SRS of each tile'),
-                                                       optional=True)
-        crs_field_param.setFlags(crs_field_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
+        crs_field_param = QgsProcessingParameterString(
+            self.CRS_FIELD_NAME,
+            self.tr("The name of the field to store the SRS of each tile"),
+            optional=True,
+        )
+        crs_field_param.setFlags(
+            crs_field_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
         self.addParameter(crs_field_param)
 
-        crs_format_param = QgsProcessingParameterEnum(self.CRS_FORMAT,
-                                                      self.tr('The format in which the CRS of each tile must be written'),
-                                                      options=[i[0] for i in self.formats],
-                                                      allowMultiple=False,
-                                                      defaultValue=0)
-        crs_format_param.setFlags(crs_format_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
+        crs_format_param = QgsProcessingParameterEnum(
+            self.CRS_FORMAT,
+            self.tr("The format in which the CRS of each tile must be written"),
+            options=[i[0] for i in self.formats],
+            allowMultiple=False,
+            defaultValue=0,
+        )
+        crs_format_param.setFlags(
+            crs_format_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
         self.addParameter(crs_format_param)
 
-        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
-                                                                  self.tr('Tile index'),
-                                                                  QgsProcessing.SourceType.TypeVectorPolygon))
+        self.addParameter(
+            QgsProcessingParameterVectorDestination(
+                self.OUTPUT,
+                self.tr("Tile index"),
+                QgsProcessing.SourceType.TypeVectorPolygon,
+            )
+        )
 
     def name(self):
-        return 'tileindex'
+        return "tileindex"
 
     def displayName(self):
-        return self.tr('Tile index')
+        return self.tr("Tile index")
 
     def group(self):
-        return self.tr('Raster miscellaneous')
+        return self.tr("Raster miscellaneous")
 
     def groupId(self):
-        return 'rastermiscellaneous'
+        return "rastermiscellaneous"
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'tiles.png'))
+        return QIcon(os.path.join(pluginPath, "images", "gdaltools", "tiles.png"))
 
     def commandName(self):
-        return 'gdaltindex'
+        return "gdaltindex"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        input_layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
         crs_field = self.parameterAsString(parameters, self.CRS_FIELD_NAME, context)
         crs_format = self.parameterAsEnum(parameters, self.CRS_FORMAT, context)
         target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, outFile)
-        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
 
         arguments = [
-            '-tileindex',
+            "-tileindex",
             self.parameterAsString(parameters, self.PATH_FIELD_NAME, context),
         ]
 
         if self.parameterAsBoolean(parameters, self.ABSOLUTE_PATH, context):
-            arguments.append('-write_absolute_path')
+            arguments.append("-write_absolute_path")
 
         if self.parameterAsBoolean(parameters, self.PROJ_DIFFERENCE, context):
-            arguments.append('-skip_different_projection')
+            arguments.append("-skip_different_projection")
 
         if crs_field:
-            arguments.append(f'-src_srs_name {crs_field}')
+            arguments.append(f"-src_srs_name {crs_field}")
 
         if crs_format:
-            arguments.append(f'-src_srs_format {self.formats[crs_format][1]}')
+            arguments.append(f"-src_srs_format {self.formats[crs_format][1]}")
 
         if target_crs.isValid():
-            arguments.append('-t_srs')
+            arguments.append("-t_srs")
             arguments.append(GdalUtils.gdal_crs_string(target_crs))
 
-        if outFormat:
-            arguments.append(f'-f {outFormat}')
+        if output_details.format:
+            arguments.append(f"-f {output_details.format}")
 
-        arguments.append(output)
+        arguments.append(output_details.connection_string)
 
         # Always write input files to a text file in case there are many of them and the
         # length of the command will be longer then allowed in command prompt
-        list_file = GdalUtils.writeLayerParameterToTextFile(filename='tile_index_files.txt', alg=self, parameters=parameters, parameter_name=self.LAYERS, context=context, quote=True, executing=executing)
-        arguments.append('--optfile')
+        list_file = GdalUtils.writeLayerParameterToTextFile(
+            filename="tile_index_files.txt",
+            alg=self,
+            parameters=parameters,
+            parameter_name=self.LAYERS,
+            context=context,
+            quote=True,
+            executing=executing,
+        )
+        arguments.append("--optfile")
         arguments.append(list_file)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

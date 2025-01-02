@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsrangeslider.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ A slider control with two interactive endpoints, for interactive selection of a 
 #include "qgsrangeslider.h"
 %End
   public:
-
     QgsRangeSlider( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRangeSlider, with the specified ``parent`` widget.
@@ -311,5 +310,5 @@ Emitted when the widget's fixed range size is changed.
  *                                                                      *
  * src/gui/qgsrangeslider.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -781,7 +781,7 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::searchItemBySourceName
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::rootItem() const
 {
   const QgsMeshDatasetGroupTreeItem *baseItem = this;
-  while ( baseItem->parentItem() != nullptr )
+  while ( baseItem->parentItem() )
     baseItem = baseItem->parentItem();
 
   return const_cast<QgsMeshDatasetGroupTreeItem *>( baseItem );

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutcustomdrophandler.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,13 +19,12 @@ Abstract base class that may be implemented to handle new types of data to be dr
 #include "qgslayoutcustomdrophandler.h"
 %End
   public:
-
     QgsLayoutCustomDropHandler( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayoutCustomDropHandler.
 %End
 
- virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) /Deprecated/;
+ virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) /Deprecated="Since 3.40. Use the version which specifies a drop location instead."/;
 %Docstring
 Called when the specified ``file`` has been dropped onto a QGIS layout. If ``True``
 is returned, then the handler has accepted this file and it should not
@@ -33,8 +32,9 @@ be further processed (e.g. by other QgsLayoutCustomDropHandler).
 
 The base class implementation does nothing.
 
-.. deprecated::
-   use the version which specifies a drop location instead.
+.. deprecated:: 3.40
+
+   Use the version which specifies a drop location instead.
 %End
 
     virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF dropPoint, const QString &file );
@@ -51,7 +51,7 @@ The base class implementation does nothing.
 .. versionadded:: 3.12
 %End
 
-    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList< QgsLayoutItem * > &pastedItems /Out/ );
+    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList<QgsLayoutItem *> &pastedItems /Out/ );
 %Docstring
 Called when the specified MIME ``data`` has been pasted onto a QGIS layout. If ``True``
 is returned, then the handler has accepted this data and it should not
@@ -69,7 +69,6 @@ The base class implementation does nothing.
 :return: - ``True`` if the handler accepted and processed the paste operation
          - pastedItems: should be filled with any newly created items as a result of the paste
 
-
 .. versionadded:: 3.14
 %End
 };
@@ -80,5 +79,5 @@ The base class implementation does nothing.
  *                                                                      *
  * src/gui/layout/qgslayoutcustomdrophandler.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

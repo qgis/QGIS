@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/maprenderer/qgsmaprendererjob.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -234,6 +234,8 @@ emitted when asynchronous rendering is finished (or canceled).
 
 
 
+
+
 };
 
 
@@ -264,5 +266,5 @@ Gets a preview/resulting image
  *                                                                      *
  * src/core/maprenderer/qgsmaprendererjob.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

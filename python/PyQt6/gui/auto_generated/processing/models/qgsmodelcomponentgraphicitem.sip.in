@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/models/qgsmodelcomponentgraphicitem.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ Base class for graphic items representing model components in the model designer
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
     enum State /BaseType=IntEnum/
     {
       Normal,
@@ -42,9 +41,7 @@ Base class for graphic items representing model components in the model designer
     typedef QFlags<QgsModelComponentGraphicItem::Flag> Flags;
 
 
-    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/,
-                                  QgsProcessingModelAlgorithm *model,
-                                  QGraphicsItem *parent /TransferThis/ );
+    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelComponentGraphicItem for the specified ``component``, with the specified ``parent`` item.
 
@@ -253,7 +250,6 @@ The default implementation does nothing.
 %End
 
   protected:
-
     QString truncatedTextForItem( const QString &text ) const;
 %Docstring
 Truncates a ``text`` string so that it fits nicely within the item's width,
@@ -325,10 +321,7 @@ A graphic item representing a model parameter (input) in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/,
-                                  QgsProcessingModelAlgorithm *model,
-                                  QGraphicsItem *parent /TransferThis/ );
+    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelParameterGraphicItem for the specified ``parameter``, with the specified ``parent`` item.
 
@@ -344,7 +337,6 @@ Ownership of ``parameter`` is transferred to the item.
 
 
   protected:
-
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -379,10 +371,7 @@ A graphic item representing a child algorithm in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/,
-                                       QgsProcessingModelAlgorithm *model,
-                                       QGraphicsItem *parent /TransferThis/ );
+    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelChildAlgorithmGraphicItem for the specified ``child``, with the specified ``parent`` item.
 
@@ -432,7 +421,6 @@ Emitted when the user opts to view the previous log from this child algorithm.
 %End
 
   protected:
-
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -475,10 +463,7 @@ A graphic item representing a model output in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/,
-                               QgsProcessingModelAlgorithm *model,
-                               QGraphicsItem *parent /TransferThis/ );
+    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelOutputGraphicItem for the specified ``output``, with the specified ``parent`` item.
 
@@ -492,7 +477,6 @@ Ownership of ``output`` is transferred to the item.
 
 
   protected:
-
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -512,7 +496,6 @@ Ownership of ``output`` is transferred to the item.
 };
 
 
-
 class QgsModelCommentGraphicItem : QgsModelComponentGraphicItem
 {
 %Docstring(signature="appended")
@@ -529,11 +512,7 @@ A graphic item representing a model comment in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/,
-                                QgsModelComponentGraphicItem *parentItem,
-                                QgsProcessingModelAlgorithm *model,
-                                QGraphicsItem *parent /TransferThis/ );
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelCommentGraphicItem for the specified ``comment``, with the specified ``parent`` item.
 
@@ -554,7 +533,6 @@ Returns the parent model component item.
 %End
 
   protected:
-
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -571,6 +549,7 @@ Returns the parent model component item.
     virtual void deleteComponent();
 
     virtual void editComponent();
+
 
 };
 
@@ -591,10 +570,7 @@ A graphic item representing a group box in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/,
-                                 QgsProcessingModelAlgorithm *model,
-                                 QGraphicsItem *parent /TransferThis/ );
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelGroupBoxGraphicItem for the specified group ``box``, with the specified ``parent`` item.
 
@@ -608,8 +584,8 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
-  protected:
 
+  protected:
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -629,6 +605,7 @@ Ownership of ``output`` is transferred to the item.
 
     virtual void editComponent();
 
+
 };
 
 
@@ -637,5 +614,5 @@ Ownership of ``output`` is transferred to the item.
  *                                                                      *
  * src/gui/processing/models/qgsmodelcomponentgraphicitem.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

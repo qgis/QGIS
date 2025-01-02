@@ -147,15 +147,15 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         const QString fieldType( match.captured( 2 ) );
         if ( fieldType == QLatin1String( "int" ) )
         {
-          fields.append( QgsField( fieldName, QVariant::LongLong, fieldType ) );
+          fields.append( QgsField( fieldName, QMetaType::Type::LongLong, fieldType ) );
         }
         else if ( fieldType == QLatin1String( "real" ) )
         {
-          fields.append( QgsField( fieldName, QVariant::Double, fieldType ) );
+          fields.append( QgsField( fieldName, QMetaType::Type::Double, fieldType ) );
         }
         if ( fieldType == QLatin1String( "text" ) )
         {
-          fields.append( QgsField( fieldName, QVariant::String, fieldType ) );
+          fields.append( QgsField( fieldName, QMetaType::Type::QString, fieldType ) );
         }
       }
     }
@@ -218,14 +218,14 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   const auto constFields = fields();
   for ( const QgsField &f : constFields )
   {
-    if ( f.type() == QVariant::Int
-         || f.type() == QVariant::UInt
-         || f.type() == QVariant::Bool
-         || f.type() == QVariant::LongLong )
+    if ( f.type() == QMetaType::Type::Int
+         || f.type() == QMetaType::Type::UInt
+         || f.type() == QMetaType::Type::Bool
+         || f.type() == QMetaType::Type::LongLong )
       urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":int" );
-    else if ( f.type() == QVariant::Double )
+    else if ( f.type() == QMetaType::Type::Double )
       urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":real" );
-    else if ( f.type() == QVariant::String )
+    else if ( f.type() == QMetaType::Type::QString )
       urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":text" );
   }
 

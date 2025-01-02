@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "qgsfieldvalidator.h"
+#include "moc_qgsfieldvalidator.cpp"
 
 #include <QValidator>
 #include <QRegularExpression>
@@ -39,7 +40,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
 {
   switch ( mField.type() )
   {
-    case QVariant::Int:
+    case QMetaType::Type::Int:
     {
       if ( mField.length() > 0 )
       {
@@ -53,7 +54,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     }
     break;
 
-    case QVariant::Double:
+    case QMetaType::Type::Double:
     {
       if ( mField.length() > 0 && mField.precision() > 0 )
       {
@@ -95,7 +96,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     }
     break;
 
-    case QVariant::LongLong :
+    case QMetaType::Type::LongLong:
       mValidator = new QgsLongLongValidator( parent );
       break;
 
@@ -114,13 +115,7 @@ QgsFieldValidator::~QgsFieldValidator()
 QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
 {
   // empty values are considered NULL for numbers and dates and are acceptable
-  if ( s.isEmpty() &&
-       ( mField.type() == QVariant::Double
-         || mField.type() == QVariant::Int
-         || mField.type() == QVariant::LongLong
-         || mField.type() == QVariant::Date
-       )
-     )
+  if ( s.isEmpty() && ( mField.type() == QMetaType::Type::Double || mField.type() == QMetaType::Type::Int || mField.type() == QMetaType::Type::LongLong || mField.type() == QMetaType::Type::QDate ) )
   {
     return Acceptable;
   }
@@ -134,7 +129,7 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
     const QValidator::State result = mValidator->validate( s, i );
     return result;
   }
-  else if ( mField.type() == QVariant::String )
+  else if ( mField.type() == QMetaType::Type::QString )
   {
     if ( s == mNullValue )
       return Acceptable;
@@ -151,15 +146,15 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
       return Invalid;
     }
   }
-  else if ( mField.type() == QVariant::Date )
+  else if ( mField.type() == QMetaType::Type::QDate )
   {
     return QDate::fromString( s, mDateFormat ).isValid() ? Acceptable : Intermediate;
   }
-  else if ( mField.type() == QVariant::Map )
+  else if ( mField.type() == QMetaType::Type::QVariantMap )
   {
     return Acceptable;
   }
-  else if ( mField.type() == QVariant::UserType && mField.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  else if ( mField.type() == QMetaType::Type::User && mField.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
   {
     return Acceptable;
   }
@@ -167,8 +162,8 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   {
     QgsDebugError(
       QStringLiteral( "unsupported type %1 (%2) for validation" )
-      .arg( mField.type() )
-      .arg( mField.typeName() )
+        .arg( mField.type() )
+        .arg( mField.typeName() )
     );
     return Invalid;
   }
@@ -182,12 +177,12 @@ void QgsFieldValidator::fixup( QString &s ) const
   {
     mValidator->fixup( s );
   }
-  else if ( mField.type() == QVariant::String && mField.length() > 0 && s.size() > mField.length() && s != mDefaultValue )
+  else if ( mField.type() == QMetaType::Type::QString && mField.length() > 0 && s.size() > mField.length() && s != mDefaultValue )
   {
     // if the value is longer, this must be a partial NULL representation
     s = mNullValue;
   }
-  else if ( mField.type() == QVariant::Date )
+  else if ( mField.type() == QMetaType::Type::QDate )
   {
     // invalid dates will also translate to NULL
     s = QString();

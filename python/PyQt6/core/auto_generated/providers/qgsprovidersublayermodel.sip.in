@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/qgsprovidersublayermodel.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -216,7 +216,7 @@ class QgsProviderSublayerProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 
-A QSortFilterProxyModel for filtering and sorting a QgsProviderSublayerModel.
+A QSortFilterProxyModel for filtering and sorting a :py:class:`QgsProviderSublayerModel`.
 
 .. versionadded:: 3.22
 %End
@@ -291,5 +291,5 @@ Sets whether empty tables will be shown in the model.
  *                                                                      *
  * src/core/providers/qgsprovidersublayermodel.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

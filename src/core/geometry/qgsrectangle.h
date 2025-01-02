@@ -40,6 +40,20 @@ class QgsBox3D;
  */
 class CORE_EXPORT QgsRectangle
 {
+    Q_GADGET
+
+    Q_PROPERTY( double xMinimum READ xMinimum WRITE setXMinimum )
+    Q_PROPERTY( double xMaximum READ xMaximum WRITE setXMaximum )
+    Q_PROPERTY( double yMinimum READ yMinimum WRITE setYMinimum )
+    Q_PROPERTY( double yMaximum READ yMaximum WRITE setYMaximum )
+    Q_PROPERTY( double width READ width )
+    Q_PROPERTY( double height READ height )
+    Q_PROPERTY( double area READ area )
+    Q_PROPERTY( double perimeter READ perimeter )
+    Q_PROPERTY( QgsPointXY center READ center )
+    Q_PROPERTY( bool isEmpty READ isEmpty )
+    Q_PROPERTY( bool isNull READ isNull )
+
   public:
 
     //! Constructor for a null rectangle
@@ -85,7 +99,6 @@ class CORE_EXPORT QgsRectangle
       mYmax = qRectF.bottomRight().y();
     }
 
-    //! Copy constructor
     QgsRectangle( const QgsRectangle &other ) SIP_HOLDGIL
     {
       mXmin = other.xMinimum();
@@ -183,7 +196,7 @@ class CORE_EXPORT QgsRectangle
      * Set a rectangle so that min corner is at max
      * and max corner is at min. It is NOT normalized.
      *
-     * \deprecated since QGIS 3.34 - will be removed in QGIS 4.0. Use setNull().
+     * \deprecated QGIS 3.34. Will be removed in QGIS 4.0. Use setNull().
      */
     Q_DECL_DEPRECATED void setMinimal() SIP_DEPRECATED
     {
@@ -370,6 +383,11 @@ class CORE_EXPORT QgsRectangle
      */
     bool intersects( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
+      if ( isNull() || rect.isNull() )
+      {
+        return false;
+      }
+
       const double x1 = ( mXmin > rect.mXmin ? mXmin : rect.mXmin );
       const double x2 = ( mXmax < rect.mXmax ? mXmax : rect.mXmax );
       if ( x1 > x2 )
@@ -514,12 +532,12 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns a string representation of the rectangle in WKT format.
      */
-    QString asWktCoordinates() const;
+    Q_INVOKABLE QString asWktCoordinates() const;
 
     /**
      * Returns a string representation of the rectangle as a WKT Polygon.
      */
-    QString asWktPolygon() const;
+    Q_INVOKABLE QString asWktPolygon() const;
 
     /**
      * Returns a QRectF with same coordinates as the rectangle.
@@ -534,17 +552,13 @@ class CORE_EXPORT QgsRectangle
      * Coordinates will be truncated to the specified precision.
      * If the specified precision is less than 0, a suitable minimum precision is used.
      */
-    QString toString( int precision = 16 ) const;
+    Q_INVOKABLE QString toString( int precision = 16 ) const;
 
     /**
      * Returns the rectangle as a polygon.
      */
     QString asPolygon() const;
 
-    /**
-     * Comparison operator
-     * \returns TRUE if rectangles are equal
-     */
     bool operator==( const QgsRectangle &r1 ) const
     {
       if ( isNull() ) return r1.isNull();
@@ -555,19 +569,11 @@ class CORE_EXPORT QgsRectangle
              qgsDoubleNear( r1.yMinimum(), yMinimum() );
     }
 
-    /**
-     * Comparison operator
-     * \returns FALSE if rectangles are equal
-     */
     bool operator!=( const QgsRectangle &r1 ) const
     {
       return ( ! operator==( r1 ) );
     }
 
-    /**
-     * Assignment operator
-     * \param r1 QgsRectangle to assign from
-     */
     QgsRectangle &operator=( const QgsRectangle &r1 )
     {
       if ( &r1 != this )

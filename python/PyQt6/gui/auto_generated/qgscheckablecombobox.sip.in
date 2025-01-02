@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscheckablecombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ QComboBox subclass which allows selecting multiple items.
 #include "qgscheckablecombobox.h"
 %End
   public:
-
     QgsCheckableComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCheckableComboBox.
@@ -153,7 +152,6 @@ Set items which should be checked/selected.
 %End
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
 %Docstring
@@ -187,5 +185,5 @@ Removes selection from all items.
  *                                                                      *
  * src/gui/qgscheckablecombobox.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

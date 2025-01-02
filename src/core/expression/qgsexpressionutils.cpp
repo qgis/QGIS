@@ -20,6 +20,7 @@
 #include "qgsvariantutils.h"
 #include "qgsproject.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgssymbollayerutils.h"
 
 ///@cond PRIVATE
 
@@ -40,9 +41,22 @@ QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
 QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
 
 
+QColor QgsExpressionUtils::getColorValue( const QVariant &value, QgsExpression *parent, bool &isQColor )
+{
+  isQColor = value.userType() == QMetaType::Type::QColor;
+  QColor color = isQColor ? value.value<QColor>() : QgsSymbolLayerUtils::decodeColor( value.toString() );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to color" ).arg( value.toString() ) );
+  }
+
+  return color;
+}
+
 QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpression *parent, bool report_error )
 {
-  if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
+  if ( value.userType() == qMetaTypeId<QgsGradientColorRamp>() )
     return value.value<QgsGradientColorRamp>();
 
   // If we get here then we can't convert so we just error and return invalid.
@@ -119,7 +133,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   // last resort - QgsProject instance. This is bad, we need to remove this!
   auto getMapLayerFromProjectInstance = [ &ml, identifier ]
   {
-    QgsProject *project = QgsProject::instance();
+    QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
     // No pointer yet, maybe it's a layer id?
     ml = project->mapLayer( identifier );
@@ -199,10 +213,10 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
 
     // Make sure we only deal with the project on the thread where it lives.
     // Anything else risks a crash.
-    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+    if ( QThread::currentThread() == QgsProject::instance()->thread() ) // skip-keyword-check
       runFunction();
     else
-      QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection ); // skip-keyword-check
   }
   else
   {
@@ -252,7 +266,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     // last resort - QgsProject instance. This is bad, we need to remove this!
     auto getMapLayerFromProjectInstance = [ value, identifier, &function, &foundLayer ]
     {
-      QgsProject *project = QgsProject::instance();
+      QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
       // maybe it's a layer id?
       QgsMapLayer *ml = project->mapLayer( identifier );
@@ -270,10 +284,10 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
       }
     };
 
-    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+    if ( QThread::currentThread() == QgsProject::instance()->thread() ) // skip-keyword-check
       getMapLayerFromProjectInstance();
     else
-      QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection ); // skip-keyword-check
   }
 #endif
 }
@@ -336,8 +350,10 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
 
 ///@endcond
 
-std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
+std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &r, const QgsExpressionContext &c, bool *foundFeatures )
 {
+  QgsExpressionContext context = c;
+  QgsFeatureRequest request = r;
   QgsExpression exp( expression );
   request.setFlags( ( exp.needsGeometry() ) ?
                     Qgis::FeatureRequestFlag::NoFlags :
@@ -351,7 +367,7 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
   const QgsFields fields = layer->fields();
   for ( int i = 0; i < fields.count(); i++ )
   {
-    if ( fields.fieldOrigin( i ) != QgsFields::OriginExpression )
+    if ( fields.fieldOrigin( i ) != Qgis::FieldOrigin::Expression )
       attributes << i;
   }
   request.setSubsetOfAttributes( attributes );
@@ -368,10 +384,10 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
     const QVariant value = exp.evaluate( &context );
     if ( !QgsVariantUtils::isNull( value ) )
     {
-      return std::make_tuple( value.type(), value.userType() );
+      return std::make_tuple( static_cast<QMetaType::Type>( value.userType() ), value.userType() );
     }
     hasFeature = it.nextFeature( f );
   }
   value = QVariant();
-  return std::make_tuple( value.type(), value.userType() );
+  return std::make_tuple( static_cast<QMetaType::Type>( value.userType() ), value.userType() );
 }

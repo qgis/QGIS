@@ -561,7 +561,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * \param fid id of feature
      * \param layer dxf layer of feature
      *
-     * \deprecated Will be made private in QGIS 4
+     * \deprecated QGIS 3.40. Will be made private in QGIS 4.
      */
     Q_DECL_DEPRECATED void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 

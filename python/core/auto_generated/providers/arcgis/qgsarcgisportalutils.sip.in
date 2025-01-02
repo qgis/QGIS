@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/arcgis/qgsarcgisportalutils.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -45,7 +45,7 @@ If ``user`` is blank then the user associated with the current logon details wil
 .. versionadded:: 3.24
 %End
 
- static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated/;
+ static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON user info for the specified user name. Only to avoid API break.
 
@@ -62,8 +62,9 @@ If ``user`` is blank then the user associated with the current logon details wil
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
     static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString() );
@@ -86,7 +87,7 @@ If ``user`` is blank then the user associated with the current logon details wil
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated/;
+ static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name is a member of. Only to avoid API break.
 
@@ -103,8 +104,9 @@ If ``user`` is blank then the user associated with the current logon details wil
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
     static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),  QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() );
@@ -126,7 +128,7 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated/;
+ static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified ``groupId``. Only to avoid API break.
 
@@ -142,8 +144,9 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
     static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
@@ -170,7 +173,7 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
 
  static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
         const QList< int > &itemTypes,
-        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated/;
+        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified ``groupId``. Only to avoid API break.
 
@@ -187,8 +190,9 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
          - errorTitle: title summary of any encountered errors
          - errorText: error text of any encountered errors
 
-.. deprecated:: QGIS 3.24
-  use the version with :py:class:`QgsHttpHeaders` instead
+.. deprecated:: 3.24
+
+   Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
 };
@@ -198,5 +202,5 @@ Retrieves JSON definitions for all items which belong the the specified ``groupI
  *                                                                      *
  * src/core/providers/arcgis/qgsarcgisportalutils.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

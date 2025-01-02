@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidget.h"
+#include "moc_qgsexternalresourcewidget.cpp"
 #include "qgspixmaplabel.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -81,18 +82,24 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::valueChanged );
 }
 
-QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
+QVariant QgsExternalResourceWidget::documentPath( QMetaType::Type type ) const
 {
   const QString path = mFileWidget->filePath();
   if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
-    return QVariant( type );
+    return QgsVariantUtils::createNullVariant( type );
   }
   else
   {
     return path;
   }
 }
+
+QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
+{
+  return documentPath( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
 
 void QgsExternalResourceWidget::setDocumentPath( const QVariant &path )
 {
@@ -181,7 +188,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
       mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( true );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       const QPixmap pm = mPixmapLabel->pixmap() ? *mPixmapLabel->pixmap() : QPixmap();
 #else
       const QPixmap pm = mPixmapLabel->pixmap();
@@ -431,16 +438,14 @@ void QgsExternalResourceWidget::onFetchFinished()
 
     if ( messageBar() )
     {
-      messageBar()->pushWarning( tr( "Fetching External Resource" ),
-                                 tr( "Error while fetching external resource '%1' : %2" ).arg(
-                                   mFileWidget->filePath(), mContent->errorString() ) );
+      messageBar()->pushWarning( tr( "Fetching External Resource" ), tr( "Error while fetching external resource '%1' : %2" ).arg( mFileWidget->filePath(), mContent->errorString() ) );
     }
   }
   else if ( content == mContent && mContent->status() == Qgis::ContentStatus::Finished )
   {
     const QString filePath = mDocumentViewerContent == Web
-                             ? QUrl::fromLocalFile( mContent->filePath() ).toString()
-                             : mContent->filePath();
+                               ? QUrl::fromLocalFile( mContent->filePath() ).toString()
+                               : mContent->filePath();
 
     updateDocumentContent( filePath );
   }

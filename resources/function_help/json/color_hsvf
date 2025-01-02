@@ -1,0 +1,26 @@
+{
+  "name": "color_hsvf",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a color object based on its hue, saturation, and value attributes.",
+  "arguments": [{
+    "arg": "hue",
+    "description": "hue of the color, as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "saturation",
+    "description": "saturation of the color as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "value",
+    "description": "value of the color as as a float value from 0.0 to 1.0"
+  }, {
+    "arg": "alpha",
+    "optional": true,
+    "default": "1.0",
+    "description": "alpha component as a float value from 0.0 to 1.0"
+  }],
+  "examples": [{
+    "expression": "color_hsvf(0.4,1,0.6)",
+    "returns": "HSVA: 0.40,1.00,0.60,1.00"
+  }],
+  "tags": ["attributes", "color", "hue", "saturation"]
+}

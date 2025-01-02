@@ -35,7 +35,6 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
     Q_PROPERTY( Qgis::LayoutUnit unit READ unit WRITE setUnit NOTIFY changed )
 
   public:
-
     /**
      * Constructor for QgsLayoutUnitsComboBox.
      */
@@ -92,19 +91,18 @@ class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
     /**
      * Emitted when the \a unit is changed.
      */
-    void changed( int );
+    void changed( int unit );
 
   private slots:
 
     void indexChanged( int index );
 
   private:
-
     QgsLayoutMeasurementConverter *mConverter = nullptr;
 
     Qgis::LayoutUnit mOldUnit = Qgis::LayoutUnit::Millimeters;
 
-    QList< QPointer< QDoubleSpinBox > > mLinkedSpinBoxes;
+    QList<QPointer<QDoubleSpinBox>> mLinkedSpinBoxes;
 };
 
 #endif // QGSLAYOUTUNITSCOMBOBOX_H

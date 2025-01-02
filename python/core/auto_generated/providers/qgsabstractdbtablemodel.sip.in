@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/qgsabstractdbtablemodel.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -52,5 +52,5 @@ Sets an sql statement that belongs to a cell specified by a model index
  *                                                                      *
  * src/core/providers/qgsabstractdbtablemodel.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

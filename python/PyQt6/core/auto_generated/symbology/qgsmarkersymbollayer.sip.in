@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsmarkersymbollayer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -213,6 +213,8 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
 
     virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -562,23 +564,19 @@ Used internally when reading/writing symbols.
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
-
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
-
 
     virtual QVariantMap properties() const;
 
     virtual bool usesMapUnits() const;
 
-
     virtual QgsSvgMarkerSymbolLayer *clone() const /Factory/;
-
 
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
@@ -639,6 +637,8 @@ Returns the marker aspect ratio between width and height to be used in rendering
 if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
 
 .. seealso:: :py:func:`setFixedAspectRatio`
+
+.. seealso:: :py:class:`QgsSvgCache`
 %End
 
     void setFixedAspectRatio( double ratio );
@@ -649,6 +649,8 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 :param ratio: Fixed Aspect Ratio
 
 .. seealso:: :py:func:`fixedAspectRatio`
+
+.. seealso:: :py:class:`QgsSvgCache`
 %End
 
     virtual QColor fillColor() const;
@@ -773,6 +775,7 @@ Used internally when reading/writing symbols.
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
@@ -868,6 +871,8 @@ Returns the marker aspect ratio between width and height to be used in rendering
 if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
 
 .. seealso:: :py:func:`setFixedAspectRatio`
+
+.. seealso:: :py:class:`QgsSvgCache`
 %End
 
     void setFixedAspectRatio( double ratio );
@@ -878,6 +883,8 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 :param ratio: Fixed Aspect Ratio
 
 .. seealso:: :py:func:`fixedAspectRatio`
+
+.. seealso:: :py:class:`QgsSvgCache`
 %End
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -952,6 +959,8 @@ required fonts are not available on the system.
 
 
     virtual QString layerType() const;
+
+    virtual Qgis::SymbolLayerFlags flags() const;
 
 
     virtual void startRender( QgsSymbolRenderContext &context );
@@ -1180,5 +1189,5 @@ Returns the marker frame rate in frame per second.
  *                                                                      *
  * src/core/symbology/qgsmarkersymbollayer.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

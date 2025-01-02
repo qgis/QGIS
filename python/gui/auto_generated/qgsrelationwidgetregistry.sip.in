@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsrelationwidgetregistry.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ The default {:py:class:`QgsRelationEditorWidget`} is protected from removing.
 #include "qgsrelationwidgetregistry.h"
 %End
   public:
-
     QgsRelationWidgetRegistry();
 %Docstring
 Constructor
@@ -92,5 +91,5 @@ Returns the default editor widget type.
  *                                                                      *
  * src/gui/qgsrelationwidgetregistry.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

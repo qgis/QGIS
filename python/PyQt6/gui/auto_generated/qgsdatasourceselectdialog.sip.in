@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/qgsdatasourceselectdialog.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsDataSourceSelectWidget: QgsPanelWidget
+class QgsDataSourceSelectWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 The :py:class:`QgsDataSourceSelectWidget` class embeds the browser view to
@@ -30,11 +30,7 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 #include "qgsdatasourceselectdialog.h"
 %End
   public:
-
-    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0,
-                               bool setFilterByLayerType = false,
-                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
-                               QWidget *parent = 0 );
+    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
 
@@ -130,7 +126,7 @@ Emitted when an item is triggered, e.g. via a double-click.
 };
 
 
-class QgsDataSourceSelectDialog: QDialog
+class QgsDataSourceSelectDialog : QDialog
 {
 %Docstring(signature="appended")
 The :py:class:`QgsDataSourceSelectDialog` class embeds the browser view to
@@ -141,7 +137,7 @@ type can be restricted by setting a layer type filter with
 setLayerTypeFilter(layerType) or by activating the filter
 directly from the constructor.
 
-To retrieve the selected data source, :py:func:`~QgsDataSourceSelectWidget.uri` can be called and it
+To retrieve the selected data source, :py:func:`~uri` can be called and it
 will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 
 .. versionadded:: 3.6
@@ -151,11 +147,7 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 #include "qgsdatasourceselectdialog.h"
 %End
   public:
-
-    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0,
-                               bool setFilterByLayerType = false,
-                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
-                               QWidget *parent = 0 );
+    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 
@@ -223,5 +215,5 @@ Apply filter to the model
  *                                                                      *
  * src/gui/qgsdatasourceselectdialog.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

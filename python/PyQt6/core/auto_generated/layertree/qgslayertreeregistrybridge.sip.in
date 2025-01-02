@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layertree/qgslayertreeregistrybridge.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -50,13 +50,14 @@ Create the instance that synchronizes given project with a layer tree root
     void setNewLayersVisible( bool enabled );
     bool newLayersVisible() const;
 
- void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) /Deprecated/;
+ void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) /Deprecated="Since 3.10. Use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead."/;
 %Docstring
 Set where the new layers should be inserted - can be used to follow current selection.
 By default it is root group with zero index.
 
-.. deprecated:: QGIS 3.10
-   use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead
+.. deprecated:: 3.10
+
+   Use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead.
 %End
 
     void setLayerInsertionPoint( const InsertionPoint &insertionPoint );
@@ -106,5 +107,5 @@ Tell others we have just added layers to the tree (used in QGIS to auto-select f
  *                                                                      *
  * src/core/layertree/qgslayertreeregistrybridge.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

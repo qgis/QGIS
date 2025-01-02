@@ -45,11 +45,10 @@ class QgsLayoutItemBaseWidget;
 class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 {
   public:
-
     //! Flags for controlling how a items behave in the GUI
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagNoCreationTools = 1 << 1,  //!< Do not show item creation tools for the item type
+      FlagNoCreationTools = 1 << 1, //!< Do not show item creation tools for the item type
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -120,7 +119,11 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Creates a configuration widget for an \a item of this type. Can return NULLPTR if no configuration GUI is required.
      */
-    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_TRANSFERBACK { Q_UNUSED( item ) return nullptr; }
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_TRANSFERBACK
+    {
+      Q_UNUSED( item )
+      return nullptr;
+    }
 
     /**
      * Creates a rubber band for use when creating layout items of this type. Can return NULLPTR if no rubber band
@@ -134,7 +137,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      * should be created. The default behavior is to return NULLPTR.
      * \see createRubberBand()
      */
-    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) SIP_TRANSFERBACK;
+    virtual QGraphicsItem *createNodeRubberBand( QgsLayoutView *view ) SIP_TRANSFERBACK;
 
     /**
      * Creates an instance of the corresponding item type.
@@ -149,14 +152,21 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      */
     virtual void newItemAddedToLayout( QgsLayoutItem *item );
 
-  private:
+    /**
+     * Called when a layout item is double-clicked.
+     * The action parameter is used to specify which mouse handle, if any, was clicked
+     * If no mouse handle is selected, Qgis::MouseHandlesAction::NoAction is used
+     *
+     * \since QGIS 3.42
+     */
+    virtual void handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action );
 
+  private:
     int mType = -1;
     QString mGroupId;
     bool mIsNodeBased = false;
     QString mName;
     Flags mFlags;
-
 };
 
 //! Layout item configuration widget creation function
@@ -166,10 +176,13 @@ typedef std::function<QgsLayoutItemBaseWidget *( QgsLayoutItem * )> QgsLayoutIte
 typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutItemRubberBandFunc SIP_SKIP;
 
 //! Layout node based rubber band creation function
-typedef std::function<QAbstractGraphicsShapeItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
+typedef std::function<QGraphicsItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
 
 //! Layout item added to layout callback
-typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
+typedef std::function<void( QgsLayoutItem *, const QVariantMap & )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
+
+//! Layout item double clicked
+typedef std::function<void( QgsLayoutItem *, Qgis::MouseHandlesAction action )> QgsLayoutItemDoubleClickedFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -181,7 +194,6 @@ typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutIt
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the various
@@ -193,12 +205,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      *
      * If \a isNodeBased is TRUE, then the corresponding item is a node based item.
      */
-    QgsLayoutItemGuiMetadata( int type, const QString &visibleName, const QIcon &creationIcon,
-                              const QgsLayoutItemWidgetFunc &pfWidget = nullptr,
-                              const QgsLayoutItemRubberBandFunc &pfRubberBand = nullptr, const QString &groupId = QString(),
-                              bool isNodeBased = false,
-                              QgsLayoutItemAbstractGuiMetadata::Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags(),
-                              const QgsLayoutItemCreateFunc &pfCreateFunc = nullptr )
+    QgsLayoutItemGuiMetadata( int type, const QString &visibleName, const QIcon &creationIcon, const QgsLayoutItemWidgetFunc &pfWidget = nullptr, const QgsLayoutItemRubberBandFunc &pfRubberBand = nullptr, const QString &groupId = QString(), bool isNodeBased = false, QgsLayoutItemAbstractGuiMetadata::Flags flags = QgsLayoutItemAbstractGuiMetadata::Flags(), const QgsLayoutItemCreateFunc &pfCreateFunc = nullptr )
       : QgsLayoutItemAbstractGuiMetadata( type, visibleName, groupId, isNodeBased, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
@@ -266,10 +273,24 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      */
     void setItemAddedToLayoutFunction( const QgsLayoutItemAddedToLayoutFunc &function ) { mAddedToLayoutFunc = function; }
 
+    /**
+     * Returns the classes' item double clicked function.
+     * \see setItemAddedToLayoutFunction()
+     */
+    QgsLayoutItemDoubleClickedFunc itemDoubleClickedFunction() const { return mDoubleClickedFunc; }
+
+    /**
+     * Sets the classes' item double clicked \a function.
+     * \see itemDoubleClickedFunction()
+     */
+    void setItemDoubleClickedFunction( const QgsLayoutItemDoubleClickedFunc &function ) { mDoubleClickedFunc = function; }
+
+    void handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action ) override;
+
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
-    QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
+    QGraphicsItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
 
     QgsLayoutItem *createItem( QgsLayout *layout ) override;
     void newItemAddedToLayout( QgsLayoutItem *item ) override;
@@ -294,7 +315,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
     QgsLayoutNodeItemRubberBandFunc mNodeRubberBandFunc = nullptr;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
     QgsLayoutItemAddedToLayoutFunc mAddedToLayoutFunc = nullptr;
-
+    QgsLayoutItemDoubleClickedFunc mDoubleClickedFunc = nullptr;
 };
 
 #endif
@@ -313,7 +334,6 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
 class GUI_EXPORT QgsLayoutItemGuiGroup
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemGuiGroup.
      */
@@ -337,7 +357,6 @@ class GUI_EXPORT QgsLayoutItemGuiGroup
      * Icon for group.
      */
     QIcon icon;
-
 };
 
 
@@ -358,7 +377,6 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty item GUI registry.
      *
@@ -369,9 +387,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
 
     ~QgsLayoutItemGuiRegistry() override;
 
-    //! QgsLayoutItemGuiRegistry cannot be copied.
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh ) = delete;
-    //! QgsLayoutItemGuiRegistry cannot be copied.
     QgsLayoutItemGuiRegistry &operator=( const QgsLayoutItemGuiRegistry &rh ) = delete;
 
     /**
@@ -478,12 +494,12 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * \see createItemRubberBand()
      * \note not available from Python bindings
      */
-    QAbstractGraphicsShapeItem *createNodeItemRubberBand( int metadataId, QgsLayoutView *view ) SIP_SKIP;
+    QGraphicsItem *createNodeItemRubberBand( int metadataId, QgsLayoutView *view ) SIP_SKIP;
 
     /**
      * Returns a list of available item metadata ids handled by the registry.
      */
-    QList< int > itemMetadataIds() const;
+    QList<int> itemMetadataIds() const;
 
   signals:
 
@@ -498,13 +514,9 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh );
 #endif
 
-    QMap< int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
+    QMap<int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
 
-    QMap< QString, QgsLayoutItemGuiGroup > mItemGroups;
-
+    QMap<QString, QgsLayoutItemGuiGroup> mItemGroups;
 };
 
 #endif //QGSLAYOUTITEMGUIREGISTRY_H
-
-
-

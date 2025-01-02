@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/symbols/qgsline3dsymbol.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,9 +26,6 @@ class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 %End
   public:
     QgsLine3DSymbol();
-%Docstring
-Constructor for QgsLine3DSymbol
-%End
     ~QgsLine3DSymbol();
 
     static QgsAbstract3DSymbol *create() /Factory/;
@@ -46,7 +43,7 @@ Caller takes ownership of the returned symbol.
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
@@ -78,19 +75,21 @@ Returns width of the line symbol (in map units)
 Sets width of the line symbol (in map units)
 %End
 
- float height() const /Deprecated/;
+ float height() const /Deprecated="Since 3.36. Use offset() instead."/;
 %Docstring
 Returns height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
+.. deprecated:: 3.36
+
    Use :py:func:`~QgsLine3DSymbol.offset` instead.
 %End
 
- void setHeight( float height ) /Deprecated/;
+ void setHeight( float height ) /Deprecated="Since 3.36. Use setOffset() instead."/;
 %Docstring
 Sets height (altitude) of the symbol (in map units)
 
-.. deprecated:: QGIS 3.36.
+.. deprecated:: 3.36
+
    Use :py:func:`~QgsLine3DSymbol.setOffset` instead.
 %End
 
@@ -147,5 +146,5 @@ Ownership of ``material`` is transferred to the symbol.
  *                                                                      *
  * src/3d/symbols/qgsline3dsymbol.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

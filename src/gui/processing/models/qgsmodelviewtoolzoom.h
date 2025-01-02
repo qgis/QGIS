@@ -31,11 +31,9 @@
  */
 class GUI_EXPORT QgsModelViewToolZoom : public QgsModelViewTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelViewToolZoom.
      */
@@ -49,22 +47,19 @@ class GUI_EXPORT QgsModelViewToolZoom : public QgsModelViewTool
     void deactivate() override;
 
   protected:
-
     //! Will be TRUE will marquee zoom operation is in progress
     bool mMarqueeZoom = false;
 
   private:
-
     //! Start position for mouse press
     QPoint mMousePressStartPos;
 
     QPointF mRubberBandStartPos;
 
     //! Rubber band item
-    std::unique_ptr< QgsModelViewRectangularRubberBand > mRubberBand;
+    std::unique_ptr<QgsModelViewRectangularRubberBand> mRubberBand;
 
     void startMarqueeZoom( QPointF scenePoint );
-
 };
 
 #endif // QGSMODELVIEWTOOLZOOM_H

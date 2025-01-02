@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>413</width>
-    <height>439</height>
+    <width>433</width>
+    <height>652</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,75 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Vertical Reference System</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QgsStackedWidget" name="mVerticalCrsStackedWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <widget class="QWidget" name="mCrsPageDisabled">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mCrsDisabledLabel">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="mCrsPageEnabled"/>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vertical reference systems are supported for point cloud layers by:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Elevation profiles&lt;/li&gt;
+&lt;li&gt;Identify tool results&lt;/li&gt;
+&lt;li&gt;3D map views (when 3D view has a vertical reference system set)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;i&gt;Other tools or plugins may ignore the vertical reference system, and care should be taken to validate results accordingly.&lt;/i&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mCrsGroupBox_2">
      <property name="focusPolicy">
@@ -67,7 +136,7 @@
          <number>6</number>
         </property>
         <property name="minimum">
-         <double>0.000000000000000</double>
+         <double>-99999999999.000000000000000</double>
         </property>
         <property name="maximum">
          <double>99999999999.000000000000000</double>
@@ -187,7 +256,24 @@
      <property name="title">
       <string>Profile Chart Appearance</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="1,2,1">
+     <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Style</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="mPointStyleComboBox"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblTransparency_4">
+        <property name="text">
+         <string>Point size</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
         <property name="decimals">
@@ -202,16 +288,6 @@
        <widget class="QCheckBox" name="mOpacityByDistanceCheckBox">
         <property name="text">
          <string>Apply opacity by distance from curve effect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QComboBox" name="mPointStyleComboBox"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Color</string>
         </property>
        </widget>
       </item>
@@ -234,10 +310,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblTransparency_4">
+      <item row="4" column="0" colspan="3">
+       <widget class="QCheckBox" name="mCheckBoxRespectLayerColors">
         <property name="text">
-         <string>Point size</string>
+         <string>Respect layer's coloring</string>
         </property>
        </widget>
       </item>
@@ -248,17 +324,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_5">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Style</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="3">
-       <widget class="QCheckBox" name="mCheckBoxRespectLayerColors">
-        <property name="text">
-         <string>Respect layer's coloring</string>
+         <string>Color</string>
         </property>
        </widget>
       </item>
@@ -282,15 +351,21 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>

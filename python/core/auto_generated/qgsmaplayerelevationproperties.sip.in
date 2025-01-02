@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmaplayerelevationproperties.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -139,6 +139,16 @@ Attempts to calculate the overall elevation or z range for the specified ``layer
 the settings defined by this elevation properties object.
 
 May return an infinite range if the extent could not be calculated.
+%End
+
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
+%Docstring
+Returns a list of significant elevation/z-values for the specified ``layer``, using
+the settings defined by this elevation properties object.
+
+These values will be highlighted in elevation related widgets for the layer.
+
+.. versionadded:: 3.38
 %End
 
     virtual bool showByDefaultInElevationProfilePlots() const;
@@ -319,5 +329,5 @@ Copies common properties from another object.
  *                                                                      *
  * src/core/qgsmaplayerelevationproperties.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmap.h"
+#include "moc_qgslayoutitemmap.cpp"
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
@@ -228,12 +229,14 @@ void QgsLayoutItemMap::setExtent( const QgsRectangle &extent )
   //recalculate data defined scale and extents, since that may override extent
   refreshMapExtents();
 
-  //adjust height
-  QRectF currentRect = rect();
-
-  double newHeight = currentRect.width() * mExtent.height() / mExtent.width();
-
-  attemptSetSceneRect( QRectF( pos().x(), pos().y(), currentRect.width(), newHeight ) );
+  //adjust height, if possible
+  if ( mExtent.isFinite() && !mExtent.isEmpty() )
+  {
+    const QRectF currentRect = rect();
+    const double newHeight = mExtent.width() == 0 ? 0
+                             : currentRect.width() * mExtent.height() / mExtent.width();
+    attemptSetSceneRect( QRectF( pos().x(), pos().y(), currentRect.width(), newHeight ) );
+  }
   update();
 }
 
@@ -1720,8 +1723,9 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   if ( !mLayout->renderContext().isPreviewRender() )
   {
     //if outputting layout, we disable optimisations like layer simplification by default, UNLESS the context specifically tells us to use them
-    jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, mLayout->renderContext().simplifyMethod().simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
+    jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, mLayout->renderContext().simplifyMethod().simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) );
     jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
+    jobMapSettings.setMaskSettings( mLayout->renderContext().maskSettings() );
     jobMapSettings.setRendererUsage( Qgis::RendererUsage::Export );
   }
   else
@@ -1745,6 +1749,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDrawSelection );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::AlwaysUseGlobalMasks, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAlwaysUseGlobalMasks );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
   jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
 
@@ -3013,7 +3018,7 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
   QgsGeometry g = mLayout->reportContext().currentGeometry( crs() );
   // Rotating the geometry, so the bounding box is correct wrt map rotation
-  if ( mEvaluatedMapRotation != 0.0 )
+  if ( !g.boundingBox().isEmpty() && mEvaluatedMapRotation != 0.0 )
   {
     QgsPointXY prevCenter = g.boundingBox().center();
     g.rotate( mEvaluatedMapRotation, g.boundingBox().center() );

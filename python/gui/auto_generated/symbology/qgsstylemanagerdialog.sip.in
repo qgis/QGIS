@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgsstylemanagerdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,8 +23,7 @@ A dialog allowing users to customize and populate a :py:class:`QgsStyle`.
 %End
   public:
 
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(),
-                           bool readOnly = false );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(), bool readOnly = false );
 %Docstring
 Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
 
@@ -43,8 +42,7 @@ All styles linked to the current project will be available.
 %End
 
 
-    static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
-                                       const QString &RampType = QString() );
+    static QString addColorRampStatic( QWidget *parent, QgsStyle *style, const QString &RampType = QString() );
 %Docstring
 Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
 
@@ -163,11 +161,12 @@ Closes the dialog
 Opens the associated help
 %End
 
- void itemChanged( QStandardItem *item ) /Deprecated/;
+ void itemChanged( QStandardItem *item ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated:: QGIS 3.6
-   - has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.6
+
+   Has no effect and will be removed in QGIS 4.0.
 %End
 
     void groupChanged( const QModelIndex & );
@@ -205,11 +204,12 @@ Toggles the interactive item tagging mode.
 Triggers the dialog for editing the selected smart group.
 %End
 
- void regrouped( QStandardItem * ) /Deprecated/;
+ void regrouped( QStandardItem * ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated:: QGIS 3.6
-   - has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.6
+
+   Has no effect and will be removed in QGIS 4.0.
 %End
 
     void filterSymbols( const QString &filter );
@@ -266,13 +266,13 @@ Remove all tags from selected symbols
 %End
 
   protected:
-
- void populateTypes() /Deprecated/;
+ void populateTypes() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 Populate combo box with known style items (symbols, color ramps).
 
-.. deprecated:: QGIS 3.6
-   - has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.6
+
+   Has no effect and will be removed in QGIS 4.0.
 %End
 
     void populateGroups();
@@ -280,27 +280,30 @@ Populate combo box with known style items (symbols, color ramps).
 populate the groups
 %End
 
- void setSymbolsChecked( const QStringList & ) /Deprecated/;
+ void setSymbolsChecked( const QStringList & ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated:: QGIS 3.6
-   - has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.6
+
+   Has no effect and will be removed in QGIS 4.0.
 %End
 
- void populateSymbols( const QStringList &symbolNames, bool checkable = false ) /Deprecated/;
+ void populateSymbols( const QStringList &symbolNames, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 Populates the list view with symbols of the current type with the given names.
 
-.. deprecated::
-   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
 %End
 
- void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) /Deprecated/;
+ void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 Populates the list view with color ramps of the current type with the given names.
 
-.. deprecated::
-   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.40
+
+   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
 %End
 
     int currentItemType();
@@ -314,18 +317,20 @@ add a new symbol to style
     bool editSymbol();
     bool editColorRamp();
 
- bool removeSymbol() /Deprecated/;
+ bool removeSymbol() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated:: QGIS 3.6
-   - has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.6
+
+   Has no effect and will be removed in QGIS 4.0.
 %End
 
- bool removeColorRamp() /Deprecated/;
+ bool removeColorRamp() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
 %Docstring
 
-.. deprecated:: QGIS 3.6
-   - has no effect and will be removed in QGIS 4.0
+.. deprecated:: 3.6
+
+   Has no effect and will be removed in QGIS 4.0.
 %End
 
     void enableSymbolInputs( bool );
@@ -353,5 +358,5 @@ sets the text of the item with bold font
  *                                                                      *
  * src/gui/symbology/qgsstylemanagerdialog.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

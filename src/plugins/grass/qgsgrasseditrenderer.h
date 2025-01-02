@@ -27,13 +27,12 @@
 class QgsGrassEditRenderer : public QgsFeatureRenderer
 {
   public:
-
     QgsGrassEditRenderer();
 
     ~QgsGrassEditRenderer() override;
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-
+    Qgis::FeatureRendererFlags flags() const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
     void stopRender( QgsRenderContext &context ) override;

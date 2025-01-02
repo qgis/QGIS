@@ -70,7 +70,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
      *
      * \param isGroupBox If TRUE, this will be a group box
-     * \deprecated use setType() instead.
+     * \deprecated QGIS 3.40. Use setType() instead.
      */
     Q_DECL_DEPRECATED virtual void setIsGroupBox( bool isGroupBox ) SIP_DEPRECATED;
 
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \returns TRUE if it will be a group box, FALSE if it will be a tab
      *
-     * \deprecated Use type() instead.
+     * \deprecated QGIS 3.40. Use type() instead.
      */
     Q_DECL_DEPRECATED virtual bool isGroupBox() const SIP_DEPRECATED;
 

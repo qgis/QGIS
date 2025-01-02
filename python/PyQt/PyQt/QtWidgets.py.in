@@ -26,8 +26,9 @@ from PyQt@QT_VERSION_MAJOR@.QtWidgets import *
 QLayout.setMargin = lambda self, m: self.setContentsMargins(m, m, m, m)
 
 if @QT_VERSION_MAJOR@ == 6:
-  from PyQt6.QtGui import QAction as _QAction, QShortcut as _QShortcut
+  from PyQt6.QtGui import QAction as _QAction, QActionGroup as _QActionGroup, QShortcut as _QShortcut
   QAction = _QAction
+  QActionGroup = _QActionGroup
   QShortcut = _QShortcut
 
   # patch back in Qt flags removed in PyQt

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsvectorfilewritertask.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,10 +28,13 @@ QGIS interface.
 
     QgsVectorFileWriterTask( QgsVectorLayer *layer,
                              const QString &fileName,
-                             const QgsVectorFileWriter::SaveVectorOptions &options );
+                             const QgsVectorFileWriter::SaveVectorOptions &options,
+                             QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
 Constructor for QgsVectorFileWriterTask. Takes a source ``layer``, destination ``fileName``
 and save ``options``.
+
+Since QGIS 3.40 the ``sinkFlags`` can be specified.
 %End
 
     virtual void cancel();
@@ -70,5 +73,5 @@ the task is canceled). The writing ``error`` and ``errorMessage`` will be report
  *                                                                      *
  * src/core/qgsvectorfilewritertask.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

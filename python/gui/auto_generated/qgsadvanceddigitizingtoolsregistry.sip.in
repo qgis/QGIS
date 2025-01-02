@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingtoolsregistry.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAdvancedDigitizingToolAbstractMetadata
+{
+%Docstring(signature="appended")
+Stores metadata about one advanced digitizing tool class.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsadvanceddigitizingtoolsregistry.h"
+%End
+  public:
+    QgsAdvancedDigitizingToolAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
+%Docstring
+Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the specified tool ``name``.
+
+``visibleName`` should be set to a translated, user visible name identifying the corresponding annotation item.
+
+An optional ``icon`` can be set, which will be used by the advanced digitizing dock widget.
+%End
+
+    virtual ~QgsAdvancedDigitizingToolAbstractMetadata();
+
+    QString name() const;
+%Docstring
+Returns the tool's unique name
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns the tool's translatable user-friendly name
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns the tool's icon
+%End
+
+    virtual QgsAdvancedDigitizingTool *createTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) /Factory/;
+%Docstring
+Returns new tool of this type. Return ``None`` on error
+%End
+
+  protected:
+};
+
+
+class QgsAdvancedDigitizingToolsRegistry
+{
+%Docstring(signature="appended")
+Registry of available advanced digitizing tools.
+
+:py:class:`QgsAdvancedDigitizingToolsRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsGui.advancedDigitizingToolsRegistry()`.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsadvanceddigitizingtoolsregistry.h"
+%End
+  public:
+    QgsAdvancedDigitizingToolsRegistry();
+    ~QgsAdvancedDigitizingToolsRegistry();
+
+
+    void addDefaultTools();
+%Docstring
+Adds the default tools shipped in QGIS
+%End
+
+    bool addTool( QgsAdvancedDigitizingToolAbstractMetadata *toolMetaData /Transfer/ );
+%Docstring
+Adds an advanced digitizing tool (take ownership) and return ``True`` on success
+%End
+
+    bool removeTool( const QString &name );
+%Docstring
+Removes the advanced digitizing tool matching the provided ``name`` and return ``True`` on success
+%End
+
+    QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata( const QString &name );
+%Docstring
+Returns the advanced digitizing tool matching the provided ``name`` or ``None`` when no match available
+%End
+
+    const QStringList toolMetadataNames() const;
+%Docstring
+Returns the list of registered tool names
+%End
+
+  private:
+    QgsAdvancedDigitizingToolsRegistry( const QgsAdvancedDigitizingToolsRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsadvanceddigitizingtoolsregistry.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

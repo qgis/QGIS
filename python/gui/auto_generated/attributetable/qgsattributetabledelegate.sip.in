@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/attributetable/qgsattributetabledelegate.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ QItemDelegate).
 #include "qgsattributetabledelegate.h"
 %End
   public:
-
     QgsAttributeTableDelegate( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -84,5 +83,5 @@ The consumer of this signal can initialize the index widget.
  *                                                                      *
  * src/gui/attributetable/qgsattributetabledelegate.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

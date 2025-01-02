@@ -16,8 +16,6 @@
 #ifndef QGSLABELINGENGINE_H
 #define QGSLABELINGENGINE_H
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
 #include "qgsmapsettings.h"
 
@@ -29,12 +27,30 @@ class QgsLabelingResults;
 class QgsLabelFeature;
 class QgsLabelingEngineSettings;
 
+#ifndef SIP_RUN
 namespace pal
 {
   class Problem;
   class Pal;
   class LabelPosition;
 }
+#endif
+
+/**
+ * \ingroup core
+ * \brief Represents a label candidate.
+ */
+class CORE_EXPORT QgsLabelCandidate
+{
+  public:
+    QgsLabelCandidate( const QRectF &r, double c ): rect( r ), cost( c ) {}
+
+    QRectF rect;
+    double cost;
+};
+
+
+#ifndef SIP_RUN
 
 /**
  * \ingroup core
@@ -148,7 +164,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! What placement strategy to use for the labels
     Qgis::LabelPlacement placement() const { return mPlacement; }
 
-    //! Default priority of labels (may be overridden by individual labels)
+    /**
+     * Default priority of labels (may be overridden by individual labels).
+     *
+     * This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority. The default is 0.5.
+     */
     double priority() const { return mPriority; }
 
     //! How the feature geometries will work as obstacles
@@ -187,7 +207,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     Flags mFlags = DrawLabels;
     //! Placement strategy
     Qgis::LabelPlacement mPlacement = Qgis::LabelPlacement::AroundPoint;
-    //! Default priority of labels
+    //! Default priority of labels. 0 = highest priority, 1 = lowest priority
     double mPriority = 0.5;
     //! Type of the obstacle of feature geometries
     QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::ObstacleType::PolygonBoundary;
@@ -345,9 +365,7 @@ class CORE_EXPORT QgsLabelingEngine
     //! Clean up everything (especially the registered providers)
     virtual ~QgsLabelingEngine();
 
-    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine( const QgsLabelingEngine &rh ) = delete;
-    //! QgsLabelingEngine cannot be copied.
     QgsLabelingEngine &operator=( const QgsLabelingEngine &rh ) = delete;
 
     //! Associate map settings instance
@@ -357,6 +375,15 @@ class CORE_EXPORT QgsLabelingEngine
 
     //! Gets associated labeling engine settings
     const QgsLabelingEngineSettings &engineSettings() const { return mMapSettings.labelingEngineSettings(); }
+
+    /**
+     * Prepares the engine for rendering in the specified \a context.
+     *
+     * \warning This method must be called in advanced on the main rendering thread, not a background thread.
+     *
+     * \since QGIS 3.40
+     */
+    bool prepare( QgsRenderContext &context );
 
     /**
      * Returns a list of layers with providers in the engine.
@@ -369,8 +396,22 @@ class CORE_EXPORT QgsLabelingEngine
      */
     QStringList participatingLayerIds() const;
 
-    //! Add provider of label features. Takes ownership of the provider
-    void addProvider( QgsAbstractLabelProvider *provider );
+    /**
+     * Adds a \a provider of label features.
+     *
+     * Takes ownership of the provider.
+     *
+     * Returns a generated string uniqueuly identifying the provider, which can be used with the providerById()
+     * method to retrieve the provider at a later stage.
+     */
+    QString addProvider( QgsAbstractLabelProvider *provider );
+
+    /**
+     * Returns the provider with matching \a id, where \a id corresponds to the value returned by the addProvider() call.
+     *
+     * Returns NULLPTR if no matching provider is found.
+     */
+    QgsAbstractLabelProvider *providerById( const QString &id );
 
     //! Remove provider if the provider's initialization failed. Provider instance is deleted.
     void removeProvider( QgsAbstractLabelProvider *provider );
@@ -389,6 +430,20 @@ class CORE_EXPORT QgsLabelingEngine
 
     //! For internal use by the providers
     QgsLabelingResults *results() const { return mResults.get(); }
+
+    /**
+     * Draws label candidate rectangles.
+     *
+     * \see drawLabelMetrics()
+     */
+    static void drawLabelCandidateRect( pal::LabelPosition *lp, QgsRenderContext &context, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr );
+
+    /**
+     * Draws label metrics.
+     *
+     * \see drawLabelCandidateRect()
+     */
+    static void drawLabelMetrics( pal::LabelPosition *label, const QgsMapToPixel &xform, QgsRenderContext &context, const QPointF &renderPoint );
 
   protected:
     void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );
@@ -436,7 +491,11 @@ class CORE_EXPORT QgsLabelingEngine
 
     //! List of providers (the are owned by the labeling engine)
     QList<QgsAbstractLabelProvider *> mProviders;
+    QHash<QString, QgsAbstractLabelProvider *> mProvidersById;
     QList<QgsAbstractLabelProvider *> mSubProviders;
+
+    //!< List of labeling engine rules (owned by the labeling engine)
+    std::vector< std::unique_ptr< QgsAbstractLabelingEngineRule > > mEngineRules;
 
     //! Resulting labeling layout
     std::unique_ptr< QgsLabelingResults > mResults;
@@ -467,9 +526,7 @@ class CORE_EXPORT QgsDefaultLabelingEngine : public QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsDefaultLabelingEngine();
 
-    //! QgsDefaultLabelingEngine cannot be copied.
     QgsDefaultLabelingEngine( const QgsDefaultLabelingEngine &rh ) = delete;
-    //! QgsDefaultLabelingEngine cannot be copied.
     QgsDefaultLabelingEngine &operator=( const QgsDefaultLabelingEngine &rh ) = delete;
 
     void run( QgsRenderContext &context ) override;
@@ -493,9 +550,7 @@ class CORE_EXPORT QgsStagedRenderLabelingEngine : public QgsLabelingEngine
     //! Construct the labeling engine with default settings
     QgsStagedRenderLabelingEngine();
 
-    //! QgsStagedRenderLabelingEngine cannot be copied.
     QgsStagedRenderLabelingEngine( const QgsStagedRenderLabelingEngine &rh ) = delete;
-    //! QgsStagedRenderLabelingEngine cannot be copied.
     QgsStagedRenderLabelingEngine &operator=( const QgsStagedRenderLabelingEngine &rh ) = delete;
 
     void run( QgsRenderContext &context ) override;
@@ -554,5 +609,7 @@ class CORE_EXPORT QgsLabelingUtils
     static Qgis::LabelLinePlacementFlags decodeLinePlacementFlags( const QString &string );
 
 };
+
+#endif
 
 #endif // QGSLABELINGENGINE_H

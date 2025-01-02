@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/scalebar/qgshollowscalebarrenderer.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,9 +23,6 @@ alternating segments. AKA "South African" style.
   public:
 
     QgsHollowScaleBarRenderer();
-%Docstring
-Constructor for QgsHollowScaleBarRenderer.
-%End
 
     virtual QString id() const;
 
@@ -51,5 +48,5 @@ Constructor for QgsHollowScaleBarRenderer.
  *                                                                      *
  * src/core/scalebar/qgshollowscalebarrenderer.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,13 +3,13 @@
  *                                                                      *
  * src/analysis/raster/qgstotalcurvaturefilter.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsTotalCurvatureFilter: QgsNineCellFilter
+class QgsTotalCurvatureFilter : QgsNineCellFilter
 {
 %Docstring(signature="appended")
 Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis.
@@ -22,10 +22,8 @@ Calculates total curvature as described by Wilson, Gallant (2000): terrain analy
     QgsTotalCurvatureFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
   protected:
+    virtual float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );
 
-     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
-                                 float *x12, float *x22, float *x32,
-                                 float *x13, float *x23, float *x33 );
 };
 
 /************************************************************************
@@ -33,5 +31,5 @@ Calculates total curvature as described by Wilson, Gallant (2000): terrain analy
  *                                                                      *
  * src/analysis/raster/qgstotalcurvaturefilter.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsrubberband.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,7 +40,6 @@ for tracking the mouse while drawing polylines or polygons.
       sipType = nullptr;
 %End
   public:
-
 
     enum IconType
     {
@@ -121,7 +120,7 @@ Set to an invalid color to avoid drawing the secondary stroke.
 Returns the current secondary stroke color.
 %End
 
-    void setWidth( int width );
+    void setWidth( double width );
 %Docstring
 Sets the width of the line. Stroke width for polygon.
 
@@ -157,12 +156,12 @@ Calling this function automatically calls setIcon(ICON_SVG)
 Returns the current icon type to highlight point geometries.
 %End
 
-    void setIconSize( int iconSize );
+    void setIconSize( double iconSize );
 %Docstring
 Sets the size of the point icons
 %End
 
-    int iconSize() const;
+    double iconSize() const;
 %Docstring
 Returns the current icon size of the point icons.
 %End
@@ -372,14 +371,12 @@ Ownership of ``symbol`` is transferred to the rubberband.
    Setting a symbol for the rubberband overrides any other appearance setting,
    such as the :py:func:`~QgsRubberBand.strokeColor` or :py:func:`~QgsRubberBand.width`.
 
-
 .. seealso:: :py:func:`setSymbol`
 
 .. versionadded:: 3.20
 %End
 
   protected:
-
     virtual void paint( QPainter *p );
 
 %Docstring
@@ -416,5 +413,5 @@ Recalculates needed rectangle
  *                                                                      *
  * src/gui/qgsrubberband.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -24,22 +24,20 @@
 #include "qgis_server.h"
 #include "qgsserverparameters.h"
 
+// Note about design: this interface must be passed along to Python and thus signatures methods must be
+// compatible with pyQGIS/pyQT api and rules.
+
 /**
  * \ingroup server
  * \brief QgsServerRequest
  * Class defining request interface passed to services QgsService::executeRequest() method
  *
  */
-
-// Note about design: this interface must be passed along to Python and thus signatures methods must be
-// compatible with pyQGIS/pyQT api and rules.
-
 class SERVER_EXPORT QgsServerRequest
 {
     Q_GADGET
 
   public:
-
     typedef QMap<QString, QString> Parameters;
     typedef QMap<QString, QString> Headers;
 
@@ -62,39 +60,23 @@ class SERVER_EXPORT QgsServerRequest
      */
     enum RequestHeader
     {
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
-      HOST,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
-      // https://tools.ietf.org/html/rfc7239
-      FORWARDED,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
-      X_FORWARDED_FOR,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Host
-      X_FORWARDED_HOST,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
-      X_FORWARDED_PROTO,
-      // The QGIS service URL
-      X_QGIS_SERVICE_URL,
-      // The QGIS WMS service URL
-      X_QGIS_WMS_SERVICE_URL,
-      // The QGIS WFS service URL
-      X_QGIS_WFS_SERVICE_URL,
-      // The QGIS WCS service URL
-      X_QGIS_WCS_SERVICE_URL,
-      // The QGIS WMTS service URL
-      X_QGIS_WMTS_SERVICE_URL,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
-      ACCEPT,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
-      USER_AGENT,
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
-      AUTHORIZATION,
+
+      HOST,                    //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
+      FORWARDED,               //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded, https://tools.ietf.org/html/rfc7239
+      X_FORWARDED_FOR,         //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+      X_FORWARDED_HOST,        //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Host
+      X_FORWARDED_PROTO,       //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
+      X_QGIS_SERVICE_URL,      //!< The QGIS service URL
+      X_QGIS_WMS_SERVICE_URL,  //!< The QGIS WMS service URL
+      X_QGIS_WFS_SERVICE_URL,  //!< The QGIS WFS service URL
+      X_QGIS_WCS_SERVICE_URL,  //!< The QGIS WCS service URL
+      X_QGIS_WMTS_SERVICE_URL, //!< The QGIS WMTS service URL
+      ACCEPT,                  //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
+      USER_AGENT,              //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+      AUTHORIZATION,           //!< Https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
     };
     Q_ENUM( RequestHeader )
 
-    /**
-     * Constructor
-     */
     QgsServerRequest() = default;
 
     /**
@@ -115,14 +97,9 @@ class SERVER_EXPORT QgsServerRequest
      */
     QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
-    /**
-     * Copy constructor.
-     */
     QgsServerRequest( const QgsServerRequest &other );
 
     QgsServerRequest &operator=( const QgsServerRequest & ) = default;
-
-    //! destructor
     virtual ~QgsServerRequest() = default;
 
     /**
@@ -133,10 +110,9 @@ class SERVER_EXPORT QgsServerRequest
 
 
     /**
-     * \returns  the request url as seen by QGIS server
+     * \returns the request url as seen by QGIS server
      *
-     * \see originalUrl for the unrewritten url as seen by the web
-     *      server, by default the two are equal
+     * \see originalUrl for the unrewritten url as seen by the web server, by default the two are equal
      */
     QUrl url() const;
 
@@ -229,8 +205,8 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Returns the base URL of QGIS server
      *
-     * E.g. if we call QGIS server with 'http://example.com/folder?REQUEST=WMS&...'
-     * the base URL will be 'http://example.com/folder'
+     * E.g. if we call QGIS server with ``http://example.com/folder?REQUEST=WMS&...``
+     * the base URL will be ``http://example.com/folder``
      *
      * \since QGIS 3.20
      */
@@ -245,10 +221,9 @@ class SERVER_EXPORT QgsServerRequest
      * Returns the query string parameter with the given \a name from the request URL, a \a defaultValue can be specified.
      * \since QGIS 3.10
      */
-    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString() ) const;
 
   protected:
-
     /**
      * Set the request original \a url (the request url as seen by the web server)
      *
@@ -266,11 +241,11 @@ class SERVER_EXPORT QgsServerRequest
 
   private:
     // Url as seen by QGIS server after web server rewrite
-    QUrl       mUrl;
+    QUrl mUrl;
     // Unrewritten url as seen by the web server
-    QUrl       mOriginalUrl;
-    QUrl       mBaseUrl;
-    Method     mMethod = GetMethod;
+    QUrl mOriginalUrl;
+    QUrl mBaseUrl;
+    Method mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization
     mutable Headers mHeaders;

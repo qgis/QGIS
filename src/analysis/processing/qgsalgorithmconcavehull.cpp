@@ -60,7 +60,7 @@ QgsConcaveHullAlgorithm *QgsConcaveHullAlgorithm::createInstance() const
 
 void QgsConcaveHullAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ALPHA" ), QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), Qgis::ProcessingNumberParameterType::Double, 0.3, false, 0, 1 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "HOLES" ), QObject::tr( "Allow holes" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NO_MULTIGEOMETRY" ), QObject::tr( "Split multipart geometry into singleparts" ), false ) );
@@ -88,22 +88,24 @@ bool QgsConcaveHullAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, QgsFields(), Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, QgsFields(), Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
   concaveHullQgis( sink, parameters, context, feedback );
 #else
   concaveHullGeos( sink, parameters, feedback );
 #endif
+
+  sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
 
-void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingFeedback *feedback )
+void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr<QgsFeatureSink> &sink, const QVariantMap &parameters, QgsProcessingFeedback *feedback )
 {
   long long i = 0;
 
@@ -124,22 +126,22 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink >
     const QgsAbstractGeometry *geom = f.geometry().constGet();
     if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
     {
-      const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+      const QgsMultiPoint mp( *qgsgeometry_cast<const QgsMultiPoint *>( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        allPoints.addPart( qgsgeometry_cast< QgsPoint * >( *pit )->clone(), Qgis::GeometryType::Point );
+        allPoints.addPartV2( qgsgeometry_cast<QgsPoint *>( *pit )->clone(), Qgis::WkbType::Point );
       }
     }
     else
     {
-      allPoints.addPart( qgsgeometry_cast< QgsPoint * >( geom )->clone(), Qgis::GeometryType::Point );
+      allPoints.addPartV2( qgsgeometry_cast<QgsPoint *>( geom )->clone(), Qgis::WkbType::Point );
     }
   }
   const QgsGeometry concaveHull = allPoints.concaveHull( mPercentage, mAllowHoles );
 
   if ( mSplitMultipart && concaveHull.isMultipart() )
   {
-    QVector< QgsGeometry > collection = concaveHull.asGeometryCollection();
+    QVector<QgsGeometry> collection = concaveHull.asGeometryCollection();
     mStep = collection.length() > 0 ? 50.0 / collection.length() : 1;
     for ( int i = 0; i < collection.length(); i++ )
     {
@@ -176,7 +178,7 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr< QgsFeatureSink >
   }
 }
 
-void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr<QgsFeatureSink> &sink, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsProcessingMultiStepFeedback multiStepFeedback( 5, feedback );
 
@@ -193,7 +195,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
   {
     feedback->reportError( QObject::tr( "Failed to compute concave hull: Delaunay triangulation algorithm not found!" ), true );
   }
-  std::unique_ptr< QgsProcessingAlgorithm > algorithm;
+  std::unique_ptr<QgsProcessingAlgorithm> algorithm;
   algorithm.reset( delaunayAlg->create() );
   QVariantMap results = algorithm->run( params, context, &multiStepFeedback );
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( results["OUTPUT"].toString(), context ) );
@@ -268,7 +270,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
   const QgsProcessingAlgorithm *dissolveAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:dissolve" ) );
   if ( !dissolveAlg )
   {
-    feedback->reportError( QObject::tr( "Failed to compute concave hull: Dissolve algorithm not found!" ), true );
+    throw QgsProcessingException( QObject::tr( "Failed to compute concave hull: Dissolve algorithm not found!" ) );
   }
   algorithm.reset( dissolveAlg->create() );
   results = algorithm->run( params, context, &multiStepFeedback );
@@ -290,7 +292,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr< QgsFeatureSink >
 
   if ( mSplitMultipart && concaveHull.isMultipart() )
   {
-    const QVector< QgsGeometry > collection = concaveHull.asGeometryCollection();
+    const QVector<QgsGeometry> collection = concaveHull.asGeometryCollection();
     step = collection.length() > 0 ? 50.0 / collection.length() : 1;
     for ( int i = 0; i < collection.length(); i++ )
     {

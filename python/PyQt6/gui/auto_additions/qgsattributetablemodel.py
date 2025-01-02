@@ -17,6 +17,36 @@ QgsAttributeTableModel.SortRole = QgsAttributeTableModel.CustomRole.Sort
 QgsAttributeTableModel.Role.SortRole = QgsAttributeTableModel.CustomRole.Sort
 QgsAttributeTableModel.SortRole.is_monkey_patched = True
 QgsAttributeTableModel.SortRole.__doc__ = "Role used for sorting start here"
-QgsAttributeTableModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsAttributeTableModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``FeatureIdRole``: ' + QgsAttributeTableModel.CustomRole.FeatureId.__doc__ + '\n' + '* ``FieldIndexRole``: ' + QgsAttributeTableModel.CustomRole.FieldIndex.__doc__ + '\n' + '* ``UserRole``: ' + QgsAttributeTableModel.CustomRole.User.__doc__ + '\n' + '* ``SortRole``: ' + QgsAttributeTableModel.CustomRole.Sort.__doc__
+QgsAttributeTableModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsAttributeTableModel.Role
+
+.. versionadded:: 3.36
+
+* ``FeatureId``: Get the feature id of the feature in this row
+
+  Available as ``QgsAttributeTableModel.FeatureIdRole`` in older QGIS releases.
+
+* ``FieldIndex``: Get the field index of this column
+
+  Available as ``QgsAttributeTableModel.FieldIndexRole`` in older QGIS releases.
+
+* ``User``: Start further roles starting from this role
+
+  Available as ``QgsAttributeTableModel.UserRole`` in older QGIS releases.
+
+* ``Sort``: Role used for sorting start here
+
+  Available as ``QgsAttributeTableModel.SortRole`` in older QGIS releases.
+
+
+"""
 # --
 QgsAttributeTableModel.CustomRole.baseClass = QgsAttributeTableModel
+try:
+    QgsAttributeTableModel.__attribute_docs__ = {'modelChanged': 'Emitted when the model has been changed.\n', 'finished': 'Emitted when the model has completely loaded all features.\n'}
+    QgsAttributeTableModel.__group__ = ['attributetable']
+except (NameError, AttributeError):
+    pass

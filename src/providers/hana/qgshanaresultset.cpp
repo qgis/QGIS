@@ -14,9 +14,11 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanadatatypes.h"
 #include "qgshanaexception.h"
 #include "qgshanaresultset.h"
 #include "qgshanautils.h"
+#include "qgsvariantutils.h"
 #include "qgslogger.h"
 #include <QString>
 
@@ -24,7 +26,29 @@
 #include "odbc/PreparedStatement.h"
 #include "odbc/Statement.h"
 
+#include <cstring>
+
 using namespace NS_ODBC;
+
+namespace
+{
+  QString fvecsToString( const char *data, size_t )
+  {
+    uint32_t numElements;
+    memcpy( &numElements, data, sizeof( numElements ) );
+
+    const char *ptr = static_cast<const char *>( data ) + sizeof( numElements );
+    const float *elements = reinterpret_cast<const float *>( ptr );
+
+    QString res;
+    res += QStringLiteral( "[" ) + QString::number( elements[0], 'g', 7 );
+    for ( uint32_t i = 1; i < numElements; ++i )
+      res += QStringLiteral( "," ) + QString::number( elements[i], 'g', 7 );
+    res += QLatin1Char( ']' );
+
+    return res;
+  }
+} // namespace
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
@@ -104,98 +128,121 @@ QString QgsHanaResultSet::getString( unsigned short columnIndex )
 
 QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
 {
-  switch ( mMetadata->getColumnType( columnIndex ) )
+  QgsHanaDataType type = QgsHanaDataTypeUtils::fromInt( mMetadata->getColumnType( columnIndex ) );
+  if ( type == QgsHanaDataType::VarBinary && mMetadata->getColumnTypeName( columnIndex ) == QLatin1String( "REAL_VECTOR" ) )
+    type = QgsHanaDataType::RealVector;
+
+  switch ( type )
   {
-    case SQLDataTypes::Bit:
-    case SQLDataTypes::Boolean:
+    case QgsHanaDataType::Bit:
+    case QgsHanaDataType::Boolean:
       return QgsHanaUtils::toVariant( mResultSet->getBoolean( columnIndex ) );
-    case SQLDataTypes::Char:
+    case QgsHanaDataType::Char:
     {
       String str = mResultSet->getString( columnIndex );
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
         if ( str.isNull() || str->empty() )
-          return QVariant( QVariant::Char );
+          return QgsVariantUtils::createNullVariant( QMetaType::Type::QChar );
         else
           return QVariant( QChar( str->at( 0 ) ) );
       }
       else
         return QgsHanaUtils::toVariant( str );
     }
-    case SQLDataTypes::WChar:
+    case QgsHanaDataType::WChar:
     {
       NString str = mResultSet->getNString( columnIndex );
       if ( mMetadata->getColumnLength( columnIndex ) == 1 )
       {
         if ( str.isNull() || str->empty() )
-          return QVariant( QVariant::Char );
+          return QgsVariantUtils::createNullVariant( QMetaType::Type::QChar );
         else
           return QVariant( QChar( str->at( 0 ) ) );
       }
       else
         return QgsHanaUtils::toVariant( str );
     }
-    case SQLDataTypes::TinyInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+    case QgsHanaDataType::TinyInt:
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getByte( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUByte( columnIndex ) );
-    case SQLDataTypes::SmallInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+    case QgsHanaDataType::SmallInt:
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getShort( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUShort( columnIndex ) );
-    case SQLDataTypes::Integer:
-      if ( mMetadata ->isSigned( columnIndex ) )
+    case QgsHanaDataType::Integer:
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getInt( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUInt( columnIndex ) );
-    case SQLDataTypes::BigInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+    case QgsHanaDataType::BigInt:
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getLong( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getULong( columnIndex ) );
-    case SQLDataTypes::Real:
+    case QgsHanaDataType::Real:
       return QgsHanaUtils::toVariant( mResultSet->getFloat( columnIndex ) );
-    case SQLDataTypes::Double:
-    case SQLDataTypes::Decimal:
-    case SQLDataTypes::Float:
-    case SQLDataTypes::Numeric:
+    case QgsHanaDataType::Double:
+    case QgsHanaDataType::Decimal:
+    case QgsHanaDataType::Float:
+    case QgsHanaDataType::Numeric:
       return QgsHanaUtils::toVariant( mResultSet->getDouble( columnIndex ) );
-    case SQLDataTypes::Date:
-    case SQLDataTypes::TypeDate:
+    case QgsHanaDataType::Date:
+    case QgsHanaDataType::TypeDate:
       return QgsHanaUtils::toVariant( mResultSet->getDate( columnIndex ) );
-    case SQLDataTypes::Time:
-    case SQLDataTypes::TypeTime:
+    case QgsHanaDataType::Time:
+    case QgsHanaDataType::TypeTime:
       return QgsHanaUtils::toVariant( mResultSet->getTime( columnIndex ) );
-    case SQLDataTypes::Timestamp:
-    case SQLDataTypes::TypeTimestamp:
+    case QgsHanaDataType::Timestamp:
+    case QgsHanaDataType::TypeTimestamp:
       return QgsHanaUtils::toVariant( mResultSet->getTimestamp( columnIndex ) );
-    case SQLDataTypes::VarChar:
-    case SQLDataTypes::LongVarChar:
+    case QgsHanaDataType::VarChar:
+    case QgsHanaDataType::LongVarChar:
       return QgsHanaUtils::toVariant( mResultSet->getString( columnIndex ) );
-    case SQLDataTypes::WVarChar:
-    case SQLDataTypes::WLongVarChar:
+    case QgsHanaDataType::WVarChar:
+    case QgsHanaDataType::WLongVarChar:
       return QgsHanaUtils::toVariant( mResultSet->getNString( columnIndex ) );
-    case SQLDataTypes::Binary:
-    case SQLDataTypes::VarBinary:
-    case SQLDataTypes::LongVarBinary:
+    case QgsHanaDataType::Binary:
+    case QgsHanaDataType::VarBinary:
+    case QgsHanaDataType::LongVarBinary:
+    case QgsHanaDataType::Geometry:
       return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
-    case 29812: /* ST_GEOMETRY, ST_POINT */
-      return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
+    case QgsHanaDataType::RealVector:
+    {
+      const size_t bufLength = mResultSet->getBinaryLength( columnIndex );
+      if ( bufLength == ResultSet::UNKNOWN_LENGTH )
+      {
+        Binary vec = mResultSet->getBinary( columnIndex );
+        if ( !vec.isNull() && vec->size() > 0 )
+          return fvecsToString( vec->data(), vec->size() );
+      }
+      else if ( bufLength != 0 && bufLength != ResultSet::NULL_DATA )
+      {
+        if ( bufLength > static_cast<size_t>( std::numeric_limits<int>::max() ) )
+          throw QgsHanaException( "RealVector size is larger than maximum integer value" );
+
+        QByteArray vec( static_cast<int>( bufLength ), '0' );
+        mResultSet->getBinaryData( columnIndex, vec.data(), bufLength );
+        return fvecsToString( vec.data(), vec.size() );
+      }
+
+      return QVariant();
+    }
     default:
-      QgsDebugError( QStringLiteral( "Unhandled HANA type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
+      QgsDebugError( QStringLiteral( "Unhandled HANA data type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
       return QVariant();
   }
 }
 
 QgsGeometry QgsHanaResultSet::getGeometry( unsigned short columnIndex )
 {
-  auto toWkbSize = []( size_t size )
-  {
+  auto toWkbSize = []( size_t size ) {
     if ( size > static_cast<size_t>( std::numeric_limits<int>::max() ) )
       throw QgsHanaException( "Geometry size is larger than maximum integer value" );
-    return  static_cast<int>( size );
+    return static_cast<int>( size );
   };
 
   const size_t bufLength = mResultSet->getBinaryLength( columnIndex );

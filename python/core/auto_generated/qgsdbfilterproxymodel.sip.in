@@ -3,20 +3,20 @@
  *                                                                      *
  * src/core/qgsdbfilterproxymodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated/
+class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated="Since 3.24. "/
 {
 %Docstring(signature="appended")
 A class that implements a custom filter and can be used
 as a proxy for :py:class:`QgsDbTableModel`
 
-.. deprecated:: QGIS 3.24
+.. deprecated:: 3.24
 %End
 
 %TypeHeaderCode
@@ -49,5 +49,5 @@ Calls QSortFilterProxyModel.setFilterRegExp and triggers update
  *                                                                      *
  * src/core/qgsdbfilterproxymodel.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -32,7 +32,7 @@ class QgsMdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsM
 
   public:
     //! Constructor
-    QgsMdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsMdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -43,7 +43,6 @@ class QgsMdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsM
 
   private:
     QString mMeshPath;
-
 };
 
 #endif // QGMDALSOURCESELECT_H

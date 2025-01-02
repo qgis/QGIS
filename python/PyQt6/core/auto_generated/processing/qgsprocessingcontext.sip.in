@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingcontext.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -35,9 +35,6 @@ expression context.
 
 
     QgsProcessingContext();
-%Docstring
-Constructor for QgsProcessingContext.
-%End
 
 
     ~QgsProcessingContext();
@@ -216,9 +213,6 @@ Constructor for LayerDetails.
 %End
 
         LayerDetails();
-%Docstring
-Default constructor
-%End
 
         QString name;
 
@@ -727,5 +721,5 @@ on algorithm completion. See :py:func:`QgsProcessingContext.layersToLoadOnComple
  *                                                                      *
  * src/core/processing/qgsprocessingcontext.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

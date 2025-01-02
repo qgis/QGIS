@@ -66,9 +66,14 @@ QString QgsPointsAlongGeometryAlgorithm::shortDescription() const
   return QObject::tr( "Creates regularly spaced points along line features." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsPointsAlongGeometryAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QList<int> QgsPointsAlongGeometryAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 Qgis::ProcessingSourceType QgsPointsAlongGeometryAlgorithm::outputLayerType() const
@@ -89,8 +94,8 @@ Qgis::WkbType QgsPointsAlongGeometryAlgorithm::outputWkbType( Qgis::WkbType inpu
 QgsFields QgsPointsAlongGeometryAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields output = inputFields;
-  output.append( QgsField( QStringLiteral( "distance" ), QVariant::Double ) );
-  output.append( QgsField( QStringLiteral( "angle" ), QVariant::Double ) );
+  output.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
+  output.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double ) );
   return output;
 }
 
@@ -101,22 +106,19 @@ QgsPointsAlongGeometryAlgorithm *QgsPointsAlongGeometryAlgorithm::createInstance
 
 void QgsPointsAlongGeometryAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance> distance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ),
-      QObject::tr( "Distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr<QgsProcessingParameterDistance> distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0 );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( distance.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance> startOffset = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "START_OFFSET" ),
-      QObject::tr( "Start offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr<QgsProcessingParameterDistance> startOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_OFFSET" ), QObject::tr( "Start offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   startOffset->setIsDynamic( true );
   startOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "START_OFFSET" ), QObject::tr( "Start offset" ), QgsPropertyDefinition::DoublePositive ) );
   startOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( startOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance> endOffset = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "END_OFFSET" ),
-      QObject::tr( "End offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr<QgsProcessingParameterDistance> endOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_OFFSET" ), QObject::tr( "End offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   endOffset->setIsDynamic( true );
   endOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "END_OFFSET" ), QObject::tr( "End offset" ), QgsPropertyDefinition::DoublePositive ) );
   endOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -149,17 +151,17 @@ bool QgsPointsAlongGeometryAlgorithm::prepareAlgorithm( const QVariantMap &param
   mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   if ( mDynamicDistance )
-    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
+    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
 
   mStartOffset = parameterAsDouble( parameters, QStringLiteral( "START_OFFSET" ), context );
   mDynamicStartOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "START_OFFSET" ) );
   if ( mDynamicStartOffset )
-    mStartOffsetProperty = parameters.value( QStringLiteral( "START_OFFSET" ) ).value< QgsProperty >();
+    mStartOffsetProperty = parameters.value( QStringLiteral( "START_OFFSET" ) ).value<QgsProperty>();
 
   mEndOffset = parameterAsDouble( parameters, QStringLiteral( "END_OFFSET" ), context );
   mDynamicEndOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "END_OFFSET" ) );
   if ( mDynamicEndOffset )
-    mEndOffsetProperty = parameters.value( QStringLiteral( "END_OFFSET" ) ).value< QgsProperty >();
+    mEndOffsetProperty = parameters.value( QStringLiteral( "END_OFFSET" ) ).value<QgsProperty>();
 
   return true;
 }
@@ -186,11 +188,11 @@ QgsFeatureList QgsPointsAlongGeometryAlgorithm::processFeature( const QgsFeature
       endOffset = mEndOffsetProperty.valueAsDouble( context.expressionContext(), endOffset );
 
     const double totalLength = geometry.type() == Qgis::GeometryType::Polygon ? geometry.constGet()->perimeter()
-                               : geometry.length() - endOffset;
+                                                                              : geometry.length() - endOffset;
 
     double currentDistance = startOffset;
     QgsFeatureList out;
-    out.reserve( static_cast< int >( std::ceil( ( totalLength - startOffset ) / distance ) ) );
+    out.reserve( static_cast<int>( std::ceil( ( totalLength - startOffset ) / distance ) ) );
     while ( currentDistance <= totalLength )
     {
       const QgsGeometry point = geometry.interpolate( currentDistance );
@@ -217,5 +219,3 @@ QgsFeatureList QgsPointsAlongGeometryAlgorithm::processFeature( const QgsFeature
 }
 
 ///@endcond
-
-

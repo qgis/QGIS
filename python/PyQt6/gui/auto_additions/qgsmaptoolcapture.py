@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/gui/qgsmaptoolcapture.h
+# The following has been generated automatically from src/gui/maptools/qgsmaptoolcapture.h
 QgsMapToolCapture.CaptureNone = QgsMapToolCapture.CaptureMode.CaptureNone
 QgsMapToolCapture.CapturePoint = QgsMapToolCapture.CaptureMode.CapturePoint
 QgsMapToolCapture.CaptureLine = QgsMapToolCapture.CaptureMode.CaptureLine
@@ -17,3 +17,7 @@ QgsMapToolCapture.Capability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsMapToolCapture.Capability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsMapToolCapture.Capability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsMapToolCapture.Capability.__or__ = lambda flag1, flag2: QgsMapToolCapture.Capability(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsMapToolCapture.__group__ = ['maptools']
+except (NameError, AttributeError):
+    pass

@@ -1394,6 +1394,118 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
     }
 };
 
+
+/**
+ * \brief An area parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('area')
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsProcessingParameterTypeArea : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterArea( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A numeric parameter representing an area measure." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Area" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "area" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterArea" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterArea" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "float" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A numeric value" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+    }
+};
+
+
+/**
+ * \brief A volume parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('volume')
+ * \since QGIS 3.40
+ */
+class CORE_EXPORT QgsProcessingParameterTypeVolume : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterVolume( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A numeric parameter representing a volume measure." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Volume" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "volume" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterVolume" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterVolume" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "float" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A numeric value" )
+             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+    }
+};
+
+
+
 /**
  * \brief A duration parameter for processing algorithms.
  *

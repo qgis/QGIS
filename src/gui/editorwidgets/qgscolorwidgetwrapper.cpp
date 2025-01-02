@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorwidgetwrapper.h"
+#include "moc_qgscolorwidgetwrapper.cpp"
 #include "qgscolorbutton.h"
 #include <QLayout>
 
@@ -31,7 +32,7 @@ QVariant QgsColorWidgetWrapper::value() const
   if ( mColorButton )
     c = mColorButton->color();
 
-  return c.isValid() ? QVariant( c ) : QVariant( QVariant::Color );
+  return c.isValid() ? QVariant( c ) : QgsVariantUtils::createNullVariant( QMetaType::Type::QColor );
 }
 
 void QgsColorWidgetWrapper::showIndeterminateState()

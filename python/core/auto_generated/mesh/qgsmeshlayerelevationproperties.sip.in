@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshlayerelevationproperties.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -44,6 +44,8 @@ Constructor for QgsMeshLayerElevationProperties, with the specified ``parent`` o
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
+
     virtual bool showByDefaultInElevationProfilePlots() const;
 
     virtual QgsMapLayerElevationProperties::Flags flags() const;
@@ -79,7 +81,6 @@ Returns the fixed elevation range for the mesh.
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
 
-
 .. seealso:: :py:func:`setFixedRange`
 
 .. versionadded:: 3.38
@@ -96,7 +97,6 @@ Sets the fixed elevation ``range`` for the mesh.
 .. note::
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
-
 
 .. seealso:: :py:func:`fixedRange`
 
@@ -115,7 +115,6 @@ Returns the fixed elevation range for each group.
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
 
-
 .. seealso:: :py:func:`setFixedRangePerGroup`
 
 .. versionadded:: 3.38
@@ -132,7 +131,6 @@ Sets the fixed elevation range for each group.
 .. note::
 
    When a fixed range is set any :py:func:`~QgsMeshLayerElevationProperties.zOffset` and :py:func:`~QgsMeshLayerElevationProperties.zScale` is ignored.
-
 
 .. seealso:: :py:func:`fixedRangePerGroup`
 
@@ -218,5 +216,5 @@ Set to NaN to indicate that there is no elevation limit.
  *                                                                      *
  * src/core/mesh/qgsmeshlayerelevationproperties.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsobjectcustomproperties.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,9 +23,6 @@ in \verbatim <customproperties> \endverbatim element.
   public:
 
     QgsObjectCustomProperties();
-%Docstring
-Constructor for QgsObjectCustomProperties.
-%End
 
     QStringList keys() const;
 %Docstring
@@ -84,5 +81,5 @@ Writes the store contents to an XML node.
  *                                                                      *
  * src/core/qgsobjectcustomproperties.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

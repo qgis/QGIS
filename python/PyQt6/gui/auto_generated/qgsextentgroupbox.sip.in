@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsextentgroupbox.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,7 +28,6 @@ When using the group box, make sure to call :py:func:`~setOriginalExtent`, :py:f
 #include "qgsextentgroupbox.h"
 %End
   public:
-
 
     enum ExtentState /BaseType=IntEnum/
     {
@@ -204,5 +203,5 @@ Emitted when the widget's extent is changed.
  *                                                                      *
  * src/gui/qgsextentgroupbox.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

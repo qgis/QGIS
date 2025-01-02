@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/auth/qgsauthimportidentitydialog.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,8 +38,7 @@ Widget for importing an identity certificate/key bundle into the authentication 
       Unknown
     };
 
-    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent /TransferThis/ = 0 );
+    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog for importing identities
 
@@ -65,5 +64,5 @@ Gets certificate/key bundle to be imported as a PKI bundle object
  *                                                                      *
  * src/gui/auth/qgsauthimportidentitydialog.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

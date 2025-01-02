@@ -21,6 +21,7 @@
 #include "qgsgrass.h"
 
 #include "qgsgrassvector.h"
+#include "moc_qgsgrassvector.cpp"
 
 extern "C"
 {
@@ -28,7 +29,7 @@ extern "C"
 #include <unistd.h>
 #endif
 #include <grass/version.h>
-#if defined(_MSC_VER) && defined(M_PI_4)
+#if defined( _MSC_VER ) && defined( M_PI_4 )
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
@@ -107,7 +108,7 @@ QgsFields QgsGrassVectorLayer::fields()
     mFieldsTimeStamp.setSecsSinceEpoch( 0 );
     return mFields;
   }
-  if ( dblnFileInfo.lastModified() >  mFieldsTimeStamp && !mDriver.isEmpty()
+  if ( dblnFileInfo.lastModified() > mFieldsTimeStamp && !mDriver.isEmpty()
        && !mDatabase.isEmpty() && !mTable.isEmpty() && !mKey.isEmpty() )
   {
     QgsDebugMsgLevel( "reload fields", 2 );
@@ -117,7 +118,7 @@ QgsFields QgsGrassVectorLayer::fields()
 
     QgsDebugMsgLevel( "open database " + mDatabase + " by driver " + mDriver, 2 );
     QgsGrass::lock();
-    QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(),  mGrassObject.mapset() );
+    QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
     dbDriver *driver = db_start_driver_open_database( mDriver.toUtf8().constData(), mDatabase.toUtf8().constData() );
 
     if ( !driver )
@@ -149,24 +150,24 @@ QgsFields QgsGrassVectorLayer::fields()
 
           int ctype = db_sqltype_to_Ctype( db_get_column_sqltype( column ) );
           QString type;
-          QVariant::Type qtype = QVariant::String; //default to string to prevent compiler warnings
+          QMetaType::Type qtype = QMetaType::Type::QString; //default to string to prevent compiler warnings
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
               type = QStringLiteral( "int" );
-              qtype = QVariant::Int;
+              qtype = QMetaType::Type::Int;
               break;
             case DB_C_TYPE_DOUBLE:
               type = QStringLiteral( "double" );
-              qtype = QVariant::Double;
+              qtype = QMetaType::Type::Double;
               break;
             case DB_C_TYPE_STRING:
               type = QStringLiteral( "string" );
-              qtype = QVariant::String;
+              qtype = QMetaType::Type::QString;
               break;
             case DB_C_TYPE_DATETIME:
               type = QStringLiteral( "datetime" );
-              qtype = QVariant::String;
+              qtype = QMetaType::Type::QString;
               break;
           }
           mFields.append( QgsField( db_get_column_name( column ), qtype, type, db_get_column_length( column ), 0 ) );
@@ -182,8 +183,7 @@ QgsFields QgsGrassVectorLayer::fields()
 
 
 /*********************** QgsGrassVector ***********************/
-QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset,
-                                const QString &name, QObject *parent )
+QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset, const QString &name, QObject *parent )
   : QObject( parent )
   , mGrassObject( gisdbase, location, mapset, name )
   , mNodeCount( 0 )
@@ -230,7 +230,8 @@ bool QgsGrassVector::openHead()
   G_TRY
   {
     map = QgsGrass::vectNewMapStruct();
-    level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().constData(), ( char * ) mGrassObject.mapset().toUtf8().constData() );
+
+    level = Vect_open_old_head( map, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
   }
   G_CATCH( QgsGrass::Exception & e )
   {
@@ -279,10 +280,13 @@ bool QgsGrassVector::openHead()
 
     for ( int i = 0; i < ncidx; i++ )
     {
-      int field = Vect_cidx_get_field_number( map, i );
+      const int field = Vect_cidx_get_field_number( map, i );
+      if ( field <= 0 )
+        continue;
+
       QgsDebugMsgLevel( QString( "i = %1 layer = %2" ).arg( i ).arg( field ), 2 );
 
-      struct field_info *fieldInfo = Vect_get_field( map, field ); // should work also with field = 0
+      struct field_info *fieldInfo = Vect_get_field( map, field );
 
       QgsGrassVectorLayer *layer = new QgsGrassVectorLayer( mGrassObject, field, fieldInfo, this );
       const auto typeMap = QgsGrass::vectorTypeMap();

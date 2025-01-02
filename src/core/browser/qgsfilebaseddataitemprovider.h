@@ -129,8 +129,13 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
      * \param sublayers list of sublayers to initially populate the item with. If the sublayer details are incomplete
      * (see QgsProviderUtils::sublayerDetailsAreIncomplete()) then the item will be populated in a background thread when
      * expanded.
+     * \param extraUriParts optional map of extra components to append to URIs generated for the \a path. The provider-specific encodeUri methods will be used to handle these URI additions. Since QGIS 3.40.
      */
-    QgsFileDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QList< QgsProviderSublayerDetails> &sublayers );
+    QgsFileDataCollectionItem( QgsDataItem *parent,
+                               const QString &name,
+                               const QString &path,
+                               const QList< QgsProviderSublayerDetails> &sublayers,
+                               const QVariantMap &extraUriParts = QVariantMap() );
 
     QVector<QgsDataItem *> createChildren() override;
     bool hasDragEnabled() const override;
@@ -180,6 +185,7 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
   private:
 
     QList< QgsProviderSublayerDetails> mSublayers;
+    QVariantMap mExtraUriParts;
     mutable bool mHasCachedCapabilities = false;
     mutable QgsAbstractDatabaseProviderConnection::Capabilities mCachedCapabilities;
     mutable Qgis::DatabaseProviderConnectionCapabilities2 mCachedCapabilities2;
@@ -204,7 +210,31 @@ class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
     QString name() override;
     Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override SIP_FACTORY;
+
+    /**
+     * Static method to create a data item for sublayers corresponding to a file-like \a path.
+     *
+     * \param path file like path to create item for
+     * \param parentItem parent data item
+     * \param providers list of data providers to include when scanning for sublayers for the path. Must be populated.
+     * \param extraUriParts map of optional extra components to append to URIs generated for the \a path. The provider-specific encodeUri methods will be used to handle these URI additions.
+     * \param queryFlags flags controlling sublayer querying
+     *
+     * \returns data item, if \a path corresponds to a layer or an item with multiple sublayers
+     *
+     * \since QGIS 3.40
+     */
+    static QgsDataItem *createLayerItemForPath( const QString &path, QgsDataItem *parentItem, const QStringList &providers,
+        const QVariantMap &extraUriParts,
+        Qgis::SublayerQueryFlags queryFlags );
+
     bool handlesDirectoryPath( const QString &path ) override;
+
+  private:
+
+    static QgsDataItem *createDataItemForPathPrivate( const QString &path, QgsDataItem *parentItem, const QStringList *allowedProviders,
+        Qgis::SublayerQueryFlags queryFlags,
+        const QVariantMap &extraUriParts );
 };
 
 #endif // QGSFILEBASEDDATAITEMPROVIDER_H

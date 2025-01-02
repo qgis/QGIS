@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/models/qgsprocessingmodelalgorithm.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,6 +31,8 @@ Constructor for QgsProcessingModelAlgorithm.
 
     virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );  //#spellok
 
+
+    virtual Qgis::ProcessingAlgorithmFlags flags() const;
 
     virtual QString name() const;
 
@@ -78,7 +80,7 @@ Validates the model, returning ``True`` if all child algorithms in the model are
 
 
 :return: - ``True`` if the child is valid
-         - issues: will be set to a list of issues encountered during the validation
+         - issues: a list of issues encountered during the validation
 
 .. versionadded:: 3.14
 %End
@@ -211,7 +213,7 @@ all mandatory inputs to the algorithm have valid values.
 :param childId: ID for child to validate
 
 :return: - ``True`` if the child is valid
-         - issues: will be set to a list of issues encountered during the validation
+         - issues: a list of issues encountered during the validation
 
 .. versionadded:: 3.14
 %End
@@ -633,7 +635,7 @@ If ``capitalize`` is ``True`` then the string will be converted to a camel case 
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
 
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
 
 };
@@ -644,5 +646,5 @@ If ``capitalize`` is ``True`` then the string will be converted to a camel case 
  *                                                                      *
  * src/core/processing/models/qgsprocessingmodelalgorithm.h             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -55,6 +55,7 @@ class QgsSymbolLayerId;
 /**
  * \ingroup core
  * \class QgsSymbolLayerUtils
+ * \brief Contains utility functions for working with symbols and symbol layers.
  */
 class CORE_EXPORT QgsSymbolLayerUtils
 {
@@ -92,6 +93,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
+
+    /**
+     * Returns TRUE if a DOM \a element contains an SLD Symbolizer element.
+     *
+     * \since QGIS 3.42
+     */
+    static bool hasSldSymbolizer( const QDomElement &element );
 
     /**
      * Decodes a \a string representing a symbol coordinate reference mode.
@@ -422,13 +430,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Checks if \a element contains an ExternalGraphic element with format "image/svg+xml"
-     * @return TRUE if the ExternalGraphic with format "image/svg+xml" is found .
+     *
+     * \returns TRUE if the ExternalGraphic with format "image/svg+xml" is found .
      */
     static bool hasExternalGraphic( QDomElement &element );
 
     /**
      * Checks if \a element contains an ExternalGraphic element, if the optional \a format is specified it will also be checked.
-     * @return TRUE if the ExternalGraphic element is found and the optionally specified format matches.
+     *
+     * \returns TRUE if the ExternalGraphic element is found and the optionally specified format matches.
      * \since QGIS 3.30
      */
     static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
@@ -445,7 +455,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Checks if \a element contains a graphic fill with a raster image of type PNG, JPEG or GIF.
-     * @return TRUE if element contains a graphic fill with a raster image.
+     *
+     * \returns TRUE if element contains a graphic fill with a raster image.
      * \since QGIS 3.30
      */
     static bool needRasterImageFill( QDomElement &element );
@@ -743,6 +754,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString svgSymbolPathToName( const QString &path, const QgsPathResolver &pathResolver );
 
+    /**
+     * Converts a \a geometry to a set of QPolygonF objects representing
+     * how the geometry should be drawn for a symbol of the given \a type,
+     * as a list of geometry parts and rings.
+     *
+     * \since QGIS 3.40
+     */
+    static QList< QList< QPolygonF > > toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
+
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
 
@@ -859,7 +879,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Converts a set of symbol layer id to a set of pointers to actual symbol layers carried by the feature renderer.
      * \since QGIS 3.12
-     * \deprecated since QGIS 3.30 because it was related to old QgsSymbolLayerReference system
+     * \deprecated QGIS 3.30. Because it was related to old QgsSymbolLayerReference system.
      */
     Q_DECL_DEPRECATED static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 
@@ -928,6 +948,18 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.30
      */
     static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+
+    /**
+     * Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified
+     * ID.
+     *
+     * The \a bounds argument specifies the target bounds (in painter coordinates) for matching geometries. Only mask
+     * geometries which intersect \a bounds will be returned. If \a bounds is a null QRectF then all clip geometries
+     * for the symbol layer will be returned.
+     *
+     * \since QGIS 3.38
+     */
+    static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
 
     ///@cond PRIVATE
 #ifndef SIP_RUN

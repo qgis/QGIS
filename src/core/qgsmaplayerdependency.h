@@ -68,7 +68,6 @@ class CORE_EXPORT QgsMapLayerDependency
 
     // TODO c++20 - replace with = default
 
-    //! Comparison operator
     bool operator==( const QgsMapLayerDependency &other ) const
     {
       return layerId() == other.layerId() && origin() == other.origin() && type() == other.type();

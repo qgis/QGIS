@@ -43,10 +43,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      */
     QgsTiledSceneRenderContext( QgsRenderContext &context, QgsFeedback *feedback = nullptr );
 
-    //! QgsTiledSceneRenderContext cannot be copied.
     QgsTiledSceneRenderContext( const QgsTiledSceneRenderContext &rh ) = delete;
-
-    //! QgsTiledSceneRenderContext cannot be copied.
     QgsTiledSceneRenderContext &operator=( const QgsTiledSceneRenderContext & ) = delete;
 
     /**
@@ -58,7 +55,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the feedback object used to cancel rendering
@@ -138,9 +135,6 @@ class CORE_EXPORT QgsTiledSceneRenderer
 
   public:
 
-    /**
-     * Constructor for QgsTiledSceneRenderer.
-     */
     QgsTiledSceneRenderer() = default;
 
     virtual ~QgsTiledSceneRenderer() = default;

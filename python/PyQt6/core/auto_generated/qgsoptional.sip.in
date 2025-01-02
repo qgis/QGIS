@@ -3,9 +3,8 @@
  *                                                                      *
  * src/core/qgsoptional.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 template<T>
@@ -49,7 +48,6 @@ A QgsOptional constructed with enabled status and data
 
     bool operator== ( const QgsOptional<T> &other ) const;
 
-    operator bool() const;
 
     bool enabled() const;
 %Docstring
@@ -79,5 +77,5 @@ Set the payload data
  *                                                                      *
  * src/core/qgsoptional.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

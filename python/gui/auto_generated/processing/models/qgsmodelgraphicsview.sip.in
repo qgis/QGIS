@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/models/qgsmodelgraphicsview.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ QGraphicsView subclass representing the model designer.
 #include "qgsmodelgraphicsview.h"
 %End
   public:
-
     QgsModelGraphicsView( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
@@ -96,7 +95,7 @@ Cuts or copies the selected items, respecting the specified ``operation``.
 .. seealso:: :py:func:`pasteItems`
 %End
 
-    void copyItems( const QList< QgsModelComponentGraphicItem * > &items, ClipboardOperation operation );
+    void copyItems( const QList<QgsModelComponentGraphicItem *> &items, ClipboardOperation operation );
 %Docstring
 Cuts or copies the a list of ``items``, respecting the specified ``operation``.
 
@@ -191,7 +190,6 @@ A simple graphics item rendered as an 'x'.
 #include "qgsmodelgraphicsview.h"
 %End
   public:
-
     QgsModelViewSnapMarker();
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
@@ -206,5 +204,5 @@ A simple graphics item rendered as an 'x'.
  *                                                                      *
  * src/gui/processing/models/qgsmodelgraphicsview.h                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

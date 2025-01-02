@@ -39,9 +39,11 @@ private:
 #ifndef _WIN32
     pid_t m_pid;
     int m_progressFd;
+    int m_exitCode;
 #else
     HANDLE m_pid;
     HANDLE m_progressFd;
+    DWORD m_exitCode;
 #endif
 
     bool start(Options& options);

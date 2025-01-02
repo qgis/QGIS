@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgscolorutils.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -81,6 +81,33 @@ An invalid color will be returned if the color could not be read.
 .. seealso:: :py:func:`colorToString`
 %End
 
+    static QColorSpace iccProfile( const QString &iccProfileFilePath, QString &errorMsg /Out/ );
+%Docstring
+Loads an ICC profile from ``iccProfileFilePath`` and returns associated color space.
+If an error occurred, an invalid color space is returned and ``errorMsg`` is updated with error
+message
+
+:param iccProfileFilePath: ICC profile file path
+
+:return: - loaded color space
+         - errorMsg: Will be set to a user-friendly message if an error occurs while loading the ICC profile file
+
+.. versionadded:: 3.40
+%End
+
+    static QString saveIccProfile( const QColorSpace &colorSpace, const QString &iccProfileFilePath );
+%Docstring
+Save color space ``colorSpace`` to an ICC profile file ``iccProfileFilePath``.
+
+:return: error message if an error occurred else empty string.
+
+.. versionadded:: 3.40
+%End
+
+
+
+
+
 };
 
 /************************************************************************
@@ -88,5 +115,5 @@ An invalid color will be returned if the color could not be read.
  *                                                                      *
  * src/core/qgscolorutils.h                                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

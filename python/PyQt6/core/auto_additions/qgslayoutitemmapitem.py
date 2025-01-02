@@ -4,3 +4,11 @@ QgsLayoutItemMapItem.StackBelowMapLayer = QgsLayoutItemMapItem.StackingPosition.
 QgsLayoutItemMapItem.StackAboveMapLayer = QgsLayoutItemMapItem.StackingPosition.StackAboveMapLayer
 QgsLayoutItemMapItem.StackBelowMapLabels = QgsLayoutItemMapItem.StackingPosition.StackBelowMapLabels
 QgsLayoutItemMapItem.StackAboveMapLabels = QgsLayoutItemMapItem.StackingPosition.StackAboveMapLabels
+try:
+    QgsLayoutItemMapItem.__group__ = ['layout']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLayoutItemMapItemStack.__group__ = ['layout']
+except (NameError, AttributeError):
+    pass

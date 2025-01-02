@@ -26,8 +26,8 @@ QWidget:item:selected
 
 QWebView, QTextBrowser
 {
-    color: #000000;
-    background-color: #ffffff;
+    color: @text;
+    background-color: @itembackground;
 }
 
 QToolTip
@@ -1179,17 +1179,6 @@ QgsMessageBar QScrollBar::up-arrow:vertical {
 QgsMessageBar QScrollBar::down-arrow:vertical {
     height: 0.7em;
     image: url(@theme_path/icons/arrow-down.svg);
-}
-
-QgsPropertyOverrideButton, QgsPropertyOverrideButton:hover, QgsPropertyOverrideButton:pressed {
-    background: none;
-    border: 1px solid rgba(0, 0, 0, 0%);
-    padding: 0px;
-}
-
-QgsPropertyOverrideButton:focus {
-    border:1px solid @focusdark;
-    border-radius: 0.2em;
 }
 
 QListWidget#mOptionsListWidget {

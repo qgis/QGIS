@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgscircularstring.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -139,7 +139,6 @@ Appends the contents of another circular ``string`` to the end of this circular 
    It is the caller's responsibility to ensure that the first point in the appended
    ``string`` matches the last point in the existing curve, or the result will be undefined.
 
-
 .. versionadded:: 3.20
 %End
 
@@ -151,7 +150,9 @@ Appends the contents of another circular ``string`` to the end of this circular 
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
-    virtual QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+    virtual QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
+
+    virtual QgsAbstractGeometry *simplifyByDistance( double tolerance ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
@@ -240,5 +241,5 @@ Appends the contents of another circular ``string`` to the end of this circular 
  *                                                                      *
  * src/core/geometry/qgscircularstring.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -26,20 +26,17 @@ class QgsVectorTileDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "Vector Tiles" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void editConnection( QgsDataItem *item );
-    static void deleteConnection( QgsDataItem *item );
+    static void duplicateConnection( QgsDataItem *item );
     static void newConnection( QgsDataItem *item );
     static void newArcGISConnection( QgsDataItem *item );
     static void saveXyzTilesServers();
     static void loadXyzTilesServers( QgsDataItem *item );
-
 };
 
 ///@endcond

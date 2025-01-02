@@ -33,6 +33,7 @@
 #include <memory>
 
 class QgsLineSymbol;
+class QgsMarkerSymbol;
 class QgsFillSymbol;
 class QgsGeometry;
 class QgsRenderContext;
@@ -89,16 +90,16 @@ class CORE_EXPORT QgsCallout
       DrawCalloutToAllParts, //!< Whether callout lines should be drawn to all feature parts
       AnchorPointPosition, //!< Feature's anchor point position
       LabelAnchorPointPosition, //!< Label's anchor point position
-      OriginX, //!< X-coordinate of callout origin (label anchor) (since QGIS 3.20)
-      OriginY, //!< Y-coordinate of callout origin (label anchor) (since QGIS 3.20)
-      DestinationX, //!< X-coordinate of callout destination (feature anchor) (since QGIS 3.20)
-      DestinationY, //!< Y-coordinate of callout destination (feature anchor) (since QGIS 3.20)
-      Curvature, //!< Curvature of curved line callouts (since QGIS 3.20)
-      Orientation, //!< Orientation of curved line callouts (since QGIS 3.20)
-      Margins, //!< Margin from text (since QGIS 3.20)
-      WedgeWidth, //!< Balloon callout wedge width (since QGIS 3.20)
-      CornerRadius, //!< Balloon callout corner radius (since QGIS 3.20)
-      BlendMode, //!< Callout blend mode (since QGIS 3.20)
+      OriginX, //!< X-coordinate of callout origin (label anchor) \since QGIS 3.20
+      OriginY, //!< Y-coordinate of callout origin (label anchor) \since QGIS 3.20
+      DestinationX, //!< X-coordinate of callout destination (feature anchor) \since QGIS 3.20
+      DestinationY, //!< Y-coordinate of callout destination (feature anchor) \since QGIS 3.20
+      Curvature, //!< Curvature of curved line callouts \since QGIS 3.20
+      Orientation, //!< Orientation of curved line callouts \since QGIS 3.20
+      Margins, //!< Margin from text \since QGIS 3.20
+      WedgeWidth, //!< Balloon callout wedge width \since QGIS 3.20
+      CornerRadius, //!< Balloon callout corner radius \since QGIS 3.20
+      BlendMode, //!< Callout blend mode \since QGIS 3.20
     };
     // *INDENT-ON*
 
@@ -460,7 +461,7 @@ class CORE_EXPORT QgsCallout
 
     /**
      * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
-     * \deprecated QGIS 3.20 use calloutLabelPoint() instead
+     * \deprecated QGIS 3.20. Use calloutLabelPoint() instead.
      */
     Q_DECL_DEPRECATED QgsGeometry labelAnchorGeometry( const QRectF &bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const SIP_DEPRECATED;
 
@@ -517,10 +518,6 @@ class CORE_EXPORT QgsSimpleLineCallout : public QgsCallout
     ~QgsSimpleLineCallout() override;
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsSimpleLineCallout( const QgsSimpleLineCallout &other );
     QgsSimpleLineCallout &operator=( const QgsSimpleLineCallout & ) = delete;
 #endif
@@ -753,12 +750,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
     QgsManhattanLineCallout();
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsManhattanLineCallout( const QgsManhattanLineCallout &other );
-
     QgsManhattanLineCallout &operator=( const QgsManhattanLineCallout & ) = delete;
 #endif
 
@@ -767,7 +759,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
      * serialized in the \a properties map (corresponding to the output from
      * QgsManhattanLineCallout::properties() ).
      */
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     QString type() const override;
     QgsManhattanLineCallout *clone() const override;
@@ -806,12 +798,7 @@ class CORE_EXPORT QgsCurvedLineCallout : public QgsSimpleLineCallout
     QgsCurvedLineCallout();
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsCurvedLineCallout( const QgsCurvedLineCallout &other );
-
     QgsCurvedLineCallout &operator=( const QgsCurvedLineCallout & ) = delete;
 #endif
 
@@ -820,7 +807,7 @@ class CORE_EXPORT QgsCurvedLineCallout : public QgsSimpleLineCallout
      * serialized in the \a properties map (corresponding to the output from
      * QgsCurvedLineCallout::properties() ).
      */
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     QString type() const override;
     QgsCurvedLineCallout *clone() const override;
@@ -897,10 +884,6 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
     ~QgsBalloonCallout() override;
 
 #ifndef SIP_RUN
-
-    /**
-     * Copy constructor.
-     */
     QgsBalloonCallout( const QgsBalloonCallout &other );
     QgsBalloonCallout &operator=( const QgsBalloonCallout & ) = delete;
 #endif
@@ -936,6 +919,33 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
      * \see fillSymbol()
      */
     void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the marker symbol used to render the callout endpoint.
+     *
+     * May be NULLPTR, if no endpoint marker will be used.
+     *
+     * The marker will always be rendered below the fill symbol for the callout.
+     *
+     * Ownership is not transferred.
+     *
+     * \see setMarkerSymbol()
+     * \since QGIS 3.40
+     */
+    QgsMarkerSymbol *markerSymbol();
+
+    /**
+     * Sets the marker \a symbol used to render the callout endpoint. Ownership of \a symbol is
+     * transferred to the callout.
+     *
+     * Set to NULLPTR to disable the endpoint marker.
+     *
+     * The marker will always be rendered below the fill symbol for the callout.
+     *
+     * \see markerSymbol()
+     * \since QGIS 3.40
+     */
+    void setMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the offset distance from the anchor point at which to start the line. Units are specified through offsetFromAnchorUnit().
@@ -1143,6 +1153,7 @@ class CORE_EXPORT QgsBalloonCallout : public QgsCallout
 #endif
 
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     double mOffsetFromAnchorDistance = 0;
     Qgis::RenderUnit mOffsetFromAnchorUnit = Qgis::RenderUnit::Millimeters;

@@ -43,8 +43,8 @@ class ANALYSIS_EXPORT ParametricLine
     ParametricLine *mParent = nullptr;
     //! MControlPoly stores the points of the control polygon
     QVector<QgsPoint *> *mControlPoly = nullptr;
+
   public:
-    //! Default constructor
     ParametricLine() = default;
 
     /**
@@ -77,17 +77,8 @@ inline ParametricLine::ParametricLine( ParametricLine *par, QVector<QgsPoint *> 
   : mParent( par )
   , mControlPoly( controlpoly )
 {
-
 }
 
 #endif
 
 #endif
-
-
-
-
-
-
-
-

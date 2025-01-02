@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgswkbtypes.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -90,7 +90,6 @@ Returns the curve type for a WKB type. For example, for Polygon WKB types the cu
 .. seealso:: :py:func:`flatType`
 
 .. seealso:: :py:func:`multiType`
-
 
 .. versionadded:: 3.10
 %End
@@ -300,5 +299,5 @@ Will convert the 25D version of the flat type if supported or Unknown if not sup
  *                                                                      *
  * src/core/geometry/qgswkbtypes.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsdetaileditemdelegate.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,20 +22,18 @@ and detail sections.
 #include "qgsdetaileditemdelegate.h"
 %End
   public:
-
     QgsDetailedItemDelegate( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDetailedItemDelegate
 %End
     ~QgsDetailedItemDelegate();
-     virtual void paint( QPainter *painter,
-                const QStyleOptionViewItem &option,
-                const QModelIndex &index ) const;
+    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
 %Docstring
 Reimplement for parent class
 %End
-     virtual QSize sizeHint( const QStyleOptionViewItem &option,
-                    const QModelIndex &index ) const;
+    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
 %Docstring
 Reimplement for parent class
 %End
@@ -55,5 +53,5 @@ Reimplement for parent class
  *                                                                      *
  * src/gui/qgsdetaileditemdelegate.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

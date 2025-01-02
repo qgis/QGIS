@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmapoverviewcanvas.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -56,7 +56,6 @@ Triggered when a layer in the overview requests a repaint.
 %End
 
   protected:
-
     void drawExtentRect();
 %Docstring
 used for overview canvas to reflect changed extent in main map canvas
@@ -133,5 +132,5 @@ called when panning to reflect mouse movement
  *                                                                      *
  * src/gui/qgsmapoverviewcanvas.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

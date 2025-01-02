@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscolorbrewercolorrampdialog.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ A widget which allows users to modify the properties of a :py:class:`QgsColorBre
 #include "qgscolorbrewercolorrampdialog.h"
 %End
   public:
-
     QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsColorBrewerColorRampWidget.
@@ -63,7 +62,6 @@ A dialog which allows users to modify the properties of a :py:class:`QgsColorBre
 #include "qgscolorbrewercolorrampdialog.h"
 %End
   public:
-
     QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsColorBrewerColorRampDialog.
@@ -109,5 +107,5 @@ Emitted when the dialog settings change
  *                                                                      *
  * src/gui/qgscolorbrewercolorrampdialog.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

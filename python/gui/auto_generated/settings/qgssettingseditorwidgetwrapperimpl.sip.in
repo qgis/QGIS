@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/settings/qgssettingseditorwidgetwrapperimpl.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -36,7 +36,7 @@ Constructor
 
     virtual bool setSettingFromWidget() const = 0;
 
-    virtual void setWidgetFromVariant( const QVariant &value ) const;
+    virtual bool setWidgetFromVariant( const QVariant &value ) const;
 
     virtual bool setWidgetValue( const U &value ) const = 0;
 %Docstring
@@ -78,10 +78,10 @@ To be re-implemented to implemeent type specific configuration (e.g. opacity for
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
 
-class QgsSettingsStringEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
+class QgsSettingsStringLineEditWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for string settings
+This class is a factory of editor for string settings with a line edit
 
 .. versionadded:: 3.32
 %End
@@ -91,9 +91,71 @@ This class is a factory of editor for string settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
 %End
   public:
-    QgsSettingsStringEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsStringLineEditWrapper( QObject *parent = 0 );
 %Docstring
-Constructor
+Constructor of the factory
+%End
+
+    QgsSettingsStringLineEditWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+%End
+
+
+    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
+
+    virtual QString id() const;
+
+
+    virtual bool setSettingFromWidget() const;
+
+
+    virtual QString valueFromWidget() const;
+
+
+    virtual bool setWidgetValue( const QString &value ) const;
+
+
+    virtual void enableAutomaticUpdatePrivate();
+
+};
+
+
+
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase;
+
+class QgsSettingsStringComboBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase
+{
+%Docstring(signature="appended")
+This class is a factory of editor for string settings with a combo box
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgssettingseditorwidgetwrapperimpl.h"
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase;
+%End
+  public:
+    enum class Mode
+    {
+      Text,
+      Data
+    };
+
+    QgsSettingsStringComboBoxWrapper( QObject *parent = 0 );
+%Docstring
+Constructor of the factory
+%End
+
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+%End
+
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -109,15 +171,20 @@ Constructor
 
     virtual bool setWidgetValue( const QString &value ) const;
 
+
+    virtual void enableAutomaticUpdatePrivate();
+
+
 };
+
 
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
 
-class QgsSettingsBoolEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
+class QgsSettingsBoolCheckBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for boolean settings
+This class is a factory of editor for boolean settings with a checkbox
 
 .. versionadded:: 3.32
 %End
@@ -127,9 +194,14 @@ This class is a factory of editor for boolean settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
 %End
   public:
-    QgsSettingsBoolEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsBoolCheckBoxWrapper( QObject *parent = 0 );
 %Docstring
-Constructor
+Constructor of the factory
+%End
+
+    QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -145,15 +217,18 @@ Constructor
 
     virtual bool setWidgetValue( const bool &value ) const;
 
+
+    virtual void enableAutomaticUpdatePrivate();
+
 };
 
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
 
-class QgsSettingsIntegerEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
+class QgsSettingsIntegerSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for integer settings
+This class is a factory of editor for integer settings with a spin box
 
 .. versionadded:: 3.32
 %End
@@ -163,9 +238,14 @@ This class is a factory of editor for integer settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
 %End
   public:
-    QgsSettingsIntegerEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsIntegerSpinBoxWrapper( QObject *parent = 0 );
 %Docstring
-Constructor
+Constructor of the factory
+%End
+
+    QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -181,16 +261,19 @@ Constructor
 
     virtual bool setWidgetValue( const int &value ) const;
 
+
+    virtual void enableAutomaticUpdatePrivate();
+
 };
 
 
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
 
-class QgsSettingsDoubleEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
+class QgsSettingsDoubleSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for double settings
+This class is a factory of editor for double settings with a double spin box
 
 .. versionadded:: 3.32
 %End
@@ -200,9 +283,14 @@ This class is a factory of editor for double settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
 %End
   public:
-    QgsSettingsDoubleEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsDoubleSpinBoxWrapper( QObject *parent = 0 );
 %Docstring
-Constructor
+Constructor of the factory
+%End
+
+    QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -218,16 +306,19 @@ Constructor
 
     virtual bool setWidgetValue( const double &value ) const;
 
+
+    virtual void enableAutomaticUpdatePrivate();
+
 };
 
 
 
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
 
-class QgsSettingsColorEditorWidgetWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
+class QgsSettingsColorButtonWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for color settings
+This class is a factory of editor for color settings with a color button
 
 .. versionadded:: 3.32
 %End
@@ -237,9 +328,14 @@ This class is a factory of editor for color settings
 typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
 %End
   public:
-    QgsSettingsColorEditorWidgetWrapper( QObject *parent = 0 );
+    QgsSettingsColorButtonWrapper( QObject *parent = 0 );
 %Docstring
-Constructor
+Constructor of the factory
+%End
+
+    QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -258,8 +354,10 @@ Constructor
 
     virtual void configureEditorPrivateImplementation();
 
-};
 
+    virtual void enableAutomaticUpdatePrivate();
+
+};
 
 
 
@@ -274,5 +372,5 @@ Constructor
  *                                                                      *
  * src/gui/settings/qgssettingseditorwidgetwrapperimpl.h                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

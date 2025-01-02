@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsgeometryrubberband.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -16,7 +16,7 @@
 %End
 
 
-class QgsGeometryRubberBand: QgsMapCanvasItem
+class QgsGeometryRubberBand : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
 A rubberband class for :py:class:`QgsAbstractGeometry` (considering curved geometries).
@@ -119,5 +119,5 @@ Sets which geometry is handled by the rubber band, polygon or line
  *                                                                      *
  * src/gui/qgsgeometryrubberband.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

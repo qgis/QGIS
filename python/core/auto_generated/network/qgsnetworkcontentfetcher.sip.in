@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/network/qgsnetworkcontentfetcher.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -16,8 +16,9 @@ class QgsNetworkContentFetcher : QObject
 {
 %Docstring(signature="appended")
 HTTP network content fetcher. A simple method for fetching remote HTTP content
-and converting the content to standard formats. Url redirects are automatically
-handled.
+and converting the content to standard formats.
+
+URL redirects are automatically handled.
 
 .. seealso:: :py:class:`QgsNetworkContentFetcherTask`
 %End
@@ -28,9 +29,6 @@ handled.
   public:
 
     QgsNetworkContentFetcher();
-%Docstring
-Constructor for QgsNetworkContentFetcher.
-%End
 
     ~QgsNetworkContentFetcher();
 
@@ -117,5 +115,5 @@ Emitted when an error with ``code`` error occurred while processing the request
  *                                                                      *
  * src/core/network/qgsnetworkcontentfetcher.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

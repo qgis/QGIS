@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsoptionsdialogbase.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,8 +25,8 @@ and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/r
 
 To use:
 
-# Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
-# In source file for dialog, inherit this class instead of QDialog, then in constructor:
+- Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+- In source file for dialog, inherit this class instead of QDialog, then in constructor:
   ...
   setupUi( this ); // set up .ui file objects
   initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
@@ -38,7 +38,6 @@ To use:
 #include "qgsoptionsdialogbase.h"
 %End
   public:
-
     QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
 %Docstring
 Constructor
@@ -187,5 +186,5 @@ it is automatically called if a line edit has "mSearchLineEdit" as object name.
  *                                                                      *
  * src/gui/qgsoptionsdialogbase.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

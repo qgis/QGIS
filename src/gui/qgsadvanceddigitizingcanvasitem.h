@@ -25,10 +25,10 @@
 class QgsAdvancedDigitizingDockWidget;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsadvanceddigitizingcanvasitem.h>
-% End
+//%End
 #endif
 
 /**
@@ -37,7 +37,6 @@ class QgsAdvancedDigitizingDockWidget;
  */
 class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsAdvancedDigitizingCanvasItem *>( sipCpp ) )
@@ -60,6 +59,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
     QPen mSnapPen;
     QPen mSnapLinePen;
     QPen mCursorPen;
+    QPen mConstructionGuidesPen;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
 };
 

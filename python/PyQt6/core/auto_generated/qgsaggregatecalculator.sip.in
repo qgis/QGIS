@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsaggregatecalculator.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -14,10 +14,13 @@
 class QgsAggregateCalculator
 {
 %Docstring(signature="appended")
-Utility class for calculating aggregates for a field (or expression) over the features
-from a vector layer. It is recommended that :py:func:`QgsVectorLayer.aggregate()` is used rather then
-directly using this class, as the :py:class:`QgsVectorLayer` method can handle delegating aggregate calculation
-to a data provider for remote calculation.
+Utility class for calculating aggregates for a field (or expression) over the features from a vector layer.
+
+.. note::
+
+   It is recommended that :py:func:`QgsVectorLayer.aggregate()` is used rather then
+   directly using this class, as the :py:class:`QgsVectorLayer` method can handle delegating aggregate calculation
+   to a data provider for remote calculation.
 %End
 
 %TypeHeaderCode
@@ -29,7 +32,7 @@ to a data provider for remote calculation.
     {
       QString function;
       QString name;
-      QSet<QVariant::Type> supportedTypes;
+      QSet<QMetaType::Type> supportedTypes;
     };
 
     struct AggregateParameters
@@ -157,5 +160,5 @@ Structured information for available aggregates.
  *                                                                      *
  * src/core/qgsaggregatecalculator.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

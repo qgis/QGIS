@@ -85,11 +85,9 @@ class CORE_EXPORT QgsClipper
       XMin,
       YMax,
       YMin,
-      ZMax, //!< Maximum Z (since QGIS 3.26)
-      ZMin, //!< Minimum Z (since QGIS 3.26)
+      ZMax, //!< Maximum Z \since QGIS 3.26
+      ZMin, //!< Minimum Z \since QGIS 3.26
     };
-
-    SIP_IF_FEATURE( !ARM ) // Not available on ARM sip bindings because of qreal issues
 
     /**
      * Trims the given feature to a rectangular box. Returns the trimmed
@@ -102,8 +100,6 @@ class CORE_EXPORT QgsClipper
     static void trimFeature( QVector<double> &x,
                              QVector<double> &y,
                              bool shapeOpen );
-
-    SIP_END
 
     /**
      * Trims the given polygon to a rectangular box, by modifying the given polygon in place.

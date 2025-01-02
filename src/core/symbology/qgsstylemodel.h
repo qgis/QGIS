@@ -152,14 +152,14 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     {
       Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
       Tag SIP_MONKEYPATCH_COMPAT_NAME(TagRole), //!< String list of tags
-      EntityName, //!< Entity name (since QGIS 3.26)
+      EntityName, //!< Entity name \since QGIS 3.26
       SymbolType SIP_MONKEYPATCH_COMPAT_NAME(SymbolTypeRole), //!< Symbol type (for symbol or legend patch shape entities)
       IsFavorite SIP_MONKEYPATCH_COMPAT_NAME(IsFavoriteRole), //!< Whether entity is flagged as a favorite
       LayerType SIP_MONKEYPATCH_COMPAT_NAME(LayerTypeRole), //!< Layer type (for label settings entities)
       CompatibleGeometryTypes SIP_MONKEYPATCH_COMPAT_NAME(CompatibleGeometryTypesRole), //!< Compatible layer geometry types (for 3D symbols)
-      StyleName, //!< Name of associated QgsStyle (QgsStyle::name()) (since QGIS 3.26)
-      StyleFileName, //!< File name of associated QgsStyle (QgsStyle::fileName()) (since QGIS 3.26)
-      IsTitle SIP_MONKEYPATCH_COMPAT_NAME(IsTitleRole), //!< True if the index corresponds to a title item (since QGIS 3.26)
+      StyleName, //!< Name of associated QgsStyle (QgsStyle::name()) \since QGIS 3.26
+      StyleFileName, //!< File name of associated QgsStyle (QgsStyle::fileName()) \since QGIS 3.26
+      IsTitle SIP_MONKEYPATCH_COMPAT_NAME(IsTitleRole), //!< True if the index corresponds to a title item \since QGIS 3.26
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

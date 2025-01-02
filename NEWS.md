@@ -1,5 +1,135 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.40 'Bratislava'?
+
+This release has following new features:
+
+- Map Tools: Respect layer/project vert datum in identify results
+- Map Tools: Present referencing relations in info tool
+- User Interface: Optionally autosize all columns by default when opening an attribute table
+- User Interface: Actions Dialogue Duplicate Button
+- Symbology: Provide style categories for raster layers
+- Symbology: Add "Linear Referencing" symbol layer type
+- Symbology: Implement color ramp interpolation for CMYK
+- Symbology: CMYK color preview
+- Symbology: Select color component as float
+- Symbology: Allow end point marker symbols for balloon callout style
+- Symbology: Buffers for marker symbols
+- Symbology: Support tolerances for QgsRasterTransparency pixel values
+- Annotations: Auto upgrade SVG and text annotations to annotation layer items on project load
+- Annotations: Add support for callouts to point text, rect text and picture items
+- Annotations: Add linked layer option for annotation layers
+- Annotations: Text inside rectangle annotation item
+- Annotations: Add picture annotation item type
+- Labelling: Support horizontal alignment in HTML labels
+- Labelling: HTML header formatting in HTML labels
+- Labelling: Add support for word-spacing CSS in html labels
+- Labelling: Implementation of labeling engine rules
+- Diagrams: Introduce stacked diagrams
+- Mesh: Add GUI for adding Quantized Mesh layers
+- Rendering: Support multiple sources for vector tiles
+- 3D Features: Respect vector layer vertical CRS settings in 3D map views
+- 3D Features: 3D Scene Clip Distance
+- Print Layouts: Add support merging cells in manual tables
+- Print Layouts: Generate valid PDF/X-4 files
+- Print Layouts: Add option to set geospatial PDF group name for items
+- Print Layouts: Add Page Properties to layout main menu
+- Print Layouts: Add scale method option for layout scale bars
+- Expressions: Add 'Custom Expression' numeric format
+- Expressions: Add line_interpolate_point_by_m and line_locate_m expressions
+- Expressions: Extended color value support
+- Expressions: Allow users to save expression functions in QGIS project file
+- Expressions: Add info about usable "expression dialect" to filter dialog
+- Expressions: Add project_color_object and ramp_color_object functions
+- Digitising: Add circles intersection digitizing tool
+- Digitising: Visual construction guides for advanced digitizing
+- Data Management: Allow setting VSI credentials when loading OGR/GDAL layers
+- Forms and Widgets: Allow reordering fields in new vector layer dialogs
+- Forms and Widgets: Add metadata setting to override widget wrapper used for a parameter
+- Forms and Widgets: Support img tags in HTML label text
+- Processing: Open file or URL Algorithm
+- Processing: Add processing parameter types for Area and Volume
+- Processing: Updated "Vector information" algorithms
+- Processing: Allow adding Processing tools to Favorites
+- Processing: Add creation options support to some native raster Processing algorithms
+- Processing: Support drag and drop for multi-layer parameters
+- Application and Project Options: Smart cache size implementation
+- Application and Project Options: Add vertical CRS selection widget to vector layer properties
+- Application and Project Options: Project color mode properties widget
+- Profile Plots: Change elevation profile name
+- Profile Plots: Ensure vector layer elevation profiles respect layer/map vert datums
+- Browser: add UX to load MVT layers from style URL only
+- Browser: Add duplicate functionality to Browser connection items
+- Browser: Adjust "Create Database" context menu actions on GeoPackage
+- Browser: Add connections to cloud storage providers to browser
+- Browser: STAC integration
+- Data Providers: Support for polyhedral surface and TIN
+- QGIS Server: WFS title definition for layers
+- Programmability: Exceptions raised on QgsDistanceArea methods
+- Programmability: Convert QgsRasterLayer to NumPy Array
+- Programmability: Convert QgsGeometry to Shapely and NumPy
+-
+
+
+# What's new in Version 3.38 'Grenoble'?
+
+This release has following new features:
+
+- Temporal: New temporal mode: pixel value as temporal datetime
+- Map Tools: Add Elevation Controller for filtering vertical data in 2d maps
+- Map Tools: Add Z range support to map canvas / map settings items
+- Map Tools: Add option to set a fixed elevation slice width for elevation controller
+- User Interface: Add search option for regular expression based searching
+- User Interface: Data defined override: use middle-click to open the Expression Builder dialog window
+- Symbology: New single color renderer for rasters
+- Symbology: Add support for Wind Barb rendering for mesh vector datasets
+- Labelling: Add maximum distance setting for point labels
+- Labelling: Add 'over point' placement option for cartographic label mode
+- Rendering: Add data defined control over heatmap radius and maximum value
+- Print Layouts: Tab character support for QgsTextFormat and QgsTextRenderer
+- Print Layouts: Copy composer grids
+- Print Layouts: Add z range filter option for layout maps
+- Print Layouts: Add buttons to expand or collapse layout legend tree
+- Expressions: Add @map_z_range variables reflecting the map's z range values
+- Data Management: Duplicate policy on fields when duplicating features
+- Data Management: Add "Fixed Time Range Per Band" mode for raster temporal control
+- Data Management: Introduce fixed elevation range for raster layers
+- Data Management: Introduce fixed elevation range for mesh layers
+- Data Management: Add a "fixed range per band" elevation mode for rasters
+- Data Management: Add "dynamic elevation range per band" mode for rasters
+- Data Management: Add fixed elevation range per dataset group mode for mesh layers
+- Data Management: Add option to export all lines with minimal width in dxf exports
+- Data Management: Allow users to override the layer names exported to DXF
+- Data Management: Create DXF blocks for point symbols with data defined properties
+- Data Management: Add option 'Use only selected features' to DXF export
+- Data Management: Import/ Export 'DXF Export' dialog settings
+- Forms and Widgets: Add CMYK support for Color Widget
+- Forms and Widgets: Add parent feature scope when adding/editing a child feature through the relation editor widget
+- Forms and Widgets: Add "match contains" to autocompleter in value relation widget
+- Forms and Widgets: Implement value relation's grouping functionality
+- Layer Legend: Show a color ramp legend for vector heatmap layers
+- Layer Legend: Add layer tree filter for "Show Broken Layers Only"
+- Processing: Show more detail in history dialog
+- Processing: Add "Run Selected Steps" option to model designer
+- Processing: Add "View Output Layers" option for model child algorithms
+- Processing: Endpoint distance threshold for network analysis
+- Processing: Add support for pure date and time decorators
+- Application and Project Options: Add vertical crs option for projects
+- Application and Project Options: Add elevation range to project properties
+- Sensors: Support feature expansion
+- Sensors: Add support for SensorThings Multidatastreams
+- Sensors: Serial port sensor's data frame delimiter
+- Sensors: Add an optional feature limit setting
+- Sensors: Implement subset string support for SensorThings
+- Profile Plots: Add tolerance for lines and polygons
+- Data Providers: Add extent based filtering for SensorThings layers
+- Data Providers: Web proxy prefix support for ArcGIS URLs
+- QGIS Server: Default limit for GetFeatureInfo results
+- QGIS Server: Add crs information in WMS GetFeatureInfo output when it differs from WGS84
+- Programmability: Add replace/ replace all functionality to QgsCodeEditorWidget
+-
+
+
 # What's new in Version 3.36 'Maidenhead'?
 
 This release has following new features:

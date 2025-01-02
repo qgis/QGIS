@@ -166,9 +166,6 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      */
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
 
-    /**
-     * Constructor for QgsLayerMetadata.
-     */
     QgsLayerMetadata() = default;
 
 

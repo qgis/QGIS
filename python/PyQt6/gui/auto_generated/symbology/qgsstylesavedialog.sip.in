@@ -3,14 +3,14 @@
  *                                                                      *
  * src/gui/symbology/qgsstylesavedialog.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsStyleSaveDialog: QDialog
+class QgsStyleSaveDialog : QDialog
 {
 %Docstring(signature="appended")
 a dialog for setting properties of a newly saved style.
@@ -20,7 +20,6 @@ a dialog for setting properties of a newly saved style.
 #include "qgsstylesavedialog.h"
 %End
   public:
-
     QgsStyleSaveDialog( QWidget *parent /TransferThis/ = 0, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 %Docstring
 Constructor for :py:class:`QgsSymbolSaveDialog`
@@ -72,5 +71,5 @@ Returns the destination style database.
  *                                                                      *
  * src/gui/symbology/qgsstylesavedialog.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

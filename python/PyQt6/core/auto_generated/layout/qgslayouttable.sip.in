@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayouttable.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -34,9 +34,6 @@ Styling option for a layout table cell
   public:
 
     QgsLayoutTableStyle();
-%Docstring
-Constructor for QgsLayoutTableStyle
-%End
 
     bool enabled;
 
@@ -190,7 +187,7 @@ Returns whether empty rows are drawn in the table.
 .. seealso:: :py:func:`setShowEmptyRows`
 %End
 
- void setHeaderFont( const QFont &font ) /Deprecated/;
+ void setHeaderFont( const QFont &font ) /Deprecated="Since 3.40. Use setHeaderTextFormat() instead."/;
 %Docstring
 Sets the ``font`` used to draw header text in the table.
 
@@ -198,11 +195,12 @@ Sets the ``font`` used to draw header text in the table.
 
 .. seealso:: :py:func:`setContentFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead.
 %End
 
- QFont headerFont() const /Deprecated/;
+ QFont headerFont() const /Deprecated="Since 3.40. Use headerTextFormat() instead."/;
 %Docstring
 Returns the font used to draw header text in the table.
 
@@ -210,11 +208,12 @@ Returns the font used to draw header text in the table.
 
 .. seealso:: :py:func:`contentFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.headerTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.headerTextFormat` instead.
 %End
 
- void setHeaderFontColor( const QColor &color ) /Deprecated/;
+ void setHeaderFontColor( const QColor &color ) /Deprecated="Since 3.40. Use setHeaderTextFormat() instead."/;
 %Docstring
 Sets the ``color`` used to draw header text in the table.
 
@@ -224,11 +223,12 @@ Sets the ``color`` used to draw header text in the table.
 
 .. seealso:: :py:func:`setContentFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setHeaderTextFormat` instead.
 %End
 
- QColor headerFontColor() const /Deprecated/;
+ QColor headerFontColor() const /Deprecated="Since 3.40. Use headerTextFormat() instead."/;
 %Docstring
 Returns the color used to draw header text in the table.
 
@@ -238,8 +238,9 @@ Returns the color used to draw header text in the table.
 
 .. seealso:: :py:func:`contentFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.headerTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.headerTextFormat` instead.
 %End
 
     void setHeaderTextFormat( const QgsTextFormat &format );
@@ -294,7 +295,7 @@ if and where headers are shown in the table.
 .. seealso:: :py:func:`setHeaderMode`
 %End
 
- void setContentFont( const QFont &font ) /Deprecated/;
+ void setContentFont( const QFont &font ) /Deprecated="Since 3.40. Use setContentTextFormat() instead."/;
 %Docstring
 Sets the ``font`` used to draw text in table body cells.
 
@@ -302,11 +303,12 @@ Sets the ``font`` used to draw text in table body cells.
 
 .. seealso:: :py:func:`setHeaderFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setContentTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setContentTextFormat` instead.
 %End
 
- QFont contentFont() const /Deprecated/;
+ QFont contentFont() const /Deprecated="Since 3.40. Use contextTextFormat() instead."/;
 %Docstring
 Returns the font used to draw text in table body cells.
 
@@ -314,11 +316,12 @@ Returns the font used to draw text in table body cells.
 
 .. seealso:: :py:func:`headerFont`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.contextTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.contextTextFormat` instead.
 %End
 
- void setContentFontColor( const QColor &color ) /Deprecated/;
+ void setContentFontColor( const QColor &color ) /Deprecated="Since 3.40. Use setContentTextFormat() instead."/;
 %Docstring
 Sets the ``color`` used to draw text in table body cells.
 
@@ -328,11 +331,12 @@ Sets the ``color`` used to draw text in table body cells.
 
 .. seealso:: :py:func:`setHeaderFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.setContentTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.setContentTextFormat` instead.
 %End
 
- QColor contentFontColor() const /Deprecated/;
+ QColor contentFontColor() const /Deprecated="Since 3.40. Use contextTextFormat() instead."/;
 %Docstring
 Returns the color used to draw text in table body cells.
 
@@ -342,8 +346,9 @@ Returns the color used to draw text in table body cells.
 
 .. seealso:: :py:func:`headerFontColor`
 
-.. deprecated::
-   use :py:func:`~QgsLayoutTable.contextTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLayoutTable.contextTextFormat` instead.
 %End
 
     void setContentTextFormat( const QgsTextFormat &format );
@@ -610,6 +615,24 @@ Creates a new :py:class:`QgsExpressionContextScope` for the cell at ``row``, ``c
 .. versionadded:: 3.16
 %End
 
+    virtual int rowSpan( int row, int column ) const;
+%Docstring
+Returns the row span for the cell a ``row``, ``column``.
+
+.. seealso:: :py:func:`columnSpan`
+
+.. versionadded:: 3.40
+%End
+
+    virtual int columnSpan( int row, int column ) const;
+%Docstring
+Returns the column span for the cell a ``row``, ``column``.
+
+.. seealso:: :py:func:`rowSpan`
+
+.. versionadded:: 3.40
+%End
+
     QgsLayoutTableContents &contents();
 %Docstring
 Returns the current contents of the table. Excludes header cells.
@@ -793,5 +816,5 @@ Returns the vertical alignment to use for the cell at the specified ``row`` and 
  *                                                                      *
  * src/core/layout/qgslayouttable.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

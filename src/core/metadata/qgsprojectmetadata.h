@@ -27,7 +27,7 @@
 /**
  * \ingroup core
  * \class QgsProjectMetadata
- * \brief A structured metadata store for a map layer.
+ * \brief A structured metadata store for a project.
  *
  * QgsProjectMetadata handles storage and management of the metadata
  * for a QgsProject. This class is an internal QGIS format with a common
@@ -54,9 +54,6 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
 {
   public:
 
-    /**
-     * Constructor for QgsProjectMetadata.
-     */
     QgsProjectMetadata() = default;
 
     QgsProjectMetadata *clone() const override SIP_FACTORY;

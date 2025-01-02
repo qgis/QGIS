@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgstablewidgetitem.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,11 +18,7 @@ specific role can be set to sort.
 #include "qgstablewidgetitem.h"
 %End
   public:
-
     QgsTableWidgetItem();
-%Docstring
-Constructor for QgsTableWidgetItem.
-%End
 
     QgsTableWidgetItem( const QString &text );
 %Docstring
@@ -42,7 +38,7 @@ Gets the role by which the items should be sorted.
 By default this will be Qt.DisplayRole
 %End
 
-    virtual bool operator <( const QTableWidgetItem &other ) const;
+    virtual bool operator<( const QTableWidgetItem &other ) const;
 
 
 };
@@ -52,5 +48,5 @@ By default this will be Qt.DisplayRole
  *                                                                      *
  * src/gui/qgstablewidgetitem.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

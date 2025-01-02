@@ -57,7 +57,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( bool isDateOrTime READ isDateOrTime )
     Q_PROPERTY( int length READ length WRITE setLength )
     Q_PROPERTY( int precision READ precision WRITE setPrecision )
-    Q_PROPERTY( QVariant::Type type READ type WRITE setType )
+    Q_PROPERTY( QMetaType::Type type READ type WRITE setType )
     Q_PROPERTY( QString comment READ comment WRITE setComment )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
@@ -84,34 +84,52 @@ class CORE_EXPORT QgsField
      *                this to QVariant::Invalid.
      */
     QgsField( const QString &name = QString(),
-              QVariant::Type type = QVariant::Invalid,
+              QMetaType::Type type = QMetaType::Type::UnknownType,
               const QString &typeName = QString(),
               int len = 0,
               int prec = 0,
               const QString &comment = QString(),
-              QVariant::Type subType = QVariant::Invalid );
+              QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
+
 
     /**
-     * Copy constructor
+     * Constructor. Constructs a new QgsField object.
+     * \param name Field name
+     * \param type Field variant type, currently supported: String / Int / Double
+     * \param typeName Field type (e.g., char, varchar, text, int, serial, double).
+     * Field types are usually unique to the source and are stored exactly
+     * as returned from the data store.
+     * \param len Field length
+     * \param prec Field precision. Usually decimal places but may also be
+     * used in conjunction with other fields types (e.g., variable character fields)
+     * \param comment Comment for the field
+     * \param subType If the field is a collection, its element's type. When
+     *                all the elements don't need to have the same type, leave
+     *                this to QVariant::Invalid.
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    QgsField( const QgsField &other );
+    Q_DECL_DEPRECATED QgsField( const QString &name,
+                                QVariant::Type type,
+                                const QString &typeName = QString(),
+                                int len = 0,
+                                int prec = 0,
+                                const QString &comment = QString(),
+                                QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL SIP_DEPRECATED;
 
-    /**
-     * Assignment operator
-     */
+    QgsField( const QgsField &other ) SIP_HOLDGIL;
     QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
     virtual ~QgsField();
 
-    bool operator==( const QgsField &other ) const;
-    bool operator!=( const QgsField &other ) const;
+    bool operator==( const QgsField &other ) const SIP_HOLDGIL;
+    bool operator!=( const QgsField &other ) const SIP_HOLDGIL;
 
     /**
      * Returns the name of the field.
      * \see setName()
      * \see displayName()
      */
-    QString name() const;
+    QString name() const SIP_HOLDGIL;
 
     /**
      * Returns the name to use when displaying this field. This will be the
@@ -119,7 +137,7 @@ class CORE_EXPORT QgsField
      * \see name()
      * \see alias()
      */
-    QString displayName() const;
+    QString displayName() const SIP_HOLDGIL;
 
     /**
      * Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
@@ -132,7 +150,7 @@ class CORE_EXPORT QgsField
      * \see alias()
      * \since QGIS 3.12
      */
-    QString displayNameWithAlias() const;
+    QString displayNameWithAlias() const SIP_HOLDGIL;
 
     /**
      * Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
@@ -144,7 +162,7 @@ class CORE_EXPORT QgsField
      *
      * \since QGIS 3.14
      */
-    QString displayType( bool showConstraints = false ) const;
+    QString displayType( bool showConstraints = false ) const SIP_HOLDGIL;
 
     /**
      * Returns a user friendly, translated representation of the field type.
@@ -156,17 +174,17 @@ class CORE_EXPORT QgsField
      * \see displayType()
      * \since QGIS 3.14
      */
-    QString friendlyTypeString() const;
+    QString friendlyTypeString() const SIP_HOLDGIL;
 
     //! Gets variant type of the field as it will be retrieved from data source
-    QVariant::Type type() const;
+    QMetaType::Type type() const SIP_HOLDGIL;
 
     /**
      * If the field is a collection, gets its element's type.
      * When all the elements don't need to have the same type, this returns
      * QVariant::Invalid.
      */
-    QVariant::Type subType() const;
+    QMetaType::Type subType() const SIP_HOLDGIL;
 
     /**
      * Gets the field type. Field types vary depending on the data source. Examples
@@ -174,24 +192,24 @@ class CORE_EXPORT QgsField
      * the data store reports it, with no attempt to standardize the value.
      * \returns QString containing the field type
      */
-    QString typeName() const;
+    QString typeName() const SIP_HOLDGIL;
 
     /**
      * Gets the length of the field.
      * \returns int containing the length of the field
      */
-    int length() const;
+    int length() const SIP_HOLDGIL;
 
     /**
      * Gets the precision of the field. Not all field types have a related precision.
      * \returns int containing the precision or zero if not applicable to the field type.
      */
-    int precision() const;
+    int precision() const SIP_HOLDGIL;
 
     /**
      * Returns the field comment
      */
-    QString comment() const;
+    QString comment() const SIP_HOLDGIL;
 
     /**
      * Returns the map of field metadata.
@@ -201,7 +219,7 @@ class CORE_EXPORT QgsField
      * \see setMetadata()
      * \since QGIS 3.32
      */
-    QMap< int, QVariant > metadata() const;
+    QMap< int, QVariant > metadata() const SIP_HOLDGIL;
 
     /**
      * Returns a specific metadata \a property.
@@ -217,7 +235,7 @@ class CORE_EXPORT QgsField
      * \see setMetadata()
      * \since QGIS 3.32
      */
-    QVariant metadata( int property ) const;
+    QVariant metadata( int property ) const SIP_HOLDGIL;
 
     /**
      * Sets the map of field \a metadata.
@@ -227,7 +245,7 @@ class CORE_EXPORT QgsField
      * \see metadata()
      * \since QGIS 3.32
      */
-    void setMetadata( const QMap< int, QVariant > metadata );
+    void setMetadata( const QMap< int, QVariant > metadata ) SIP_HOLDGIL;
 
     /**
      * Sets a metadata \a property to \a value.
@@ -243,62 +261,75 @@ class CORE_EXPORT QgsField
      * \see metadata()
      * \since QGIS 3.32
      */
-    void setMetadata( int property, const QVariant &value );
+    void setMetadata( int property, const QVariant &value ) SIP_HOLDGIL;
 
     /**
      * Returns if this field is numeric. Any integer or floating point type
      * will return TRUE for this.
-     *
      */
-    bool isNumeric() const;
+    bool isNumeric() const SIP_HOLDGIL;
 
     /**
      * Returns if this field is a date and/or time type.
      *
      * \since QGIS 3.6
      */
-    bool isDateOrTime() const;
+    bool isDateOrTime() const SIP_HOLDGIL;
 
     /**
      * Set the field name.
      * \param name Name of the field
      */
-    void setName( const QString &name );
+    void setName( const QString &name ) SIP_HOLDGIL;
 
     /**
-     * Set variant type.
+     * Set variant \a type.
      */
-    void setType( QVariant::Type type );
+    void setType( QMetaType::Type type ) SIP_HOLDGIL;
+
+    /**
+     * Set variant \a type.
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED void setType( QVariant::Type type ) SIP_HOLDGIL SIP_DEPRECATED;
 
     /**
      * If the field is a collection, set its element's type.
      * When all the elements don't need to have the same type, set this to
      * QVariant::Invalid.
      */
-    void setSubType( QVariant::Type subType );
+    void setSubType( QMetaType::Type subType ) SIP_HOLDGIL;
+
+    /**
+     * If the field is a collection, set its element's type.
+     * When all the elements don't need to have the same type, set this to
+     * QVariant::Invalid.
+     * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
+     */
+    Q_DECL_DEPRECATED void setSubType( QVariant::Type subType ) SIP_HOLDGIL  SIP_DEPRECATED;
 
     /**
      * Set the field type.
      * \param typeName Field type
      */
-    void setTypeName( const QString &typeName );
+    void setTypeName( const QString &typeName ) SIP_HOLDGIL;
 
     /**
      * Set the field length.
      * \param len Length of the field
      */
-    void setLength( int len );
+    void setLength( int len ) SIP_HOLDGIL;
 
     /**
      * Set the field precision.
      * \param precision Precision of the field
      */
-    void setPrecision( int precision );
+    void setPrecision( int precision ) SIP_HOLDGIL;
 
     /**
      * Set the field comment
      */
-    void setComment( const QString &comment );
+    void setComment( const QString &comment ) SIP_HOLDGIL;
 
     /**
      * Returns the expression used when calculating the default value for the field.
@@ -306,55 +337,55 @@ class CORE_EXPORT QgsField
      * empty string if no default is set
      * \see setDefaultValueDefinition()
      */
-    QgsDefaultValue defaultValueDefinition() const;
+    QgsDefaultValue defaultValueDefinition() const SIP_HOLDGIL;
 
     /**
      * Sets an expression to use when calculating the default value for the field.
      * \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
-     * a default constructed QgsDefaultValue() to reset.
+     * a default constructed QgsDefaultValue to reset.
      * \see defaultValueDefinition()
      */
-    void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
+    void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition ) SIP_HOLDGIL;
 
     /**
      * Returns constraints which are present for the field.
      * \see setConstraints()
      */
-    const QgsFieldConstraints &constraints() const;
+    const QgsFieldConstraints &constraints() const SIP_HOLDGIL;
 
     /**
      * Sets constraints which are present for the field.
      * \see constraints()
      */
-    void setConstraints( const QgsFieldConstraints &constraints );
+    void setConstraints( const QgsFieldConstraints &constraints ) SIP_HOLDGIL;
 
     /**
      * Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
      * \see setAlias()
      */
-    QString alias() const;
+    QString alias() const SIP_HOLDGIL;
 
     /**
      * Sets the alias for the field (the friendly displayed name of the field ).
      * \param alias field alias, or empty string to remove an existing alias
      * \see alias()
      */
-    void setAlias( const QString &alias );
+    void setAlias( const QString &alias ) SIP_HOLDGIL;
 
     /**
      * Returns the Flags for the field (searchable, …).
      * \see setConfigurationFlags()
      * \since QGIS 3.34
      */
-    Qgis::FieldConfigurationFlags configurationFlags() const;
+    Qgis::FieldConfigurationFlags configurationFlags() const SIP_HOLDGIL;
 
     /**
      * Sets the Flags for the field (searchable, …).
      * \see configurationFlags()
      * \since QGIS 3.34
      */
-    void setConfigurationFlags( Qgis::FieldConfigurationFlags flags );
+    void setConfigurationFlags( Qgis::FieldConfigurationFlags flags ) SIP_HOLDGIL;
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
@@ -363,7 +394,7 @@ class CORE_EXPORT QgsField
      * Returns the readable and translated value of the configuration flag
      * \since QGIS 3.16
      */
-    static QString readableConfigurationFlag( Qgis::FieldConfigurationFlag flag );
+    static QString readableConfigurationFlag( Qgis::FieldConfigurationFlag flag ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -448,7 +479,7 @@ class CORE_EXPORT QgsField
      *
      * \param v  The value to set
      */
-    void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
+    void setEditorWidgetSetup( const QgsEditorWidgetSetup &v ) SIP_HOLDGIL;
 
     /**
      * Gets the editor widget setup for the field.
@@ -458,21 +489,21 @@ class CORE_EXPORT QgsField
      *
      * \returns the value
      */
-    QgsEditorWidgetSetup editorWidgetSetup() const;
+    QgsEditorWidgetSetup editorWidgetSetup() const SIP_HOLDGIL;
 
     /**
      * Make field read-only if \a readOnly is set to true. This is the case for
      * providers which support generated fields for instance.
      * \since QGIS 3.18
      */
-    void setReadOnly( bool readOnly );
+    void setReadOnly( bool readOnly ) SIP_HOLDGIL;
 
     /**
      * Returns TRUE if this field is a read-only field. This is the case for
      * providers which support generated fields for instance.
      * \since QGIS 3.18
      */
-    bool isReadOnly() const;
+    bool isReadOnly() const SIP_HOLDGIL;
 
     /**
      * Returns the field's split policy, which indicates how field values should
@@ -482,7 +513,7 @@ class CORE_EXPORT QgsField
      *
      * \since QGIS 3.30
      */
-    Qgis::FieldDomainSplitPolicy splitPolicy() const;
+    Qgis::FieldDomainSplitPolicy splitPolicy() const SIP_HOLDGIL;
 
     /**
      * Sets the field's split \a policy, which indicates how field values should
@@ -492,7 +523,7 @@ class CORE_EXPORT QgsField
      *
      * \since QGIS 3.30
      */
-    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
+    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy ) SIP_HOLDGIL;
 
     /**
      * Returns the field's duplicate policy, which indicates how field values should
@@ -502,7 +533,7 @@ class CORE_EXPORT QgsField
      *
      * \since QGIS 3.38
      */
-    Qgis::FieldDuplicatePolicy duplicatePolicy() const;
+    Qgis::FieldDuplicatePolicy duplicatePolicy() const SIP_HOLDGIL;
 
     /**
      * Sets the field's duplicate \a policy, which indicates how field values should
@@ -512,7 +543,7 @@ class CORE_EXPORT QgsField
      *
      * \since QGIS 3.38
      */
-    void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy );
+    void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy ) SIP_HOLDGIL;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

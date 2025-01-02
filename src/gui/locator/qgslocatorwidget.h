@@ -22,6 +22,7 @@
 #include "qgslocatorfilter.h"
 #include "qgsfloatingwidget.h"
 #include "qgsfilterlineedit.h"
+#include "qgssettingstree.h"
 
 #include <QWidget>
 #include <QTreeView>
@@ -34,6 +35,7 @@ class QgsLocatorResultsView;
 class QgsMapCanvas;
 class QgsLocatorModelBridge;
 class QgsLocatorLineEdit;
+class QgsSettingsEntryInteger;
 
 /**
  * \class QgsLocatorWidget
@@ -47,6 +49,11 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     Q_OBJECT
 
   public:
+#ifndef SIP_RUN
+
+    static inline QgsSettingsTreeNode *sTreeGuiLocator = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "locator" ) );
+    static const QgsSettingsEntryInteger *settingLocatorTreeHeight;
+#endif
 
     /**
      * Constructor for QgsLocatorWidget.
@@ -69,7 +76,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
      * \brief Set placeholder \a text for the line edit.
      * \since QGIS 3.36
      */
-    void setPlaceholderText( const QString  &text );
+    void setPlaceholderText( const QString &text );
 
     /**
      * Sets the result container \a anchorPoint and \a anchorWidgetPoint position.
@@ -109,6 +116,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     void scheduleDelayedPopup();
     void resultAdded();
     void showContextMenu( const QPoint &point );
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
     QgsLocatorModelBridge *mModelBridge = nullptr;
@@ -124,7 +132,6 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     bool mHasSelectedResult = false;
 
     void acceptCurrentEntry();
-
 };
 
 #ifndef SIP_RUN
@@ -136,15 +143,14 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
-
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
 
     QgsLocatorFilterFilter *clone() const override SIP_FACTORY;
     QgsLocatorFilter::Flags flags() const override;
 
-    QString name() const override { return QStringLiteral( "filters" );}
+    QString name() const override { return QStringLiteral( "filters" ); }
     QString displayName() const override { return QString(); }
-    Priority priority() const override { return static_cast< QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
+    Priority priority() const override { return static_cast<QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
@@ -162,7 +168,6 @@ class GUI_EXPORT QgsLocatorResultsView : public QTreeView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLocatorResultsView.
      */
@@ -182,7 +187,6 @@ class GUI_EXPORT QgsLocatorResultsView : public QTreeView
      * Selects the previous result in the list, wrapping around for the first result.
      */
     void selectPreviousResult();
-
 };
 
 
@@ -215,5 +219,3 @@ class QgsLocatorLineEdit : public QgsFilterLineEdit
 
 
 #endif // QGSLOCATORWIDGET_H
-
-

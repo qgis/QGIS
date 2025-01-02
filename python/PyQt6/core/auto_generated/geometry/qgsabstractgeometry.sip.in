@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsabstractgeometry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -88,9 +88,6 @@ Abstract base class for all geometries
     };
 
     QgsAbstractGeometry();
-%Docstring
-Constructor for QgsAbstractGeometry.
-%End
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 
@@ -349,7 +346,7 @@ Returns a KML representation of the geometry.
 
 
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  = 0;
 %Docstring
 Transforms the geometry using a coordinate transform
 
@@ -440,11 +437,11 @@ Returns the point corresponding to a specified vertex id
 Searches for the closest segment of the geometry to a given point.
 
 :param pt: specifies the point to find closest segment to
-:param segmentPt: storage for the closest point within the geometry
-:param vertexAfter: storage for the ID of the vertex at the end of the closest segment
 :param epsilon: epsilon for segment snapping
 
 :return: - squared distance to closest segment or negative value on error
+         - segmentPt: the closest point within the geometry
+         - vertexAfter: the ID of the vertex at the end of the closest segment
          - leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not be determined, e.g. point exactly on a line) ``False`` if point is to right of segment)
 %End
 
@@ -604,7 +601,7 @@ E.g. :py:class:`QgsLineString` -> :py:class:`QgsCompoundCurve`, :py:class:`QgsPo
 :return: the converted geometry. Caller takes ownership
 %End
 
-    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const = 0 /Factory/;
 %Docstring
 Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
 Ownership is transferred to the caller.
@@ -626,6 +623,21 @@ In this case, it can be thought like rounding the x and y of all the points/vert
 :param vSpacing: Vertical spacing of the grid (y axis). 0 to disable.
 :param dSpacing: Depth spacing of the grid (z axis). 0 (default) to disable.
 :param mSpacing: Custom dimension spacing of the grid (m axis). 0 (default) to disable.
+:param removeRedundantPoints: if ``True``, then points which are redundant (e.g. they represent mid points on a straight line segment) will be skipped (since QGIS 3.38)
+%End
+
+    virtual QgsAbstractGeometry *simplifyByDistance( double tolerance ) const = 0 /Factory/;
+%Docstring
+Simplifies the geometry by applying the Douglas Peucker simplification by distance
+algorithm.
+
+The caller takes ownership of the returned geometry. Curved geometries will be segmentized prior to simplification.
+
+If a simplified geometry cannot be calculated ``None`` will be returned.
+
+The returned geometry may be invalid and contain self-intersecting rings.
+
+.. versionadded:: 3.38
 %End
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
@@ -772,8 +784,7 @@ Checks validity of the geometry, and returns ``True`` if the geometry is valid.
               (corresponding to :py:class:`Qgis`.GeometryValidityFlags).
 
 :return: - ``True`` if geometry is valid
-         - error: will be set to the validity error message
-
+         - error: the validity error message
 
 .. versionadded:: 3.8
 %End
@@ -852,8 +863,6 @@ Example
        geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
        for v in geometry.vertices():
            print(v.x(), v.y())
-
-
 
 .. seealso:: :py:func:`parts`
 %End
@@ -968,10 +977,8 @@ Java-style iterator for traversal of vertices of a geometry
 #include "qgsabstractgeometry.h"
 %End
   public:
+
     QgsVertexIterator();
-%Docstring
-Constructor for QgsVertexIterator
-%End
 
     QgsVertexIterator( const QgsAbstractGeometry *geometry );
 %Docstring
@@ -1015,10 +1022,8 @@ Java-style iterator for traversal of parts of a geometry
 #include "qgsabstractgeometry.h"
 %End
   public:
+
     QgsGeometryPartIterator();
-%Docstring
-Constructor for QgsGeometryPartIterator
-%End
 
     QgsGeometryPartIterator( QgsAbstractGeometry *geometry );
 %Docstring
@@ -1063,10 +1068,8 @@ Java-style iterator for const traversal of parts of a geometry
 #include "qgsabstractgeometry.h"
 %End
   public:
+
     QgsGeometryConstPartIterator();
-%Docstring
-Constructor for QgsGeometryConstPartIterator
-%End
 
     QgsGeometryConstPartIterator( const QgsAbstractGeometry *geometry );
 %Docstring
@@ -1106,5 +1109,5 @@ QFlags<QgsAbstractGeometry::WkbFlag> operator|(QgsAbstractGeometry::WkbFlag f1, 
  *                                                                      *
  * src/core/geometry/qgsabstractgeometry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

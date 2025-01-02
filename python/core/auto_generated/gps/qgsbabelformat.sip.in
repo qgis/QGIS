@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/gps/qgsbabelformat.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -135,5 +135,5 @@ Returns the list of known extensions for the format, e.g. "csv", "txt".
  *                                                                      *
  * src/core/gps/qgsbabelformat.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

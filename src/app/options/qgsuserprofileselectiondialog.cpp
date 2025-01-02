@@ -23,6 +23,7 @@
 #include "qgsnewnamedialog.h"
 
 #include "qgsuserprofileselectiondialog.h"
+#include "moc_qgsuserprofileselectiondialog.cpp"
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
   : QDialog( parent ), mManager( manager )
@@ -41,7 +42,7 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   mProfileListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   // Fill the list of profiles
-  mProfileListWidget->clear();  // Clear bogus profiles in the Ui form
+  mProfileListWidget->clear(); // Clear bogus profiles in the Ui form
   for ( auto profile : mManager->allProfiles() )
   {
     auto item = new QListWidgetItem( mManager->profileForName( profile )->icon(), profile );
@@ -64,7 +65,7 @@ QString QgsUserProfileSelectionDialog::selectedProfileName() const
 void QgsUserProfileSelectionDialog::accept()
 {
   // Accept only if an item is selected
-  if ( mProfileListWidget->currentItem() != nullptr && mProfileListWidget->currentItem()->isSelected() )
+  if ( mProfileListWidget->currentItem() && mProfileListWidget->currentItem()->isSelected() )
   {
     QDialog::accept();
   }

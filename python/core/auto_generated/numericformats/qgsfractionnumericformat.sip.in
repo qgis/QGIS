@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/numericformats/qgsfractionnumericformat.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -135,9 +135,9 @@ This method is based of Richard's algorithm (1981) from "Continued Fractions wit
 :param tolerance: acceptable tolerance. Larger values will give "nicer" fractions.
 
 :return: - ``True`` if ``value`` was successfully converted to a fraction
-         - numerator: will be set to calculated fraction numerator
-         - denominator: will be set to the calculated fraction denominator
-         - sign: will be set to the sign of the result (as -1 or +1 values)
+         - numerator: calculated fraction numerator
+         - denominator: the calculated fraction denominator
+         - sign: the sign of the result (as -1 or +1 values)
 %End
 
     static QString toUnicodeSuperscript( const QString &input );
@@ -168,5 +168,5 @@ Sets the format's ``configuration``.
  *                                                                      *
  * src/core/numericformats/qgsfractionnumericformat.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

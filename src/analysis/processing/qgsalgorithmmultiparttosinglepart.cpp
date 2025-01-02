@@ -62,6 +62,11 @@ QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
                       "contain, and the same attributes are used for each of them." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsMultipartToSinglepartAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::createInstance() const
 {
   return new QgsMultipartToSinglepartAlgorithm();
@@ -106,5 +111,3 @@ QgsFeatureList QgsMultipartToSinglepartAlgorithm::processFeature( const QgsFeatu
 
 
 ///@endcond
-
-

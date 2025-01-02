@@ -90,7 +90,7 @@ void QgsGeometryMissingVertexCheck::fixError( const QMap<QString, QgsFeaturePool
 
       case AddMissingVertex:
       {
-        QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
+        QgsFeaturePool *featurePool = featurePools[error->layerId()];
 
         QgsFeature feature;
         featurePool->getFeature( error->featureId(), feature );
@@ -130,17 +130,17 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
   const QgsFeature &currentFeature = layerFeature.feature();
   std::unique_ptr<QgsMultiPolygon> boundaries = std::make_unique<QgsMultiPolygon>();
 
-  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->exteriorRing()->clone(), mContext->tolerance );
+  std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( polygon->exteriorRing()->clone(), mContext->tolerance ) );
   boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
 
   const int numRings = polygon->numInteriorRings();
   for ( int i = 0; i < numRings; ++i )
   {
-    geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->interiorRing( i ), mContext->tolerance );
+    geomEngine.reset( QgsGeometry::createGeometryEngine( polygon->interiorRing( i ), mContext->tolerance ) );
     boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
   }
 
-  geomEngine = QgsGeometryCheckerUtils::createGeomEngine( boundaries.get(), mContext->tolerance );
+  geomEngine.reset( QgsGeometry::createGeometryEngine( boundaries.get(), mContext->tolerance ) );
   geomEngine->prepareGeometry();
 
   const QgsFeatureIds fids = featurePool->getIntersects( boundaries->boundingBox() );
@@ -236,7 +236,7 @@ QgsGeometryCheck::CheckType QgsGeometryMissingVertexCheck::checkType() const
 ///@cond private
 QList<Qgis::GeometryType> QgsGeometryMissingVertexCheck::factoryCompatibleGeometryTypes()
 {
-  return {Qgis::GeometryType::Polygon};
+  return { Qgis::GeometryType::Polygon };
 }
 
 bool QgsGeometryMissingVertexCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP
@@ -292,7 +292,6 @@ void QgsGeometryMissingVertexCheckError::setInvolvedFeatures( const QMap<QString
 
 QIcon QgsGeometryMissingVertexCheckError::icon() const
 {
-
   if ( status() == QgsGeometryCheckError::StatusFixed )
     return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
   else

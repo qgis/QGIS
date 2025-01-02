@@ -66,9 +66,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     ~QgsProcessingRegistry() override;
 
-    //! Registry cannot be copied
     QgsProcessingRegistry( const QgsProcessingRegistry &other ) = delete;
-    //! Registry cannot be copied
     QgsProcessingRegistry &operator=( const QgsProcessingRegistry &other ) = delete;
 
     /**

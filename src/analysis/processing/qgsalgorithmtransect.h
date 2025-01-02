@@ -30,9 +30,7 @@
  */
 class QgsTransectAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     /**
      * Draw the transect on which side of the line
      */
@@ -50,15 +48,13 @@ class QgsTransectAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsTransectAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     /**
      * Returns the transect of the point \a point with \a length, \a orientation and \a angle.
      * \param point The vertex

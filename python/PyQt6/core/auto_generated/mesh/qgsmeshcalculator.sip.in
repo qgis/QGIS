@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/mesh/qgsmeshcalculator.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -49,7 +49,7 @@ Resulting dataset is always scalar
                                          const QgsRectangle &outputExtent,
                                          double startTime,
                                          double endTime,
-                                         QgsMeshLayer *layer ) /Deprecated/;
+                                         QgsMeshLayer *layer ) /Deprecated="Since 3.12. "/;
 %Docstring
 Creates calculator with bounding box (rectangular) mask
 
@@ -60,8 +60,7 @@ Creates calculator with bounding box (rectangular) mask
 :param endTime: time filter defining the ending dataset
 :param layer: mesh layer with dataset groups references in formulaString
 
-.. deprecated::
-   QGIS 3.12
+.. deprecated:: 3.12
 %End
 
  QgsMeshCalculator( const QString &formulaString,
@@ -69,7 +68,7 @@ Creates calculator with bounding box (rectangular) mask
                                          const QgsGeometry &outputMask,
                                          double startTime,
                                          double endTime,
-                                         QgsMeshLayer *layer ) /Deprecated/;
+                                         QgsMeshLayer *layer ) /Deprecated="Since 3.12. "/;
 %Docstring
 Creates calculator with geometry mask
 
@@ -80,8 +79,7 @@ Creates calculator with geometry mask
 :param endTime: time filter defining the ending dataset
 :param layer: mesh layer with dataset groups references in formulaString
 
-.. deprecated::
-   QGIS 3.12
+.. deprecated:: 3.12
 %End
 
     QgsMeshCalculator( const QString &formulaString,
@@ -184,7 +182,7 @@ Starts the calculation, creates new dataset group and adds it to the mesh layer
 %End
 
  static Result expression_valid( const QString &formulaString,
-        QgsMeshLayer *layer ) /Deprecated/;
+        QgsMeshLayer *layer ) /Deprecated="Since 3.12. Use expressionIsValid."/;
 %Docstring
 Returns whether formula is valid for particular mesh layer
 
@@ -193,8 +191,9 @@ Returns whether formula is valid for particular mesh layer
 
 :return: QgsMeshCalculator.Success in case of success
 
-.. deprecated::
-   QGIS 3.12 - use expressionIsValid
+.. deprecated:: 3.12
+
+   Use expressionIsValid.
 %End
 
     static Result expressionIsValid( const QString &formulaString,
@@ -219,5 +218,5 @@ Returns whether formula is valid for particular mesh layer
  *                                                                      *
  * src/core/mesh/qgsmeshcalculator.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

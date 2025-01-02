@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/effects/qgspainteffect.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -84,9 +84,6 @@ and render the result to the render context's paint device.
     };
 
     QgsPaintEffect();
-%Docstring
-Constructor for QgsPaintEffect.
-%End
 
     QgsPaintEffect( const QgsPaintEffect &other );
     virtual ~QgsPaintEffect();
@@ -305,13 +302,17 @@ effects.
 .. seealso:: :py:func:`sourceAsImage`
 %End
 
-    void fixQPictureDpi( QPainter *painter ) const;
+ void fixQPictureDpi( QPainter *painter ) const /Deprecated="Since 3.40. Use QgsPainting.drawPicture() or QgsPainting.applyScaleFixForQPictureDpi() instead."/;
 %Docstring
 Applies a workaround to a QPainter to avoid an issue with incorrect scaling
 when drawing QPictures. This may need to be called by derived classes prior
 to rendering results onto a painter.
 
 :param painter: destination painter
+
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsPainting.drawPicture()` or :py:func:`QgsPainting.applyScaleFixForQPictureDpi()` instead.
 %End
 
 };
@@ -334,9 +335,6 @@ If no alterations are performed then the original picture will be rendered as a 
   public:
 
     QgsDrawSourceEffect();
-%Docstring
-Constructor for QgsDrawSourceEffect
-%End
 
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
@@ -448,5 +446,5 @@ Sets the effect to be painted
  *                                                                      *
  * src/core/effects/qgspainteffect.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayertoolscontext.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorLayerToolsContext
+{
+%Docstring(signature="appended")
+Contains settings which reflect the context in which vector layer tool operations should
+consider.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayertoolscontext.h"
+%End
+  public:
+
+    QgsVectorLayerToolsContext();
+
+    QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other );
+
+    void setExpressionContext( const QgsExpressionContext *context );
+%Docstring
+Sets the optional expression context used by the vector layer tools.
+
+:param context: expression context pointer. Ownership is not transferred.
+
+.. seealso:: :py:func:`expressionContext`
+
+.. seealso:: :py:func:`setAdditionalExpressionContextScope`
+%End
+
+    QgsExpressionContext *expressionContext() const;
+%Docstring
+Returns the optional expression context used by the vector layer tools.
+
+.. seealso:: :py:func:`setExpressionContext`
+
+.. seealso:: :py:func:`additionalExpressionContextScope`
+%End
+
+    void setAdditionalExpressionContextScope( const QgsExpressionContextScope *scope );
+%Docstring
+Sets an additional expression context scope to be made available when calculating expressions.
+
+:param scope: additional scope. Ownership is not transferred and a copy will be made.
+
+.. seealso:: :py:func:`additionalExpressionContextScope`
+%End
+
+    const QgsExpressionContextScope *additionalExpressionContextScope() const;
+%Docstring
+Returns an additional expression context scope to be made available when calculating expressions.
+
+.. seealso:: :py:func:`setAdditionalExpressionContextScope`
+%End
+
+    QWidget *parentWidget() const;
+%Docstring
+Returns the widget which should be parented to tools dialogues.
+%End
+
+    void setParentWidget( QWidget *parent );
+%Docstring
+Sets the widget which should be parented to tools' dialogues.
+
+:param parent: the widget actign as parent
+%End
+
+    bool showModal() const;
+%Docstring
+Returns whether tools' dialogues should be modal.
+%End
+
+    void setShowModal( bool modal );
+%Docstring
+Sets whether tools' dialogues should be modal.
+%End
+
+    bool hideParent() const;
+%Docstring
+Returns whether the parent widget should be hidden when showing tools' dialogues.
+%End
+
+    void setHideParent( bool hide );
+%Docstring
+Sets whether the parent widget should be hidden when showing tools' dialogues.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsvectorlayertoolscontext.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

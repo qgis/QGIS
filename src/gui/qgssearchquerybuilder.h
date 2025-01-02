@@ -32,7 +32,7 @@ class QgsVectorLayer;
  * \ingroup gui
  * \class QgsSearchQueryBuilder
  * \brief Query Builder for search strings
- * \deprecated Will be removed in QGIS 4
+ * \deprecated QGIS 3.40. Will be removed in QGIS 4.
  */
 class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {
@@ -40,9 +40,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   public:
     //! Constructor - takes pointer to vector layer as a parameter
-    QgsSearchQueryBuilder( QgsVectorLayer *layer,
-                           QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! returns newly created search string
     QString searchString();
@@ -96,7 +94,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void btnSampleValues_clicked();
 
   private:
-
     /**
      * Populate the field list for the selected table
      */
@@ -125,7 +122,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void showHelp();
 
   private:
-
     //! Layer for which is the query builder opened
     QgsVectorLayer *mLayer = nullptr;
     //! Map that holds field information, keyed by field name

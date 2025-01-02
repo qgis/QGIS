@@ -132,12 +132,18 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QString asKml( int precision = 17 ) const override;
     void normalize() final SIP_HOLDGIL;
 
+    /**
+     * Gets a polygon representation of this surface.
+     * Ownership is transferred to the caller.
+     */
+    virtual QgsPolygon *surfaceToPolygon() const SIP_FACTORY;
+
     //surface interface
     double area() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
-    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
+    QgsCurvePolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
@@ -407,7 +413,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      */
-    inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( !geom )
         return nullptr;

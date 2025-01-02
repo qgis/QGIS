@@ -43,7 +43,6 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack );
 int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack );
 int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack );
 int nmea_parse_HCHDG( const char *buff, int buff_sz, nmeaHCHDG *pack );
-int nmea_parse_HCHDT( const char *buff, int buff_sz, nmeaHCHDT *pack );
 int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack );
 int nmea_parse_GPHDT( const char *buff, int buff_sz, nmeaGPHDT *pack );
 

@@ -3,20 +3,20 @@
  *                                                                      *
  * tests/code_layout/sipify/sipifyheader.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 class QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType
-{
-%TypeHeaderCode
-#include "sipifyheader.h"
-#include "qgssettingsentry.h"
-typedef QgsSettingsEntryEnumFlag<Qgis::SnappingType> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
-%End
-  public:
-    QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const Qgis::SnappingType &defaultValue, const QString &description = QString() );
-    QString key( const QString &dynamicKeyPart = QString() ) const;
-    Qgis::SnappingType value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const Qgis::SnappingType &defaultValueOverride = Qgis::SnappingType() ) const;
-};
+    {
+    %TypeHeaderCode
+    #include "sipifyheader.h"
+    #include "qgssettingsentry.h"
+    typedef QgsSettingsEntryEnumFlag<Qgis::SnappingType> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
+    %End
+      public:
+        QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const Qgis::SnappingType &defaultValue, const QString &description = QString() );
+        QString key( const QString &dynamicKeyPart = QString() ) const;
+        Qgis::SnappingType value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const Qgis::SnappingType &defaultValueOverride = Qgis::SnappingType() ) const;
+    };
 
 
 
@@ -314,12 +314,19 @@ remove argument
     void method();
     void test();
     void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
-
     void position();
-    void position(  bool keep );
+    void position( bool keep );
     void position( bool keep, bool keep );
     void position( bool keep );
-
+    static QgsFields stringToFields( const QString &string, QTextCodec *encoding = 0 );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
+                                       bool addToLegend = true );
+    QgsEditorWidgetWrapper *create( const QString &widgetId,
+                                    QgsVectorLayer *vl,
+                                    int fieldIdx,
+                                    const QVariantMap &config,
+                                    QWidget *editor,
+                                    QWidget *parent /TransferThis/ ) /Factory/;
     void method( bool superArg = test );
     void method( bool myArg1,
                  bool superArg2 = test, // hola
@@ -462,5 +469,5 @@ typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase;
  *                                                                      *
  * tests/code_layout/sipify/sipifyheader.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

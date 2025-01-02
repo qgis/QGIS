@@ -26,17 +26,17 @@ CREATE EXTENSION IF NOT EXISTS citext;
 --- Create qgis_test schema
 DROP SCHEMA IF EXISTS qgis_test CASCADE;
 CREATE SCHEMA qgis_test;
-GRANT ALL ON SCHEMA qgis_test TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON TABLES TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO public;
+GRANT ALL ON SCHEMA qgis_test TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON TABLES TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO qgis_test_group;
 
 
 --- Create "CamelCase'singlequote'Schema" schema
 DROP SCHEMA IF EXISTS "CamelCase'singlequote'Schema" CASCADE;
 CREATE SCHEMA "CamelCase'singlequote'Schema";
-GRANT ALL ON SCHEMA "CamelCase'singlequote'Schema" TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON TABLES TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON SEQUENCES TO public;
+GRANT ALL ON SCHEMA "CamelCase'singlequote'Schema" TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON TABLES TO qgis_test_group;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON SEQUENCES TO qgis_test_group;
 
 
 SET default_tablespace = '';
@@ -787,5 +787,7 @@ CREATE TABLE qgis_test.referencing_layer_composite(
   fk_ref_4 integer,
     CONSTRAINT fk_ref_3_4
       FOREIGN KEY (fk_ref_3, fk_ref_4)
-      REFERENCES qgis_test.referenced_layer_composite(pk_ref_3, pk_ref_4)
+      -- NOTE: referenced cols are given in reverse order to guard
+      --       against issue GH-56420
+      REFERENCES qgis_test.referenced_layer_composite(pk_ref_4, pk_ref_3)
 );

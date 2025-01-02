@@ -72,7 +72,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param urlPrefix http web proxy url prefix
      *
      * \returns JSON user info
-     * \deprecated since QGIS 3.24, use the version with QgsHttpHeaders instead
+     * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
 
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param urlPrefix http web proxy url prefix
      *
      * \returns a list of JSON group info
-     * \deprecated since QGIS 3.24, use the version with QgsHttpHeaders instead
+     * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
 
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param urlPrefix http web proxy url prefix
      *
      * \returns a list of JSON item info for all items within the group
-     * \deprecated since QGIS 3.24, use the version with QgsHttpHeaders instead
+     * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
 
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param urlPrefix http web proxy url prefix
      *
      * \returns a list of JSON item info for all items within the group
-     * \deprecated since QGIS 3.24, use the version with QgsHttpHeaders instead
+     * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
         const QList< int > &itemTypes,

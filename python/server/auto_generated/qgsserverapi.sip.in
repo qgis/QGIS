@@ -3,9 +3,8 @@
  *                                                                      *
  * src/server/qgsserverapi.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -17,7 +16,7 @@ class QgsServerApi
 %Docstring(signature="appended")
 Server generic API endpoint abstract base class.
 
-.. seealso:: :py:class:`QgsServerOgcApi`
+.. seealso:: :py:class:`QgsServerOgcApi` for an OGC API (aka WFS3) implementation.
 
 An API must have a name and a (possibly empty) version and define a
 (possibly empty) root path (e.g. "/wfs3").
@@ -51,12 +50,9 @@ After the API has been registered to the server API registry:
        api = API(server.serverInterface())
        server.serverInterface().serviceRegistry().registerApi(api)
 
-
 the incoming calls with an URL path starting with the API root path
 will be routed to the first matching API and :py:func:`~executeRequest` method
 of the API will be invoked.
-
-
 
 .. versionadded:: 3.10
 %End
@@ -65,7 +61,6 @@ of the API will be invoked.
 #include "qgsserverapi.h"
 %End
   public:
-
     QgsServerApi( QgsServerInterface *serverIface );
 %Docstring
 Creates a QgsServerApi object
@@ -115,12 +110,10 @@ Returns the server interface
 };
 
 
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/server/qgsserverapi.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

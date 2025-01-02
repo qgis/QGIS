@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/dxf/qgsdxfexport.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -515,8 +515,9 @@ Register name of layer for feature
 :param fid: id of feature
 :param layer: dxf layer of feature
 
-.. deprecated::
-   Will be made private in QGIS 4
+.. deprecated:: 3.40
+
+   Will be made private in QGIS 4.
 %End
 
   private:
@@ -534,5 +535,5 @@ QFlags<QgsDxfExport::DxfPolylineFlag> operator|(QgsDxfExport::DxfPolylineFlag f1
  *                                                                      *
  * src/core/dxf/qgsdxfexport.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

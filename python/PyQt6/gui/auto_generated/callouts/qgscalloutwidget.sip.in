@@ -3,9 +3,8 @@
  *                                                                      *
  * src/gui/callouts/qgscalloutwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 class QgsCalloutWidget : QWidget, protected QgsExpressionContextGenerator
@@ -20,16 +19,15 @@ Base class for widgets which allow control over the properties of callouts.
 #include "qgscalloutwidget.h"
 %End
   public:
-
-    QgsCalloutWidget( QWidget *parent /TransferThis/, QgsVectorLayer *vl = 0 );
+    QgsCalloutWidget( QWidget *parent /TransferThis/, QgsMapLayer *vl = 0 );
 %Docstring
 Constructor for QgsCalloutWidget.
 
-:param vl: associated vector layer
+:param vl: associated map layer
 :param parent: parent widget
 %End
 
-    virtual void setCallout( QgsCallout *callout ) = 0;
+    virtual void setCallout( const QgsCallout *callout ) = 0;
 %Docstring
 Sets the ``callout`` to show in the widget. Ownership is not transferred.
 
@@ -60,9 +58,20 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 .. seealso:: :py:func:`setContext`
 %End
 
-    const QgsVectorLayer *vectorLayer() const;
+ const QgsVectorLayer *vectorLayer() const /Deprecated="Since 3.40. Use layer() instead."/;
 %Docstring
 Returns the vector layer associated with the widget.
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsCalloutWidget.layer` instead.
+%End
+
+    const QgsMapLayer *layer() const;
+%Docstring
+Returns the vector layer associated with the widget.
+
+.. versionadded:: 3.40
 %End
 
     virtual void setGeometryType( Qgis::GeometryType type ) = 0;
@@ -71,7 +80,6 @@ Sets the geometry ``type`` of the features to customize the widget accordingly.
 %End
 
   protected:
-
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
 %Docstring
 Registers a data defined override button. Handles setting up connections
@@ -102,5 +110,5 @@ If the subsymbol is changed, :py:func:`~QgsCalloutWidget.symbolChanged` should b
  *                                                                      *
  * src/gui/callouts/qgscalloutwidget.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

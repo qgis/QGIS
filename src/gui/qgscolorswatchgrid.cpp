@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgscolorswatchgrid.h"
+#include "moc_qgscolorswatchgrid.cpp"
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
-#include "qgslogger.h"
+#include "qgscolortooltip_p.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QMenu>
@@ -121,47 +122,13 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
     //if color has an associated name from the color scheme, use that
     const QString colorName = mColors.at( colorIdx ).second;
 
-    // create very large preview swatch, because the grid itself has only tiny preview icons
-    const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-    const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
-    const int margin = static_cast< int >( height * 0.1 );
-    QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
-    icon.fill( Qt::transparent );
-
-    QPainter p;
-    p.begin( &icon );
-
-    //start with checkboard pattern
-    const QBrush checkBrush = QBrush( transparentBackground() );
-    p.setPen( Qt::NoPen );
-    p.setBrush( checkBrush );
-    p.drawRect( margin, margin, width, height );
-
-    //draw color over pattern
-    p.setBrush( QBrush( mColors.at( colorIdx ).first ) );
-
-    //draw border
-    p.setPen( QColor( 197, 197, 197 ) );
-    p.drawRect( margin, margin, width, height );
-    p.end();
-
-    QByteArray data;
-    QBuffer buffer( &data );
-    icon.save( &buffer, "PNG", 100 );
-
     QString info;
     if ( !colorName.isEmpty() )
       info += QStringLiteral( "<h3>%1</h3><p>" ).arg( colorName );
 
-    info += QStringLiteral( "<b>HEX</b> %1<br>"
-                            "<b>RGB</b> %2<br>"
-                            "<b>HSV</b> %3,%4,%5<p>" ).arg( color.name(),
-                                QgsSymbolLayerUtils::encodeColor( color ) )
-            .arg( color.hue() ).arg( color.saturation() ).arg( color.value() );
-    info += QStringLiteral( "<img src='data:image/png;base64, %0'>" ).arg( QString( data.toBase64() ) );
+    info += QgsColorTooltip::htmlDescription( color, this );
 
     setToolTip( info );
-
   }
   else
   {
@@ -183,7 +150,7 @@ void QgsColorSwatchGrid::mousePressEvent( QMouseEvent *event )
 
 void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( ! mPressedOnWidget )
+  if ( !mPressedOnWidget )
   {
     return;
   }
@@ -208,11 +175,11 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
   {
-    mCurrentFocusBox = std::min< int >( mCurrentFocusBox + 1, mColors.length() - 1 );
+    mCurrentFocusBox = std::min<int>( mCurrentFocusBox + 1, mColors.length() - 1 );
   }
   else if ( event->key() == Qt::Key_Left )
   {
-    mCurrentFocusBox = std::max< int >( mCurrentFocusBox - 1, 0 );
+    mCurrentFocusBox = std::max<int>( mCurrentFocusBox - 1, 0 );
   }
   else if ( event->key() == Qt::Key_Up )
   {
@@ -296,8 +263,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
 
   //draw header text
   painter.setPen( headerTextColor );
-  painter.drawText( QRect( mLabelMargin, 0.25 * mLabelMargin, width() - 2 * mLabelMargin, mLabelHeight ),
-                    Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
+  painter.drawText( QRect( mLabelMargin, 0.25 * mLabelMargin, width() - 2 * mLabelMargin, mLabelHeight ), Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
 
   //draw color swatches
   QgsNamedColorList::const_iterator colorIt = mColors.constBegin();
@@ -307,9 +273,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     const int row = index / NUMBER_COLORS_PER_ROW;
     const int column = index % NUMBER_COLORS_PER_ROW;
 
-    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin,
-                              row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin,
-                              mSwatchSize, mSwatchSize );
+    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin, row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin, mSwatchSize, mSwatchSize );
 
     if ( mCurrentHoverBox == index )
     {

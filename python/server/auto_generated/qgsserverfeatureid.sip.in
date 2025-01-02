@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsserverfeatureid.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -17,10 +17,8 @@
 %End
 
 
-
-namespace QgsServerFeatureId
+  namespace QgsServerFeatureId
 {
-
   QString getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes );
 %Docstring
 Returns the feature id based on primary keys.
@@ -33,7 +31,7 @@ Returns the feature id based on primary keys.
 .. versionadded:: 3.4.9
 %End
 
-  QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest &featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
+  QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest & featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
 %Docstring
 Returns the feature request based on feature ids build with primary keys.
 
@@ -66,7 +64,6 @@ Returns the primary keys separator
 
 .. versionadded:: 3.4.9
 %End
-
 };
 
 /************************************************************************
@@ -74,5 +71,5 @@ Returns the primary keys separator
  *                                                                      *
  * src/server/qgsserverfeatureid.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

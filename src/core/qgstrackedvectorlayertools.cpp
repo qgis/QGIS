@@ -13,19 +13,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgstrackedvectorlayertools.h"
+#include "moc_qgstrackedvectorlayertools.cpp"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayertoolscontext.h"
 
 
-bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, QWidget *parentWidget, bool showModal, bool hideParent ) const
+bool QgsTrackedVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
 {
   QgsFeature *f = feature;
   if ( !feature )
     f = new QgsFeature();
 
   const_cast<QgsVectorLayerTools *>( mBackend )->setForceSuppressFormPopup( forceSuppressFormPopup() );
-
-  if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f, parentWidget, showModal, hideParent ) )
+  if ( mBackend->addFeatureV2( layer, defaultValues, defaultGeometry, f, context ) )
   {
     mAddedFeatures[layer].insert( f->id() );
     if ( !feature )

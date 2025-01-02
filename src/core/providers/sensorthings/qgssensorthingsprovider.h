@@ -39,7 +39,7 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     static const inline QString SENSORTHINGS_PROVIDER_KEY = QStringLiteral( "sensorthings" );
     static const inline QString SENSORTHINGS_PROVIDER_DESCRIPTION = QStringLiteral( "OGC SensorThings API data provider" );
 
-    QgsSensorThingsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    QgsSensorThingsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     QgsAbstractFeatureSource *featureSource() const final;
     QString storageType() const final;
@@ -51,8 +51,10 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     QString htmlMetadata() const final;
 
     Qgis::DataProviderFlags flags() const final;
-    QgsVectorDataProvider::Capabilities capabilities() const final;
+    Qgis::VectorProviderCapabilities capabilities() const final;
     bool supportsSubsetString() const final;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     QString subsetString() const final;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) final;
     QgsCoordinateReferenceSystem crs() const final;
@@ -87,7 +89,7 @@ class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
     QList<QgsDataItemProvider *> dataItemProviders() const final;
     QVariantMap decodeUri( const QString &uri ) const final;
     QString encodeUri( const QVariantMap &parts ) const final;
-    QgsSensorThingsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) final;
+    QgsSensorThingsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) final;
     QList< Qgis::LayerType > supportedLayerTypes() const final;
 
     // handling of stored connections

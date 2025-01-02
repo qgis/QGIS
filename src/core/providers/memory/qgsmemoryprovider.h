@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMEMORYPROVIDER_H
+#define QGSMEMORYPROVIDER_H
+
 #define SIP_NO_FILE
 
 #include "qgsvectordataprovider.h"
@@ -33,7 +36,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
 
   public:
     explicit QgsMemoryProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext,
-                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                                Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsMemoryProvider() override;
 
@@ -61,10 +64,12 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override;
+    QString subsetStringDialect() const override;
+    QString subsetStringHelpUrl() const override;
     bool createSpatialIndex() override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
-    QgsVectorDataProvider::Capabilities capabilities() const override;
+    Qgis::VectorProviderCapabilities capabilities() const override;
     bool truncate() override;
 
     /* Implementation of functions from QgsDataProvider */
@@ -106,8 +111,9 @@ class QgsMemoryProviderMetadata final: public QgsProviderMetadata
   public:
     QgsMemoryProviderMetadata();
     QIcon icon() const override;
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond
+#endif // QGSMEMORYPROVIDER_H

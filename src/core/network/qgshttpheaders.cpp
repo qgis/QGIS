@@ -184,6 +184,10 @@ void QgsHttpHeaders::setFromUrlQuery( const QUrlQuery &uri )
       QString name = key.right( key.size() - QgsHttpHeaders::PARAM_PREFIX.size() );
       mHeaders[sanitizeKey( name )] = item.second;
     }
+    else if ( key == QgsHttpHeaders::KEY_REFERER ) // backward comptibility
+    {
+      mHeaders[QgsHttpHeaders::KEY_REFERER] = item.second;
+    }
   }
 }
 

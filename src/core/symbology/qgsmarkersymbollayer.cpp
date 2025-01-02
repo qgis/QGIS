@@ -29,6 +29,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfontmanager.h"
 #include "qgscolorutils.h"
+#include "qgspainting.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -40,21 +41,7 @@
 
 #include <cmath>
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-Q_GUI_EXPORT extern int qt_defaultDpiY();
-
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
-
-static void _fixQPictureDPI( QPainter *p )
-{
-  // QPicture makes an assumption that we drawing to it with system DPI.
-  // Then when being drawn, it scales the painter. The following call
-  // negates the effect. There is no way of setting QPicture's DPI.
-  // See QTBUG-20361
-  p->scale( static_cast< double >( qt_defaultDpiX() ) / p->device()->logicalDpiX(),
-            static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
-}
-
 
 //////
 
@@ -1089,6 +1076,11 @@ QString QgsSimpleMarkerSymbolLayer::layerType() const
   return QStringLiteral( "SimpleMarker" );
 }
 
+Qgis::SymbolLayerFlags QgsSimpleMarkerSymbolLayer::flags() const
+{
+  return QgsSimpleMarkerSymbolLayerBase::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QgsSimpleMarkerSymbolLayerBase::startRender( context );
@@ -1124,7 +1116,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   // use caching only when:
   // - size, rotation, shape, color, stroke color is not data-defined
   // - drawing to screen (not printer)
-  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
+  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.forceVectorRendering()
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::FillColor ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeColor )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle )
                 && !mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle );
@@ -1931,6 +1923,7 @@ void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   if ( mFill )
   {
+    mFill->setRenderHints( mFill->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
     mFill->startRender( context.renderContext(), context.fields() );
   }
 
@@ -2105,6 +2098,20 @@ QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &path, double si
   mColor = QColor( 35, 35, 35 );
   mStrokeColor = QColor( 35, 35, 35 );
   setPath( path );
+}
+
+QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QgsSvgMarkerSymbolLayer &other )
+  : QgsMarkerSymbolLayer( other )
+  , mPath( other.mPath )
+  , mDefaultAspectRatio( other.mDefaultAspectRatio )
+  , mFixedAspectRatio( other.mFixedAspectRatio )
+  , mHasFillParam( other.mHasFillParam )
+  , mStrokeColor( other.mStrokeColor )
+  , mStrokeWidth( other.mStrokeWidth )
+  , mParameters( other.mParameters )
+  , mStrokeWidthUnit( other.mStrokeWidthUnit )
+  , mStrokeWidthMapUnitScale( other.mStrokeWidthMapUnitScale )
+{
 }
 
 QgsSvgMarkerSymbolLayer::~QgsSvgMarkerSymbolLayer() = default;
@@ -2313,6 +2320,11 @@ QString QgsSvgMarkerSymbolLayer::layerType() const
   return QStringLiteral( "SvgMarker" );
 }
 
+Qgis::SymbolLayerFlags QgsSvgMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsSvgMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QgsMarkerSymbolLayer::startRender( context ); // get anchor point expressions
@@ -2405,7 +2417,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   bool fitsInCache = true;
   bool usePict = true;
   const bool rasterizeSelected = !mHasFillParam || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name );
-  if ( ( !context.renderContext().forceVectorOutput() && !rotated ) || ( useSelectedColor && rasterizeSelected ) )
+  if ( ( !context.forceVectorRendering() && !rotated ) || ( useSelectedColor && rasterizeSelected ) )
   {
     QImage img = QgsApplication::svgCache()->svgAsImage( path, width * devicePixelRatio, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio,
@@ -2454,13 +2466,11 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   {
     p->setOpacity( context.opacity() );
     const QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, width, fillColor, strokeColor, strokeWidth,
-                         context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio,
+                         context.renderContext().scaleFactor(), context.forceVectorRendering(), aspectRatio,
                          ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ), evaluatedParameters );
     if ( pct.width() > 1 )
     {
-      const QgsScopedQPainterState painterPictureState( p );
-      _fixQPictureDPI( p );
-      p->drawPicture( 0, 0, pct );
+      QgsPainting::drawPicture( p, QPointF( 0, 0 ), pct );
     }
   }
 
@@ -2619,25 +2629,7 @@ bool QgsSvgMarkerSymbolLayer::usesMapUnits() const
 
 QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
 {
-  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( mPath, mSize, mAngle );
-  m->setFixedAspectRatio( mFixedAspectRatio );
-  m->setColor( mColor );
-  m->setStrokeColor( mStrokeColor );
-  m->setStrokeWidth( mStrokeWidth );
-  m->setStrokeWidthUnit( mStrokeWidthUnit );
-  m->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
-  m->setOffset( mOffset );
-  m->setOffsetUnit( mOffsetUnit );
-  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
-  m->setSizeUnit( mSizeUnit );
-  m->setSizeMapUnitScale( mSizeMapUnitScale );
-  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
-  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
-  m->setParameters( mParameters );
-
-  copyDataDefinedProperties( m );
-  copyPaintEffect( m );
-  return m;
+  return new QgsSvgMarkerSymbolLayer( *this );
 }
 
 void QgsSvgMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
@@ -3093,7 +3085,7 @@ void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &propert
 void QgsRasterMarkerSymbolLayer::resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
 {
   const QVariantMap::iterator it = properties.find( QStringLiteral( "name" ) );
-  if ( it != properties.end() && it.value().type() == QVariant::String )
+  if ( it != properties.end() && it.value().userType() == QMetaType::Type::QString )
   {
     if ( saving )
       it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
@@ -3135,6 +3127,11 @@ double QgsRasterMarkerSymbolLayer::updateDefaultAspectRatio()
 QString QgsRasterMarkerSymbolLayer::layerType() const
 {
   return QStringLiteral( "RasterMarker" );
+}
+
+Qgis::SymbolLayerFlags QgsRasterMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
 }
 
 void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
@@ -3533,6 +3530,11 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
 QString QgsFontMarkerSymbolLayer::layerType() const
 {
   return QStringLiteral( "FontMarker" );
+}
+
+Qgis::SymbolLayerFlags QgsFontMarkerSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
 }
 
 void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
@@ -4036,7 +4038,7 @@ QgsAnimatedMarkerSymbolLayer::QgsAnimatedMarkerSymbolLayer( const QString &path,
 
 QgsAnimatedMarkerSymbolLayer::~QgsAnimatedMarkerSymbolLayer() = default;
 
-QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &properties )
+QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &properties ) // cppcheck-suppress duplInheritedMember
 {
   QString path;
   double size = DEFAULT_RASTERMARKER_SIZE;

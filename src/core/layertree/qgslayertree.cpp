@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertree.h"
+#include "moc_qgslayertree.cpp"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
 
@@ -104,7 +105,7 @@ void QgsLayerTree::setHasCustomLayerOrder( bool hasCustomLayerOrder )
   emit layerOrderChanged();
 }
 
-QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context )
+QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayerTree *tree = new QgsLayerTree();
 

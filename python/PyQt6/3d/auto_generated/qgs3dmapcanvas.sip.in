@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgs3dmapcanvas.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -37,12 +37,7 @@ Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window 
 #include "qgs3dmapcanvas.h"
 %End
   public:
-
     Qgs3DMapCanvas();
-%Docstring
-Constructor for Qgs3DMapCanvas.
-%End
-
     ~Qgs3DMapCanvas();
 
     Qgs3DMapSettings *mapSettings();
@@ -62,7 +57,6 @@ Returns access to the view's camera controller. Returns ``None`` if the scene ha
 
 
   protected:
-
     virtual void showEvent( QShowEvent *e );
 
 %Docstring
@@ -85,5 +79,5 @@ Resets the aspect ratio of the 3D window.
  *                                                                      *
  * src/3d/qgs3dmapcanvas.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

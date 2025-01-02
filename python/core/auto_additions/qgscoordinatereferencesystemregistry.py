@@ -1,0 +1,12 @@
+# The following has been generated automatically from src/core/proj/qgscoordinatereferencesystemregistry.h
+try:
+    QgsCoordinateReferenceSystemRegistry.UserCrsDetails.__attribute_docs__ = {'id': 'CRS ID', 'name': 'CRS name (or description)', 'proj': 'PROJ string definition of CRS', 'wkt': 'WKT definition of CRS. This will be empty for custom CRSes\nwhich were defined using a PROJ string only.', 'crs': ':py:class:`QgsCoordinateReferenceSystem` object representing the user-defined CRS.'}
+    QgsCoordinateReferenceSystemRegistry.UserCrsDetails.__group__ = ['proj']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsCoordinateReferenceSystemRegistry.__attribute_docs__ = {'userCrsChanged': 'Emitted whenever an existing user CRS definition is changed.\n\nThe ``id`` argument specifies the ID of the user CRS which has been changed.\n\nObjects which store :py:class:`QgsCoordinateReferenceSystem` members should connect to this signal\nand update any stored CRS definitions to ensure that they always use the current\ndefinition of any user defined CRSes.\n\n.. seealso:: :py:func:`crsDefinitionsChanged`\n\n.. seealso:: :py:func:`userCrsAdded`\n', 'userCrsAdded': 'Emitted whenever a new user CRS definition is added.\n\nThe ``id`` argument specifies the ID of the user CRS which has been changed.\n\n.. seealso:: :py:func:`userCrsChanged`\n\n.. seealso:: :py:func:`crsDefinitionsChanged`\n', 'userCrsRemoved': 'Emitted when the user CRS with matching ``id`` is removed\nfrom the database.\n\n.. seealso:: :py:func:`removeUserCrs`\n', 'crsDefinitionsChanged': 'Emitted whenever an operation has caused any of the known CRS definitions (including\nuser-defined CRS) to change.\n', 'recentCrsPushed': 'Emitted when a recently used CRS has been pushed to the top of the recent CRS list.\n\n.. seealso:: :py:func:`pushRecent`\n\n.. versionadded:: 3.36\n', 'recentCrsRemoved': 'Emitted when a recently used CRS has been removed from the recent CRS list.\n\n.. seealso:: :py:func:`removeRecent`\n\n.. versionadded:: 3.36\n', 'recentCrsCleared': 'Emitted when the list of recently used CRS has been cleared.\n\n.. seealso:: :py:func:`clearRecent`\n\n.. versionadded:: 3.36\n'}
+    QgsCoordinateReferenceSystemRegistry.__signal_arguments__ = {'userCrsChanged': ['id: str'], 'userCrsAdded': ['id: str'], 'userCrsRemoved': ['id: int'], 'recentCrsPushed': ['crs: QgsCoordinateReferenceSystem'], 'recentCrsRemoved': ['crs: QgsCoordinateReferenceSystem']}
+    QgsCoordinateReferenceSystemRegistry.__group__ = ['proj']
+except (NameError, AttributeError):
+    pass

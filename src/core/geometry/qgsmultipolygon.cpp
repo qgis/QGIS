@@ -28,6 +28,34 @@ QgsMultiPolygon::QgsMultiPolygon()
   mWkbType = Qgis::WkbType::MultiPolygon;
 }
 
+QgsMultiPolygon::QgsMultiPolygon( const QList<QgsPolygon> &polygons )
+{
+  if ( polygons.empty() )
+    return;
+
+  mGeometries.reserve( polygons.size() );
+  for ( const QgsPolygon &poly : polygons )
+  {
+    mGeometries.append( poly.clone() );
+  }
+
+  setZMTypeFromSubGeometry( &polygons.at( 0 ), Qgis::WkbType::MultiPolygon );
+}
+
+QgsMultiPolygon::QgsMultiPolygon( const QList<QgsPolygon *> &polygons )
+{
+  if ( polygons.empty() )
+    return;
+
+  mGeometries.reserve( polygons.size() );
+  for ( QgsPolygon *poly : polygons )
+  {
+    mGeometries.append( poly );
+  }
+
+  setZMTypeFromSubGeometry( polygons.at( 0 ), Qgis::WkbType::MultiPolygon );
+}
+
 QgsPolygon *QgsMultiPolygon::polygonN( int index )
 {
   return qgsgeometry_cast< QgsPolygon * >( geometryN( index ) );
@@ -164,6 +192,39 @@ bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
 }
 
+bool QgsMultiPolygon::addGeometries( const QVector<QgsAbstractGeometry *> &geometries )
+{
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( !qgsgeometry_cast<QgsPolygon *>( g ) )
+    {
+      qDeleteAll( geometries );
+      return false;
+    }
+  }
+
+  if ( mGeometries.empty() && !geometries.empty() )
+  {
+    setZMTypeFromSubGeometry( geometries.at( 0 ), Qgis::WkbType::MultiPolygon );
+  }
+  mGeometries.reserve( mGeometries.size() + geometries.size() );
+  for ( QgsAbstractGeometry *g : geometries )
+  {
+    if ( is3D() && !g->is3D() )
+      g->addZValue();
+    else if ( !is3D() && g->is3D() )
+      g->dropZValue();
+    if ( isMeasure() && !g->isMeasure() )
+      g->addMValue();
+    else if ( !isMeasure() && g->isMeasure() )
+      g->dropMValue();
+    mGeometries.append( g );
+  }
+
+  clearCache();
+  return true;
+}
+
 bool QgsMultiPolygon::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g || !qgsgeometry_cast< QgsPolygon * >( g ) )
@@ -173,6 +234,17 @@ bool QgsMultiPolygon::insertGeometry( QgsAbstractGeometry *g, int index )
   }
 
   return QgsMultiSurface::insertGeometry( g, index );
+}
+
+QgsMultiPolygon *QgsMultiPolygon::simplifyByDistance( double tolerance ) const
+{
+  std::unique_ptr< QgsMultiPolygon > res = std::make_unique< QgsMultiPolygon >();
+  res->reserve( mGeometries.size() );
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    res->addGeometry( mGeometries.at( i )->simplifyByDistance( tolerance ) );
+  }
+  return res.release();
 }
 
 QgsMultiSurface *QgsMultiPolygon::toCurveType() const

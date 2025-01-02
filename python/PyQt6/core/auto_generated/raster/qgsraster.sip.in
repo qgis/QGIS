@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsraster.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -41,5 +41,5 @@ representable in the output data type. This can be checked with :py:func:`~QgsRa
  *                                                                      *
  * src/core/raster/qgsraster.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

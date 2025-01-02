@@ -487,9 +487,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 {
   public:
 
-    /**
-     * Constructor for QgsRandomColorRamp.
-     */
     QgsRandomColorRamp() = default;
 
     int count() const override;
@@ -701,6 +698,8 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
 /**
  * \ingroup core
  * \class QgsCptCityColorRamp
+ *
+ * \brief A color ramp from the CPT City collection.
  */
 class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 {
@@ -731,14 +730,14 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
                          bool doLoadFile = true );
 
     //! Creates the symbol layer
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns the string identifier for QgsCptCityColorRamp.
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "cpt-city" ); }
+    static QString typeString() { return QStringLiteral( "cpt-city" ); } // cppcheck-suppress duplInheritedMember
 
     QString type() const override;
 

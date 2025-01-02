@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterfilewritertask.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,15 +30,16 @@ QGIS interface.
  QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe /Transfer/,
         int columns, int rows,
         const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
+        const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.8. Use version with transformContext instead."/;
 %Docstring
 Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
 ``columns``, ``rows``, ``outputExtent`` and destination ``crs``.
 Ownership of the ``pipe`` is transferred to the writer task, and will
 be deleted when the task completes.
 
-.. deprecated:: QGIS 3.8
-  use version with transformContext instead
+.. deprecated:: 3.8
+
+   Use version with transformContext instead.
 %End
 
 
@@ -74,8 +75,9 @@ parameter indicates the file path for the written file(s).
 Emitted when an error occurs which prevented the file being written (or if
 the task is canceled). The writing ``error`` will be reported.
 
-.. deprecated:: QGIS 3.10.
-   Use errorOccurred(int, const QString&)
+.. deprecated:: 3.10
+
+   Use errorOccurred(int, const QString&).
 %End
 
     void errorOccurred( int error, const QString &errorMessage );
@@ -101,5 +103,5 @@ the task is canceled). The writing ``error`` will be reported and a
  *                                                                      *
  * src/core/raster/qgsrasterfilewritertask.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -57,6 +57,19 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
       ServerExceptionError, //!< An exception was raised by the server
     };
 
+    /**
+     * Request flags
+     *
+     * \since QGIS 3.40
+     */
+    enum class RequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      EmptyResponseIsValid = 1 << 0, //!< Do not generate an error if getting an empty response (e.g. HTTP 204)
+    };
+    Q_ENUM( RequestFlag )
+    Q_DECLARE_FLAGS( RequestFlags, RequestFlag )
+    Q_FLAG( RequestFlags )
+
     //! Constructor for QgsBlockingNetworkRequest
     explicit QgsBlockingNetworkRequest();
 
@@ -74,6 +87,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * The optional \a feedback argument can be used to abort ongoing requests.
      *
+     * The optional \a requestFlags argument can be used to modify the behavior (added in QGIS 3.40).
+     *
      * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
      * by calling reply().
      *
@@ -82,7 +97,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * \see post()
      */
-    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    ErrorCode get( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = nullptr, RequestFlags requestFlags = QgsBlockingNetworkRequest::RequestFlags() );
 
     /**
      * Performs a "post" operation on the specified \a request, using the given \a data.
@@ -216,11 +231,11 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     /**
      * Emitted when when data arrives during a request.
      */
-    void downloadProgress( qint64, qint64 );
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
 
     /**
      * Emitted once a request has finished downloading.
-     * \deprecated Use the finished() signal instead.
+     * \deprecated QGIS 3.40. Use the finished() signal instead.
      */
     Q_DECL_DEPRECATED void downloadFinished() SIP_DEPRECATED;
 
@@ -228,7 +243,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * Emitted when when data are sent during a request.
      * \since QGIS 3.22
      */
-    void uploadProgress( qint64, qint64 );
+    void uploadProgress( qint64 bytesReceived, qint64 bytesTotal );
 
     /**
      * Emitted once a request has finished.
@@ -282,11 +297,14 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     //! Whether we already received bytes
     bool mGotNonEmptyResponse = false;
 
+    //! Request flags
+    RequestFlags mRequestFlags;
+
     int mExpirationSec = 30;
 
     QPointer< QgsFeedback > mFeedback;
 
-    ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr );
+    ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr, RequestFlags requestFlags = RequestFlags() );
 
     QString errorMessageFailedAuth();
 

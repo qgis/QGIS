@@ -1,0 +1,157 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelpointsettings.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsLabelPointSettings
+{
+%Docstring(signature="appended")
+
+Contains settings related to how the label engine places and formats
+labels for point features, or polygon features which are labeled in
+the "around" or "over" centroid placement modes.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgslabelpointsettings.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
+%Docstring
+Updates the point settings to respect any data defined properties
+set within the specified ``properties`` collection.
+%End
+
+    Qgis::LabelQuadrantPosition quadrant() const;
+%Docstring
+Returns the quadrant in which to offset labels from the point.
+
+.. seealso:: :py:func:`setQuadrant`
+%End
+
+    void setQuadrant( Qgis::LabelQuadrantPosition quadrant );
+%Docstring
+Sets the ``quadrant`` in which to offset labels from the point.
+
+.. seealso:: :py:func:`quadrant`
+%End
+
+    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const;
+%Docstring
+Returns the ordered list of predefined label positions for points.
+
+Positions earlier in the list will be prioritized over later positions.
+Only used when the placement is set to :py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
+
+.. seealso:: :py:func:`setPredefinedPositionOrder`
+%End
+
+    void setPredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &order );
+%Docstring
+Sets the ordered list of predefined label positions for points.
+
+Positions earlier in the list will be prioritized over later positions.
+Only used when the placement is set to :py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
+
+.. seealso:: :py:func:`predefinedPositionOrder`
+%End
+
+    double maximumDistance() const;
+%Docstring
+Returns the maximum distance which labels are allowed to be from their corresponding points.
+
+This setting works alongside the standard label offset distance properties to define a permissible
+range of distances at which labels can be placed from their points.
+
+The default value is 0, which indicates that no maximum is set and the label's usual distance
+from point will always be respected.
+
+.. seealso:: :py:func:`setMaximumDistance`
+
+.. seealso:: :py:func:`maximumDistanceUnit`
+
+.. seealso:: :py:func:`maximumDistanceMapUnitScale`
+%End
+
+    void setMaximumDistance( double distance );
+%Docstring
+Sets the maximum ``distance`` which labels are allowed to be from their corresponding points.
+
+This setting works alongside the standard label offset distance properties to define a permissible
+range of distances at which labels can be placed from their points.
+
+Setting ``distance`` to 0 indicates that no maximum is set and the label's usual distance
+from point will always be respected.
+
+.. seealso:: :py:func:`maximumDistance`
+
+.. seealso:: :py:func:`maximumDistanceUnit`
+
+.. seealso:: :py:func:`maximumDistanceMapUnitScale`
+%End
+
+    Qgis::RenderUnit maximumDistanceUnit() const;
+%Docstring
+Returns the units for label maximum distance.
+
+.. seealso:: :py:func:`setMaximumDistanceUnit`
+
+.. seealso:: :py:func:`maximumDistance`
+
+.. seealso:: :py:func:`maximumDistanceMapUnitScale`
+%End
+
+    void setMaximumDistanceUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for label maximum distance.
+
+.. seealso:: :py:func:`maximumDistanceUnit`
+
+.. seealso:: :py:func:`maximumDistance`
+
+.. seealso:: :py:func:`maximumDistanceMapUnitScale`
+%End
+
+    QgsMapUnitScale maximumDistanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale for label maximum distance.
+
+.. seealso:: :py:func:`setMaximumDistanceMapUnitScale`
+
+.. seealso:: :py:func:`maximumDistance`
+
+.. seealso:: :py:func:`maximumDistanceUnit`
+%End
+
+    void setMaximumDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for label maximum distance.
+
+.. seealso:: :py:func:`maximumDistanceMapUnitScale`
+
+.. seealso:: :py:func:`maximumDistance`
+
+.. seealso:: :py:func:`maximumDistanceUnit`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelpointsettings.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

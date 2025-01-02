@@ -151,9 +151,7 @@ class CORE_EXPORT QgsSensorRegistry : public QObject
      */
     bool populate();
 
-    //! QgsSensorRegistry cannot be copied.
     QgsSensorRegistry( const QgsSensorRegistry &rh ) = delete;
-    //! QgsSensorRegistry cannot be copied.
     QgsSensorRegistry &operator=( const QgsSensorRegistry &rh ) = delete;
 
     /**

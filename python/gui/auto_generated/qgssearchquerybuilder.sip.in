@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgssearchquerybuilder.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,17 +15,16 @@ class QgsSearchQueryBuilder : QDialog
 %Docstring(signature="appended")
 Query Builder for search strings
 
-.. deprecated::
-   Will be removed in QGIS 4
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.
 %End
 
 %TypeHeaderCode
 #include "qgssearchquerybuilder.h"
 %End
   public:
-    QgsSearchQueryBuilder( QgsVectorLayer *layer,
-                           QWidget *parent /TransferThis/ = 0,
-                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor - takes pointer to vector layer as a parameter
 %End
@@ -51,5 +50,5 @@ change search string shown in text field
  *                                                                      *
  * src/gui/qgssearchquerybuilder.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/classification/qgsclassificationmethodregistry.h            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -36,7 +36,7 @@ Adds a method to the registry
 Returns ``False`` if a method with same id already exists.
 %End
 
-    QgsClassificationMethod *method( const QString &id ) /Factory/;
+    std::unique_ptr< QgsClassificationMethod > method( const QString &id );
 %Docstring
 Returns a new instance of the method for the given id
 %End
@@ -58,5 +58,5 @@ Returns the icon for a given method id
  *                                                                      *
  * src/core/classification/qgsclassificationmethodregistry.h            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

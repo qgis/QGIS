@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsvertexeditor.h"
+#include "moc_qgsvertexeditor.cpp"
 #include "qgscoordinateutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
@@ -51,9 +52,9 @@ static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent )
   : QAbstractTableModel( parent )
-  , mCanvas( canvas )
 {
-  QWidget *parentWidget = qobject_cast< QWidget * >( parent );
+  Q_UNUSED( canvas )
+  QWidget *parentWidget = qobject_cast<QWidget *>( parent );
   if ( parentWidget )
     mWidgetFont = parentWidget->font();
 }
@@ -99,8 +100,7 @@ int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mLockedFeature ||
-       ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
+  if ( !index.isValid() || !mLockedFeature || ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
     return QVariant();
 
   if ( index.row() >= mLockedFeature->vertexMap().count() )
@@ -178,7 +178,6 @@ QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
   {
     return QVariant();
   }
-
 }
 
 QVariant QgsVertexEditorModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -340,8 +339,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
 
   QVBoxLayout *pageHintLayout = new QVBoxLayout();
   mHintLabel = new QLabel();
-  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on an editable feature to show its table of vertices." ),
-                       tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
+  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on an editable feature to show its table of vertices." ), tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
   mHintLabel->setWordWrap( true );
 
   pageHintLayout->addStretch();
@@ -373,8 +371,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
   QAction *autoPopupAction = new QAction( tr( "Auto-open Table" ), this );
   autoPopupAction->setCheckable( true );
   autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() );
-  connect( autoPopupAction, &QAction::toggled, this, [ = ]( bool checked )
-  {
+  connect( autoPopupAction, &QAction::toggled, this, [=]( bool checked ) {
     QgsVertexEditor::settingAutoPopupVertexEditorDock->setValue( checked );
   } );
   mWidgetMenu->addAction( autoPopupAction );
@@ -556,7 +553,6 @@ void QgsVertexEditor::closeEvent( QCloseEvent *event )
 CoordinateItemDelegate::CoordinateItemDelegate( const QgsCoordinateReferenceSystem &crs, QObject *parent )
   : QStyledItemDelegate( parent ), mCrs( crs )
 {
-
 }
 
 QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale & ) const
@@ -588,7 +584,7 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
   if ( lineEdit && index.isValid() )
   {
-    lineEdit->setText( displayText( index.data( ).toDouble( ), QLocale() ).replace( QLocale().groupSeparator(), QString( ) ) );
+    lineEdit->setText( displayText( index.data().toDouble(), QLocale() ).replace( QLocale().groupSeparator(), QString() ) );
   }
 }
 

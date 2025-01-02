@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemlegend.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -122,6 +122,7 @@ Returns whether the legend should automatically resize to fit its contents.
 Returns the legend model.
 %End
 
+
     void setAutoUpdateModel( bool autoUpdate );
 %Docstring
 Sets whether the legend content should auto update to reflect changes in the project's
@@ -210,24 +211,26 @@ Returns legend style.
 Sets the style of ``component`` to ``style`` for the legend.
 %End
 
- QFont styleFont( QgsLegendStyle::Style component ) const /Deprecated/;
+ QFont styleFont( QgsLegendStyle::Style component ) const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() from style() instead."/;
 %Docstring
 Returns the font settings for a legend ``component``.
 
 .. seealso:: :py:func:`setStyleFont`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
- void setStyleFont( QgsLegendStyle::Style component, const QFont &font ) /Deprecated/;
+ void setStyleFont( QgsLegendStyle::Style component, const QFont &font ) /Deprecated="Since 3.40. Use QgsLegendStyle.setTextFormat() from style() instead."/;
 %Docstring
 Sets the style ``font`` for a legend ``component``.
 
 .. seealso:: :py:func:`styleFont`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
     void setStyleMargin( QgsLegendStyle::Style component, double margin );
@@ -240,24 +243,26 @@ Set the ``margin`` for a legend ``component``.
 Set the ``margin`` for a particular ``side`` of a legend ``component``.
 %End
 
- double lineSpacing() const /Deprecated/;
+ double lineSpacing() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() from style() instead."/;
 %Docstring
 Returns the spacing in-between lines in layout units.
 
 .. seealso:: :py:func:`setLineSpacing`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
- void setLineSpacing( double spacing ) /Deprecated/;
+ void setLineSpacing( double spacing ) /Deprecated="Since 3.40. Use QgsLegendStyle.setTextFormat() from style() instead."/;
 %Docstring
 Sets the ``spacing`` in-between multiple lines.
 
 .. seealso:: :py:func:`lineSpacing`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
     double boxSpace() const;
@@ -288,24 +293,26 @@ Sets the legend column ``spacing``.
 .. seealso:: :py:func:`columnSpace`
 %End
 
- QColor fontColor() const /Deprecated/;
+ QColor fontColor() const /Deprecated="Since 3.40. Use QgsLegendStyle.setTextFormat() from style() instead."/;
 %Docstring
 Returns the legend font color.
 
 .. seealso:: :py:func:`setFontColor`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
- void setFontColor( const QColor &color ) /Deprecated/;
+ void setFontColor( const QColor &color ) /Deprecated="Since 3.40. Use QgsLegendStyle.setTextFormat() from style() instead."/;
 %Docstring
 Sets the legend font ``color``.
 
 .. seealso:: :py:func:`fontColor`
 
-.. deprecated::
-   use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
     double symbolWidth() const;
@@ -658,5 +665,5 @@ Returns the legend's renderer settings object.
  *                                                                      *
  * src/core/layout/qgslayoutitemlegend.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

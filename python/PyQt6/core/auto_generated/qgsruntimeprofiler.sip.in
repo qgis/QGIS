@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsruntimeprofiler.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,23 +38,25 @@ Constructor to create a new runtime profiler.
 %End
     ~QgsRuntimeProfiler();
 
- void beginGroup( const QString &name ) /Deprecated/;
+ void beginGroup( const QString &name ) /Deprecated="Since 3.40. Use start() instead."/;
 %Docstring
 Begin the group for the profiler. Groups will append {GroupName}/ to the
 front of the profile tag set using start.
 
 :param name: The name of the group.
 
-.. deprecated::
-   use :py:func:`~QgsRuntimeProfiler.start` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRuntimeProfiler.start` instead.
 %End
 
- void endGroup() /Deprecated/;
+ void endGroup() /Deprecated="Since 3.40. Use end() instead."/;
 %Docstring
 End the current active group.
 
-.. deprecated::
-   use :py:func:`~QgsRuntimeProfiler.end` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsRuntimeProfiler.end` instead.
 %End
 
     QStringList childGroups( const QString &parent = QString(), const QString &group = "startup" ) const;
@@ -213,5 +215,5 @@ This is useful for reusing an existing scoped runtime profiler with multi-step p
  *                                                                      *
  * src/core/qgsruntimeprofiler.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

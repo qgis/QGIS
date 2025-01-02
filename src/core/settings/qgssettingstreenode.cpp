@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssettingstreenode.h"
+#include "moc_qgssettingstreenode.cpp"
 #include "qgssettingsentryimpl.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
@@ -26,8 +27,16 @@ QgsSettingsTreeNode::~QgsSettingsTreeNode()
   if ( mType != Qgis::SettingsTreeNodeType::Root )
     mParent->unregisterChildNode( this );
 
-  qDeleteAll( mChildrenNodes );
-  qDeleteAll( mChildrenSettings );
+  // do not use qDeleteAll
+  // the destructor of QgsSettingsTreeNode and QgsSettingsEntry
+  // will call unregister on the parent (see above)
+  // and will modify the containers at the same time
+  const auto nodes = mChildrenNodes;
+  for ( const auto *node : nodes )
+    delete node;
+  const auto settings = mChildrenSettings;
+  for ( const auto *setting : settings )
+    delete setting;
 }
 
 QgsSettingsTreeNode *QgsSettingsTreeNode::createRootNode()

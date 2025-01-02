@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgshelp.h                                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,7 +32,6 @@ help system will be shown.
 #include "qgshelp.h"
 %End
   public:
-
     static void openHelp( const QString &key );
 %Docstring
 Opens help topic for the given help key using default system
@@ -56,5 +55,5 @@ not found, URI of the builtin error page returned.
  *                                                                      *
  * src/gui/qgshelp.h                                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

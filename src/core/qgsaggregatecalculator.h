@@ -33,8 +33,9 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  * \class QgsAggregateCalculator
- * \brief Utility class for calculating aggregates for a field (or expression) over the features
- * from a vector layer. It is recommended that QgsVectorLayer::aggregate() is used rather then
+ * \brief Utility class for calculating aggregates for a field (or expression) over the features from a vector layer.
+ *
+ * \note It is recommended that QgsVectorLayer::aggregate() is used rather then
  * directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
  * to a data provider for remote calculation.
  */
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsAggregateCalculator
       //! A translated, human readable name
       QString name;
       //! This aggregate function can only be used with these datatypes
-      QSet<QVariant::Type> supportedTypes;
+      QSet<QMetaType::Type> supportedTypes;
     };
 
     //! A bundle of parameters controlling aggregate calculation
@@ -214,7 +215,7 @@ class CORE_EXPORT QgsAggregateCalculator
     static QVariant calculateArrayAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
         QgsExpressionContext *context );
 
-    static QVariant calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType, int userType,
+    static QVariant calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QMetaType::Type resultType, int userType,
                                int attr, QgsExpression *expression,
                                const QString &delimiter,
                                QgsExpressionContext *context, bool *ok = nullptr, QString *error = nullptr );

@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgswindow3dengine.h"
+#include "moc_qgswindow3dengine.cpp"
 
-#include <Qt3DRender/QRenderCapture>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 
@@ -32,7 +32,6 @@ QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   mMapCanvas3D->setRootEntity( mRoot );
 
   mFrameGraph = new QgsFrameGraph( mMapCanvas3D, QSize( 1024, 768 ), mMapCanvas3D->camera(), mRoot );
-  mFrameGraph->setRenderCaptureEnabled( false );
   mMapCanvas3D->setActiveFrameGraph( mFrameGraph->frameGraphRoot() );
 
   // force switching to no shadow rendering

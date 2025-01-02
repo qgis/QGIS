@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgsdatadefinedsizelegendwidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ Widget for configuration of appearance of legend for marker symbols with data-de
 #include "qgsdatadefinedsizelegendwidget.h"
 %End
   public:
-
     explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol /Transfer/, QgsMapCanvas *canvas = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates the dialog and initializes the content to what is passed in the legend configuration (may be ``None``).
@@ -47,5 +46,5 @@ Returns configuration as set up in the dialog (may be ``None``). Ownership is pa
  *                                                                      *
  * src/gui/symbology/qgsdatadefinedsizelegendwidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

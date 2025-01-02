@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutitemhtml.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -272,5 +272,5 @@ Recalculates the frame sizes for the current viewport dimensions
  *                                                                      *
  * src/core/layout/qgslayoutitemhtml.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

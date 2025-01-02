@@ -36,7 +36,6 @@ class CORE_EXPORT QgsEditorWidgetSetup
       , mConfig( config )
     {}
 
-    //! Constructor for QgsEditorWidgetSetup
     QgsEditorWidgetSetup() = default;
 
     /**

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewdefaultactions.h"
+#include "moc_qgslayertreeviewdefaultactions.cpp"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgslayertree.h"
@@ -90,8 +91,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject *parent
 
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent )
 {
-  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
-                            tr( "&Zoom to Layer" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ), tr( "&Zoom to Layer" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
   Q_NOWARN_DEPRECATED_PUSH
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayer ) );
@@ -101,8 +101,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
 
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayers( QgsMapCanvas *canvas, QObject *parent )
 {
-  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
-                            tr( "&Zoom to Layer(s)" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ), tr( "&Zoom to Layer(s)" ), parent );
   a->setData( QVariant::fromValue( canvas ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayers ) );
   return a;
@@ -110,8 +109,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayers( QgsMapCanvas *canva
 
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent )
 {
-  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ),
-                            tr( "Zoom to &Selection" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ), tr( "Zoom to &Selection" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToSelection ) );
   return a;
@@ -119,8 +117,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToSelection( QgsMapCanvas *ca
 
 QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent )
 {
-  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
-                            tr( "&Zoom to Group" ), parent );
+  QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ), tr( "&Zoom to Group" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToGroup ) );
   return a;
@@ -181,7 +178,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllChildren( QObject *par
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityCheckedRecursive() )
     return nullptr;
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   QAction *a = new QAction( tr( "Check and All its Children (⌘-click)" ), parent );
 #else
   QAction *a = new QAction( tr( "Check and All its Children (Ctrl-click)" ), parent );
@@ -195,7 +192,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionUncheckAndAllChildren( QObject *p
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityUncheckedRecursive() )
     return nullptr;
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   QAction *a = new QAction( tr( "Uncheck and All its Children (⌘-click)" ), parent );
 #else
   QAction *a = new QAction( tr( "Uncheck and All its Children (Ctrl-click)" ), parent );
@@ -311,7 +308,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas )
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
 {
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( mView->currentLayer() );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mView->currentLayer() );
 
   const QList<QgsMapLayer *> layers = mView->selectedLayers();
 
@@ -319,7 +316,6 @@ void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )
     canvas->zoomToSelected( layers );
   else if ( layers.size() <= 1 && layer )
     canvas->zoomToSelected( layer );
-
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToGroup( QgsMapCanvas *canvas )
@@ -452,7 +448,7 @@ void QgsLayerTreeViewDefaultActions::makeTopLevel()
 
 void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
 {
-  const QList< QgsLayerTreeLayer * >  selectedLayerNodes = mView->selectedLayerNodes();
+  const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
   for ( QgsLayerTreeLayer *l : selectedLayerNodes )
   {
     QgsLayerTreeGroup *rootGroup = mView->layerTreeModel()->rootGroup();
@@ -474,11 +470,10 @@ void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
 
 void QgsLayerTreeViewDefaultActions::moveToTop()
 {
-  QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
+  QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
   std::reverse( selectedNodes.begin(), selectedNodes.end() );
   // sort the nodes by depth first to avoid moving a group before its contents
-  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
-  {
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode *a, const QgsLayerTreeNode *b ) {
     return a->depth() > b->depth();
   } );
   for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
@@ -493,10 +488,9 @@ void QgsLayerTreeViewDefaultActions::moveToTop()
 
 void QgsLayerTreeViewDefaultActions::moveToBottom()
 {
-  QList< QgsLayerTreeNode * > selectedNodes = mView->selectedNodes();
+  QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
   // sort the nodes by depth first to avoid moving a group before its contents
-  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
-  {
+  std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode *a, const QgsLayerTreeNode *b ) {
     return a->depth() > b->depth();
   } );
   for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
@@ -512,7 +506,7 @@ void QgsLayerTreeViewDefaultActions::moveToBottom()
 void QgsLayerTreeViewDefaultActions::groupSelected()
 {
   const QList<QgsLayerTreeNode *> nodes = mView->selectedNodes( true );
-  if ( nodes.empty() || ! QgsLayerTree::isGroup( nodes[0]->parent() ) )
+  if ( nodes.empty() || !QgsLayerTree::isGroup( nodes[0]->parent() ) )
     return;
 
   QgsLayerTreeGroup *parentGroup = QgsLayerTree::toGroup( nodes[0]->parent() );

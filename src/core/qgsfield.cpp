@@ -1,3 +1,4 @@
+#include "moc_qgsfield.cpp"
 /***************************************************************************
        qgsfield.cpp - Describes a field in a layer or table
         --------------------------------------
@@ -44,10 +45,16 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
   // names how they are now.
 }
 #endif
-QgsField::QgsField( const QString &name, QVariant::Type type,
-                    const QString &typeName, int len, int prec, const QString &comment, QVariant::Type subType )
+QgsField::QgsField( const QString &name, QMetaType::Type type,
+                    const QString &typeName, int len, int prec, const QString &comment, QMetaType::Type subType )
 {
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
+}
+
+QgsField::QgsField( const QString &name, QVariant::Type type,
+                    const QString &typeName, int len, int prec, const QString &comment, QVariant::Type subType )
+  : QgsField( name, QgsVariantUtils::variantTypeToMetaType( type ), typeName, len, prec, comment, QgsVariantUtils::variantTypeToMetaType( subType ) )
+{
 }
 
 QgsField::QgsField( const QgsField &other ) //NOLINT
@@ -105,6 +112,10 @@ QString QgsField::displayNameWithAlias() const
 QString QgsField::displayType( const bool showConstraints ) const
 {
   QString typeStr = typeName();
+  if ( typeStr.isEmpty() )
+  {
+    typeStr = QgsVariantUtils::typeToDisplayString( type(), subType() );
+  }
 
   if ( length() > 0 && precision() > 0 )
     typeStr += QStringLiteral( "(%1, %2)" ).arg( length() ).arg( precision() );
@@ -127,7 +138,7 @@ QString QgsField::displayType( const bool showConstraints ) const
 
 QString QgsField::friendlyTypeString() const
 {
-  if ( d->type == QVariant::UserType )
+  if ( d->type == QMetaType::Type::User )
   {
     if ( d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -137,12 +148,12 @@ QString QgsField::friendlyTypeString() const
   return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
 }
 
-QVariant::Type QgsField::type() const
+QMetaType::Type QgsField::type() const
 {
   return d->type;
 }
 
-QVariant::Type QgsField::subType() const
+QMetaType::Type QgsField::subType() const
 {
   return d->subType;
 }
@@ -199,12 +210,12 @@ void QgsField::setMetadata( int property, const QVariant &value )
 
 bool QgsField::isNumeric() const
 {
-  return d->type == QVariant::Double || d->type == QVariant::Int || d->type == QVariant::UInt || d->type == QVariant::LongLong || d->type == QVariant::ULongLong;
+  return d->type == QMetaType::Type::Double || d->type == QMetaType::Type::Int || d->type == QMetaType::Type::UInt || d->type == QMetaType::Type::LongLong || d->type == QMetaType::Type::ULongLong;
 }
 
 bool QgsField::isDateOrTime() const
 {
-  return d->type == QVariant::Date || d->type == QVariant::Time || d->type == QVariant::DateTime;
+  return d->type == QMetaType::Type::QDate || d->type == QMetaType::Type::QTime || d->type == QMetaType::Type::QDateTime;
 }
 
 /***************************************************************************
@@ -218,14 +229,24 @@ void QgsField::setName( const QString &name )
   d->name = name;
 }
 
-void QgsField::setType( QVariant::Type type )
+void QgsField::setType( QMetaType::Type type )
 {
   d->type = type;
 }
 
-void QgsField::setSubType( QVariant::Type subType )
+void QgsField::setType( QVariant::Type type )
+{
+  setType( QgsVariantUtils::variantTypeToMetaType( type ) );
+}
+
+void QgsField::setSubType( QMetaType::Type subType )
 {
   d->subType = subType;
+}
+
+void QgsField::setSubType( QVariant::Type subType )
+{
+  setSubType( QgsVariantUtils::variantTypeToMetaType( subType ) );
 }
 
 void QgsField::setTypeName( const QString &typeName )
@@ -300,7 +321,7 @@ QString QgsField::displayString( const QVariant &v ) const
     return QgsApplication::nullRepresentation();
   }
 
-  if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  if ( v.userType() == qMetaTypeId<QgsReferencedGeometry>() )
   {
     QgsReferencedGeometry geom = qvariant_cast<QgsReferencedGeometry>( v );
     if ( geom.isNull() )
@@ -318,7 +339,7 @@ QString QgsField::displayString( const QVariant &v ) const
   }
 
   // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
-  if ( d->type == QVariant::Double )
+  if ( d->type == QMetaType::Type::Double )
   {
     // if value doesn't contain a double (a default value expression for instance),
     // apply no transformation
@@ -406,11 +427,11 @@ QString QgsField::displayString( const QVariant &v ) const
     const QJsonDocument doc = QJsonDocument::fromVariant( v );
     return QString::fromUtf8( doc.toJson().constData() );
   }
-  else if ( d->type == QVariant::ByteArray )
+  else if ( d->type == QMetaType::Type::QByteArray )
   {
     return QObject::tr( "BLOB" );
   }
-  else if ( d->type == QVariant::StringList || d->type == QVariant::List )
+  else if ( d->type == QMetaType::Type::QStringList || d->type == QMetaType::Type::QVariantList )
   {
     QString result;
     const QVariantList list = v.toList();
@@ -461,9 +482,9 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return true;
   }
 
-  if ( d->type == QVariant::Int && v.toInt() != v.toLongLong() )
+  if ( d->type == QMetaType::Type::Int && v.toInt() != v.toLongLong() )
   {
-    v = QVariant( d->type );
+    v = QgsVariantUtils::createNullVariant( d->type );
     if ( errorMessage )
       *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toLongLong() );
     return false;
@@ -471,7 +492,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   // Give it a chance to convert to double since for not '.' locales
   // we accept both comma and dot as decimal point
-  if ( d->type == QVariant::Double && v.type() == QVariant::String )
+  if ( d->type == QMetaType::Type::Double && v.userType() == QMetaType::Type::QString )
   {
     QVariant tmp( v );
     if ( !tmp.convert( d->type ) )
@@ -498,7 +519,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
 
   // For string representation of an int we also might have thousand separator
-  if ( d->type == QVariant::Int && v.type() == QVariant::String )
+  if ( d->type == QMetaType::Type::Int && v.userType() == QMetaType::Type::QString )
   {
     QVariant tmp( v );
     if ( !tmp.convert( d->type ) )
@@ -515,7 +536,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
 
   // For string representation of a long we also might have thousand separator
-  if ( d->type == QVariant::LongLong && v.type() == QVariant::String )
+  if ( d->type == QMetaType::Type::LongLong && v.userType() == QMetaType::Type::QString )
   {
     QVariant tmp( v );
     if ( !tmp.convert( d->type ) )
@@ -533,14 +554,14 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   //String representations of doubles in QVariant will return false to convert( QVariant::Int )
   //work around this by first converting to double, and then checking whether the double is convertible to int
-  if ( d->type == QVariant::Int && v.canConvert( QVariant::Double ) )
+  if ( d->type == QMetaType::Type::Int && v.canConvert( QMetaType::Type::Double ) )
   {
     bool ok = false;
     const double dbl = v.toDouble( &ok );
     if ( !ok )
     {
       //couldn't convert to number
-      v = QVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
 
       if ( errorMessage )
         *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
@@ -552,7 +573,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     if ( round  > std::numeric_limits<int>::max() || round < -std::numeric_limits<int>::max() )
     {
       //double too large to fit in int
-      v = QVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
 
       if ( errorMessage )
         *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toDouble() );
@@ -565,7 +586,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   //String representations of doubles in QVariant will return false to convert( QVariant::LongLong )
   //work around this by first converting to double, and then checking whether the double is convertible to longlong
-  if ( d->type == QVariant::LongLong && v.canConvert( QVariant::Double ) )
+  if ( d->type == QMetaType::Type::LongLong && v.canConvert( QMetaType::Type::Double ) )
   {
     //firstly test the conversion to longlong because conversion to double will rounded the value
     QVariant tmp( v );
@@ -576,7 +597,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       if ( !ok )
       {
         //couldn't convert to number
-        v = QVariant( d->type );
+        v = QgsVariantUtils::createNullVariant( d->type );
 
         if ( errorMessage )
           *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
@@ -588,7 +609,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       if ( round  > static_cast<double>( std::numeric_limits<long long>::max() ) || round < static_cast<double>( -std::numeric_limits<long long>::max() ) )
       {
         //double too large to fit in longlong
-        v = QVariant( d->type );
+        v = QgsVariantUtils::createNullVariant( d->type );
 
         if ( errorMessage )
           *errorMessage = QObject::tr( "Value \"%1\" is too large for long long field" ).arg( original.toDouble() );
@@ -602,7 +623,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName.compare( QLatin1String( "jsonb" ), Qt::CaseInsensitive ) == 0 )
   {
-    if ( d->type == QVariant::String )
+    if ( d->type == QMetaType::Type::QString )
     {
       const QJsonDocument doc = QJsonDocument::fromVariant( v );
       if ( !doc.isNull() )
@@ -610,30 +631,30 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
         v = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
         return true;
       }
-      v = QVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
       return false;
     }
-    else if ( d->type == QVariant::Map )
+    else if ( d->type == QMetaType::Type::QVariantMap )
     {
-      if ( v.type() == QVariant::StringList || v.type() == QVariant::List || v.type() == QVariant::Map )
+      if ( v.userType() == QMetaType::Type::QStringList || v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QVariantMap )
       {
         return true;
       }
-      v = QVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
       return false;
     }
   }
 
-  if ( ( d->type == QVariant::StringList || ( d->type == QVariant::List && d->subType == QVariant::String ) )
-       && ( v.type() == QVariant::String ) )
+  if ( ( d->type == QMetaType::Type::QStringList || ( d->type == QMetaType::Type::QVariantList && d->subType == QMetaType::Type::QString ) )
+       && ( v.userType() == QMetaType::Type::QString ) )
   {
     v = QStringList( { v.toString() } );
     return true;
   }
 
-  if ( ( d->type == QVariant::StringList || d->type == QVariant::List ) && !( v.type() == QVariant::StringList || v.type() == QVariant::List ) )
+  if ( ( d->type == QMetaType::Type::QStringList || d->type == QMetaType::Type::QVariantList ) && !( v.userType() == QMetaType::Type::QStringList || v.userType() == QMetaType::Type::QVariantList ) )
   {
-    v = QVariant( d->type );
+    v = QgsVariantUtils::createNullVariant( d->type );
 
     if ( errorMessage )
       *errorMessage = QObject::tr( "Could not convert value \"%1\" to target list type" ).arg( original.toString() );
@@ -642,12 +663,12 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
 
   // Handle referenced geometries (e.g. from additional geometry fields)
-  if ( d->type == QVariant::String && v.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+  if ( d->type == QMetaType::Type::QString && v.userType() == qMetaTypeId<QgsReferencedGeometry>() )
   {
     const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
     if ( geom.isNull() )
     {
-      v = QVariant( d->type );
+      v = QgsVariantUtils::createNullVariant( d->type );
     }
     else
     {
@@ -655,13 +676,13 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
     return true;
   }
-  else if ( d->type == QVariant::UserType && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  else if ( d->type == QMetaType::Type::User && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
   {
-    if ( v.userType() == QMetaType::type( "QgsReferencedGeometry" ) || v.userType() == QMetaType::type( "QgsGeometry" ) )
+    if ( v.userType() == qMetaTypeId<QgsReferencedGeometry>() || v.userType() == qMetaTypeId< QgsGeometry>() )
     {
       return true;
     }
-    else if ( v.type() == QVariant::String )
+    else if ( v.userType() == QMetaType::Type::QString )
     {
       const QgsGeometry geom = QgsGeometry::fromWkt( v.toString() );
       if ( !geom.isNull() )
@@ -674,7 +695,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   }
   else if ( !v.convert( d->type ) )
   {
-    v = QVariant( d->type );
+    v = QgsVariantUtils::createNullVariant( d->type );
 
     if ( errorMessage )
       *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )
@@ -684,7 +705,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
-  if ( d->type == QVariant::Double && d->precision > 0 )
+  if ( d->type == QMetaType::Type::Double && d->precision > 0 )
   {
     const double s = std::pow( 10, d->precision );
     const double d = v.toDouble() * s;
@@ -692,7 +713,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return true;
   }
 
-  if ( d->type == QVariant::String && d->length > 0 && v.toString().length() > d->length )
+  if ( d->type == QMetaType::Type::QString && d->length > 0 && v.toString().length() > d->length )
   {
     const int length = v.toString().length();
     v = v.toString().left( d->length );
@@ -815,7 +836,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
      >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
      constraintExpression >> constraintDescription >> subType >> splitPolicy >> duplicatePolicy >> metadata;
   field.setName( name );
-  field.setType( static_cast< QVariant::Type >( type ) );
+  field.setType( static_cast< QMetaType::Type >( type ) );
   field.setTypeName( typeName );
   field.setLength( static_cast< int >( length ) );
   field.setPrecision( static_cast< int >( precision ) );
@@ -848,7 +869,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
     fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintExpression );
   fieldConstraints.setConstraintExpression( constraintExpression, constraintDescription );
   field.setConstraints( fieldConstraints );
-  field.setSubType( static_cast< QVariant::Type >( subType ) );
+  field.setSubType( static_cast< QMetaType::Type >( subType ) );
   field.setMetadata( metadata );
   return in;
 }

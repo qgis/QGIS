@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/validity/qgsvaliditycheckregistry.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -76,5 +76,5 @@ thread and only return when they have all completed.
  *                                                                      *
  * src/core/validity/qgsvaliditycheckregistry.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

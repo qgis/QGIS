@@ -36,7 +36,8 @@ QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCu
 Qgis::AnnotationItemFlags QgsAnnotationLineTextItem::flags() const
 {
   // in truth this should depend on whether the text format is scale dependent or not!
-  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox
+         | Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
 QgsAnnotationLineTextItem::~QgsAnnotationLineTextItem() = default;
@@ -105,7 +106,7 @@ bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &do
   return true;
 }
 
-QList<QgsAnnotationItemNode> QgsAnnotationLineTextItem::nodes() const
+QList<QgsAnnotationItemNode> QgsAnnotationLineTextItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
   QList< QgsAnnotationItemNode > res;
   int i = 0;
@@ -116,7 +117,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationLineTextItem::nodes() const
   return res;
 }
 
-Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {
@@ -160,7 +161,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEdit( Qg
   return Qgis::AnnotationItemEditOperationResult::Invalid;
 }
 
-QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
 {
   switch ( operation->type() )
   {

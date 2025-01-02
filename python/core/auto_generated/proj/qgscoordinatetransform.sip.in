@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/proj/qgscoordinatetransform.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -76,7 +76,7 @@ which dictate the behavior of the transformation.
 
 .. warning::
 
-   Do NOT use an empty/default constructed QgsCoordinateTransformContext()
+   Do NOT use an empty/default constructed :py:class:`QgsCoordinateTransformContext`()
    object when creating QgsCoordinateTransform objects. This prevents correct
    datum transform handling and may result in inaccurate transformations. Always
    ensure that the :py:class:`QgsCoordinateTransformContext` object is correctly retrieved
@@ -109,7 +109,6 @@ correctly respected during coordinate transforms. E.g.
 Since QGIS 3.26 the optional ``flags`` argument can be used to specify flags
 which dictate the behavior of the transformation.
 
-
 .. warning::
 
    Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
@@ -120,23 +119,23 @@ which dictate the behavior of the transformation.
  explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination,
         int sourceDatumTransformId,
-        int destinationDatumTransformId ) /Deprecated/;
+        int destinationDatumTransformId ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead."/;
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system, with the specified
 datum transforms (see :py:class:`QgsDatumTransform`).
 
-.. deprecated::
-   will be removed in QGIS 4.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
+.. deprecated:: 3.40
+
+   Will be removed in QGIS 4.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
 %End
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
-%Docstring
-Copy constructor
-%End
-
 
     ~QgsCoordinateTransform();
+
+    bool operator==( const QgsCoordinateTransform &other ) const;
+    bool operator!=( const QgsCoordinateTransform &other ) const;
 
     static bool isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 %Docstring
@@ -348,6 +347,14 @@ otherwise points are transformed from destination to source CRS.
 Returns ``True`` if the transform short circuits because the source and destination are equivalent.
 %End
 
+    bool hasVerticalComponent() const;
+%Docstring
+Returns ``True`` if the transform includes a vertical component, i.e. if both the :py:func:`~QgsCoordinateTransform.sourceCrs`
+and :py:func:`~QgsCoordinateTransform.destinationCrs` have a vertical axis.
+
+.. versionadded:: 3.40
+%End
+
     QString coordinateOperation() const;
 %Docstring
 Returns a Proj string representing the coordinate operation which will be used to transform
@@ -364,7 +371,6 @@ coordinates.
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
    an empty string, and the deprecated :py:func:`~QgsCoordinateTransform.sourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.destinationDatumTransformId` methods should be used instead.
-
 
 .. seealso:: :py:func:`instantiatedCoordinateOperationDetails`
 
@@ -406,7 +412,6 @@ coordinates.
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
    and the deprecated :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId` or :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId` methods should be used instead.
 
-
 .. seealso:: :py:func:`coordinateOperation`
 
 .. versionadded:: 3.8
@@ -426,7 +431,6 @@ are transformed). See :py:func:`~QgsCoordinateTransform.fallbackOperationOccurre
 
    If :py:func:`~QgsCoordinateTransform.setBallparkTransformsAreAppropriate` is set to ``True``, this setting will be ignored
    and fallback transformations will always be permitted.
-
 
 .. seealso:: :py:func:`allowFallbackTransforms`
 
@@ -486,7 +490,6 @@ and fallback transforms will always be allowed when required.
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
 
-
 .. versionadded:: 3.12
 %End
 
@@ -506,7 +509,6 @@ operation occurred by testing :py:func:`~QgsCoordinateTransform.fallbackOperatio
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
 
-
 .. seealso:: :py:func:`fallbackOperationOccurred`
 
 .. versionadded:: 3.12
@@ -525,7 +527,7 @@ Returns ``True`` if a fallback operation occurred for the most recent transform.
 .. versionadded:: 3.12
 %End
 
- int sourceDatumTransformId() const /Deprecated/;
+ int sourceDatumTransformId() const /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
 Returns the ID of the datum transform to use when projecting from the source
 CRS.
@@ -539,11 +541,12 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 
 .. seealso:: :py:func:`destinationDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
- void setSourceDatumTransformId( int datumId ) /Deprecated/;
+ void setSourceDatumTransformId( int datumId ) /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting from the source
 CRS.
@@ -557,11 +560,12 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
- int destinationDatumTransformId() const /Deprecated/;
+ int destinationDatumTransformId() const /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
 Returns the ID of the datum transform to use when projecting to the destination
 CRS.
@@ -575,11 +579,12 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 
 .. seealso:: :py:func:`sourceDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
- void setDestinationDatumTransformId( int datumId ) /Deprecated/;
+ void setDestinationDatumTransformId( int datumId ) /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
 CRS.
@@ -593,8 +598,9 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
 
-.. deprecated::
-   Unused on builds based on Proj 6.0 or later
+.. deprecated:: 3.40
+
+   Unused on builds based on Proj 6.0 or later.
 %End
 
 
@@ -633,5 +639,5 @@ sourceUnits * scaleFactor = destinationUnits
  *                                                                      *
  * src/core/proj/qgscoordinatetransform.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

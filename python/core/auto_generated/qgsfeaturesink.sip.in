@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeaturesink.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -39,6 +39,13 @@ An interface for objects which accept features via addFeature(s) methods.
 
 
     virtual ~QgsFeatureSink();
+
+    virtual void finalize();
+%Docstring
+Finalizes the sink, flushing any buffered features to the destination.
+
+.. versionadded:: 3.42
+%End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 %Docstring
@@ -89,5 +96,5 @@ QFlags<QgsFeatureSink::Flag> operator|(QgsFeatureSink::Flag f1, QFlags<QgsFeatur
  *                                                                      *
  * src/core/qgsfeaturesink.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

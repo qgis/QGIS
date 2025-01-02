@@ -23,9 +23,7 @@ long QgsMapCanvasUtils::zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorL
 {
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
 
-  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
-                                    .setExpressionContext( context )
-                                    .setNoAttributes();
+  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter ).setExpressionContext( context ).setNoAttributes();
 
   QgsFeatureIterator features = layer->getFeatures( request );
 
@@ -56,13 +54,11 @@ long QgsMapCanvasUtils::flashMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLa
 {
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
 
-  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
-                                    .setExpressionContext( context )
-                                    .setNoAttributes();
+  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter ).setExpressionContext( context ).setNoAttributes();
 
   QgsFeatureIterator features = layer->getFeatures( request );
   QgsFeature feat;
-  QList< QgsGeometry > geoms;
+  QList<QgsGeometry> geoms;
   while ( features.nextFeature( feat ) )
   {
     if ( feat.hasGeometry() )
@@ -85,7 +81,7 @@ QString QgsMapCanvasUtils::filterForLayer( QgsMapCanvas *canvas, QgsVectorLayer 
 
     QgsVectorLayerTemporalContext temporalContext;
     temporalContext.setLayer( layer );
-    return qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, canvas->temporalRange() );
+    return qobject_cast<const QgsVectorLayerTemporalProperties *>( layer->temporalProperties() )->createFilterString( temporalContext, canvas->temporalRange() );
   }
   else
   {

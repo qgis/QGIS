@@ -48,9 +48,12 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mStyleName( format.font().styleName() )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
+  , mWordSpacing( format.hasProperty( QTextFormat::FontWordSpacing ) ? format.fontWordSpacing() : std::numeric_limits< double >::quiet_NaN() )
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
+  , mBackgroundBrush( format.background() )
+  , mBackgroundPath( format.background().style() == Qt::NoBrush ? format.stringProperty( QTextFormat::BackgroundImageUrl ) : QString() )
 {
   mVerticalAlign = convertTextCharFormatVAlign( format, mHasVerticalAlignSet );
 
@@ -64,6 +67,12 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
     if ( !families.isEmpty() )
       mFontFamily = families.at( 0 );
   }
+  if ( format.isImageFormat() )
+  {
+    const QTextImageFormat imageFormat = format.toImageFormat();
+    mImagePath = imageFormat.name();
+    mImageSize = QSizeF( imageFormat.width(), imageFormat.height() );
+  }
 }
 
 void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
@@ -72,6 +81,10 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mTextColor = other.mTextColor;
   if ( mFontPointSize == -1 && other.mFontPointSize != -1 )
     mFontPointSize = other.mFontPointSize;
+  if ( mFontPercentageSize == -1 && other.mFontPercentageSize != -1 )
+    mFontPercentageSize = other.mFontPercentageSize;
+  if ( std::isnan( mWordSpacing ) )
+    mWordSpacing = other.mWordSpacing;
   if ( mFontFamily.isEmpty() && !other.mFontFamily.isEmpty() )
     mFontFamily = other.mFontFamily;
   if ( mStrikethrough == BooleanValue::NotSet && other.mStrikethrough != BooleanValue::NotSet )
@@ -91,6 +104,10 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mVerticalAlign = other.mVerticalAlign;
     mHasVerticalAlignSet = true;
   }
+  if ( mBackgroundBrush.style() == Qt::NoBrush && mBackgroundPath.isEmpty() && other.mBackgroundBrush.style() != Qt::NoBrush )
+    mBackgroundBrush = other.mBackgroundBrush;
+  if ( mBackgroundBrush.style() == Qt::NoBrush  && mBackgroundPath.isEmpty() && !other.mBackgroundPath.isEmpty() )
+    mBackgroundPath = other.mBackgroundPath;
 }
 
 QColor QgsTextCharacterFormat::textColor() const
@@ -111,6 +128,16 @@ double QgsTextCharacterFormat::fontPointSize() const
 void QgsTextCharacterFormat::setFontPointSize( double size )
 {
   mFontPointSize = size;
+}
+
+double QgsTextCharacterFormat::fontPercentageSize() const
+{
+  return mFontPercentageSize;
+}
+
+void QgsTextCharacterFormat::setFontPercentageSize( double size )
+{
+  mFontPercentageSize = size;
 }
 
 QString QgsTextCharacterFormat::family() const
@@ -153,6 +180,26 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
   mOverline = enabled;
 }
 
+QString QgsTextCharacterFormat::imagePath() const
+{
+  return mImagePath;
+}
+
+void QgsTextCharacterFormat::setImagePath( const QString &path )
+{
+  mImagePath = path;
+}
+
+QSizeF QgsTextCharacterFormat::imageSize() const
+{
+  return mImageSize;
+}
+
+void QgsTextCharacterFormat::setImageSize( const QSizeF &size )
+{
+  mImageSize = size;
+}
+
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderContext &context, const double scaleFactor ) const
 {
   // important -- MUST set family first
@@ -161,6 +208,9 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
 
   if ( mFontPointSize != -1 )
     font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, Qgis::RenderUnit::Points ) );
+
+  if ( mFontPercentageSize != -1 )
+    font.setPixelSize( font.pixelSize() * mFontPercentageSize );
 
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
@@ -201,6 +251,21 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
     font.setOverline( mOverline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mStrikethrough != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setStrikeOut( mStrikethrough == QgsTextCharacterFormat::BooleanValue::SetTrue );
+
+  if ( !std::isnan( mWordSpacing ) )
+  {
+    font.setWordSpacing( scaleFactor * context.convertToPainterUnits( mWordSpacing, Qgis::RenderUnit::Points ) );
+  }
+}
+
+QString QgsTextCharacterFormat::backgroundImagePath() const
+{
+  return mBackgroundPath;
+}
+
+void QgsTextCharacterFormat::setBackgroundImagePath( const QString &path )
+{
+  mBackgroundPath = path;
 }
 
 QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::italic() const
@@ -221,4 +286,29 @@ int QgsTextCharacterFormat::fontWeight() const
 void QgsTextCharacterFormat::setFontWeight( int fontWeight )
 {
   mFontWeight = fontWeight;
+}
+
+double QgsTextCharacterFormat::wordSpacing() const
+{
+  return mWordSpacing;
+}
+
+void QgsTextCharacterFormat::setWordSpacing( double spacing )
+{
+  mWordSpacing = spacing;
+}
+
+bool QgsTextCharacterFormat::hasBackground() const
+{
+  return mBackgroundBrush.style() != Qt::NoBrush || !mBackgroundPath.isEmpty();
+}
+
+QBrush QgsTextCharacterFormat::backgroundBrush() const
+{
+  return mBackgroundBrush;
+}
+
+void QgsTextCharacterFormat::setBackgroundBrush( const QBrush &brush )
+{
+  mBackgroundBrush = brush;
 }

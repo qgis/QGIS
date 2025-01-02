@@ -31,9 +31,7 @@
  */
 class QgsTaperedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsTaperedBufferAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -50,10 +48,9 @@ class QgsTaperedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     double mStartWidth = 0.0;
     bool mDynamicStartWidth = false;
     QgsProperty mStartWidthProperty;
@@ -65,7 +62,6 @@ class QgsTaperedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     int mSegments = 16;
     bool mDynamicSegments = false;
     QgsProperty mSegmentsProperty;
-
 };
 
 
@@ -74,9 +70,7 @@ class QgsTaperedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
  */
 class QgsVariableWidthBufferByMAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsVariableWidthBufferByMAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -93,17 +87,13 @@ class QgsVariableWidthBufferByMAlgorithm : public QgsProcessingFeatureBasedAlgor
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     int mSegments = 16;
     bool mDynamicSegments = false;
     QgsProperty mSegmentsProperty;
-
 };
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMTAPEREDBUFFER_H
-
-

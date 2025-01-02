@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgselevationutils.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,6 +30,25 @@ This method considers the elevation (or z) range available from layers contained
 returns the maximal combined elevation range of these layers.
 %End
 
+    static QList< double > significantZValuesForProject( QgsProject *project );
+%Docstring
+Returns a list of significant elevation/z-values for the specified ``project``, using
+the values from layers contained by the project.
+
+These values will be highlighted in elevation related widgets for the project.
+
+.. versionadded:: 3.38
+%End
+
+    static QList< double > significantZValuesForLayers( const QList< QgsMapLayer * > &layers );
+%Docstring
+Returns a list of significant elevation/z-values for the specified ``layers``.
+
+These values will be highlighted in elevation related widgets for the project.
+
+.. versionadded:: 3.38
+%End
+
     static bool canEnableElevationForLayer( QgsMapLayer *layer );
 %Docstring
 Returns ``True`` if elevation can be enabled for a map ``layer``.
@@ -54,5 +73,5 @@ Returns ``True`` if the elevation was enabled successfully.
  *                                                                      *
  * src/core/qgselevationutils.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

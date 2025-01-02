@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenerendererpropertieswidget.h"
+#include "moc_qgstiledscenerendererpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgstiledscenerendererregistry.h"
@@ -86,12 +87,7 @@ QgsTiledSceneRendererPropertiesWidget::QgsTiledSceneRendererPropertiesWidget( Qg
   connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged );
 
-  mMaxErrorUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters,
-                                   Qgis::RenderUnit::MetersInMapUnits,
-                                   Qgis::RenderUnit::MapUnits,
-                                   Qgis::RenderUnit::Pixels,
-                                   Qgis::RenderUnit::Points,
-                                   Qgis::RenderUnit::Inches } );
+  mMaxErrorUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mMaxErrorSpinBox->setClearValue( 3 );
 
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged );
@@ -112,7 +108,7 @@ void QgsTiledSceneRendererPropertiesWidget::setContext( const QgsSymbolWidgetCon
 
 void QgsTiledSceneRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = qobject_cast< QgsTiledSceneLayer * >( layer );
+  mLayer = qobject_cast<QgsTiledSceneLayer *>( layer );
 
   mBlockChangedSignal = true;
   mOpacityWidget->setOpacity( mLayer->opacity() );
@@ -172,8 +168,8 @@ void QgsTiledSceneRendererPropertiesWidget::rendererChanged()
   const QString rendererName = cboRenderers->currentData().toString();
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
-  std::unique_ptr< QgsTiledSceneRenderer > oldRenderer;
-  std::unique_ptr< QgsTiledSceneRenderer > newRenderer;
+  std::unique_ptr<QgsTiledSceneRenderer> oldRenderer;
+  std::unique_ptr<QgsTiledSceneRenderer> newRenderer;
   if ( mActiveWidget )
     newRenderer.reset( mActiveWidget->renderer() );
 
@@ -233,4 +229,3 @@ void QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged()
   if ( !mBlockChangedSignal )
     emit widgetChanged();
 }
-

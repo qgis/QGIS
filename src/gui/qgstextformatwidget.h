@@ -52,7 +52,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     Q_PROPERTY( QgsTextFormat format READ format )
 
   public:
-
     /**
      * Constructor for QgsTextFormatWidget.
      * \param format initial formatting settings to show in widget
@@ -60,8 +59,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \param parent parent widget
      * \param layer associated layer (vector or mesh)
      */
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                         QgsMapLayer *layer = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsMapLayer *layer = nullptr );
 
     ~QgsTextFormatWidget() override;
 
@@ -122,7 +120,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void auxiliaryFieldCreated();
 
   protected:
-
     //! Widget mode
     enum Mode
     {
@@ -168,8 +165,18 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      */
     Qgis::GeometryType labelGeometryType() const;
 
+    /**
+     * Toggles whether data defined buttons should be shown in the widget.
+     *
+     * \since QGIS 3.42
+     */
+    void setPropertyOverrideButtonsVisible( bool visible );
+
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
+    //! Tab positions
+    QList<QgsTextFormat::Tab> mTabPositions;
+
     //! Quadrant button group
     QButtonGroup *mQuadrantBtnGrp = nullptr;
     //! Symbol direction button group
@@ -195,6 +202,25 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     //! Geometry type for layer, if known
     Qgis::GeometryType mGeomType = Qgis::GeometryType::Unknown;
+
+    //! Text widget item
+    QListWidgetItem *mTextItem = nullptr;
+    //! Formatting widget item
+    QListWidgetItem *mFormattingItem = nullptr;
+    //! Buffer widget item
+    QListWidgetItem *mBufferItem = nullptr;
+    //! Mask widget item
+    QListWidgetItem *mMaskItem = nullptr;
+    //! Background widget item
+    QListWidgetItem *mBackgroundItem = nullptr;
+    //! Shadow widget item
+    QListWidgetItem *mShadowItem = nullptr;
+    //! Callout widget item
+    QListWidgetItem *mCalloutItem = nullptr;
+    //! Placement widget item
+    QListWidgetItem *mPlacementItem = nullptr;
+    //! Rendering widget item
+    QListWidgetItem *mRenderingItem = nullptr;
 
   protected slots:
 
@@ -236,9 +262,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     Mode mWidgetMode = Text;
 
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
-    std::unique_ptr< QgsPaintEffect > mBufferEffect;
-    std::unique_ptr< QgsPaintEffect > mMaskEffect;
-    std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
+    std::unique_ptr<QgsPaintEffect> mBufferEffect;
+    std::unique_ptr<QgsPaintEffect> mMaskEffect;
+    std::unique_ptr<QgsPaintEffect> mBackgroundEffect;
     QColor mPreviewBackgroundColor;
 
     QFontDatabase mFontDB;
@@ -254,12 +280,11 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     void initWidget();
     void setWidgetMode( Mode mode );
-    void toggleDDButtons( bool visible );
     void blockFontChangeSignals( bool blk );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void updateFont( const QFont &font );
-    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+    void connectValueChanged( const QList<QWidget *> &widgets );
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
 
@@ -299,6 +324,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mDirectSymbRightToolBtn_clicked();
     void chkLineOrientationDependent_toggled( bool active );
     void mToolButtonConfigureSubstitutes_clicked();
+    void configureTabStops();
     void collapseSample( bool collapse );
     void changeTextColor( const QColor &color );
     void changeBufferColor( const QColor &color );
@@ -332,7 +358,6 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextFormatDialog.
      * \param format initial format settings to show in dialog
@@ -361,13 +386,11 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     QDialogButtonBox *buttonBox() const;
 
   private:
-
     QgsTextFormatWidget *mFormatWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
     void showHelp();
-
 };
 
 /**
@@ -386,7 +409,6 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextFormatPanelWidget.
      * \param format initial format settings to show in dialog
@@ -417,7 +439,6 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     void setDockMode( bool dockMode ) override;
 
   private:
-
     QgsTextFormatWidget *mFormatWidget = nullptr;
     bool mBlockSignals = false;
 };

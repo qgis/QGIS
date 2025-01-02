@@ -63,6 +63,11 @@ QString QgsPointOnSurfaceAlgorithm::shortHelpString() const
   return QObject::tr( "Returns a point guaranteed to lie on the surface of a geometry." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsPointOnSurfaceAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios;
+}
+
 QgsPointOnSurfaceAlgorithm *QgsPointOnSurfaceAlgorithm::createInstance() const
 {
   return new QgsPointOnSurfaceAlgorithm();
@@ -70,10 +75,11 @@ QgsPointOnSurfaceAlgorithm *QgsPointOnSurfaceAlgorithm::createInstance() const
 
 void QgsPointOnSurfaceAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterBoolean> allParts = std::make_unique< QgsProcessingParameterBoolean >(
-        QStringLiteral( "ALL_PARTS" ),
-        QObject::tr( "Create point on surface for each part" ),
-        false );
+  std::unique_ptr<QgsProcessingParameterBoolean> allParts = std::make_unique<QgsProcessingParameterBoolean>(
+    QStringLiteral( "ALL_PARTS" ),
+    QObject::tr( "Create point on surface for each part" ),
+    false
+  );
   allParts->setIsDynamic( true );
   allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "All parts" ), QObject::tr( "Create point on surface for each part" ), QgsPropertyDefinition::Boolean ) );
   allParts->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -85,7 +91,7 @@ bool QgsPointOnSurfaceAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   mAllParts = parameterAsBoolean( parameters, QStringLiteral( "ALL_PARTS" ), context );
   mDynamicAllParts = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ALL_PARTS" ) );
   if ( mDynamicAllParts )
-    mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value< QgsProperty >();
+    mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value<QgsProperty>();
 
   return true;
 }

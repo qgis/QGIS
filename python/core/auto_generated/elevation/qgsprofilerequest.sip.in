@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/elevation/qgsprofilerequest.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -32,9 +32,6 @@ to the request.
 %End
 
     QgsProfileRequest( const QgsProfileRequest &other );
-%Docstring
-Copy constructor.
-%End
 
     ~QgsProfileRequest();
 
@@ -188,5 +185,5 @@ Sets the expression context used to evaluate expressions.
  *                                                                      *
  * src/core/elevation/qgsprofilerequest.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

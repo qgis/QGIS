@@ -175,7 +175,7 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   mActive = map.value( QStringLiteral( "active" ) ).toBool();
 
   mDependencies.clear();
-  if ( map.value( QStringLiteral( "dependencies" ) ).type() == QVariant::StringList )
+  if ( map.value( QStringLiteral( "dependencies" ) ).userType() == QMetaType::Type::QStringList )
   {
     const QStringList dependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
     mDependencies.reserve( dependencies.size() );

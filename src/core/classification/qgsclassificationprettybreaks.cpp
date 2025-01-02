@@ -36,9 +36,10 @@ QString QgsClassificationPrettyBreaks::id() const
   return QStringLiteral( "Pretty" );
 }
 
-QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses )
+QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( values );
+  Q_UNUSED( error );
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
 
   if ( symmetricModeEnabled() )
@@ -47,10 +48,10 @@ QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, d
   return breaks;
 }
 
-QgsClassificationMethod *QgsClassificationPrettyBreaks::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationPrettyBreaks::clone() const
 {
-  QgsClassificationPrettyBreaks *c = new QgsClassificationPrettyBreaks();
-  copyBase( c );
+  std::unique_ptr< QgsClassificationPrettyBreaks > c = std::make_unique< QgsClassificationPrettyBreaks >();
+  copyBase( c.get() );
   return c;
 }
 

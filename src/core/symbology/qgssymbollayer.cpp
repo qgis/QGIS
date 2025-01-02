@@ -27,6 +27,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
+#include "qgsgeos.h"
 
 #include <QSize>
 #include <QPainter>
@@ -115,6 +116,8 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { static_cast< int >( QgsSymbolLayer::Property::RandomOffsetX ), QgsPropertyDefinition( "randomOffsetX", QObject::tr( "Horizontal random offset" ), QgsPropertyDefinition::Double, origin )},
     { static_cast< int >( QgsSymbolLayer::Property::RandomOffsetY ), QgsPropertyDefinition( "randomOffsetY", QObject::tr( "Vertical random offset" ), QgsPropertyDefinition::Double, origin )},
     { static_cast< int >( QgsSymbolLayer::Property::LineClipping ), QgsPropertyDefinition( "lineClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>during_render</b>|<b>before_render</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::SkipMultiples ), QgsPropertyDefinition( "skipMultiples", QObject::tr( "Skip multiples of" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ShowMarker ), QgsPropertyDefinition( "showMarker", QObject::tr( "Show marker" ), QgsPropertyDefinition::Boolean, origin )},
   };
 }
 
@@ -226,6 +229,21 @@ void QgsSymbolLayer::setPaintEffect( QgsPaintEffect *effect )
     return;
 
   mPaintEffect.reset( effect );
+}
+
+QgsSymbolLayer::QgsSymbolLayer( const QgsSymbolLayer &other )
+  : mType( other.mType )
+  , mEnabled( other.mEnabled )
+  , mUserFlags( other.mUserFlags )
+  , mLocked( other.mLocked )
+  , mColor( other.mColor )
+  , mRenderingPass( other.mRenderingPass )
+  , mId( other.mId )
+  , mDataDefinedProperties( other.mDataDefinedProperties )
+  , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
+  , mFields( other.mFields )
+  , mClipPath( other.mClipPath )
+{
 }
 
 QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
@@ -529,6 +547,23 @@ void QgsLineSymbolLayer::setRingFilter( const RenderRingFilter filter )
 QgsFillSymbolLayer::QgsFillSymbolLayer( bool locked )
   : QgsSymbolLayer( Qgis::SymbolType::Fill, locked )
 {
+}
+
+QgsMarkerSymbolLayer::QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other )
+  : QgsSymbolLayer( other )
+  , mAngle( other.mAngle )
+  , mLineAngle( other.mLineAngle )
+  , mSize( other.mSize )
+  , mSizeUnit( other.mSizeUnit )
+  , mSizeMapUnitScale( other.mSizeMapUnitScale )
+  , mOffset( other.mOffset )
+  , mOffsetUnit( other.mOffsetUnit )
+  , mOffsetMapUnitScale( other.mOffsetMapUnitScale )
+  , mScaleMethod( other.mScaleMethod )
+  , mHorizontalAnchorPoint( other.mHorizontalAnchorPoint )
+  , mVerticalAnchorPoint( other.mVerticalAnchorPoint )
+{
+
 }
 
 void QgsMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
@@ -864,7 +899,7 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, c
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #5 points).
   if ( points.size() <= 5 &&
-       ( context.renderContext().vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::AntialiasingSimplification ) &&
+       ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification ) &&
        QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) &&
        ( p->renderHints() & QPainter::Antialiasing ) )
   {
@@ -952,44 +987,88 @@ double QgsMarkerSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
   return angle;
 }
 
-void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
+QPainterPath generateClipPath( const QgsRenderContext &renderContext, const QString &id, const QRectF *rect, bool &foundGeometries )
 {
-  mClipPath.clear();
-
-  const QgsRenderContext &renderContext = context.renderContext();
-  const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( id() );
-  if ( !clipPaths.isEmpty() )
+  foundGeometries = false;
+  const QVector<QgsGeometry> clipGeometries = rect
+      ? QgsSymbolLayerUtils::collectSymbolLayerClipGeometries( renderContext, id, *rect )
+      : renderContext.symbolLayerClipGeometries( id );
+  if ( !clipGeometries.empty() )
   {
-    QPainterPath mergedPaths;
-    mergedPaths.setFillRule( Qt::WindingFill );
-    for ( const QPainterPath &path : clipPaths )
+    foundGeometries = true;
+    QgsGeometry mergedGeom = QgsGeometry::unaryUnion( clipGeometries );
+    if ( renderContext.maskSettings().simplifyTolerance() > 0 )
     {
-      mergedPaths.addPath( path );
+      QgsGeos geos( mergedGeom.constGet() );
+      mergedGeom = QgsGeometry( geos.simplify( renderContext.maskSettings().simplifyTolerance() ) );
     }
-
-    if ( !mergedPaths.isEmpty() )
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+    // structure would be better, but too old GEOS
+    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Linework );
+#else
+    mergedGeom = mergedGeom.makeValid( Qgis::MakeValidMethod::Structure );
+#endif
+    if ( !mergedGeom.isEmpty() )
     {
-      mClipPath.addRect( 0, 0, renderContext.outputSize().width(),
-                         renderContext.outputSize().height() );
-      mClipPath = mClipPath.subtracted( mergedPaths );
+      QgsGeometry exterior;
+      const QgsRectangle contextBounds( 0, 0,
+                                        renderContext.outputSize().width(),
+                                        renderContext.outputSize().height() );
+      if ( rect )
+      {
+        exterior = QgsGeometry::fromRect( QgsRectangle( *rect ).intersect( contextBounds ) );
+      }
+      else
+      {
+        exterior = QgsGeometry::fromRect( contextBounds );
+      }
+      const QgsGeometry maskGeom = exterior.difference( mergedGeom );
+      if ( !maskGeom.isNull() )
+      {
+        return maskGeom.constGet()->asQPainterPath();
+      }
     }
   }
+  return QPainterPath();
 }
 
-void QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive )
+void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
 {
+  const QgsRenderContext &renderContext = context.renderContext();
+
+  bool foundGeometries = false;
+  mClipPath = generateClipPath( renderContext, id(), nullptr, foundGeometries );
+}
+
+bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect )
+{
+  bool res = false;
   if ( !mClipPath.isEmpty() )
   {
     context.painter()->save();
     context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
+    res = true;
+  }
+  else if ( rect.isValid() )
+  {
+    // find just the clip geometries within the area the symbol layer will be drawn over
+    bool foundGeometries = false;
+    const QPainterPath clipPath = generateClipPath( context, id(), &rect, foundGeometries );
+    if ( !clipPath.isEmpty() )
+    {
+      context.painter()->setClipPath( clipPath, context.painter()->clipPath().isEmpty() ? Qt::ReplaceClip : Qt::IntersectClip );
+      res = true;
+    }
   }
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
     const QList<QgsSymbolLayer *> layers = lSubSymbol->symbolLayers();
     for ( QgsSymbolLayer *sl : layers )
-      sl->installMasks( context, true );
+      res = sl->installMasks( context, true ) || res;
   }
+
+  return res;
 }
 
 void QgsSymbolLayer::removeMasks( QgsRenderContext &context, bool recursive )

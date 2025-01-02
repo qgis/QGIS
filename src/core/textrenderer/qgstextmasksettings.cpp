@@ -205,7 +205,22 @@ void QgsTextMaskSettings::readXml( const QDomElement &elem )
   const QDomElement textMaskElem = elem.firstChildElement( QStringLiteral( "text-mask" ) );
   d->enabled = textMaskElem.attribute( QStringLiteral( "maskEnabled" ), QStringLiteral( "0" ) ).toInt();
   d->type = static_cast<QgsTextMaskSettings::MaskType>( textMaskElem.attribute( QStringLiteral( "maskType" ), QStringLiteral( "0" ) ).toInt() );
-  d->size = textMaskElem.attribute( QStringLiteral( "maskSize" ), QStringLiteral( "0" ) ).toDouble();
+  if ( textMaskElem.hasAttribute( QStringLiteral( "maskSize2" ) ) )
+  {
+    d->size = textMaskElem.attribute( QStringLiteral( "maskSize2" ), QStringLiteral( "1.5" ) ).toDouble();
+  }
+  else
+  {
+    // the older maskSize attribute used to be treated as 0 instead of the default 1.5 mm size when no mask
+    // settings were available, and then when the project was saved this incorrect 0 value would become an
+    // actual valid attribute in the XML. Since we can't now differentiate a valid 0 value from an accidental
+    // 0 value in older projects, we instead assume "0" as a mistake and reset it to 1.5.
+    // when the project is saved the newer maskSize2 attribute will be used and we know that a "0" value
+    // WAS an explicit user choice.
+    d->size = textMaskElem.attribute( QStringLiteral( "maskSize" ) ).toDouble();
+    if ( d->size == 0 )
+      d->size = 1.5;
+  }
   d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textMaskElem.attribute( QStringLiteral( "maskSizeUnits" ) ) );
   d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textMaskElem.attribute( QStringLiteral( "maskSizeMapUnitScale" ) ) );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( textMaskElem.attribute( QStringLiteral( "maskJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
@@ -224,6 +239,8 @@ QDomElement QgsTextMaskSettings::writeXml( QDomDocument &doc ) const
   textMaskElem.setAttribute( QStringLiteral( "maskEnabled" ), d->enabled );
   textMaskElem.setAttribute( QStringLiteral( "maskType" ), d->type );
   textMaskElem.setAttribute( QStringLiteral( "maskSize" ), d->size );
+  // deliberate -- see comment in readXml
+  textMaskElem.setAttribute( QStringLiteral( "maskSize2" ), d->size );
   textMaskElem.setAttribute( QStringLiteral( "maskSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
   textMaskElem.setAttribute( QStringLiteral( "maskSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
   textMaskElem.setAttribute( QStringLiteral( "maskJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );

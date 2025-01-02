@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgscolorrampimpl.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -493,9 +493,6 @@ to some hardcoded saturation and value ranges to prevent ugly color generation.
   public:
 
     QgsRandomColorRamp();
-%Docstring
-Constructor for QgsRandomColorRamp.
-%End
 
     virtual int count() const;
 
@@ -738,6 +735,10 @@ Generates the scheme using the current name and number of colors
 
 class QgsCptCityColorRamp : QgsGradientColorRamp
 {
+%Docstring(signature="appended")
+
+A color ramp from the CPT City collection.
+%End
 
 %TypeHeaderCode
 #include "qgscolorrampimpl.h"
@@ -827,5 +828,5 @@ Returns the string identifier for QgsCptCityColorRamp.
  *                                                                      *
  * src/core/qgscolorrampimpl.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

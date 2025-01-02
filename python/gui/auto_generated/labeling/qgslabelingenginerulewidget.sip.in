@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelingenginerulewidget.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsLabelingEngineRuleWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+Base class for widgets which allow control over the properties of :py:class:`QgsAbstractLabelingEngineRule` subclasses
+
+.. seealso:: :py:class:`QgsLabelingEngineRulesWidget` for a widget for configuring multiple rules
+
+.. seealso:: :py:class:`QgsLabelingEngineRuleDialog`
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgslabelingenginerulewidget.h"
+%End
+  public:
+    QgsLabelingEngineRuleWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLabelingEngineRuleWidget.
+%End
+
+    virtual void setRule( const QgsAbstractLabelingEngineRule *rule ) = 0;
+%Docstring
+Sets the ``rule`` to show in the widget. Ownership is not transferred.
+
+.. seealso:: :py:func:`rule`
+%End
+
+    virtual QgsAbstractLabelingEngineRule *rule() = 0 /TransferBack/;
+%Docstring
+Returns the rule defined by the current settings in the widget.
+
+Ownership of the returned object is transferred to the caller
+
+.. seealso:: :py:func:`setRule`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the configuration of the rule is changed.
+%End
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelingenginerulewidget.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

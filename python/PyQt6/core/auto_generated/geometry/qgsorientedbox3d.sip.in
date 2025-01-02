@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/geometry/qgsorientedbox3d.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -110,7 +110,7 @@ Returns an array of all corners as 3D vectors.
 Returns size of sides of the box.
 %End
 
-    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const throw( QgsCsException ) /HoldGIL/;
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const  /HoldGIL/;
 %Docstring
 Reprojects corners of this box using the given coordinate ``transform``
 and returns axis-aligned box containing reprojected corners.
@@ -154,5 +154,5 @@ Returns ``True`` if the box intersects the ``other`` box.
  *                                                                      *
  * src/core/geometry/qgsorientedbox3d.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

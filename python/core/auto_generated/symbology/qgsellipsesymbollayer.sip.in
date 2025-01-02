@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsellipsesymbollayer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -67,6 +67,8 @@ Creates the symbol layer
 
     virtual QString layerType() const;
 
+    virtual Qgis::SymbolLayerFlags flags() const;
+
     virtual void startRender( QgsSymbolRenderContext &context );
 
     virtual void stopRender( QgsSymbolRenderContext &context );
@@ -84,7 +86,7 @@ Creates the symbol layer
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
 
- void setSymbolName( const QString &name ) /Deprecated/;
+ void setSymbolName( const QString &name ) /Deprecated="Since 3.20. "/;
 %Docstring
 Sets the rendered ellipse marker shape using a symbol ``name``.
 
@@ -92,10 +94,10 @@ Sets the rendered ellipse marker shape using a symbol ``name``.
 
 .. seealso:: :py:func:`shape`
 
-.. deprecated:: QGIS 3.20
+.. deprecated:: 3.20
 %End
 
- QString symbolName() const /Deprecated/;
+ QString symbolName() const /Deprecated="Since 3.20. "/;
 %Docstring
 Returns the shape name for the rendered ellipse marker symbol.
 
@@ -103,7 +105,7 @@ Returns the shape name for the rendered ellipse marker symbol.
 
 .. seealso:: :py:func:`setShape`
 
-.. deprecated:: QGIS 3.20
+.. deprecated:: 3.20
 %End
 
     QgsEllipseSymbolLayer::Shape shape() const;
@@ -305,5 +307,5 @@ Returns the units for the symbol's stroke width.
  *                                                                      *
  * src/core/symbology/qgsellipsesymbollayer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgstextformatwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,9 +31,7 @@ of Labeling.
 #include "qgstextformatwidget.h"
 %End
   public:
-
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0,
-                         QgsMapLayer *layer = 0 );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
@@ -110,7 +108,6 @@ Emitted when an auxiliary field is created in the widget.
 %End
 
   protected:
-
     enum Mode /BaseType=IntEnum/
     {
       Text,
@@ -141,12 +138,11 @@ Sets the background color for the text preview widget.
 :param color: background color
 %End
 
- void enableDataDefinedAlignment( bool enable ) /Deprecated/;
+ void enableDataDefinedAlignment( bool enable ) /Deprecated="Since 3.24. "/;
 %Docstring
 Update the enabled state of the data defined alignment buttons.
 
-.. deprecated::
-   QGIS 3.24
+.. deprecated:: 3.24
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -159,6 +155,15 @@ when registering labels for the labeling settings currently defined by the widge
 
 .. versionadded:: 3.16
 %End
+
+    void setPropertyOverrideButtonsVisible( bool visible );
+%Docstring
+Toggles whether data defined buttons should be shown in the widget.
+
+.. versionadded:: 3.42
+%End
+
+
 
 
 
@@ -217,7 +222,6 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 #include "qgstextformatwidget.h"
 %End
   public:
-
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatDialog.
@@ -265,7 +269,6 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 #include "qgstextformatwidget.h"
 %End
   public:
-
     QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatPanelWidget.
@@ -305,5 +308,5 @@ Sets the ``context`` in which the widget is shown, e.g., the associated map canv
  *                                                                      *
  * src/gui/qgstextformatwidget.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

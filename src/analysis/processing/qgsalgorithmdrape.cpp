@@ -38,27 +38,23 @@ QString QgsDrapeAlgorithmBase::outputName() const
 
 void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "RASTER" ),
-                QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ),
-                QObject::tr( "Band number" ), 1, QStringLiteral( "RASTER" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "RASTER" ), QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "RASTER" ) ) );
 
   // nodata value
-  std::unique_ptr< QgsProcessingParameterNumber > nodata = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NODATA" ),
-      QObject::tr( "Value for NoData or non-intersecting vertices" ), Qgis::ProcessingNumberParameterType::Double,
-      0.0 );
+  std::unique_ptr<QgsProcessingParameterNumber> nodata = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   nodata->setIsDynamic( true );
   nodata->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), QgsPropertyDefinition::Double ) );
   nodata->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( nodata.release() );
 
-  auto scaleParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
+  auto scaleParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
   scaleParam->setIsDynamic( true );
   scaleParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), QgsPropertyDefinition::Double ) );
   scaleParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( scaleParam.release() );
 
-  auto offsetParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto offsetParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   offsetParam->setIsDynamic( true );
   offsetParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), QgsPropertyDefinition::Double ) );
   offsetParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -70,17 +66,17 @@ bool QgsDrapeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mNoData = parameterAsDouble( parameters, QStringLiteral( "NODATA" ), context );
   mDynamicNoData = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "NODATA" ) );
   if ( mDynamicNoData )
-    mNoDataProperty = parameters.value( QStringLiteral( "NODATA" ) ).value< QgsProperty >();
+    mNoDataProperty = parameters.value( QStringLiteral( "NODATA" ) ).value<QgsProperty>();
 
   mScale = parameterAsDouble( parameters, QStringLiteral( "SCALE" ), context );
   mDynamicScale = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "SCALE" ) );
   if ( mDynamicScale )
-    mScaleProperty = parameters.value( QStringLiteral( "SCALE" ) ).value< QgsProperty >();
+    mScaleProperty = parameters.value( QStringLiteral( "SCALE" ) ).value<QgsProperty>();
 
   mOffset = parameterAsDouble( parameters, QStringLiteral( "OFFSET" ), context );
   mDynamicOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "OFFSET" ) );
   if ( mDynamicOffset )
-    mOffsetProperty = parameters.value( QStringLiteral( "OFFSET" ) ).value< QgsProperty >();
+    mOffsetProperty = parameters.value( QStringLiteral( "OFFSET" ) ).value<QgsProperty>();
 
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "RASTER" ), context );
 
@@ -89,17 +85,12 @@ bool QgsDrapeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, Qgs
 
   mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   if ( mBand < 1 || mBand > layer->bandCount() )
-    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand )
-                                  .arg( layer->bandCount() ) );
+    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
   mRasterExtent = layer->extent();
 
-  std::unique_ptr< QgsRasterInterface > provider( layer->dataProvider()->clone() );
-  QgsRasterDataProvider *dp = dynamic_cast< QgsRasterDataProvider * >( provider.get() );
-  if ( !dp )
+  mRasterProvider.reset( layer->dataProvider()->clone() );
+  if ( !mRasterProvider )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "RASTER" ) ) );
-
-  mRasterProvider.reset( dp );
-  provider.release();
 
   return true;
 }
@@ -146,8 +137,7 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
     // a pointless iteration over all vertices
     if ( !mRasterExtent.isNull() && geometry.boundingBoxIntersects( mRasterExtent ) )
     {
-      geometry.transformVertices( [ = ]( const QgsPoint & p )->QgsPoint
-      {
+      geometry.transformVertices( [=]( const QgsPoint &p ) -> QgsPoint {
         QgsPointXY t;
         double val = nodata;
         try
@@ -216,11 +206,11 @@ QgsDrapeToZAlgorithm *QgsDrapeToZAlgorithm::createInstance() const
 
 bool QgsDrapeToZAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
-  if ( ! QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
+  if ( !QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
     return false;
   return QgsWkbTypes::hasZ( layer->wkbType() );
 }
@@ -279,11 +269,11 @@ QgsDrapeToMAlgorithm *QgsDrapeToMAlgorithm::createInstance() const
 
 bool QgsDrapeToMAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
-  if ( ! QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
+  if ( !QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
     return false;
   return QgsWkbTypes::hasM( layer->wkbType() );
 }
@@ -306,5 +296,3 @@ QgsPoint QgsDrapeToMAlgorithm::drapeVertex( const QgsPoint &p, double rasterVal 
 
 
 ///@endcond
-
-

@@ -26,7 +26,17 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayerOpacity( layer->opacity() )
+  , mLayerBlendMode( layer->blendMode() )
 {
+  if ( QgsMapLayer *linkedLayer = layer->linkedVisibilityLayer() )
+  {
+    if ( !context.customProperties().value( QStringLiteral( "visible_layer_ids" ) ).toList().contains( linkedLayer->id() ) )
+    {
+      mReadyToCompose = true;
+      return;
+    }
+  }
+
   // Clone items from layer which fall inside the rendered extent
   // Because some items have scale dependent bounds, we have to accept some limitations here.
   // first, we can use the layer's spatial index to very quickly retrieve items we know will fall within the visible
@@ -89,7 +99,7 @@ bool QgsAnnotationLayerRenderer::render()
       continue;
 
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-    if ( item.second->useSymbologyReferenceScale() )
+    if ( item.second->useSymbologyReferenceScale() && item.second->flags() & Qgis::AnnotationItemFlag::SupportsReferenceScale )
     {
       referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, item.second->symbologyReferenceScale() ) );
     }
@@ -114,5 +124,14 @@ bool QgsAnnotationLayerRenderer::render()
 
 bool QgsAnnotationLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
+    return false;
+
+  if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+    return true;
+
+  if ( mLayerBlendMode != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  return false;
 }

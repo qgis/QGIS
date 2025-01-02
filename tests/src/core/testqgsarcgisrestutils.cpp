@@ -40,10 +40,10 @@ class TestQgsArcGisRestUtils : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
     void testMapEsriFieldType();
     void testParseSpatialReference();
     void testParseSpatialReferenceEPSG();
@@ -68,11 +68,8 @@ class TestQgsArcGisRestUtils : public QObject
     void testParsePolylineZM();
 
   private:
-
     QVariantMap jsonStringToMap( const QString &string ) const;
-
 };
-
 
 
 //runs before all tests
@@ -91,22 +88,22 @@ void TestQgsArcGisRestUtils::cleanupTestCase()
 
 void TestQgsArcGisRestUtils::testMapEsriFieldType()
 {
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeInteger" ) ), QVariant::LongLong );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSmallInteger" ) ), QVariant::Int );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QVariant::Double );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QVariant::Double );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeString" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::DateTime );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QVariant::LongLong );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QVariant::ByteArray );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeRaster" ) ), QVariant::ByteArray );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGUID" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeXML" ) ), QVariant::String );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeInteger" ) ), QMetaType::Type::LongLong );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSmallInteger" ) ), QMetaType::Type::Int );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QMetaType::Type::Double );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QMetaType::Type::Double );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeString" ) ), QMetaType::Type::QString );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QMetaType::Type::QDateTime );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QMetaType::Type::LongLong );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QMetaType::Type::QByteArray );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QMetaType::Type::QString );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeRaster" ) ), QMetaType::Type::QByteArray );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGUID" ) ), QMetaType::Type::QString );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeXML" ) ), QMetaType::Type::QString );
 
   // not valid fields
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGeometry" ) ), QVariant::Invalid );
-  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "xxx" ) ), QVariant::Invalid );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "esriFieldTypeGeometry" ) ), QMetaType::Type::UnknownType );
+  QCOMPARE( QgsArcGisRestUtils::convertFieldType( QStringLiteral( "xxx" ) ), QMetaType::Type::UnknownType );
 }
 
 void TestQgsArcGisRestUtils::testParseSpatialReference()
@@ -114,7 +111,8 @@ void TestQgsArcGisRestUtils::testParseSpatialReference()
   QVariantMap map;
   map.insert(
     QStringLiteral( "wkt" ),
-    QStringLiteral( "PROJCS[\"NewJTM\",GEOGCS[\"GCS_ETRF_1989\",DATUM[\"D_ETRF_1989\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",40000.0],PARAMETER[\"False_Northing\",70000.0],PARAMETER[\"Central_Meridian\",-2.135],PARAMETER[\"Scale_Factor\",0.9999999],PARAMETER[\"Latitude_Of_Origin\",49.225],UNIT[\"Meter\",1.0]]" ) );
+    QStringLiteral( "PROJCS[\"NewJTM\",GEOGCS[\"GCS_ETRF_1989\",DATUM[\"D_ETRF_1989\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",40000.0],PARAMETER[\"False_Northing\",70000.0],PARAMETER[\"Central_Meridian\",-2.135],PARAMETER[\"Scale_Factor\",0.9999999],PARAMETER[\"Latitude_Of_Origin\",49.225],UNIT[\"Meter\",1.0]]" )
+  );
 
   const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( map );
   QVERIFY( crs.isValid() );
@@ -214,33 +212,33 @@ void TestQgsArcGisRestUtils::testParseEsriColorJson()
 void TestQgsArcGisRestUtils::testParseMarkerSymbol()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"type\": \"esriSMS\","
-                          "\"style\": \"esriSMSSquare\","
-                          "\"color\": ["
-                          "76,"
-                          "115,"
-                          "10,"
-                          "200"
-                          "],"
-                          "\"size\": 8,"
-                          "\"angle\": 10,"
-                          "\"xoffset\": 7,"
-                          "\"yoffset\": 17,"
-                          "\"outline\": {"
-                          "\"color\": ["
-                          "152,"
-                          "230,"
-                          "17,"
-                          "176"
-                          "],"
-                          "\"width\": 5"
-                          "}"
-                          "}" );
+                                           "\"type\": \"esriSMS\","
+                                           "\"style\": \"esriSMSSquare\","
+                                           "\"color\": ["
+                                           "76,"
+                                           "115,"
+                                           "10,"
+                                           "200"
+                                           "],"
+                                           "\"size\": 8,"
+                                           "\"angle\": 10,"
+                                           "\"xoffset\": 7,"
+                                           "\"yoffset\": 17,"
+                                           "\"outline\": {"
+                                           "\"color\": ["
+                                           "152,"
+                                           "230,"
+                                           "17,"
+                                           "176"
+                                           "],"
+                                           "\"width\": 5"
+                                           "}"
+                                           "}" );
   std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsMarkerSymbol *marker = dynamic_cast< QgsMarkerSymbol * >( symbol.get() );
+  QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
-  QgsSimpleMarkerSymbolLayer *markerLayer = dynamic_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) );
+  QgsSimpleMarkerSymbolLayer *markerLayer = dynamic_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) );
   QVERIFY( markerLayer );
   QCOMPARE( markerLayer->fillColor(), QColor( 76, 115, 10, 200 ) );
   QCOMPARE( markerLayer->shape(), Qgis::MarkerShape::Square );
@@ -253,6 +251,71 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( markerLayer->strokeWidth(), 5.0 );
   QCOMPARE( markerLayer->strokeWidthUnit(), Qgis::RenderUnit::Points );
 
+  // esriTS
+  const QVariantMap fontMap = jsonStringToMap( "{"
+                                               "\"type\": \"esriTS\","
+                                               "\"text\": \"text\","
+                                               "\"color\": ["
+                                               "78,"
+                                               "78,"
+                                               "78,"
+                                               "255"
+                                               "],"
+                                               "\"backgroundColor\": ["
+                                               "0,"
+                                               "0,"
+                                               "0,"
+                                               "0"
+                                               "],"
+                                               "\"borderLineSize\": 2,"
+                                               "\"borderLineColor\": ["
+                                               "255,"
+                                               "0,"
+                                               "255,"
+                                               "255"
+                                               "],"
+                                               "\"haloSize\": 2,"
+                                               "\"haloColor\": ["
+                                               "0,"
+                                               "255,"
+                                               "0,"
+                                               "255"
+                                               "],"
+                                               "\"verticalAlignment\": \"bottom\","
+                                               "\"horizontalAlignment\": \"left\","
+                                               "\"rightToLeft\": false,"
+                                               "\"angle\": 45,"
+                                               "\"xoffset\": 0,"
+                                               "\"yoffset\": 0,"
+                                               "\"kerning\": true,"
+                                               "\"font\": {"
+                                               "\"family\": \"Arial\","
+                                               "\"size\": 12,"
+                                               "\"style\": \"normal\","
+                                               "\"weight\": \"bold\","
+                                               "\"decoration\": \"none\""
+                                               "}"
+                                               "}" );
+
+  std::unique_ptr<QgsSymbol> fontSymbol( QgsArcGisRestUtils::convertSymbol( fontMap ) );
+  QgsMarkerSymbol *fontMarker = dynamic_cast<QgsMarkerSymbol *>( fontSymbol.get() );
+  QVERIFY( fontMarker );
+  QCOMPARE( fontMarker->symbolLayerCount(), 1 );
+  QgsFontMarkerSymbolLayer *fontMarkerLayer = dynamic_cast<QgsFontMarkerSymbolLayer *>( fontMarker->symbolLayer( 0 ) );
+  QVERIFY( fontMarkerLayer );
+  QCOMPARE( fontMarkerLayer->fontStyle(), QString( "normal" ) );
+  QCOMPARE( fontMarkerLayer->fontFamily(), QString( "Arial" ) );
+  QCOMPARE( fontMarkerLayer->offset(), QPointF( 0, 0 ) );
+  QCOMPARE( fontMarkerLayer->angle(), 45 );
+  QCOMPARE( fontMarkerLayer->horizontalAnchorPoint(), QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left );
+  QCOMPARE( fontMarkerLayer->verticalAnchorPoint(), QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom );
+  QColor mainColor = fontMarkerLayer->color();
+  QCOMPARE( mainColor.name(), QStringLiteral( "#4e4e4e" ) );
+  QColor strokeColor = fontMarkerLayer->strokeColor();
+  QCOMPARE( strokeColor.name(), QStringLiteral( "#ff00ff" ) );
+  QCOMPARE( fontMarkerLayer->strokeWidth(), 2 );
+  QCOMPARE( fontMarkerLayer->character(), QString( "text" ) );
+
   // invalid json
   symbol = QgsArcGisRestUtils::parseEsriMarkerSymbolJson( QVariantMap() );
   QVERIFY( !symbol );
@@ -261,21 +324,21 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
 void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"type\": \"esriPMS\","
-                          "\"url\": \"471E7E31\","
-                          "\"imageData\": \"abcdef\","
-                          "\"contentType\": \"image/png\","
-                          "\"width\": 20,"
-                          "\"height\": 25,"
-                          "\"angle\": 10,"
-                          "\"xoffset\": 7,"
-                          "\"yoffset\": 17"
-                          "}" );
+                                           "\"type\": \"esriPMS\","
+                                           "\"url\": \"471E7E31\","
+                                           "\"imageData\": \"abcdef\","
+                                           "\"contentType\": \"image/png\","
+                                           "\"width\": 20,"
+                                           "\"height\": 25,"
+                                           "\"angle\": 10,"
+                                           "\"xoffset\": 7,"
+                                           "\"yoffset\": 17"
+                                           "}" );
   std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsMarkerSymbol *marker = dynamic_cast< QgsMarkerSymbol * >( symbol.get() );
+  QgsMarkerSymbol *marker = dynamic_cast<QgsMarkerSymbol *>( symbol.get() );
   QVERIFY( marker );
   QCOMPARE( marker->symbolLayerCount(), 1 );
-  QgsRasterMarkerSymbolLayer *markerLayer = dynamic_cast< QgsRasterMarkerSymbolLayer * >( marker->symbolLayer( 0 ) );
+  QgsRasterMarkerSymbolLayer *markerLayer = dynamic_cast<QgsRasterMarkerSymbolLayer *>( marker->symbolLayer( 0 ) );
   QVERIFY( markerLayer );
   QCOMPARE( markerLayer->path(), QStringLiteral( "base64:abcdef" ) );
   QCOMPARE( markerLayer->size(), 20.0 );
@@ -293,21 +356,21 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
 void TestQgsArcGisRestUtils::testParseLineSymbol()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"type\": \"esriSLS\","
-                          "\"style\": \"esriSLSDot\","
-                          "\"color\": ["
-                          "115,"
-                          "76,"
-                          "10,"
-                          "212"
-                          "],"
-                          "\"width\": 7"
-                          "}" );
+                                           "\"type\": \"esriSLS\","
+                                           "\"style\": \"esriSLSDot\","
+                                           "\"color\": ["
+                                           "115,"
+                                           "76,"
+                                           "10,"
+                                           "212"
+                                           "],"
+                                           "\"width\": 7"
+                                           "}" );
   std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsLineSymbol *line = dynamic_cast< QgsLineSymbol * >( symbol.get() );
+  QgsLineSymbol *line = dynamic_cast<QgsLineSymbol *>( symbol.get() );
   QVERIFY( line );
   QCOMPARE( line->symbolLayerCount(), 1 );
-  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast< QgsSimpleLineSymbolLayer * >( line->symbolLayer( 0 ) );
+  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( line->symbolLayer( 0 ) );
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 115, 76, 10, 212 ) );
   QCOMPARE( lineLayer->width(), 7.0 );
@@ -322,31 +385,31 @@ void TestQgsArcGisRestUtils::testParseLineSymbol()
 void TestQgsArcGisRestUtils::testParseFillSymbol()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"type\": \"esriSFS\","
-                          "\"style\": \"esriSFSHorizontal\","
-                          "\"color\": ["
-                          "115,"
-                          "76,"
-                          "10,"
-                          "200"
-                          "],"
-                          "\"outline\": {"
-                          "\"type\": \"esriSLS\","
-                          "\"style\": \"esriSLSDashDot\","
-                          "\"color\": ["
-                          "110,"
-                          "120,"
-                          "130,"
-                          "215"
-                          "],"
-                          "\"width\": 5"
-                          "}"
-                          "}" );
+                                           "\"type\": \"esriSFS\","
+                                           "\"style\": \"esriSFSHorizontal\","
+                                           "\"color\": ["
+                                           "115,"
+                                           "76,"
+                                           "10,"
+                                           "200"
+                                           "],"
+                                           "\"outline\": {"
+                                           "\"type\": \"esriSLS\","
+                                           "\"style\": \"esriSLSDashDot\","
+                                           "\"color\": ["
+                                           "110,"
+                                           "120,"
+                                           "130,"
+                                           "215"
+                                           "],"
+                                           "\"width\": 5"
+                                           "}"
+                                           "}" );
   const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsFillSymbol *fill = dynamic_cast< QgsFillSymbol * >( symbol.get() );
+  QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 1 );
-  QgsSimpleFillSymbolLayer *fillLayer = dynamic_cast< QgsSimpleFillSymbolLayer * >( fill->symbolLayer( 0 ) );
+  QgsSimpleFillSymbolLayer *fillLayer = dynamic_cast<QgsSimpleFillSymbolLayer *>( fill->symbolLayer( 0 ) );
   QVERIFY( fillLayer );
   QCOMPARE( fillLayer->fillColor(), QColor( 115, 76, 10, 200 ) );
   QCOMPARE( fillLayer->brushStyle(), Qt::HorPattern );
@@ -360,35 +423,35 @@ void TestQgsArcGisRestUtils::testParseFillSymbol()
 void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"type\": \"esriPFS\","
-                          "\"url\": \"866880A0\","
-                          "\"imageData\": \"abcdef\","
-                          "\"contentType\": \"image/png\","
-                          "\"width\": 20,"
-                          "\"height\": 25,"
-                          "\"angle\": 0,"
-                          "\"outline\": {"
-                          "\"type\": \"esriSLS\","
-                          "\"style\": \"esriSLSDashDot\","
-                          "\"color\": ["
-                          "110,"
-                          "120,"
-                          "130,"
-                          "215"
-                          "],"
-                          "\"width\": 5"
-                          "}"
-                          "}" );
+                                           "\"type\": \"esriPFS\","
+                                           "\"url\": \"866880A0\","
+                                           "\"imageData\": \"abcdef\","
+                                           "\"contentType\": \"image/png\","
+                                           "\"width\": 20,"
+                                           "\"height\": 25,"
+                                           "\"angle\": 0,"
+                                           "\"outline\": {"
+                                           "\"type\": \"esriSLS\","
+                                           "\"style\": \"esriSLSDashDot\","
+                                           "\"color\": ["
+                                           "110,"
+                                           "120,"
+                                           "130,"
+                                           "215"
+                                           "],"
+                                           "\"width\": 5"
+                                           "}"
+                                           "}" );
   const std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( map ) );
-  QgsFillSymbol *fill = dynamic_cast< QgsFillSymbol * >( symbol.get() );
+  QgsFillSymbol *fill = dynamic_cast<QgsFillSymbol *>( symbol.get() );
   QVERIFY( fill );
   QCOMPARE( fill->symbolLayerCount(), 2 );
-  QgsRasterFillSymbolLayer *fillLayer = dynamic_cast< QgsRasterFillSymbolLayer * >( fill->symbolLayer( 0 ) );
+  QgsRasterFillSymbolLayer *fillLayer = dynamic_cast<QgsRasterFillSymbolLayer *>( fill->symbolLayer( 0 ) );
   QVERIFY( fillLayer );
   QCOMPARE( fillLayer->imageFilePath(), QString( "base64:abcdef" ) );
   QCOMPARE( fillLayer->width(), 20.0 );
   QCOMPARE( fillLayer->sizeUnit(), Qgis::RenderUnit::Points );
-  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast< QgsSimpleLineSymbolLayer * >( fill->symbolLayer( 1 ) );
+  QgsSimpleLineSymbolLayer *lineLayer = dynamic_cast<QgsSimpleLineSymbolLayer *>( fill->symbolLayer( 1 ) );
   QVERIFY( lineLayer );
   QCOMPARE( lineLayer->color(), QColor( 110, 120, 130, 215 ) );
   QCOMPARE( lineLayer->width(), 5.0 );
@@ -399,35 +462,35 @@ void TestQgsArcGisRestUtils::testParsePictureFillSymbol()
 void TestQgsArcGisRestUtils::testParseRendererSimple()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"type\": \"simple\","
-                          "\"symbol\": {"
-                          "\"color\": ["
-                          "0,"
-                          "0,"
-                          "128,"
-                          "128"
-                          "],"
-                          "\"size\": 15,"
-                          "\"angle\": 0,"
-                          "\"xoffset\": 0,"
-                          "\"yoffset\": 0,"
-                          "\"type\": \"esriSMS\","
-                          "\"style\": \"esriSMSCircle\","
-                          "\"outline\": {"
-                          "\"color\": ["
-                          "0,"
-                          "0,"
-                          "128,"
-                          "255"
-                          "],"
-                          "\"width\": 0.99975,"
-                          "\"type\": \"esriSLS\","
-                          "\"style\": \"esriSLSSolid\""
-                          "}"
-                          "}"
-                          "}" );
-  const std::unique_ptr< QgsFeatureRenderer > renderer( QgsArcGisRestUtils::convertRenderer( map ) );
-  QgsSingleSymbolRenderer *ssRenderer = dynamic_cast< QgsSingleSymbolRenderer *>( renderer.get() );
+                                           "\"type\": \"simple\","
+                                           "\"symbol\": {"
+                                           "\"color\": ["
+                                           "0,"
+                                           "0,"
+                                           "128,"
+                                           "128"
+                                           "],"
+                                           "\"size\": 15,"
+                                           "\"angle\": 0,"
+                                           "\"xoffset\": 0,"
+                                           "\"yoffset\": 0,"
+                                           "\"type\": \"esriSMS\","
+                                           "\"style\": \"esriSMSCircle\","
+                                           "\"outline\": {"
+                                           "\"color\": ["
+                                           "0,"
+                                           "0,"
+                                           "128,"
+                                           "255"
+                                           "],"
+                                           "\"width\": 0.99975,"
+                                           "\"type\": \"esriSLS\","
+                                           "\"style\": \"esriSLSSolid\""
+                                           "}"
+                                           "}"
+                                           "}" );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
   QVERIFY( ssRenderer );
   QVERIFY( ssRenderer->symbol() );
 }
@@ -435,71 +498,71 @@ void TestQgsArcGisRestUtils::testParseRendererSimple()
 void TestQgsArcGisRestUtils::testParseRendererCategorized()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"type\": \"uniqueValue\","
-                          "\"field1\": \"COUNTRY\","
-                          "\"uniqueValueInfos\": ["
-                          "{"
-                          "\"value\": \"US\","
-                          "\"symbol\": {"
-                          "\"color\": ["
-                          "253,"
-                          "127,"
-                          "111,"
-                          "255"
-                          "],"
-                          "\"size\": 12.75,"
-                          "\"angle\": 0,"
-                          "\"xoffset\": 0,"
-                          "\"yoffset\": 0,"
-                          "\"type\": \"esriSMS\","
-                          "\"style\": \"esriSMSCircle\","
-                          "\"outline\": {"
-                          "\"color\": ["
-                          "26,"
-                          "26,"
-                          "26,"
-                          "255"
-                          "],"
-                          "\"width\": 0.75,"
-                          "\"type\": \"esriSLS\","
-                          "\"style\": \"esriSLSSolid\""
-                          "}"
-                          "},"
-                          "\"label\": \"United States\""
-                          "},"
-                          "{"
-                          "\"value\": \"Canada\","
-                          "\"symbol\": {"
-                          "\"color\": ["
-                          "126,"
-                          "176,"
-                          "213,"
-                          "255"
-                          "],"
-                          "\"size\": 12.75,"
-                          "\"angle\": 0,"
-                          "\"xoffset\": 0,"
-                          "\"yoffset\": 0,"
-                          "\"type\": \"esriSMS\","
-                          "\"style\": \"esriSMSCircle\","
-                          "\"outline\": {"
-                          "\"color\": ["
-                          "26,"
-                          "26,"
-                          "26,"
-                          "255"
-                          "],"
-                          "\"width\": 0.75,"
-                          "\"type\": \"esriSLS\","
-                          "\"style\": \"esriSLSSolid\""
-                          "}"
-                          "},"
-                          "\"label\": \"Canada\""
-                          "}"
-                          "]"
-                          "}" );
-  const std::unique_ptr< QgsFeatureRenderer > renderer( QgsArcGisRestUtils::convertRenderer( map ) );
-  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast< QgsCategorizedSymbolRenderer *>( renderer.get() );
+                                           "\"type\": \"uniqueValue\","
+                                           "\"field1\": \"COUNTRY\","
+                                           "\"uniqueValueInfos\": ["
+                                           "{"
+                                           "\"value\": \"US\","
+                                           "\"symbol\": {"
+                                           "\"color\": ["
+                                           "253,"
+                                           "127,"
+                                           "111,"
+                                           "255"
+                                           "],"
+                                           "\"size\": 12.75,"
+                                           "\"angle\": 0,"
+                                           "\"xoffset\": 0,"
+                                           "\"yoffset\": 0,"
+                                           "\"type\": \"esriSMS\","
+                                           "\"style\": \"esriSMSCircle\","
+                                           "\"outline\": {"
+                                           "\"color\": ["
+                                           "26,"
+                                           "26,"
+                                           "26,"
+                                           "255"
+                                           "],"
+                                           "\"width\": 0.75,"
+                                           "\"type\": \"esriSLS\","
+                                           "\"style\": \"esriSLSSolid\""
+                                           "}"
+                                           "},"
+                                           "\"label\": \"United States\""
+                                           "},"
+                                           "{"
+                                           "\"value\": \"Canada\","
+                                           "\"symbol\": {"
+                                           "\"color\": ["
+                                           "126,"
+                                           "176,"
+                                           "213,"
+                                           "255"
+                                           "],"
+                                           "\"size\": 12.75,"
+                                           "\"angle\": 0,"
+                                           "\"xoffset\": 0,"
+                                           "\"yoffset\": 0,"
+                                           "\"type\": \"esriSMS\","
+                                           "\"style\": \"esriSMSCircle\","
+                                           "\"outline\": {"
+                                           "\"color\": ["
+                                           "26,"
+                                           "26,"
+                                           "26,"
+                                           "255"
+                                           "],"
+                                           "\"width\": 0.75,"
+                                           "\"type\": \"esriSLS\","
+                                           "\"style\": \"esriSLSSolid\""
+                                           "}"
+                                           "},"
+                                           "\"label\": \"Canada\""
+                                           "}"
+                                           "]"
+                                           "}" );
+  const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map ) );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
   QVERIFY( catRenderer );
   QCOMPARE( catRenderer->categories().count(), 2 );
   QCOMPARE( catRenderer->categories().at( 0 ).value().toString(), QStringLiteral( "US" ) );
@@ -513,86 +576,86 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
 void TestQgsArcGisRestUtils::testParseLabeling()
 {
   const QVariantMap map = jsonStringToMap( "{"
-                          "\"labelingInfo\": ["
-                          "{"
-                          "\"labelPlacement\": \"esriServerPointLabelPlacementAboveRight\","
-                          "\"where\": \"1=1\","
-                          "\"labelExpression\": \"[Name]\","
-                          "\"useCodedValues\": true,"
-                          "\"symbol\": {"
-                          "\"type\": \"esriTS\","
-                          "\"color\": ["
-                          "255,"
-                          "0,"
-                          "0,"
-                          "255"
-                          "],"
-                          "\"backgroundColor\": null,"
-                          "\"borderLineColor\": null,"
-                          "\"borderLineSize\": null,"
-                          "\"verticalAlignment\": \"bottom\","
-                          "\"horizontalAlignment\": \"center\","
-                          "\"rightToLeft\": false,"
-                          "\"angle\": 0,"
-                          "\"xoffset\": 0,"
-                          "\"yoffset\": 0,"
-                          "\"haloColor\": null,"
-                          "\"haloSize\": null,"
-                          "\"font\": {"
-                          "\"family\": \"Arial\","
-                          "\"size\": 8,"
-                          "\"style\": \"normal\","
-                          "\"weight\": \"bold\","
-                          "\"decoration\": \"none\""
-                          "}"
-                          "},"
-                          "\"minScale\": 200000,"
-                          "\"maxScale\": 0"
-                          "},{"
-                          "\"labelPlacement\": \"esriServerPointLabelPlacementAboveRight\","
-                          "\"where\": \"1_testing broken where string\","
-                          "\"labelExpression\": \"\\\"Name: \\\" CONCAT [Name] CONCAT NEWLINE CONCAT [Size]\","
-                          "\"useCodedValues\": true,"
-                          "\"symbol\": {"
-                          "\"type\": \"esriTS\","
-                          "\"color\": ["
-                          "255,"
-                          "0,"
-                          "0,"
-                          "255"
-                          "],"
-                          "\"backgroundColor\": null,"
-                          "\"borderLineColor\": null,"
-                          "\"borderLineSize\": null,"
-                          "\"verticalAlignment\": \"bottom\","
-                          "\"horizontalAlignment\": \"center\","
-                          "\"rightToLeft\": false,"
-                          "\"angle\": 0,"
-                          "\"xoffset\": 0,"
-                          "\"yoffset\": 0,"
-                          "\"haloColor\": ["
-                          "255,"
-                          "255,"
-                          "255,"
-                          "255"
-                          "],"
-                          "\"haloSize\": 1,"
-                          "\"font\": {"
-                          "\"family\": \"Arial\","
-                          "\"size\": 8,"
-                          "\"style\": \"normal\","
-                          "\"weight\": \"bold\","
-                          "\"decoration\": \"none\""
-                          "}"
-                          "},"
-                          "\"minScale\": 200000,"
-                          "\"maxScale\": 0"
-                          "}"
-                          "]"
-                          "}" );
-  const std::unique_ptr< QgsAbstractVectorLayerLabeling > labeling( QgsArcGisRestUtils::convertLabeling( map.value( QStringLiteral( "labelingInfo" ) ).toList() ) );
+                                           "\"labelingInfo\": ["
+                                           "{"
+                                           "\"labelPlacement\": \"esriServerPointLabelPlacementAboveRight\","
+                                           "\"where\": \"1=1\","
+                                           "\"labelExpression\": \"[Name]\","
+                                           "\"useCodedValues\": true,"
+                                           "\"symbol\": {"
+                                           "\"type\": \"esriTS\","
+                                           "\"color\": ["
+                                           "255,"
+                                           "0,"
+                                           "0,"
+                                           "255"
+                                           "],"
+                                           "\"backgroundColor\": null,"
+                                           "\"borderLineColor\": null,"
+                                           "\"borderLineSize\": null,"
+                                           "\"verticalAlignment\": \"bottom\","
+                                           "\"horizontalAlignment\": \"center\","
+                                           "\"rightToLeft\": false,"
+                                           "\"angle\": 0,"
+                                           "\"xoffset\": 0,"
+                                           "\"yoffset\": 0,"
+                                           "\"haloColor\": null,"
+                                           "\"haloSize\": null,"
+                                           "\"font\": {"
+                                           "\"family\": \"Arial\","
+                                           "\"size\": 8,"
+                                           "\"style\": \"normal\","
+                                           "\"weight\": \"bold\","
+                                           "\"decoration\": \"none\""
+                                           "}"
+                                           "},"
+                                           "\"minScale\": 200000,"
+                                           "\"maxScale\": 0"
+                                           "},{"
+                                           "\"labelPlacement\": \"esriServerPointLabelPlacementAboveRight\","
+                                           "\"where\": \"1_testing broken where string\","
+                                           "\"labelExpression\": \"\\\"Name: \\\" CONCAT [Name] CONCAT NEWLINE CONCAT [Size]\","
+                                           "\"useCodedValues\": true,"
+                                           "\"symbol\": {"
+                                           "\"type\": \"esriTS\","
+                                           "\"color\": ["
+                                           "255,"
+                                           "0,"
+                                           "0,"
+                                           "255"
+                                           "],"
+                                           "\"backgroundColor\": null,"
+                                           "\"borderLineColor\": null,"
+                                           "\"borderLineSize\": null,"
+                                           "\"verticalAlignment\": \"bottom\","
+                                           "\"horizontalAlignment\": \"center\","
+                                           "\"rightToLeft\": false,"
+                                           "\"angle\": 0,"
+                                           "\"xoffset\": 0,"
+                                           "\"yoffset\": 0,"
+                                           "\"haloColor\": ["
+                                           "255,"
+                                           "255,"
+                                           "255,"
+                                           "255"
+                                           "],"
+                                           "\"haloSize\": 1,"
+                                           "\"font\": {"
+                                           "\"family\": \"Arial\","
+                                           "\"size\": 8,"
+                                           "\"style\": \"normal\","
+                                           "\"weight\": \"bold\","
+                                           "\"decoration\": \"none\""
+                                           "}"
+                                           "},"
+                                           "\"minScale\": 200000,"
+                                           "\"maxScale\": 0"
+                                           "}"
+                                           "]"
+                                           "}" );
+  const std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling( QgsArcGisRestUtils::convertLabeling( map.value( QStringLiteral( "labelingInfo" ) ).toList() ) );
   QVERIFY( labeling );
-  QgsRuleBasedLabeling *rules = dynamic_cast< QgsRuleBasedLabeling *>( labeling.get() );
+  QgsRuleBasedLabeling *rules = dynamic_cast<QgsRuleBasedLabeling *>( labeling.get() );
   QVERIFY( rules );
   QgsRuleBasedLabeling::Rule *root = rules->rootRule();
   QVERIFY( root );
@@ -609,7 +672,7 @@ void TestQgsArcGisRestUtils::testParseLabeling()
   QgsPalLayerSettings *settings = children.at( 0 )->settings();
   QVERIFY( settings );
   QCOMPARE( settings->placement, Qgis::LabelPlacement::OverPoint );
-  QCOMPARE( settings->quadOffset, Qgis::LabelQuadrantPosition::AboveRight );
+  QCOMPARE( settings->pointSettings().quadrant(), Qgis::LabelQuadrantPosition::AboveRight );
   QCOMPARE( settings->fieldName, QStringLiteral( "\"Name\"" ) );
 
   QgsTextFormat textFormat = settings->format();
@@ -641,7 +704,7 @@ QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) con
 void TestQgsArcGisRestUtils::testParseCompoundCurve()
 {
   const QVariantMap map = jsonStringToMap( "{\"curvePaths\": [[[6,3],[5,3],{\"c\": [[3,3],[1,4]]}]]}" );
-  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point ) );
   QVERIFY( curve );
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3),CircularString (5 3, 1 4, 3 3)))" ) );
 }
@@ -649,7 +712,7 @@ void TestQgsArcGisRestUtils::testParseCompoundCurve()
 void TestQgsArcGisRestUtils::testParsePolyline()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3],[5,3]]]}" );
-  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::Point ) );
   QVERIFY( curve );
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3)))" ) );
 }
@@ -657,25 +720,25 @@ void TestQgsArcGisRestUtils::testParsePolyline()
 void TestQgsArcGisRestUtils::testParsePolylineZ()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1],[5,3,2]]]}" );
-  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZ ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZ ) );
   QVERIFY( curve );
-  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurveZ (CompoundCurveZ ((6 3 1, 5 3 2)))" ) );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve Z (CompoundCurve Z ((6 3 1, 5 3 2)))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParsePolylineM()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1],[5,3,2]]]}" );
-  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointM ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointM ) );
   QVERIFY( curve );
-  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurveM (CompoundCurveM ((6 3 1, 5 3 2)))" ) );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve M (CompoundCurve M ((6 3 1, 5 3 2)))" ) );
 }
 
 void TestQgsArcGisRestUtils::testParsePolylineZM()
 {
   const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1,11],[5,3,2,12]]]}" );
-  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZM ) );
+  std::unique_ptr<QgsMultiCurve> curve( QgsArcGisRestUtils::convertGeometryPolyline( map, Qgis::WkbType::PointZM ) );
   QVERIFY( curve );
-  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurveZM (CompoundCurveZM ((6 3 1 11, 5 3 2 12)))" ) );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve ZM (CompoundCurve ZM ((6 3 1 11, 5 3 2 12)))" ) );
 }
 
 QGSTEST_MAIN( TestQgsArcGisRestUtils )

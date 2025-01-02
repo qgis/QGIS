@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextfragment.h"
+#include "qgstextblockformat.h"
 #include "qgsstringutils.h"
 #include <QVector>
 
@@ -48,11 +49,28 @@ class CORE_EXPORT QgsTextBlock
     explicit QgsTextBlock( const QgsTextFragment &fragment );
 
     /**
+     * Constructor for QgsTextBlock consisting of a plain \a text, and optional character \a format.
+     *
+     * If \a text contains tab characters they will be appended as separate text fragments
+     * within the block, consisting of just the tab character.
+     *
+     * \since QGIS 3.38
+     */
+    static QgsTextBlock fromPlainText( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+
+    /**
      * Converts the block to plain text.
      *
      * \since QGIS 3.16
      */
     QString toPlainText() const;
+
+    /**
+     * Reserves the specified \a count of fragments for optimised fragment appending.
+     *
+     * \since QGIS 3.40
+     */
+    void reserve( int count );
 
     /**
      * Appends a \a fragment to the block.
@@ -63,6 +81,43 @@ class CORE_EXPORT QgsTextBlock
      * Appends a \a fragment to the block.
      */
     void append( QgsTextFragment &&fragment ) SIP_SKIP;
+#ifndef SIP_RUN
+
+    /**
+     * Inserts a \a fragment into the block, at the specified index.
+     *
+     * \since QGIS 3.40
+     */
+    void insert( int index, const QgsTextFragment &fragment );
+
+#else
+    /**
+     * Inserts a \a fragment into the block, at the specified index.
+     *
+     * \throws IndexError if no fragment exists at the specified index.
+     *
+     * \since QGIS 3.40
+     */
+    void insert( int index, const QgsTextFragment &fragment );
+    % MethodCode
+    if ( a0 < 0 || a0 > sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->insert( a0, *a1 );
+    }
+    % End
+#endif
+
+    /**
+     * Inserts a \a fragment into the block, at the specified index.
+     *
+     * \since QGIS 3.40
+     */
+    void insert( int index, QgsTextFragment &&fragment ) SIP_SKIP;
 
     /**
      * Clears the block, removing all its contents.
@@ -80,11 +135,36 @@ class CORE_EXPORT QgsTextBlock
     int size() const;
 
     /**
+     * Returns the block formatting for the fragment.
+     *
+     * \see setBlockFormat()
+     *
+     * \since QGIS 3.40
+     */
+    const QgsTextBlockFormat &blockFormat() const { return mBlockFormat; }
+
+    /**
+     * Sets the block \a format for the fragment.
+     *
+     * \see blockFormat()
+     *
+     * \since QGIS 3.40
+     */
+    void setBlockFormat( const QgsTextBlockFormat &format );
+
+    /**
      * Applies a \a capitalization style to the block's text.
      *
      * \since QGIS 3.16
      */
     void applyCapitalization( Qgis::Capitalization capitalization );
+
+    /**
+     * Returns TRUE if the block or any of the fragments in the block have background brushes set.
+     *
+     * \since QGIS 3.42
+     */
+    bool hasBackgrounds() const;
 
 #ifdef SIP_RUN
     int __len__() const;
@@ -144,7 +224,7 @@ class CORE_EXPORT QgsTextBlock
   private:
 
     QVector< QgsTextFragment > mFragments;
-
+    QgsTextBlockFormat mBlockFormat;
 };
 
 #endif // QGSTEXTBLOCK_H

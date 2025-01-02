@@ -66,18 +66,18 @@ QString QgsSqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
   if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
-  switch ( value.type() )
+  switch ( value.userType() )
   {
-    case QVariant::Int:
-    case QVariant::LongLong:
-    case QVariant::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Double:
       return value.toString();
 
-    case QVariant::Bool:
+    case QMetaType::Type::Bool:
       return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
 
     default:
-    case QVariant::String:
+    case QMetaType::Type::QString:
       QString v = value.toString();
       v.replace( '\'', QLatin1String( "''" ) );
       if ( v.contains( '\\' ) )
@@ -92,6 +92,42 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
   const QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
   if ( staticRes != Fail )
     return staticRes;
+
+  // This is just to identify the most simple cases where nodes are numeric
+  std::function<bool( const QgsExpressionNode * )> nodeIsNumeric;
+  nodeIsNumeric = [this, &nodeIsNumeric]( const QgsExpressionNode * node )
+  {
+    const QgsExpressionNode::NodeType nodeType { node->nodeType() };
+
+    switch ( nodeType )
+    {
+      case QgsExpressionNode::ntColumnRef:
+      {
+        const QgsExpressionNodeColumnRef *col = static_cast<const QgsExpressionNodeColumnRef *>( node );
+        const int idx = mFields.indexFromName( col->name() );
+        return idx >= 0 && QgsVariantUtils::isNumericType( mFields[idx].type() );
+      }
+      case QgsExpressionNode::ntLiteral:
+      {
+        const QgsExpressionNodeLiteral *lit = static_cast<const QgsExpressionNodeLiteral *>( node );
+        return QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( lit->value().userType() ) );
+      }
+      case QgsExpressionNode::ntBinaryOperator:
+      {
+        const QgsExpressionNodeBinaryOperator *op = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+        return nodeIsNumeric( op->opLeft() ) && nodeIsNumeric( op->opRight() );
+      }
+      case QgsExpressionNode::ntUnaryOperator:
+      {
+        const QgsExpressionNodeUnaryOperator *op = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+        return nodeIsNumeric( op->operand() );
+      }
+
+      default:
+        return false;
+    }
+
+  };
 
   switch ( node->nodeType() )
   {
@@ -232,8 +268,14 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
           break;
 
         case QgsExpressionNodeBinaryOperator::boPlus:
-          op = QStringLiteral( "+" );
+        {
+          const QgsExpressionNodeBinaryOperator *nodeOp = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+          if ( nodeIsNumeric( nodeOp->opLeft() ) && nodeIsNumeric( nodeOp->opRight() ) )
+          {
+            op = QStringLiteral( "+" );
+          }
           break;
+        }
 
         case QgsExpressionNodeBinaryOperator::boMinus:
           op = QStringLiteral( "-" );
@@ -365,7 +407,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
     {
       const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
       bool ok = false;
-      if ( mFlags.testFlag( CaseInsensitiveStringMatch ) && n->value().type() == QVariant::String )
+      if ( mFlags.testFlag( CaseInsensitiveStringMatch ) && n->value().userType() == QMetaType::Type::QString )
       {
         // provider uses case insensitive matching, so if literal was a string then we only have a Partial compilation and need to
         // double check results using QGIS' expression engine
@@ -509,7 +551,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::replaceNodeByStaticCa
   if ( node->hasCachedStaticValue() )
   {
     bool ok = false;
-    if ( mFlags.testFlag( CaseInsensitiveStringMatch ) && node->cachedStaticValue().type() == QVariant::String )
+    if ( mFlags.testFlag( CaseInsensitiveStringMatch ) && node->cachedStaticValue().userType() == QMetaType::Type::QString )
     {
       // provider uses case insensitive matching, so if literal was a string then we only have a Partial compilation and need to
       // double check results using QGIS' expression engine

@@ -31,7 +31,9 @@
  * \ingroup core
  * \class QgsLayoutMeasurementConverter
  * \brief This class provides a method of converting QgsLayoutMeasurements from
- * one unit to another. Conversion to or from pixel units utilizes a specified
+ * one unit to another.
+ *
+ * Conversion to or from pixel units utilizes a specified
  * dots per inch (DPI) property for the converter. Converters default to using
  * 300 DPI.
  * \see QgsLayoutMeasurement
@@ -40,9 +42,6 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
 {
   public:
 
-    /**
-     * Constructor for QgsLayoutMeasurementConverter.
-     */
     QgsLayoutMeasurementConverter() = default;
 
     /**

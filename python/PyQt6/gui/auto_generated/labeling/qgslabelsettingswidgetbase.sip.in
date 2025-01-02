@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ Base class for widgets which allow customization of label engine properties, suc
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-
     QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetBase.
@@ -89,7 +88,6 @@ Emitted when an auxiliary field is created in the widget.
 %End
 
   protected:
-
     virtual QgsExpressionContext createExpressionContext() const;
 
 
@@ -106,7 +104,7 @@ and help text for the associated property.
 class QgsLabelSettingsWidgetDialog : QDialog
 {
 %Docstring(signature="appended")
-A blocking dialog containing a QgsLabelSettingsWidgetBase.
+A blocking dialog containing a :py:class:`QgsLabelSettingsWidgetBase`.
 
 .. versionadded:: 3.12
 %End
@@ -115,8 +113,6 @@ A blocking dialog containing a QgsLabelSettingsWidgetBase.
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-
-
     QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget /Transfer/, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetDialog.
@@ -140,5 +136,5 @@ Returns the dialog's button box.
  *                                                                      *
  * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

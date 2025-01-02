@@ -30,12 +30,10 @@
  * Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to it.
  * \note Not available in Python bindings
 */
-class ANALYSIS_EXPORT Bezier3D: public ParametricLine
+class ANALYSIS_EXPORT Bezier3D : public ParametricLine
 {
   protected:
-
   public:
-    //! Default constructor
     Bezier3D() = default;
     //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
     Bezier3D( ParametricLine *par, QVector<QgsPoint *> *controlpoly );
@@ -67,14 +65,14 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
     void setParent( ParametricLine *par ) override;
     //! Sets the control polygon
     void setControlPoly( QVector<QgsPoint *> *cp ) override;
-
 };
 
 #ifndef SIP_RUN
 
 //-----------------------------------------------constructors, destructor and assignment operator------------------------------
 
-inline Bezier3D::Bezier3D( ParametricLine *parent, QVector<QgsPoint *> *controlpoly ) : ParametricLine( parent, controlpoly )
+inline Bezier3D::Bezier3D( ParametricLine *parent, QVector<QgsPoint *> *controlpoly )
+  : ParametricLine( parent, controlpoly )
 {
   mDegree = mControlPoly->count() - 1;
 }
@@ -129,4 +127,3 @@ inline void Bezier3D::setControlPoly( QVector<QgsPoint *> *cp )
 #endif
 
 #endif
-

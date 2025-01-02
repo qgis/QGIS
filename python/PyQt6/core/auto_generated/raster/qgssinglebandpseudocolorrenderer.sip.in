@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgssinglebandpseudocolorrenderer.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -61,8 +61,8 @@ Returns the raster shader
 
 
     void createShader( QgsColorRamp *colorRamp /Transfer/ = 0,
-                       QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
-                       QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
+                       Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
+                       Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
                        int classes = 0,
                        bool clip = false,
                        const QgsRectangle &extent = QgsRectangle() );
@@ -90,22 +90,24 @@ Creates a color ramp shader
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
- int band() const /Deprecated/;
+ int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
 Returns the band used by the renderer
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsSingleBandPseudoColorRenderer.inputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandPseudoColorRenderer.inputBand` instead.
 %End
 
- void setBand( int bandNo ) /Deprecated/;
+ void setBand( int bandNo ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
 %Docstring
 Sets the band used by the renderer.
 
 .. seealso:: :py:func:`band`
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsSingleBandPseudoColorRenderer.setInputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsSingleBandPseudoColorRenderer.setInputBand` instead.
 %End
 
     virtual int inputBand() const;
@@ -118,6 +120,7 @@ Sets the band used by the renderer.
     void setClassificationMin( double min );
     void setClassificationMax( double max );
 
+
   private:
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );
@@ -128,5 +131,5 @@ Sets the band used by the renderer.
  *                                                                      *
  * src/core/raster/qgssinglebandpseudocolorrenderer.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

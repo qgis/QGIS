@@ -1694,7 +1694,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
                 }
               }
             },
-            "description": "Metadata about the collection 'A test vector layer èé' shared by this API."
+            "description": "Metadata about the collection 'A test wfs vector layer èé' shared by this API."
           },
           "default": {
             "content": {
@@ -1712,7 +1712,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "description": "An error occurred."
           }
         },
-        "summary": "Describe the 'A test vector layer èé' feature collection",
+        "summary": "Describe the 'A test wfs vector layer èé' feature collection",
         "tags": [
           "Capabilities"
         ]
@@ -1809,7 +1809,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
                 }
               }
             },
-            "description": "Metadata about the collection 'A test vector layer èé' shared by this API."
+            "description": "Metadata about the collection 'A test wfs vector layer èé' shared by this API."
           },
           "default": {
             "content": {
@@ -1827,7 +1827,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "description": "An error occurred."
           }
         },
-        "summary": "Retrieve features of 'A test vector layer èé' feature collection",
+        "summary": "Retrieve features of 'A test wfs vector layer èé' feature collection",
         "tags": [
           "Features"
         ]
@@ -1926,7 +1926,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
                 }
               }
             },
-            "description": "Retrieve a 'A test vector layer èé' feature by 'featureId'."
+            "description": "Retrieve a 'A test wfs vector layer èé' feature by 'featureId'."
           },
           "default": {
             "content": {
@@ -1944,7 +1944,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "description": "An error occurred."
           }
         },
-        "summary": "Retrieve a single feature from the 'A test vector layer èé' feature collection",
+        "summary": "Retrieve a single feature from the 'A test wfs vector layer èé' feature collection",
         "tags": [
           "Features"
         ]

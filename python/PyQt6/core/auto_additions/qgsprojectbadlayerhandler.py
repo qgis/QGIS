@@ -6,3 +6,7 @@ QgsProjectBadLayerHandler.IS_FILE = QgsProjectBadLayerHandler.ProviderType.IS_FI
 QgsProjectBadLayerHandler.IS_DATABASE = QgsProjectBadLayerHandler.ProviderType.IS_DATABASE
 QgsProjectBadLayerHandler.IS_URL = QgsProjectBadLayerHandler.ProviderType.IS_URL
 QgsProjectBadLayerHandler.IS_Unknown = QgsProjectBadLayerHandler.ProviderType.IS_Unknown
+try:
+    QgsProjectBadLayerHandler.__group__ = ['project']
+except (NameError, AttributeError):
+    pass

@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 /**
  * \ingroup core
@@ -33,37 +34,15 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     //! construct a default object
     QgsVectorSimplifyMethod();
 
-    //! Simplification flags for fast rendering of features
-    enum SimplifyHint SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoSimplification           = 0, //!< No simplification can be applied
-      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
-      AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
-    };
-    Q_ENUM( SimplifyHint )
-    Q_DECLARE_FLAGS( SimplifyHints, SimplifyHint )
-    Q_FLAG( SimplifyHints )
-
     //! Sets the simplification hints of the vector layer managed
-    void setSimplifyHints( SimplifyHints simplifyHints ) { mSimplifyHints = simplifyHints; }
+    void setSimplifyHints( Qgis::VectorRenderingSimplificationFlags simplifyHints ) { mSimplifyHints = simplifyHints; }
     //! Gets the simplification hints of the vector layer managed
-    inline SimplifyHints simplifyHints() const { return mSimplifyHints; }
-
-    //! Types of local simplification algorithms that can be used
-    enum SimplifyAlgorithm
-    {
-      Distance    = 0, //!< The simplification uses the distance between points to remove duplicate points
-      SnapToGrid  = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
-      Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
-      SnappedToGridGlobal = 3, //!< Snap to a global grid based on the tolerance. Good for consistent results for incoming vertices, regardless of their feature
-    };
-    Q_ENUM( SimplifyAlgorithm )
+    inline Qgis::VectorRenderingSimplificationFlags simplifyHints() const { return mSimplifyHints; }
 
     //! Sets the local simplification algorithm of the vector layer managed
-    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
+    void setSimplifyAlgorithm( Qgis::VectorSimplificationAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
     //! Gets the local simplification algorithm of the vector layer managed
-    inline SimplifyAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
+    inline Qgis::VectorSimplificationAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
 
     //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
     void setTolerance( double tolerance ) { mTolerance = tolerance; }
@@ -87,9 +66,9 @@ class CORE_EXPORT QgsVectorSimplifyMethod
 
   private:
     //! Simplification hints for fast rendering of features of the vector layer managed
-    SimplifyHints mSimplifyHints;
+    Qgis::VectorRenderingSimplificationFlags mSimplifyHints;
     //! Simplification algorithm
-    SimplifyAlgorithm mSimplifyAlgorithm = QgsVectorSimplifyMethod::Distance;
+    Qgis::VectorSimplificationAlgorithm mSimplifyAlgorithm = Qgis::VectorSimplificationAlgorithm::Distance;
     //! Simplification tolerance, it represents the maximum distance between two coordinates which can be considered equal
     double mTolerance = 1;
     //! Simplification threshold
@@ -100,6 +79,5 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     float mMaximumScale = 1;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorSimplifyMethod::SimplifyHints )
 
 #endif // QGSVECTORSIMPLIFYMETHOD_H

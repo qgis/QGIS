@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgssubsetstringeditorproviderregistry.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,12 +25,11 @@ This class keeps a list of subset string editor providers.
 #include "qgssubsetstringeditorproviderregistry.h"
 %End
   public:
-
     QgsSubsetStringEditorProviderRegistry();
     ~QgsSubsetStringEditorProviderRegistry();
 
 
-    QList< QgsSubsetStringEditorProvider *> providers();
+    QList<QgsSubsetStringEditorProvider *> providers();
 %Docstring
 Gets list of available providers
 %End
@@ -66,7 +65,7 @@ Returns a (possibly empty) list of providers by data ``providerkey``
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags ) /TransferBack/;
 %Docstring
 Creates a new dialog to edit the subset string of the provided ``layer``.
-It will default to returning a :py:class:`QgsQueryBuilder`* if no provider was found.
+It will default to returning a :py:class:`QgsQueryBuilder` if no provider was found.
 The returned object must be destroyed by the caller.
 %End
 
@@ -79,5 +78,5 @@ The returned object must be destroyed by the caller.
  *                                                                      *
  * src/gui/qgssubsetstringeditorproviderregistry.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

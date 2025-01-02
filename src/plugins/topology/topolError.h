@@ -88,12 +88,12 @@ class TopolError
     /**
      * Deletes first feature
      */
-    bool fixDeleteFirst();
+    bool fixDeleteFirst(); // cppcheck-suppress functionConst
 
     /**
      * Deletes second feature
      */
-    bool fixDeleteSecond();
+    bool fixDeleteSecond(); // cppcheck-suppress functionConst
 
     //helper fix functions
 
@@ -112,7 +112,6 @@ class TopolError
     bool fixUnion( const FeatureLayer &fl1, const FeatureLayer &fl2 );
 
   public:
-
     /**
      * Constructor
      * \param boundingBox bounding box of the two features

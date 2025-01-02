@@ -89,7 +89,6 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
     };
 
   private:
-    Ui::QgsSourceFieldsProperties *ui = nullptr;
     void updateFieldRenamingStatus();
 
   signals:
@@ -104,13 +103,13 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
     void addAttributeClicked();
     void deleteAttributeClicked();
     void calculateFieldClicked();
+    void saveLayerEditsClicked();
 
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
 
     void attributesListCellChanged( int row, int column );
     void attributesListCellPressed( int row, int column );
-
 };
 
 #endif // QGSSOURCEFIELDSPROPERTIES_H

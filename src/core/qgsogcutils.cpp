@@ -1955,6 +1955,7 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
     case QgsExpressionNode::ntFunction:
     case QgsExpressionNode::ntLiteral:
     case QgsExpressionNode::ntColumnRef:
+    case QgsExpressionNode::ntUnaryOperator:
     {
       QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
       const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
@@ -2168,26 +2169,26 @@ QDomElement QgsOgcUtilsExprToFilter::expressionLiteralToOgcFilter( const QgsExpr
   Q_UNUSED( expression )
   Q_UNUSED( context )
   QString value;
-  switch ( node->value().type() )
+  switch ( node->value().userType() )
   {
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       value = QString::number( node->value().toInt() );
       break;
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       value = qgsDoubleToString( node->value().toDouble() );
       break;
-    case QVariant::String:
+    case QMetaType::Type::QString:
       value = node->value().toString();
       break;
-    case QVariant::Date:
+    case QMetaType::Type::QDate:
       value = node->value().toDate().toString( Qt::ISODate );
       break;
-    case QVariant::DateTime:
+    case QMetaType::Type::QDateTime:
       value = node->value().toDateTime().toString( Qt::ISODate );
       break;
 
     default:
-      mErrorMessage = QObject::tr( "Literal type not supported: %1" ).arg( node->value().type() );
+      mErrorMessage = QObject::tr( "Literal type not supported: %1" ).arg( static_cast<QMetaType::Type>( node->value().userType() ) );
       return QDomElement();
   }
 
@@ -2452,7 +2453,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
       otherGeomElem = geomNode.toElement();
     }
-    else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().userType() == QMetaType::type( "QgsGeometry" ) )
+    else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().userType() == qMetaTypeId< QgsGeometry>() )
     {
       QgsGeometry geom = otherNode->cachedStaticValue().value<QgsGeometry>();
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
@@ -2701,23 +2702,23 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement::NodeLiteral *node )
 {
   QString value;
-  switch ( node->value().type() )
+  switch ( node->value().userType() )
   {
-    case QVariant::Int:
+    case QMetaType::Type::Int:
       value = QString::number( node->value().toInt() );
       break;
-    case QVariant::LongLong:
+    case QMetaType::Type::LongLong:
       value = QString::number( node->value().toLongLong() );
       break;
-    case QVariant::Double:
+    case QMetaType::Type::Double:
       value = qgsDoubleToString( node->value().toDouble() );
       break;
-    case QVariant::String:
+    case QMetaType::Type::QString:
       value = node->value().toString();
       break;
 
     default:
-      mErrorMessage = QObject::tr( "Literal type not supported: %1" ).arg( node->value().type() );
+      mErrorMessage = QObject::tr( "Literal type not supported: %1" ).arg( static_cast<QMetaType::Type>( node->value().userType() ) );
       return QDomElement();
   }
 
@@ -2920,7 +2921,7 @@ bool QgsOgcUtilsSQLStatementToFilter::processSRSName( const QgsSQLStatement::Nod
       return false;
     }
     const QgsSQLStatement::NodeLiteral *lit = static_cast<const QgsSQLStatement::NodeLiteral *>( lastArg );
-    if ( lit->value().type() == QVariant::Int )
+    if ( lit->value().userType() == QMetaType::Type::Int )
     {
       if ( mFilterVersion == QgsOgcUtils::FILTER_OGC_1_0 )
       {
@@ -3015,11 +3016,11 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       }
       const QgsSQLStatement::NodeLiteral *lit = static_cast<const QgsSQLStatement::NodeLiteral *>( arg );
       double val = 0.0;
-      if ( lit->value().type() == QVariant::Int )
+      if ( lit->value().userType() == QMetaType::Type::Int )
         val = lit->value().toInt();
-      else if ( lit->value().type() == QVariant::LongLong )
+      else if ( lit->value().userType() == QMetaType::Type::LongLong )
         val = lit->value().toLongLong();
-      else if ( lit->value().type() == QVariant::Double )
+      else if ( lit->value().userType() == QMetaType::Type::Double )
         val = lit->value().toDouble();
       else
       {
@@ -3171,18 +3172,18 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     }
     QString distance;
     QString unit( QStringLiteral( "m" ) );
-    switch ( lit->value().type() )
+    switch ( lit->value().userType() )
     {
-      case QVariant::Int:
+      case QMetaType::Type::Int:
         distance = QString::number( lit->value().toInt() );
         break;
-      case QVariant::LongLong:
+      case QMetaType::Type::LongLong:
         distance = QString::number( lit->value().toLongLong() );
         break;
-      case QVariant::Double:
+      case QMetaType::Type::Double:
         distance = qgsDoubleToString( lit->value().toDouble() );
         break;
-      case QVariant::String:
+      case QMetaType::Type::QString:
       {
         distance = lit->value().toString();
         for ( int i = 0; i < distance.size(); i++ )
@@ -3198,7 +3199,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       }
 
       default:
-        mErrorMessage = QObject::tr( "Literal type not supported: %1" ).arg( lit->value().type() );
+        mErrorMessage = QObject::tr( "Literal type not supported: %1" ).arg( static_cast<QMetaType::Type>( lit->value().userType() ) );
         return QDomElement();
     }
 

@@ -3,7 +3,6 @@
 # Files
 
 set(WFS_SRCS
-  ${CMAKE_SOURCE_DIR}/external/nlohmann/json.hpp
   qgswfsprovider.cpp
   qgswfsprovidermetadata.cpp
   qgswfscapabilities.cpp
@@ -36,6 +35,7 @@ set(WFS_SRCS
   oapif/qgsoapifoptionsrequest.cpp
   oapif/qgsoapifprovider.cpp
   oapif/qgsoapifqueryablesrequest.cpp
+  oapif/qgsoapifsingleitemrequest.cpp
   oapif/qgsoapifutils.cpp
 )
 
@@ -56,6 +56,8 @@ endif()
 # Static
 add_library(provider_wfs_a STATIC ${WFS_SRCS})
 
+set_target_properties(provider_wfs_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 target_include_directories(provider_wfs_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/wfs
   ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
@@ -75,13 +77,11 @@ target_compile_definitions(provider_wfs_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SO
 target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(WFS_UIS_H ${WFS_UIS})
-  else()
-    QT5_WRAP_UI(WFS_UIS_H ${WFS_UIS})
-  endif()
+  qt_wrap_ui(WFS_UIS_H ${WFS_UIS})
 
   add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
+
+  set_target_properties(provider_wfs_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   target_include_directories(provider_wfs_gui_a PUBLIC
     ${CMAKE_SOURCE_DIR}/src/providers/wfs
@@ -116,6 +116,8 @@ if (FORCE_STATIC_LIBS)
   endif()
 else()
   add_library(provider_wfs MODULE ${WFS_SRCS} ${WFS_GUI_SRCS})
+
+  set_target_properties(provider_wfs PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   # require c++17
   target_compile_features(provider_wfs PRIVATE cxx_std_17)

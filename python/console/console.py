@@ -17,33 +17,50 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-import os
 
-from qgis.PyQt.QtCore import Qt, QTimer, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
-from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
-from qgis.PyQt.QtGui import QDesktopServices, QKeySequence
-from qgis.PyQt.QtWidgets import (
-    QVBoxLayout,
-    QMessageBox
+import os
+import subprocess
+
+from qgis.PyQt.QtCore import (
+    Qt,
+    QTimer,
+    QCoreApplication,
+    QSize,
+    QByteArray,
+    QFileInfo,
+    QUrl,
+    QDir,
 )
+from qgis.PyQt.QtWidgets import (
+    QToolBar,
+    QToolButton,
+    QWidget,
+    QSplitter,
+    QTreeWidget,
+    QAction,
+    QFileDialog,
+    QCheckBox,
+    QSizePolicy,
+    QMenu,
+    QGridLayout,
+    QApplication,
+    QShortcut,
+)
+from qgis.PyQt.QtGui import QDesktopServices, QKeySequence
+from qgis.PyQt.QtWidgets import QVBoxLayout, QMessageBox
 from qgis.utils import iface
 from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
 from .console_settings import ConsoleOptionsFactory
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsSettings,
-    QgsFileUtils
-)
+from qgis.core import Qgis, QgsApplication, QgsSettings, QgsFileUtils
 from qgis.gui import (
     QgsFilterLineEdit,
     QgsHelp,
     QgsDockWidget,
     QgsGui,
     QgsApplicationExitBlockerInterface,
-    QgsCodeEditorDockWidget
+    QgsCodeEditorDockWidget,
 )
 from functools import partial
 
@@ -55,13 +72,15 @@ _options_factory = ConsoleOptionsFactory()
 
 
 def show_console():
-    """ called from QGIS to open the console """
+    """called from QGIS to open the console"""
     global _console
     if _console is None:
         parent = iface.mainWindow() if iface else None
         _console = PythonConsole(parent)
         if iface:
-            _console.visibilityChanged.connect(iface.actionShowPythonDialog().setChecked)
+            _console.visibilityChanged.connect(
+                iface.actionShowPythonDialog().setChecked
+            )
 
         _console.show()  # force show even if it was restored as hidden
         # set focus to the console so the user can start typing
@@ -88,9 +107,9 @@ def console_displayhook(obj):
 
 
 def init_options_widget():
-    """ called from QGIS to add the console options widget """
+    """called from QGIS to add the console options widget"""
     global _options_factory
-    _options_factory.setTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
+    _options_factory.setTitle(QCoreApplication.translate("PythonConsole", "Python"))
     iface.registerOptionsWidgetFactory(_options_factory)
 
 
@@ -142,13 +161,14 @@ class PythonConsoleWidget(QWidget):
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
+        self.setWindowTitle(
+            QCoreApplication.translate("PythonConsole", "Python Console")
+        )
 
         self.shell = ShellScintilla(console_widget=self)
         self.setFocusProxy(self.shell)
         self.shell_output = ShellOutputScintilla(
-            console_widget=self,
-            shell_editor=self.shell
+            console_widget=self, shell_editor=self.shell
         )
         self.tabEditorWidget = EditorTabWidget(console_widget=self)
 
@@ -180,7 +200,7 @@ class PythonConsoleWidget(QWidget):
         self.listClassMethod = QTreeWidget(self.splitterObj)
         self.listClassMethod.setColumnCount(2)
         objInspLabel = QCoreApplication.translate("PythonConsole", "Object Inspector")
-        self.listClassMethod.setHeaderLabels([objInspLabel, ''])
+        self.listClassMethod.setHeaderLabels([objInspLabel, ""])
         self.listClassMethod.setColumnHidden(1, True)
         self.listClassMethod.setAlternatingRowColors(True)
 
@@ -204,17 +224,23 @@ class PythonConsoleWidget(QWidget):
         self.openFileButton = QAction(self)
         self.openFileButton.setCheckable(False)
         self.openFileButton.setEnabled(True)
-        self.openFileButton.setIcon(QgsApplication.getThemeIcon("mActionScriptOpen.svg"))
+        self.openFileButton.setIcon(
+            QgsApplication.getThemeIcon("mActionScriptOpen.svg")
+        )
         self.openFileButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
         self.openFileButton.setToolTip(openFileBt)
         self.openFileButton.setText(openFileBt)
 
-        openExtEditorBt = QCoreApplication.translate("PythonConsole", "Open in External Editor")
+        openExtEditorBt = QCoreApplication.translate(
+            "PythonConsole", "Open in External Editor"
+        )
         self.openInEditorButton = QAction(self)
         self.openInEditorButton.setCheckable(False)
         self.openInEditorButton.setEnabled(True)
-        self.openInEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg"))
+        self.openInEditorButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg")
+        )
         self.openInEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.openInEditorButton.setIconVisibleInMenu(True)
         self.openInEditorButton.setToolTip(openExtEditorBt)
@@ -234,7 +260,9 @@ class PythonConsoleWidget(QWidget):
         self.saveAsFileButton = QAction(self)
         self.saveAsFileButton.setCheckable(False)
         self.saveAsFileButton.setEnabled(True)
-        self.saveAsFileButton.setIcon(QgsApplication.getThemeIcon("mActionFileSaveAs.svg"))
+        self.saveAsFileButton.setIcon(
+            QgsApplication.getThemeIcon("mActionFileSaveAs.svg")
+        )
         self.saveAsFileButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.saveAsFileButton.setIconVisibleInMenu(True)
         self.saveAsFileButton.setToolTip(saveAsFileBt)
@@ -254,7 +282,9 @@ class PythonConsoleWidget(QWidget):
         self.copyEditorButton = QAction(self)
         self.copyEditorButton.setCheckable(False)
         self.copyEditorButton.setEnabled(True)
-        self.copyEditorButton.setIcon(QgsApplication.getThemeIcon("mActionEditCopy.svg"))
+        self.copyEditorButton.setIcon(
+            QgsApplication.getThemeIcon("mActionEditCopy.svg")
+        )
         self.copyEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.copyEditorButton.setIconVisibleInMenu(True)
         self.copyEditorButton.setToolTip(copyEditorBt)
@@ -264,7 +294,9 @@ class PythonConsoleWidget(QWidget):
         self.pasteEditorButton = QAction(self)
         self.pasteEditorButton.setCheckable(False)
         self.pasteEditorButton.setEnabled(True)
-        self.pasteEditorButton.setIcon(QgsApplication.getThemeIcon("mActionEditPaste.svg"))
+        self.pasteEditorButton.setIcon(
+            QgsApplication.getThemeIcon("mActionEditPaste.svg")
+        )
         self.pasteEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.pasteEditorButton.setIconVisibleInMenu(True)
         self.pasteEditorButton.setToolTip(pasteEditorBt)
@@ -274,7 +306,9 @@ class PythonConsoleWidget(QWidget):
         self.runScriptEditorButton = QAction(self)
         self.runScriptEditorButton.setCheckable(False)
         self.runScriptEditorButton.setEnabled(True)
-        self.runScriptEditorButton.setIcon(QgsApplication.getThemeIcon("mActionStart.svg"))
+        self.runScriptEditorButton.setIcon(
+            QgsApplication.getThemeIcon("mActionStart.svg")
+        )
         self.runScriptEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.runScriptEditorButton.setIconVisibleInMenu(True)
         self.runScriptEditorButton.setToolTip(runScriptEditorBt)
@@ -285,7 +319,9 @@ class PythonConsoleWidget(QWidget):
         self.toggleCommentEditorButton = QAction(self)
         self.toggleCommentEditorButton.setCheckable(False)
         self.toggleCommentEditorButton.setEnabled(True)
-        self.toggleCommentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"))
+        self.toggleCommentEditorButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
+        )
         self.toggleCommentEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.toggleCommentEditorButton.setIconVisibleInMenu(True)
         self.toggleCommentEditorButton.setToolTip(toggleText + " <b>Ctrl+:</b>")
@@ -296,10 +332,14 @@ class PythonConsoleWidget(QWidget):
         self.reformatCodeEditorButton = QAction(self)
         self.reformatCodeEditorButton.setCheckable(False)
         self.reformatCodeEditorButton.setEnabled(True)
-        self.reformatCodeEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconFormatCode.svg"))
+        self.reformatCodeEditorButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconFormatCode.svg")
+        )
         self.reformatCodeEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.reformatCodeEditorButton.setIconVisibleInMenu(True)
-        self.reformatCodeEditorButton.setToolTip(reformatCodeText + " <b>Ctrl+Alt+F</b>")
+        self.reformatCodeEditorButton.setToolTip(
+            reformatCodeText + " <b>Ctrl+Alt+F</b>"
+        )
         self.reformatCodeEditorButton.setShortcut("Ctrl+Alt+F")
         self.reformatCodeEditorButton.setText(reformatCodeText)
 
@@ -307,9 +347,12 @@ class PythonConsoleWidget(QWidget):
         objList = QCoreApplication.translate("PythonConsole", "Object Inspector…")
         self.objectListButton = QAction(self)
         self.objectListButton.setCheckable(True)
-        self.objectListButton.setEnabled(QgsSettings().value("pythonConsole/enableObjectInsp",
-                                                             False, type=bool))
-        self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg"))
+        self.objectListButton.setEnabled(
+            QgsSettings().value("pythonConsole/enableObjectInsp", False, type=bool)
+        )
+        self.objectListButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg")
+        )
         self.objectListButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.objectListButton.setIconVisibleInMenu(True)
         self.objectListButton.setToolTip(objList)
@@ -320,7 +363,9 @@ class PythonConsoleWidget(QWidget):
         self.find_text_action = QAction(self)
         self.find_text_action.setCheckable(True)
         self.find_text_action.setEnabled(True)
-        self.find_text_action.setIcon(QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg"))
+        self.find_text_action.setIcon(
+            QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg")
+        )
         self.find_text_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.find_text_action.setIconVisibleInMenu(True)
         self.find_text_action.setToolTip(findText)
@@ -329,9 +374,7 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.search_bar_toggled.connect(
             self.find_text_action.setChecked
         )
-        self.find_text_action.toggled.connect(
-            self.tabEditorWidget.toggle_search_bar
-        )
+        self.find_text_action.toggled.connect(self.tabEditorWidget.toggle_search_bar)
 
         # ----------------Toolbar Console-------------------------------------
 
@@ -340,7 +383,9 @@ class PythonConsoleWidget(QWidget):
         self.showEditorButton = QAction(self)
         self.showEditorButton.setEnabled(True)
         self.showEditorButton.setCheckable(True)
-        self.showEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg"))
+        self.showEditorButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg")
+        )
         self.showEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.showEditorButton.setIconVisibleInMenu(True)
         self.showEditorButton.setToolTip(showEditor)
@@ -350,7 +395,9 @@ class PythonConsoleWidget(QWidget):
         self.clearButton = QAction(self)
         self.clearButton.setCheckable(False)
         self.clearButton.setEnabled(True)
-        self.clearButton.setIcon(QgsApplication.getThemeIcon("console/iconClearConsole.svg"))
+        self.clearButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconClearConsole.svg")
+        )
         self.clearButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
@@ -360,7 +407,9 @@ class PythonConsoleWidget(QWidget):
         self.optionsButton = QAction(self)
         self.optionsButton.setCheckable(False)
         self.optionsButton.setEnabled(True)
-        self.optionsButton.setIcon(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"))
+        self.optionsButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
+        )
         self.optionsButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.optionsButton.setIconVisibleInMenu(True)
         self.optionsButton.setToolTip(optionsBt)
@@ -379,13 +428,19 @@ class PythonConsoleWidget(QWidget):
         # Help button
         self.helpConsoleAction = QAction(self)
         self.helpConsoleAction.setEnabled(True)
-        self.helpConsoleAction.setText(QCoreApplication.translate("PythonConsole", "Python Console Help"))
+        self.helpConsoleAction.setText(
+            QCoreApplication.translate("PythonConsole", "Python Console Help")
+        )
         self.helpAPIAction = QAction(self)
         self.helpAPIAction.setEnabled(True)
-        self.helpAPIAction.setText(QCoreApplication.translate("PythonConsole", "PyQGIS API Documentation"))
+        self.helpAPIAction.setText(
+            QCoreApplication.translate("PythonConsole", "PyQGIS API Documentation")
+        )
         self.helpCookbookAction = QAction(self)
         self.helpCookbookAction.setEnabled(True)
-        self.helpCookbookAction.setText(QCoreApplication.translate("PythonConsole", "PyQGIS Cookbook"))
+        self.helpCookbookAction.setText(
+            QCoreApplication.translate("PythonConsole", "PyQGIS Cookbook")
+        )
 
         self.helpMenu = QMenu(self)
         self.helpMenu.addAction(self.helpConsoleAction)
@@ -396,7 +451,9 @@ class PythonConsoleWidget(QWidget):
         self.helpButton = QToolButton(self)
         self.helpButton.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.helpButton.setEnabled(True)
-        self.helpButton.setIcon(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"))
+        self.helpButton.setIcon(
+            QgsApplication.getThemeIcon("console/iconHelpConsole.svg")
+        )
         self.helpButton.setToolTip(helpBt)
         self.helpButton.setMenu(self.helpMenu)
 
@@ -456,16 +513,22 @@ class PythonConsoleWidget(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.widgetButtonEditor.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.widgetButtonEditor.sizePolicy().hasHeightForWidth()
+        )
         self.widgetButtonEditor.setSizePolicy(sizePolicy)
 
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy = QSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.shell_output.sizePolicy().hasHeightForWidth())
         self.shell_output.setSizePolicy(sizePolicy)
 
-        self.shell_output.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.shell_output.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAsNeeded
+        )
         self.shell.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
         # ------------ Layout -------------------------------
@@ -522,9 +585,17 @@ class PythonConsoleWidget(QWidget):
             tab_index = tab_count - i - 1
             tab_widget = self.tabEditorWidget.widget(tab_index)
             if tab_widget.isModified():
-                ret = QMessageBox.question(self, self.tr("Save {}").format(self.tabEditorWidget.tabText(tab_index)),
-                                           self.tr("There are unsaved changes in this script. Do you want to keep those?"),
-                                           QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel)
+                ret = QMessageBox.question(
+                    self,
+                    self.tr("Save {}").format(self.tabEditorWidget.tabText(tab_index)),
+                    self.tr(
+                        "There are unsaved changes in this script. Do you want to keep those?"
+                    ),
+                    QMessageBox.StandardButton.Save
+                    | QMessageBox.StandardButton.Cancel
+                    | QMessageBox.StandardButton.Discard,
+                    QMessageBox.StandardButton.Cancel,
+                )
                 if ret == QMessageBox.StandardButton.Save:
                     tab_widget.save()
                     if tab_widget.isModified():
@@ -544,14 +615,14 @@ class PythonConsoleWidget(QWidget):
 
     def onClickGoToLine(self, item, column):
         tabEditor = self.tabEditorWidget.currentWidget()
-        if item.text(1) == 'syntaxError':
+        if item.text(1) == "syntaxError":
             check = tabEditor.syntaxCheck()
             if check and not tabEditor.isReadOnly():
                 self.tabEditorWidget.currentWidget().save()
             return
         linenr = int(item.text(1))
         itemName = str(item.text(0))
-        charPos = itemName.find(' ')
+        charPos = itemName.find(" ")
         if charPos != -1:
             objName = itemName[0:charPos]
         else:
@@ -587,24 +658,20 @@ class PythonConsoleWidget(QWidget):
 
     def openScriptFileExtEditor(self):
         tabWidget = self.tabEditorWidget.currentWidget()
-        path = tabWidget.path
-        import subprocess
-        try:
-            subprocess.Popen([os.environ['EDITOR'], path])
-        except KeyError:
-            QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+        tabWidget.open_in_external_editor()
 
     def openScriptFile(self):
         settings = QgsSettings()
         lastDirPath = settings.value("pythonConsole/lastDirPath", QDir.homePath())
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList, selected_filter = QFileDialog.getOpenFileNames(
-            self, openFileTr, lastDirPath, "Script file (*.py)")
+            self, openFileTr, lastDirPath, "Script file (*.py)"
+        )
         if fileList:
             for pyFile in fileList:
                 for i in range(self.tabEditorWidget.count()):
                     tabWidget = self.tabEditorWidget.widget(i)
-                    if tabWidget.path == pyFile:
+                    if tabWidget.file_path() == pyFile:
                         self.tabEditorWidget.setCurrentWidget(tabWidget)
                         break
                 else:
@@ -613,68 +680,76 @@ class PythonConsoleWidget(QWidget):
 
                     lastDirPath = QFileInfo(pyFile).path()
                     settings.setValue("pythonConsole/lastDirPath", pyFile)
-                    self.updateTabListScript(pyFile, action='append')
+                    self.updateTabListScript(pyFile, action="append")
 
     def saveScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
         try:
             tabWidget.save()
-        except (IOError, OSError) as error:
-            msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
-                                                                                                              error.strerror)
+        except OSError as error:
+            msgText = QCoreApplication.translate(
+                "PythonConsole", "The file <b>{0}</b> could not be saved. Error: {1}"
+            ).format(tabWidget.file_path(), error.strerror)
             self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
 
     def saveAsScriptFile(self, index=None):
         tabWidget = self.tabEditorWidget.currentWidget()
         if not index:
             index = self.tabEditorWidget.currentIndex()
-        if not tabWidget.path:
-            fileName = self.tabEditorWidget.tabText(index).replace('*', '') + '.py'
+        if not tabWidget.file_path():
+            fileName = self.tabEditorWidget.tabText(index).replace("*", "")
+            fileName = QgsFileUtils.ensureFileNameHasExtension(fileName, ["py"])
             folder = QgsSettings().value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True
         else:
-            pathFileName = tabWidget.path
+            pathFileName = tabWidget.file_path()
             fileNone = False
         saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
-        filename, filter = QFileDialog.getSaveFileName(self,
-                                                       saveAsFileTr,
-                                                       pathFileName, "Script file (*.py)")
+        filename, filter = QFileDialog.getSaveFileName(
+            self, saveAsFileTr, pathFileName, "Script file (*.py)"
+        )
         if filename:
-            filename = QgsFileUtils.ensureFileNameHasExtension(filename, ['py'])
+            filename = QgsFileUtils.ensureFileNameHasExtension(filename, ["py"])
 
             try:
                 tabWidget.save(filename)
-            except (IOError, OSError) as error:
-                msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
-                                                                                                                  error.strerror)
+            except OSError as error:
+                msgText = QCoreApplication.translate(
+                    "PythonConsole",
+                    "The file <b>{0}</b> could not be saved. Error: {1}",
+                ).format(tabWidget.file_path(), error.strerror)
                 self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
                 if fileNone:
-                    tabWidget.path = None
+                    tabWidget.set_file_path(None)
                 else:
-                    tabWidget.path = pathFileName
+                    tabWidget.set_file_path(pathFileName)
                 return
 
             if not fileNone:
-                self.updateTabListScript(pathFileName, action='remove')
+                self.updateTabListScript(pathFileName, action="remove")
 
     def openHelpConsole(self):
         QgsHelp.openHelp("plugins/python_console.html")
 
     def openHelpAPI(self):
-        m = re.search(r'^([0-9]+)\.([0-9]+)\.', Qgis.QGIS_VERSION)
+        m = re.search(r"^([0-9]+)\.([0-9]+)\.", Qgis.QGIS_VERSION)
         if m:
-            QDesktopServices.openUrl(QUrl('https://qgis.org/pyqgis/{}.{}/'.format(m.group(1), m.group(2))))
+            QDesktopServices.openUrl(
+                QUrl(f"https://qgis.org/pyqgis/{m.group(1)}.{m.group(2)}/")
+            )
 
     def openHelpCookbook(self):
-        m = re.search(r'^([0-9]+)\.([0-9]+)\.', Qgis.QGIS_VERSION)
+        m = re.search(r"^([0-9]+)\.([0-9]+)\.", Qgis.QGIS_VERSION)
         if m:
-            QDesktopServices.openUrl(QUrl('https://docs.qgis.org/{}.{}/en/docs/pyqgis_developer_cookbook/index.html'.format(m.group(1), m.group(2))))
+            QDesktopServices.openUrl(
+                QUrl(
+                    f"https://docs.qgis.org/{m.group(1)}.{m.group(2)}/en/docs/pyqgis_developer_cookbook/index.html"
+                )
+            )
 
     def openSettings(self):
-        iface.showOptionsDialog(iface.mainWindow(), currentPage='consoleOptions')
+        iface.showOptionsDialog(iface.mainWindow(), currentPage="consoleOptions")
 
     def updateSettings(self):
         self.shell.refreshSettingsShell()
@@ -688,23 +763,24 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.showMessage(text, level)
 
     def updateTabListScript(self, script, action=None):
-        if action == 'remove':
+        if action == "remove":
             self.tabListScript.remove(script)
-        elif action == 'append':
+        elif action == "append":
             if not self.tabListScript:
                 self.tabListScript = []
             if script not in self.tabListScript:
                 self.tabListScript.append(script)
         else:
             self.tabListScript = []
-        QgsSettings().setValue("pythonConsole/tabScripts",
-                               self.tabListScript)
+        QgsSettings().setValue("pythonConsole/tabScripts", self.tabListScript)
 
     def saveSettingsConsole(self):
         settings = QgsSettings()
         settings.setValue("pythonConsole/splitterConsole", self.splitter.saveState())
         settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
-        settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
+        settings.setValue(
+            "pythonConsole/splitterEditor", self.splitterEditor.saveState()
+        )
 
         self.shell.writeHistoryFile()
 
@@ -712,12 +788,18 @@ class PythonConsoleWidget(QWidget):
         settings = QgsSettings()
         storedTabScripts = settings.value("pythonConsole/tabScripts", [])
         self.tabListScript = storedTabScripts
-        self.splitter.restoreState(settings.value("pythonConsole/splitterConsole", QByteArray()))
-        self.splitterEditor.restoreState(settings.value("pythonConsole/splitterEditor", QByteArray()))
-        self.splitterObj.restoreState(settings.value("pythonConsole/splitterObj", QByteArray()))
+        self.splitter.restoreState(
+            settings.value("pythonConsole/splitterConsole", QByteArray())
+        )
+        self.splitterEditor.restoreState(
+            settings.value("pythonConsole/splitterEditor", QByteArray())
+        )
+        self.splitterObj.restoreState(
+            settings.value("pythonConsole/splitterObj", QByteArray())
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     a = QApplication(sys.argv)
     console = PythonConsoleWidget()
     console.show()

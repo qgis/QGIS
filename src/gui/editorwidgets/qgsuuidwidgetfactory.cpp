@@ -19,7 +19,7 @@
 #include "qgsdummyconfigdlg.h"
 
 QgsUuidWidgetFactory::QgsUuidWidgetFactory( const QString &name )
-  :  QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
@@ -36,6 +36,6 @@ QgsEditorConfigWidget *QgsUuidWidgetFactory::configWidget( QgsVectorLayer *vl, i
 
 unsigned int QgsUuidWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
-  const QVariant::Type type = vl->fields().field( fieldIdx ).type();
-  return type == QVariant::String ? 5 : 0;
+  const QMetaType::Type type = vl->fields().field( fieldIdx ).type();
+  return type == QMetaType::Type::QString ? 5 : 0;
 }

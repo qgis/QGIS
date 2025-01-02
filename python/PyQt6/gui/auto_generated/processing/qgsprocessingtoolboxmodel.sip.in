@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/processing/qgsprocessingtoolboxmodel.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,12 +38,13 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent )
         sipType = sipType_QgsProcessingToolboxModelRecentNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite )
+        sipType = sipType_QgsProcessingToolboxModelFavoriteNode;
     }
     else
       sipType = 0;
 %End
   public:
-
 
     enum class NodeType /BaseType=IntEnum/
     {
@@ -51,6 +52,7 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
       Group,
       Algorithm,
       Recent,
+      Favorite,
     };
 
     ~QgsProcessingToolboxModelNode();
@@ -113,14 +115,30 @@ Processing toolbox model node corresponding to the recent algorithms group
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelRecentNode();
-%Docstring
-Constructor for QgsProcessingToolboxModelRecentNode.
-%End
 
     virtual NodeType nodeType() const;
+};
 
+class QgsProcessingToolboxModelFavoriteNode : QgsProcessingToolboxModelNode
+{
+%Docstring(signature="appended")
+Processing toolbox model node corresponding to the favorite algorithms group
+
+.. warning::
+
+   Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtoolboxmodel.h"
+%End
+  public:
+    QgsProcessingToolboxModelFavoriteNode();
+
+    virtual NodeType nodeType() const;
 };
 
 class QgsProcessingToolboxModelProviderNode : QgsProcessingToolboxModelNode
@@ -139,7 +157,6 @@ Processing toolbox model node corresponding to a Processing provider.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
 %Docstring
 Constructor for QgsProcessingToolboxModelProviderNode, linked to the
@@ -176,7 +193,6 @@ Processing toolbox model node corresponding to a group of algorithms.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelGroupNode( const QString &id, const QString &name );
 %Docstring
 Constructor for QgsProcessingToolboxModelGroupNode.
@@ -216,7 +232,6 @@ Processing toolbox model node corresponding to an algorithm.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 %Docstring
 Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
@@ -249,8 +264,7 @@ of this model.
 %End
   public:
 
-
-      enum class CustomRole /BaseType=IntEnum/
+    enum class CustomRole /BaseType=IntEnum/
     {
       NodeType,
       AlgorithmFlags,
@@ -261,8 +275,7 @@ of this model.
       ProviderFlags,
     };
 
-    QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,
-                               QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+    QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxModel, with the given ``parent`` object.
 
@@ -273,6 +286,9 @@ by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
 level group containing recently used algorithms.
+
+If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
+level group containing favorite algorithms. Since QGIS 3.40
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -360,10 +376,15 @@ Returns the index corresponding to the parent of a given node.
 Emitted whenever recent algorithms are added to the model.
 %End
 
+    void favoriteAlgorithmAdded();
+%Docstring
+Emitted whenever favorite algorithms are added to the model.
+%End
+
 };
 
 
-class QgsProcessingToolboxProxyModel: QSortFilterProxyModel
+class QgsProcessingToolboxProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
@@ -378,7 +399,6 @@ the results.
 %End
   public:
 
-
     enum class Filter /BaseType=IntFlag/
     {
       Toolbox,
@@ -389,9 +409,7 @@ the results.
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
 
-    explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0,
-        QgsProcessingRegistry *registry = 0,
-        QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+    explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxProxyModel, with the given ``parent`` object.
 
@@ -402,6 +420,9 @@ by the model.
 
 If ``recentLog`` is specified then it will be used to create a "Recently used" top
 level group containing recently used algorithms.
+
+If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
+level group containing favorite algorithms. SInce QGIS 3.40
 %End
 
     QgsProcessingToolboxModel *toolboxModel();
@@ -463,5 +484,5 @@ QFlags<QgsProcessingToolboxProxyModel::Filter> operator|(QgsProcessingToolboxPro
  *                                                                      *
  * src/gui/processing/qgsprocessingtoolboxmodel.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

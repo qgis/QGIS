@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsscalewidget.h"
+#include "moc_qgsscalewidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgslayoutmanager.h"
@@ -106,8 +107,7 @@ void QgsScaleWidget::menuAboutToShow()
   mMenu->clear();
 
   double scale = mCanvas->scale();
-  QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ),
-      tr( "Use Current Map Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
+  QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ), tr( "Use Current Map Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
   connect( canvasScaleAction, &QAction::triggered, this, [this, scale] { setScale( scale ); } );
   mMenu->addAction( canvasScaleAction );
 
@@ -117,7 +117,7 @@ void QgsScaleWidget::menuAboutToShow()
     const QList<QgsPrintLayout *> layouts = manager->printLayouts();
     for ( const QgsPrintLayout *layout : layouts )
     {
-      QList< QgsLayoutItemMap * > maps;
+      QList<QgsLayoutItemMap *> maps;
       layout->layoutItems( maps );
       if ( maps.empty() )
         continue;

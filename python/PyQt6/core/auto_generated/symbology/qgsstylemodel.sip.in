@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsstylemodel.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -392,5 +392,5 @@ specified string will be shown.
  *                                                                      *
  * src/core/symbology/qgsstylemodel.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

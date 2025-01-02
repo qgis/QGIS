@@ -53,14 +53,9 @@ class CORE_EXPORT QgsProcessingContext
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /**
-     * Constructor for QgsProcessingContext.
-     */
     QgsProcessingContext();
 
-    //! QgsProcessingContext cannot be copied
     QgsProcessingContext( const QgsProcessingContext &other ) = delete;
-    //! QgsProcessingContext cannot be copied
     QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
 
     ~QgsProcessingContext();
@@ -263,7 +258,6 @@ class CORE_EXPORT QgsProcessingContext
           , project( project )
         {}
 
-        //! Default constructor
         LayerDetails() = default;
 
         /**
@@ -489,7 +483,7 @@ class CORE_EXPORT QgsProcessingContext
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const SIP_SKIP { return mTransformErrorCallback; }
 
     /**
      * Returns the default encoding to use for newly created files.

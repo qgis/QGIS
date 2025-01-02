@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgspalettedrasterrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -122,12 +122,13 @@ Returns optional category label
 Set category label
 %End
 
- int band() const /Deprecated/;
+ int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
 Returns the raster band used for rendering the raster.
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsPalettedRasterRenderer.inputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsPalettedRasterRenderer.inputBand` instead.
 %End
 
     virtual int inputBand() const;
@@ -221,5 +222,5 @@ color ``ramp`` can be specified to automatically assign colors from the ramp.
  *                                                                      *
  * src/core/raster/qgspalettedrasterrenderer.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

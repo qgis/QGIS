@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/settings/qgssettingsentry.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -197,8 +197,9 @@ Removes the settings from the underlying QSettings.
 %Docstring
 Returns settings section. The settings section of the parent group is returned if available.
 
-.. deprecated:: QGIS 3.26
-   the key is entirely self-defined
+.. deprecated:: 3.26
+
+   The key is entirely self-defined.
 %End
 
     bool setVariantValue( const QVariant &value, const QString &dynamicKeyPart = QString() ) const;
@@ -245,20 +246,22 @@ Returns settings value.
 .. versionadded:: 3.26
 %End
 
- QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
+ QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated="Since 3.26. Use valueAsVariantWithDefaultOverride() instead."/;
 %Docstring
 Returns settings value with an optional default value override
 
-.. deprecated:: QGIS 3.26
-   use valueAsVariantWithDefaultOverride instead
+.. deprecated:: 3.26
+
+   Use :py:func:`~QgsSettingsEntryBase.valueAsVariantWithDefaultOverride` instead.
 %End
 
- QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
+ QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated="Since 3.26. Use valueAsVariantWithDefaultOverride() instead."/;
 %Docstring
 Returns settings value with an optional default value override
 
-.. deprecated:: QGIS 3.26
-   use valueAsVariantWithDefaultOverride instead
+.. deprecated:: 3.26
+
+   Use :py:func:`~QgsSettingsEntryBase.valueAsVariantWithDefaultOverride` instead.
 %End
 
 
@@ -503,5 +506,5 @@ Check if the value is valid
  *                                                                      *
  * src/core/settings/qgssettingsentry.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

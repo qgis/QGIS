@@ -2,5 +2,14 @@
 # monkey patching scoped based enum
 QgsGcpPoint.PointType.Source.__doc__ = "Source point"
 QgsGcpPoint.PointType.Destination.__doc__ = "Destination point"
-QgsGcpPoint.PointType.__doc__ = "Coordinate point types\n\n" + '* ``Source``: ' + QgsGcpPoint.PointType.Source.__doc__ + '\n' + '* ``Destination``: ' + QgsGcpPoint.PointType.Destination.__doc__
+QgsGcpPoint.PointType.__doc__ = """Coordinate point types
+
+* ``Source``: Source point
+* ``Destination``: Destination point
+
+"""
 # --
+try:
+    QgsGcpPoint.__group__ = ['georeferencing']
+except (NameError, AttributeError):
+    pass

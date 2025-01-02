@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutcombobox.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,7 +20,6 @@ The :py:class:`QgsLayoutComboBox` class is a combo box which displays available 
 #include "qgslayoutcombobox.h"
 %End
   public:
-
     explicit QgsLayoutComboBox( QWidget *parent /TransferThis/ = 0, QgsLayoutManager *manager = 0 );
 %Docstring
 QgsLayoutComboBox creates a combo box to display a list of items in a
@@ -91,5 +90,5 @@ Emitted whenever the currently selected layout changes
  *                                                                      *
  * src/gui/layout/qgslayoutcombobox.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

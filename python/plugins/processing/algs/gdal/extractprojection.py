@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "September 2013"
+__copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
 
@@ -27,69 +27,71 @@ from osgeo import gdal, osr
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from qgis.core import QgsProcessingException
-from qgis.core import (QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingOutputFile)
+from qgis.core import (
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterBoolean,
+    QgsProcessingOutputFile,
+)
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
+gdal.UseExceptions()
+osr.UseExceptions()
+
 
 class ExtractProjection(GdalAlgorithm):
-    INPUT = 'INPUT'
-    PRJ_FILE_CREATE = 'PRJ_FILE_CREATE'
-    WORLD_FILE = 'WORLD_FILE'
-    PRJ_FILE = 'PRJ_FILE'
+    INPUT = "INPUT"
+    PRJ_FILE_CREATE = "PRJ_FILE_CREATE"
+    WORLD_FILE = "WORLD_FILE"
+    PRJ_FILE = "PRJ_FILE"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            self.INPUT,
-            self.tr('Input file')))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.PRJ_FILE_CREATE,
-            self.tr('Create also .prj file'), False))
-        self.addOutput(QgsProcessingOutputFile(
-            self.WORLD_FILE,
-            self.tr('World file')))
-        self.addOutput(QgsProcessingOutputFile(
-            self.PRJ_FILE,
-            self.tr('ESRI Shapefile prj file')))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(self.INPUT, self.tr("Input file"))
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.PRJ_FILE_CREATE, self.tr("Create also .prj file"), False
+            )
+        )
+        self.addOutput(QgsProcessingOutputFile(self.WORLD_FILE, self.tr("World file")))
+        self.addOutput(
+            QgsProcessingOutputFile(self.PRJ_FILE, self.tr("ESRI Shapefile prj file"))
+        )
 
     def name(self):
-        return 'extractprojection'
+        return "extractprojection"
 
     def displayName(self):
-        return self.tr('Extract projection')
+        return self.tr("Extract projection")
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools',
-                                  'projection-export.png'))
+        return QIcon(
+            os.path.join(pluginPath, "images", "gdaltools", "projection-export.png")
+        )
 
     def group(self):
-        return self.tr('Raster projections')
+        return self.tr("Raster projections")
 
     def groupId(self):
-        return 'rasterprojections'
+        return "rasterprojections"
 
     def commandName(self):
-        return 'extractprojection'
+        return "extractprojection"
 
-    def getConsoleCommands(self, parameters, context, feedback,
-                           executing=True):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return [self.commandName()]
 
     def processAlgorithm(self, parameters, context, feedback):
-        createPrj = self.parameterAsBoolean(parameters,
-                                            self.PRJ_FILE_CREATE,
-                                            context)
-        raster = self.parameterAsRasterLayer(parameters, self.INPUT,
-                                             context)
-        if raster.dataProvider().name() != 'gdal':
-            raise QgsProcessingException(self.tr('This algorithm can '
-                                                 'only be used with '
-                                                 'GDAL raster layers'))
+        createPrj = self.parameterAsBoolean(parameters, self.PRJ_FILE_CREATE, context)
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster.dataProvider().name() != "gdal":
+            raise QgsProcessingException(
+                self.tr("This algorithm can " "only be used with " "GDAL raster layers")
+            )
         rasterPath = raster.source()
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geotransform = rasterDS.GetGeoTransform()
@@ -102,36 +104,38 @@ class ExtractProjection(GdalAlgorithm):
         outFileName = inFileName[0]
         # this is not a good idea as it won't work with an extension like .jpeg
         # outFileExt = '.' + inFileName[1][1:4:2] + 'w'
-        if (len(inFileName[1]) < 4):
-            outFileExt = '.wld'
+        if len(inFileName[1]) < 4:
+            outFileExt = ".wld"
         else:
-            outFileExt = inFileName[1][0:2] + inFileName[1][-1] + 'w'
+            outFileExt = inFileName[1][0:2] + inFileName[1][-1] + "w"
 
         results = {}
-        if crs != '' and createPrj:
+        if crs != "" and createPrj:
             tmp = osr.SpatialReference()
             tmp.ImportFromWkt(crs)
             tmp.MorphToESRI()
             crs = tmp.ExportToWkt()
             tmp = None
 
-            with open(outFileName + '.prj', 'w', encoding='utf-8') as prj:
+            with open(outFileName + ".prj", "w", encoding="utf-8") as prj:
                 prj.write(crs)
-            results[self.PRJ_FILE] = outFileName + '.prj'
+            results[self.PRJ_FILE] = outFileName + ".prj"
         else:
             results[self.PRJ_FILE] = None
 
-        with open(outFileName + outFileExt, 'w') as wld:
-            wld.write('%0.8f\n' % geotransform[1])
-            wld.write('%0.8f\n' % geotransform[4])
-            wld.write('%0.8f\n' % geotransform[2])
-            wld.write('%0.8f\n' % geotransform[5])
-            wld.write('%0.8f\n' % (geotransform[0]
-                                   + 0.5 * geotransform[1]
-                                   + 0.5 * geotransform[2]))
-            wld.write('%0.8f\n' % (geotransform[3]
-                                   + 0.5 * geotransform[4]
-                                   + 0.5 * geotransform[5]))
+        with open(outFileName + outFileExt, "w") as wld:
+            wld.write("%0.8f\n" % geotransform[1])
+            wld.write("%0.8f\n" % geotransform[4])
+            wld.write("%0.8f\n" % geotransform[2])
+            wld.write("%0.8f\n" % geotransform[5])
+            wld.write(
+                "%0.8f\n"
+                % (geotransform[0] + 0.5 * geotransform[1] + 0.5 * geotransform[2])
+            )
+            wld.write(
+                "%0.8f\n"
+                % (geotransform[3] + 0.5 * geotransform[4] + 0.5 * geotransform[5])
+            )
         results[self.WORLD_FILE] = outFileName + outFileExt
 
         return results

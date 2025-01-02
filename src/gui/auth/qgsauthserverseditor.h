@@ -35,7 +35,6 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     Q_OBJECT
 
   public:
-
     /**
      * Widget for editing authentication configurations directly in database
      * \param parent Parent Widget
@@ -64,10 +63,9 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     void btnGroupByOrg_toggled( bool checked );
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
+    void authMessageLog( const QString &message, const QString &authtag, Qgis::MessageLevel level );
 
   protected:
-
     void showEvent( QShowEvent *e ) override;
 
   private:
@@ -80,17 +78,11 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
 
     void setupSslConfigsTree();
 
-    void populateSslConfigsSection( QTreeWidgetItem *item,
-                                    const QList<QgsAuthConfigSslServer> &configs,
-                                    QgsAuthServersEditor::ConfigType conftype );
+    void populateSslConfigsSection( QTreeWidgetItem *item, const QList<QgsAuthConfigSslServer> &configs, QgsAuthServersEditor::ConfigType conftype );
 
-    void appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer> &configs,
-                                  QgsAuthServersEditor::ConfigType conftype,
-                                  QTreeWidgetItem *parent = nullptr );
+    void appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer> &configs, QgsAuthServersEditor::ConfigType conftype, QTreeWidgetItem *parent = nullptr );
 
-    void appendSslConfigsToItem( const QList<QgsAuthConfigSslServer> &configs,
-                                 QgsAuthServersEditor::ConfigType conftype,
-                                 QTreeWidgetItem *parent = nullptr );
+    void appendSslConfigsToItem( const QList<QgsAuthConfigSslServer> &configs, QgsAuthServersEditor::ConfigType conftype, QTreeWidgetItem *parent = nullptr );
 
     QgsMessageBar *messageBar();
     int messageTimeout();

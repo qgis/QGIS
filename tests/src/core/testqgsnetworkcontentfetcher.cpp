@@ -28,18 +28,18 @@ class TestQgsNetworkContentFetcher : public QObject
     TestQgsNetworkContentFetcher() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
-    void fetchEmptyUrl(); //test fetching blank url
-    void fetchBadUrl(); //test fetching bad url
+    void initTestCase();        // will be called before the first testfunction is executed.
+    void cleanupTestCase();     // will be called after the last testfunction was executed.
+    void init();                // will be called before each testfunction is executed.
+    void cleanup();             // will be called after every testfunction.
+    void fetchEmptyUrl();       //test fetching blank url
+    void fetchBadUrl();         //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
 
     void contentLoaded();
 
   private:
-    bool mLoaded =  false ;
+    bool mLoaded = false;
 };
 
 void TestQgsNetworkContentFetcher::initTestCase()
@@ -96,7 +96,7 @@ void TestQgsNetworkContentFetcher::fetchEncodedContent()
   QgsNetworkContentFetcher fetcher;
   //test fetching encoded content as string
   mLoaded = false;
-  fetcher.fetchContent( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' +  "encoded_html.html" ) );
+  fetcher.fetchContent( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' + "encoded_html.html" ) );
   connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
   while ( !mLoaded )
   {

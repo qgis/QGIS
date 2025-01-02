@@ -23,6 +23,7 @@
 /**
  * \ingroup core
  * \class QgsDartMeasurement
+ * \brief Emits dart measurements for display in CDash reports.
  */
 class CORE_EXPORT QgsDartMeasurement
 {
@@ -34,7 +35,6 @@ class CORE_EXPORT QgsDartMeasurement
       Integer
     };
 
-    //! Constructor for QgsDartMeasurement
     QgsDartMeasurement() = default;
 
     QgsDartMeasurement( const QString &name, Type type, const QString &value );

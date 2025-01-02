@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrasterbandcombobox.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ A combobox widget which displays the bands present in a raster layer.
 #include "qgsrasterbandcombobox.h"
 %End
   public:
-
     QgsRasterBandComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterBandComboBox.
@@ -92,5 +91,5 @@ Emitted when the currently selected band changes.
  *                                                                      *
  * src/gui/raster/qgsrasterbandcombobox.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

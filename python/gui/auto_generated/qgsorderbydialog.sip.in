@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsorderbydialog.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ This is a dialog to build and manage a list of order by clauses.
 #include "qgsorderbydialog.h"
 %End
   public:
-
     QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Create a new order by dialog. This helps building order by structures.
@@ -41,7 +40,6 @@ Gets the order by defined in the dialog
 %End
 
   protected:
-
     virtual bool eventFilter( QObject *obj, QEvent *e );
 
 
@@ -52,5 +50,5 @@ Gets the order by defined in the dialog
  *                                                                      *
  * src/gui/qgsorderbydialog.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

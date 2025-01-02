@@ -44,7 +44,8 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
 
   public:
 
-    static const int NoGroup = 9999;
+    static const int NoGroup = -1;
+    static const int UnorderedGroup = 0;
 
     //! Custom model roles
     // *INDENT-OFF*
@@ -62,7 +63,9 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
       ResultFilterPriority SIP_MONKEYPATCH_COMPAT_NAME(ResultFilterPriorityRole), //!< Result priority, used by QgsLocatorProxyModel for sorting roles.
       ResultScore SIP_MONKEYPATCH_COMPAT_NAME(ResultScoreRole), //!< Result match score, used by QgsLocatorProxyModel for sorting roles.
       ResultFilterName SIP_MONKEYPATCH_COMPAT_NAME(ResultFilterNameRole), //!< Associated filter name which created the result
-      ResultFilterGroupSorting SIP_MONKEYPATCH_COMPAT_NAME(ResultFilterGroupSortingRole), //!< Group results within the same filter results
+      ResultFilterGroupSorting SIP_MONKEYPATCH_COMPAT_NAME(ResultFilterGroupSortingRole), //!< Custom value for sorting \deprecated QGIS 3.40. No longer used.
+      ResultFilterGroupTitle, //!< Group title
+      ResultFilterGroupScore, //!< Group score
       ResultActions SIP_MONKEYPATCH_COMPAT_NAME(ResultActionsRole), //!< The actions to be shown for the given result in a context menu
     };
     Q_ENUM( CustomRole )
@@ -102,24 +105,35 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
 
   private:
 
-    enum ColumnCount
+    enum Column
     {
       Name = 0,
       Description
     };
 
+
+    // sorting is made on these values!
+    enum class EntryType : int
+    {
+      Filter = 0,
+      Group = 1,
+      Result = 2,
+    };
+
     struct Entry
     {
+      EntryType type = EntryType::Result;
       QgsLocatorResult result;
       QString filterTitle;
       QgsLocatorFilter *filter = nullptr;
       QString groupTitle = QString();
-      int groupSorting = 0;
+      double groupScore = UnorderedGroup;
     };
 
     QList<Entry> mResults;
     QSet<QString> mFoundResultsFromFilterNames;
-    QMap<QgsLocatorFilter *, QStringList> mFoundResultsFilterGroups;
+    // maps locator with pair of group title and group score
+    QMap<QgsLocatorFilter *, QList<std::pair<QString, double>>> mFoundResultsFilterGroups;
     bool mDeferredClear = false;
     QTimer mDeferredClearTimer;
 };

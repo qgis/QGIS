@@ -26,6 +26,7 @@
 #include <QUrl>
 
 #include "qgsmapsavedialog.h"
+#include "moc_qgsmapsavedialog.cpp"
 #include "qgsabstractgeopdfexporter.h"
 #include "qgsguiutils.h"
 #include "qgis.h"
@@ -47,9 +48,7 @@
 #include "qgsfileutils.h"
 #include "qgsannotationlayer.h"
 
-Q_GUI_EXPORT extern int qt_defaultDpiX();
-
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList<QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )
@@ -66,7 +65,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mSize = ms.outputSize();
   mDevicePixelRatio = ms.devicePixelRatio();
 
-  mResolutionSpinBox->setValue( static_cast< int >( std::round( mDpi ) ) );
+  mResolutionSpinBox->setValue( static_cast<int>( std::round( mDpi ) ) );
 
   mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
   mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
@@ -88,9 +87,9 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
-  connect( mResolutionSpinBox, &QSpinBox::editingFinished, this, [ = ] { updateDpi( mResolutionSpinBox->value() ); } );
-  connect( mOutputWidthSpinBox, &QSpinBox::editingFinished, this, [ = ] { updateOutputWidth( mOutputWidthSpinBox->value() );} );
-  connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [ = ] { updateOutputHeight( mOutputHeightSpinBox->value() );} );
+  connect( mResolutionSpinBox, &QSpinBox::editingFinished, this, [=] { updateDpi( mResolutionSpinBox->value() ); } );
+  connect( mOutputWidthSpinBox, &QSpinBox::editingFinished, this, [=] { updateOutputWidth( mOutputWidthSpinBox->value() ); } );
+  connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [=] { updateOutputHeight( mOutputHeightSpinBox->value() ); } );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
   connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsMapSaveDialog::lockChanged );
@@ -101,8 +100,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   {
     case Pdf:
     {
-      connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & )
-      {
+      connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & ) {
         QgsMessageViewer *viewer = new QgsMessageViewer( this );
         viewer->setWindowTitle( tr( "Advanced effects warning" ) );
         viewer->setMessageAsPlainText( mInfoDetails );
@@ -111,30 +109,31 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
       this->setWindowTitle( tr( "Save Map as PDF" ) );
 
-      mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast< int>( Qgis::TextRenderFormat::AlwaysOutlines ) );
-      mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysText ) );
+      mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast<int>( Qgis::TextRenderFormat::AlwaysOutlines ) );
+      mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast<int>( Qgis::TextRenderFormat::AlwaysText ) );
+      mTextRenderFormatComboBox->addItem( tr( "Prefer Exporting Text as Text Objects" ), static_cast<int>( Qgis::TextRenderFormat::PreferText ) );
 
-      const bool geoPdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
-      mGeoPDFGroupBox->setEnabled( geoPdfAvailable );
-      mGeoPDFGroupBox->setChecked( false );
-      if ( !geoPdfAvailable )
+      const bool geospatialPdfAvailable = QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable();
+      mGeospatialPDFGroupBox->setEnabled( geospatialPdfAvailable );
+      mGeospatialPDFGroupBox->setChecked( false );
+      if ( !geospatialPdfAvailable )
       {
-        mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
-        mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
+        mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 0 );
+        mGeospatialPdfUnavailableReason->setText( QgsAbstractGeospatialPdfExporter::geospatialPDFAvailabilityExplanation() );
         // avoid showing reason in disabled text color - we want it to stand out
-        QPalette p = mGeoPdfUnavailableReason->palette();
+        QPalette p = mGeospatialPdfUnavailableReason->palette();
         p.setColor( QPalette::Disabled, QPalette::WindowText, QPalette::WindowText );
-        mGeoPdfUnavailableReason->setPalette( p );
-        mGeoPDFOptionsStackedWidget->removeWidget( mGeoPDFOptionsStackedWidget->widget( 1 ) );
+        mGeospatialPdfUnavailableReason->setPalette( p );
+        mGeospatialPDFOptionsStackedWidget->removeWidget( mGeospatialPDFOptionsStackedWidget->widget( 1 ) );
       }
       else
       {
-        mGeoPDFOptionsStackedWidget->setCurrentIndex( 1 );
-        mGeoPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
-        mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
+        mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 1 );
+        mGeospatialPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
+        mGeospatialPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
       }
 
-      connect( mGeoPDFGroupBox, &QGroupBox::toggled, this, &QgsMapSaveDialog::updatePdfExportWarning );
+      connect( mGeospatialPDFGroupBox, &QGroupBox::toggled, this, &QgsMapSaveDialog::updatePdfExportWarning );
       updatePdfExportWarning();
       break;
     }
@@ -142,7 +141,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     case Image:
     {
       mExportMetadataCheckBox->hide();
-      mGeoPDFGroupBox->hide();
+      mGeospatialPDFGroupBox->hide();
       mAdvancedPdfSettings->hide();
       mTextExportLabel->hide();
       QPushButton *button = new QPushButton( tr( "Copy to Clipboard" ) );
@@ -233,7 +232,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 
     QgsMapSettings ms = mMapCanvas->mapSettings();
     ms.setRotation( 0 );
-    mDpi = static_cast< int>( std::round( ms.outputDpi() ) ) ;
+    mDpi = static_cast<int>( std::round( ms.outputDpi() ) );
     mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
     mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
 
@@ -333,7 +332,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   switch ( mDialogType )
   {
     case Pdf:
-      mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true ); // hardcode antialiasing when saving as PDF
+      mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true );               // hardcode antialiasing when saving as PDF
       mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true ); // hardcode antialiasing when saving as PDF
       break;
 
@@ -356,7 +355,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  QList< QgsMapLayer * > layers = mMapCanvas->layers();
+  QList<QgsMapLayer *> layers = mMapCanvas->layers();
   if ( !QgsProject::instance()->mainAnnotationLayer()->isEmpty() )
   {
     layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
@@ -426,8 +425,7 @@ void QgsMapSaveDialog::copyToClipboard()
     mapRendererTask->addDecorations( mDecorations );
   }
 
-  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
-  {
+  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [=] {
     QApplication::clipboard()->setImage( *img, QClipboard::Clipboard );
     QApplication::restoreOverrideCursor();
     QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully copied map to clipboard" ) );
@@ -436,8 +434,7 @@ void QgsMapSaveDialog::copyToClipboard()
     delete img;
     setEnabled( true );
   } );
-  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int )
-  {
+  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [=]( int ) {
     QApplication::restoreOverrideCursor();
     QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not copy the map to clipboard" ) );
 
@@ -458,7 +455,7 @@ void QgsMapSaveDialog::onAccepted()
   {
     case Image:
     {
-      const QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
+      const QPair<QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
       if ( !fileNameAndFilter.first.isEmpty() )
       {
         QgsMapSettings ms = QgsMapSettings();
@@ -478,13 +475,10 @@ void QgsMapSaveDialog::onAccepted()
 
         mapRendererTask->setSaveWorldFile( saveWorldFile() );
 
-        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
-        {
-          QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" )
-              .arg( QUrl::fromLocalFile( fileNameAndFilter.first ).toString(), QDir::toNativeSeparators( fileNameAndFilter.first ) ) );
+        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [=] {
+          QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNameAndFilter.first ).toString(), QDir::toNativeSeparators( fileNameAndFilter.first ) ) );
         } );
-        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int error )
-        {
+        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [=]( int error ) {
           switch ( error )
           {
             case QgsMapRendererTask::ImageAllocationFail:
@@ -525,45 +519,45 @@ void QgsMapSaveDialog::onAccepted()
         if ( mSimplifyGeometriesCheckbox->isChecked() )
         {
           QgsVectorSimplifyMethod simplifyMethod;
-          simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+          simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::GeometrySimplification );
           simplifyMethod.setForceLocalOptimization( true );
           // we use SnappedToGridGlobal, because it avoids gaps and slivers between previously adjacent polygons
-          simplifyMethod.setSimplifyAlgorithm( QgsVectorSimplifyMethod::SnappedToGridGlobal );
+          simplifyMethod.setSimplifyAlgorithm( Qgis::VectorSimplificationAlgorithm::SnappedToGridGlobal );
           simplifyMethod.setThreshold( 0.1f ); // (pixels). We are quite conservative here. This could possibly be bumped all the way up to 1. But let's play it safe.
           ms.setSimplifyMethod( simplifyMethod );
         }
 
-        ms.setTextRenderFormat( static_cast< Qgis::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
+        ms.setTextRenderFormat( static_cast<Qgis::TextRenderFormat>( mTextRenderFormatComboBox->currentData().toInt() ) );
 
-        QgsAbstractGeoPdfExporter::ExportDetails geoPdfExportDetails;
+        QgsAbstractGeospatialPdfExporter::ExportDetails geospatialPdfExportDetails;
         if ( mExportMetadataCheckBox->isChecked() )
         {
-          // These details will be used on non-GeoPDF exports is the export metadata checkbox is checked
-          geoPdfExportDetails.author = QgsProject::instance()->metadata().author();
-          geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-          geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-          geoPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
-          geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
-          geoPdfExportDetails.title = QgsProject::instance()->metadata().title();
-          geoPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+          // These details will be used on non-Geospatial PDF exports is the export metadata checkbox is checked
+          geospatialPdfExportDetails.author = QgsProject::instance()->metadata().author();
+          geospatialPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+          geospatialPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+          geospatialPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
+          geospatialPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
+          geospatialPdfExportDetails.title = QgsProject::instance()->metadata().title();
+          geospatialPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
         }
 
-        if ( mGeoPDFGroupBox->isChecked() )
+        if ( mGeospatialPDFGroupBox->isChecked() )
         {
-          if ( mGeoPdfFormatComboBox->currentIndex() == 0 )
+          if ( mGeospatialPdfFormatComboBox->currentIndex() == 0 )
           {
-            geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
-            geoPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = false;
+            geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
+            geospatialPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = false;
           }
           else
           {
-            geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = false;
-            geoPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = true;
+            geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = false;
+            geospatialPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = true;
           }
 
-          geoPdfExportDetails.includeFeatures = mExportGeoPdfFeaturesCheckBox->isChecked();
+          geospatialPdfExportDetails.includeFeatures = mExportGeospatialPdfFeaturesCheckBox->isChecked();
         }
-        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), QgsTask::CanCancel, mGeoPDFGroupBox->isChecked(), geoPdfExportDetails );
+        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), QgsTask::CanCancel, mGeospatialPDFGroupBox->isChecked(), geospatialPdfExportDetails );
 
         if ( drawAnnotations() )
         {
@@ -582,13 +576,10 @@ void QgsMapSaveDialog::onAccepted()
           mapRendererTask->setExportMetadata( exportMetadata() );
         }
 
-        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
-        {
-          QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" )
-              .arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [=] {
+          QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
         } );
-        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
-        {
+        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [=]( int ) {
           QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF" ) );
         } );
 
@@ -601,11 +592,10 @@ void QgsMapSaveDialog::onAccepted()
 
 void QgsMapSaveDialog::updatePdfExportWarning()
 {
-  const QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
+  const QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeospatialPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
   if ( !layers.isEmpty() )
   {
-    mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
-                     QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
+    mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg( QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
     mInfo->setText( tr( "%1A number of layers%2 use advanced effects, rasterizing map is recommended for proper rendering." ).arg( QStringLiteral( "<a href='#'>" ), QStringLiteral( "</a>" ) ) );
     mSaveAsRaster->setChecked( true );
   }

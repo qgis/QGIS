@@ -46,19 +46,16 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a new QgsNewDatabaseTableNameWidget
      *
-     * \param browserModel an existing browser model (typically from app), if NULL an instance will be created
+     * \param browserModel an existing browser model (typically from app), if NULLPTR an instance will be created
      * \param providersFilter optional white list of data provider keys that should be
      *        shown in the widget, if not specified all providers data items with database
      *        capabilities will be shown
      * \param parent optional parent for this widget
      */
-    explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = nullptr,
-                                            const QStringList &providersFilter = QStringList(),
-                                            QWidget *parent = nullptr );
+    explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = nullptr, const QStringList &providersFilter = QStringList(), QWidget *parent = nullptr );
 
     /**
      * Sets whether the optional "Ok"/accept button should be visible.
@@ -145,7 +142,6 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
     void accepted();
 
   private:
-
     void updateUri();
     void validate();
     QStringList tableNames();
@@ -170,7 +166,6 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
 
     // For testing:
     friend class TestQgsNewDatabaseTableNameWidget;
-
 };
 
 
@@ -187,24 +182,21 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsNewDatabaseTableNameDialog: public QDialog
+class GUI_EXPORT QgsNewDatabaseTableNameDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a new QgsNewDatabaseTableNameDialog
      *
-     * \param browserModel an existing browser model (typically from app), if NULL an instance will be created
+     * \param browserModel an existing browser model (typically from app), if NULLPTR an instance will be created
      * \param providersFilter optional white list of data provider keys that should be
      *        shown in the widget, if not specified all providers data items with database
      *        capabilities will be shown
      * \param parent optional parent for this widget
      */
-    explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = nullptr,
-                                            const QStringList &providersFilter = QStringList(),
-                                            QWidget *parent = nullptr );
+    explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = nullptr, const QStringList &providersFilter = QStringList(), QWidget *parent = nullptr );
 
     /**
      * Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
@@ -238,8 +230,6 @@ class GUI_EXPORT QgsNewDatabaseTableNameDialog: public QDialog
     QString validationError() const;
 
   private:
-
     QgsNewDatabaseTableNameWidget *mWidget = nullptr;
-
 };
 #endif // QGSNEWDATABASETABLENAMEWIDGET_H

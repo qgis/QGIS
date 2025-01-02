@@ -31,9 +31,6 @@ class CORE_EXPORT QgsRasterIdentifyResult
 {
   public:
 
-    /**
-     * Constructor for QgsRasterIdentifyResult.
-     */
     QgsRasterIdentifyResult() = default;
 
     /**

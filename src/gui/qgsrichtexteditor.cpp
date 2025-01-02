@@ -29,6 +29,7 @@
 ****************************************************************************/
 
 #include "qgsrichtexteditor.h"
+#include "moc_qgsrichtexteditor.cpp"
 #include "qgsguiutils.h"
 #include "qgscolorbutton.h"
 #include "qgscodeeditor.h"
@@ -68,22 +69,6 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 
   connect( mTextEdit, &QTextEdit::currentCharFormatChanged, this, &QgsRichTextEditor::slotCurrentCharFormatChanged );
   connect( mTextEdit, &QTextEdit::cursorPositionChanged, this, &QgsRichTextEditor::slotCursorPositionChanged );
-
-  // paragraph formatting
-  mParagraphStyleCombo = new QComboBox();
-  mParagraphStyleCombo->addItem( tr( "Standard" ), ParagraphStandard );
-  mParagraphStyleCombo->addItem( tr( "Heading 1" ), ParagraphHeading1 );
-  mParagraphStyleCombo->addItem( tr( "Heading 2" ), ParagraphHeading2 );
-  mParagraphStyleCombo->addItem( tr( "Heading 3" ), ParagraphHeading3 );
-  mParagraphStyleCombo->addItem( tr( "Heading 4" ), ParagraphHeading4 );
-  mParagraphStyleCombo->addItem( tr( "Monospace" ), ParagraphMonospace );
-
-  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
-  mToolBar->insertWidget( mToolBar->actions().at( 0 ), mParagraphStyleCombo );
-
-  mFontSizeCombo = new QComboBox();
-  mFontSizeCombo->setEditable( true );
-  mToolBar->insertWidget( mActionBold, mFontSizeCombo );
 
   // undo & redo
   mActionUndo->setShortcut( QKeySequence::Undo );
@@ -131,34 +116,6 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( mActionUnderline, &QAction::triggered, this, &QgsRichTextEditor::textUnderline );
   connect( mActionStrikeOut, &QAction::triggered, this, &QgsRichTextEditor::textStrikeout );
 
-  QAction *removeFormat = new QAction( tr( "Remove Character Formatting" ), this );
-  removeFormat->setShortcut( QKeySequence( QStringLiteral( "CTRL+M" ) ) );
-  connect( removeFormat, &QAction::triggered, this, &QgsRichTextEditor::textRemoveFormat );
-  mTextEdit->addAction( removeFormat );
-
-  QAction *removeAllFormat = new QAction( tr( "Remove all Formatting" ), this );
-  connect( removeAllFormat, &QAction::triggered, this, &QgsRichTextEditor::textRemoveAllFormat );
-  mTextEdit->addAction( removeAllFormat );
-
-  QAction *clearText = new QAction( tr( "Clear all Content" ), this );
-  connect( clearText, &QAction::triggered, this, &QgsRichTextEditor::clearSource );
-  mTextEdit->addAction( clearText );
-
-  QMenu *menu = new QMenu( this );
-  menu->addAction( removeAllFormat );
-  menu->addAction( removeFormat );
-  menu->addAction( clearText );
-
-  QToolButton *menuButton = new QToolButton();
-  menuButton->setMenu( menu );
-  menuButton->setPopupMode( QToolButton::InstantPopup );
-  menuButton->setToolTip( tr( "Advanced Options" ) );
-  menuButton->setText( QStringLiteral( "…" ) );
-  QWidget *spacer = new QWidget();
-  spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  mToolBar->addWidget( spacer );
-  mToolBar->addWidget( menuButton );
-
   // lists
   mActionBulletList->setShortcut( QKeySequence( QStringLiteral( "CTRL+-" ) ) );
   mActionOrderedList->setShortcut( QKeySequence( QStringLiteral( "CTRL+=" ) ) );
@@ -171,12 +128,77 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( mActionIncreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::increaseIndentation );
   connect( mActionDecreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::decreaseIndentation );
 
+  connect( mActionEditSource, &QAction::toggled, this, &QgsRichTextEditor::editSource );
+
+  // images
+  connect( mActionInsertImage, &QAction::triggered, this, &QgsRichTextEditor::insertImage );
+
+  setMode( Mode::QTextDocument );
+
+  fontChanged( mTextEdit->font() );
+
+  connect( mTextEdit, &QTextEdit::textChanged, this, &QgsRichTextEditor::textChanged );
+  connect( mSourceEdit, &QgsCodeEditorHTML::textChanged, this, &QgsRichTextEditor::textChanged );
+}
+
+void QgsRichTextEditor::setMode( Mode mode )
+{
+  mMode = mode;
+
+  delete mFontSizeCombo;
+  mFontSizeCombo = nullptr;
+  delete mParagraphStyleCombo;
+  mParagraphStyleCombo = nullptr;
+  delete mForeColorButton;
+  mForeColorButton = nullptr;
+  delete mBackColorButton;
+  mBackColorButton = nullptr;
+
+  mToolBar->clear();
+
+  // paragraph formatting
+  mParagraphStyleCombo = new QComboBox();
+  mParagraphStyleCombo->addItem( tr( "Standard" ), ParagraphStandard );
+  mParagraphStyleCombo->addItem( tr( "Heading 1" ), ParagraphHeading1 );
+  mParagraphStyleCombo->addItem( tr( "Heading 2" ), ParagraphHeading2 );
+  mParagraphStyleCombo->addItem( tr( "Heading 3" ), ParagraphHeading3 );
+  mParagraphStyleCombo->addItem( tr( "Heading 4" ), ParagraphHeading4 );
+  mParagraphStyleCombo->addItem( tr( "Monospace" ), ParagraphMonospace );
+
+  connect( mParagraphStyleCombo, qOverload<int>( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
+  if ( mode == Mode::QTextDocument )
+  {
+    mToolBar->addWidget( mParagraphStyleCombo );
+  }
+
+  mToolBar->addAction( mActionUndo );
+  mToolBar->addAction( mActionRedo );
+  mToolBar->addAction( mActionCut );
+  mToolBar->addAction( mActionCopy );
+  mToolBar->addAction( mActionPaste );
+
   // font size
-  const QList< int > sizes = QFontDatabase::standardSizes();
+  mFontSizeCombo = new QComboBox();
+  mFontSizeCombo->setEditable( true );
+
+  const QList<int> sizes = QFontDatabase::standardSizes();
   for ( const int size : sizes )
     mFontSizeCombo->addItem( QString::number( size ), size );
 
   mFontSizeCombo->setCurrentIndex( mFontSizeCombo->findData( QApplication::font().pointSize() ) );
+  connect( mFontSizeCombo, &QComboBox::textActivated, this, &QgsRichTextEditor::textSize );
+
+  if ( mode != Mode::PlainText )
+  {
+    mToolBar->addSeparator();
+    mToolBar->addWidget( mFontSizeCombo );
+    mToolBar->addAction( mActionBold );
+    mToolBar->addAction( mActionItalic );
+    mToolBar->addAction( mActionUnderline );
+    mToolBar->addAction( mActionStrikeOut );
+
+    mToolBar->addSeparator();
+  }
 
   // text foreground color
   mForeColorButton = new QgsColorButton();
@@ -188,10 +210,12 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   mForeColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
   mForeColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
-  QAction *listSeparator = mToolBar->insertSeparator( mActionBulletList );
-
   connect( mForeColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textFgColor );
-  mToolBar->insertWidget( listSeparator, mForeColorButton );
+
+  if ( mode != Mode::PlainText )
+  {
+    mToolBar->addWidget( mForeColorButton );
+  }
 
   // text background color
   mBackColorButton = new QgsColorButton();
@@ -203,18 +227,59 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   mBackColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
   mBackColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
   connect( mBackColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textBgColor );
-  mToolBar->insertWidget( listSeparator, mBackColorButton );
 
-  connect( mActionEditSource, &QAction::toggled, this, &QgsRichTextEditor::editSource );
+  if ( mode == Mode::QTextDocument )
+  {
+    mToolBar->addWidget( mBackColorButton );
+    mToolBar->addAction( mActionBulletList );
+    mToolBar->addAction( mActionOrderedList );
+    mToolBar->addAction( mActionDecreaseIndent );
+    mToolBar->addAction( mActionIncreaseIndent );
+    mToolBar->addSeparator();
+    mToolBar->addAction( mActionInsertLink );
+    mToolBar->addAction( mActionInsertImage );
+  }
+  if ( mode != Mode::PlainText )
+  {
+    mToolBar->addAction( mActionEditSource );
+  }
 
-  // images
-  connect( mActionInsertImage, &QAction::triggered, this, &QgsRichTextEditor::insertImage );
-  connect( mFontSizeCombo, &QComboBox::textActivated, this, &QgsRichTextEditor::textSize );
+  QMenu *menu = new QMenu( this );
+  if ( mode != Mode::PlainText )
+  {
+    QAction *removeFormat = new QAction( tr( "Remove Character Formatting" ), menu );
+    removeFormat->setShortcut( QKeySequence( QStringLiteral( "CTRL+M" ) ) );
+    connect( removeFormat, &QAction::triggered, this, &QgsRichTextEditor::textRemoveFormat );
+    mTextEdit->addAction( removeFormat );
 
-  fontChanged( mTextEdit->font() );
+    QAction *removeAllFormat = new QAction( tr( "Remove all Formatting" ), menu );
+    connect( removeAllFormat, &QAction::triggered, this, &QgsRichTextEditor::textRemoveAllFormat );
+    mTextEdit->addAction( removeAllFormat );
+    menu->addAction( removeAllFormat );
+    menu->addAction( removeFormat );
+  }
 
-  connect( mTextEdit, &QTextEdit::textChanged, this, &QgsRichTextEditor::textChanged );
-  connect( mSourceEdit, &QgsCodeEditorHTML::textChanged, this, &QgsRichTextEditor::textChanged );
+  QAction *clearText = new QAction( tr( "Clear all Content" ), menu );
+  connect( clearText, &QAction::triggered, this, &QgsRichTextEditor::clearSource );
+  mTextEdit->addAction( clearText );
+
+  menu->addAction( clearText );
+
+  QToolButton *menuButton = new QToolButton( mToolBar );
+  menuButton->setMenu( menu );
+  menuButton->setPopupMode( QToolButton::InstantPopup );
+  menuButton->setToolTip( tr( "Advanced Options" ) );
+  menuButton->setText( QStringLiteral( "…" ) );
+
+  QWidget *spacer = new QWidget();
+  spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  mToolBar->addWidget( spacer );
+  mToolBar->addWidget( menuButton );
+
+  if ( mode == Mode::PlainText )
+  {
+    editSource( false );
+  }
 }
 
 QString QgsRichTextEditor::toPlainText() const
@@ -228,6 +293,9 @@ QString QgsRichTextEditor::toPlainText() const
       // go via text edit to remove html from text...
       mTextEdit->setText( mSourceEdit->text() );
       return mTextEdit->toPlainText();
+
+    default:
+      break;
   }
   return QString();
 }
@@ -241,6 +309,9 @@ QString QgsRichTextEditor::toHtml() const
 
     case 1:
       return mSourceEdit->text();
+
+    default:
+      break;
   }
   return QString();
 }
@@ -369,10 +440,7 @@ void QgsRichTextEditor::textLink( bool checked )
   {
     const QString url = mTextEdit->currentCharFormat().anchorHref();
     bool ok;
-    const QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ),
-                           tr( "Link URL:" ), QLineEdit::Normal,
-                           url,
-                           &ok );
+    const QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ), tr( "Link URL:" ), QLineEdit::Normal, url, &ok );
     if ( ok )
     {
       format.setAnchor( true );
@@ -412,7 +480,7 @@ void QgsRichTextEditor::textStyle( int )
   cursor.setCharFormat( format );
   mTextEdit->setCurrentCharFormat( format );
 
-  const ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
+  const ParagraphItems style = static_cast<ParagraphItems>( mParagraphStyleCombo->currentData().toInt() );
 
   switch ( style )
   {
@@ -536,8 +604,7 @@ void QgsRichTextEditor::mergeFormatOnWordOrSelection( const QTextCharFormat &for
 void QgsRichTextEditor::slotCursorPositionChanged()
 {
   QTextList *l = mTextEdit->textCursor().currentList();
-  if ( mLastBlockList && ( l == mLastBlockList || ( l != nullptr && mLastBlockList != nullptr
-                           && l->format().style() == mLastBlockList->format().style() ) ) )
+  if ( mLastBlockList && ( l == mLastBlockList || ( l && mLastBlockList && l->format().style() == mLastBlockList->format().style() ) ) )
   {
     return;
   }
@@ -702,10 +769,7 @@ void QgsRichTextEditor::insertImage()
 {
   const QSettings s;
   const QString attdir = s.value( QStringLiteral( "general/filedialog-path" ) ).toString();
-  const QString file = QFileDialog::getOpenFileName( this,
-                       tr( "Select an image" ),
-                       attdir,
-                       tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
+  const QString file = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
   if ( file.isEmpty() )
     return;
 

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsservicemodule.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,16 +26,10 @@ QGS_ServiceModule_Init() entry point.
 #include "qgsservicemodule.h"
 %End
   public:
-
     QgsServiceModule();
-%Docstring
-Default constructor for QgsServiceModule.
-%End
-
     virtual ~QgsServiceModule();
 
-    virtual void registerSelf( QgsServiceRegistry &registry,
-                               QgsServerInterface *serverIface = 0 ) = 0;
+    virtual void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface = 0 ) = 0;
 %Docstring
 Asks the module to register all provided services.
 
@@ -49,5 +43,5 @@ Asks the module to register all provided services.
  *                                                                      *
  * src/server/qgsservicemodule.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstableeditordialog.h"
+#include "moc_qgstableeditordialog.cpp"
 #include "qgstableeditorwidget.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
@@ -21,6 +22,11 @@
 #include "qgspanelwidgetstack.h"
 #include "qgstableeditorformattingwidget.h"
 #include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutitemmanualtable.h"
+#include "qgslayouttablecolumn.h"
 
 #include <QClipboard>
 #include <QMessageBox>
@@ -44,7 +50,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   mMessageBar = new QgsMessageBar( centralWidget() );
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-  static_cast< QGridLayout * >( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
+  static_cast<QGridLayout *>( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
 
   mTableWidget = new QgsTableEditorWidget();
   mTableWidget->setContentsMargins( 0, 0, 0, 0 );
@@ -55,8 +61,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   mTableWidget->setFocus();
   mTableWidget->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() ) );
 
-  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [ = ]
-  {
+  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [=] {
     if ( !mBlockSignals )
       emit tableChanged();
   } );
@@ -81,20 +86,17 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::cellPropertyChanged, mTableWidget, &QgsTableEditorWidget::setSelectionCellProperty );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [ = ]
-  {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [=] {
     mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
   } );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [ = ]
-  {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [=] {
     mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
   } );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::rowHeightChanged, mTableWidget, &QgsTableEditorWidget::setSelectionRowHeight );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::columnWidthChanged, mTableWidget, &QgsTableEditorWidget::setSelectionColumnWidth );
 
-  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [ = ]
-  {
+  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [=] {
     mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
@@ -104,16 +106,16 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setVerticalAlignment( mTableWidget->selectionVerticalAlignment() );
     mFormattingWidget->setCellProperty( mTableWidget->selectionCellProperty() );
 
-    updateActionNamesFromSelection();
+    updateActionsFromSelection();
 
     mFormattingWidget->setEnabled( !mTableWidget->isHeaderCellSelected() );
   } );
-  updateActionNamesFromSelection();
+  updateActionsFromSelection();
 
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
 
   mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() );
-  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [ = ]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
+  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [=]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
 
   connect( mActionImportFromClipboard, &QAction::triggered, this, &QgsTableEditorDialog::setTableContentsFromClipboard );
   connect( mActionClose, &QAction::triggered, this, &QMainWindow::close );
@@ -121,14 +123,15 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mActionInsertRowsBelow, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertRowsBelow );
   connect( mActionInsertColumnsBefore, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertColumnsBefore );
   connect( mActionInsertColumnsAfter, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertColumnsAfter );
+  connect( mActionMergeSelected, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::mergeSelectedCells );
+  connect( mActionSplitSelected, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::splitSelectedCells );
   connect( mActionDeleteRows, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::deleteRows );
   connect( mActionDeleteColumns, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::deleteColumns );
   connect( mActionSelectRow, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandRowSelection );
   connect( mActionSelectColumn, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandColumnSelection );
   connect( mActionSelectAll, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectAll );
   connect( mActionClear, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::clearSelectedCells );
-  connect( mActionIncludeHeader, &QAction::toggled, this, [ = ]( bool checked )
-  {
+  connect( mActionIncludeHeader, &QAction::toggled, this, [=]( bool checked ) {
     mTableWidget->setIncludeTableHeader( checked );
     emit includeHeaderChanged( checked );
   } );
@@ -150,13 +153,68 @@ void QgsTableEditorDialog::closeEvent( QCloseEvent * )
   settings.setValue( QStringLiteral( "LayoutDesigner/tableEditorState" ), saveState(), QgsSettings::App );
 }
 
+QgsMapLayer *QgsTableEditorDialog::layer() const
+{
+  return mLayer.data();
+}
+
+void QgsTableEditorDialog::setLayer( QgsMapLayer *layer )
+{
+  if ( layer != mLayer )
+  {
+    mLayer = layer;
+    mFormattingWidget->setLayer( layer );
+  }
+}
+
+QgsLayoutItemManualTable *QgsTableEditorDialog::table() const
+{
+  return mTable;
+}
+
+void QgsTableEditorDialog::setTable( QgsLayoutItemManualTable *table )
+{
+  if ( mTable == table )
+    return;
+
+  mTable = table;
+
+  if ( QgsLayout *layout = table->layout() )
+  {
+    setLayer( layout->reportContext().layer() );
+  }
+  registerExpressionContextGenerator( table );
+
+  setIncludeTableHeader( table->includeTableHeader() );
+  setTableContents( table->tableContents() );
+
+  int row = 0;
+  const QList<double> rowHeights = table->rowHeights();
+  for ( const double height : rowHeights )
+  {
+    setTableRowHeight( row, height );
+    row++;
+  }
+  int col = 0;
+  const QList<double> columnWidths = table->columnWidths();
+  QVariantList headers;
+  headers.reserve( columnWidths.size() );
+  for ( const double width : columnWidths )
+  {
+    setTableColumnWidth( col, width );
+    headers << ( col < table->headers().count() ? table->headers().value( col ).heading() : QVariant() );
+    col++;
+  }
+  setTableHeaders( headers );
+}
+
+
 bool QgsTableEditorDialog::setTableContentsFromClipboard()
 {
   if ( QApplication::clipboard()->text().isEmpty() )
     return false;
 
-  if ( QMessageBox::question( this, tr( "Import Content From Clipboard" ),
-                              tr( "Importing content from clipboard will overwrite current table content. Are you sure?" ) ) != QMessageBox::Yes )
+  if ( QMessageBox::question( this, tr( "Import Content From Clipboard" ), tr( "Importing content from clipboard will overwrite current table content. Are you sure?" ) ) != QMessageBox::Yes )
     return false;
 
   QgsTableContents contents;
@@ -245,7 +303,7 @@ void QgsTableEditorDialog::registerExpressionContextGenerator( QgsExpressionCont
   mFormattingWidget->registerExpressionContextGenerator( generator );
 }
 
-void QgsTableEditorDialog::updateActionNamesFromSelection()
+void QgsTableEditorDialog::updateActionsFromSelection()
 {
   const int rowCount = mTableWidget->rowsAssociatedWithSelection().size();
   const int columnCount = mTableWidget->columnsAssociatedWithSelection().size();
@@ -301,6 +359,9 @@ void QgsTableEditorDialog::updateActionNamesFromSelection()
     mActionDeleteColumns->setText( tr( "Delete %n Column(s)", nullptr, columnCount ) );
     mActionSelectColumn->setText( tr( "Select %n Column(s)", nullptr, columnCount ) );
   }
+
+  mActionMergeSelected->setEnabled( mTableWidget->canMergeSelection() );
+  mActionSplitSelected->setEnabled( mTableWidget->canSplitSelection() );
 }
 
 #include "qgstableeditordialog.h"

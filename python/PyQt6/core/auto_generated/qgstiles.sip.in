@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgstiles.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -13,7 +13,9 @@
 class QgsTileXYZ
 {
 %Docstring(signature="appended")
-Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
+Stores coordinates of a tile in a tile matrix set.
+
+Tile matrix is identified
 by the :py:func:`~zoomLevel`, and the position within tile matrix is given by :py:func:`~column`
 and :py:func:`~row`.
 
@@ -105,7 +107,7 @@ Returns index of the last row in the range
 class QgsTileMatrix
 {
 %Docstring(signature="appended")
-Defines a matrix of tiles for a single zoom level: it is defined by its size (width * \brief height)
+Defines a matrix of tiles for a single zoom level: it is defined by its size (width * height)
 and map extent that it covers.
 
 Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile has [0,0] coordinate
@@ -400,5 +402,5 @@ Returns a list of tiles in the given tile range.
  *                                                                      *
  * src/core/qgstiles.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

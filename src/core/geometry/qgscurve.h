@@ -35,9 +35,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 {
   public:
 
-    /**
-     * Constructor for QgsCurve.
-     */
     QgsCurve() = default;
 
     /**
@@ -345,7 +342,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      */
     bool snapToGridPrivate( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
                             const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
-                            QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const;
+                            QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM,
+                            bool removeRedundantPoints ) const;
 #endif
 
     /**

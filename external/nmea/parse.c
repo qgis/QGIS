@@ -237,29 +237,21 @@ int nmea_parse_GPGGA( const char *buff, int buff_sz, nmeaGPGGA *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  char type;
-
-  if ( 15 != nmea_scanf( buff, buff_sz,
-                         "$G%CGGA,%s,%f,%C,%f,%C,%d,%d,%f,%f,%C,%f,%C,%f,%d*",
-                         &( type ),
+  if ( 16 != nmea_scanf( buff, buff_sz,
+                         "$%C%CGGA,%s,%f,%C,%f,%C,%d,%d,%f,%f,%C,%f,%C,%f,%d*",
+                         &( pack->talkerId[0] ), &( pack->talkerId[1] ),
                          &( time_buff[0] ),
                          &( pack->lat ), &( pack->ns ), &( pack->lon ), &( pack->ew ),
                          &( pack->sig ), &( pack->satinuse ), &( pack->HDOP ), &( pack->elv ), &( pack->elv_units ),
                          &( pack->diff ), &( pack->diff_units ), &( pack->dgps_age ), &( pack->dgps_sid ) ) )
   {
-    nmea_error( "G?GGA parse error!" );
-    return 0;
-  }
-
-  if ( type != 'P' && type != 'N' )
-  {
-    nmea_error( "G?GGA invalid type " );
+    nmea_error( "GGA parse error!" );
     return 0;
   }
 
   if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )
   {
-    nmea_error( "GPGGA time parse error!" );
+    nmea_error( "GGA time parse error!" );
     return 0;
   }
 
@@ -283,28 +275,20 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  char type;
-
-  if ( 9 != nmea_scanf( buff, buff_sz,
-                        "$G%CGST,%s,%f,%f,%f,%f,%f,%f,%f*",
-                        &( type ),
-                        &( time_buff[0] ),
-                        &( pack->rms_pr ), &( pack->err_major ), &( pack->err_minor ), &( pack->err_ori ),
-                        &( pack->sig_lat ), &( pack->sig_lon ), &( pack->sig_alt ) ) )
+  if ( 10 != nmea_scanf( buff, buff_sz,
+                         "$%C%CGST,%s,%f,%f,%f,%f,%f,%f,%f*",
+                         &( pack->talkerId[0] ), &( pack->talkerId[1] ),
+                         &( time_buff[0] ),
+                         &( pack->rms_pr ), &( pack->err_major ), &( pack->err_minor ), &( pack->err_ori ),
+                         &( pack->sig_lat ), &( pack->sig_lon ), &( pack->sig_alt ) ) )
   {
-    nmea_error( "G?GST parse error!" );
-    return 0;
-  }
-
-  if ( type != 'P' && type != 'N' )
-  {
-    nmea_error( "G?GST invalid type " );
+    nmea_error( "GST parse error!" );
     return 0;
   }
 
   if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )
   {
-    nmea_error( "G?GST time parse error!" );
+    nmea_error( "GST time parse error!" );
     return 0;
   }
 
@@ -326,20 +310,15 @@ int nmea_parse_GPGSA( const char *buff, int buff_sz, nmeaGPGSA *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  if ( 18 != nmea_scanf( buff, buff_sz,
-                         "$G%CGSA,%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*",
-                         &( pack->pack_type ), &( pack->fix_mode ), &( pack->fix_type ),
+  if ( 19 != nmea_scanf( buff, buff_sz,
+                         "$%C%CGSA,%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*",
+                         &( pack->talkerId[0] ), &( pack->talkerId[1] ),
+                         &( pack->fix_mode ), &( pack->fix_type ),
                          &( pack->sat_prn[0] ), &( pack->sat_prn[1] ), &( pack->sat_prn[2] ), &( pack->sat_prn[3] ), &( pack->sat_prn[4] ), &( pack->sat_prn[5] ),
                          &( pack->sat_prn[6] ), &( pack->sat_prn[7] ), &( pack->sat_prn[8] ), &( pack->sat_prn[9] ), &( pack->sat_prn[10] ), &( pack->sat_prn[11] ),
                          &( pack->PDOP ), &( pack->HDOP ), &( pack->VDOP ) ) )
   {
-    nmea_error( "G?GSA parse error!" );
-    return 0;
-  }
-
-  if ( pack->pack_type != 'P' && pack->pack_type != 'N' && pack->pack_type != 'L' )
-  {
-    nmea_error( "G?GSA invalid type " );
+    nmea_error( "GSA parse error!" );
     return 0;
   }
 
@@ -364,12 +343,12 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nmea_trace_buff( buff, buff_sz );
 
   nsen = nmea_scanf( buff, buff_sz,
-                     "$G%CGSV,%d,%d,%d,"
+                     "$%C%CGSV,%d,%d,%d,"
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d*",
-                     &( pack->pack_type ),
+                     &( pack->talkerId[0] ), &( pack->talkerId[1] ),
                      &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
                      &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
                      &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
@@ -380,15 +359,9 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nsat = ( nsat + NMEA_SATINPACK > pack->sat_count ) ? pack->sat_count - nsat : NMEA_SATINPACK;
   nsat = nsat * 4 + 3 /* first three sentence`s */;
 
-  if ( nsen - 1 < nsat || nsen - 1 > ( NMEA_SATINPACK * 4 + 3 ) )
+  if ( nsen - 2 < nsat || nsen - 2 > ( NMEA_SATINPACK * 4 + 3 ) )
   {
-    nmea_error( "G?GSV parse error!" );
-    return 0;
-  }
-
-  if ( pack->pack_type != 'P' && pack->pack_type != 'N' && pack->pack_type != 'L' && pack->pack_type != 'A' && pack->pack_type != 'B' && pack->pack_type != 'Q' )
-  {
-    nmea_error( "G?GSV invalid type " );
+    nmea_error( "GSV parse error!" );
     return 0;
   }
 
@@ -405,7 +378,6 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
 int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
 {
   int nsen;
-  char type;
   char time_buff[NMEA_TIMEPARSE_BUF];
 
   NMEA_ASSERT( buff && pack );
@@ -415,28 +387,22 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
   nmea_trace_buff( buff, buff_sz );
 
   nsen = nmea_scanf( buff, buff_sz,
-                     "$G%CRMC,%s,%C,%f,%C,%f,%C,%f,%f,%2d%2d%2d,%f,%C,%C,%C*",
-                     &( type ), &( time_buff[0] ),
+                     "$%C%CRMC,%s,%C,%f,%C,%f,%C,%f,%f,%2d%2d%2d,%f,%C,%C,%C*",
+                     &( pack->talkerId[0] ), &( pack->talkerId[1] ), &( time_buff[0] ),
                      &( pack->status ), &( pack->lat ), &( pack->ns ), &( pack->lon ), &( pack->ew ),
                      &( pack->speed ), &( pack->direction ),
                      &( pack->utc.day ), &( pack->utc.mon ), &( pack->utc.year ),
                      &( pack->declination ), &( pack->declin_ew ), &( pack->mode ), &( pack->navstatus ) );
 
-  if ( nsen < 14 || nsen > 16 )
+  if ( nsen < 15 || nsen > 17 )
   {
-    nmea_error( "G?RMC parse error!" );
-    return 0;
-  }
-
-  if ( type != 'P' && type != 'N' )
-  {
-    nmea_error( "G?RMC invalid type " );
+    nmea_error( "RMC parse error!" );
     return 0;
   }
 
   if ( 0 != _nmea_parse_time( &time_buff[0], ( int )strlen( &time_buff[0] ), &( pack->utc ) ) )
   {
-    nmea_error( "GPRMC time parse error!" );
+    nmea_error( "RMC time parse error!" );
     return 0;
   }
 
@@ -463,26 +429,19 @@ int nmea_parse_GPHDT( const char *buff, int buff_sz, nmeaGPHDT *pack )
   nmea_trace_buff( buff, buff_sz );
 
   char type;
-  char talker_id;
 
-  if ( 3 != nmea_scanf( buff, buff_sz,
-                        "$G%CHDT,%f,%C*",
-                        &( talker_id ),
+  if ( 4 != nmea_scanf( buff, buff_sz,
+                        "$%C%CHDT,%f,%C*",
+                        &( pack->talkerId[0] ), &( pack->talkerId[1] ),
                         &( pack->heading ), &( type ) ) )
   {
-    nmea_error( "G?HDT parse error!" );
-    return 0;
-  }
-
-  if ( talker_id != 'P' && talker_id != 'N' )
-  {
-    nmea_error( "G?HDT invalid type " );
+    nmea_error( "HDT parse error!" );
     return 0;
   }
 
   if ( type != 'T' )
   {
-    nmea_error( "G?HDT invalid type " );
+    nmea_error( "HDT invalid type " );
     return 0;
   }
 
@@ -504,23 +463,15 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  char type;
-
-  if ( 9 != nmea_scanf( buff, buff_sz,
-                        "$G%CVTG,%f,%C,%f,%C,%f,%C,%f,%C*",
-                        &type,
-                        &( pack->dir ), &( pack->dir_t ),
-                        &( pack->dec ), &( pack->dec_m ),
-                        &( pack->spn ), &( pack->spn_n ),
-                        &( pack->spk ), &( pack->spk_k ) ) )
+  if ( 10 != nmea_scanf( buff, buff_sz,
+                         "$%C%CVTG,%f,%C,%f,%C,%f,%C,%f,%C*",
+                         &pack->talkerId[0], &pack->talkerId[1],
+                         &( pack->dir ), &( pack->dir_t ),
+                         &( pack->dec ), &( pack->dec_m ),
+                         &( pack->spn ), &( pack->spn_n ),
+                         &( pack->spk ), &( pack->spk_k ) ) )
   {
-    nmea_error( "G?VTG parse error!" );
-    return 0;
-  }
-
-  if ( type != 'P' && type != 'N' )
-  {
-    nmea_error( "G?VTG invalid type " );
+    nmea_error( "VTG parse error!" );
     return 0;
   }
 
@@ -529,7 +480,7 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
        pack->spn_n != 'N' ||
        pack->spk_k != 'K' )
   {
-    nmea_error( "G?VTG parse error (format error)!" );
+    nmea_error( "VTG parse error (format error)!" );
     return 0;
   }
 
@@ -537,7 +488,7 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
 }
 
 /**
- * \brief Parse HCHDG packet from buffer.
+ * \brief Parse HDG packet from buffer.
  * @param buff a constant character pointer of packet buffer.
  * @param buff_sz buffer size.
  * @param pack a pointer of packet which will filled by function.
@@ -551,51 +502,26 @@ int nmea_parse_HCHDG( const char *buff, int buff_sz, nmeaHCHDG *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  if ( 5 != nmea_scanf( buff, buff_sz,
-                        "$HCHDG,%f,%f,%C,%f,%C*",
+  if ( 7 != nmea_scanf( buff, buff_sz,
+                        "$%C%CHDG,%f,%f,%C,%f,%C*",
+                        &pack->talkerId[0], &pack->talkerId[1],
                         &( pack->mag_heading ), &( pack->mag_deviation ),
                         &( pack->ew_deviation ), &( pack->mag_variation ),
                         &( pack->ew_variation ) ) )
   {
-    nmea_error( "HCHDG parse error!" );
+    nmea_error( "HDG parse error!" );
     return 0;
   }
 
   if ( pack->ew_deviation != 'E' && pack->ew_deviation != 'W' )
   {
-    nmea_error( "HCHDG invalid deviation direction" );
+    nmea_error( "HDG invalid deviation direction" );
     return 0;
   }
 
   if ( pack->ew_variation != 'E' && pack->ew_variation != 'W' )
   {
-    nmea_error( "HCHDG invalid variation direction" );
-    return 0;
-  }
-
-  return 1;
-}
-
-/**
- * \brief Parse HDT packet from buffer.
- * @param buff a constant character pointer of packet buffer.
- * @param buff_sz buffer size.
- * @param pack a pointer of packet which will filled by function.
- * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
- */
-int nmea_parse_HCHDT( const char *buff, int buff_sz, nmeaHCHDT *pack )
-{
-  NMEA_ASSERT( buff && pack );
-
-  memset( pack, 0, sizeof( nmeaHCHDT ) );
-
-  nmea_trace_buff( buff, buff_sz );
-
-  if ( 2 != nmea_scanf( buff, buff_sz,
-                        "$HCHDT,%f,%C*",
-                        &( pack->direction ), &( pack->t_flag ) ) )
-  {
-    nmea_error( "HCHDT parse error!" );
+    nmea_error( "HDG invalid variation direction" );
     return 0;
   }
 

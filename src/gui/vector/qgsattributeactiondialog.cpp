@@ -21,6 +21,7 @@ back to QgsVectorLayer.
  ***************************************************************************/
 
 #include "qgsattributeactiondialog.h"
+#include "moc_qgsattributeactiondialog.cpp"
 #include "qgsactionmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsaction.h"
@@ -52,6 +53,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager &acti
   connect( mMoveDownButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::moveDown );
   connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::remove );
   connect( mAddButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::insert );
+  connect( mDuplicateButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::duplicate );
   connect( mAddDefaultActionsButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::addDefaultActions );
 
   init( actions, mLayer->attributeTableConfig() );
@@ -109,7 +111,7 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
 
   // Type
   item = new QTableWidgetItem( textForType( action.type() ) );
-  item->setData( Role::ActionType, static_cast< int >( action.type() ) );
+  item->setData( Role::ActionType, static_cast<int>( action.type() ) );
   item->setData( Role::ActionId, action.id() );
   item->setFlags( item->flags() & ~Qt::ItemIsEditable );
   mAttributeActionTable->setItem( row, Type, item );
@@ -224,17 +226,7 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
 {
   const QUuid id { mAttributeActionTable->item( row, Type )->data( Role::ActionId ).toUuid() };
-  QgsAction action( id,
-                    static_cast<Qgis::AttributeActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ),
-                    mAttributeActionTable->item( row, Description )->text(),
-                    mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
-                    mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
-                    mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
-                    mAttributeActionTable->item( row, ShortTitle )->text(),
-                    mAttributeActionTable->item( row, ActionScopes )->data( Qt::UserRole ).value<QSet<QString>>(),
-                    mAttributeActionTable->item( row, NotificationMessage )->text(),
-                    mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->checkState() == Qt::Checked
-                  );
+  QgsAction action( id, static_cast<Qgis::AttributeActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ), mAttributeActionTable->item( row, Description )->text(), mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(), mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(), mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked, mAttributeActionTable->item( row, ShortTitle )->text(), mAttributeActionTable->item( row, ActionScopes )->data( Qt::UserRole ).value<QSet<QString>>(), mAttributeActionTable->item( row, NotificationMessage )->text(), mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->checkState() == Qt::Checked );
   return action;
 }
 
@@ -296,6 +288,35 @@ void QgsAttributeActionDialog::insert()
   }
 }
 
+void QgsAttributeActionDialog::duplicate()
+{
+  // Add the action details as a new row in the table.
+  const int pos = mAttributeActionTable->rowCount();
+  const int row = mAttributeActionTable->currentRow();
+
+  QgsAttributeActionPropertiesDialog dlg(
+    static_cast<Qgis::AttributeActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ),
+    mAttributeActionTable->item( row, Description )->text(),
+    mAttributeActionTable->item( row, ShortTitle )->text(),
+    mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
+    mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
+    mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
+    mAttributeActionTable->item( row, ActionScopes )->data( Qt::UserRole ).value<QSet<QString>>(),
+    mAttributeActionTable->item( row, NotificationMessage )->text(),
+    mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->checkState() == Qt::Checked,
+    mLayer
+  );
+
+  dlg.setWindowTitle( tr( "Duplicate Action" ) );
+
+  if ( dlg.exec() )
+  {
+    const QString name = uniqueName( dlg.description() );
+
+    insertRow( pos, dlg.type(), name, dlg.actionText(), dlg.iconPath(), dlg.capture(), dlg.shortTitle(), dlg.actionScopes(), dlg.notificationMessage(), dlg.isEnabledOnlyWhenEditable() );
+  }
+}
+
 void QgsAttributeActionDialog::updateButtons()
 {
   QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
@@ -314,6 +335,7 @@ void QgsAttributeActionDialog::updateButtons()
   }
 
   mRemoveButton->setEnabled( hasSelection );
+  mDuplicateButton->setEnabled( hasSelection );
 }
 
 void QgsAttributeActionDialog::addDefaultActions()
@@ -328,7 +350,6 @@ void QgsAttributeActionDialog::addDefaultActions()
   insertRow( pos++, Qgis::AttributeActionType::OpenUrl, tr( "Search on web based on attribute's value" ), QStringLiteral( "https://www.google.com/search?q=[% @field_value %]" ), QString(), false, tr( "Search Web" ), QSet<QString>() << QStringLiteral( "Field" ), QString() );
   insertRow( pos++, Qgis::AttributeActionType::GenericPython, tr( "List feature ids" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nlayer = QgsProject.instance().mapLayer('[% @layer_id %]')\nif layer.selectedFeatureCount():\n    ids = layer.selectedFeatureIds()\nelse:\n    ids = [f.id() for f in layer.getFeatures()]\n\nQtWidgets.QMessageBox.information(None, \"Feature ids\", ', '.join([str(id) for id in ids]))" ), QString(), false, tr( "List feature ids" ), QSet<QString>() << QStringLiteral( "Layer" ), QString() );
   insertRow( pos++, Qgis::AttributeActionType::GenericPython, tr( "Duplicate selected features" ), QStringLiteral( "project = QgsProject.instance()\nlayer = QgsProject.instance().mapLayer('[% @layer_id %]')\nif not layer.isEditable():\n    qgis.utils.iface.messageBar().pushMessage( 'Cannot duplicate feature in not editable mode on layer {layer}'.format( layer=layer.name() ) )\nelse:\n    features=[]\n    if len('[% $id %]')>0:\n        features.append( layer.getFeature( [% $id %] ) )\n    else:\n        for x in layer.selectedFeatures():\n            features.append( x )\n    feature_count=0\n    children_info=''\n    featureids=[]\n    for f in features:\n        result=QgsVectorLayerUtils.duplicateFeature(layer, f, project, 0 )\n        featureids.append( result[0].id() )\n        feature_count+=1\n        for ch_layer in result[1].layers():\n            children_info+='{number_of_children} children on layer {children_layer}\\n'.format( number_of_children=str( len( result[1].duplicatedFeatures(ch_layer) ) ), children_layer=ch_layer.name() )\n            ch_layer.selectByIds( result[1].duplicatedFeatures(ch_layer) )\n    layer.selectByIds( featureids )\n    qgis.utils.iface.messageBar().pushMessage( '{number_of_features} features on layer {layer} duplicated with\\n{children_info}'.format( number_of_features=str( feature_count ), layer=layer.name(), children_info=children_info ) )" ), QString(), false, tr( "Duplicate selected" ), QSet<QString>() << QStringLiteral( "Layer" ), QString(), true );
-
 }
 
 void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
@@ -352,7 +373,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
 
   if ( actionProperties.exec() )
   {
-    mAttributeActionTable->item( row, Type )->setData( Role::ActionType, static_cast< int >( actionProperties.type() ) );
+    mAttributeActionTable->item( row, Type )->setData( Role::ActionType, static_cast<int>( actionProperties.type() ) );
     mAttributeActionTable->item( row, Type )->setText( textForType( actionProperties.type() ) );
     mAttributeActionTable->item( row, Description )->setText( actionProperties.description() );
     mAttributeActionTable->item( row, ShortTitle )->setText( actionProperties.shortTitle() );

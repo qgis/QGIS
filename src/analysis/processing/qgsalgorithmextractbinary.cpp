@@ -64,11 +64,9 @@ QgsExtractBinaryFieldAlgorithm *QgsExtractBinaryFieldAlgorithm::createInstance()
 
 void QgsExtractBinaryFieldAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
 
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Binary field" ), QVariant(),
-                QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Binary field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any ) );
 
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME" ), QObject::tr( "File name" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
@@ -77,7 +75,7 @@ void QgsExtractBinaryFieldAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
@@ -87,14 +85,14 @@ QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( QObject::tr( "Invalid binary field" ) );
 
   const QString folder = parameterAsString( parameters, QStringLiteral( "FOLDER" ), context );
-  if ( !QFileInfo::exists( folder ) )
-    throw QgsProcessingException( QObject::tr( "Destination folder %1 does not exist" ).arg( folder ) );
+  if ( !QDir().mkpath( folder ) )
+    throw QgsProcessingException( QObject::tr( "Failed to create output directory." ) );
 
   const QDir dir( folder );
   const QString filenameExpressionString = parameterAsString( parameters, QStringLiteral( "FILENAME" ), context );
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, input.get() );
 
-  QSet< QString > fields;
+  QSet<QString> fields;
   fields.insert( fieldName );
   QgsFeatureRequest request;
 

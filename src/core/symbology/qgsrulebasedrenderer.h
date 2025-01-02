@@ -162,9 +162,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
               const QString &label = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
-        //! Rules cannot be copied
         Rule( const Rule &rh ) = delete;
-        //! Rules cannot be copied
         Rule &operator=( const Rule &rh ) = delete;
 
         /**
@@ -509,6 +507,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
+    Qgis::FeatureRendererFlags flags() const override;
     bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;

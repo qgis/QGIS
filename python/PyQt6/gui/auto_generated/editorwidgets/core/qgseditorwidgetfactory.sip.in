@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/core/qgseditorwidgetfactory.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,7 +25,6 @@ and another factory method to create a configuration dialog.
 #include "qgseditorwidgetfactory.h"
 %End
   public:
-
     QgsEditorWidgetFactory( const QString &name );
 %Docstring
 Constructor
@@ -112,5 +111,5 @@ Typical return values are:
  *                                                                      *
  * src/gui/editorwidgets/core/qgseditorwidgetfactory.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

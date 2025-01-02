@@ -3,8 +3,9 @@
  *                                                                      *
  * src/gui/settings/qgssettingseditorwidgetwrapper.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
+
 
 
 
@@ -22,7 +23,7 @@ Base class for settings editor wrappers
 #include "qgssettingseditorwidgetwrapper.h"
 %End
   public:
-    static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget ) /Factory/;
+    static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget );
 %Docstring
 Creates a wrapper from the definition stored in a ``widget`` created by :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor`
 %End
@@ -43,12 +44,12 @@ This id of the type of settings it handles
    This mostly correspond to the content of :py:class:`Qgis`.SettingsType but it's a string since custom Python implementation are possible.
 %End
 
-    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0;
+    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0 /Factory/;
 %Docstring
 Creates a new instance of the editor wrapper so it can be configured for a widget and a setting
 %End
 
-    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = 0 );
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = 0 ) /TransferBack/;
 %Docstring
 Creates the editor widget for the given ``setting``
 %End
@@ -76,26 +77,54 @@ Returns the value from the widget as a variant
 The wrapper must be configured before calling this medthod
 %End
 
-    virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
+    virtual bool setWidgetFromVariant( const QVariant &value ) const = 0;
 %Docstring
 Sets the ``value`` of the widget
 The wrapper must be configured before calling this medthod
 %End
 
+    void configureAutomaticUpdate( QDialog *dialog = 0 );
+%Docstring
+Configure the settings update behavior when a widget value is changed.
+
+If a ``dialog`` is provided, the setting will be updated when the dialog is accepted.
+If not, the setting will be updated directly at each widget value change.
+
+.. note::
+
+   This must called after :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor` or :py:func:`~QgsSettingsEditorWidgetWrapper.configureEditor`.
+
+.. versionadded:: 3.40
+%End
+
+    QStringList dynamicKeyPartList() const;
+%Docstring
+Returns the dynamic key parts
+
+.. versionadded:: 3.40
+%End
+
 
   protected:
-    virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
+    virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0 /TransferBack/;
 %Docstring
 Creates the widgets
 %End
 
-    virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
+    virtual bool configureEditorPrivate( QWidget *editor /TransferBack/, const QgsSettingsEntryBase *setting /KeepReference/ ) = 0;
 %Docstring
 Configures an existing ``editor`` widget
 %End
 
-};
+    virtual void enableAutomaticUpdatePrivate() = 0;
+%Docstring
+Enables automatic update, which causes the setting to be updated immediately when the widget
+value is changed.
 
+.. versionadded:: 3.40
+%End
+
+};
 
 
 /************************************************************************
@@ -103,5 +132,5 @@ Configures an existing ``editor`` widget
  *                                                                      *
  * src/gui/settings/qgssettingseditorwidgetwrapper.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

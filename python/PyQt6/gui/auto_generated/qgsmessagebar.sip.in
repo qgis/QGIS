@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsmessagebar.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -11,7 +11,7 @@
 
 
 
-class QgsMessageBar: QFrame
+class QgsMessageBar : QFrame
 {
 %Docstring(signature="appended")
 A bar for displaying non-blocking messages to the user.
@@ -36,7 +36,6 @@ the :py:func:`~pushWidget` method.
 #include "qgsmessagebar.h"
 %End
   public:
-
     QgsMessageBar( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMessageBar
@@ -235,5 +234,5 @@ Pushes a critical warning ``message`` that must be manually dismissed by the use
  *                                                                      *
  * src/gui/qgsmessagebar.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

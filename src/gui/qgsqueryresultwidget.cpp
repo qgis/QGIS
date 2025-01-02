@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsqueryresultwidget.h"
+#include "moc_qgsqueryresultwidget.cpp"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsexpressionutils.h"
 #include "qgscodeeditorsql.h"
@@ -54,27 +55,26 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   mSqlEditorContainer->setLayout( vl );
 
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
-  connect( mClearButton, &QPushButton::pressed, this, [ = ]
-  {
+  connect( mClearButton, &QPushButton::pressed, this, [=] {
     mSqlEditor->setText( QString() );
   } );
-  connect( mLoadLayerPushButton, &QPushButton::pressed, this, [ = ]
-  {
+  connect( mLoadLayerPushButton, &QPushButton::pressed, this, [=] {
     if ( mConnection )
     {
       emit createSqlVectorLayer( mConnection->providerKey(), mConnection->uri(), sqlVectorLayerOptions() );
     }
-  }
-         );
+  } );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
-  connect( mFilterToolButton, &QToolButton::pressed, this, [ = ]
-  {
+  connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [=] {
+    mExecuteButton->setText( mSqlEditor->selectedText().isEmpty() ? tr( "Execute" ) : tr( "Execute Selection" ) );
+  } );
+  connect( mFilterToolButton, &QToolButton::pressed, this, [=] {
     if ( mConnection )
     {
       try
       {
         std::unique_ptr<QgsVectorLayer> vlayer { mConnection->createSqlVectorLayer( sqlVectorLayerOptions() ) };
-        QgsQueryBuilder builder{ vlayer.get() };
+        QgsQueryBuilder builder { vlayer.get() };
         if ( builder.exec() == QDialog::Accepted )
         {
           mFilterLineEdit->setText( builder.sql() );
@@ -93,27 +93,25 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   mLoadAsNewLayerGroupBox->setCollapsed( true );
 
-  connect( mLoadAsNewLayerGroupBox, &QgsCollapsibleGroupBox::collapsedStateChanged, this, [ = ]( bool collapsed )
-  {
-    if ( ! collapsed )
+  connect( mLoadAsNewLayerGroupBox, &QgsCollapsibleGroupBox::collapsedStateChanged, this, [=]( bool collapsed ) {
+    if ( !collapsed )
     {
       // Configure the load layer interface
-      const bool showPkConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::PrimaryKeys )};
+      const bool showPkConfig { connection && connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::PrimaryKeys ) };
       mPkColumnsCheckBox->setVisible( showPkConfig );
       mPkColumnsComboBox->setVisible( showPkConfig );
 
-      const bool showGeometryColumnConfig {connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::GeometryColumn )};
+      const bool showGeometryColumnConfig { connection && connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::GeometryColumn ) };
       mGeometryColumnCheckBox->setVisible( showGeometryColumnConfig );
       mGeometryColumnComboBox->setVisible( showGeometryColumnConfig );
 
-      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::SubsetStringFilter ) };
+      const bool showFilterConfig { connection && connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::SubsetStringFilter ) };
       mFilterLabel->setVisible( showFilterConfig );
       mFilterToolButton->setVisible( showFilterConfig );
       mFilterLineEdit->setVisible( showFilterConfig );
 
-      const bool showDisableSelectAtId{ connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds ) };
+      const bool showDisableSelectAtId { connection && connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds ) };
       mAvoidSelectingAsFeatureIdCheckBox->setVisible( showDisableSelectAtId );
-
     }
   } );
 
@@ -132,20 +130,20 @@ QgsQueryResultWidget::~QgsQueryResultWidget()
 void QgsQueryResultWidget::setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options )
 {
   mSqlVectorLayerOptions = options;
-  if ( ! options.sql.isEmpty() )
+  if ( !options.sql.isEmpty() )
   {
     setQuery( options.sql );
   }
   mAvoidSelectingAsFeatureIdCheckBox->setChecked( options.disableSelectAtId );
-  mPkColumnsCheckBox->setChecked( ! options.primaryKeyColumns.isEmpty() );
+  mPkColumnsCheckBox->setChecked( !options.primaryKeyColumns.isEmpty() );
   mPkColumnsComboBox->setCheckedItems( {} );
-  if ( ! options.primaryKeyColumns.isEmpty() )
+  if ( !options.primaryKeyColumns.isEmpty() )
   {
     mPkColumnsComboBox->setCheckedItems( options.primaryKeyColumns );
   }
-  mGeometryColumnCheckBox->setChecked( ! options.geometryColumn.isEmpty() );
+  mGeometryColumnCheckBox->setChecked( !options.geometryColumn.isEmpty() );
   mGeometryColumnComboBox->clear();
-  if ( ! options.geometryColumn.isEmpty() )
+  if ( !options.geometryColumn.isEmpty() )
   {
     mGeometryColumnComboBox->setCurrentText( options.geometryColumn );
   }
@@ -180,17 +178,15 @@ void QgsQueryResultWidget::executeQuery()
   cancelRunningQuery();
   if ( mConnection )
   {
-    const QString sql { mSqlEditor->text( ) };
+    const QString sql { mSqlEditor->selectedText().isEmpty() ? mSqlEditor->text() : mSqlEditor->selectedText() };
 
     bool ok = false;
-    mCurrentHistoryEntryId = QgsGui::historyProviderRegistry()->addEntry( QStringLiteral( "dbquery" ),
-                             QVariantMap
-    {
-      { QStringLiteral( "query" ), sql },
-      { QStringLiteral( "provider" ), mConnection->providerKey() },
-      { QStringLiteral( "connection" ), mConnection->uri() },
-    },
-    ok );
+    mCurrentHistoryEntryId = QgsGui::historyProviderRegistry()->addEntry( QStringLiteral( "dbquery" ), QVariantMap {
+                                                                                                         { QStringLiteral( "query" ), sql },
+                                                                                                         { QStringLiteral( "provider" ), mConnection->providerKey() },
+                                                                                                         { QStringLiteral( "connection" ), mConnection->uri() },
+                                                                                                       },
+                                                                          ok );
 
     mWasCanceled = false;
     mFeedback = std::make_unique<QgsFeedback>();
@@ -201,8 +197,7 @@ void QgsQueryResultWidget::executeQuery()
     mProgressBar->setRange( 0, 0 );
     mSqlErrorMessage.clear();
 
-    connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [ = ]
-    {
+    connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [=] {
       mStatusLabel->setText( tr( "Stopped" ) );
       mFeedback->cancel();
       mProgressBar->hide();
@@ -212,8 +207,7 @@ void QgsQueryResultWidget::executeQuery()
     // Create model when result is ready
     connect( &mQueryResultWatcher, &QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult>::finished, this, &QgsQueryResultWidget::startFetching, Qt::ConnectionType::UniqueConnection );
 
-    QFuture<QgsAbstractDatabaseProviderConnection::QueryResult> future = QtConcurrent::run( [ = ]() -> QgsAbstractDatabaseProviderConnection::QueryResult
-    {
+    QFuture<QgsAbstractDatabaseProviderConnection::QueryResult> future = QtConcurrent::run( [=]() -> QgsAbstractDatabaseProviderConnection::QueryResult {
       try
       {
         return mConnection->execSql( sql, mFeedback.get() );
@@ -236,11 +230,12 @@ void QgsQueryResultWidget::updateButtons()
 {
   mFilterLineEdit->setEnabled( mFirstRowFetched );
   mFilterToolButton->setEnabled( mFirstRowFetched );
-  mExecuteButton->setEnabled( ! mSqlEditor->text().isEmpty() );
+  const bool isEmpty = mSqlEditor->text().isEmpty();
+  mExecuteButton->setEnabled( !isEmpty );
+  mClearButton->setEnabled( !isEmpty );
   mLoadAsNewLayerGroupBox->setVisible( mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
   mLoadAsNewLayerGroupBox->setEnabled(
-    mSqlErrorMessage.isEmpty() &&
-    mFirstRowFetched
+    mSqlErrorMessage.isEmpty() && mFirstRowFetched
   );
 }
 
@@ -252,10 +247,7 @@ void QgsQueryResultWidget::showCellContextMenu( QPoint point )
     QMenu *menu = new QMenu();
     menu->setAttribute( Qt::WA_DeleteOnClose );
 
-    menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, [ = ]
-    {
-      copySelection();
-    }, QKeySequence::Copy );
+    menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, [=] { copySelection(); }, QKeySequence::Copy );
 
     menu->exec( mQueryResultsTableView->viewport()->mapToGlobal( point ) );
   }
@@ -295,7 +287,7 @@ void QgsQueryResultWidget::copySelection()
   }
 }
 
-void QgsQueryResultWidget::updateSqlLayerColumns( )
+void QgsQueryResultWidget::updateSqlLayerColumns()
 {
   // Precondition
   Q_ASSERT( mModel );
@@ -304,9 +296,9 @@ void QgsQueryResultWidget::updateSqlLayerColumns( )
   mFilterLineEdit->setEnabled( true );
   mPkColumnsComboBox->clear();
   mGeometryColumnComboBox->clear();
-  const bool hasPkInformation { ! mSqlVectorLayerOptions.primaryKeyColumns.isEmpty() };
-  const bool hasGeomColInformation { ! mSqlVectorLayerOptions.geometryColumn.isEmpty() };
-  static const QStringList geomColCandidates { QStringLiteral( "geom" ), QStringLiteral( "geometry" ),  QStringLiteral( "the_geom" ) };
+  const bool hasPkInformation { !mSqlVectorLayerOptions.primaryKeyColumns.isEmpty() };
+  const bool hasGeomColInformation { !mSqlVectorLayerOptions.geometryColumn.isEmpty() };
+  static const QStringList geomColCandidates { QStringLiteral( "geom" ), QStringLiteral( "geometry" ), QStringLiteral( "the_geom" ) };
   const QStringList constCols { mModel->columns() };
   for ( const QString &c : constCols )
   {
@@ -314,7 +306,7 @@ void QgsQueryResultWidget::updateSqlLayerColumns( )
     // Only check first match
     mPkColumnsComboBox->addItemWithCheckState( c, pkCheckedState && mPkColumnsComboBox->checkedItems().isEmpty() ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
     mGeometryColumnComboBox->addItem( c );
-    if ( ! hasGeomColInformation && geomColCandidates.contains( c, Qt::CaseSensitivity::CaseInsensitive ) )
+    if ( !hasGeomColInformation && geomColCandidates.contains( c, Qt::CaseSensitivity::CaseInsensitive ) )
     {
       mGeometryColumnComboBox->setCurrentText( c );
     }
@@ -353,9 +345,9 @@ void QgsQueryResultWidget::cancelApiFetcher()
 
 void QgsQueryResultWidget::startFetching()
 {
-  if ( ! mWasCanceled )
+  if ( !mWasCanceled )
   {
-    if ( ! mSqlErrorMessage.isEmpty() )
+    if ( !mSqlErrorMessage.isEmpty() )
     {
       showError( tr( "SQL error" ), mSqlErrorMessage, true );
     }
@@ -364,8 +356,7 @@ void QgsQueryResultWidget::startFetching()
       if ( mQueryResultWatcher.result().rowCount() != static_cast<long long>( Qgis::FeatureCountState::UnknownCount ) )
       {
         mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 rows, %2 ms)" )
-                               .arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ),
-                                     QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
+                                 .arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ), QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
       }
       else
       {
@@ -373,35 +364,29 @@ void QgsQueryResultWidget::startFetching()
       }
       mProgressBar->hide();
       mModel = std::make_unique<QgsQueryResultModel>( mQueryResultWatcher.result() );
-      connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
-      {
+      connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [=] {
         mModel->cancel();
         mWasCanceled = true;
       } );
 
-      connect( mModel.get(), &QgsQueryResultModel::fetchMoreRows, this, [ = ]( long long maxRows )
-      {
+      connect( mModel.get(), &QgsQueryResultModel::fetchMoreRows, this, [=]( long long maxRows ) {
         mFetchedRowsBatchCount = 0;
         mProgressBar->setRange( 0, maxRows );
         mProgressBar->show();
       } );
 
-      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int first, int last )
-      {
-        if ( ! mFirstRowFetched )
+      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [=]( const QModelIndex &, int first, int last ) {
+        if ( !mFirstRowFetched )
         {
           emit firstResultBatchFetched();
           mFirstRowFetched = true;
           mQueryResultsTableView->show();
           updateButtons();
-          updateSqlLayerColumns( );
+          updateSqlLayerColumns();
           mActualRowCount = mModel->queryResult().rowCount();
         }
         mStatusLabel->setText( tr( "Fetched rows: %1/%2 %3 %4 ms" )
-                               .arg( QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ),
-                                     mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ),
-                                     mWasCanceled ? tr( "(stopped)" ) : QString(),
-                                     QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
+                                 .arg( QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ), mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ), mWasCanceled ? tr( "(stopped)" ) : QString(), QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
         mFetchedRowsBatchCount += last - first + 1;
         mProgressBar->setValue( mFetchedRowsBatchCount );
       } );
@@ -409,16 +394,14 @@ void QgsQueryResultWidget::startFetching()
       mQueryResultsTableView->setModel( mModel.get() );
       mQueryResultsTableView->show();
 
-      connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
-      {
+      connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [=] {
         bool ok = false;
         const QgsHistoryEntry currentHistoryEntry = QgsGui::historyProviderRegistry()->entry( mCurrentHistoryEntryId, ok );
         QVariantMap entryDetails = currentHistoryEntry.entry;
         entryDetails.insert( QStringLiteral( "rows" ), mActualRowCount );
         entryDetails.insert( QStringLiteral( "time" ), mQueryResultWatcher.result().queryExecutionTime() );
 
-        QgsGui::historyProviderRegistry()->updateEntry( mCurrentHistoryEntryId,
-            entryDetails );
+        QgsGui::historyProviderRegistry()->updateEntry( mCurrentHistoryEntryId, entryDetails );
         mProgressBar->hide();
         mStopButton->setEnabled( false );
       } );
@@ -514,7 +497,7 @@ void QgsQueryResultWidget::copyResults( int fromRow, int toRow, int fromColumn, 
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const
 {
-  mSqlVectorLayerOptions.sql = mSqlEditor->text();
+  mSqlVectorLayerOptions.sql = mSqlEditor->text().replace( QRegularExpression( ";\\s*$" ), QString() );
   mSqlVectorLayerOptions.filter = mFilterLineEdit->text();
   mSqlVectorLayerOptions.primaryKeyColumns = mPkColumnsComboBox->checkedItems();
   mSqlVectorLayerOptions.geometryColumn = mGeometryColumnComboBox->currentText();
@@ -522,11 +505,11 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidge
   mSqlVectorLayerOptions.disableSelectAtId = mAvoidSelectingAsFeatureIdCheckBox->isChecked();
   QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { mSqlVectorLayerOptions };
   // Override if not used
-  if ( ! mPkColumnsCheckBox->isChecked() )
+  if ( !mPkColumnsCheckBox->isChecked() )
   {
     options.primaryKeyColumns.clear();
   }
-  if ( ! mGeometryColumnCheckBox->isChecked() )
+  if ( !mGeometryColumnCheckBox->isChecked() )
   {
     options.geometryColumn.clear();
   }
@@ -541,7 +524,6 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
 
   if ( connection )
   {
-
     // Add provider specific APIs
     const QMultiMap<Qgis::SqlKeywordCategory, QStringList> keywordsDict { connection->sqlDictionary() };
     QStringList keywords;
@@ -560,8 +542,7 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
     apiFetcher->moveToThread( apiFetcherWorkerThread );
     connect( apiFetcherWorkerThread, &QThread::started, apiFetcher, &QgsConnectionsApiFetcher::fetchTokens );
     connect( apiFetcher, &QgsConnectionsApiFetcher::tokensReady, this, &QgsQueryResultWidget::tokensReady );
-    connect( apiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, apiFetcherWorkerThread, [apiFetcher, apiFetcherWorkerThread]
-    {
+    connect( apiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, apiFetcherWorkerThread, [apiFetcher, apiFetcherWorkerThread] {
       apiFetcherWorkerThread->quit();
       apiFetcherWorkerThread->wait();
       apiFetcherWorkerThread->deleteLater();
@@ -573,7 +554,6 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
   }
 
   updateButtons();
-
 }
 
 void QgsQueryResultWidget::setQuery( const QString &sql )
@@ -604,10 +584,10 @@ void QgsConnectionsApiFetcher::fetchTokens()
     emit fetchingFinished();
     return;
   }
-  std::unique_ptr< QgsAbstractDatabaseProviderConnection > connection( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mUri, {} ) ) );
-  if ( ! mStopFetching && connection )
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mUri, {} ) ) );
+  if ( !mStopFetching && connection )
   {
-    mFeedback = std::make_unique< QgsFeedback >();
+    mFeedback = std::make_unique<QgsFeedback>();
     QStringList schemas;
     if ( connection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
     {
@@ -623,12 +603,11 @@ void QgsConnectionsApiFetcher::fetchTokens()
     }
     else
     {
-      schemas.push_back( QString() );  // Fake empty schema for DBs not supporting it
+      schemas.push_back( QString() ); // Fake empty schema for DBs not supporting it
     }
 
     for ( const auto &schema : std::as_const( schemas ) )
     {
-
       if ( mStopFetching )
       {
         connection.reset();
@@ -660,7 +639,6 @@ void QgsConnectionsApiFetcher::fetchTokens()
       // Get fields
       for ( const auto &table : std::as_const( tableNames ) )
       {
-
         if ( mStopFetching )
         {
           connection.reset();

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/mesh/qgsmeshcontours.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ Exporter of contours lines or polygons from a mesh layer.
 #include "qgsmeshcontours.h"
 %End
   public:
-
     QgsMeshContours( QgsMeshLayer *layer );
 %Docstring
 Constructs the mesh contours exporter.
@@ -37,10 +36,7 @@ Caches the native and triangular mesh from data provider
 
     ~QgsMeshContours();
 
-    QgsGeometry exportLines( const QgsMeshDatasetIndex &index,
-                             double value,
-                             QgsMeshRendererScalarSettings::DataResamplingMethod method,
-                             QgsFeedback *feedback = 0 );
+    QgsGeometry exportLines( const QgsMeshDatasetIndex &index, double value, QgsMeshRendererScalarSettings::DataResamplingMethod method, QgsFeedback *feedback = 0 );
 %Docstring
 Exports multi line string containing the contour line for particular dataset and value.
 
@@ -57,11 +53,7 @@ Exports multi line string containing the contour line for particular dataset and
 %End
 
 
-    QgsGeometry exportPolygons( const QgsMeshDatasetIndex &index,
-                                double min_value,
-                                double max_value,
-                                QgsMeshRendererScalarSettings::DataResamplingMethod method,
-                                QgsFeedback *feedback = 0 );
+    QgsGeometry exportPolygons( const QgsMeshDatasetIndex &index, double min_value, double max_value, QgsMeshRendererScalarSettings::DataResamplingMethod method, QgsFeedback *feedback = 0 );
 %Docstring
 Exports multi polygons representing the areas with values in range for particular dataset
 
@@ -87,5 +79,5 @@ Exports multi polygons representing the areas with values in range for particula
  *                                                                      *
  * src/analysis/mesh/qgsmeshcontours.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

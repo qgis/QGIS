@@ -27,17 +27,17 @@
 #include <qgspoint.h>
 #include "qgsreferencedgeometry.h"
 
-class TestQgsPointXY: public QgsTest
+class TestQgsPointXY : public QgsTest
 {
     Q_OBJECT
   public:
-
-    TestQgsPointXY() : QgsTest( QStringLiteral( "QgsPointXY Tests" ) ) {}
+    TestQgsPointXY()
+      : QgsTest( QStringLiteral( "QgsPointXY Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase(); // will be called before the first testfunction is executed.
+    void init();         // will be called before each testfunction is executed.
+    void cleanup();      // will be called after every testfunction.
     void equality();
     void gettersSetters();
     void constructors();
@@ -325,7 +325,7 @@ void TestQgsPointXY::asVariant()
   //convert to and from a QVariant
   const QVariant var = QVariant::fromValue( p1 );
   QVERIFY( var.isValid() );
-  QCOMPARE( var.userType(), QMetaType::type( "QgsPointXY" ) );
+  QCOMPARE( var.userType(), qMetaTypeId<QgsPointXY>() );
 
   const QgsPointXY p2 = qvariant_cast<QgsPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );
@@ -346,7 +346,7 @@ void TestQgsPointXY::referenced()
   // not great - we'd ideally like this to pass, but it doesn't:
   // QVERIFY( !var.canConvert< QgsPointXY >() );
 
-  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedPointXY" ) );
+  QCOMPARE( var.userType(), qMetaTypeId<QgsReferencedPointXY>() );
 
   const QgsReferencedPointXY p2 = qvariant_cast<QgsReferencedPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );
@@ -361,7 +361,7 @@ void TestQgsPointXY::isEmpty()
   QCOMPARE( pointEmpty.x(), 0.0 );
   QCOMPARE( pointEmpty.y(), 0.0 );
   pointEmpty.setX( 7 );
-  QVERIFY( ! pointEmpty.isEmpty() );
+  QVERIFY( !pointEmpty.isEmpty() );
   QCOMPARE( pointEmpty.x(), 7.0 );
   QCOMPARE( pointEmpty.y(), 0.0 );
   pointEmpty = QgsPointXY();
@@ -369,14 +369,14 @@ void TestQgsPointXY::isEmpty()
   QCOMPARE( pointEmpty.x(), 0.0 );
   QCOMPARE( pointEmpty.y(), 0.0 );
   pointEmpty.setY( 4 );
-  QVERIFY( ! pointEmpty.isEmpty() );
+  QVERIFY( !pointEmpty.isEmpty() );
   QCOMPARE( pointEmpty.x(), 0.0 );
   QCOMPARE( pointEmpty.y(), 4.0 );
 
   QVERIFY( QgsPointXY( QgsPoint() ).isEmpty() );
   // "can't" be empty
-  QVERIFY( ! QgsPointXY( QPoint() ).isEmpty() );
-  QVERIFY( ! QgsPointXY( QPointF() ).isEmpty() );
+  QVERIFY( !QgsPointXY( QPoint() ).isEmpty() );
+  QVERIFY( !QgsPointXY( QPointF() ).isEmpty() );
 }
 
 QGSTEST_MAIN( TestQgsPointXY )

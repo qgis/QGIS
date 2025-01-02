@@ -27,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #ifndef SIP_RUN
-#include "json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 using namespace nlohmann;
 #endif
 
@@ -150,9 +150,6 @@ class CORE_EXPORT QgsAbstractGeometry
     };
     Q_ENUM( QgsAbstractGeometry::AxisOrder )
 
-    /**
-     * Constructor for QgsAbstractGeometry.
-     */
     QgsAbstractGeometry() = default;
     virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
@@ -306,7 +303,7 @@ class CORE_EXPORT QgsAbstractGeometry
     enum WkbFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagExportTrianglesAsPolygons = 1 << 0, //!< Triangles should be exported as polygon geometries
-      FlagExportNanAsDoubleMin = 1 << 1, //!< Use -DOUBLE_MAX to represent NaN (since QGIS 3.30)
+      FlagExportNanAsDoubleMin = 1 << 1, //!< Use -DOUBLE_MAX to represent NaN \since QGIS 3.30
     };
     Q_DECLARE_FLAGS( WkbFlags, WkbFlag )
 
@@ -644,8 +641,23 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
      * \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
      * \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
+     * \param removeRedundantPoints if TRUE, then points which are redundant (e.g. they represent mid points on a straight line segment) will be skipped (since QGIS 3.38)
      */
-    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const = 0 SIP_FACTORY;
+
+    /**
+     * Simplifies the geometry by applying the Douglas Peucker simplification by distance
+     * algorithm.
+     *
+     * The caller takes ownership of the returned geometry. Curved geometries will be segmentized prior to simplification.
+     *
+     * If a simplified geometry cannot be calculated NULLPTR will be returned.
+     *
+     * The returned geometry may be invalid and contain self-intersecting rings.
+     *
+     * \since QGIS 3.38
+    */
+    virtual QgsAbstractGeometry *simplifyByDistance( double tolerance ) const = 0 SIP_FACTORY;
 
     /**
      * Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a
@@ -1189,7 +1201,7 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 class CORE_EXPORT QgsVertexIterator
 {
   public:
-    //! Constructor for QgsVertexIterator
+
     QgsVertexIterator() = default;
 
     //! Constructs iterator for the given geometry
@@ -1238,7 +1250,7 @@ class CORE_EXPORT QgsVertexIterator
 class CORE_EXPORT QgsGeometryPartIterator
 {
   public:
-    //! Constructor for QgsGeometryPartIterator
+
     QgsGeometryPartIterator() = default;
 
     //! Constructs iterator for the given geometry
@@ -1288,7 +1300,7 @@ class CORE_EXPORT QgsGeometryPartIterator
 class CORE_EXPORT QgsGeometryConstPartIterator
 {
   public:
-    //! Constructor for QgsGeometryConstPartIterator
+
     QgsGeometryConstPartIterator() = default;
 
     //! Constructs iterator for the given geometry

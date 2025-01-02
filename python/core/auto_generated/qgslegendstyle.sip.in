@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgslegendstyle.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -43,24 +43,26 @@ Contains detailed styling information relating to how a layout legend should be 
 
     QgsLegendStyle();
 
- QFont font() const /Deprecated/;
+ QFont font() const /Deprecated="Since 3.40. Use textFormat() instead."/;
 %Docstring
 Returns the font used for rendering this legend component.
 
 .. seealso:: :py:func:`setFont`
 
-.. deprecated::
-   use :py:func:`~QgsLegendStyle.textFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLegendStyle.textFormat` instead.
 %End
 
- void setFont( const QFont &font ) /Deprecated/;
+ void setFont( const QFont &font ) /Deprecated="Since 3.40. Use setTextFormat() instead."/;
 %Docstring
 Sets the ``font`` used for rendering this legend component.
 
 .. seealso:: :py:func:`font`
 
-.. deprecated::
-   use :py:func:`~QgsLegendStyle.setTextFormat` instead
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsLegendStyle.setTextFormat` instead.
 %End
 
     QgsTextFormat &textFormat();
@@ -82,7 +84,7 @@ Sets the text ``format`` used for rendering this legend component.
 .. versionadded:: 3.30
 %End
 
-    double margin( Side side );
+    double margin( Side side ) const;
 %Docstring
 Returns the margin (in mm) for the specified ``side`` of the component.
 
@@ -193,5 +195,5 @@ Returns a translated string representing a style component, for use in UI.
  *                                                                      *
  * src/core/qgslegendstyle.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

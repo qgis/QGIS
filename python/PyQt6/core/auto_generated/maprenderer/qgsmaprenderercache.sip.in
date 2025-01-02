@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/maprenderer/qgsmaprenderercache.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -42,15 +42,16 @@ Invalidates the cache contents, clearing all cached images.
 .. seealso:: :py:func:`clearCacheImage`
 %End
 
- bool init( const QgsRectangle &extent, double scale ) /Deprecated/;
+ bool init( const QgsRectangle &extent, double scale ) /Deprecated="Since 3.18. Will be removed in QGIS 4.0. Use the updateParameters() and clear()."/;
 %Docstring
 Initialize cache: sets extent and scale parameters and clears the cache if any
 parameters have changed since last initialization.
 
 :return: flag whether the parameters are the same as last time
 
-.. deprecated:: QGIS 3.18
-   - will be removed in QGIS 4.0. Use the :py:func:`~QgsMapRendererCache.updateParameters` and :py:func:`~QgsMapRendererCache.clear`
+.. deprecated:: 3.18
+
+   Will be removed in QGIS 4.0. Use the :py:func:`~QgsMapRendererCache.updateParameters` and :py:func:`~QgsMapRendererCache.clear`.
 %End
 
     bool updateParameters( const QgsRectangle &extent, const QgsMapToPixel &mtp );
@@ -172,5 +173,5 @@ Invalidates cached images which relate to the specified map ``layer``.
  *                                                                      *
  * src/core/maprenderer/qgsmaprenderercache.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

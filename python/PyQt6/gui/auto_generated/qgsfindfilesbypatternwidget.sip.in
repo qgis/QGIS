@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsfindfilesbypatternwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ A reusable widget for finding files (recursively) by file pattern.
 #include "qgsfindfilesbypatternwidget.h"
 %End
   public:
-
     QgsFindFilesByPatternWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFindFilesByPatternWidget, with the specified ``parent`` widget.
@@ -62,7 +61,6 @@ A dialog for finding files (recursively) by file pattern.
 #include "qgsfindfilesbypatternwidget.h"
 %End
   public:
-
     QgsFindFilesByPatternDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFindFilesByPatternDialog, with the specified ``parent`` widget.
@@ -81,5 +79,5 @@ no matching files were found.
  *                                                                      *
  * src/gui/qgsfindfilesbypatternwidget.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingssubseteditor.h"
+#include "moc_qgssensorthingssubseteditor.cpp"
 #include "qgsvectorlayer.h"
 #include "qgscodeeditor.h"
 #include "qgsfieldproxymodel.h"
@@ -55,6 +56,7 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
   boldFont.setBold( true );
   mLabelComparisons->setFont( boldFont );
   mLabelLogical->setFont( boldFont );
+  mLabelDate->setFont( boldFont );
   mLabelArithmetic->setFont( boldFont );
 
   mButtonEq->setToolTip( tr( "Equal" ) );
@@ -85,6 +87,8 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
   mButtonDiv->setProperty( "expression", " div " );
   mButtonMod->setToolTip( tr( "Modulo" ) );
   mButtonMod->setProperty( "expression", " mod " );
+  mButtonNow->setToolTip( tr( "Current datetime" ) );
+  mButtonNow->setProperty( "expression", " now() " );
 
   if ( mLayer )
     lblDataUri->setText( tr( "Set filter on %1" ).arg( mLayer->name() ) );
@@ -112,15 +116,14 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
           mButtonSub,
           mButtonMul,
           mButtonDiv,
-          mButtonMod
+          mButtonMod,
+          mButtonNow
         } )
   {
-    connect( button, &QPushButton::clicked, this, [this, button]
-    {
+    connect( button, &QPushButton::clicked, this, [this, button] {
       mSubsetEditor->insertText( button->property( "expression" ).toString() );
       mSubsetEditor->setFocus();
     } );
-
   }
 }
 
@@ -150,7 +153,7 @@ void QgsSensorThingsSubsetEditor::reset()
 
 void QgsSensorThingsSubsetEditor::lstFieldsDoubleClicked( const QModelIndex &index )
 {
-  mSubsetEditor->insertText( mModelFields->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString() );
+  mSubsetEditor->insertText( mModelFields->data( index, static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString() );
   mSubsetEditor->setFocus();
 }
 

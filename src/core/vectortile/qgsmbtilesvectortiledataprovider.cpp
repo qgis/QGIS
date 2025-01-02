@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmbtilesvectortiledataprovider.h"
+#include "moc_qgsmbtilesvectortiledataprovider.cpp"
 #include "qgsthreadingutils.h"
 #include "qgsmbtiles.h"
 #include "qgstiles.h"
@@ -33,7 +34,7 @@
 QString QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY = QStringLiteral( "mbtilesvectortiles" );
 QString QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_DESCRIPTION = QObject::tr( "MBTile Vector Tiles data provider" );
 
-QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, ReadFlags flags )
+QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsVectorTileDataProvider( uri, providerOptions, flags )
 {
   QgsDataSourceUri dsUri;
@@ -235,7 +236,7 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsMbTilesVectorTileDataProvid
          | ProviderMetadataCapability::QuerySublayers;
 }
 
-QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsMbTilesVectorTileDataProvider( uri, options, flags );
 }

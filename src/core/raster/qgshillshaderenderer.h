@@ -68,7 +68,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     /**
      * Returns the band used by the renderer
      *
-     * \deprecated since QGIS 3.38 use inputBand() instead
+     * \deprecated QGIS 3.38. Use inputBand() instead.
      */
     Q_DECL_DEPRECATED int band() const SIP_DEPRECATED { return mBand; }
 
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * Sets the band used by the renderer.
      * \see band
      *
-     * \deprecated since QGIS 3.38 use setInputBand() instead
+     * \deprecated QGIS 3.38. Use setInputBand() instead.
      */
     Q_DECL_DEPRECATED void setBand( int bandNo ) SIP_DEPRECATED;
     bool setInputBand( int band ) override;

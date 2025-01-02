@@ -3,7 +3,7 @@
  *                                                                      *
  * src/3d/qgs3dtypes.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,7 +25,6 @@ Defines enumerations and other auxiliary types for QGIS 3D
 #include "qgs3dtypes.h"
 %End
   public:
-
     enum CullingMode
     {
       NoCulling,
@@ -41,8 +40,6 @@ Defines enumerations and other auxiliary types for QGIS 3D
       Main3DRenderer,
       Selected3DRenderer,
     };
-
-
 };
 
 /************************************************************************
@@ -50,5 +47,5 @@ Defines enumerations and other auxiliary types for QGIS 3D
  *                                                                      *
  * src/3d/qgs3dtypes.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

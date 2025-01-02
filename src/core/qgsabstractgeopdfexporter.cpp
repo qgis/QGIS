@@ -32,7 +32,7 @@
 #include <QUuid>
 #include <QTextStream>
 
-bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
+bool QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable()
 {
   // test if GDAL has read support in PDF driver
   GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
@@ -52,7 +52,7 @@ bool QgsAbstractGeoPdfExporter::geoPDFCreationAvailable()
   return false;
 }
 
-QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
+QString QgsAbstractGeospatialPdfExporter::geospatialPDFAvailabilityExplanation()
 {
   // test if GDAL has read support in PDF driver
   GDALDriverH hDriverMem = GDALGetDriverByName( "PDF" );
@@ -69,10 +69,19 @@ QString QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation()
   if ( pHavePdfium && strstr( pHavePdfium, "YES" ) )
     return QString();
 
-  return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for GeoPDF creation." );
+  return QObject::tr( "GDAL PDF driver was not built with PDF read support. A build with PDF read support is required for geospatial PDF creation." );
 }
 
-bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
+void CPL_STDCALL collectErrors( CPLErr, int, const char *msg )
+{
+  QgsDebugError( QStringLiteral( "GDAL PDF creation error: %1 " ).arg( msg ) );
+  if ( QStringList *errorList = static_cast< QStringList * >( CPLGetErrorHandlerUserData() ) )
+  {
+    errorList->append( QString( msg ) );
+  }
+}
+
+bool QgsAbstractGeospatialPdfExporter::finalize( const QList<ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details )
 {
   if ( details.includeFeatures && !saveTemporaryLayers() )
     return false;
@@ -102,15 +111,41 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   }
   else
   {
-    mErrorMessage = QObject::tr( "Could not create GeoPDF composition file" );
+    mErrorMessage = QObject::tr( "Could not create geospatial PDF composition file" );
     return false;
   }
 
   char **papszOptions = CSLSetNameValue( nullptr, "COMPOSITION_FILE", xmlFilePath.toUtf8().constData() );
 
+  QStringList creationErrors;
+  CPLPushErrorHandlerEx( collectErrors, &creationErrors );
+
   // return a non-null (fake) dataset in case of success, nullptr otherwise.
   gdal::dataset_unique_ptr outputDataset( GDALCreate( driver, destinationFile.toUtf8().constData(), 0, 0, 0, GDT_Unknown, papszOptions ) );
+
+  CPLPopErrorHandler();
+  // Keep explicit comparison to avoid confusing cppcheck
   const bool res = outputDataset.get() != nullptr;
+  if ( !res )
+  {
+    if ( creationErrors.size() == 1 )
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file: %1" ).arg( creationErrors.at( 0 ) );
+    }
+    else if ( !creationErrors.empty() )
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file. Received errors:\n" );
+      for ( const QString &error : std::as_const( creationErrors ) )
+      {
+        mErrorMessage += ( !mErrorMessage.isEmpty() ? QStringLiteral( "\n" ) : QString() ) + error;
+      }
+
+    }
+    else
+    {
+      mErrorMessage = QObject::tr( "Could not create PDF file, but no error details are available" );
+    }
+  }
   outputDataset.reset();
 
   CSLDestroy( papszOptions );
@@ -118,12 +153,12 @@ bool QgsAbstractGeoPdfExporter::finalize( const QList<ComponentLayerDetail> &com
   return res;
 }
 
-QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &filename ) const
+QString QgsAbstractGeospatialPdfExporter::generateTemporaryFilepath( const QString &filename ) const
 {
   return mTemporaryDir.filePath( QgsFileUtils::stringToSafeFilename( filename ) );
 }
 
-bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
+bool QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
 {
   switch ( mode )
   {
@@ -148,7 +183,7 @@ bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionM
   return false;
 }
 
-void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature, const QString &group )
+void QgsAbstractGeospatialPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeospatialPdfExporter::RenderedFeature &feature, const QString &group )
 {
   // because map layers may be rendered in parallel, we need a mutex here
   QMutexLocker locker( &mMutex );
@@ -159,7 +194,7 @@ void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, con
   mCollatedFeatures[ group ][ layerId ].append( f );
 }
 
-bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
+bool QgsAbstractGeospatialPdfExporter::saveTemporaryLayers()
 {
   for ( auto groupIt = mCollatedFeatures.constBegin(); groupIt != mCollatedFeatures.constEnd(); ++groupIt )
   {
@@ -201,7 +236,70 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
   return true;
 }
 
-QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
+///@cond PRIVATE
+struct TreeNode
+{
+  QString id;
+  bool initiallyVisible = false;
+  QString name;
+  QString mutuallyExclusiveGroupId;
+  QString mapLayerId;
+  std::vector< std::unique_ptr< TreeNode > > children;
+  TreeNode *parent = nullptr;
+
+  void addChild( std::unique_ptr< TreeNode > child )
+  {
+    child->parent = this;
+    children.emplace_back( std::move( child ) );
+  }
+
+  QDomElement toElement( QDomDocument &doc ) const
+  {
+    QDomElement layerElement = doc.createElement( QStringLiteral( "Layer" ) );
+    layerElement.setAttribute( QStringLiteral( "id" ), id );
+    layerElement.setAttribute( QStringLiteral( "name" ), name );
+    layerElement.setAttribute( QStringLiteral( "initiallyVisible" ), initiallyVisible ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    if ( !mutuallyExclusiveGroupId.isEmpty() )
+      layerElement.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), mutuallyExclusiveGroupId );
+
+    for ( const auto &child : children )
+    {
+      layerElement.appendChild( child->toElement( doc ) );
+    }
+
+    return layerElement;
+  }
+
+  QDomElement createIfLayerOnElement( QDomDocument &doc, QDomElement &contentElement ) const
+  {
+    QDomElement element = doc.createElement( QStringLiteral( "IfLayerOn" ) );
+    element.setAttribute( QStringLiteral( "layerId" ), id );
+    contentElement.appendChild( element );
+    return element;
+  }
+
+  QDomElement createNestedIfLayerOnElements( QDomDocument &doc, QDomElement &contentElement ) const
+  {
+    TreeNode *currentParent = parent;
+    QDomElement finalElement = doc.createElement( QStringLiteral( "IfLayerOn" ) );
+    finalElement.setAttribute( QStringLiteral( "layerId" ), id );
+
+    QDomElement currentElement = finalElement;
+    while ( currentParent )
+    {
+      QDomElement ifGroupOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
+      ifGroupOn.setAttribute( QStringLiteral( "layerId" ), currentParent->id );
+      ifGroupOn.appendChild( currentElement );
+      currentElement = ifGroupOn;
+      currentParent = currentParent->parent;
+    }
+    contentElement.appendChild( currentElement );
+    return finalElement;
+  }
+};
+///@endcond
+
+QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
 {
   QDomDocument doc;
 
@@ -268,129 +366,147 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   }
   compositionElem.appendChild( metadata );
 
-  QMap< QString, QSet< QString > > createdLayerIds;
-  QMap< QString, QDomElement > groupLayerMap;
-  QMap< QString, QString > customGroupNamesToIds;
+  QSet< QString > createdLayerIds;
+  std::vector< std::unique_ptr< TreeNode > > rootGroups;
+  std::vector< std::unique_ptr< TreeNode > > rootLayers;
+  QMap< QString, TreeNode * > groupNameMap;
 
-  QMultiMap< QString, QDomElement > pendingLayerTreeElements;
+  QStringList layerTreeGroupOrder = details.layerTreeGroupOrder;
+
+  // add any missing groups to end of order
+  // Missing groups from the explicitly set custom layer tree groups
+  for ( auto it = details.customLayerTreeGroups.constBegin(); it != details.customLayerTreeGroups.constEnd(); ++it )
+  {
+    if ( layerTreeGroupOrder.contains( it.value() ) )
+      continue;
+    layerTreeGroupOrder.append( it.value() );
+  }
+
+  // Missing groups from vector components
+  if ( details.includeFeatures )
+  {
+    for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
+    {
+      if ( !component.group.isEmpty() && !layerTreeGroupOrder.contains( component.group ) )
+      {
+        layerTreeGroupOrder.append( component.group );
+      }
+    }
+  }
+
+  // missing groups from other components
+  for ( const ComponentLayerDetail &component : components )
+  {
+    if ( !component.group.isEmpty() && !layerTreeGroupOrder.contains( component.group ) )
+    {
+      layerTreeGroupOrder.append( component.group );
+    }
+  }
+  // now we are confident that we have a definitive list of all the groups for the export
+  QMap< QString, TreeNode * > groupNameToTreeNode;
+  QMap< QString, TreeNode * > layerIdToTreeNode;
+
+  auto createGroup = [&details, &groupNameToTreeNode]( const QString & groupName ) -> std::unique_ptr< TreeNode >
+  {
+    std::unique_ptr< TreeNode > group = std::make_unique< TreeNode >();
+    const QString id = QUuid::createUuid().toString();
+    group->id = id;
+    groupNameToTreeNode[ groupName ] = group.get();
+
+    group->name = groupName;
+    group->initiallyVisible = true;
+    if ( details.mutuallyExclusiveGroups.contains( groupName ) )
+      group->mutuallyExclusiveGroupId = QStringLiteral( "__mutually_exclusive_groups__" );
+    return group;
+  };
 
   if ( details.includeFeatures )
   {
     for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
     {
-      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
-        continue;
+      const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
 
-      QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-      layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
-      layer.setAttribute( QStringLiteral( "initiallyVisible" ), details.initialLayerVisibility.value( component.mapLayerId, true ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+      std::unique_ptr< TreeNode > layer = std::make_unique< TreeNode >();
+      layer->id = destinationGroup.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( destinationGroup, component.mapLayerId );
+      layer->name = details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name;
+      layer->initiallyVisible = details.initialLayerVisibility.value( component.mapLayerId, true );
+      layer->mapLayerId = component.mapLayerId;
 
-      if ( !component.group.isEmpty() )
+      layerIdToTreeNode.insert( component.mapLayerId, layer.get() );
+      if ( !destinationGroup.isEmpty() )
       {
-        if ( groupLayerMap.contains( component.group ) )
+        if ( TreeNode *groupNode = groupNameMap.value( destinationGroup ) )
         {
-          groupLayerMap[ component.group ].appendChild( layer );
+          groupNode->addChild( std::move( layer ) );
         }
         else
         {
-          QDomElement group = doc.createElement( QStringLiteral( "Layer" ) );
-          group.setAttribute( QStringLiteral( "id" ), QStringLiteral( "group_%1" ).arg( component.group ) );
-          group.setAttribute( QStringLiteral( "name" ), component.group );
-          group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-          group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
-          pendingLayerTreeElements.insert( component.mapLayerId, group );
-          group.appendChild( layer );
-          groupLayerMap[ component.group ] = group;
+          std::unique_ptr< TreeNode > group = createGroup( destinationGroup );
+          group->addChild( std::move( layer ) );
+          groupNameMap.insert( destinationGroup, group.get() );
+          rootGroups.emplace_back( std::move( group ) );
         }
       }
       else
       {
-        pendingLayerTreeElements.insert( component.mapLayerId, layer );
+        rootLayers.emplace_back( std::move( layer ) );
       }
 
-      createdLayerIds[ component.group ].insert( component.mapLayerId );
+      createdLayerIds.insert( component.mapLayerId );
     }
   }
-  // some PDF components may not be linked to vector components - e.g. layers with labels but no features (or raster layers)
+
+  // some PDF components may not be linked to vector components - e.g.
+  // - layers with labels but no features
+  // - raster layers
+  // - legends and other map content
   for ( const ComponentLayerDetail &component : components )
   {
-    if ( component.mapLayerId.isEmpty() || createdLayerIds.value( component.group ).contains( component.mapLayerId ) )
+    if ( !component.mapLayerId.isEmpty() && createdLayerIds.contains( component.mapLayerId ) )
       continue;
 
-    if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
+    const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
+    if ( destinationGroup.isEmpty() && component.mapLayerId.isEmpty() )
       continue;
 
-    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-    layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-    layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
-    layer.setAttribute( QStringLiteral( "initiallyVisible" ), details.initialLayerVisibility.value( component.mapLayerId, true ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-
-    if ( !component.group.isEmpty() )
+    std::unique_ptr< TreeNode > mapLayerNode;
+    if ( !component.mapLayerId.isEmpty() )
     {
-      if ( groupLayerMap.contains( component.group ) )
+      mapLayerNode = std::make_unique< TreeNode >();
+      mapLayerNode->id = destinationGroup.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( destinationGroup, component.mapLayerId );
+      mapLayerNode->name = details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId, component.name );
+      mapLayerNode->initiallyVisible = details.initialLayerVisibility.value( component.mapLayerId, true );
+
+      layerIdToTreeNode.insert( component.mapLayerId, mapLayerNode.get() );
+    }
+
+    if ( !destinationGroup.isEmpty() )
+    {
+      if ( TreeNode *groupNode = groupNameMap.value( destinationGroup ) )
       {
-        groupLayerMap[ component.group ].appendChild( layer );
+        if ( mapLayerNode )
+          groupNode->addChild( std::move( mapLayerNode ) );
       }
       else
       {
-        QDomElement group = doc.createElement( QStringLiteral( "Layer" ) );
-        group.setAttribute( QStringLiteral( "id" ), QStringLiteral( "group_%1" ).arg( component.group ) );
-        group.setAttribute( QStringLiteral( "name" ), component.group );
-        group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-        group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
-        pendingLayerTreeElements.insert( component.mapLayerId, group );
-        group.appendChild( layer );
-        groupLayerMap[ component.group ] = group;
+        std::unique_ptr< TreeNode > group = createGroup( destinationGroup );
+        if ( mapLayerNode )
+          group->addChild( std::move( mapLayerNode ) );
+        groupNameMap.insert( destinationGroup, group.get() );
+        rootGroups.emplace_back( std::move( group ) );
       }
     }
     else
     {
-      pendingLayerTreeElements.insert( component.mapLayerId, layer );
+      if ( mapLayerNode )
+        rootLayers.emplace_back( std::move( mapLayerNode ) );
     }
 
-    createdLayerIds[ component.group ].insert( component.mapLayerId );
-  }
-
-  // layertree
-  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
-  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
-
-  // create custom layer tree entries
-  for ( auto it = details.customLayerTreeGroups.constBegin(); it != details.customLayerTreeGroups.constEnd(); ++it )
-  {
-    if ( customGroupNamesToIds.contains( it.value() ) )
-      continue;
-
-    QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
-    const QString id = QUuid::createUuid().toString();
-    customGroupNamesToIds[ it.value() ] = id;
-    layer.setAttribute( QStringLiteral( "id" ), id );
-    layer.setAttribute( QStringLiteral( "name" ), it.value() );
-    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
-    layerTree.appendChild( layer );
-  }
-
-  // start by adding layer tree elements with known layer orders
-  for ( const QString &layerId : details.layerOrder )
-  {
-    const QList< QDomElement> elements = pendingLayerTreeElements.values( layerId );
-    for ( const QDomElement &element : elements )
-      layerTree.appendChild( element );
-  }
-  // then add all the rest (those we don't have an explicit order for)
-  for ( auto it = pendingLayerTreeElements.constBegin(); it != pendingLayerTreeElements.constEnd(); ++it )
-  {
-    if ( details.layerOrder.contains( it.key() ) )
+    if ( !component.mapLayerId.isEmpty() )
     {
-      // already added this one, just above...
-      continue;
+      createdLayerIds.insert( component.mapLayerId );
     }
-
-    layerTree.appendChild( it.value() );
   }
-
-  compositionElem.appendChild( layerTree );
 
   // pages
   QDomElement page = doc.createElement( QStringLiteral( "Page" ) );
@@ -408,10 +524,9 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
   page.appendChild( height );
 
-
   // georeferencing
   int i = 0;
-  for ( const QgsAbstractGeoPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
+  for ( const QgsAbstractGeospatialPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
   {
     QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
     georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced_%1" ).arg( i++ ) );
@@ -423,7 +538,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       QDomElement srs = doc.createElement( QStringLiteral( "SRS" ) );
       // not currently used by GDAL or the PDF spec, but exposed in the GDAL XML schema. Maybe something we'll need to consider down the track...
       // srs.setAttribute( QStringLiteral( "dataAxisToSRSAxisMapping" ), QStringLiteral( "2,1" ) );
-      if ( !section.crs.authid().startsWith( QStringLiteral( "user" ), Qt::CaseInsensitive ) )
+      if ( !section.crs.authid().isEmpty() && !section.crs.authid().startsWith( QStringLiteral( "user" ), Qt::CaseInsensitive ) )
       {
         srs.appendChild( doc.createTextNode( section.crs.authid() ) );
       }
@@ -502,38 +617,22 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   QDomElement content = doc.createElement( QStringLiteral( "Content" ) );
   for ( const ComponentLayerDetail &component : components )
   {
-    if ( component.mapLayerId.isEmpty() )
+    if ( component.mapLayerId.isEmpty() && component.group.isEmpty() )
     {
       content.appendChild( createPdfDatasetElement( component ) );
     }
-    else if ( !component.group.isEmpty() )
+    else if ( !component.mapLayerId.isEmpty() )
     {
-      // if content belongs to a group, we need nested "IfLayerOn" elements, one for the group and one for the layer
-      QDomElement ifGroupOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      ifGroupOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "group_%1" ).arg( component.group ) );
-      QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), customGroupNamesToIds.value( details.customLayerTreeGroups.value( component.mapLayerId ) ) );
-      else if ( component.group.isEmpty() )
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
-      else
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-
-      ifLayerOn.appendChild( createPdfDatasetElement( component ) );
-      ifGroupOn.appendChild( ifLayerOn );
-      content.appendChild( ifGroupOn );
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      {
+        QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, content );
+        ifLayerOnElement.appendChild( createPdfDatasetElement( component ) );
+      }
     }
-    else
+    else if ( TreeNode *groupNode = groupNameToTreeNode.value( component.group ) )
     {
-      QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), customGroupNamesToIds.value( details.customLayerTreeGroups.value( component.mapLayerId ) ) );
-      else if ( component.group.isEmpty() )
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
-      else
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      ifLayerOn.appendChild( createPdfDatasetElement( component ) );
-      content.appendChild( ifLayerOn );
+      QDomElement ifGroupOn = groupNode->createIfLayerOnElement( doc, content );
+      ifGroupOn.appendChild( createPdfDatasetElement( component ) );
     }
   }
 
@@ -542,28 +641,79 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   {
     for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
     {
-      QDomElement ifLayerOn = doc.createElement( QStringLiteral( "IfLayerOn" ) );
-      if ( details.customLayerTreeGroups.contains( component.mapLayerId ) )
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), customGroupNamesToIds.value( details.customLayerTreeGroups.value( component.mapLayerId ) ) );
-      else if ( component.group.isEmpty() )
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
-      else
-        ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
-      vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
-      vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );
-      vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "false" ) );
-      QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
-      logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), component.name );
-      if ( !component.displayAttribute.isEmpty() )
-        logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), component.displayAttribute );
-      vectorDataset.appendChild( logicalStructure );
-      ifLayerOn.appendChild( vectorDataset );
-      content.appendChild( ifLayerOn );
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      {
+        QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, content );
+
+        QDomElement vectorDataset = doc.createElement( QStringLiteral( "Vector" ) );
+        vectorDataset.setAttribute( QStringLiteral( "dataset" ), component.sourceVectorPath );
+        vectorDataset.setAttribute( QStringLiteral( "layer" ), component.sourceVectorLayer );
+        vectorDataset.setAttribute( QStringLiteral( "visible" ), QStringLiteral( "false" ) );
+        QDomElement logicalStructure = doc.createElement( QStringLiteral( "LogicalStructure" ) );
+        logicalStructure.setAttribute( QStringLiteral( "displayLayerName" ), component.name );
+        if ( !component.displayAttribute.isEmpty() )
+          logicalStructure.setAttribute( QStringLiteral( "fieldToDisplay" ), component.displayAttribute );
+        vectorDataset.appendChild( logicalStructure );
+        ifLayerOnElement.appendChild( vectorDataset );
+      }
     }
   }
 
   page.appendChild( content );
+
+  // layertree
+  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
+  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
+
+  // groups are added first
+
+  // sort root groups in desired order
+  std::sort( rootGroups.begin(), rootGroups.end(), [&layerTreeGroupOrder]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool
+  {
+    return layerTreeGroupOrder.indexOf( a->name ) < layerTreeGroupOrder.indexOf( b->name );
+  } );
+
+  bool haveFoundMutuallyExclusiveGroup = false;
+  for ( const auto &node : std::as_const( rootGroups ) )
+  {
+    if ( !node->mutuallyExclusiveGroupId.isEmpty() )
+    {
+      // only the first object in a mutually exclusive group is initially visible
+      node->initiallyVisible = !haveFoundMutuallyExclusiveGroup;
+      haveFoundMutuallyExclusiveGroup = true;
+    }
+    layerTree.appendChild( node->toElement( doc ) );
+  }
+
+  // filter out groups which don't have any content
+  layerTreeGroupOrder.erase( std::remove_if( layerTreeGroupOrder.begin(), layerTreeGroupOrder.end(), [&details]( const QString & group )
+  {
+    return details.customLayerTreeGroups.key( group ).isEmpty();
+  } ), layerTreeGroupOrder.end() );
+
+
+  // then top-level layers
+  std::sort( rootLayers.begin(), rootLayers.end(), [&details]( const std::unique_ptr< TreeNode > &a, const std::unique_ptr< TreeNode > &b ) -> bool
+  {
+    const int indexA = details.layerOrder.indexOf( a->mapLayerId );
+    const int indexB = details.layerOrder.indexOf( b->mapLayerId );
+
+    if ( indexA >= 0 && indexB >= 0 )
+      return indexA < indexB;
+    else if ( indexA >= 0 )
+      return true;
+    else if ( indexB >= 0 )
+      return false;
+
+    return a->name.localeAwareCompare( b->name ) < 0;
+  } );
+
+  for ( const auto &node : std::as_const( rootLayers ) )
+  {
+    layerTree.appendChild( node->toElement( doc ) );
+  }
+
+  compositionElem.appendChild( layerTree );
   compositionElem.appendChild( page );
 
   doc.appendChild( compositionElem );
@@ -575,7 +725,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   return composition;
 }
 
-QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode mode )
+QString QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode mode )
 {
   switch ( mode )
   {

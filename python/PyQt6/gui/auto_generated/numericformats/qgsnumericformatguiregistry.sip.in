@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/numericformats/qgsnumericformatguiregistry.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -45,7 +45,6 @@ The :py:class:`QgsNumericFormatGuiRegistry` is a home for widgets for configurin
 #include "qgsnumericformatguiregistry.h"
 %End
   public:
-
     QgsNumericFormatGuiRegistry();
 %Docstring
 Constructor. Should never be called manually, is already
@@ -79,5 +78,5 @@ Returns ``None`` if no configuration widgets are available for the specified ``f
  *                                                                      *
  * src/gui/numericformats/qgsnumericformatguiregistry.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

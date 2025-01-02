@@ -26,7 +26,7 @@
 
 
 class QgisInterface;
-#ifdef  HAVE_SERVER_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsServerInterface;
 #endif
 
@@ -44,7 +44,6 @@ class QgsServerInterface;
 class PYTHON_EXPORT QgsPythonUtils
 {
   public:
-
     virtual ~QgsPythonUtils() = default;
 
     /**
@@ -218,6 +217,11 @@ class PYTHON_EXPORT QgsPythonUtils
      */
     virtual bool unloadPlugin( const QString &packageName ) = 0;
 
+    /**
+     * Initialize GDAL Python, turning on its exceptions.
+     * \since QGIS 3.38
+     */
+    virtual void initGDAL() = 0;
 };
 
 #endif

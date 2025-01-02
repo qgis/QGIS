@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgssvgcache.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,15 +22,17 @@ This class supports parameter replacement in SVG files according to the SVG para
 
 Supported parameters are:
 
-- ``param``(fill): fill color (with no opacity value)
-- ``param``(fill-opacity): fill color opacity
-- ``param``(outline): outline color (with no opacity value)
-- ``param``(outline-opacity): outline color opacity
-- ``param``(outline-width): width of outline strokes
+- ``param(fill)``: fill color (with no opacity value)
+- ``param(fill-opacity)``: fill color opacity
+- ``param(outline)``: outline color (with no opacity value)
+- ``param(outline-opacity)``: outline color opacity
+- ``param(outline-width)``: width of outline strokes
 
 E.g:
 
-<circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
+.. code-block:: text
+
+       <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
 
 .. note::
 
@@ -93,7 +95,6 @@ Returns an SVG drawing as a QPicture.
    using QPainter.drawPicture( QPointF( 5, 10 ), picture ) it will be drawn centered over the point (5, 10).
    Appropriate translation to the destination painter based on the picture's boundingRect may need to be applied
    if rendering the SVG using the top-left or other reference point is desired.
-
 
 .. warning::
 
@@ -211,12 +212,13 @@ in the same thread to ensure provided the image.
 
   signals:
 
- void statusChanged( const QString  &statusQString ) /Deprecated/;
+ void statusChanged( const QString  &statusQString ) /Deprecated="Since 3.6. No longer emitted."/;
 %Docstring
 Emit a signal to be caught by qgisapp and display a msg on status bar.
 
-.. deprecated::
-   Deprecated since QGIS 3.6 -- no longer emitted.
+.. deprecated:: 3.6
+
+   No longer emitted.
 %End
 
     void remoteSvgFetched( const QString &url );
@@ -238,5 +240,5 @@ Emitted when the cache has finished retrieving an SVG file from a remote ``url``
  *                                                                      *
  * src/core/symbology/qgssvgcache.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

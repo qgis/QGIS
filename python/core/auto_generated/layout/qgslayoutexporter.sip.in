@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/layout/qgslayoutexporter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,6 +20,7 @@ Handles rendering and exports of layouts to various formats.
 #include "qgslayoutexporter.h"
 %End
   public:
+
 
 
 
@@ -122,9 +123,6 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
     struct ImageExportSettings
     {
       ImageExportSettings();
-%Docstring
-Constructor for ImageExportSettings
-%End
 
       double dpi;
 
@@ -144,6 +142,9 @@ Constructor for ImageExportSettings
       QgsLayoutRenderContext::Flags flags;
 
       QVector<qreal> predefinedMapScales;
+
+
+      int quality;
 
     };
 
@@ -178,9 +179,6 @@ to the error description.
     struct PdfExportSettings
     {
       PdfExportSettings();
-%Docstring
-Constructor for PdfExportSettings
-%End
 
       double dpi;
 
@@ -256,9 +254,6 @@ to the error description.
     struct PrintExportSettings
     {
       PrintExportSettings();
-%Docstring
-Constructor for PrintExportSettings
-%End
 
       double dpi;
 
@@ -296,9 +291,6 @@ to the error description.
     struct SvgExportSettings
     {
       SvgExportSettings();
-%Docstring
-Constructor for SvgExportSettings
-%End
 
       double dpi;
 
@@ -350,6 +342,13 @@ to the error description.
 %Docstring
 Returns the file name corresponding to the last error encountered during
 an export.
+%End
+
+    QString errorMessage() const;
+%Docstring
+Returns a string describing the last error encountered during an export.
+
+.. versionadded:: 3.38
 %End
 
     QMap< QString, QgsLabelingResults * > labelingResults();
@@ -435,5 +434,5 @@ Subclasses can override this method to customize page file naming.
  *                                                                      *
  * src/core/layout/qgslayoutexporter.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

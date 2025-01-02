@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layertree/qgscustomlayerorderwidget.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ to the layer tree cause refresh of the list.
 #include "qgscustomlayerorderwidget.h"
 %End
   public:
-
     explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCustomLayerOrderWidget
@@ -43,5 +42,5 @@ Constructor for QgsCustomLayerOrderWidget
  *                                                                      *
  * src/gui/layertree/qgscustomlayerorderwidget.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

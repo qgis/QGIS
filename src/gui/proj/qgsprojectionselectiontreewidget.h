@@ -46,9 +46,10 @@ class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
   public:
     RemoveRecentCrsDelegate( QObject *parent );
     bool eventFilter( QObject *obj, QEvent *event ) override;
+
   protected:
-    void paint( QPainter *painter,
-                const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
   private:
     void setHoveredIndex( const QModelIndex &index );
 
@@ -67,7 +68,7 @@ class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
  * QgsProjectionSelectionDialog dialog. In most cases it is more
  * suitable to use the compact QgsProjectionSelectionWidget widget.
  *
- * \see QgsProjectionSelectionDialog.
+ * \see QgsProjectionSelectionDialog
  * \see QgsProjectionSelectionWidget
  */
 
@@ -76,7 +77,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectionSelectionTreeWidget, with the specified \a parent widget.
      *
@@ -84,8 +84,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * shown in the widget. The default is to show all horizontal and compound CRS in order to match
      * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
-    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 
     ~QgsProjectionSelectionTreeWidget() override;
 
@@ -186,7 +185,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Marks the current selected projection for push to front of recent projections list.
      *
-     * \deprecated Has no effect since QGIS 3.20
+     * \deprecated QGIS 3.40. Has no effect since QGIS 3.20.
      */
     Q_DECL_DEPRECATED void pushProjectionToFront() SIP_DEPRECATED;
 
@@ -206,7 +205,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Notifies others that the widget is now fully initialized, including deferred selection of projection.
-     * \deprecated no longer emitted
+     * \deprecated QGIS 3.40. No longer emitted.
      */
     Q_DECL_DEPRECATED void initialized() SIP_DEPRECATED;
 
@@ -223,7 +222,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void hasValidSelectionChanged( bool isValid );
 
   protected:
-
     // Used to manage column sizes
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -231,7 +229,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private:
-
     void loadUnknownCrs( const QgsCoordinateReferenceSystem &crs );
 
     void selectCrsByAuthId( const QString &authid );
@@ -246,7 +243,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QgsCoordinateReferenceSystemProxyModel *mCrsModel = nullptr;
     QgsRecentCoordinateReferenceSystemTableModel *mRecentCrsModel = nullptr;
 
-    enum Columns { NameColumn, AuthidColumn, ClearColumn };
+    enum Columns
+    {
+      NameColumn,
+      AuthidColumn,
+      ClearColumn
+    };
 
     bool mShowMap = true;
 

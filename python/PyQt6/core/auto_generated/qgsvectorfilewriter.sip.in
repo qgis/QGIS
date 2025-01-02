@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsvectorfilewriter.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -108,10 +108,8 @@ There are two possibilities how to use this class:
 
     struct MetaData
     {
+
       MetaData();
-%Docstring
-Constructor for MetaData
-%End
 
       MetaData( const QString &longName, const QString &trLongName, const QString &glob, const QString &ext, const QMap<QString, QgsVectorFileWriter::Option *> &driverOptions, const QMap<QString, QgsVectorFileWriter::Option *> &layerOptions, const QString &compulsoryEncoding = QString() );
 
@@ -164,10 +162,8 @@ Interface to convert raw field values to their user-friendly value.
 #include "qgsvectorfilewriter.h"
 %End
       public:
+
         FieldValueConverter();
-%Docstring
-Constructor
-%End
 
         virtual ~FieldValueConverter();
 
@@ -249,7 +245,7 @@ Creates a clone of the FieldValueConverter.
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
-                                                                                 ) /Deprecated/;
+                                                                                 ) /Deprecated="Since 3.40. Use writeAsVectorFormatV2() instead."/;
 %Docstring
 Write contents of vector layer to an (OGR supported) vector format
 
@@ -259,7 +255,6 @@ Write contents of vector layer to an (OGR supported) vector format
 :param destCRS: CRS to reproject exported geometries to, or invalid CRS for no reprojection
 :param driverName: OGR driver to use
 :param onlySelected: write only selected features of layer
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
@@ -274,7 +269,10 @@ Write contents of vector layer to an (OGR supported) vector format
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
-.. deprecated::
+:return: - errorMessage: the error message text, if an error occurs while writing the layer
+
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
@@ -298,7 +296,7 @@ Write contents of vector layer to an (OGR supported) vector format
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
-                                                                                 ) /Deprecated/;
+                                                                                 ) /Deprecated="Since 3.40. Use writeAsVectorFormatV2() instead."/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -309,7 +307,6 @@ Writes a layer out to a vector file.
            for no transformation
 :param driverName: OGR driver to use
 :param onlySelected: write only selected features of layer
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
@@ -324,7 +321,10 @@ Writes a layer out to a vector file.
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
-.. deprecated::
+:return: - errorMessage: the error message text, if an error occurs while writing the layer
+
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
@@ -338,10 +338,8 @@ Options to pass to :py:func:`~QgsVectorFileWriter.writeAsVectorFormat`
 #include "qgsvectorfilewriter.h"
 %End
       public:
+
         SaveVectorOptions();
-%Docstring
-Constructor
-%End
 
         virtual ~SaveVectorOptions();
 
@@ -402,7 +400,7 @@ Constructor
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
         QString *errorMessage /Out/ = 0
-                                                                                 ) /Deprecated/;
+                                                                                 ) /Deprecated="Since 3.40. Use writeAsVectorFormatV2() instead."/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -410,9 +408,11 @@ Writes a layer out to a vector file.
 :param fileName: file name to write to
 :param options: options.
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 
-.. deprecated::
+:return: - errorMessage: the error message text, if an error occurs while writing the layer
+
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.
 %End
 
@@ -427,7 +427,14 @@ Writes a layer out to a vector file.
                                            QString *newFilename = 0,
                                            Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
-                                         ) /Deprecated/;
+                                         ) /Deprecated="Since 3.40. Use create() instead."/;
+%Docstring
+Create a new vector file writer
+
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsVectorFileWriter.create` instead.
+%End
 
 
 
@@ -462,7 +469,7 @@ Create a new vector file writer.
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
         QString *newLayer = 0,
-        QString *errorMessage /Out/ = 0 ) /Deprecated/;
+        QString *errorMessage /Out/ = 0 ) /Deprecated="Since 3.20. Use writeAsVectorFormatV3() instead."/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -474,10 +481,11 @@ Writes a layer out to a vector file.
 :param newLayer: potentially modified layer name (output parameter)
 
 :return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
-         - errorMessage: will be set to the error message text, if an error occurs while writing the layer
+         - errorMessage: the error message text, if an error occurs while writing the layer
 
-.. deprecated:: QGIS 3.20
-  use writeAsVectorFormatV3 instead
+.. deprecated:: 3.20
+
+   Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV3` instead.
 %End
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormatV3( QgsVectorLayer *layer,
@@ -494,11 +502,11 @@ Writes a layer out to a vector file.
 :param fileName: file name to write to
 :param transformContext: coordinate transform context
 :param options: save options
-:param newFilename: potentially modified file name (output parameter)
-:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 
 :return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
+         - newFilename: potentially modified file name (output parameter)
          - newLayer: potentially modified layer name (output parameter)
+         - errorMessage: the error message text, if an error occurs while writing the layer
 
 .. versionadded:: 3.20
 %End
@@ -743,5 +751,5 @@ QFlags<QgsVectorFileWriter::VectorFormatOption> operator|(QgsVectorFileWriter::V
  *                                                                      *
  * src/core/qgsvectorfilewriter.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/actions/qgsactionmenu.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,21 +21,16 @@ This class is a menu that is populated automatically with the actions defined fo
 #include "qgsactionmenu.h"
 %End
   public:
-
     struct ActionData
     {
+        ActionData();
+        ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+        ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      ActionData();
-%Docstring
-Constructor for ActionData.
-%End
-      ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
-      ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
-
-      Qgis::ActionType actionType;
-      QVariant actionData;
-      QgsFeatureId featureId;
-      QgsMapLayer *mapLayer;
+        Qgis::ActionType actionType;
+        QVariant actionData;
+        QgsFeatureId featureId;
+        QgsMapLayer *mapLayer;
     };
 
     explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );
@@ -108,7 +103,11 @@ Returns ``True`` if the menu has no valid actions.
 %End
 
   signals:
+
     void reinit();
+%Docstring
+Emitted after actions have been reloaded.
+%End
 
 };
 
@@ -119,5 +118,5 @@ Returns ``True`` if the menu has no valid actions.
  *                                                                      *
  * src/gui/actions/qgsactionmenu.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

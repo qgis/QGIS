@@ -164,8 +164,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
 
     // get the data
     float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
-    if ( GDALRasterIO( mRasterBandH, GF_Read, xPosition, yPositionIO, blockSize, blockSize,
-                       dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+    if ( GDALRasterIO( mRasterBandH, GF_Read, xPosition, yPositionIO, blockSize, blockSize, dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
     {
       result = RasterIoError;
     }
@@ -187,15 +186,14 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
 
         const double pixelValue = weight * calculateKernelValue( distance, radius, mShape, mOutputValues );
         const int pos = xp + blockSize * yp;
-        if ( dataBuffer[ pos ] == NO_DATA )
+        if ( dataBuffer[pos] == NO_DATA )
         {
-          dataBuffer[ pos ] = 0;
+          dataBuffer[pos] = 0;
         }
-        dataBuffer[ pos ] += pixelValue;
+        dataBuffer[pos] += pixelValue;
       }
     }
-    if ( GDALRasterIO( mRasterBandH, GF_Write, xPosition, yPositionIO, blockSize, blockSize,
-                       dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+    if ( GDALRasterIO( mRasterBandH, GF_Write, xPosition, yPositionIO, blockSize, blockSize, dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
     {
       result = RasterIoError;
     }
@@ -243,13 +241,13 @@ bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const Qgs
   if ( GDALSetRasterNoDataValue( poBand, NO_DATA ) != CE_None )
     return false;
 
-  float *line = static_cast< float * >( CPLMalloc( sizeof( float ) * columns ) );
+  float *line = static_cast<float *>( CPLMalloc( sizeof( float ) * columns ) );
   for ( int i = 0; i < columns; i++ )
   {
     line[i] = NO_DATA;
   }
   // Write the empty raster
-  for ( int i = 0; i < rows ; i++ )
+  for ( int i = 0; i < rows; i++ )
   {
     if ( GDALRasterIO( poBand, GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
@@ -417,7 +415,3 @@ QgsRectangle QgsKernelDensityEstimation::calculateBounds() const
   bbox.setYMaximum( bbox.yMaximum() + radius );
   return bbox;
 }
-
-
-
-

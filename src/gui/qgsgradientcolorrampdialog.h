@@ -40,7 +40,6 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     Q_PROPERTY( QgsGradientColorRamp ramp READ ramp WRITE setRamp )
 
   public:
-
     /**
      * Constructor for QgsGradientColorRampDialog.
      * \param ramp initial ramp to show in dialog
@@ -106,13 +105,12 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     void showHelp();
 
   private:
-
     QgsGradientColorRamp mRamp;
     QwtPlotCurve *mLightnessCurve = nullptr;
     QwtPlotCurve *mSaturationCurve = nullptr;
     QwtPlotCurve *mHueCurve = nullptr;
     QwtPlotCurve *mAlphaCurve = nullptr;
-    QList< QwtPlotMarker * > mMarkers;
+    QList<QwtPlotMarker *> mMarkers;
     QgsGradientPlotEventFilter *mPlotFilter = nullptr;
     int mCurrentPlotColorComponent;
     int mCurrentPlotMarkerIndex;
@@ -121,6 +119,9 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     void updatePlot();
     void addPlotMarker( double x, double y, const QColor &color, bool isSelected = false );
     void addMarkersForColor( double x, const QColor &color, bool isSelected = false );
+
+    // Returns TRUE if it's possible to edit direction regarding given colorSpec
+    static bool hasDirection( QColor::Spec colorSpec );
 };
 
 
@@ -130,12 +131,11 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
 // For private only, not part of stable api or exposed to Python bindings
 //
 /// @cond PRIVATE
-class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
+class GUI_EXPORT QgsGradientPlotEventFilter : public QObject
 {
     Q_OBJECT
 
   public:
-
     QgsGradientPlotEventFilter( QwtPlot *plot );
 
     bool eventFilter( QObject *object, QEvent *event ) override;
@@ -147,7 +147,6 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
     void mouseMove( QPointF );
 
   private:
-
     QwtPlot *mPlot = nullptr;
     QPointF mapPoint( QPointF point ) const;
 };

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsgmlschema.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,9 +20,6 @@ Description of feature class in GML
   public:
 
     QgsGmlFeatureClass();
-%Docstring
-Constructor for QgsGmlFeatureClass.
-%End
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
     QList<QgsField> &fields();
@@ -87,5 +84,5 @@ Gets error if :py:func:`~QgsGmlSchema.parseXSD` or :py:func:`~QgsGmlSchema.guess
  *                                                                      *
  * src/core/qgsgmlschema.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

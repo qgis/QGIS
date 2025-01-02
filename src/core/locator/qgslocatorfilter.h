@@ -36,11 +36,17 @@ class QgsLocatorFilter;
  */
 class CORE_EXPORT QgsLocatorResult
 {
+    Q_GADGET
+
+    Q_PROPERTY( QVariant userData READ userData WRITE setUserData )
+    Q_PROPERTY( QString displayString MEMBER displayString )
+    Q_PROPERTY( QString description MEMBER description )
+    Q_PROPERTY( double score MEMBER score )
+    Q_PROPERTY( QString group MEMBER group )
+    Q_PROPERTY( double groupScore MEMBER groupScore )
+
   public:
 
-    /**
-     * Constructor for QgsLocatorResult.
-     */
     QgsLocatorResult() = default;
 
     /**
@@ -101,6 +107,15 @@ class CORE_EXPORT QgsLocatorResult
     QString group;
 
     /**
+     * Specifies the score of the group to allow ordering.
+     * Score must be positive, higher scores are shown first.
+     * If the scores are left to 0 or are identical,
+     * the sorting of groups is made alphabetically.
+     * \since QGIS 3.40
+     */
+    double groupScore = 0;
+
+    /**
      * The ResultAction stores basic information for additional
      * actions to be used in a locator widget for the result.
      * They could be used in a context menu for instance.
@@ -109,7 +124,7 @@ class CORE_EXPORT QgsLocatorResult
     struct CORE_EXPORT ResultAction
     {
       public:
-        //! Constructor for ResultAction
+
         ResultAction() = default;
 
         /**
@@ -270,6 +285,22 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * result.
      */
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
+
+    /**
+     * This is called when the \a result is selected by the user.
+     * The filter subclass can implement logic here.
+     *
+     * \since QGIS 3.40
+     */
+    virtual void resultSelected( const QgsLocatorResult &result ) {Q_UNUSED( result )}
+
+    /**
+     * This is called when a \a result is deselected.
+     * The filter subclass can implement logic here.
+     *
+     * \since QGIS 3.40
+     */
+    virtual void resultDeselected( const QgsLocatorResult &result ) {Q_UNUSED( result )}
 
     /**
      * Triggers a filter \a result from this filter for an entry in the context menu.

@@ -15,9 +15,9 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgsvectorrenderingoptions.h"
+#include "moc_qgsvectorrenderingoptions.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
-#include "qgsvectorsimplifymethod.h"
 #include "qgsvectorlayer.h"
 #include "qgssettingsentryenumflag.h"
 
@@ -34,7 +34,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   QgsSettings settings;
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.enumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), QgsVectorSimplifyMethod::GeometrySimplification ) != QgsVectorSimplifyMethod::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( settings.enumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ) != Qgis::VectorRenderingSimplificationFlag::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( QgsVectorLayer::settingsSimplifyDrawingTol->value() );
   mSimplifyDrawingAtProvider->setChecked( !QgsVectorLayer::settingsSimplifyLocal->value() );
 
@@ -62,10 +62,10 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   mSimplifyMaximumScaleComboBox->setScale( QgsVectorLayer::settingsSimplifyMaxScale->value() );
 
   // Default local simplification algorithm
-  mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), static_cast<int>( QgsVectorSimplifyMethod::Distance ) );
-  mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), static_cast<int>( QgsVectorSimplifyMethod::SnapToGrid ) );
-  mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), static_cast<int>( QgsVectorSimplifyMethod::Visvalingam ) );
-  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QgsVectorLayer::settingsSimplifyAlgorithm->value() ) );
+  mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), QVariant::fromValue( Qgis::VectorSimplificationAlgorithm::Distance ) );
+  mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), QVariant::fromValue( Qgis::VectorSimplificationAlgorithm::SnapToGrid ) );
+  mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), QVariant::fromValue( Qgis::VectorSimplificationAlgorithm::Visvalingam ) );
+  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QVariant::fromValue( QgsVectorLayer::settingsSimplifyAlgorithm->value() ) ) );
 }
 
 QString QgsVectorRenderingOptionsWidget::helpKey() const
@@ -78,20 +78,21 @@ void QgsVectorRenderingOptionsWidget::apply()
   QgsSettings settings;
 
   // Default simplify drawing configuration
-  QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
+  Qgis::VectorRenderingSimplificationFlags simplifyHints = Qgis::VectorRenderingSimplificationFlag::NoSimplification;
   if ( mSimplifyDrawingGroupBox->isChecked() )
   {
-    simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
-    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
+    simplifyHints |= Qgis::VectorRenderingSimplificationFlag::GeometrySimplification;
+    if ( mSimplifyDrawingSpinBox->value() > 1 )
+      simplifyHints |= Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification;
   }
   QgsVectorLayer::settingsSimplifyDrawingHints->setValue( simplifyHints );
-  QgsVectorLayer::settingsSimplifyAlgorithm->setValue( mSimplifyAlgorithmComboBox->currentData().value<QgsVectorSimplifyMethod::SimplifyAlgorithm>() );
+  QgsVectorLayer::settingsSimplifyAlgorithm->setValue( mSimplifyAlgorithmComboBox->currentData().value<Qgis::VectorSimplificationAlgorithm>() );
   QgsVectorLayer::settingsSimplifyDrawingTol->setValue( mSimplifyDrawingSpinBox->value() );
   QgsVectorLayer::settingsSimplifyLocal->setValue( !mSimplifyDrawingAtProvider->isChecked() );
   QgsVectorLayer::settingsSimplifyMaxScale->setValue( mSimplifyMaximumScaleComboBox->scale() );
 
   //curve segmentation
-  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType )mToleranceTypeComboBox->currentData().toInt();
+  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType ) mToleranceTypeComboBox->currentData().toInt();
   settings.setEnumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
   double segmentationTolerance = mSegmentationToleranceSpinBox->value();
   if ( segmentationType == QgsAbstractGeometry::MaximumAngle )
@@ -99,7 +100,6 @@ void QgsVectorRenderingOptionsWidget::apply()
     segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
   }
   settings.setValue( QStringLiteral( "/qgis/segmentationTolerance" ), segmentationTolerance );
-
 }
 
 
@@ -109,7 +109,6 @@ void QgsVectorRenderingOptionsWidget::apply()
 QgsVectorRenderingOptionsFactory::QgsVectorRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon(), QStringLiteral( "vector" ) )
 {
-
 }
 
 QIcon QgsVectorRenderingOptionsFactory::icon() const
@@ -124,5 +123,5 @@ QgsOptionsPageWidget *QgsVectorRenderingOptionsFactory::createWidget( QWidget *p
 
 QStringList QgsVectorRenderingOptionsFactory::path() const
 {
-  return {QStringLiteral( "rendering" ) };
+  return { QStringLiteral( "rendering" ) };
 }

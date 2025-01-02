@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsbookmarkmanager.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -190,8 +190,7 @@ Adds a ``bookmark`` to the manager.
 :param bookmark: the bookmark to add
 
 :return: - The bookmark's ID (or newly generated ID, if no ID was originally set and one was automatically generated)
-         - ok: will be set to ``True`` if the bookmark was successfully added, or ``False`` if the bookmark could not be added (eg as a result of a duplicate bookmark ID).
-
+         - ok: ``True`` if the bookmark was successfully added, or ``False`` if the bookmark could not be added (eg as a result of a duplicate bookmark ID).
 
 .. seealso:: :py:func:`removeBookmark`
 
@@ -339,5 +338,5 @@ Emitted when a bookmark is changed
  *                                                                      *
  * src/core/qgsbookmarkmanager.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

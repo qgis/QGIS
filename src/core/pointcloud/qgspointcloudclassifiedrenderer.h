@@ -33,9 +33,6 @@ class CORE_EXPORT QgsPointCloudCategory
 {
   public:
 
-    /**
-     * Constructor for QgsPointCloudCategory.
-     */
     QgsPointCloudCategory() = default;
 
     /**

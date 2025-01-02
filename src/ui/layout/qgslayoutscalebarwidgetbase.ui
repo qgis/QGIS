@@ -44,7 +44,7 @@
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">padding: 2px; font-weight: bold; sbackground-color: palette(mid);</string>
+      <string notr="true">padding: 2px; font-weight: bold; background-color: palette(mid);</string>
      </property>
      <property name="text">
       <string>Scalebar</string>
@@ -62,14 +62,14 @@
         <x>0</x>
         <y>0</y>
         <width>566</width>
-        <height>1018</height>
+        <height>1031</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Main Properties</string>
@@ -122,7 +122,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxUnits">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Units</string>
@@ -134,10 +134,54 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
-          <item row="2" column="0">
-           <widget class="QLabel" name="mUnitLabelLabel">
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mUnitLabelLineEdit">
+            <property name="toolTip">
+             <string>Text used for labeling the scalebar units, e.g., &quot;m&quot; or &quot;km&quot;. This should be matched to reflect the multiplier above.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="mNumberFormatPushButton">
             <property name="text">
-             <string>&amp;Label for units</string>
+             <string>Customize</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mUnitsComboBox">
+            <property name="toolTip">
+             <string>Specifies the underlying units used for scalebar calculations, e.g., &quot;meters&quot; or &quot;feet&quot;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
+            <property name="toolTip">
+             <string>Specifies how many scalebar units per labeled unit. For example, if your scalebar units are set to &quot;meters&quot;, a multiplier of 1000 will result in the scalebar labels in kilometers.</string>
+            </property>
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="maximum">
+             <double>9999999999999.000000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mUnitsLabel">
+            <property name="text">
+             <string>Scalebar units</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mUnitLabelLabel_2">
+            <property name="text">
+             <string>Number format</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -160,47 +204,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
-            <property name="toolTip">
-             <string>Specifies how many scalebar units per labeled unit. For example, if your scalebar units are set to &quot;meters&quot;, a multiplier of 1000 will result in the scalebar labels in kilometers.</string>
-            </property>
-            <property name="decimals">
-             <number>6</number>
-            </property>
-            <property name="maximum">
-             <double>9999999999999.000000000000000</double>
-            </property>
-            <property name="showClearButton">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="mUnitsComboBox">
-            <property name="toolTip">
-             <string>Specifies the underlying units used for scalebar calculations, e.g., &quot;meters&quot; or &quot;feet&quot;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mUnitsLabel">
+          <item row="2" column="0">
+           <widget class="QLabel" name="mUnitLabelLabel">
             <property name="text">
-             <string>Scalebar units</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="mUnitLabelLineEdit">
-            <property name="toolTip">
-             <string>Text used for labeling the scalebar units, e.g., &quot;m&quot; or &quot;km&quot;. This should be matched to reflect the multiplier above.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mUnitLabelLabel_2">
-            <property name="text">
-             <string>Number format</string>
+             <string>&amp;Label for units</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -210,10 +217,13 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QPushButton" name="mNumberFormatPushButton">
+          <item row="4" column="1">
+           <widget class="QComboBox" name="mMethodCombo"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Customize</string>
+             <string>Method</string>
             </property>
            </widget>
           </item>
@@ -223,7 +233,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxSegments">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Segments</string>
@@ -505,7 +515,7 @@
                <property name="maximum">
                 <double>9999999999999.000000000000000</double>
                </property>
-               <property name="showClearButton">
+               <property name="showClearButton" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
@@ -526,10 +536,10 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Display</string>
+          <string>Appearance</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -538,74 +548,17 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
-          <item row="7" column="0">
-           <widget class="QLabel" name="mFillSymbol1Label">
+          <item row="3" column="0" colspan="3">
+           <widget class="QLabel" name="mLabelVerticalPlacementLabel">
             <property name="text">
-             <string>Primary fill</string>
+             <string>Distance label placement</string>
             </property>
            </widget>
           </item>
-          <item row="13" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mAlignmentComboBox"/>
+          <item row="4" column="0" colspan="3">
+           <widget class="QComboBox" name="mDistanceLabelPlacementComboBox"/>
           </item>
-          <item row="8" column="1" colspan="2">
-           <widget class="QgsSymbolButton" name="mFillSymbol2Button">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Fill Style…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="0">
-           <widget class="QLabel" name="mFontLabel">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="13" column="0">
-           <widget class="QLabel" name="mAlignmentLabel">
-            <property name="text">
-             <string>Alignment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="1" colspan="2">
-           <widget class="QgsFontButton" name="mFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QgsDoubleSpinBox" name="mLabelBarSpaceSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mLabelBarSpaceLabel">
-            <property name="text">
-             <string>Label margin</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1" colspan="2">
+          <item row="5" column="1" colspan="2">
            <widget class="QgsSymbolButton" name="mFillSymbol1Button">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -618,43 +571,11 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="mFillSymbol2Label">
-            <property name="text">
-             <string>Secondary fill</string>
-            </property>
-           </widget>
+          <item row="11" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mAlignmentComboBox"/>
           </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="mDivisionStyleLabel">
-            <property name="text">
-             <string>Division style</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="mLineStyleLabel">
-            <property name="text">
-             <string>Line style</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="3">
-           <widget class="QLabel" name="mLabelVerticalPlacementLabel">
-            <property name="text">
-             <string>Vertical label placement</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="3">
-           <widget class="QLabel" name="mLabelHorizontalPlacementLabel">
-            <property name="text">
-             <string>Horizontal label placement</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="1" colspan="2">
-           <widget class="QgsSymbolButton" name="mLineStyleButton">
+          <item row="10" column="1" colspan="2">
+           <widget class="QgsSymbolButton" name="mSubdivisionStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -662,15 +583,16 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Line Style…</string>
+             <string>Subdivision Style…</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="3">
-           <widget class="QComboBox" name="mLabelVerticalPlacementComboBox"/>
-          </item>
-          <item row="6" column="0" colspan="3">
-           <widget class="QComboBox" name="mLabelHorizontalPlacementComboBox"/>
+          <item row="9" column="0">
+           <widget class="QLabel" name="mDivisionStyleLabel">
+            <property name="text">
+             <string>Division style</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="mBoxSizeLabel">
@@ -689,27 +611,7 @@
             </property>
            </widget>
           </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="mSubdivisionStyleLabel">
-            <property name="text">
-             <string>Subdivision style</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="1" colspan="2">
-           <widget class="QgsSymbolButton" name="mSubdivisionStyleButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Subdivision Style…</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="1" colspan="2">
+          <item row="9" column="1" colspan="2">
            <widget class="QgsSymbolButton" name="mDivisionStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -719,6 +621,104 @@
             </property>
             <property name="text">
              <string>Division Style…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QLabel" name="mFontLabel">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="2">
+           <widget class="QgsSymbolButton" name="mLineStyleButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Line Style…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="mFillSymbol2Label">
+            <property name="text">
+             <string>Secondary fill</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="mSubdivisionStyleLabel">
+            <property name="text">
+             <string>Subdivision style</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mLabelBarSpaceLabel">
+            <property name="text">
+             <string>Label margin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="mFillSymbol1Label">
+            <property name="text">
+             <string>Primary fill</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QgsDoubleSpinBox" name="mLabelBarSpaceSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1" colspan="2">
+           <widget class="QgsSymbolButton" name="mFillSymbol2Button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Fill Style…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1" colspan="2">
+           <widget class="QgsFontButton" name="mFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QLabel" name="mAlignmentLabel">
+            <property name="text">
+             <string>Alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="mLineStyleLabel">
+            <property name="text">
+             <string>Line style</string>
             </property>
            </widget>
           </item>
@@ -792,6 +792,7 @@
   <tabstop>mMapUnitsPerBarUnitSpinBox</tabstop>
   <tabstop>mUnitLabelLineEdit</tabstop>
   <tabstop>mNumberFormatPushButton</tabstop>
+  <tabstop>mMethodCombo</tabstop>
   <tabstop>mGroupBoxSegments</tabstop>
   <tabstop>mSegmentsLeftSpinBox</tabstop>
   <tabstop>mSegmentsLeftDDBtn</tabstop>
@@ -814,8 +815,7 @@
   <tabstop>groupBox_5</tabstop>
   <tabstop>mBoxSizeSpinBox</tabstop>
   <tabstop>mLabelBarSpaceSpinBox</tabstop>
-  <tabstop>mLabelVerticalPlacementComboBox</tabstop>
-  <tabstop>mLabelHorizontalPlacementComboBox</tabstop>
+  <tabstop>mDistanceLabelPlacementComboBox</tabstop>
   <tabstop>mFillSymbol1Button</tabstop>
   <tabstop>mFillSymbol2Button</tabstop>
   <tabstop>mLineStyleButton</tabstop>

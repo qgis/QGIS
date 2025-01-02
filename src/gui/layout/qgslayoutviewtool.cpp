@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtool.h"
+#include "moc_qgslayoutviewtool.cpp"
 #include "qgslayoutview.h"
 #include "qgslayoutviewmouseevent.h"
 
@@ -22,8 +23,7 @@ QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
   , mView( view )
   , mToolName( name )
 {
-  connect( mView, &QgsLayoutView::willBeDeleted, this, [ = ]
-  {
+  connect( mView, &QgsLayoutView::willBeDeleted, this, [=] {
     mView = nullptr;
   } );
 }
@@ -109,7 +109,6 @@ void QgsLayoutViewTool::setAction( QAction *action )
 QAction *QgsLayoutViewTool::action()
 {
   return mAction;
-
 }
 
 void QgsLayoutViewTool::setCursor( const QCursor &cursor )

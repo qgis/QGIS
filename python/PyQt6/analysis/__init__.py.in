@@ -24,6 +24,7 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 from qgis.PyQt import QtCore
 
 from qgis._analysis import *
+from qgis.core import Qgis as _Qgis
 
 # preserve API compatibility following QgsExifTools moved to core
 from qgis.core import QgsExifTools
@@ -31,127 +32,126 @@ from qgis.core import QgsExifTools
 # preserve API compatibility as QgsAlignRaster.Item moved to QgsAlignRasterData.RasterItem
 from qgis.core import QgsAlignRasterData
 
-from qgis.core import Qgis
 QgsAlignRaster.Item = QgsAlignRasterData.RasterItem
 
-QgsAlignRaster.ResampleAlg = Qgis.GdalResampleAlgorithm
+QgsAlignRaster.ResampleAlg = _Qgis.GdalResampleAlgorithm
 # monkey patching scoped based enum
-QgsAlignRaster.RA_NearestNeighbour = Qgis.GdalResampleAlgorithm.RA_NearestNeighbour
+QgsAlignRaster.RA_NearestNeighbour = _Qgis.GdalResampleAlgorithm.RA_NearestNeighbour
 QgsAlignRaster.RA_NearestNeighbour.is_monkey_patched = True
 QgsAlignRaster.RA_NearestNeighbour.__doc__ = "Nearest neighbour (select on one input pixel)"
-QgsAlignRaster.RA_Bilinear = Qgis.GdalResampleAlgorithm.RA_Bilinear
+QgsAlignRaster.RA_Bilinear = _Qgis.GdalResampleAlgorithm.RA_Bilinear
 QgsAlignRaster.RA_Bilinear.is_monkey_patched = True
 QgsAlignRaster.RA_Bilinear.__doc__ = "Bilinear (2x2 kernel)"
-QgsAlignRaster.RA_Cubic = Qgis.GdalResampleAlgorithm.RA_Cubic
+QgsAlignRaster.RA_Cubic = _Qgis.GdalResampleAlgorithm.RA_Cubic
 QgsAlignRaster.RA_Cubic.is_monkey_patched = True
 QgsAlignRaster.RA_Cubic.__doc__ = "Cubic Convolution Approximation (4x4 kernel)"
-QgsAlignRaster.RA_CubicSpline = Qgis.GdalResampleAlgorithm.RA_CubicSpline
+QgsAlignRaster.RA_CubicSpline = _Qgis.GdalResampleAlgorithm.RA_CubicSpline
 QgsAlignRaster.RA_CubicSpline.is_monkey_patched = True
 QgsAlignRaster.RA_CubicSpline.__doc__ = "Cubic B-Spline Approximation (4x4 kernel)"
-QgsAlignRaster.RA_Lanczos = Qgis.GdalResampleAlgorithm.RA_Lanczos
+QgsAlignRaster.RA_Lanczos = _Qgis.GdalResampleAlgorithm.RA_Lanczos
 QgsAlignRaster.RA_Lanczos.is_monkey_patched = True
 QgsAlignRaster.RA_Lanczos.__doc__ = "Lanczos windowed sinc interpolation (6x6 kernel)"
-QgsAlignRaster.RA_Average = Qgis.GdalResampleAlgorithm.RA_Average
+QgsAlignRaster.RA_Average = _Qgis.GdalResampleAlgorithm.RA_Average
 QgsAlignRaster.RA_Average.is_monkey_patched = True
 QgsAlignRaster.RA_Average.__doc__ = "Average (computes the average of all non-NODATA contributing pixels)"
-QgsAlignRaster.RA_Mode = Qgis.GdalResampleAlgorithm.RA_Mode
+QgsAlignRaster.RA_Mode = _Qgis.GdalResampleAlgorithm.RA_Mode
 QgsAlignRaster.RA_Mode.is_monkey_patched = True
 QgsAlignRaster.RA_Mode.__doc__ = "Mode (selects the value which appears most often of all the sampled points)"
-QgsAlignRaster.RA_Max = Qgis.GdalResampleAlgorithm.RA_Max
+QgsAlignRaster.RA_Max = _Qgis.GdalResampleAlgorithm.RA_Max
 QgsAlignRaster.RA_Max.is_monkey_patched = True
 QgsAlignRaster.RA_Max.__doc__ = "Maximum (selects the maximum of all non-NODATA contributing pixels)"
-QgsAlignRaster.RA_Min = Qgis.GdalResampleAlgorithm.RA_Min
+QgsAlignRaster.RA_Min = _Qgis.GdalResampleAlgorithm.RA_Min
 QgsAlignRaster.RA_Min.is_monkey_patched = True
 QgsAlignRaster.RA_Min.__doc__ = "Minimum (selects the minimum of all non-NODATA contributing pixels)"
-QgsAlignRaster.RA_Median = Qgis.GdalResampleAlgorithm.RA_Median
+QgsAlignRaster.RA_Median = _Qgis.GdalResampleAlgorithm.RA_Median
 QgsAlignRaster.RA_Median.is_monkey_patched = True
 QgsAlignRaster.RA_Median.__doc__ = "Median (selects the median of all non-NODATA contributing pixels)"
-QgsAlignRaster.RA_Q1 = Qgis.GdalResampleAlgorithm.RA_Q1
+QgsAlignRaster.RA_Q1 = _Qgis.GdalResampleAlgorithm.RA_Q1
 QgsAlignRaster.RA_Q1.is_monkey_patched = True
 QgsAlignRaster.RA_Q1.__doc__ = "First quartile (selects the first quartile of all non-NODATA contributing pixels)"
-QgsAlignRaster.RA_Q3 = Qgis.GdalResampleAlgorithm.RA_Q3
+QgsAlignRaster.RA_Q3 = _Qgis.GdalResampleAlgorithm.RA_Q3
 QgsAlignRaster.RA_Q3.is_monkey_patched = True
 QgsAlignRaster.RA_Q3.__doc__ = "Third quartile (selects the third quartile of all non-NODATA contributing pixels)"
-Qgis.GdalResampleAlgorithm.__doc__ = "Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)\n\n.. note::\n\n   RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only\n\n.. versionadded:: 3.34\n\n" + '* ``RA_NearestNeighbour``: ' + Qgis.GdalResampleAlgorithm.RA_NearestNeighbour.__doc__ + '\n' + '* ``RA_Bilinear``: ' + Qgis.GdalResampleAlgorithm.RA_Bilinear.__doc__ + '\n' + '* ``RA_Cubic``: ' + Qgis.GdalResampleAlgorithm.RA_Cubic.__doc__ + '\n' + '* ``RA_CubicSpline``: ' + Qgis.GdalResampleAlgorithm.RA_CubicSpline.__doc__ + '\n' + '* ``RA_Lanczos``: ' + Qgis.GdalResampleAlgorithm.RA_Lanczos.__doc__ + '\n' + '* ``RA_Average``: ' + Qgis.GdalResampleAlgorithm.RA_Average.__doc__ + '\n' + '* ``RA_Mode``: ' + Qgis.GdalResampleAlgorithm.RA_Mode.__doc__ + '\n' + '* ``RA_Max``: ' + Qgis.GdalResampleAlgorithm.RA_Max.__doc__ + '\n' + '* ``RA_Min``: ' + Qgis.GdalResampleAlgorithm.RA_Min.__doc__ + '\n' + '* ``RA_Median``: ' + Qgis.GdalResampleAlgorithm.RA_Median.__doc__ + '\n' + '* ``RA_Q1``: ' + Qgis.GdalResampleAlgorithm.RA_Q1.__doc__ + '\n' + '* ``RA_Q3``: ' + Qgis.GdalResampleAlgorithm.RA_Q3.__doc__
+_Qgis.GdalResampleAlgorithm.__doc__ = "Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)\n\n.. note::\n\n   RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only\n\n.. versionadded:: 3.34\n\n" + '* ``RA_NearestNeighbour``: ' + _Qgis.GdalResampleAlgorithm.RA_NearestNeighbour.__doc__ + '\n' + '* ``RA_Bilinear``: ' + _Qgis.GdalResampleAlgorithm.RA_Bilinear.__doc__ + '\n' + '* ``RA_Cubic``: ' + _Qgis.GdalResampleAlgorithm.RA_Cubic.__doc__ + '\n' + '* ``RA_CubicSpline``: ' + _Qgis.GdalResampleAlgorithm.RA_CubicSpline.__doc__ + '\n' + '* ``RA_Lanczos``: ' + _Qgis.GdalResampleAlgorithm.RA_Lanczos.__doc__ + '\n' + '* ``RA_Average``: ' + _Qgis.GdalResampleAlgorithm.RA_Average.__doc__ + '\n' + '* ``RA_Mode``: ' + _Qgis.GdalResampleAlgorithm.RA_Mode.__doc__ + '\n' + '* ``RA_Max``: ' + _Qgis.GdalResampleAlgorithm.RA_Max.__doc__ + '\n' + '* ``RA_Min``: ' + _Qgis.GdalResampleAlgorithm.RA_Min.__doc__ + '\n' + '* ``RA_Median``: ' + _Qgis.GdalResampleAlgorithm.RA_Median.__doc__ + '\n' + '* ``RA_Q1``: ' + _Qgis.GdalResampleAlgorithm.RA_Q1.__doc__ + '\n' + '* ``RA_Q3``: ' + _Qgis.GdalResampleAlgorithm.RA_Q3.__doc__
 # --
-Qgis.GdalResampleAlgorithm.baseClass = Qgis
+_Qgis.GdalResampleAlgorithm.baseClass = _Qgis
 
-QgsZonalStatistics.Statistic = Qgis.ZonalStatistic
+QgsZonalStatistics.Statistic = _Qgis.ZonalStatistic
 # monkey patching scoped based enum
-QgsZonalStatistics.Count = Qgis.ZonalStatistic.Count
+QgsZonalStatistics.Count = _Qgis.ZonalStatistic.Count
 QgsZonalStatistics.Count.is_monkey_patched = True
 QgsZonalStatistics.Count.__doc__ = "Pixel count"
-QgsZonalStatistics.Sum = Qgis.ZonalStatistic.Sum
+QgsZonalStatistics.Sum = _Qgis.ZonalStatistic.Sum
 QgsZonalStatistics.Sum.is_monkey_patched = True
 QgsZonalStatistics.Sum.__doc__ = "Sum of pixel values"
-QgsZonalStatistics.Mean = Qgis.ZonalStatistic.Mean
+QgsZonalStatistics.Mean = _Qgis.ZonalStatistic.Mean
 QgsZonalStatistics.Mean.is_monkey_patched = True
 QgsZonalStatistics.Mean.__doc__ = "Mean of pixel values"
-QgsZonalStatistics.Median = Qgis.ZonalStatistic.Median
+QgsZonalStatistics.Median = _Qgis.ZonalStatistic.Median
 QgsZonalStatistics.Median.is_monkey_patched = True
 QgsZonalStatistics.Median.__doc__ = "Median of pixel values"
-QgsZonalStatistics.StDev = Qgis.ZonalStatistic.StDev
+QgsZonalStatistics.StDev = _Qgis.ZonalStatistic.StDev
 QgsZonalStatistics.StDev.is_monkey_patched = True
 QgsZonalStatistics.StDev.__doc__ = "Standard deviation of pixel values"
-QgsZonalStatistics.Min = Qgis.ZonalStatistic.Min
+QgsZonalStatistics.Min = _Qgis.ZonalStatistic.Min
 QgsZonalStatistics.Min.is_monkey_patched = True
 QgsZonalStatistics.Min.__doc__ = "Min of pixel values"
-QgsZonalStatistics.Max = Qgis.ZonalStatistic.Max
+QgsZonalStatistics.Max = _Qgis.ZonalStatistic.Max
 QgsZonalStatistics.Max.is_monkey_patched = True
 QgsZonalStatistics.Max.__doc__ = "Max of pixel values"
-QgsZonalStatistics.Range = Qgis.ZonalStatistic.Range
+QgsZonalStatistics.Range = _Qgis.ZonalStatistic.Range
 QgsZonalStatistics.Range.is_monkey_patched = True
 QgsZonalStatistics.Range.__doc__ = "Range of pixel values (max - min)"
-QgsZonalStatistics.Minority = Qgis.ZonalStatistic.Minority
+QgsZonalStatistics.Minority = _Qgis.ZonalStatistic.Minority
 QgsZonalStatistics.Minority.is_monkey_patched = True
 QgsZonalStatistics.Minority.__doc__ = "Minority of pixel values"
-QgsZonalStatistics.Majority = Qgis.ZonalStatistic.Majority
+QgsZonalStatistics.Majority = _Qgis.ZonalStatistic.Majority
 QgsZonalStatistics.Majority.is_monkey_patched = True
 QgsZonalStatistics.Majority.__doc__ = "Majority of pixel values"
-QgsZonalStatistics.Variety = Qgis.ZonalStatistic.Variety
+QgsZonalStatistics.Variety = _Qgis.ZonalStatistic.Variety
 QgsZonalStatistics.Variety.is_monkey_patched = True
 QgsZonalStatistics.Variety.__doc__ = "Variety (count of distinct) pixel values"
-QgsZonalStatistics.Variance = Qgis.ZonalStatistic.Variance
+QgsZonalStatistics.Variance = _Qgis.ZonalStatistic.Variance
 QgsZonalStatistics.Variance.is_monkey_patched = True
 QgsZonalStatistics.Variance.__doc__ = "Variance of pixel values"
-QgsZonalStatistics.All = Qgis.ZonalStatistic.All
+QgsZonalStatistics.All = _Qgis.ZonalStatistic.All
 QgsZonalStatistics.All.is_monkey_patched = True
 QgsZonalStatistics.All.__doc__ = "All statistics"
-QgsZonalStatistics.Default = Qgis.ZonalStatistic.Default
+QgsZonalStatistics.Default = _Qgis.ZonalStatistic.Default
 QgsZonalStatistics.Default.is_monkey_patched = True
 QgsZonalStatistics.Default.__doc__ = "Default statistics"
-Qgis.ZonalStatistic.__doc__ = "Statistics to be calculated during a zonal statistics operation.\n\n.. versionadded:: 3.36.\n\n" + '* ``Count``: ' + Qgis.ZonalStatistic.Count.__doc__ + '\n' + '* ``Sum``: ' + Qgis.ZonalStatistic.Sum.__doc__ + '\n' + '* ``Mean``: ' + Qgis.ZonalStatistic.Mean.__doc__ + '\n' + '* ``Median``: ' + Qgis.ZonalStatistic.Median.__doc__ + '\n' + '* ``StDev``: ' + Qgis.ZonalStatistic.StDev.__doc__ + '\n' + '* ``Min``: ' + Qgis.ZonalStatistic.Min.__doc__ + '\n' + '* ``Max``: ' + Qgis.ZonalStatistic.Max.__doc__ + '\n' + '* ``Range``: ' + Qgis.ZonalStatistic.Range.__doc__ + '\n' + '* ``Minority``: ' + Qgis.ZonalStatistic.Minority.__doc__ + '\n' + '* ``Majority``: ' + Qgis.ZonalStatistic.Majority.__doc__ + '\n' + '* ``Variety``: ' + Qgis.ZonalStatistic.Variety.__doc__ + '\n' + '* ``Variance``: ' + Qgis.ZonalStatistic.Variance.__doc__ + '\n' + '* ``All``: ' + Qgis.ZonalStatistic.All.__doc__ + '\n' + '* ``Default``: ' + Qgis.ZonalStatistic.Default.__doc__
+_Qgis.ZonalStatistic.__doc__ = "Statistics to be calculated during a zonal statistics operation.\n\n.. versionadded:: 3.36.\n\n" + '* ``Count``: ' + _Qgis.ZonalStatistic.Count.__doc__ + '\n' + '* ``Sum``: ' + _Qgis.ZonalStatistic.Sum.__doc__ + '\n' + '* ``Mean``: ' + _Qgis.ZonalStatistic.Mean.__doc__ + '\n' + '* ``Median``: ' + _Qgis.ZonalStatistic.Median.__doc__ + '\n' + '* ``StDev``: ' + _Qgis.ZonalStatistic.StDev.__doc__ + '\n' + '* ``Min``: ' + _Qgis.ZonalStatistic.Min.__doc__ + '\n' + '* ``Max``: ' + _Qgis.ZonalStatistic.Max.__doc__ + '\n' + '* ``Range``: ' + _Qgis.ZonalStatistic.Range.__doc__ + '\n' + '* ``Minority``: ' + _Qgis.ZonalStatistic.Minority.__doc__ + '\n' + '* ``Majority``: ' + _Qgis.ZonalStatistic.Majority.__doc__ + '\n' + '* ``Variety``: ' + _Qgis.ZonalStatistic.Variety.__doc__ + '\n' + '* ``Variance``: ' + _Qgis.ZonalStatistic.Variance.__doc__ + '\n' + '* ``All``: ' + _Qgis.ZonalStatistic.All.__doc__ + '\n' + '* ``Default``: ' + _Qgis.ZonalStatistic.Default.__doc__
 # --
-Qgis.ZonalStatistic.baseClass = Qgis
-QgsZonalStatistics.Statistics = Qgis.ZonalStatistics
-Qgis.ZonalStatistics.baseClass = Qgis
-ZonalStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
-QgsZonalStatistics.Result = Qgis.ZonalStatisticResult
+_Qgis.ZonalStatistic.baseClass = _Qgis
+QgsZonalStatistics.Statistics = _Qgis.ZonalStatistics
+_Qgis.ZonalStatistics.baseClass = _Qgis
+ZonalStatistics = _Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsZonalStatistics.Result = _Qgis.ZonalStatisticResult
 # monkey patching scoped based enum
-QgsZonalStatistics.Success = Qgis.ZonalStatisticResult.Success
+QgsZonalStatistics.Success = _Qgis.ZonalStatisticResult.Success
 QgsZonalStatistics.Success.is_monkey_patched = True
 QgsZonalStatistics.Success.__doc__ = "Success"
-QgsZonalStatistics.LayerTypeWrong = Qgis.ZonalStatisticResult.LayerTypeWrong
+QgsZonalStatistics.LayerTypeWrong = _Qgis.ZonalStatisticResult.LayerTypeWrong
 QgsZonalStatistics.LayerTypeWrong.is_monkey_patched = True
 QgsZonalStatistics.LayerTypeWrong.__doc__ = "Layer is not a polygon layer"
-QgsZonalStatistics.LayerInvalid = Qgis.ZonalStatisticResult.LayerInvalid
+QgsZonalStatistics.LayerInvalid = _Qgis.ZonalStatisticResult.LayerInvalid
 QgsZonalStatistics.LayerInvalid.is_monkey_patched = True
 QgsZonalStatistics.LayerInvalid.__doc__ = "Layer is invalid"
-QgsZonalStatistics.RasterInvalid = Qgis.ZonalStatisticResult.RasterInvalid
+QgsZonalStatistics.RasterInvalid = _Qgis.ZonalStatisticResult.RasterInvalid
 QgsZonalStatistics.RasterInvalid.is_monkey_patched = True
 QgsZonalStatistics.RasterInvalid.__doc__ = "Raster layer is invalid"
-QgsZonalStatistics.RasterBandInvalid = Qgis.ZonalStatisticResult.RasterBandInvalid
+QgsZonalStatistics.RasterBandInvalid = _Qgis.ZonalStatisticResult.RasterBandInvalid
 QgsZonalStatistics.RasterBandInvalid.is_monkey_patched = True
 QgsZonalStatistics.RasterBandInvalid.__doc__ = "The raster band does not exist on the raster layer"
-QgsZonalStatistics.FailedToCreateField = Qgis.ZonalStatisticResult.FailedToCreateField
+QgsZonalStatistics.FailedToCreateField = _Qgis.ZonalStatisticResult.FailedToCreateField
 QgsZonalStatistics.FailedToCreateField.is_monkey_patched = True
 QgsZonalStatistics.FailedToCreateField.__doc__ = "Output fields could not be created"
-QgsZonalStatistics.Canceled = Qgis.ZonalStatisticResult.Canceled
+QgsZonalStatistics.Canceled = _Qgis.ZonalStatisticResult.Canceled
 QgsZonalStatistics.Canceled.is_monkey_patched = True
 QgsZonalStatistics.Canceled.__doc__ = "Algorithm was canceled"
-Qgis.ZonalStatisticResult.__doc__ = "Zonal statistics result codes.\n\n.. versionadded:: 3.36.\n\n" + '* ``Success``: ' + Qgis.ZonalStatisticResult.Success.__doc__ + '\n' + '* ``LayerTypeWrong``: ' + Qgis.ZonalStatisticResult.LayerTypeWrong.__doc__ + '\n' + '* ``LayerInvalid``: ' + Qgis.ZonalStatisticResult.LayerInvalid.__doc__ + '\n' + '* ``RasterInvalid``: ' + Qgis.ZonalStatisticResult.RasterInvalid.__doc__ + '\n' + '* ``RasterBandInvalid``: ' + Qgis.ZonalStatisticResult.RasterBandInvalid.__doc__ + '\n' + '* ``FailedToCreateField``: ' + Qgis.ZonalStatisticResult.FailedToCreateField.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ZonalStatisticResult.Canceled.__doc__
+_Qgis.ZonalStatisticResult.__doc__ = "Zonal statistics result codes.\n\n.. versionadded:: 3.36.\n\n" + '* ``Success``: ' + _Qgis.ZonalStatisticResult.Success.__doc__ + '\n' + '* ``LayerTypeWrong``: ' + _Qgis.ZonalStatisticResult.LayerTypeWrong.__doc__ + '\n' + '* ``LayerInvalid``: ' + _Qgis.ZonalStatisticResult.LayerInvalid.__doc__ + '\n' + '* ``RasterInvalid``: ' + _Qgis.ZonalStatisticResult.RasterInvalid.__doc__ + '\n' + '* ``RasterBandInvalid``: ' + _Qgis.ZonalStatisticResult.RasterBandInvalid.__doc__ + '\n' + '* ``FailedToCreateField``: ' + _Qgis.ZonalStatisticResult.FailedToCreateField.__doc__ + '\n' + '* ``Canceled``: ' + _Qgis.ZonalStatisticResult.Canceled.__doc__
 # --
-Qgis.ZonalStatisticResult.baseClass = Qgis
+_Qgis.ZonalStatisticResult.baseClass = _Qgis
 
 
 @MONKEYPATCH_INJECTIONS@

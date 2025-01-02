@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetableaddcolumndialog.h"
+#include "moc_qgsrasterattributetableaddcolumndialog.cpp"
 #include "qgsrasterattributetable.h"
 #include "qgsgui.h"
 
@@ -29,15 +30,15 @@ QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( 
 
   setupUi( this );
 
-  connect( mName, &QLineEdit::textChanged, this, [ = ]( const QString & ) { updateDialog(); } );
-  connect( mStandardColumn, &QRadioButton::toggled, this, [ = ]( bool ) { updateDialog(); } );
-  connect( mColor, &QRadioButton::toggled, this, [ = ]( bool ) { updateDialog(); } );
-  connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateDialog(); } );
+  connect( mName, &QLineEdit::textChanged, this, [=]( const QString & ) { updateDialog(); } );
+  connect( mStandardColumn, &QRadioButton::toggled, this, [=]( bool ) { updateDialog(); } );
+  connect( mColor, &QRadioButton::toggled, this, [=]( bool ) { updateDialog(); } );
+  connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { updateDialog(); } );
 
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::String ), tr( "String" ), static_cast<int>( QVariant::Type::String ) );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Int ), tr( "Integer" ), static_cast<int>( QVariant::Type::Int ) );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::LongLong ), tr( "Long Integer" ), static_cast<int>( QVariant::Type::LongLong ) );
-  mDataType->addItem( QgsFields::iconForFieldType( QVariant::Type::Double ), tr( "Double" ), static_cast<int>( QVariant::Type::Double ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), tr( "String" ), static_cast<int>( QMetaType::Type::QString ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), tr( "Integer" ), static_cast<int>( QMetaType::Type::Int ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::LongLong ), tr( "Long Integer" ), static_cast<int>( QMetaType::Type::LongLong ) );
+  mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), tr( "Double" ), static_cast<int>( QMetaType::Type::Double ) );
   mStandardColumn->setChecked( true );
 
   updateDialog();
@@ -74,12 +75,12 @@ QString QgsRasterAttributeTableAddColumnDialog::name() const
 
 Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTableAddColumnDialog::usage() const
 {
-  return static_cast<Qgis::RasterAttributeTableFieldUsage>( mUsage->currentData( ).toInt( ) );
+  return static_cast<Qgis::RasterAttributeTableFieldUsage>( mUsage->currentData().toInt() );
 }
 
-QVariant::Type QgsRasterAttributeTableAddColumnDialog::type() const
+QMetaType::Type QgsRasterAttributeTableAddColumnDialog::type() const
 {
-  return static_cast<QVariant::Type>( mDataType->currentData( ).toInt( ) );
+  return static_cast<QMetaType::Type>( mDataType->currentData().toInt() );
 }
 
 void QgsRasterAttributeTableAddColumnDialog::updateDialog()
@@ -91,9 +92,9 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
   QList<Qgis::RasterAttributeTableFieldUsage> usages;
   usages = mAttributeTable->usages();
   const bool hasMinMax { usages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) };
-  const bool hasMinAndMax { usages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) &&usages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) };
-  const bool canAddMinMax { !hasMinMax &&mAttributeTable->type() == Qgis::RasterAttributeTableType::Thematic };
-  const bool canAddMinAndMax { !hasMinAndMax &&mAttributeTable->type() == Qgis::RasterAttributeTableType::Athematic };
+  const bool hasMinAndMax { usages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) };
+  const bool canAddMinMax { !hasMinMax && mAttributeTable->type() == Qgis::RasterAttributeTableType::Thematic };
+  const bool canAddMinAndMax { !hasMinAndMax && mAttributeTable->type() == Qgis::RasterAttributeTableType::Athematic };
 
   if ( mAttributeTable->hasColor() || mAttributeTable->hasRamp() )
   {
@@ -139,7 +140,7 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
 
   const QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> usageInfo { QgsRasterAttributeTable::usageInformation() };
 
-  const int currentUsageIndex { mUsage->currentIndex()};
+  const int currentUsageIndex { mUsage->currentIndex() };
   const QSignalBlocker usageBlocker( mUsage );
   mUsage->clear();
 
@@ -149,13 +150,9 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
     // We don't want duplicated columns or columns that are not suitable for color or ramps
     // if they are already there, it could be a single if condition but it is more readable
     // this way
-    if ( ! it.value().unique || ! usages.contains( it.key() ) )
+    if ( !it.value().unique || !usages.contains( it.key() ) )
     {
-      if ( ( it.key() == Qgis::RasterAttributeTableFieldUsage::MinMax && ! canAddMinMax ) ||
-           ( it.key() == Qgis::RasterAttributeTableFieldUsage::Min && ! canAddMinAndMax ) ||
-           ( it.key() == Qgis::RasterAttributeTableFieldUsage::Max && ! canAddMinAndMax ) ||
-           ( it.value().isColor ) ||
-           ( it.value().isRamp ) )
+      if ( ( it.key() == Qgis::RasterAttributeTableFieldUsage::MinMax && !canAddMinMax ) || ( it.key() == Qgis::RasterAttributeTableFieldUsage::Min && !canAddMinAndMax ) || ( it.key() == Qgis::RasterAttributeTableFieldUsage::Max && !canAddMinAndMax ) || ( it.value().isColor ) || ( it.value().isRamp ) )
       {
         continue;
       }
@@ -169,7 +166,7 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
   int currentIndex { mColumn->currentIndex() };
   if ( mColumn->currentIndex() < 0 )
   {
-    currentIndex = fields.count( ) - 1;
+    currentIndex = fields.count() - 1;
   }
 
   const QSignalBlocker columnBlocker( mColumn );
@@ -178,13 +175,12 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
   {
     mColumn->addItem( field.name );
   }
-  mColumn->setCurrentIndex( std::clamp( currentIndex, 0, static_cast<int>( fields.count( ) - 1 ) ) );
+  mColumn->setCurrentIndex( std::clamp( currentIndex, 0, static_cast<int>( fields.count() - 1 ) ) );
 
-  if ( ! isValid )
+  if ( !isValid )
   {
     mError->show();
   }
 
   mButtonBox->button( QDialogButtonBox::StandardButton::Ok )->setEnabled( isValid );
-
 }

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ A widget to configure layer tree embedded widgets for a particular map layer.
 #include "qgslayertreeembeddedconfigwidget.h"
 %End
   public:
-
     QgsLayerTreeEmbeddedConfigWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 A widget to configure layer tree embedded widgets for a particular map layer.
@@ -44,5 +43,5 @@ Store changes made in the widget to the layer
  *                                                                      *
  * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

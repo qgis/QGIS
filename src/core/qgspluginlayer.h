@@ -64,6 +64,12 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
 
+    /**
+     * Returns an icon for the layer.
+     * \since QGIS 3.42
+     */
+    virtual QIcon icon() const;
+
   protected:
     QString mPluginLayerType;
     QgsDataProvider *mDataProvider;
@@ -82,7 +88,7 @@ class QgsPluginLayerDataProvider : public QgsDataProvider
   public:
     QgsPluginLayerDataProvider( const QString &layerType,
                                 const QgsDataProvider::ProviderOptions &providerOptions,
-                                QgsDataProvider::ReadFlags flags );
+                                Qgis::DataProviderReadFlags flags );
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;

@@ -144,7 +144,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**
      * Returns the raster band used for rendering the raster.
      *
-     * \deprecated since QGIS 3.38 use inputBand() instead
+     * \deprecated QGIS 3.38. Use inputBand() instead.
      */
     Q_DECL_DEPRECATED int band() const SIP_DEPRECATED { return mBand; }
 

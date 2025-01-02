@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsscrollarea.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,6 @@ of QScrollArea.
 #include "qgsscrollarea.h"
 %End
   public:
-
     explicit QgsScrollArea( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScrollArea.
@@ -70,5 +69,5 @@ the scroll area widget.
  *                                                                      *
  * src/gui/qgsscrollarea.h                                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

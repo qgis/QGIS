@@ -3,13 +3,13 @@
  *                                                                      *
  * src/analysis/processing/qgsnativealgorithms.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsNativeAlgorithms: QgsProcessingProvider
+class QgsNativeAlgorithms : QgsProcessingProvider
 {
 %Docstring(signature="appended")
 Native c++ processing algorithm provider.
@@ -19,7 +19,6 @@ Native c++ processing algorithm provider.
 #include "qgsnativealgorithms.h"
 %End
   public:
-
     QgsNativeAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for QgsNativeAlgorithms.
@@ -41,18 +40,14 @@ Constructor for QgsNativeAlgorithms.
 
 
   protected:
-
     virtual void loadAlgorithms();
 
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/analysis/processing/qgsnativealgorithms.h                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayerprofilegenerator.h"
+#include "qgsabstractgeometry.h"
+#include "qgspolyhedralsurface.h"
 #include "qgsprofilerequest.h"
 #include "qgscurve.h"
 #include "qgsvectorlayer.h"
@@ -673,7 +675,7 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTerrainProvider( request.terrainProvider() ? request.terrainProvider()->clone() : nullptr )
   , mTolerance( request.tolerance() )
-  , mSourceCrs( layer->crs() )
+  , mSourceCrs( layer->crs3D() )
   , mTargetCrs( request.crs() )
   , mTransformContext( request.transformContext() )
   , mExtent( layer->extent() )
@@ -720,6 +722,72 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
+  if ( QgsLineString *profileLine =
+         qgsgeometry_cast<QgsLineString *>( mProfileCurve.get() ) )
+  {
+    // The profile generation code can't deal with curves that enter a single
+    // point multiple times. We handle this for line strings by splitting them
+    // into multiple parts, each with no repeated points, and computing the
+    // profile for each by itself.
+    std::unique_ptr< QgsCurve > origCurve = std::move( mProfileCurve );
+    std::unique_ptr< QgsVectorLayerProfileResults > totalResults;
+    double distanceProcessed = 0;
+
+    QVector<QgsLineString *> disjointParts = profileLine->splitToDisjointXYParts();
+    for ( int i = 0; i < disjointParts.size(); i++ )
+    {
+      mProfileCurve.reset( disjointParts[i] );
+      if ( !generateProfileInner() )
+      {
+        mProfileCurve = std::move( origCurve );
+
+        // Free the rest of the parts
+        for ( int j = i + 1; j < disjointParts.size(); j++ )
+          delete disjointParts[j];
+
+        return false;
+      }
+
+      if ( !totalResults )
+        // Use the first result set as a base
+        totalResults.reset( mResults.release() );
+      else
+      {
+        // Merge the results, shifting them by distanceProcessed
+        totalResults->mRawPoints.append( mResults->mRawPoints );
+        totalResults->minZ = std::min( totalResults->minZ, mResults->minZ );
+        totalResults->maxZ = std::max( totalResults->maxZ, mResults->maxZ );
+        for ( auto it = mResults->mDistanceToHeightMap.constKeyValueBegin();
+              it != mResults->mDistanceToHeightMap.constKeyValueEnd();
+              ++it )
+        {
+          totalResults->mDistanceToHeightMap[it->first + distanceProcessed] = it->second;
+        }
+        for ( auto it = mResults->features.constKeyValueBegin();
+              it != mResults->features.constKeyValueEnd();
+              ++it )
+        {
+          for ( QgsVectorLayerProfileResults::Feature feature : it->second )
+          {
+            feature.crossSectionGeometry.translate( distanceProcessed, 0 );
+            totalResults->features[it->first].push_back( feature );
+          }
+        }
+      }
+
+      distanceProcessed += mProfileCurve->length();
+    }
+
+    mProfileCurve = std::move( origCurve );
+    mResults.reset( totalResults.release() );
+    return true;
+  }
+
+  return generateProfileInner();
+}
+
+bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGenerationContext & )
+{
   // we need to transform the profile curve to the vector's CRS
   mTransformedCurve.reset( mProfileCurve->clone() );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
@@ -806,7 +874,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
 {
   // get features from layer
   QgsFeatureRequest request;
-  request.setDestinationCrs( mTargetCrs, mTransformContext );
+  request.setCoordinateTransform( QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext ) );
   request.setDistanceWithin( QgsGeometry( mProfileCurve->clone() ), mTolerance );
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
@@ -1375,8 +1443,12 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           intersection.reset( mProfileBufferedCurveEngine->intersection( shiftedPoly.get(), &error ) );
           if ( intersection.get() )
             processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
+#ifdef QGISDEBUG
           else
+          {
             QgsDebugMsgLevel( QStringLiteral( "processPolygon after shift bad geom! error: %1" ).arg( error ), 0 );
+          }
+#endif
         }
       }
 
@@ -1395,6 +1467,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
       {
         const QgsRectangle bounds = clampedPolygon->boundingBox();
         QgsTessellator t( bounds, false, false, false, false );
+        t.setOutputZUp( true );
         t.addPolygon( *clampedPolygon, 0 );
 
         tessellation = QgsGeometry( t.asMultiPolygon() );
@@ -1495,7 +1568,25 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     {
       if ( mProfileBufferedCurveEngine->intersects( *it ) )
       {
-        processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( *it ), transformedParts, crossSectionParts, offset, wasCollinear );
+        if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( *it ) )
+        {
+          processPolygon( curvePolygon, transformedParts, crossSectionParts, offset, wasCollinear );
+        }
+        else if ( const QgsPolyhedralSurface *polySurface = qgsgeometry_cast< const QgsPolyhedralSurface * >( *it ) )
+        {
+          for ( int i = 0; i < polySurface->numPatches(); ++i )
+          {
+            const QgsPolygon *polygon = polySurface->patchN( i );
+            if ( mProfileBufferedCurveEngine->intersects( polygon ) )
+            {
+              processPolygon( polygon, transformedParts, crossSectionParts, offset, wasCollinear );
+            }
+          }
+        }
+        else
+        {
+          QgsDebugError( QStringLiteral( "Unhandled Geometry type: %1" ).arg( ( *it )->wktTypeStr() ) );
+        }
       }
     }
 

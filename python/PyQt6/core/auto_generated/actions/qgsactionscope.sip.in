@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/actions/qgsactionscope.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,20 +15,28 @@ additional expression variables.
 
 Each :py:class:`QgsAction` can be available in one or several action scopes.
 
-Examples:
----------
+Examples
+======================================
 
-<dl>
-<dt>Canvas</dt>
-<dd>Show for canvas tools. Adds `@click_x` and `@click_y` in map coordinates.</dd>
-<dt>Feature</dt>
-<dd>Show in feature specific places like the attribute table or feature
-form.</dd>
-<dt>Field</dt>
-<dd>Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.</dd>
-<dt>Layer</dt>
-<dd>Show in attribute table and work on the layer or selection.</dd>
-</dl>
+Canvas
+------------------------------------
+
+Show for canvas tools. Adds `@click_x` and `@click_y` in map coordinates.
+
+Feature
+-------------------------------------
+
+Show in feature specific places like the attribute table or feature form.
+
+Field
+-----------------------------------
+
+Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.
+
+Layer
+-----------------------------------
+
+Show in attribute table and work on the layer or selection.
 %End
 
 %TypeHeaderCode
@@ -55,50 +63,85 @@ of the corresponding properties.
 
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring
+Returns the expression context scope for the action scope.
+
 An expression scope may offer additional variables for an action scope.
 This can be an `field_name` for the attribute which was clicked or
 `click_x` and `click_y` for actions which are available as map canvas clicks.
+
+.. seealso:: :py:func:`setExpressionContextScope`
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
 %Docstring
-\copydoc :py:func:`~QgsActionScope.expressionContextScope`
+Sets the expression context scope for the action scope.
+
+An expression scope may offer additional variables for an action scope.
+This can be an `field_name` for the attribute which was clicked or
+`click_x` and `click_y` for actions which are available as map canvas clicks.
+
+.. seealso:: :py:func:`expressionContextScope`
 %End
 
     QString id() const;
 %Docstring
-A unique identifier for this action scope.
+Returns the unique identifier for this action scope.
+
+.. seealso:: :py:func:`setId`
 %End
 
     void setId( const QString &id );
 %Docstring
-\copydoc :py:func:`~QgsActionScope.id`
+Sets the unique ``id`` for this action scope.
+
+.. seealso:: :py:func:`id`
 %End
 
     QString title() const;
 %Docstring
+Returns the action scope's title.
+
 The title is a human readable and translated string that will be
 presented to the user in the properties dialog.
+
+.. seealso:: :py:func:`setTitle`
 %End
+
     void setTitle( const QString &title );
 %Docstring
-\copydoc :py:func:`~QgsActionScope.title`
+Sets the action scope's ``title``.
+
+The title should be a human readable and translated string that will be
+presented to the user in the properties dialog.
+
+.. seealso:: :py:func:`title`
 %End
 
     QString description() const;
 %Docstring
+Returns the action scope's description.
+
 The description should be a longer description of where actions in this scope
 are available. It is not necessary to list the available expression variables
 in here, they are extracted automatically from the :py:func:`~QgsActionScope.expressionContextScope`.
+
+.. seealso:: :py:func:`setDescription`
 %End
+
     void setDescription( const QString &description );
 %Docstring
-\copydoc :py:func:`~QgsActionScope.description`
+Sets the action scope's ``description``.
+
+The description should be a longer description of where actions in this scope
+are available. It is not necessary to list the available expression variables
+in here, they are extracted automatically from the :py:func:`~QgsActionScope.expressionContextScope`.
+
+.. seealso:: :py:func:`description`
 %End
 
     bool isValid() const;
 %Docstring
-Returns if this scope is valid.
+Returns ``True`` if this scope is valid.
 %End
     Py_hash_t __hash__();
 %MethodCode
@@ -113,5 +156,5 @@ Returns if this scope is valid.
  *                                                                      *
  * src/core/actions/qgsactionscope.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

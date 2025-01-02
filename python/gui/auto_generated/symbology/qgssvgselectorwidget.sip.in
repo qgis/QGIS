@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgssvgselectorwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,7 +27,6 @@ initial creation of the model is responsive and does not block the GUI.
 #include "qgssvgselectorwidget.h"
 %End
   public:
-
     QgsSvgSelectorFilterModel( QObject *parent /TransferThis/, const QString &path = QString(), int iconSize = 30 );
 %Docstring
 Constructor for creating a model for SVG files in a specific path.
@@ -51,7 +50,6 @@ not block the GUI.
 #include "qgssvgselectorwidget.h"
 %End
   public:
-
     QgsSvgSelectorListModel( QObject *parent /TransferThis/, int iconSize = 30 );
 %Docstring
 Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
@@ -99,12 +97,15 @@ not block the GUI.
 
 class QgsSvgSelectorWidget : QWidget
 {
+%Docstring(signature="appended")
+
+A widget allowing selection of an SVG file, and configuration of SVG related parameters.
+%End
 
 %TypeHeaderCode
 #include "qgssvgselectorwidget.h"
 %End
   public:
-
     QgsSvgSelectorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSvgSelectorWidget
@@ -133,14 +134,15 @@ Defines if the group box to fill parameters is visible
 .. versionadded:: 3.18
 %End
 
- bool allowParamerters() const /Deprecated/;
+ bool allowParamerters() const /Deprecated="Since 3.40. Use allowParameters()."/;
 %Docstring
 Returns if the group box to fill parameters is visible
 
 .. versionadded:: 3.18
 
-.. deprecated::
-   Use :py:func:`~QgsSvgSelectorWidget.allowParameters`
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsSvgSelectorWidget.allowParameters`.
 %End
 
     bool allowParameters() const;
@@ -185,7 +187,11 @@ Sets the dynamic parameters
 %End
 
   signals:
+
     void svgSelected( const QString &path );
+%Docstring
+Emitted when an SVG is selected in the widget.
+%End
 
     void svgParametersChanged( const QMap<QString, QgsProperty> &parameters );
 %Docstring
@@ -206,11 +212,7 @@ class QgsSvgSelectorDialog : QDialog
 #include "qgssvgselectorwidget.h"
 %End
   public:
-
-    QgsSvgSelectorDialog( QWidget *parent /TransferThis/ = 0,
-                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-                          QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
-                          Qt::Orientation orientation = Qt::Horizontal );
+    QgsSvgSelectorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok, Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
 Constructor for QgsSvgSelectorDialog.
 %End
@@ -228,5 +230,5 @@ Returns pointer to the embedded SVG selector widget
  *                                                                      *
  * src/gui/symbology/qgssvgselectorwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

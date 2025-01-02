@@ -35,21 +35,12 @@ class CORE_EXPORT QgsArchive
 {
   public:
 
-    /**
-     * Constructor
-     */
     QgsArchive();
 
-    /**
-     * Copy constructor
-     */
     QgsArchive( const QgsArchive &other );
 
     QgsArchive &operator=( const QgsArchive &other );
 
-    /**
-     * Destructor
-     */
     virtual ~QgsArchive() = default;
 
     /**

@@ -3,13 +3,13 @@
  *                                                                      *
  * src/gui/qgsfloatingwidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
-class QgsFloatingWidget: QWidget
+class QgsFloatingWidget : QWidget
 {
 %Docstring(signature="appended")
 A QWidget subclass for creating widgets which float outside of the normal Qt layout
@@ -21,7 +21,6 @@ within their parent widget.
 #include "qgsfloatingwidget.h"
 %End
   public:
-
     enum AnchorPoint
     {
       TopLeft,
@@ -130,5 +129,5 @@ Emitted when the anchor widget point changes
  *                                                                      *
  * src/gui/qgsfloatingwidget.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

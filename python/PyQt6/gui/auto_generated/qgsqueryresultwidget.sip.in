@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsqueryresultwidget.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -12,7 +12,7 @@
 
 
 
-class QgsQueryResultWidget: QWidget
+class QgsQueryResultWidget : QWidget
 {
 %Docstring(signature="appended")
 The :py:class:`QgsQueryResultWidget` class allows users to enter and run an SQL query on a
@@ -35,8 +35,6 @@ be used in different contexts like when updating the SQL of an existing query la
 #include "qgsqueryresultwidget.h"
 %End
   public:
-
-
     enum class QueryWidgetMode /BaseType=IntFlag/
     {
       SqlQueryMode,
@@ -135,5 +133,5 @@ Emitted when the first batch of results has been fetched.
  *                                                                      *
  * src/gui/qgsqueryresultwidget.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

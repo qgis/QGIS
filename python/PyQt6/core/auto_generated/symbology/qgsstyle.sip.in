@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsstyle.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,57 +22,6 @@ typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 
-enum SymbolTable /BaseType=IntEnum/
-{
-  SymbolId,
-  SymbolName,
-  SymbolXML,
-  SymbolFavoriteId,
-};
-
-enum TagTable /BaseType=IntEnum/
-{
-  TagId,
-  TagName,
-};
-
-enum TagmapTable /BaseType=IntEnum/
-{
-  TagmapTagId,
-  TagmapSymbolId,
-};
-
-enum ColorrampTable /BaseType=IntEnum/
-{
-  ColorrampId,
-  ColorrampName,
-  ColorrampXML,
-  ColorrampFavoriteId,
-};
-
-enum TextFormatTable /BaseType=IntEnum/
-{
-  TextFormatId,
-  TextFormatName,
-  TextFormatXML,
-  TextFormatFavoriteId,
-};
-
-enum LabelSettingsTable /BaseType=IntEnum/
-{
-  LabelSettingsId,
-  LabelSettingsName,
-  LabelSettingsXML,
-  LabelSettingsFavoriteId,
-};
-
-enum SmartgroupTable /BaseType=IntEnum/
-{
-  SmartgroupId,
-  SmartgroupName,
-  SmartgroupXML,
-};
-
 class QgsStyle : QObject
 {
 
@@ -80,6 +29,57 @@ class QgsStyle : QObject
 #include "qgsstyle.h"
 %End
   public:
+
+    enum class SymbolTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class TagTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+    };
+
+    enum class TagmapTableColumn /BaseType=IntEnum/
+    {
+      TagId,
+      SymbolId,
+    };
+
+    enum class ColorRampTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class TextFormatTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class LabelSettingsTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+      FavoriteId,
+    };
+
+    enum class SmartGroupTableColumn /BaseType=IntEnum/
+    {
+      Id,
+      Name,
+      XML,
+    };
 
     QgsStyle( QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -857,7 +857,7 @@ This function will load an on-disk database and populate styles.
 .. seealso:: :py:func:`errorString`
 %End
 
- bool save( const QString &filename = QString() ) /Deprecated/;
+ bool save( const QString &filename = QString() ) /Deprecated="Since 3.40. This function has no effect."/;
 %Docstring
 Saves style into a file.
 
@@ -872,8 +872,8 @@ The current :py:func:`~QgsStyle.fileName` will be used if no explicit ``filename
 
 .. seealso:: :py:func:`errorString`
 
+.. deprecated:: 3.40
 
-.. deprecated::
    This function has no effect.
 %End
 
@@ -1256,7 +1256,7 @@ Emitted whenever icon previews for entities in the style must be rebuilt.
 class QgsStyleEntityInterface
 {
 %Docstring(signature="appended")
-An interface for entities which can be placed in a QgsStyle database.
+An interface for entities which can be placed in a :py:class:`QgsStyle` database.
 
 .. versionadded:: 3.10
 %End
@@ -1481,5 +1481,5 @@ Returns the entity's symbol.
  *                                                                      *
  * src/core/symbology/qgsstyle.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

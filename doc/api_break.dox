@@ -17,6 +17,17 @@ https://github.com/qgis/qgis4.0_api/issues
 
 This page maintains a list of incompatible changes that happened in previous releases.
 
+QGIS 3.38        {#qgis_api_break_3_38}
+=========
+
+Enabling GDAL Python exceptions
+-------------------------------
+
+- QGIS now turns on exceptions in the osgeo.gdal, osgeo.ogr and osgeo.osr modules.
+  This may affect plugins that use the GDAL Python API. Typically gdal.Open,
+  gdal.OpenEx or ogr.Open() (non exclusive list) will now throw an exception
+  if the dataset cannot be opened.
+
 QGIS 3.24        {#qgis_api_break_3_24}
 =========
 

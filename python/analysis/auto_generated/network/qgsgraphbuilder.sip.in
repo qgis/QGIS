@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/network/qgsgraphbuilder.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ This class used for making the :py:class:`QgsGraph` object
 #include "qgsgraphbuilder.h"
 %End
   public:
-
     QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
 Default constructor
@@ -35,7 +34,7 @@ Default constructor
 MANDATORY BUILDER PROPERTY DECLARATION
 %End
 
-    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop );
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector<QVariant> &prop );
 
 
     QgsGraph graph() const;
@@ -63,5 +62,5 @@ state ready for additional graph construction.
  *                                                                      *
  * src/analysis/network/qgsgraphbuilder.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

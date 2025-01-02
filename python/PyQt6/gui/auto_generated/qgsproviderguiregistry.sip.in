@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsproviderguiregistry.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,6 @@ loaded in constructor.
 #include "qgsproviderguiregistry.h"
 %End
   public:
-
     QgsProviderGuiRegistry( const QString &pluginPath );
 %Docstring
 Creates registry and loads static provider plugins
@@ -120,5 +119,5 @@ The optional ``layer`` argument can be used to only return factories which suppo
  *                                                                      *
  * src/gui/qgsproviderguiregistry.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

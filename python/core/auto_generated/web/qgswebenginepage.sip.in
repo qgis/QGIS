@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/web/qgswebenginepage.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -66,7 +66,6 @@ If ``blocking`` is ``True`` then the call will block while the HTML is loaded. O
 
    Setting ``blocking`` to ``True`` involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
 
-
 :return: ``True`` if loading was successful
 %End
 
@@ -110,7 +109,6 @@ The ``painterRect`` argument specifies the target rectangle for the page in ``pa
 
 :return: ``True`` if rendering was successful
 
-
 :raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
 %End
 
@@ -145,5 +143,5 @@ This signal is independent of script execution or page rendering.
  *                                                                      *
  * src/core/web/qgswebenginepage.h                                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

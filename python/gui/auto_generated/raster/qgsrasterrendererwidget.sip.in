@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/raster/qgsrasterrendererwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -11,7 +11,7 @@
 
 
 
-class QgsRasterRendererWidget: QWidget
+class QgsRasterRendererWidget : QWidget
 {
 %Docstring(signature="appended")
 
@@ -22,7 +22,6 @@ Abstract base class for widgets which configure a :py:class:`QgsRasterRenderer`.
 #include "qgsrasterrendererwidget.h"
 %End
   public:
-
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent );
 
     virtual QgsRasterRenderer *renderer() = 0 /Factory/;
@@ -113,5 +112,5 @@ All widgets will fire this event to notify of an internal change.
  *                                                                      *
  * src/gui/raster/qgsrasterrendererwidget.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

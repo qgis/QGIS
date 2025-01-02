@@ -26,7 +26,8 @@ class TestQgsMergeattributesDialog : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsMergeattributesDialog() : QgsTest( QStringLiteral( "Merge attributes dialog" ) )
+    TestQgsMergeattributesDialog()
+      : QgsTest( QStringLiteral( "Merge attributes dialog" ) )
     {}
 
   private:
@@ -52,18 +53,19 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorFileWriter::SaveVectorOptions options;
       QgsVectorLayer ml( "Polygon", "test", "memory" );
       QVERIFY( ml.isValid() );
-      QTemporaryFile tmpFile( QDir::tempPath() +  "/TestQgsMergeattributesDialog" );
+      QTemporaryFile tmpFile( QDir::tempPath() + "/TestQgsMergeattributesDialog" );
       tmpFile.open();
-      const QString fileName( tmpFile.fileName( ) );
+      const QString fileName( tmpFile.fileName() );
       options.driverName = "GPKG";
       options.layerName = "test";
       QString newFilename;
       const QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormatV3(
-            &ml,
-            fileName,
-            ml.transformContext(),
-            options, nullptr,
-            &newFilename ) );
+        &ml,
+        fileName,
+        ml.transformContext(),
+        options, nullptr,
+        &newFilename
+      ) );
 
       QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
       QgsVectorLayer layer( QStringLiteral( "%1|layername=test" ).arg( newFilename ), "src_test", "ogr" );
@@ -102,7 +104,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "Polygon", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField uniqueField( QStringLiteral( "unique" ), QVariant::Int );
+      QgsField uniqueField( QStringLiteral( "unique" ), QMetaType::Type::Int );
       QgsFieldConstraints constraints;
       constraints.setConstraint(
         QgsFieldConstraints::ConstraintUnique
@@ -111,10 +113,10 @@ class TestQgsMergeattributesDialog : public QgsTest
         constraints
       );
 
-      QgsField notUniqueField( QStringLiteral( "not_unique" ), QVariant::Int );
+      QgsField notUniqueField( QStringLiteral( "not_unique" ), QMetaType::Type::Int );
       QVERIFY( ml.dataProvider()->addAttributes(
-      { uniqueField, notUniqueField }
-               ) );
+        { uniqueField, notUniqueField }
+      ) );
 
       ml.updateFields();
       QCOMPARE( ml.fields().at( 0 ).constraints().constraints(), QgsFieldConstraints::ConstraintUnique );
@@ -122,14 +124,14 @@ class TestQgsMergeattributesDialog : public QgsTest
 
       // Create a feature
       QgsFeature f1( ml.fields(), 1 );
-      f1.setAttributes( { 11, 12} );
+      f1.setAttributes( { 11, 12 } );
       f1.setGeometry( QgsGeometry::fromWkt( "POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))" ) );
       QVERIFY( ml.dataProvider()->addFeature( f1 ) );
       QCOMPARE( ml.featureCount(), 1 );
 
       // And a bigger feature
       QgsFeature f2( ml.fields(), 2 );
-      f2.setAttributes( { 21, 22} );
+      f2.setAttributes( { 21, 22 } );
       f2.setGeometry( QgsGeometry::fromWkt( "POLYGON((3 3, 10 3, 10 10, 3 10, 3 3))" ) );
       QVERIFY( ml.dataProvider()->addFeature( f2 ) );
       QCOMPARE( ml.featureCount(), 2 );
@@ -158,8 +160,8 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "LineString", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QVariant::Int );
-      QgsField hiddenField( QStringLiteral( "hidden" ), QVariant::Int );
+      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QMetaType::Type::Int );
+      QgsField hiddenField( QStringLiteral( "hidden" ), QMetaType::Type::Int );
       // hide the field
       ml.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() ) );
       QVERIFY( ml.dataProvider()->addAttributes( { notHiddenField, hiddenField } ) );
@@ -191,8 +193,8 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "LineString", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QVariant::Int );
-      QgsField hiddenField( QStringLiteral( "hidden" ), QVariant::Int );
+      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QMetaType::Type::Int );
+      QgsField hiddenField( QStringLiteral( "hidden" ), QMetaType::Type::Int );
       QVERIFY( ml.dataProvider()->addAttributes( { notHiddenField, hiddenField } ) );
       ml.updateFields();
 

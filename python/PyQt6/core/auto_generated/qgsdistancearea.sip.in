@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsdistancearea.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -38,15 +38,9 @@ Internally, the GeographicLib library is used to calculate all ellipsoid based m
   public:
 
     QgsDistanceArea();
-%Docstring
-Constructor
-%End
     ~QgsDistanceArea();
 
     QgsDistanceArea( const QgsDistanceArea &other );
-%Docstring
-Copy constructor
-%End
 
     bool willUseEllipsoid() const;
 %Docstring
@@ -168,6 +162,8 @@ Measures the area of a geometry.
 .. seealso:: :py:func:`measurePerimeter`
 
 .. seealso:: :py:func:`areaUnits`
+
+:raises QgsCsException: if a transformation error occurs while calculating the area
 %End
 
     double measureLength( const QgsGeometry &geometry ) const;
@@ -184,6 +180,8 @@ Measures the length of a geometry.
 .. seealso:: :py:func:`measureArea`
 
 .. seealso:: :py:func:`measurePerimeter`
+
+:raises QgsCsException: if a transformation error occurs while calculating the length
 %End
 
     double measurePerimeter( const QgsGeometry &geometry ) const;
@@ -200,6 +198,8 @@ Measures the perimeter of a polygon geometry.
 .. seealso:: :py:func:`measureArea`
 
 .. seealso:: :py:func:`measurePerimeter`
+
+:raises QgsCsException: if a transformation error occurs while calculating the perimeter
 %End
 
     double measureLine( const QVector<QgsPointXY> &points ) const;
@@ -209,6 +209,8 @@ Measures the length of a line with multiple segments.
 :param points: list of points in line
 
 :return: length of line. The units for the returned length can be retrieved by calling :py:func:`~QgsDistanceArea.lengthUnits`.
+
+:raises QgsCsException: if a transformation error occurs while calculating the length
 
 .. seealso:: :py:func:`lengthUnits`
 %End
@@ -222,6 +224,8 @@ Measures the distance between two points.
 
 :return: distance between points. The units for the returned distance can be retrieved by calling :py:func:`~QgsDistanceArea.lengthUnits`.
 
+:raises QgsCsException: if a transformation error occurs while calculating the length
+
 .. seealso:: :py:func:`lengthUnits`
 %End
 
@@ -233,7 +237,7 @@ otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTy
 
 :param p1: start point [can be Cartesian or Geographic]
 :param distance: must be in meters
-:param azimuth: - azimuth in radians, clockwise from North
+:param azimuth: azimuth in radians, clockwise from North
 
 :return: - distance in mapUnits
          - projectedPoint: calculated projected point
@@ -264,9 +268,11 @@ Returns the units of area for areal calculations made by this object.
     double measurePolygon( const QVector<QgsPointXY> &points ) const;
 %Docstring
 Measures the area of the polygon described by a set of points.
+
+:raises QgsCsException: if a transformation error occurs while calculating the area.
 %End
 
-    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const throw( QgsCsException );
+    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 %Docstring
 Computes the bearing (in radians) between two points.
 
@@ -336,9 +342,9 @@ different areal unit.
 Given a location, an azimuth and a distance, computes the
 location of the projected point.
 
-:param p1: - location of first geographic (latitude/longitude) point as degrees.
-:param distance: - distance in meters.
-:param azimuth: - azimuth in radians, clockwise from North
+:param p1: location of first geographic (latitude/longitude) point as degrees.
+:param distance: distance in meters.
+:param azimuth: azimuth in radians, clockwise from North
 
 :return: p2 - location of projected point as longitude/latitude.
 %End
@@ -378,10 +384,9 @@ will also be in this same CRS.
 :param p2: Ending point, in :py:func:`~QgsDistanceArea.ellipsoidCrs`
 
 :return: - the latitude at which the geodesic crosses the antimeridian
-         - fractionAlongLine: will be set to the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
+         - fractionAlongLine: the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
 
 .. seealso:: :py:func:`splitGeometryAtAntimeridian`
-
 
 .. versionadded:: 3.6
 %End
@@ -420,5 +425,5 @@ created at the antimeridian.
  *                                                                      *
  * src/core/qgsdistancearea.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

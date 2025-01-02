@@ -41,11 +41,11 @@ class QNetworkReply;
  */
 struct QgsWcsMetadataLinkProperty
 {
-  //! Metadata type, the standard to which the metadata complies
-  QString metadataType;
+    //! Metadata type, the standard to which the metadata complies
+    QString metadataType;
 
-  //! Metadata link URL
-  QString xlinkHref;
+    //! Metadata link URL
+    QString xlinkHref;
 };
 
 /**
@@ -55,58 +55,58 @@ struct QgsWcsMetadataLinkProperty
  */
 struct QgsWcsCoverageSummary
 {
-  QgsWcsCoverageSummary() = default;
+    QgsWcsCoverageSummary() = default;
 
-  int           orderId = 0;
+    int orderId = 0;
 
-  //! Coverage unique identifier
-  QString       identifier;
+    //! Coverage unique identifier
+    QString identifier;
 
-  //! Title for the coverage
-  QString       title;
+    //! Title for the coverage
+    QString title;
 
-  //! Brief coverage description
-  QString       abstract;
+    //! Brief coverage description
+    QString abstract;
 
-  //! Coverage CRS which GetCoverage response may be expressed
-  QStringList   supportedCrs;
+    //! Coverage CRS which GetCoverage response may be expressed
+    QStringList supportedCrs;
 
-  //! Format identifiers, which GetCoverage response may be encoded
-  QStringList   supportedFormat;
-  QList<double> nullValues;
+    //! Format identifiers, which GetCoverage response may be encoded
+    QStringList supportedFormat;
+    QList<double> nullValues;
 
-  //! Minimum bounding rectangle surrounding this coverage
-  QgsRectangle  wgs84BoundingBox; // almost useless, we need the native
-  QString       nativeCrs;
+    //! Minimum bounding rectangle surrounding this coverage
+    QgsRectangle wgs84BoundingBox; // almost useless, we need the native
+    QString nativeCrs;
 
-  //! Optional metadataLink
-  QgsWcsMetadataLinkProperty metadataLink;
+    //! Optional metadataLink
+    QgsWcsMetadataLinkProperty metadataLink;
 
-  //! Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
-  QMap<QString, QgsRectangle> boundingBoxes;
-  QgsRectangle  nativeBoundingBox;
+    //! Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
+    QMap<QString, QgsRectangle> boundingBoxes;
+    QgsRectangle nativeBoundingBox;
 
-  //! timePosition or timePeriod (beginPosition/endPosition[/timeResolution] - used in KVP request)
-  QStringList times;
-  QVector<QgsWcsCoverageSummary> coverageSummary;
-  // non reflecting Capabilities structure:
-  bool valid = false;
-  bool described = false;
-  // native size
-  int width = 0;
-  int height = 0;
-  bool hasSize = false;
+    //! timePosition or timePeriod (beginPosition/endPosition[/timeResolution] - used in KVP request)
+    QStringList times;
+    QVector<QgsWcsCoverageSummary> coverageSummary;
+    // non reflecting Capabilities structure:
+    bool valid = false;
+    bool described = false;
+    // native size
+    int width = 0;
+    int height = 0;
+    bool hasSize = false;
 };
 
 //! Capability Property structure
 struct QgsWcsCapabilitiesProperty
 {
-  QString                   version;
-  QString                   title;
-  QString                   abstract;
-  QString                   getCoverageGetUrl;
-  // using QgsWcsCoverageSummary for contents for simplification
-  QgsWcsCoverageSummary     contents;
+    QString version;
+    QString title;
+    QString abstract;
+    QString getCoverageGetUrl;
+    // using QgsWcsCoverageSummary for contents for simplification
+    QgsWcsCoverageSummary contents;
 };
 
 /**
@@ -117,7 +117,6 @@ class QgsWcsCapabilities : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for the provider.
      *
@@ -258,7 +257,7 @@ class QgsWcsCapabilities : public QObject
     void progressChanged( int progress, int totalSteps );
 
     //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( QString const   &statusQString );
+    void statusChanged( QString const &statusQString );
 
     void downloadFinished();
 
@@ -288,7 +287,7 @@ class QgsWcsCapabilities : public QObject
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
-     * \param preferredVersion - optional version, e.g. 1.0.0, 1.1.0
+     * \param preferredVersion optional version, e.g. 1.0.0, 1.1.0
      *
      * \returns false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
@@ -310,8 +309,7 @@ class QgsWcsCapabilities : public QObject
     void parseContentMetadata( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary );
 
     //! parse the WCS Layer XML element
-    void parseCoverageOfferingBrief( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary,
-                                     QgsWcsCoverageSummary *parent = nullptr );
+    void parseCoverageOfferingBrief( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent = nullptr );
 
     //! Parse metadata element from the document
     void parseMetadataLink( const QDomElement &element, QgsWcsMetadataLinkProperty &metadataLink );
@@ -319,8 +317,7 @@ class QgsWcsCapabilities : public QObject
 
     // ------------- 1.1 --------------------
     //! parse the WCS Layer XML element
-    void parseCoverageSummary( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary,
-                               QgsWcsCoverageSummary *parent = nullptr );
+    void parseCoverageSummary( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent = nullptr );
 
     //! Data source uri
     QgsDataSourceUri mUri;

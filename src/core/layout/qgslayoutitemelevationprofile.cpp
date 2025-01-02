@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemelevationprofile.h"
+#include "moc_qgslayoutitemelevationprofile.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgsplot.h"
 #include "qgslayout.h"
@@ -30,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsprofilesourceregistry.h"
 
 #include <QTimer>
 
@@ -673,6 +675,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
         QList< QgsAbstractProfileSource * > sources;
+        sources << QgsApplication::profileSourceRegistry()->profileSources();
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
           if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
@@ -725,6 +728,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
         QList< QgsAbstractProfileSource * > sources;
+        sources << QgsApplication::profileSourceRegistry()->profileSources();
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
           if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
@@ -960,6 +964,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
 
   QList< QgsAbstractProfileSource * > sources;
+  sources << QgsApplication::profileSourceRegistry()->profileSources();
   for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
   {
     if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
@@ -1021,6 +1026,45 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
     case Qgis::DistanceUnit::Inches:
+    case Qgis::DistanceUnit::ChainsInternational:
+    case Qgis::DistanceUnit::ChainsBritishBenoit1895A:
+    case Qgis::DistanceUnit::ChainsBritishBenoit1895B:
+    case Qgis::DistanceUnit::ChainsBritishSears1922Truncated:
+    case Qgis::DistanceUnit::ChainsBritishSears1922:
+    case Qgis::DistanceUnit::ChainsClarkes:
+    case Qgis::DistanceUnit::ChainsUSSurvey:
+    case Qgis::DistanceUnit::FeetBritish1865:
+    case Qgis::DistanceUnit::FeetBritish1936:
+    case Qgis::DistanceUnit::FeetBritishBenoit1895A:
+    case Qgis::DistanceUnit::FeetBritishBenoit1895B:
+    case Qgis::DistanceUnit::FeetBritishSears1922Truncated:
+    case Qgis::DistanceUnit::FeetBritishSears1922:
+    case Qgis::DistanceUnit::FeetClarkes:
+    case Qgis::DistanceUnit::FeetGoldCoast:
+    case Qgis::DistanceUnit::FeetIndian:
+    case Qgis::DistanceUnit::FeetIndian1937:
+    case Qgis::DistanceUnit::FeetIndian1962:
+    case Qgis::DistanceUnit::FeetIndian1975:
+    case Qgis::DistanceUnit::FeetUSSurvey:
+    case Qgis::DistanceUnit::LinksInternational:
+    case Qgis::DistanceUnit::LinksBritishBenoit1895A:
+    case Qgis::DistanceUnit::LinksBritishBenoit1895B:
+    case Qgis::DistanceUnit::LinksBritishSears1922Truncated:
+    case Qgis::DistanceUnit::LinksBritishSears1922:
+    case Qgis::DistanceUnit::LinksClarkes:
+    case Qgis::DistanceUnit::LinksUSSurvey:
+    case Qgis::DistanceUnit::YardsBritishBenoit1895A:
+    case Qgis::DistanceUnit::YardsBritishBenoit1895B:
+    case Qgis::DistanceUnit::YardsBritishSears1922Truncated:
+    case Qgis::DistanceUnit::YardsBritishSears1922:
+    case Qgis::DistanceUnit::YardsClarkes:
+    case Qgis::DistanceUnit::YardsIndian:
+    case Qgis::DistanceUnit::YardsIndian1937:
+    case Qgis::DistanceUnit::YardsIndian1962:
+    case Qgis::DistanceUnit::YardsIndian1975:
+    case Qgis::DistanceUnit::MilesUSSurvey:
+    case Qgis::DistanceUnit::Fathoms:
+    case Qgis::DistanceUnit::MetersGermanLegal:
       mPlot->xAxis().setLabelSuffix( QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) ) );
       break;
 

@@ -286,11 +286,11 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
       valueIndex = tileLayer->values_size() - 1;
       mKnownValues[v] = valueIndex;
 
-      if ( v.type() == QVariant::Double )
+      if ( v.userType() == QMetaType::Type::Double )
         value->set_double_value( v.toDouble() );
-      else if ( v.type() == QVariant::Int )
+      else if ( v.userType() == QMetaType::Type::Int )
         value->set_int_value( v.toInt() );
-      else if ( v.type() == QVariant::Bool )
+      else if ( v.userType() == QMetaType::Type::Bool )
         value->set_bool_value( v.toBool() );
       else
         value->set_string_value( v.toString().toUtf8().toStdString() );

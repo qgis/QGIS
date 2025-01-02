@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/project/qgsprojecttimesettings.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -161,7 +161,6 @@ Returns the total number of frames for the project's movie.
 
 .. seealso:: :py:func:`setTotalMovieFrames`
 
-
 .. versionadded:: 3.36
 %End
 
@@ -174,7 +173,6 @@ Sets the total number of ``frames`` for the movie.
    This is only used when the navigationm mode is set to :py:class:`Qgis`.TemporalNavigationMode.Movie.
 
 .. seealso:: :py:func:`totalMovieFrames`
-
 
 .. versionadded:: 3.36
 %End
@@ -198,5 +196,5 @@ Emitted when the temporal range changes.
  *                                                                      *
  * src/core/project/qgsprojecttimesettings.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

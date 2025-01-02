@@ -40,7 +40,6 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     static const QgsAttributeTableModel *masterModel( const QAbstractItemModel *model );
 
   public:
-
     /**
      * Constructor
      * \param parent parent object
@@ -91,7 +90,6 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     void actionColumnItemPainted( const QModelIndex &index ) const;
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
 };
 

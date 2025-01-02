@@ -1,0 +1,15 @@
+{
+  "name": "project_color_object",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a color from the project's color scheme. Contrary to project_color which returns a color string representation, project_color_object returns a color object.",
+  "arguments": [{
+    "arg": "name",
+    "description": "a color name"
+  }],
+  "examples": [{
+    "expression": "project_color_object('Logo color')",
+    "returns": "RGBA: 0.08,0.55,0.20,1.00"
+  }],
+  "tags": ["scheme", "project", "color"]
+}

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsoptionalexpression.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -73,5 +73,5 @@ Read the optional expression from the provided QDomElement.
  *                                                                      *
  * src/core/qgsoptionalexpression.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

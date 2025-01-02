@@ -32,6 +32,7 @@ class QgsMapLayer;
 /**
  * \ingroup core
  * \class QgsMimeDataUtils
+ * \brief Contains utility functions for working with MIME data.
  */
 class CORE_EXPORT QgsMimeDataUtils
 {

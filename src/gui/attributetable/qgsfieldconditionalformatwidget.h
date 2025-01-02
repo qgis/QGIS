@@ -35,7 +35,6 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFieldConditionalFormatWidget.
      */
@@ -44,7 +43,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     /**
      * Switches the widget to the rules page.
      *
-     * \deprecated no longer used, will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void viewRules() SIP_DEPRECATED;
 
@@ -63,14 +62,14 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     void editStyle( int index, const QgsConditionalStyle &style );
 
     /**
-     * \deprecated no longer used, use QgsEditConditionalFormatRuleWidget::loadStyle instead.
+     * \deprecated QGIS 3.40. No longer used, use QgsEditConditionalFormatRuleWidget::loadStyle instead.
      */
     Q_DECL_DEPRECATED void loadStyle( const QgsConditionalStyle &style ) SIP_DEPRECATED;
 
     /**
      * Resets the formatting options to their default state.
      *
-     * \deprecated no longer used, will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED void reset() SIP_DEPRECATED;
 
@@ -115,7 +114,6 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     void addNewRule();
     void fieldChanged( const QString &fieldName );
     void deleteCurrentRule();
-
 };
 
 /**
@@ -129,7 +127,6 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldConditionalFormatWidget, with the specified \a parent widget.
      */
@@ -183,9 +180,6 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
 
   private:
     QgsVectorLayer *mLayer = nullptr;
-    int mEditIndex = 0;
-    bool mEditing = false;
-    QStandardItemModel *mModel = nullptr;
     QStandardItemModel *mPresetsModel = nullptr;
     QList<QgsConditionalStyle> mPresets;
 
@@ -195,7 +189,6 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
     void setExpression();
     void presetSet( int index );
     bool isCustomSet();
-
 };
 
 #endif // QGSFIELDCONDITIONALFORMATWIDGET_H

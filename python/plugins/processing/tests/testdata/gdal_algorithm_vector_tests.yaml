@@ -226,27 +226,6 @@ tests:
           geometry:
             explode_collections: true
 
-  - algorithm: gdal:offsetcurve
-    name: Offset curve (right-sided) (GEOS < 3.11)
-    condition:
-      geos:
-        less_than: 31100
-    params:
-      DISTANCE: -0.5
-      GEOMETRY: geometry
-      INPUT:
-        name: lines.gml
-        type: vector
-      OPTIONS: ''
-    results:
-      OUTPUT:
-        name: expected/gdal/offset_lines.gml
-        type: vector
-        compare:
-          ignore_crs_check: true
-          geometry:
-            explode_collections: true
-
   - algorithm: gdal:ogrinfo
     name: ogrinfo
     params:
@@ -262,6 +241,70 @@ tests:
           - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
           - 'Geometry: Line String'
           - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+
+  - algorithm: gdal:ogrinfo
+    name: ogrinfo all layers
+    params:
+      INPUT:
+        name: points_lines.gpkg
+        type: vector
+      SUMMARY_ONLY: 'True'
+      ALL_LAYERS: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info_2.html
+        type: regex
+        rules:
+          - 'Layer name: points'
+          - 'Geometry: Point'
+          - 'Feature Count: 9'
+          - 'Extent: \(0.000000, -5.000000\) - \(8.000000, 3.000000\)'
+          - 'Layer name: lines'
+          - 'Geometry: Line String'
+          - 'Feature Count: 7'
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+
+  - algorithm: gdal:ogrinfojson
+    name: ogrinfo (json)
+    condition:
+      gdal:
+        at_least: 3070000
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info.json
+        type: regex
+        rules:
+          - '"extent":\[\n\s*-1.0,\s*-3.0,\n\s*11.0,\n\s*5.0\n\s*\],'
+          - '"type":"LineString",'
+          - '"featureCount":[6|7],' # On some platforms returns 6 instead of 7...
+
+  - algorithm: gdal:ogrinfojson
+    name: ogrinfo (json) all layers
+    condition:
+      gdal:
+        at_least: 3070000
+    params:
+      INPUT:
+        name: points_lines.gpkg
+        type: vector
+      ALL_LAYERS: true
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info_2.json
+        type: regex
+        rules:
+          - '"name":"points",'
+          - '"type":"Point",'
+          - '"extent":\[\n\s*0.0,\s*-5.0,\n\s*8.0,\n\s*3.0\n\s*\],'
+          - '"featureCount":9,'
+          - '"name":"lines",'
+          - '"type":"LineString",'
+          - '"extent":\[\n\s*-1.0,\s*-3.0,\n\s*11.0,\n\s*5.0\n\s*\],'
+          - '"featureCount":7,'
 
   - algorithm: gdal:onesidebuffer
     name: One-sided buffer (left-handed)

@@ -43,13 +43,12 @@ class TestQgs25DRenderer : public QgsTest
     Q_OBJECT
   public:
     TestQgs25DRenderer()
-      : QgsTest( QStringLiteral( "25D Renderer Tests" ),
-                 QStringLiteral( "25d_renderer" ) )
+      : QgsTest( QStringLiteral( "25D Renderer Tests" ), QStringLiteral( "25d_renderer" ) )
     {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void render();
     void renderLayout();
@@ -76,11 +75,10 @@ void TestQgs25DRenderer::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
-  simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
+  simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   //need a very high height to check for stacking
@@ -122,7 +120,7 @@ void TestQgs25DRenderer::renderLayout()
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
   map->setFrameEnabled( true );
-  map->setLayers( QList< QgsMapLayer * >() << mpPolysLayer );
+  map->setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   l.addLayoutItem( map );
 
   map->setExtent( mpPolysLayer->extent() );

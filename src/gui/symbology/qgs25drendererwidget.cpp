@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drendererwidget.h"
+#include "moc_qgs25drendererwidget.cpp"
 #include "qgs25drenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
@@ -26,14 +27,15 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   if ( !layer )
     return;
 
-  // the renderer only applies to point vector layers
+  // the renderer only applies to polygon vector layers
   if ( layer->geometryType() != Qgis::GeometryType::Polygon )
   {
     //setup blank dialog
     QGridLayout *layout = new QGridLayout( this );
     QLabel *label = new QLabel( tr( "The 2.5D renderer only can be used with polygon layers. \n"
                                     "'%1' is not a polygon layer and cannot be rendered in 2.5D." )
-                                .arg( layer->name() ), this );
+                                  .arg( layer->name() ),
+                                this );
     layout->addWidget( label );
     return;
   }
@@ -75,13 +77,13 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   mShadowSizeWidget->setClearValue( 4 );
   mWallExpositionShading->setChecked( mRenderer->wallShadingEnabled() );
 
-  connect( mAngleWidget, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &Qgs25DRendererWidget::updateRenderer );
-  connect( mHeightWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mAngleWidget, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mHeightWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &Qgs25DRendererWidget::updateRenderer );
   connect( mWallColorButton, &QgsColorButton::colorChanged, this, &Qgs25DRendererWidget::updateRenderer );
   connect( mRoofColorButton, &QgsColorButton::colorChanged, this, &Qgs25DRendererWidget::updateRenderer );
   connect( mShadowColorButton, &QgsColorButton::colorChanged, this, &Qgs25DRendererWidget::updateRenderer );
   connect( mShadowEnabledWidget, &QGroupBox::toggled, this, &Qgs25DRendererWidget::updateRenderer );
-  connect( mShadowSizeWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &Qgs25DRendererWidget::updateRenderer );
+  connect( mShadowSizeWidget, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs25DRendererWidget::updateRenderer );
   connect( mWallExpositionShading, &QAbstractButton::toggled, this, &Qgs25DRendererWidget::updateRenderer );
 }
 

@@ -19,10 +19,9 @@
 #include "qgsgcpcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeorefdatapoint.h"
+#include "moc_qgsgeorefdatapoint.cpp"
 
-QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
-                                        const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint,
-                                        const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled )
+QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas, const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled )
   : mSrcCanvas( srcCanvas )
   , mDstCanvas( dstCanvas )
   , mGcpPoint( sourceCoordinates, destinationPoint, destinationPointCrs, enabled )
@@ -92,13 +91,18 @@ void QgsGeorefDataPoint::setEnabled( bool enabled )
 
 void QgsGeorefDataPoint::setId( int id )
 {
+  const bool noLongerTemporary = mId < 0 && id >= 0;
   mId = id;
   if ( mGCPSourceItem )
   {
+    if ( noLongerTemporary )
+      mGCPSourceItem->setPointColor( Qt::red );
     mGCPSourceItem->update();
   }
   if ( mGCPDestinationItem )
   {
+    if ( noLongerTemporary )
+      mGCPDestinationItem->setPointColor( Qt::red );
     mGCPDestinationItem->update();
   }
 }

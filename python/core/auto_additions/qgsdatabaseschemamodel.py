@@ -5,6 +5,19 @@ QgsDatabaseSchemaModel.RoleEmpty = QgsDatabaseSchemaModel.CustomRole.Empty
 QgsDatabaseSchemaModel.Role.RoleEmpty = QgsDatabaseSchemaModel.CustomRole.Empty
 QgsDatabaseSchemaModel.RoleEmpty.is_monkey_patched = True
 QgsDatabaseSchemaModel.RoleEmpty.__doc__ = "Entry is an empty entry"
-QgsDatabaseSchemaModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsDatabaseSchemaModel.Role\n\n.. versionadded:: 3.36\n\n" + '* ``RoleEmpty``: ' + QgsDatabaseSchemaModel.CustomRole.Empty.__doc__
+QgsDatabaseSchemaModel.CustomRole.__doc__ = """Custom model roles.
+
+.. note::
+
+   Prior to QGIS 3.36 this was available as QgsDatabaseSchemaModel.Role
+
+.. versionadded:: 3.36
+
+* ``Empty``: Entry is an empty entry
+
+  Available as ``QgsDatabaseSchemaModel.RoleEmpty`` in older QGIS releases.
+
+
+"""
 # --
 QgsDatabaseSchemaModel.CustomRole.baseClass = QgsDatabaseSchemaModel

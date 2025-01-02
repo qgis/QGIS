@@ -23,6 +23,9 @@
 #include "../epf/Epf.hpp"
 #include "../bu/BuPyramid.hpp"
 
+#include <dirlist.hpp>    // untwine/os
+#include <stringconv.hpp> // untwine/os
+
 namespace untwine
 {
 
@@ -49,6 +52,8 @@ void addArgs(pdal::ProgramArgs& programArgs, Options& options, pdal::Arg * &temp
         options.a_srs, "");
     programArgs.add("metadata", "Write PDAL metadata to VLR output",
         options.metadata, false);
+    programArgs.add("no_srs", "PDAL readers.las.nosrs passthrough.",
+        options.no_srs, false);
 }
 
 bool handleOptions(pdal::StringList& arglist, Options& options)
@@ -70,13 +75,21 @@ bool handleOptions(pdal::StringList& arglist, Options& options)
             std::cout << "untwine version (" << UNTWINE_VERSION << ")\n";
         if (help)
         {
-            std::cout << "Usage: untwine [output file/directory] <options>\n";
+            std::cout << "Usage: untwine output file <options>\n";
             programArgs.dump(std::cout, 2, 80);
         }
         if (help || version)
             return false;
 
         programArgs.parse(arglist);
+
+        // Make sure the output file can be opened so that we can provide an early error if
+        // there's a problem.
+        std::ofstream tmp(os::toNative(options.outputName), std::ios::out | std::ios::binary);
+        if (!tmp)
+            throw FatalError("Can't open file '" + options.outputName + "' for output");
+        tmp.close();
+        pdal::FileUtils::deleteFile(options.outputName);
 
         if (!tempArg->set())
         {
@@ -112,7 +125,7 @@ void cleanup(const std::string& dir, bool rmdir)
     std::regex re("[0-9]+-[0-9]+-[0-9]+-[0-9]+.bin");
     std::smatch sm;
 
-    const std::vector<std::string>& files = directoryList(dir);
+    const std::vector<std::string>& files = os::directoryList(dir);
     for (const std::string& f : files)
         if (std::regex_match(f, sm, re))
             pdal::FileUtils::deleteFile(dir + "/" + f);
@@ -122,7 +135,7 @@ void cleanup(const std::string& dir, bool rmdir)
 
 } // namespace untwine
 
-#ifdef _WIN32
+#ifdef _MSC_VER // MSVC Compiler
 int wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] )
 #else
 int main(int argc, char *argv[])
@@ -134,7 +147,7 @@ int main(int argc, char *argv[])
     argv++;
     argc--;
     while (argc--)
-        arglist.push_back(untwine::fromNative(*argv++));
+        arglist.push_back(untwine::os::fromNative(*argv++));
 
     using namespace untwine;
 

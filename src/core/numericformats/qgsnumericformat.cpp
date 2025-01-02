@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsnumericformat.h"
+#include "moc_qgsnumericformat.cpp"
 #include "qgsxmlutils.h"
 #include "qgsreadwritecontext.h"
 
@@ -43,6 +44,16 @@ QgsNumericFormatContext::QgsNumericFormatContext()
   mPositiveSign = l.positiveSign().at( 0 );
   mExponential = l.exponential().at( 0 );
 #endif
+}
+
+QgsExpressionContext QgsNumericFormatContext::expressionContext() const
+{
+  return mExpressionContext;
+}
+
+void QgsNumericFormatContext::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
 }
 
 int QgsNumericFormat::sortKey()

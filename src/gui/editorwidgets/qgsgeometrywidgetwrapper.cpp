@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrywidgetwrapper.h"
+#include "moc_qgsgeometrywidgetwrapper.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsmessagebar.h"
 #include "qgsgeometrywidget.h"
@@ -28,8 +29,8 @@
 
 QgsGeometryWidgetWrapper::QgsGeometryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-  , mMessageBar( messageBar )
 {
+  Q_UNUSED( messageBar )
 }
 
 
@@ -40,7 +41,7 @@ QVariant QgsGeometryWidgetWrapper::value() const
 
   const QgsReferencedGeometry geomValue = mWidget->geometryValue();
   if ( geomValue.isNull() )
-    return QVariant( QVariant::UserType );
+    return QgsVariantUtils::createNullVariant( QMetaType::Type::User );
 
   return QVariant::fromValue( geomValue );
 }
@@ -78,13 +79,13 @@ void QgsGeometryWidgetWrapper::updateValues( const QVariant &value, const QVaria
   QgsReferencedGeometry geom;
   if ( !QgsVariantUtils::isNull( value ) )
   {
-    if ( value.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
+    if ( value.userType() == qMetaTypeId<QgsReferencedGeometry>() )
     {
-      geom = value.value< QgsReferencedGeometry >();
+      geom = value.value<QgsReferencedGeometry>();
     }
-    else if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
+    else if ( value.userType() == qMetaTypeId<QgsGeometry>() )
     {
-      geom = QgsReferencedGeometry( value.value< QgsGeometry >(), QgsCoordinateReferenceSystem() );
+      geom = QgsReferencedGeometry( value.value<QgsGeometry>(), QgsCoordinateReferenceSystem() );
     }
   }
 
@@ -93,4 +94,3 @@ void QgsGeometryWidgetWrapper::updateValues( const QVariant &value, const QVaria
     mWidget->setGeometryValue( geom );
   }
 }
-

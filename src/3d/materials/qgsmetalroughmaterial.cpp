@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterial.h"
+#include "moc_qgsmetalroughmaterial.cpp"
+#include "qgs3dutils.h"
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QAbstractTexture>
-#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QShaderProgramBuilder>
 #include <Qt3DRender/QGraphicsApiFilter>
 
 ///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
-  : QMaterial( parent )
+  : QgsMaterial( parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( QStringLiteral( "baseColor" ), QColor( "grey" ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( QStringLiteral( "metalness" ), 0.0f, this ) )
   , mRoughnessParameter( new Qt3DRender::QParameter( QStringLiteral( "roughness" ), 0.0f, this ) )
@@ -198,39 +199,14 @@ void QgsMetalRoughMaterial::setTextureScale( float textureScale )
   mTextureScaleParameter->setValue( textureScale );
 }
 
-QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines )
-{
-  // There is one caveat to take care of - GLSL source code needs to start with #version as
-  // a first directive, otherwise we get the old GLSL 100 version. So we can't just prepend the
-  // shader source code, but insert our defines at the right place.
-
-  QStringList defineLines;
-  for ( const QString &define : defines )
-    defineLines += "#define " + define + "\n";
-
-  QString definesText = defineLines.join( QString() );
-
-  QByteArray newShaderCode = shaderCode;
-  int versionIndex = shaderCode.indexOf( "#version " );
-  int insertionIndex = versionIndex == -1 ? 0 : shaderCode.indexOf( '\n', versionIndex + 1 ) + 1;
-  newShaderCode.insert( insertionIndex, definesText.toLatin1() );
-  return newShaderCode;
-}
-
 void QgsMetalRoughMaterial::init()
 {
-  QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::baseColorChanged );
-  QObject::connect( mMetalnessParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::metalnessChanged );
-  QObject::connect( mRoughnessParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::roughnessChanged );
-  QObject::connect( mAmbientOcclusionMapParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::ambientOcclusionChanged );
-  QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::normalChanged );
-  connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsMetalRoughMaterial::handleTextureScaleChanged );
+  QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::baseColorChanged );
+  QObject::connect( mMetalnessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::metalnessChanged );
+  QObject::connect( mRoughnessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::roughnessChanged );
+  QObject::connect( mAmbientOcclusionMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::ambientOcclusionChanged );
+  QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::normalChanged );
+  connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::handleTextureScaleChanged );
 
   mMetalRoughGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/default.vert" ) ) ) );
 
@@ -282,7 +258,7 @@ void QgsMetalRoughMaterial::updateFragmentShader()
   if ( mFlatShading )
     defines += "FLAT_SHADING";
 
-  QByteArray finalShaderCode = addDefinesToShaderCode( fragmentShaderCode, defines );
+  QByteArray finalShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, defines );
   mMetalRoughGL3Shader->setFragmentShaderCode( finalShaderCode );
 }
 

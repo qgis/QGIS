@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsprovidersourcewidgetprovider.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ An interface for providers of widgets designed to configure a data provider's so
 #include "qgsprovidersourcewidgetprovider.h"
 %End
   public:
-
     virtual ~QgsProviderSourceWidgetProvider();
 
     virtual QString providerKey() const = 0;
@@ -57,5 +56,5 @@ The returned object must be destroyed by the caller.
  *                                                                      *
  * src/gui/qgsprovidersourcewidgetprovider.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

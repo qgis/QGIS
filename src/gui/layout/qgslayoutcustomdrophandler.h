@@ -34,7 +34,6 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutCustomDropHandler.
      */
@@ -47,7 +46,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      *
      * The base class implementation does nothing.
      *
-     * \deprecated use the version which specifies a drop location instead.
+     * \deprecated QGIS 3.40. Use the version which specifies a drop location instead.
      */
     Q_DECL_DEPRECATED virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) SIP_DEPRECATED;
 
@@ -84,7 +83,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      *
      * \since QGIS 3.14
      */
-    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList< QgsLayoutItem * > &pastedItems SIP_OUT );
+    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList<QgsLayoutItem *> &pastedItems SIP_OUT );
 };
 
 

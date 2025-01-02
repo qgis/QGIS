@@ -1,0 +1,396 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlabeling.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+class QgsAbstractRasterLayerLabeling /Abstract/
+{
+%Docstring(signature="appended")
+Abstract base class for labeling settings for raster layers.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlabeling.h"
+%End
+  public:
+
+%ConvertToSubClassCode
+    if ( sipCpp->type() == "simple" )
+      sipType = sipType_QgsRasterLayerSimpleLabeling;
+    else
+      sipType = 0;
+%End
+
+    QgsAbstractRasterLayerLabeling();
+    virtual ~QgsAbstractRasterLayerLabeling();
+
+    static QgsAbstractRasterLayerLabeling *defaultLabelingForLayer( QgsRasterLayer *layer ) /Factory/;
+%Docstring
+Creates default labeling for a raster ``layer``.
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Unique type string of the labeling configuration implementation
+%End
+
+    virtual QgsAbstractRasterLayerLabeling *clone() const = 0 /Factory/;
+%Docstring
+Returns a new copy of the object
+%End
+
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Saves the labeling configuration to an XML element.
+
+.. seealso:: :py:func:`createFromElement`
+%End
+
+    virtual bool requiresAdvancedEffects() const = 0;
+%Docstring
+Returns ``True`` if drawing labels requires advanced effects like composition
+modes, which could prevent it being used as an isolated cached image
+or exported to a vector format.
+%End
+
+    virtual void multiplyOpacity( double opacityFactor );
+%Docstring
+Multiply opacity by ``opacityFactor``.
+
+This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
+by ``opacity`` effectively changing the opacity of the whole labeling elements.
+%End
+
+    virtual bool isInScaleRange( double scale ) const;
+%Docstring
+Tests whether the labels should be visible at the specified ``scale``.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+:return: ``True`` if the labels are visible at the given scale.
+%End
+
+
+    static QgsAbstractRasterLayerLabeling *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Tries to create an instance of an implementation based on the XML data.
+%End
+
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
+%Docstring
+Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+%End
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the labeling.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+%End
+
+  private:
+    QgsAbstractRasterLayerLabeling( const QgsAbstractRasterLayerLabeling &rhs );
+};
+
+
+class QgsRasterLayerSimpleLabeling : QgsAbstractRasterLayerLabeling
+{
+%Docstring(signature="appended")
+Basic implementation of the labeling interface for raster layers.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlabeling.h"
+%End
+  public:
+
+    explicit QgsRasterLayerSimpleLabeling();
+    ~QgsRasterLayerSimpleLabeling();
+
+    virtual QString type() const;
+
+    virtual QgsRasterLayerSimpleLabeling *clone() const /Factory/;
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    virtual bool requiresAdvancedEffects() const;
+
+    virtual void multiplyOpacity( double opacityFactor );
+
+
+    static QgsRasterLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a QgsRasterLayerSimpleLabeling from a DOM element with saved configuration
+%End
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for rendering the labels.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for rendering the labels.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+    const QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for the labels.
+
+.. seealso:: :py:func:`setNumericFormat`
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for the labels.
+
+Ownership of ``format`` is transferred to the labeling.
+
+.. seealso:: :py:func:`numericFormat`
+%End
+
+    int band() const;
+%Docstring
+Returns the raster band to use for label values.
+
+.. seealso:: :py:func:`setBand`
+%End
+
+    void setBand( int band );
+%Docstring
+Sest the raster ``band`` to use for label values.
+
+.. seealso:: :py:func:`band`
+%End
+
+    double priority() const;
+%Docstring
+Returns the priority of labels.
+
+This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority.
+
+The default is 0.5.
+
+.. seealso:: :py:func:`setPriority`
+%End
+
+    void setPriority( double priority );
+%Docstring
+Sets the ``priority`` of labels.
+
+This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority.
+
+.. seealso:: :py:func:`priority`
+%End
+
+
+    QgsLabelPlacementSettings &placementSettings();
+%Docstring
+Returns the label placement settings.
+
+.. seealso:: :py:func:`setPlacementSettings`
+%End
+
+    void setPlacementSettings( const QgsLabelPlacementSettings &settings );
+%Docstring
+Sets the label placement ``settings``.
+
+.. seealso:: :py:func:`placementSettings`
+%End
+
+
+    QgsLabelThinningSettings &thinningSettings();
+%Docstring
+Returns the label thinning settings.
+
+.. seealso:: :py:func:`setThinningSettings`
+%End
+
+    void setThinningSettings( const QgsLabelThinningSettings &settings );
+%Docstring
+Sets the label thinning ``settings``.
+
+.. seealso:: :py:func:`thinningSettings`
+%End
+
+    double zIndex() const;
+%Docstring
+Returns the Z-Index of the labels.
+
+Labels with a higher z-index are rendered on top of labels with a lower z-index.
+
+.. seealso:: :py:func:`setZIndex`
+%End
+
+    void setZIndex( double index );
+%Docstring
+Sets the Z-Index of the labels.
+
+Labels with a higher z-index are rendered on top of labels with a lower z-index.
+
+.. seealso:: :py:func:`zIndex`
+%End
+
+    double maximumScale() const;
+%Docstring
+Returns the maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
+
+The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+A scale of 0 indicates no maximum scale visibility.
+
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+
+.. seealso:: :py:func:`setMaximumScale`
+
+.. seealso:: :py:func:`minimumScale`
+
+.. seealso:: :py:func:`hasScaleBasedVisibility`
+%End
+
+    void setMaximumScale( double scale );
+%Docstring
+Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the labels will be visible.
+
+The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+A scale of 0 indicates no maximum scale visibility.
+
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+
+.. seealso:: :py:func:`maximumScale`
+
+.. seealso:: :py:func:`setMinimumScale`
+
+.. seealso:: :py:func:`setScaleBasedVisibility`
+%End
+
+    double minimumScale() const;
+%Docstring
+Returns the minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
+
+The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+A scale of 0 indicates no minimum scale visibility.
+
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+
+.. seealso:: :py:func:`setMinimumScale`
+
+.. seealso:: :py:func:`maximumScale`
+
+.. seealso:: :py:func:`hasScaleBasedVisibility`
+%End
+
+    void setMinimumScale( double scale );
+%Docstring
+Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the labels will be visible.
+
+The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+A scale of 0 indicates no minimum scale visibility.
+
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+
+.. seealso:: :py:func:`minimumScale`
+
+.. seealso:: :py:func:`setMaximumScale`
+
+.. seealso:: :py:func:`hasScaleBasedVisibility`
+%End
+
+    void setScaleBasedVisibility( bool enabled );
+%Docstring
+Sets whether scale based visibility is enabled for the labels.
+
+.. seealso:: :py:func:`setMinimumScale`
+
+.. seealso:: :py:func:`setMaximumScale`
+
+.. seealso:: :py:func:`hasScaleBasedVisibility`
+%End
+
+    bool hasScaleBasedVisibility() const;
+%Docstring
+Returns whether scale based visibility is enabled for the labels.
+
+.. seealso:: :py:func:`minimumScale`
+
+.. seealso:: :py:func:`maximumScale`
+
+.. seealso:: :py:func:`setScaleBasedVisibility`
+%End
+
+    virtual bool isInScaleRange( double scale ) const;
+
+
+    Qgis::RasterResamplingMethod resampleMethod() const;
+%Docstring
+Returns the resampling method used when the raster labels are being
+resampled over neighboring pixels.
+
+.. seealso:: :py:func:`setResampleMethod`
+
+.. seealso:: :py:func:`resampleOver`
+%End
+
+    void setResampleMethod( Qgis::RasterResamplingMethod method );
+%Docstring
+Sets the resampling ``method`` to use when the raster labels are being
+resampled over neighboring pixels.
+
+.. seealso:: :py:func:`resampleMethod`
+
+.. seealso:: :py:func:`setResampleOver`
+%End
+
+    int resampleOver() const;
+%Docstring
+Returns the number of neighboring pixels to resample over, when labels are
+showing values resampled over neighboring pixels.
+
+.. seealso:: :py:func:`setResampleOver`
+
+.. seealso:: :py:func:`resampleMethod`
+%End
+
+    void setResampleOver( int pixels );
+%Docstring
+Sets the number of neighboring ``pixels`` to resample over, when labels are
+showing values resampled over neighboring pixels.
+
+.. seealso:: :py:func:`resampleOver`
+
+.. seealso:: :py:func:`setResampleMethod`
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlabeling.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

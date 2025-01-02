@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/locator/qgslocatorwidget.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -42,7 +42,7 @@ widget to customize the searches performed by its :py:func:`~QgsLocatorWidget.lo
 as prioritizing results which are near the current canvas extent.
 %End
 
-    void setPlaceholderText( const QString  &text );
+    void setPlaceholderText( const QString &text );
 %Docstring
 Set placeholder ``text`` for the line edit.
 
@@ -84,12 +84,10 @@ Emitted when the configure option is triggered in the widget.
 
 
 
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/gui/locator/qgslocatorwidget.h                                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

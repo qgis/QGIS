@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/tableeditor/qgstableeditordialog.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ has support for table foreground and background colors, and numeric formats.
 #include "qgstableeditordialog.h"
 %End
   public:
-
     QgsTableEditorDialog( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsTableEditorDialog with the specified ``parent`` widget.
@@ -126,6 +125,22 @@ an expression context for the editor when required.
 .. versionadded:: 3.16
 %End
 
+    QgsMapLayer *layer() const;
+%Docstring
+Returns the (possibly ``None``) layer associated with the expression editor context.
+
+.. versionadded:: 3.40
+%End
+
+    void setLayer( QgsMapLayer *layer );
+%Docstring
+Sets the ``layer`` to be used associated with the expression editor context.
+
+.. versionadded:: 3.40
+%End
+
+
+
   signals:
 
     void tableChanged();
@@ -139,7 +154,6 @@ Emitted whenever the "include table header" setting is changed.
 %End
 
   protected:
-
     virtual void closeEvent( QCloseEvent * );
 
 
@@ -150,5 +164,5 @@ Emitted whenever the "include table header" setting is changed.
  *                                                                      *
  * src/gui/tableeditor/qgstableeditordialog.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

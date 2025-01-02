@@ -18,11 +18,7 @@ set (offline_editing_plugin_RCCS  offline_editing_plugin.qrc)
 ########################################################
 # Build
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_UI(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
-else()
-  QT5_WRAP_UI(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
-endif()
+qt_wrap_ui(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
 
 add_library (plugin_offlineediting MODULE
   ${offline_editing_plugin_SRCS}

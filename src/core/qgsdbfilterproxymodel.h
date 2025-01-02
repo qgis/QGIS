@@ -28,7 +28,7 @@
  * \ingroup core
  * \brief A class that implements a custom filter and can be used
  * as a proxy for QgsDbTableModel
- * \deprecated since QGIS 3.24
+ * \deprecated QGIS 3.24
 */
 class CORE_DEPRECATED_EXPORT QgsDatabaseFilterProxyModel : public QSortFilterProxyModel SIP_DEPRECATED
 {

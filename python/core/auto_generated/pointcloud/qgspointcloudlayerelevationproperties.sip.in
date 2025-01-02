@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pointcloud/qgspointcloudlayerelevationproperties.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -41,6 +41,8 @@ Constructor for QgsPointCloudLayerElevationProperties, with the specified ``pare
     virtual bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = 0 ) const;
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
+
+    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
 
     virtual bool showByDefaultInElevationProfilePlots() const;
 
@@ -222,5 +224,5 @@ Sets whether layer coloring should be respected when rendering elevation profile
  *                                                                      *
  * src/core/pointcloud/qgspointcloudlayerelevationproperties.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

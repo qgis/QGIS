@@ -32,6 +32,7 @@ RUN dnf -y --refresh install \
     libxml2-devel \
     libzip-devel \
     libzstd-devel \
+    mold \
     netcdf-devel \
     ninja-build \
     ocl-icd-devel \
@@ -46,6 +47,7 @@ RUN dnf -y --refresh install \
     protobuf-lite-devel \
     python3-devel \
     python3-mock \
+    python3-oauthlib \
     python3-OWSLib \
     python3-pyqt6 \
     python3-pyqt6-devel \
@@ -91,16 +93,17 @@ RUN dnf -y --refresh install \
 
 
 # Oracle : client side
-RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip > instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
-RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip > instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
-RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip > instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-basic-linux.x64-21.16.0.0.0dbru.zip > instantclient-basic-linux.x64-21.16.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip > instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip > instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
-RUN unzip instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
-RUN unzip instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
-RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+RUN unzip -n instantclient-basic-linux.x64-21.16.0.0.0dbru.zip
+RUN unzip -n instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
+RUN unzip -n instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
-ENV PATH="/instantclient_19_9:${PATH}"
-ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
+ENV PATH="/instantclient_21_16:${PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_21_16:${LD_LIBRARY_PATH}"
+
 ENV LANG=C.UTF-8
 
 FROM binary-for-oracle as binary-only

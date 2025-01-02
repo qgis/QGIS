@@ -9,4 +9,3 @@ usr/lib/libqgis_server.so
 usr/lib/libqgisgrass?.so
 usr/lib/libqgispython.so
 usr/share/qgis/FindQGIS.cmake
-#bullseye#usr/share/sip/qgis

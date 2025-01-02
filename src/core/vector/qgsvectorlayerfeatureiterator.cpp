@@ -138,11 +138,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
   , mFetchedFid( false )
 {
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
-  {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
-    mHasValidTransform = mTransform.isValid();
-  }
+  mTransform = mRequest.calculateTransform( mSource->mCrs );
+  mHasValidTransform = mTransform.isValid();
 
   // prepare spatial filter geometries for optimal speed
   // since the mDistanceWithin* constraint member variables are all in the DESTINATION CRS,
@@ -202,7 +199,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
     for ( const int attrIndex : usedAttributeIndices )
     {
-      if ( mSource->mFields.fieldOrigin( attrIndex ) != QgsFields::OriginProvider )
+      if ( mSource->mFields.fieldOrigin( attrIndex ) != Qgis::FieldOrigin::Provider )
         mDelegatedOrderByToProvider = false;
 
       attributeIndexes << attrIndex;
@@ -238,8 +235,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   // but we remove any destination CRS parameter - that is handled in QgsVectorLayerFeatureIterator,
   // not at the provider level. Otherwise virtual fields depending on geometry would have incorrect
   // values
-  if ( mRequest.destinationCrs().isValid() )
+  if ( mRequest.coordinateTransform().isValid() || mRequest.destinationCrs().isValid() )
   {
+    mProviderRequest.setCoordinateTransform( QgsCoordinateTransform() );
     mProviderRequest.setDestinationCrs( QgsCoordinateReferenceSystem(), mRequest.transformContext() );
   }
 
@@ -263,7 +261,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     {
       if ( attrIndex < 0 || attrIndex >= nPendingFields )
         continue;
-      if ( mSource->mFields.fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
+      if ( mSource->mFields.fieldOrigin( attrIndex ) == Qgis::FieldOrigin::Provider )
         providerSubset << mSource->mFields.fieldOriginIndex( attrIndex );
     }
 
@@ -294,7 +292,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
       // If there are fields in the expression which are not of origin provider, the provider will not be able to filter based on them.
       // In this case we disable the expression filter.
-      if ( source->mFields.fieldOrigin( idx ) != QgsFields::OriginProvider )
+      if ( source->mFields.fieldOrigin( idx ) != Qgis::FieldOrigin::Provider )
       {
         mProviderRequest.disableFilter();
         // can't limit at provider side
@@ -798,7 +796,7 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   if ( !mSource->mFields.exists( fieldIdx ) )
     return;
 
-  if ( mSource->mFields.fieldOrigin( fieldIdx ) != QgsFields::OriginJoin )
+  if ( mSource->mFields.fieldOrigin( fieldIdx ) != Qgis::FieldOrigin::Join )
     return;
 
   int sourceLayerIndex;
@@ -857,11 +855,11 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   std::unique_ptr<QgsExpression> exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() ); // skip-keyword-check
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() ); // skip-keyword-check
   exp->setGeomCalculator( &da );
-  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  exp->setAreaUnits( QgsProject::instance()->areaUnits() );
+  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() ); // skip-keyword-check
+  exp->setAreaUnits( QgsProject::instance()->areaUnits() ); // skip-keyword-check
 
   if ( !mExpressionContext )
     createExpressionContext();
@@ -939,7 +937,7 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
   QList< int >::const_iterator prepFieldIt = mPreparedFields.constBegin();
   for ( ; prepFieldIt != mPreparedFields.constEnd(); ++prepFieldIt )
   {
-    if ( mSource->mFields.fieldOrigin( *prepFieldIt ) != QgsFields::OriginJoin )
+    if ( mSource->mFields.fieldOrigin( *prepFieldIt ) != Qgis::FieldOrigin::Join )
     {
       resolvedFields.insert( *prepFieldIt );
     }
@@ -1044,20 +1042,20 @@ void QgsVectorLayerFeatureIterator::prepareField( int fieldIdx )
 {
   switch ( mSource->mFields.fieldOrigin( fieldIdx ) )
   {
-    case QgsFields::OriginExpression:
+    case Qgis::FieldOrigin::Expression:
       prepareExpression( fieldIdx );
       break;
 
-    case QgsFields::OriginJoin:
+    case Qgis::FieldOrigin::Join:
       if ( mSource->mJoinBuffer->containsJoins() )
       {
         prepareJoin( fieldIdx );
       }
       break;
 
-    case QgsFields::OriginUnknown:
-    case QgsFields::OriginProvider:
-    case QgsFields::OriginEdit:
+    case Qgis::FieldOrigin::Unknown:
+    case Qgis::FieldOrigin::Provider:
+    case Qgis::FieldOrigin::Edit:
       break;
   }
 }
@@ -1193,15 +1191,15 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   else
   {
     QString v = joinValue.toString();
-    switch ( joinValue.type() )
+    switch ( joinValue.userType() )
     {
-      case QVariant::Int:
-      case QVariant::LongLong:
-      case QVariant::Double:
+      case QMetaType::Type::Int:
+      case QMetaType::Type::LongLong:
+      case QMetaType::Type::Double:
         break;
 
       default:
-      case QVariant::String:
+      case QMetaType::Type::QString:
         v.replace( '\'', QLatin1String( "''" ) );
         v.prepend( '\'' ).append( '\'' );
         break;
@@ -1339,7 +1337,7 @@ void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
   mExpressionContext = std::make_unique< QgsExpressionContext >();
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
   mExpressionContext->setFeedback( mRequest.feedback() );
 }

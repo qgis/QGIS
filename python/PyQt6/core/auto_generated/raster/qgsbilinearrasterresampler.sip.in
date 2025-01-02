@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsbilinearrasterresampler.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,11 +23,15 @@ Bilinear Raster Resampler
   public:
 
     QgsBilinearRasterResampler();
-%Docstring
-Constructor for QgsBilinearRasterResampler.
-%End
- virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
 
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated="Since 3.12. Use resampleV2() instead."/;
+
+%Docstring
+
+.. deprecated:: 3.12
+
+   Use :py:func:`~QgsBilinearRasterResampler.resampleV2` instead.
+%End
 
     virtual QImage resampleV2( const QImage &source, const QSize &size );
 
@@ -44,5 +48,5 @@ Constructor for QgsBilinearRasterResampler.
  *                                                                      *
  * src/core/raster/qgsbilinearrasterresampler.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

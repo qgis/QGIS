@@ -32,14 +32,14 @@ class CORE_EXPORT QgsClassificationPrettyBreaks : public QgsClassificationMethod
 
     QString name() const override;
     QString id() const override;
-    QgsClassificationMethod *clone() const override;
+    std::unique_ptr< QgsClassificationMethod > clone() const override;
     QIcon icon() const override;
 
     bool valuesRequired() const override {return false;}
 
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum,
-                                   const QList<double> &values, int nclasses ) override;
+                                   const QList<double> &values, int nclasses, QString &error ) override;
 };
 
 #endif // QGSCLASSIFICATIONPRETTYBREAKS_H

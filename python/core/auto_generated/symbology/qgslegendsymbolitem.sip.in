@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgslegendsymbolitem.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,9 +25,6 @@ that can be used by legend model for rendering of legend.
   public:
 
     QgsLegendSymbolItem();
-%Docstring
-Constructor for QgsLegendSymbolItem.
-%End
 
     QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
 %Docstring
@@ -112,6 +109,24 @@ Takes ownership of the settings object.
 Returns extra information for data-defined size legend rendering. Normally it returns ``None``.
 %End
 
+    void setUserData( int key, QVariant &value );
+%Docstring
+Adds a ``key`` - ``value`` pair to the item's user data.
+
+.. seealso:: :py:func:`userData`
+
+.. versionadded:: 3.38
+%End
+
+    QVariant userData( int key ) const;
+%Docstring
+Retrieves the item's user data with the specified ``key``.
+
+.. seealso:: :py:func:`setUserData`
+
+.. versionadded:: 3.38
+%End
+
 };
 
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
@@ -121,5 +136,5 @@ typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
  *                                                                      *
  * src/core/symbology/qgslegendsymbolitem.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

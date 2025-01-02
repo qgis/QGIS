@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutnewitempropertiesdialog.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ enter their sizes and positions.
 #include "qgslayoutnewitempropertiesdialog.h"
 %End
   public:
-
     QgsLayoutItemPropertiesDialog( QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for :py:class:`QgsLayoutNewItemPropertiesDialog`.
@@ -89,5 +88,5 @@ conversion of units.
  *                                                                      *
  * src/gui/layout/qgslayoutnewitempropertiesdialog.h                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

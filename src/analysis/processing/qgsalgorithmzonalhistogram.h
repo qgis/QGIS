@@ -30,9 +30,7 @@
  */
 class QgsZonalHistogramAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsZonalHistogramAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -44,14 +42,11 @@ class QgsZonalHistogramAlgorithm : public QgsProcessingAlgorithm
     QgsZonalHistogramAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsRasterInterface > mRasterInterface;
+    std::unique_ptr<QgsRasterInterface> mRasterInterface;
     int mRasterBand = 1;
     bool mHasNoDataValue = false;
     float mNodataValue = -1;
@@ -61,11 +56,8 @@ class QgsZonalHistogramAlgorithm : public QgsProcessingAlgorithm
     double mCellSizeY = 0;
     double mNbCellsXProvider = 0;
     double mNbCellsYProvider = 0;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMZONALHISTOGRAM_H
-
-

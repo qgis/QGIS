@@ -3,12 +3,16 @@
  *                                                                      *
  * src/core/geometry/qgsgeometryengine.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
+
+%ModuleHeaderCode
+#include <qgsgeos.h>
+%End
 
 class QgsGeometryEngine
 {
@@ -26,7 +30,7 @@ a large number of spatial relationships will be tested (such as calling :py:func
 geometry should first be prepared by calling :py:func:`~prepareGeometry` before performing the tests.
 
 Example
--------
+-------------------------------------
 
 .. code-block:: python
 
@@ -52,6 +56,12 @@ Example
 
 %TypeHeaderCode
 #include "qgsgeometryengine.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsGeos * >( sipCpp ) != NULL )
+      sipType = sipType_QgsGeos;
+    else
+      sipType = NULL;
 %End
   public:
 
@@ -272,14 +282,14 @@ Determines whether the geometry is simple (according to OGC definition).
 Splits this geometry according to a given line.
 
 :param splitLine: the line that splits the geometry
-\param[out] newGeometries list of new geometries that have been created with the split
 :param topological: ``True`` if topological editing is enabled
-\param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-\param[out] errorMsg error messages emitted, if any
+:param topologyTestPoints: points that need to be tested for topological completeness in the dataset
+:param errorMsg: error messages emitted, if any
 :param skipIntersectionCheck: set to ``True`` to skip the potentially expensive initial intersection check. Only set this flag if an intersection
                               test has already been performed by the caller!
 
-:return: 0 in case of success, 1 if geometry has not been split, error else
+:return: - 0 in case of success, 1 if geometry has not been split, error else
+         - newGeometries: list of new geometries that have been created with the split
 %End
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
@@ -316,5 +326,5 @@ Logs an error ``message`` encountered during an operation.
  *                                                                      *
  * src/core/geometry/qgsgeometryengine.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

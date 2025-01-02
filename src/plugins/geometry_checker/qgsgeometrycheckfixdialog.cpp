@@ -24,6 +24,7 @@
 #include <QGridLayout>
 
 #include "qgsgeometrycheckfixdialog.h"
+#include "moc_qgsgeometrycheckfixdialog.cpp"
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
@@ -32,8 +33,7 @@
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
 
-QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
-    const QList<QgsGeometryCheckError *> &errors, QWidget *parent )
+QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker, const QList<QgsGeometryCheckError *> &errors, QWidget *parent )
   : QDialog( parent )
   , mChecker( checker )
   , mErrors( errors )
@@ -73,7 +73,6 @@ QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *ch
   connect( mNextBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::setupNextError );
   connect( mFixBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::fixError );
   connect( mSkipBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::skipError );
-
 }
 
 void QgsGeometryCheckerFixDialog::showEvent( QShowEvent * )

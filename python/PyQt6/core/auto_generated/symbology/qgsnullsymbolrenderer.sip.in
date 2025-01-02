@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/symbology/qgsnullsymbolrenderer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -11,8 +11,10 @@
 class QgsNullSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
-and diagrams for the layer. Selected features will also be drawn with a default symbol.
+Null symbol renderer, which draws no symbols for features by default, but allows for labeling
+and diagrams for the layer.
+
+Selected features will also be drawn with a default symbol.
 %End
 
 %TypeHeaderCode
@@ -28,7 +30,7 @@ and diagrams for the layer. Selected features will also be drawn with a default 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void stopRender( QgsRenderContext &context );
 
@@ -73,5 +75,5 @@ Creates a QgsNullSymbolRenderer from an existing renderer.
  *                                                                      *
  * src/core/symbology/qgsnullsymbolrenderer.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

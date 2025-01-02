@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgsrasterprojector.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -16,9 +16,11 @@
 class QgsRasterProjector : QgsRasterInterface
 {
 %Docstring(signature="appended")
-:py:class:`QgsRasterProjector` implements approximate projection support for
-it calculates grid of points in source CRS for target CRS + extent
-which are used to calculate affine transformation matrices.
+Implements approximate projection support for optimised raster transformation.
+
+:py:class:`QgsRasterProjector` calculates a grid of points in the source CRS for a specific target CRS and extent.
+These are used to calculate affine transformation matrices, which can be used instead of raw
+PROJ transformations for optimised bulk reprojection of points.
 %End
 
 %TypeHeaderCode
@@ -47,12 +49,13 @@ which are used to calculate affine transformation matrices.
 
 
  void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
-                                   int srcDatumTransform = -1, int destDatumTransform = -1 ) /Deprecated/;
+                                   int srcDatumTransform = -1, int destDatumTransform = -1 ) /Deprecated="Since 3.8. Use transformContext version instead."/;
 %Docstring
 Sets the source and destination CRS
 
-.. deprecated:: QGIS 3.8
-  use transformContext version instead
+.. deprecated:: 3.8
+
+   Use transformContext version instead.
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
@@ -103,5 +106,5 @@ Calculate destination extent and size from source extent and size
  *                                                                      *
  * src/core/raster/qgsrasterprojector.h                                 *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

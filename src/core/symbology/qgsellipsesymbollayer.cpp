@@ -348,6 +348,11 @@ QString QgsEllipseSymbolLayer::layerType() const
   return QStringLiteral( "EllipseMarker" );
 }
 
+Qgis::SymbolLayerFlags QgsEllipseSymbolLayer::flags() const
+{
+  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
+}
+
 void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QgsMarkerSymbolLayer::startRender( context ); // get anchor point expressions

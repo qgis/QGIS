@@ -77,6 +77,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 
   public slots:
     void editConnection();
+    void duplicateConnection();
     void deleteConnection();
     void refreshConnection();
 
@@ -87,7 +88,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 
   private:
     void stop();
-    QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
+    QMap<QString, QgsOracleOwnerItem *> mOwnerMap;
     QgsOracleColumnTypeTask *mColumnTypeTask = nullptr;
     void setAllAsPopulated();
 };
@@ -108,7 +109,7 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
 };
 
 Q_NOWARN_DEPRECATED_PUSH // deleteLayer deprecated
-class QgsOracleLayerItem : public QgsLayerItem
+  class QgsOracleLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 

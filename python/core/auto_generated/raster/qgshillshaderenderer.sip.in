@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/raster/qgshillshaderenderer.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -62,22 +62,24 @@ Factory method to create a new renderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
- int band() const /Deprecated/;
+ int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
 Returns the band used by the renderer
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsHillshadeRenderer.inputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsHillshadeRenderer.inputBand` instead.
 %End
 
- void setBand( int bandNo ) /Deprecated/;
+ void setBand( int bandNo ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
 %Docstring
 Sets the band used by the renderer.
 
 .. seealso:: :py:func:`band`
 
-.. deprecated:: QGIS 3.38
-   use :py:func:`~QgsHillshadeRenderer.setInputBand` instead
+.. deprecated:: 3.38
+
+   Use :py:func:`~QgsHillshadeRenderer.setInputBand` instead.
 %End
     virtual bool setInputBand( int band );
 
@@ -153,5 +155,5 @@ Sets whether to render using a multi-directional hillshade algorithm.
  *                                                                      *
  * src/core/raster/qgshillshaderenderer.h                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

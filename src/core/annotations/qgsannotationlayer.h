@@ -21,10 +21,11 @@
 #include "qgis_sip.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerrenderer.h"
-
+#include "qgsmaplayerref.h"
 
 class QgsAnnotationItem;
 class QgsAbstractAnnotationItemEditOperation;
+class QgsAnnotationItemEditContext;
 class QgsPaintEffect;
 
 
@@ -155,9 +156,18 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      *
      * Returns TRUE if the operation was successfully applied.
      *
-     * \since QGIS 3.22
+     * \deprecated QGIS 3.40. Use applyEditV2() instead.
      */
-    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+    Q_DECL_DEPRECATED Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) SIP_DEPRECATED;
+
+    /**
+     * Applies an edit \a operation to the layer.
+     *
+     * Returns TRUE if the operation was successfully applied.
+     *
+     * \since QGIS 3.40
+     */
+    Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
 
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
@@ -175,6 +185,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
     QString htmlMetadata() const override;
+    void resolveReferences( QgsProject *project ) override;
 
     /**
      * Returns the current paint effect for the layer.
@@ -193,6 +204,24 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
+    /**
+     * Returns a linked layer, where the items in this annotation layer
+     * will only be visible when the linked layer is also visible.
+     *
+     * \see setLinkedVisibilityLayer()
+     * \since QGIS 3.40
+     */
+    QgsMapLayer *linkedVisibilityLayer();
+
+    /**
+     * Sets a linked \a layer, where the items in this annotation layer
+     * will only be visible when the linked layer is also visible.
+     *
+     * \see linkedVisibilityLayer()
+     * \since QGIS 3.40
+     */
+    void setLinkedVisibilityLayer( QgsMapLayer *layer );
+
   private:
 
     QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
@@ -208,6 +237,8 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsDataProvider *mDataProvider = nullptr;
 
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
+
+    QgsMapLayerRef mLinkedLayer;
 
     friend class QgsAnnotationLayerRenderer;
 
@@ -227,7 +258,7 @@ class QgsAnnotationLayerDataProvider : public QgsDataProvider
 
   public:
     QgsAnnotationLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
-                                    QgsDataProvider::ReadFlags flags );
+                                    Qgis::DataProviderReadFlags flags );
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;
     QString description() const override;

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsderivativefilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,9 +23,8 @@ Needs to be subclassed (e.g. for slope and aspect).
   public:
     QgsDerivativeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
-     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
-                                 float *x12, float *x22, float *x32,
-                                 float *x13, float *x23, float *x33 ) = 0;
+    virtual float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) = 0;
+
 
   protected:
     float calcFirstDerX( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) const;
@@ -43,5 +42,5 @@ Calculates the first order derivative in y-direction according to Horn (1981)
  *                                                                      *
  * src/analysis/raster/qgsderivativefilter.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

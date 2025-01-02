@@ -20,21 +20,25 @@
 #include <QMessageBox>
 
 #include "qgsgui.h"
+#include "moc_qgsgui.cpp"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgssourceselectproviderregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgsannotationitemguiregistry.h"
-#ifdef Q_OS_MACX
+#include "qgsadvanceddigitizingtoolsregistry.h"
+#include "qgscalloutsregistry.h"
+#include "callouts/qgscalloutwidget.h"
+#ifdef Q_OS_MACOS
 #include "qgsmacnative.h"
-#elif defined (Q_OS_WIN)
+#elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
 #include "qgswinnative.h"
 #else
 #include "qgsnative.h"
 #endif
-#elif defined (Q_OS_LINUX)
+#elif defined( Q_OS_LINUX )
 #include "qgslinuxnative.h"
 #else
 #include "qgsnative.h"
@@ -43,6 +47,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgswidgetstatehelper_p.h"
 #include "qgslogger.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingrecentalgorithmlog.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgssettings.h"
@@ -63,6 +68,7 @@
 #include "qgsinputcontrollermanager.h"
 #include "qgssensorguiregistry.h"
 #include "qgshistoryentry.h"
+#include "qgsstacsourceselectprovider.h"
 
 #include "qgssettingseditorwidgetregistry.h"
 
@@ -141,6 +147,11 @@ QgsAnnotationItemGuiRegistry *QgsGui::annotationItemGuiRegistry()
   return instance()->mAnnotationItemGuiRegistry;
 }
 
+QgsAdvancedDigitizingToolsRegistry *QgsGui::advancedDigitizingToolsRegistry()
+{
+  return instance()->mAdvancedDigitizingToolsRegistry;
+}
+
 QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
 {
   return instance()->mProcessingGuiRegistry;
@@ -154,6 +165,11 @@ QgsNumericFormatGuiRegistry *QgsGui::numericFormatGuiRegistry()
 QgsCodeEditorColorSchemeRegistry *QgsGui::codeEditorColorSchemeRegistry()
 {
   return instance()->mCodeEditorColorSchemeRegistry;
+}
+
+QgsProcessingFavoriteAlgorithmManager *QgsGui::processingFavoriteAlgorithmManager()
+{
+  return instance()->mProcessingFavoriteAlgorithmManager;
 }
 
 QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
@@ -231,9 +247,11 @@ QgsGui::~QgsGui()
 {
   delete mProcessingGuiRegistry;
   delete mDataItemGuiProviderRegistry;
+  delete mProcessingFavoriteAlgorithmManager;
   delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
   delete mAnnotationItemGuiRegistry;
+  delete mAdvancedDigitizingToolsRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
@@ -259,7 +277,7 @@ QgsGui::~QgsGui()
 QColor QgsGui::sampleColor( QPoint point )
 {
   QScreen *screen = findScreenAt( point );
-  if ( ! screen )
+  if ( !screen )
   {
     return QColor();
   }
@@ -273,7 +291,7 @@ QColor QgsGui::sampleColor( QPoint point )
 
 QScreen *QgsGui::findScreenAt( QPoint point )
 {
-  const QList< QScreen * > screens = QGuiApplication::screens();
+  const QList<QScreen *> screens = QGuiApplication::screens();
   for ( QScreen *screen : screens )
   {
     if ( screen->geometry().contains( point ) )
@@ -290,13 +308,13 @@ QgsGui::QgsGui()
   QgsMacNative *macNative = new QgsMacNative();
   macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
   mNative = macNative;
-#elif defined (Q_OS_WIN)
+#elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
   mNative = new QgsWinNative();
 #else
   mNative = new QgsNative();
 #endif
-#elif defined(Q_OS_LINUX)
+#elif defined( Q_OS_LINUX )
   mNative = new QgsLinuxNative();
 #else
   mNative = new QgsNative();
@@ -329,6 +347,7 @@ QgsGui::QgsGui()
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->addProvider( new QgsLayerMetadataSourceSelectProvider() );
+  mSourceSelectProviderRegistry->addProvider( new QgsStacSourceSelectProvider() );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
@@ -343,84 +362,172 @@ QgsGui::QgsGui()
   mAnnotationItemGuiRegistry = new QgsAnnotationItemGuiRegistry();
   mAnnotationItemGuiRegistry->addDefaultItems();
 
+  mAdvancedDigitizingToolsRegistry = new QgsAdvancedDigitizingToolsRegistry();
+  mAdvancedDigitizingToolsRegistry->addDefaultTools();
+
   mWidgetStateHelper = new QgsWidgetStateHelper();
+  mProcessingFavoriteAlgorithmManager = new QgsProcessingFavoriteAlgorithmManager();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
 
-  qRegisterMetaType< QgsHistoryEntry >( "QgsHistoryEntry" );
+  qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
-bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
+bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *messageBar, Qgis::PythonEmbeddedType embeddedType )
 {
-  const Qgis::PythonMacroMode macroMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
 
-  switch ( macroMode )
+  switch ( pythonEmbeddedMode )
   {
-    case Qgis::PythonMacroMode::SessionOnly:
-    case Qgis::PythonMacroMode::Always:
-      if ( lambda )
-        lambda();
+    case Qgis::PythonEmbeddedMode::SessionOnly:
+    case Qgis::PythonEmbeddedMode::Always:
+      if ( embeddedType == Qgis::PythonEmbeddedType::Macro )
+      {
+        if ( lambda )
+          lambda();
+      }
+      // If this is the case, expression functions
+      // are loaded directly by the QGIS project.
       return true;
-    case Qgis::PythonMacroMode::Never:
-    case Qgis::PythonMacroMode::NotForThisSession:
+    case Qgis::PythonEmbeddedMode::Never:
+    case Qgis::PythonEmbeddedMode::NotForThisSession:
       if ( messageBar )
       {
-        messageBar->pushMessage( tr( "Python Macros" ),
-                                 tr( "Python macros are currently disabled and will not be run" ),
-                                 Qgis::MessageLevel::Warning );
+        switch ( embeddedType )
+        {
+          case Qgis::PythonEmbeddedType::Macro:
+            messageBar->pushMessage( tr( "Python Macros" ), tr( "Python macros are currently disabled and will not be run" ), Qgis::MessageLevel::Warning );
+            break;
+          case Qgis::PythonEmbeddedType::ExpressionFunction:
+            messageBar->pushMessage( tr( "Python Expressions" ), tr( "Python expressions from project are currently disabled and will not be loaded" ), Qgis::MessageLevel::Warning );
+            break;
+        }
       }
       return false;
-    case Qgis::PythonMacroMode::Ask:
-      if ( !lambda )
+    case Qgis::PythonEmbeddedMode::Ask:
+      if ( embeddedType == Qgis::PythonEmbeddedType::Macro )
       {
-        QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ),
-                            tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
-        QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Disable for this Session" ), QMessageBox::DestructiveRole );
-        msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
-        QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
-        msgBox.exec();
-
-        QAbstractButton *clicked = msgBox.clickedButton();
-        if ( clicked == stopSessionButton )
+        if ( !lambda )
         {
-          QgsSettings().setEnumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::NotForThisSession );
+          QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ), tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
+          QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Disable for this Session" ), QMessageBox::DestructiveRole );
+          msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
+          QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
+          msgBox.exec();
+
+          QAbstractButton *clicked = msgBox.clickedButton();
+          if ( clicked == stopSessionButton )
+          {
+            QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::NotForThisSession );
+          }
+          return clicked == yesButton;
         }
-        return clicked == yesButton;
+        else
+        {
+          // create the notification widget for macros
+          Q_ASSERT( messageBar );
+          if ( messageBar )
+          {
+            QToolButton *btnEnableMacros = new QToolButton();
+            btnEnableMacros->setText( tr( "Enable Macros" ) );
+            btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+            btnEnableMacros->setCursor( Qt::PointingHandCursor );
+            btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+            QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
+              tr( "Security warning" ),
+              tr( "Python macros cannot currently be run." ),
+              btnEnableMacros,
+              Qgis::MessageLevel::Warning,
+              0,
+              messageBar
+            );
+
+            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [=]() {
+              lambda();
+              messageBar->popWidget( macroMsg );
+            } );
+
+            // display the macros notification widget
+            messageBar->pushItem( macroMsg );
+          }
+
+          return false;
+        }
       }
-      else
+      else if ( embeddedType == Qgis::PythonEmbeddedType::ExpressionFunction )
       {
-        // create the notification widget for macros
+        // create the notification widget for expressions from project
         Q_ASSERT( messageBar );
         if ( messageBar )
         {
-          QToolButton *btnEnableMacros = new QToolButton();
-          btnEnableMacros->setText( tr( "Enable Macros" ) );
-          btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
-          btnEnableMacros->setCursor( Qt::PointingHandCursor );
-          btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+          QToolButton *btnEnableExpressionsFromProject = new QToolButton();
+          btnEnableExpressionsFromProject->setText( tr( "Enable python expressions from project" ) );
+          btnEnableExpressionsFromProject->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+          btnEnableExpressionsFromProject->setCursor( Qt::PointingHandCursor );
+          btnEnableExpressionsFromProject->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
 
-          QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
+          QgsMessageBarItem *expressionFromProjectMsg = new QgsMessageBarItem(
             tr( "Security warning" ),
-            tr( "Python macros cannot currently be run." ),
-            btnEnableMacros,
+            tr( "Python expressions from project cannot currently be loaded." ),
+            btnEnableExpressionsFromProject,
             Qgis::MessageLevel::Warning,
             0,
-            messageBar );
+            messageBar
+          );
 
-          connect( btnEnableMacros, &QToolButton::clicked, messageBar, [ = ]()
-          {
-            lambda();
-            messageBar->popWidget( macroMsg );
+          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [=]() {
+            QgsProject::instance()->loadFunctionsFromProject( true );
+            messageBar->popWidget( expressionFromProjectMsg );
           } );
 
-          // display the macros notification widget
-          messageBar->pushItem( macroMsg );
+          // display the notification widget
+          messageBar->pushItem( expressionFromProjectMsg );
         }
 
         return false;
       }
   }
   return false;
+}
+
+void QgsGui::initCalloutWidgets()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [=]() {
+    auto _initCalloutWidgetFunction = []( const QString &name, QgsCalloutWidgetFunc f ) {
+      QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
+
+      QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
+      if ( !abstractMetadata )
+      {
+        QgsDebugError( QStringLiteral( "Failed to find callout entry in registry: %1" ).arg( name ) );
+      }
+      QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
+      if ( !metadata )
+      {
+        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ).arg( name ) );
+      }
+      else
+      {
+        metadata->setWidgetFunction( f );
+      }
+    };
+
+    _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
+    _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
+    _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
+    _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
+  } );
+}
+
+bool QgsGui::hasWebEngine()
+{
+#ifdef HAVE_WEBENGINE
+  return true;
+#else
+  return false;
+#endif
 }
 
 ///@cond PRIVATE

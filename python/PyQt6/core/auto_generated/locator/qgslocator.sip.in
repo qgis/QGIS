@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/locator/qgslocator.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -88,8 +88,9 @@ with valid prefixes.
 
 .. seealso:: :py:func:`filters`
 
-.. deprecated:: QGIS 3.2
-   use :py:func:`~QgsLocator.filters` instead
+.. deprecated:: 3.2
+
+   Use :py:func:`~QgsLocator.filters` instead.
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );
@@ -172,5 +173,5 @@ of successful completion or early cancellation.
  *                                                                      *
  * src/core/locator/qgslocator.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

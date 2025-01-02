@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsdatetimesearchwidgetwrapper.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Wraps a date/time edit widget for searching.
 #include "qgsdatetimesearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDateTimeSearchWidgetWrapper.
@@ -74,5 +73,5 @@ the editor widget's configured field format for date/time values.
  *                                                                      *
  * src/gui/editorwidgets/qgsdatetimesearchwidgetwrapper.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

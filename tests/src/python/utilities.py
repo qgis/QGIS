@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Tim Sutton (tim@linfiniti.com)'
-__date__ = '20/01/2011'
-__copyright__ = 'Copyright 2012, The QGIS Project'
+
+__author__ = "Tim Sutton (tim@linfiniti.com)"
+__date__ = "20/01/2011"
+__copyright__ = "Copyright 2012, The QGIS Project"
 
 import os
 import platform
@@ -45,22 +46,21 @@ FONTSLOADED = False
 def assertHashesForFile(theHashes, theFilename):
     """Assert that a files has matches one of a list of expected hashes"""
     myHash = hashForFile(theFilename)
-    myMessage = ('Unexpected hash'
-                 '\nGot: %s'
-                 '\nExpected: %s'
-                 '\nPlease check graphics %s visually '
-                 'and add to list of expected hashes '
-                 'if it is OK on this platform.'
-                 % (myHash, theHashes, theFilename))
+    myMessage = (
+        "Unexpected hash"
+        "\nGot: %s"
+        "\nExpected: %s"
+        "\nPlease check graphics %s visually "
+        "and add to list of expected hashes "
+        "if it is OK on this platform." % (myHash, theHashes, theFilename)
+    )
     assert myHash in theHashes, myMessage
 
 
 def assertHashForFile(theHash, theFilename):
     """Assert that a files has matches its expected hash"""
     myHash = hashForFile(theFilename)
-    myMessage = ('Unexpected hash'
-                 '\nGot: %s'
-                 '\nExpected: %s' % (myHash, theHash))
+    myMessage = "Unexpected hash" "\nGot: %s" "\nExpected: %s" % (myHash, theHash)
     assert myHash == theHash, myMessage
 
 
@@ -84,17 +84,16 @@ def unitTestDataPath(theSubdir=None):
     tmpPath = os.path.split(os.path.dirname(myPath))
     myPath = os.path.split(tmpPath[0])
     if theSubdir is not None:
-        myPath = os.path.abspath(os.path.join(myPath[0],
-                                              'testdata',
-                                              theSubdir))
+        myPath = os.path.abspath(os.path.join(myPath[0], "testdata", theSubdir))
     else:
-        myPath = os.path.abspath(os.path.join(myPath[0], 'testdata'))
+        myPath = os.path.abspath(os.path.join(myPath[0], "testdata"))
     return myPath
 
 
 def svgSymbolsPath():
     return os.path.abspath(
-        os.path.join(unitTestDataPath(), '..', '..', 'images', 'svg'))
+        os.path.join(unitTestDataPath(), "..", "..", "images", "svg")
+    )
 
 
 def writeShape(theMemoryLayer, theFileName):
@@ -105,18 +104,21 @@ def writeShape(theMemoryLayer, theFileName):
     myLayerOptions = []
     mySelectedOnlyFlag = False
     mySkipAttributesFlag = False
-    myGeoCrs = QgsCoordinateReferenceSystem('EPSG:4326')
+    myGeoCrs = QgsCoordinateReferenceSystem("EPSG:4326")
     myResult, myErrorMessage = QgsVectorFileWriter.writeAsVectorFormat(
         theMemoryLayer,
         myFileName,
-        'utf-8',
+        "utf-8",
         myGeoCrs,
-        'ESRI Shapefile',
+        "ESRI Shapefile",
         mySelectedOnlyFlag,
         myOptions,
         myLayerOptions,
-        mySkipAttributesFlag)
-    assert myResult == QgsVectorFileWriter.WriterError.NoError, f'Writing shape failed, Error {myResult} ({myErrorMessage})'
+        mySkipAttributesFlag,
+    )
+    assert (
+        myResult == QgsVectorFileWriter.WriterError.NoError
+    ), f"Writing shape failed, Error {myResult} ({myErrorMessage})"
 
     return myFileName
 
@@ -153,17 +155,17 @@ def compareWkt(a, b, tol=0.000001):
 
     # remove optional spaces before z/m
     r = re.compile(r"\s+([zm])")
-    a0 = r.sub(r'\1', a0)
-    b0 = r.sub(r'\1', b0)
+    a0 = r.sub(r"\1", a0)
+    b0 = r.sub(r"\1", b0)
 
     # spaces before brackets are optional
     r = re.compile(r"\s*\(\s*")
-    a0 = r.sub('(', a0)
-    b0 = r.sub('(', b0)
+    a0 = r.sub("(", a0)
+    b0 = r.sub("(", b0)
     # spaces after brackets are optional
     r = re.compile(r"\s*\)\s*")
-    a0 = r.sub(')', a0)
-    b0 = r.sub(')', b0)
+    a0 = r.sub(")", a0)
+    b0 = r.sub(")", b0)
 
     # compare the structure
     r0 = re.compile(r"-?\d+(?:\.\d+)?(?:[eE]\d+)?")
@@ -179,20 +181,19 @@ def compareWkt(a, b, tol=0.000001):
     if len(a0) != len(b0):
         return False
 
-    for (a1, b1) in zip(a0, b0):
+    for a1, b1 in zip(a0, b0):
         if not doubleNear(a1, b1, tol):
             return False
 
     return True
 
 
-def getTempfilePath(sufx='png'):
+def getTempfilePath(sufx="png"):
     """
     :returns: Path to empty tempfile ending in defined suffix
     Caller should delete tempfile if not used
     """
-    tmp = tempfile.NamedTemporaryFile(
-        suffix=f".{sufx}", delete=False)
+    tmp = tempfile.NamedTemporaryFile(suffix=f".{sufx}", delete=False)
     filepath = tmp.name
     tmp.close()
     # set read permission for group and other so we can access docker test generated file
@@ -226,39 +227,49 @@ def mapSettingsString(ms):
     # fullExtent() causes extra call in middle of output flow; get first
     full_ext = ms.visibleExtent().toString()
 
-    s = 'MapSettings...\n'
-    s += '  layers(): {}\n'.format(
-        [layer.name() for layer in ms.layers()])
-    s += '  backgroundColor(): rgba {},{},{},{}\n'.format(
-        ms.backgroundColor().red(), ms.backgroundColor().green(),
-        ms.backgroundColor().blue(), ms.backgroundColor().alpha())
-    s += '  selectionColor(): rgba {},{},{},{}\n'.format(
-        ms.selectionColor().red(), ms.selectionColor().green(),
-        ms.selectionColor().blue(), ms.selectionColor().alpha())
-    s += '  outputSize(): {} x {}\n'.format(
-        ms.outputSize().width(), ms.outputSize().height())
-    s += f'  outputDpi(): {ms.outputDpi()}\n'
-    s += f'  mapUnits(): {ms.mapUnits()}\n'
-    s += f'  scale(): {ms.scale()}\n'
-    s += f'  mapUnitsPerPixel(): {ms.mapUnitsPerPixel()}\n'
-    s += '  extent():\n    {}\n'.format(
-        ms.extent().toString().replace(' : ', '\n    '))
-    s += '  visibleExtent():\n    {}\n'.format(
-        ms.visibleExtent().toString().replace(' : ', '\n    '))
-    s += '  fullExtent():\n    {}\n'.format(full_ext.replace(' : ', '\n    '))
-    s += '  destinationCrs(): {}\n'.format(
-        ms.destinationCrs().authid())
-    s += '  flag.Antialiasing: {}\n'.format(
-        ms.testFlag(QgsMapSettings.Flag.Antialiasing))
-    s += '  flag.UseAdvancedEffects: {}\n'.format(
-        ms.testFlag(QgsMapSettings.Flag.UseAdvancedEffects))
-    s += '  flag.ForceVectorOutput: {}\n'.format(
-        ms.testFlag(QgsMapSettings.Flag.ForceVectorOutput))
-    s += '  flag.DrawLabeling: {}\n'.format(
-        ms.testFlag(QgsMapSettings.Flag.DrawLabeling))
-    s += '  flag.DrawEditingInfo: {}\n'.format(
-        ms.testFlag(QgsMapSettings.Flag.DrawEditingInfo))
-    s += f'  outputImageFormat(): {ms.outputImageFormat()}\n'
+    s = "MapSettings...\n"
+    s += f"  layers(): {[layer.name() for layer in ms.layers()]}\n"
+    s += "  backgroundColor(): rgba {},{},{},{}\n".format(
+        ms.backgroundColor().red(),
+        ms.backgroundColor().green(),
+        ms.backgroundColor().blue(),
+        ms.backgroundColor().alpha(),
+    )
+    s += "  selectionColor(): rgba {},{},{},{}\n".format(
+        ms.selectionColor().red(),
+        ms.selectionColor().green(),
+        ms.selectionColor().blue(),
+        ms.selectionColor().alpha(),
+    )
+    s += "  outputSize(): {} x {}\n".format(
+        ms.outputSize().width(), ms.outputSize().height()
+    )
+    s += f"  outputDpi(): {ms.outputDpi()}\n"
+    s += f"  mapUnits(): {ms.mapUnits()}\n"
+    s += f"  scale(): {ms.scale()}\n"
+    s += f"  mapUnitsPerPixel(): {ms.mapUnitsPerPixel()}\n"
+    s += "  extent():\n    {}\n".format(ms.extent().toString().replace(" : ", "\n    "))
+    s += "  visibleExtent():\n    {}\n".format(
+        ms.visibleExtent().toString().replace(" : ", "\n    ")
+    )
+    s += "  fullExtent():\n    {}\n".format(full_ext.replace(" : ", "\n    "))
+    s += f"  destinationCrs(): {ms.destinationCrs().authid()}\n"
+    s += "  flag.Antialiasing: {}\n".format(
+        ms.testFlag(QgsMapSettings.Flag.Antialiasing)
+    )
+    s += "  flag.UseAdvancedEffects: {}\n".format(
+        ms.testFlag(QgsMapSettings.Flag.UseAdvancedEffects)
+    )
+    s += "  flag.ForceVectorOutput: {}\n".format(
+        ms.testFlag(QgsMapSettings.Flag.ForceVectorOutput)
+    )
+    s += "  flag.DrawLabeling: {}\n".format(
+        ms.testFlag(QgsMapSettings.Flag.DrawLabeling)
+    )
+    s += "  flag.DrawEditingInfo: {}\n".format(
+        ms.testFlag(QgsMapSettings.Flag.DrawEditingInfo)
+    )
+    s += f"  outputImageFormat(): {ms.outputImageFormat()}\n"
     return s
 
 
@@ -268,8 +279,7 @@ def getExecutablePath(exe):
     :returns: Path to executable
     """
     exe_exts = []
-    if (platform.system().lower().startswith('win') and
-            "PATHEXT" in os.environ):
+    if platform.system().lower().startswith("win") and "PATHEXT" in os.environ:
         exe_exts = os.environ["PATHEXT"].split(os.pathsep)
 
     for path in os.environ["PATH"].split(os.pathsep):
@@ -279,14 +289,14 @@ def getExecutablePath(exe):
         for ext in exe_exts:
             if os.path.exists(exe_path + ext):
                 return exe_path
-    return ''
+    return ""
 
 
 def getTestFontFamily():
     return QgsFontUtils.standardTestFontFamily()
 
 
-def getTestFont(style='Roman', size=12):
+def getTestFont(style="Roman", size=12):
     """Only Roman and Bold are loaded by default
     Others available: Oblique, Bold Oblique
     """
@@ -300,24 +310,26 @@ def loadTestFonts():
 
     global FONTSLOADED  # pylint: disable=W0603
     if FONTSLOADED is False:
-        QgsFontUtils.loadStandardTestFonts(['Roman', 'Bold'])
-        msg = getTestFontFamily() + ' base test font styles could not be loaded'
-        res = (QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Roman') and
-               QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Bold'))
+        QgsFontUtils.loadStandardTestFonts(["Roman", "Bold", "Deja Bold"])
+        msg = getTestFontFamily() + " base test font styles could not be loaded"
+        res = QgsFontUtils.fontFamilyHasStyle(
+            getTestFontFamily(), "Roman"
+        ) and QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), "Bold")
         assert res, msg
         FONTSLOADED = True
 
 
 def openInBrowserTab(url):
-    if sys.platform[:3] in ('win', 'dar'):
+    if sys.platform[:3] in ("win", "dar"):
         webbrowser.open_new_tab(url)
     else:
         # some Linux OS pause execution on webbrowser open, so background it
-        cmd = 'import webbrowser;' \
-              'webbrowser.open_new_tab("{}")'.format(url)
-        subprocess.Popen([sys.executable, "-c", cmd],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
+        cmd = "import webbrowser;" 'webbrowser.open_new_tab("{}")'.format(url)
+        subprocess.Popen(
+            [sys.executable, "-c", cmd],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
 
 
 def printImportant(info):
@@ -328,17 +340,18 @@ def printImportant(info):
     """
 
     print(info)
-    with open(os.path.join(tempfile.gettempdir(), 'ctest-important.log'), 'a+') as f:
-        f.write(f'{info}\n')
+    with open(os.path.join(tempfile.gettempdir(), "ctest-important.log"), "a+") as f:
+        f.write(f"{info}\n")
 
 
 def waitServer(url, timeout=10):
-    r""" Wait for a server to be online and to respond
-        HTTP errors are ignored
-        \param timeout: in seconds
-        \return: True of False
+    r"""Wait for a server to be online and to respond
+    HTTP errors are ignored
+    \param timeout: in seconds
+    \return: True of False
     """
     from time import time as now
+
     end = now() + timeout
     while True:
         try:

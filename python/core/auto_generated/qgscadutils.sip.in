@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgscadutils.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -132,7 +132,6 @@ Returns the recent CAD point at the specified ``index`` (in map coordinates).
 
 .. versionadded:: 3.22
 %End
-
 %Property( name = cadPointList, get = _cadPointList, set = _setCadPointList )
         void _setCadPointList( const QList< QgsPointXY > &list );
         QList< QgsPointXY > _cadPointList() const;
@@ -153,5 +152,5 @@ some extra information.
  *                                                                      *
  * src/core/qgscadutils.h                                               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

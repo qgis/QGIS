@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsfeatureiterator.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -127,7 +127,7 @@ Iterators should call this method before returning features to ensure that any
 %End
 
 
-    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const throw( QgsCsException );
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
 %Docstring
 Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`.
 If ``transform`` is a valid coordinate transform, the return rectangle will represent
@@ -137,7 +137,7 @@ features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on
 Will throw a :py:class:`QgsCsException` if the rect cannot be transformed from the destination CRS.
 %End
 
-    RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const throw( QgsCsException );
+    RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const;
 %Docstring
 Update a :py:class:`QgsFeatureRequest` so that spatial filters are
 transformed to the source's coordinate reference system.
@@ -147,7 +147,6 @@ features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on
 :return: result of operation. See QgsAbstractFeatureIterator.RequestToSourceCrsResult for interpretation.
 
 :raises QgsCsException: if the rect cannot be transformed from the destination CRS.
-
 
 .. versionadded:: 3.22
 %End
@@ -272,7 +271,7 @@ Will return if this iterator is valid.
 An invalid iterator was probably introduced by a failed attempt to acquire a connection
 or is a default constructed iterator.
 
-.. seealso:: :py:func:`isClosed`
+.. seealso:: :py:func:`isClosed` to check if the iterator successfully completed and returned all the features.
 %End
 
     bool isClosed() const;
@@ -306,5 +305,5 @@ This indicates that there is something wrong with the expression compiler.
  *                                                                      *
  * src/core/qgsfeatureiterator.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

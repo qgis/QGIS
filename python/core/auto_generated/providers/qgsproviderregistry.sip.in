@@ -3,9 +3,8 @@
  *                                                                      *
  * src/core/providers/qgsproviderregistry.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
-
 
 
 
@@ -38,7 +37,7 @@ ogr and postgres.
     enum WidgetMode
     {
 
-      None,
+      Standalone,
 
       Embedded,
 
@@ -52,15 +51,16 @@ Means of accessing canonical single instance
 
     ~QgsProviderRegistry();
 
- QString library( const QString &providerKey ) const /Deprecated/;
+ QString library( const QString &providerKey ) const /Deprecated="Since 3.10. Providers may not need to be loaded from a library (empty string returned)."/;
 %Docstring
 Returns path for the library of the provider.
 
 If the provider uses direct provider function pointers instead of a library an empty string will
 be returned.
 
-.. deprecated::
-   QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+.. deprecated:: 3.10
+
+   Providers may not need to be loaded from a library (empty string returned).
 %End
 
     QString pluginList( bool asHtml = false ) const;
@@ -82,7 +82,7 @@ Sets library directory where to search for plugins
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /TransferBack/;
+                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) /TransferBack/;
 %Docstring
 Creates a new instance of a provider.
 
@@ -96,14 +96,15 @@ Creates a new instance of a provider.
 .. seealso:: :py:func:`createRasterDataProvider`
 %End
 
- Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const /Deprecated/;
+ Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const /Deprecated="Since 3.10. Use instead capabilities() method of individual data item provider."/;
 %Docstring
 Returns the provider capabilities
 
 :param providerKey: identifier of the provider
 
-.. deprecated::
-   QGIS 3.10 (use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider)
+.. deprecated:: 3.10
+
+   Use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider.
 %End
 
 
@@ -204,14 +205,15 @@ If a provider does not work with paths, unmodified URI will be returned.
 .. versionadded:: 3.30
 %End
 
- QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) /Deprecated/;
+ QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) /Deprecated="Since 3.10. Use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead."/;
 %Docstring
 Returns a new widget for selecting layers from a provider.
 Either the ``parent`` widget must be set or the caller becomes
 responsible for deleting the returned widget.
 
-.. deprecated::
-   QGIS 3.10 - use :py:func:`QgsGui.sourceSelectProviderRegistry()`->:py:func:`~QgsProviderRegistry.createDataSourceWidget` instead
+.. deprecated:: 3.10
+
+   Use :py:func:`QgsGui.sourceSelectProviderRegistry()`->:py:func:`~QgsProviderRegistry.createDataSourceWidget` instead.
 %End
 
     QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const /Factory/;
@@ -248,7 +250,7 @@ Returns ``True`` if a layer style with the specified ``styleId`` exists in the p
 :param styleId: style ID to test for
 
 :return: - ``True`` if the layer style already exists
-         - errorCause: will be set to a descriptive error message, if an error occurs while checking if the style exists
+         - errorCause: a descriptive error message, if an error occurs while checking if the style exists
 
 .. seealso:: :py:func:`getStyleById`
 
@@ -314,10 +316,8 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 :return: - ``True`` if the metadata was successfully saved.
          - errorMessage: descriptive string of error if encountered
 
-
 :raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
-
 
 .. versionadded:: 3.20
 %End
@@ -336,7 +336,7 @@ Returns new instance of transaction. Ownership is transferred to the caller
 .. versionadded:: 3.10
 %End
 
- QFunctionPointer function( const QString &providerKey, const QString &functionName ) const /Deprecated/;
+ QFunctionPointer function( const QString &providerKey, const QString &functionName ) const /Deprecated="Since 3.10. Any provider functionality should be accessed through QgsProviderMetadata."/;
 %Docstring
 Gets pointer to provider function
 
@@ -346,11 +346,12 @@ Gets pointer to provider function
 :return: pointer to function or ``None`` on error. If the provider uses direct provider
          function pointers instead of a library ``None`` will be returned.
 
-.. deprecated::
-   QGIS 3.10 - any provider functionality should be accessed through :py:class:`QgsProviderMetadata`
+.. deprecated:: 3.10
+
+   Any provider functionality should be accessed through :py:class:`QgsProviderMetadata`.
 %End
 
- QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated/;
+ QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated="Since 3.10. Providers may not need to be loaded from a library."/;
 %Docstring
 Returns a new QLibrary for the specified ``providerKey``. Ownership of the returned
 object is transferred to the caller and the caller is responsible for deleting it.
@@ -358,8 +359,9 @@ object is transferred to the caller and the caller is responsible for deleting i
 If the provider uses direct provider function pointers instead of a library ``None`` will
 be returned.
 
-.. deprecated::
-   QGIS 3.10 - providers may not need to be loaded from a library
+.. deprecated:: 3.10
+
+   Providers may not need to be loaded from a library.
 %End
 
     QStringList providerList() const;
@@ -523,7 +525,6 @@ handled by any registered providers, and construct user-friendly warnings as to 
 
    ownership of the UnusableUriHandlerInterface instance is transferred to the registry
 
-
 .. versionadded:: 3.18.1
 %End
 
@@ -546,10 +547,8 @@ QGIS build.
 
 :param uri: URI to test
 
-
 :return: - ``True`` if the ``uri`` was matched to a registered QgsProviderRegistry.UnusableUriHandlerInterface.
          - details: will be populated with details allowing construction of a user-friendly warning message
-
 
 .. seealso:: :py:func:`registerUnusableUriHandler`
 
@@ -750,11 +749,12 @@ Returns a string containing the available directory drivers
 Returns a string containing the available protocol drivers
 %End
 
- void registerGuis( QWidget *widget ) /Deprecated/;
+ void registerGuis( QWidget *widget ) /Deprecated="Since 3.10. Does nothing - use QgsGui.providerGuiRegistry()."/;
 %Docstring
 
-.. deprecated:: QGIS 3.10
-   - does nothing - use :py:func:`QgsGui.providerGuiRegistry()`
+.. deprecated:: 3.10
+
+   Does nothing - use :py:func:`QgsGui.providerGuiRegistry()`.
 %End
 
     bool registerProvider( QgsProviderMetadata *providerMetadata /Transfer/ );
@@ -780,5 +780,5 @@ register a new vector data provider from its ``providerMetadata``
  *                                                                      *
  * src/core/providers/qgsproviderregistry.h                             *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

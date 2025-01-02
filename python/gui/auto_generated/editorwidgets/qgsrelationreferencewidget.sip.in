@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/editorwidgets/qgsrelationreferencewidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -30,7 +30,6 @@ class QgsRelationReferenceWidget : QWidget
       sipType = NULL;
 %End
   public:
-
     enum CanvasExtent
     {
       Fixed,
@@ -46,12 +45,13 @@ class QgsRelationReferenceWidget : QWidget
 
     void setRelationEditable( bool editable );
 
- void setForeignKey( const QVariant &value ) /Deprecated/;
+ void setForeignKey( const QVariant &value ) /Deprecated="Since 3.10. Use setForeignKeys."/;
 %Docstring
 this sets the related feature using from the foreign key
 
-.. deprecated:: QGIS 3.10
-   use setForeignKeys
+.. deprecated:: 3.10
+
+   Use setForeignKeys.
 %End
 
     void setForeignKeys( const QVariantList &values );
@@ -61,11 +61,11 @@ Sets the related feature using the foreign keys
 .. versionadded:: 3.10
 %End
 
- QVariant foreignKey() const /Deprecated/;
+ QVariant foreignKey() const /Deprecated="Since 3.10. "/;
 %Docstring
 returns the related feature foreign key
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
 
@@ -270,14 +270,14 @@ unset the currently related feature
 
   signals:
 
- void foreignKeyChanged( const QVariant & ) /Deprecated/;
+ void foreignKeyChanged( const QVariant &key ) /Deprecated="Since 3.10. "/;
 %Docstring
 Emitted when the foreign key changed
 
-.. deprecated:: QGIS 3.10
+.. deprecated:: 3.10
 %End
 
-    void foreignKeysChanged( const QVariantList & );
+    void foreignKeysChanged( const QVariantList &keys );
 %Docstring
 Emitted when the foreign keys changed
 
@@ -291,5 +291,5 @@ Emitted when the foreign keys changed
  *                                                                      *
  * src/gui/editorwidgets/qgsrelationreferencewidget.h                   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
       Group, //!< Node group
       Elapsed, //!< Node elapsed time
       ParentElapsed, //!< Total elapsed time for node's parent
-      Id, //!< Internal node ID (since QGIS 3.34)
+      Id, //!< Internal node ID \since QGIS 3.34
     };
     // *INDENT-ON*
 
@@ -65,9 +65,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
      */
     QgsRuntimeProfilerNode( const QString &group, const QString &name, const QString &id = QString() );
 
-    //! QgsRuntimeProfilerNode cannot be copied
     QgsRuntimeProfilerNode( const QgsRuntimeProfilerNode &other ) = delete;
-    //! QgsRuntimeProfilerNode cannot be copied
     QgsRuntimeProfilerNode &operator=( const QgsRuntimeProfilerNode &other ) = delete;
 
     ~QgsRuntimeProfilerNode();
@@ -204,14 +202,14 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      * front of the profile tag set using start.
      * \param name The name of the group.
      *
-     * \deprecated use start() instead
+     * \deprecated QGIS 3.40. Use start() instead.
      */
     Q_DECL_DEPRECATED void beginGroup( const QString &name ) SIP_DEPRECATED;
 
     /**
      * \brief End the current active group.
      *
-     * \deprecated use end() instead
+     * \deprecated QGIS 3.40. Use end() instead.
      */
     Q_DECL_DEPRECATED void endGroup() SIP_DEPRECATED;
 
@@ -387,7 +385,7 @@ class CORE_EXPORT QgsScopedRuntimeProfile
      *
      * \since QGIS 3.14
      */
-    void switchTask( const QString &name );
+    void switchTask( const QString &name ); // cppcheck-suppress functionConst
 
   private:
 

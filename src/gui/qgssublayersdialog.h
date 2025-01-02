@@ -26,16 +26,15 @@
 /**
  * \ingroup gui
  * \class QgsSublayersDialog
- * \deprecated Will be removed in QGIS 4.0
+ * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
 {
     Q_OBJECT
   public:
-
     /**
      * Prompt behavior of the QgsSublayersDialog
-     * \deprecated Use Qgis::SublayerPromptMode instead
+     * \deprecated QGIS 3.40. Use Qgis::SublayerPromptMode instead.
      */
     enum PromptMode
     {
@@ -75,24 +74,24 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      */
     struct LayerDefinition
     {
-      //! Identifier of the layer (one unique layer id may have multiple types though)
-      int layerId = -1;
+        //! Identifier of the layer (one unique layer id may have multiple types though)
+        int layerId = -1;
 
-      //! Name of the layer (not necessarily unique)
-      QString layerName;
+        //! Name of the layer (not necessarily unique)
+        QString layerName;
 
-      //! Number of features (might be unused)
-      int count = -1;
+        //! Number of features (might be unused)
+        int count = -1;
 
-      //! Extra type depending on the use (e.g. geometry type for vector sublayers)
-      QString type;
+        //! Extra type depending on the use (e.g. geometry type for vector sublayers)
+        QString type;
 
-      /**
+        /**
        * Description.
        *
        * \since QGIS 3.10
        */
-      QString description;
+        QString description;
     };
 
     /**
@@ -111,13 +110,9 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * \param fl window flags
      * \param dataSourceUri data source URI
      *
-     * \deprecated Will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
      */
-    Q_DECL_DEPRECATED QgsSublayersDialog( ProviderType providerType,
-                                          const QString &name,
-                                          QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                          Qt::WindowFlags fl = Qt::WindowFlags(),
-                                          const QString &dataSourceUri = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), const QString &dataSourceUri = QString() ) SIP_DEPRECATED;
 
     ~QgsSublayersDialog() override;
 
@@ -159,7 +154,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     void mBtnDeselectAll_pressed();
 
   protected:
-
     /**
      * Provider type name
      */

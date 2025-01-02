@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/editform/qgsattributeeditorcontainer.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -55,23 +55,25 @@ Returns the container type.
 .. versionadded:: 3.32
 %End
 
- virtual void setIsGroupBox( bool isGroupBox ) /Deprecated/;
+ virtual void setIsGroupBox( bool isGroupBox ) /Deprecated="Since 3.40. Use setType() instead."/;
 %Docstring
 Determines if this container is rendered as collapsible group box or tab in a tabwidget
 
 :param isGroupBox: If ``True``, this will be a group box
 
-.. deprecated::
-   use :py:func:`~QgsAttributeEditorContainer.setType` instead.
+.. deprecated:: 3.40
+
+   Use :py:func:`~QgsAttributeEditorContainer.setType` instead.
 %End
 
- virtual bool isGroupBox() const /Deprecated/;
+ virtual bool isGroupBox() const /Deprecated="Since 3.40. Use type() instead."/;
 %Docstring
 Returns if this container is going to be a group box
 
 :return: ``True`` if it will be a group box, ``False`` if it will be a tab
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use :py:func:`~QgsAttributeEditorContainer.type` instead.
 %End
 
@@ -183,5 +185,5 @@ Sets the background color to ``backgroundColor``.
  *                                                                      *
  * src/core/editform/qgsattributeeditorcontainer.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

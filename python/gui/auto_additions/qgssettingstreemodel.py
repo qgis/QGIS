@@ -3,5 +3,19 @@
 QgsSettingsTreeModel.Column.Name.__doc__ = "Name"
 QgsSettingsTreeModel.Column.Value.__doc__ = "Value"
 QgsSettingsTreeModel.Column.Description.__doc__ = "Description"
-QgsSettingsTreeModel.Column.__doc__ = "Columns\n\n" + '* ``Name``: ' + QgsSettingsTreeModel.Column.Name.__doc__ + '\n' + '* ``Value``: ' + QgsSettingsTreeModel.Column.Value.__doc__ + '\n' + '* ``Description``: ' + QgsSettingsTreeModel.Column.Description.__doc__
+QgsSettingsTreeModel.Column.__doc__ = """Columns
+
+* ``Name``: Name
+* ``Value``: Value
+* ``Description``: Description
+
+"""
 # --
+try:
+    QgsSettingsTreeModel.__group__ = ['settings']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsSettingsTreeProxyModel.__group__ = ['settings']
+except (NameError, AttributeError):
+    pass

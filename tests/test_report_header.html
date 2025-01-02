@@ -1,3 +1,55 @@
+<style>
+.copy-code {
+    position: relative;
+    cursor: pointer;
+    padding: 2px 4px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+.copy-code:active {
+    background-color: #c0c0c0;
+}
+.copy-code:hover {
+    background-color: #e0e0e0;
+}
+
+.copy-code::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translate(-50%, 250%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.copy-code:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+</style>
+
+<script>
+function copyToClipboard(element) {
+    const text = element.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        const originalTooltip = element.getAttribute('data-tooltip');
+        element.setAttribute('data-tooltip', 'Copied!');
+        setTimeout(() => {
+            element.setAttribute('data-tooltip', originalTooltip);
+        }, 1000);
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+}
+</script>
 <h1>Test results</h1>
 <h3>Settings</h3>
 <table>

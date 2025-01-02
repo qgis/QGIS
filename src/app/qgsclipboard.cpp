@@ -26,6 +26,7 @@
 #include <QTextCodec>
 
 #include "qgsclipboard.h"
+#include "moc_qgsclipboard.cpp"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsfields.h"
@@ -75,7 +76,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorTileLayer *src )
   // things are a bit tricky for vector tile features, as each will have different fields
   // so we build a "super set" of fields first, and then make sure each feature has that superset present
 
-  const QList< QgsFeature > selectedFeatures = src->selectedFeatures();
+  const QList<QgsFeature> selectedFeatures = src->selectedFeatures();
   QgsFields supersetFields;
   for ( const QgsFeature &feature : selectedFeatures )
   {
@@ -122,10 +123,18 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore, QgsVectorLa
 
 void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlContent ) const
 {
-  const CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
+  CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ), AttributesWithWKT );
 
   textContent.clear();
   htmlContent.clear();
+
+  if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mFeatureLayer.data() ) )
+  {
+    if ( vectorLayer->geometryType() == Qgis::GeometryType::Null )
+    {
+      format = AttributesOnly;
+    }
+  }
 
   switch ( format )
   {
@@ -139,7 +148,7 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
       // first do the field names
       if ( ( format == AttributesWithWKB ) || ( format == AttributesWithWKT ) )
       {
-        const QLatin1String geometryHeading = format == AttributesWithWKB  ? QLatin1String( "wkb_geom" ) : QLatin1String( "wkt_geom" );
+        const QLatin1String geometryHeading = format == AttributesWithWKB ? QLatin1String( "wkb_geom" ) : QLatin1String( "wkt_geom" );
         // only include the "wkx_geom" field IF we have other fields -- otherwise it's redundant and we should just set the clipboard to WKT/WKB text directly
         if ( !mFeatureFields.isEmpty() )
         {
@@ -196,15 +205,18 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
         {
           QString value;
           QVariant variant = attributes.at( idx );
-          const bool useJSONFromVariant = variant.type() == QVariant::StringList || variant.type() == QVariant::List || variant.type() == QVariant::Map;
+          const bool useJSONFromVariant = variant.userType() == QMetaType::Type::QStringList || variant.userType() == QMetaType::Type::QVariantList || variant.userType() == QMetaType::Type::QVariantMap;
 
           if ( useJSONFromVariant )
           {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
           }
           else
           {
-            value = attributes.at( idx ).toString();
+            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
+              value = "";
+            else
+              value = variant.toString();
           }
 
           if ( value.contains( '\n' ) || value.contains( '\t' ) )
@@ -215,11 +227,14 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
           }
           if ( useJSONFromVariant )
           {
-            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( attributes.at( idx ) ).dump() );
+            value = QString::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump() );
           }
           else
           {
-            value = attributes.at( idx ).toString();
+            if ( QgsVariantUtils::isNull( variant ) && variant.isValid() )
+              value = "";
+            else
+              value = variant.toString();
           }
           value.replace( '\n', QLatin1String( "<br>" ) ).replace( '\t', QLatin1String( "&emsp;" ) );
           htmlFields += QStringLiteral( "<td>%1</td>" ).arg( value );
@@ -292,20 +307,18 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
     return features;
 
   // Poor man's csv parser
-  bool isInsideQuotes {false};
+  bool isInsideQuotes { false };
   QgsAttributes attrs;
   QgsGeometry geom;
   QString attrVal;
-  bool isFirstLine {string.startsWith( QLatin1String( "wkt_geom" ) )};
+  bool isFirstLine { string.startsWith( QLatin1String( "wkt_geom" ) ) };
   // it seems there is no other way to check for header
-  const bool hasHeader{string.startsWith( QLatin1String( "wkt_geom" ) )};
+  const bool hasHeader { string.startsWith( QLatin1String( "wkt_geom" ) ) };
   QgsGeometry geometry;
-  bool setFields {fields.isEmpty()};
+  bool setFields { fields.isEmpty() };
   QgsFields fieldsFromClipboard;
 
-  auto parseFunc = [ & ]( const QChar & c )
-  {
-
+  auto parseFunc = [&]( const QChar &c ) {
     // parse geom only if it wasn't successfully set before
     if ( geometry.isNull() )
     {
@@ -316,7 +329,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
     {
       if ( attrVal != QLatin1String( "wkt_geom" ) ) // ignore this one
       {
-        fieldsFromClipboard.append( QgsField{attrVal, QVariant::String } );
+        fieldsFromClipboard.append( QgsField { attrVal, QMetaType::Type::QString } );
       }
     }
     else // ... or value
@@ -333,7 +346,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
       }
       else
       {
-        QgsFeature feature{setFields ? fieldsFromClipboard : fields};
+        QgsFeature feature { setFields ? fieldsFromClipboard : fields };
         feature.setGeometry( geometry );
         if ( hasHeader || !geometry.isNull() )
         {
@@ -417,7 +430,7 @@ QgsFields QgsClipboard::retrieveFields() const
           continue;
         }
 
-        f.append( QgsField( fieldName, QVariant::String ) );
+        f.append( QgsField( fieldName, QMetaType::Type::QString ) );
       }
     }
   }

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/tiledscene/qgstiledscenerequest.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -60,8 +60,8 @@ An null ``box`` removes the filter.
 
     double requiredGeometricError() const;
 %Docstring
-Returns the required geometric error threshold for the returned tiles, in
-scene CRS units.
+Returns the required geometric error threshold for the returned tiles,
+in meters.
 
 If the error is 0 then no geometric error filtering will be applied.
 
@@ -70,8 +70,8 @@ If the error is 0 then no geometric error filtering will be applied.
 
     void setRequiredGeometricError( double error );
 %Docstring
-Sets the required geometric ``error`` threshold for the returned tiles, in
-scene CRS units.
+Sets the required geometric ``error`` threshold for the returned tiles,
+in meters.
 
 If the ``error`` is 0 then no geometric error filtering will be applied.
 
@@ -123,5 +123,5 @@ Set to -1 if no parent tile ID filtering is to be made.
  *                                                                      *
  * src/core/tiledscene/qgstiledscenerequest.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

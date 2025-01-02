@@ -33,12 +33,11 @@ class QItemSelectionModel;
  * \ingroup gui
  * \class QgsAttributeTableFilterModel
  */
-class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, public QgsFeatureModel
+class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * The filter mode defines how the rows should be filtered.
      */
@@ -49,7 +48,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowVisible,      //!< Show only visible features (depends on the map canvas)
       ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
       ShowEdited,       //!< Show only features which have unsaved changes
-      ShowInvalid,      //!< Show only features not respecting constraints (since QGIS 3.30)
+      ShowInvalid,      //!< Show only features not respecting constraints \since QGIS 3.30
     };
     Q_ENUM( FilterMode )
 
@@ -74,7 +73,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, Role ) : int
     {
-      Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = static_cast< int >( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
+      Type SIP_MONKEYPATCH_COMPAT_NAME( TypeRole ) = static_cast<int>( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -191,7 +190,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
-    inline QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const { return mapToSource( proxyIndex ); }
+    QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
 
     inline QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const { return mapFromSource( sourceIndex ); }
 
@@ -289,7 +288,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void filterError( const QString &errorMessage );
 
   protected:
-
     /**
      * Returns TRUE if the source row will be accepted
      *
@@ -316,7 +314,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
      *
-     * \deprecated since QGIS 3.10.3 - made private as reloadVisible()
+     * \deprecated QGIS 3.10.3. Made private as reloadVisible().
      */
     Q_DECL_DEPRECATED void extentsChanged();
 

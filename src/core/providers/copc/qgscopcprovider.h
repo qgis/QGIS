@@ -35,7 +35,7 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
   public:
     QgsCopcProvider( const QString &uri,
                      const QgsDataProvider::ProviderOptions &providerOptions,
-                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsCopcProvider();
 
@@ -57,7 +57,6 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     std::unique_ptr<QgsPointCloudIndex> mIndex;
 
     QgsRectangle mExtent;
-    uint64_t mPointCount;
     QgsCoordinateReferenceSystem mCrs;
 };
 
@@ -68,7 +67,7 @@ class QgsCopcProviderMetadata : public QgsProviderMetadata
     QgsCopcProviderMetadata();
     QIcon icon() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    QgsCopcProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsCopcProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     int priorityForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;

@@ -505,7 +505,7 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
 bool QgsProperty::isProjectColor() const
 {
-  const thread_local QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "^project_color(_object|)\\('.*'\\)$" ) );
   return d->type == Qgis::PropertyType::Expression && !d->expressionString.isEmpty()
          && rx.match( d->expressionString ).hasMatch();
 }
@@ -615,7 +615,7 @@ QDateTime QgsProperty::valueAsDateTime( const QgsExpressionContext &context, con
   }
 
   QDateTime dateTime;
-  if ( val.type() == QVariant::DateTime )
+  if ( val.userType() == QMetaType::Type::QDateTime )
   {
     dateTime = val.value<QDateTime>();
   }
@@ -665,7 +665,7 @@ QColor QgsProperty::valueAsColor( const QgsExpressionContext &context, const QCo
     return defaultColor;
 
   QColor color;
-  if ( val.type() == QVariant::Color )
+  if ( val.userType() == QMetaType::Type::QColor )
   {
     color = val.value<QColor>();
   }

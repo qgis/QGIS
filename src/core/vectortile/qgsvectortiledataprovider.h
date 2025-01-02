@@ -42,6 +42,7 @@ class QgsVectorTileMatrixSet;
 class QgsVectorTileDataProviderSharedData
 {
   public:
+
     QgsVectorTileDataProviderSharedData();
 
     /**
@@ -77,21 +78,23 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
 
   public:
 
+    //! Role to set column attribute in the request so it can be retrieved later
+    static int DATA_COLUMN;
+    //! Role to set row attribute in the request so it can be retrieved later
+    static int DATA_ROW;
+    //! Role to set zoom attribute in the request so it can be retrieved later
+    static int DATA_ZOOM;
+    //! Role to set source ID attribute in the request so it can be retrieved later
+    static int DATA_SOURCE_ID;
+
     /**
      * Constructor for QgsVectorTileDataProvider, with the specified \a uri.
      */
     QgsVectorTileDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags );
+                               Qgis::DataProviderReadFlags flags );
 
-    /**
-     * Copy constructor.
-     */
     QgsVectorTileDataProvider( const QgsVectorTileDataProvider &other );
-
-    /**
-     * QgsVectorTileDataProvider cannot be assigned.
-     */
     QgsVectorTileDataProvider &operator=( const QgsVectorTileDataProvider &other ) = delete;
 
     /**
@@ -113,6 +116,17 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * Returns the source path for the data.
      */
     virtual QString sourcePath() const = 0;
+
+
+    /**
+     * Returns the list of source paths for the data.
+     * \since QGIS 3.40
+     */
+    virtual QgsStringMap sourcePaths() const
+    {
+      return { { QString(), sourcePath() } };
+    }
+
 
     /**
      * Returns a clone of the data provider.
@@ -146,7 +160,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      *
      * The default implementation returns an invalid request.
      */
-    virtual QNetworkRequest tileRequest( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
+    virtual QList<QNetworkRequest> tileRequests( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const;
 
     /**
      * Returns the style definition for the provider, if available.

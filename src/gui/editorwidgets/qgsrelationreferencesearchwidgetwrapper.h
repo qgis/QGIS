@@ -40,7 +40,6 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRelationReferenceSearchWidgetWrapper
      * \param vl associated vector layer
@@ -79,7 +78,7 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
 
     /**
      * Called when current value of search widget changes
-     * \deprecated since QGIS 3.10 made private
+     * \deprecated QGIS 3.10. Made private.
      */
     Q_DECL_DEPRECATED void onValueChanged( const QVariant &value ) SIP_DEPRECATED;
 

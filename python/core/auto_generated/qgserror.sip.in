@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgserror.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -27,9 +27,6 @@ class QgsErrorMessage
     };
 
     QgsErrorMessage();
-%Docstring
-Constructor for QgsErrorMessage
-%End
 
     QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 %Docstring
@@ -53,8 +50,9 @@ Constructor.
 class QgsError
 {
 %Docstring(signature="appended")
-:py:class:`QgsError` is container for error messages (report). It may contain chain
-(sort of traceback) of error messages (e.g. GDAL - provider - layer).
+A container for error messages.
+
+It may contain a chain (e.g. a traceback) of error messages (e.g. GDAL - provider - layer).
 Higher level messages are appended at the end.
 %End
 
@@ -64,9 +62,6 @@ Higher level messages are appended at the end.
   public:
 
     QgsError();
-%Docstring
-Constructor for QgsError
-%End
 
     QgsError( const QString &message, const QString &tag );
 %Docstring
@@ -140,5 +135,5 @@ messageList return the list of current error messages
  *                                                                      *
  * src/core/qgserror.h                                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -21,44 +21,76 @@ __author__ = 'Nathan Woodrow'
 __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Nathan Woodrow'
 
+import typing as _typing
+
 from qgis.PyQt.QtCore import NULL
+from qgis.PyQt.QtCore import Qt as _Qt
 from qgis._core import *
 
 @MONKEYPATCH_INJECTIONS@
 
 from .additions.edit import edit, QgsEditError
-from .additions.fromfunction import fromFunction
+from .additions.fromfunction import _fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
-from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
 from .additions.providermetadata import PyProviderMetadata
-from .additions.qgsfeature import mapping_feature
+from .additions.qgsfeature import _mapping_feature
 from .additions.qgsfunction import register_function, qgsfunction
-from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
+from .additions.qgsgeometry import _geometryNonZero, _mapping_geometry
 from .additions.qgssettings import _qgssettings_enum_value, _qgssettings_set_enum_value, _qgssettings_flag_value
 from .additions.qgssettingsentry import PyQgsSettingsEntryEnumFlag
 from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
 from .additions.validitycheck import check
-from .additions.ranges import datetime_range_repr, date_range_repr
 
 # Injections into classes
-QgsFeature.__geo_interface__ = property(mapping_feature)
+QgsFeature.__geo_interface__ = property(_mapping_feature)
 QgsGeometry.__bool__ = _geometryNonZero
-QgsGeometry.__geo_interface__ = property(mapping_geometry)
+QgsGeometry.__geo_interface__ = property(_mapping_geometry)
 QgsGeometry.__nonzero__ = _geometryNonZero
-QgsProcessingFeatureSourceDefinition.__repr__ = processing_source_repr
-QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
 QgsProject.blockDirtying = ProjectDirtyBlocker
 QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 QgsRuntimeProfiler.profile = ScopedRuntimeProfileContextManager
 QgsSettings.enumValue = _qgssettings_enum_value
 QgsSettings.setEnumValue = _qgssettings_set_enum_value
 QgsSettings.flagValue = _qgssettings_flag_value
-QgsTask.fromFunction = fromFunction
-QgsDateTimeRange.__repr__ = datetime_range_repr
-QgsDateRange.__repr__ = date_range_repr
+QgsTask.fromFunction = _fromFunction
+
+# add some __repr__ methods to QGIS range classes. We can't do this via sip because they are template based classes
+
+def _datetime_range_repr(self):
+    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(_Qt.DateFormat.ISODate)}, {self.end().toString(_Qt.DateFormat.ISODate)}{']' if self.includeEnd() else ')'}>"
+
+
+def _date_range_repr(self):
+    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(_Qt.DateFormat.ISODate)}, {self.end().toString(_Qt.DateFormat.ISODate)}{']' if self.includeEnd() else ')'}>"
+
+
+QgsDateTimeRange.__repr__ = _datetime_range_repr
+QgsDateRange.__repr__ = _date_range_repr
+
+
+QgsProperty.__bool__ = lambda self: self.propertyType() != Qgis.PropertyType.Invalid
+QgsOptionalExpression.__bool__ = lambda self: self.enabled()
+
+# add some __repr__ methods to processing classes
+def _processing_source_repr(self):
+    if self.featureLimit != -1:
+        return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}, 'featureLimit': {}}}>".format(
+            self.source.staticValue(), self.selectedFeaturesOnly, self.featureLimit)
+    else:
+        return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}}}>".format(
+            self.source.staticValue(), self.selectedFeaturesOnly)
+
+
+def _processing_output_layer_repr(self):
+    return "<QgsProcessingOutputLayerDefinition {{'sink':{}, 'createOptions': {}}}>".format(self.sink.staticValue(),
+                                                                                            self.createOptions)
+
+QgsProcessingFeatureSourceDefinition.__repr__ = _processing_source_repr
+QgsProcessingOutputLayerDefinition.__repr__ = _processing_output_layer_repr
+
 
 # Classes patched
 QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
@@ -93,6 +125,71 @@ QgsVectorLayer.Cross.__doc__ = "Cross marker"
 QgsVectorLayer.NoMarker = Qgis.VertexMarkerType.NoMarker
 QgsVectorLayer.NoMarker.is_monkey_patched = True
 QgsVectorLayer.NoMarker.__doc__ = "No marker"
+
+QgsMapToPixelSimplifier.Distance = Qgis.VectorSimplificationAlgorithm.Distance
+QgsMapToPixelSimplifier.SnapToGrid = Qgis.VectorSimplificationAlgorithm.SnapToGrid
+QgsMapToPixelSimplifier.Visvalingam = Qgis.VectorSimplificationAlgorithm.Visvalingam
+QgsMapToPixelSimplifier.SnappedToGridGlobal = Qgis.VectorSimplificationAlgorithm.SnappedToGridGlobal
+
+SymbolTable = QgsStyle.SymbolTableColumn
+SymbolTable.SymbolId = QgsStyle.SymbolTableColumn.Id.value
+SymbolId = QgsStyle.SymbolTableColumn.Id.value
+SymbolTable.SymbolName = QgsStyle.SymbolTableColumn.Name.value
+SymbolName = QgsStyle.SymbolTableColumn.Name.value
+SymbolTable.SymbolXML = QgsStyle.SymbolTableColumn.XML.value
+SymbolXML = QgsStyle.SymbolTableColumn.XML.value
+SymbolTable.SymbolFavoriteId = QgsStyle.SymbolTableColumn.FavoriteId.value
+SymbolFavoriteId = QgsStyle.SymbolTableColumn.FavoriteId.value
+
+TagTable = QgsStyle.TagTableColumn
+TagTable.TagId = QgsStyle.TagTableColumn.Id.value
+TagId = QgsStyle.TagTableColumn.Id.value
+TagTable.TagName = QgsStyle.TagTableColumn.Name.value
+TagName = QgsStyle.TagTableColumn.Name.value
+
+TagmapTable = QgsStyle.TagmapTableColumn
+TagmapTable.TagmapTagId = QgsStyle.TagmapTableColumn.TagId.value
+TagmapTagId = QgsStyle.TagmapTableColumn.TagId.value
+TagmapTable.TagmapSymbolId = QgsStyle.TagmapTableColumn.SymbolId.value
+TagmapSymbolId = QgsStyle.TagmapTableColumn.SymbolId.value
+
+ColorrampTable = QgsStyle.ColorRampTableColumn
+ColorrampTable.ColorrampId = QgsStyle.ColorRampTableColumn.Id.value
+ColorrampId = QgsStyle.ColorRampTableColumn.Id.value
+ColorrampTable.ColorrampName = QgsStyle.ColorRampTableColumn.Name.value
+ColorrampName = QgsStyle.ColorRampTableColumn.Name.value
+ColorrampTable.ColorrampXML = QgsStyle.ColorRampTableColumn.XML.value
+ColorrampXML = QgsStyle.ColorRampTableColumn.XML.value
+ColorrampTable.ColorrampFavoriteId = QgsStyle.ColorRampTableColumn.FavoriteId.value
+ColorrampFavoriteId = QgsStyle.ColorRampTableColumn.FavoriteId.value
+
+TextFormatTable = QgsStyle.TextFormatTableColumn
+TextFormatTable.TextFormatId = QgsStyle.TextFormatTableColumn.Id.value
+TextFormatId = QgsStyle.TextFormatTableColumn.Id.value
+TextFormatTable.TextFormatName = QgsStyle.TextFormatTableColumn.Name.value
+TextFormatName = QgsStyle.TextFormatTableColumn.Name.value
+TextFormatTable.TextFormatXML = QgsStyle.TextFormatTableColumn.XML.value
+TextFormatXML = QgsStyle.TextFormatTableColumn.XML.value
+TextFormatTable.TextFormatFavoriteId = QgsStyle.TextFormatTableColumn.FavoriteId.value
+TextFormatFavoriteId = QgsStyle.TextFormatTableColumn.FavoriteId.value
+
+LabelSettingsTable = QgsStyle.LabelSettingsTableColumn
+LabelSettingsTable.LabelSettingsId = QgsStyle.LabelSettingsTableColumn.Id.value
+LabelSettingsId = QgsStyle.LabelSettingsTableColumn.Id.value
+LabelSettingsTable.LabelSettingsName = QgsStyle.LabelSettingsTableColumn.Name.value
+LabelSettingsName = QgsStyle.LabelSettingsTableColumn.Name.value
+LabelSettingsTable.LabelSettingsXML = QgsStyle.LabelSettingsTableColumn.XML.value
+LabelSettingsXML = QgsStyle.LabelSettingsTableColumn.XML.value
+LabelSettingsTable.LabelSettingsFavoriteId = QgsStyle.LabelSettingsTableColumn.FavoriteId.value
+LabelSettingsFavoriteId = QgsStyle.LabelSettingsTableColumn.FavoriteId.value
+
+SmartgroupTable = QgsStyle.SmartGroupTableColumn
+SmartgroupTable.SmartgroupId = QgsStyle.SmartGroupTableColumn.Id.value
+SmartgroupId = QgsStyle.SmartGroupTableColumn.Id.value
+SmartgroupTable.SmartgroupName = QgsStyle.SmartGroupTableColumn.Name.value
+SmartgroupName = QgsStyle.SmartGroupTableColumn.Name.value
+SmartgroupTable.SmartgroupXML = QgsStyle.SmartGroupTableColumn.XML.value
+SmartgroupXML = QgsStyle.SmartGroupTableColumn.XML.value
 
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
@@ -167,212 +264,224 @@ QgsAbstractMetadataBaseValidator.ValidationResult.identifier = QgsAbstractMetada
 
 
 # TODO QGIS 4.0 - remove, replaced by Qgis.LinePlacementFlags
-class LinePlacementFlags:
+class _LinePlacementFlags:
   OnLine = 1
   AboveLine = 2
   BelowLine = 4
   MapOrientation = 8
 
-QgsPalLayerSettings.LinePlacementFlags = LinePlacementFlags
+QgsPalLayerSettings.LinePlacementFlags = _LinePlacementFlags
 QgsPalLayerSettings.OnLine = QgsPalLayerSettings.LinePlacementFlags.OnLine
 QgsPalLayerSettings.AboveLine = QgsPalLayerSettings.LinePlacementFlags.AboveLine
 QgsPalLayerSettings.BelowLine = QgsPalLayerSettings.LinePlacementFlags.BelowLine
 QgsPalLayerSettings.MapOrientation = QgsPalLayerSettings.LinePlacementFlags.MapOrientation
 
 
-def get_placement_flags(self):
+def _get_placement_flags(self):
     return self.lineSettings().placementFlags()
 
 
-def set_placement_flags(self, flags):
+def _set_placement_flags(self, flags):
     self.lineSettings().setPlacementFlags(Qgis.LabelLinePlacementFlags(flags))
 
 
-QgsPalLayerSettings.placementFlags = property(get_placement_flags)
-QgsPalLayerSettings.placementFlags = QgsPalLayerSettings.placementFlags.setter(set_placement_flags)
+QgsPalLayerSettings.placementFlags = property(_get_placement_flags)
+QgsPalLayerSettings.placementFlags = QgsPalLayerSettings.placementFlags.setter(_set_placement_flags)
 
 
-def get_merge_lines(self):
+def _get_merge_lines(self):
     return self.lineSettings().mergeLines()
 
 
-def set_merge_lines(self, merge):
+def _set_merge_lines(self, merge):
     self.lineSettings().setMergeLines(merge)
 
 
-QgsPalLayerSettings.mergeLines = property(get_merge_lines)
-QgsPalLayerSettings.mergeLines = QgsPalLayerSettings.mergeLines.setter(set_merge_lines)
+QgsPalLayerSettings.mergeLines = property(_get_merge_lines)
+QgsPalLayerSettings.mergeLines = QgsPalLayerSettings.mergeLines.setter(_set_merge_lines)
 
 
-def get_add_direction_symbol(self):
+def _get_add_direction_symbol(self):
     return self.lineSettings().addDirectionSymbol()
 
 
-def set_add_direction_symbol(self, add):
+def _set_add_direction_symbol(self, add):
     self.lineSettings().setAddDirectionSymbol(add)
 
 
-QgsPalLayerSettings.addDirectionSymbol = property(get_add_direction_symbol)
-QgsPalLayerSettings.addDirectionSymbol = QgsPalLayerSettings.addDirectionSymbol.setter(set_add_direction_symbol)
+QgsPalLayerSettings.addDirectionSymbol = property(_get_add_direction_symbol)
+QgsPalLayerSettings.addDirectionSymbol = QgsPalLayerSettings.addDirectionSymbol.setter(_set_add_direction_symbol)
 
 
-def get_left_direction_symbol(self):
+def _get_left_direction_symbol(self):
     return self.lineSettings().leftDirectionSymbol()
 
 
-def set_left_direction_symbol(self, symbol):
+def _set_left_direction_symbol(self, symbol):
     self.lineSettings().setLeftDirectionSymbol(symbol)
 
 
-QgsPalLayerSettings.leftDirectionSymbol = property(get_left_direction_symbol)
-QgsPalLayerSettings.leftDirectionSymbol = QgsPalLayerSettings.leftDirectionSymbol.setter(set_left_direction_symbol)
+QgsPalLayerSettings.leftDirectionSymbol = property(_get_left_direction_symbol)
+QgsPalLayerSettings.leftDirectionSymbol = QgsPalLayerSettings.leftDirectionSymbol.setter(_set_left_direction_symbol)
 
 
-def get_right_direction_symbol(self):
+def _get_right_direction_symbol(self):
     return self.lineSettings().rightDirectionSymbol()
 
 
-def set_right_direction_symbol(self, symbol):
+def _set_right_direction_symbol(self, symbol):
     self.lineSettings().setRightDirectionSymbol(symbol)
 
 
-QgsPalLayerSettings.rightDirectionSymbol = property(get_right_direction_symbol)
-QgsPalLayerSettings.rightDirectionSymbol = QgsPalLayerSettings.rightDirectionSymbol.setter(set_right_direction_symbol)
+QgsPalLayerSettings.rightDirectionSymbol = property(_get_right_direction_symbol)
+QgsPalLayerSettings.rightDirectionSymbol = QgsPalLayerSettings.rightDirectionSymbol.setter(_set_right_direction_symbol)
 
 
-def get_reverse_direction_symbol(self):
+def _get_reverse_direction_symbol(self):
     return self.lineSettings().reverseDirectionSymbol()
 
 
-def set_reverse_direction_symbol(self, reverse):
+def _set_reverse_direction_symbol(self, reverse):
     self.lineSettings().setReverseDirectionSymbol(reverse)
 
 
-QgsPalLayerSettings.reverseDirectionSymbol = property(get_reverse_direction_symbol)
-QgsPalLayerSettings.reverseDirectionSymbol = QgsPalLayerSettings.reverseDirectionSymbol.setter(set_reverse_direction_symbol)
+QgsPalLayerSettings.reverseDirectionSymbol = property(_get_reverse_direction_symbol)
+QgsPalLayerSettings.reverseDirectionSymbol = QgsPalLayerSettings.reverseDirectionSymbol.setter(_set_reverse_direction_symbol)
 
 
 # TODO QGIS 4.0 - remove, replaced by QgsLabelLineSettings.DirectionSymbolPlacement
-class DirectionSymbols:
+class _DirectionSymbols:
   SymbolLeftRight = 0
   SymbolAbove = 1
   SymbolBelow = 2
 
-QgsPalLayerSettings.DirectionSymbols = DirectionSymbols
+QgsPalLayerSettings.DirectionSymbols = _DirectionSymbols
 QgsPalLayerSettings.SymbolLeftRight = QgsPalLayerSettings.DirectionSymbols.SymbolLeftRight
 QgsPalLayerSettings.SymbolAbove = QgsPalLayerSettings.DirectionSymbols.SymbolAbove
 QgsPalLayerSettings.SymbolBelow = QgsPalLayerSettings.DirectionSymbols.SymbolBelow
 
 
-def get_direction_symbol_placement(self):
+def _get_direction_symbol_placement(self):
     return self.lineSettings().directionSymbolPlacement()
 
 
-def set_direction_symbol_placement(self, flags):
+def _set_direction_symbol_placement(self, flags):
     self.lineSettings().setDirectionSymbolPlacement(QgsLabelLineSettings.DirectionSymbolPlacement(flags))
 
 
-QgsPalLayerSettings.placeDirectionSymbol = property(get_direction_symbol_placement)
-QgsPalLayerSettings.placeDirectionSymbol = QgsPalLayerSettings.placeDirectionSymbol.setter(set_direction_symbol_placement)
+QgsPalLayerSettings.placeDirectionSymbol = property(_get_direction_symbol_placement)
+QgsPalLayerSettings.placeDirectionSymbol = QgsPalLayerSettings.placeDirectionSymbol.setter(_set_direction_symbol_placement)
 
 
-def get_overrun_distance(self):
+def _get_overrun_distance(self):
     return self.lineSettings().overrunDistance()
 
 
-def set_overrun_distance(self, distance):
+def _set_overrun_distance(self, distance):
     self.lineSettings().setOverrunDistance(distance)
 
 
-QgsPalLayerSettings.overrunDistance = property(get_overrun_distance)
-QgsPalLayerSettings.overrunDistance = QgsPalLayerSettings.overrunDistance.setter(set_overrun_distance)
+QgsPalLayerSettings.overrunDistance = property(_get_overrun_distance)
+QgsPalLayerSettings.overrunDistance = QgsPalLayerSettings.overrunDistance.setter(_set_overrun_distance)
 
 
-def get_overrun_distance_unit(self):
+def _get_overrun_distance_unit(self):
     return self.lineSettings().overrunDistanceUnit()
 
 
-def set_overrun_distance_unit(self, unit):
+def _set_overrun_distance_unit(self, unit):
     self.lineSettings().setOverrunDistanceUnit(unit)
 
 
-QgsPalLayerSettings.overrunDistanceUnit = property(get_overrun_distance_unit)
-QgsPalLayerSettings.overrunDistanceUnit = QgsPalLayerSettings.overrunDistanceUnit.setter(set_overrun_distance_unit)
+QgsPalLayerSettings.overrunDistanceUnit = property(_get_overrun_distance_unit)
+QgsPalLayerSettings.overrunDistanceUnit = QgsPalLayerSettings.overrunDistanceUnit.setter(_set_overrun_distance_unit)
 
 
-def get_overrun_distance_scale(self):
+def _get_overrun_distance_scale(self):
     return self.lineSettings().overrunDistanceMapUnitScale()
 
 
-def set_overrun_distance_scale(self, scale):
+def _set_overrun_distance_scale(self, scale):
     self.lineSettings().setOverrunDistanceMapUnitScale(scale)
 
 
-QgsPalLayerSettings.overrunDistanceMapUnitScale = property(get_overrun_distance_scale)
-QgsPalLayerSettings.overrunDistanceMapUnitScale = QgsPalLayerSettings.overrunDistanceMapUnitScale.setter(set_overrun_distance_scale)
+QgsPalLayerSettings.overrunDistanceMapUnitScale = property(_get_overrun_distance_scale)
+QgsPalLayerSettings.overrunDistanceMapUnitScale = QgsPalLayerSettings.overrunDistanceMapUnitScale.setter(_set_overrun_distance_scale)
 
 
-def get_limit_num_labels(self):
+def _get_quad_offset(self):
+    return self.pointSettings().quadrant()
+
+
+def _set_quad_offset(self, quadrant):
+    self.pointSettings().setQuadrant(quadrant)
+
+
+QgsPalLayerSettings.quadOffset = property(_get_quad_offset)
+QgsPalLayerSettings.quadOffset = QgsPalLayerSettings.quadOffset.setter(_set_quad_offset)
+
+
+def _get_limit_num_labels(self):
     return self.thinningSettings().limitNumberOfLabelsEnabled()
 
 
-def set_limit_num_labels(self, limit):
+def _set_limit_num_labels(self, limit):
     self.thinningSettings().setLimitNumberLabelsEnabled(limit)
 
 
-QgsPalLayerSettings.limitNumLabels = property(get_limit_num_labels)
-QgsPalLayerSettings.limitNumLabels = QgsPalLayerSettings.limitNumLabels.setter(set_limit_num_labels)
+QgsPalLayerSettings.limitNumLabels = property(_get_limit_num_labels)
+QgsPalLayerSettings.limitNumLabels = QgsPalLayerSettings.limitNumLabels.setter(_set_limit_num_labels)
 
 
 
-def get_max_num_labels(self):
+def _get_max_num_labels(self):
     return self.thinningSettings().maximumNumberLabels()
 
 
-def set_max_num_labels(self, limit):
+def _set_max_num_labels(self, limit):
     self.thinningSettings().setMaximumNumberLabels(limit)
 
 
-QgsPalLayerSettings.maxNumLabels = property(get_max_num_labels)
-QgsPalLayerSettings.maxNumLabels = QgsPalLayerSettings.maxNumLabels.setter(set_max_num_labels)
+QgsPalLayerSettings.maxNumLabels = property(_get_max_num_labels)
+QgsPalLayerSettings.maxNumLabels = QgsPalLayerSettings.maxNumLabels.setter(_set_max_num_labels)
 
 
 
-def get_min_feature_size(self):
+def _get_min_feature_size(self):
     return self.thinningSettings().minimumFeatureSize()
 
 
-def set_min_feature_size(self, limit):
+def _set_min_feature_size(self, limit):
     self.thinningSettings().setMinimumFeatureSize(limit)
 
 
-QgsPalLayerSettings.minFeatureSize = property(get_min_feature_size)
-QgsPalLayerSettings.minFeatureSize = QgsPalLayerSettings.minFeatureSize.setter(set_min_feature_size)
+QgsPalLayerSettings.minFeatureSize = property(_get_min_feature_size)
+QgsPalLayerSettings.minFeatureSize = QgsPalLayerSettings.minFeatureSize.setter(_set_min_feature_size)
 
 
 
-def get_is_obstacle(self):
+def _get_is_obstacle(self):
     return self.obstacleSettings().isObstacle()
 
 
-def set_is_obstacle(self, enabled):
+def _set_is_obstacle(self, enabled):
     self.obstacleSettings().setIsObstacle(enabled)
 
 
-QgsPalLayerSettings.obstacle = property(get_is_obstacle)
-QgsPalLayerSettings.obstacle = QgsPalLayerSettings.obstacle.setter(set_is_obstacle)
+QgsPalLayerSettings.obstacle = property(_get_is_obstacle)
+QgsPalLayerSettings.obstacle = QgsPalLayerSettings.obstacle.setter(_set_is_obstacle)
 
 
-def get_obstacle_factor(self):
+def _get_obstacle_factor(self):
     return self.obstacleSettings().factor()
 
 
-def set_obstacle_factor(self, factor):
+def _set_obstacle_factor(self, factor):
     self.obstacleSettings().setFactor(factor)
 
 
-QgsPalLayerSettings.obstacleFactor = property(get_obstacle_factor)
-QgsPalLayerSettings.obstacleFactor = QgsPalLayerSettings.obstacleFactor.setter(set_obstacle_factor)
+QgsPalLayerSettings.obstacleFactor = property(_get_obstacle_factor)
+QgsPalLayerSettings.obstacleFactor = QgsPalLayerSettings.obstacleFactor.setter(_set_obstacle_factor)
 
 
 
@@ -384,43 +493,229 @@ QgsPalLayerSettings.PolygonBoundary = QgsLabelObstacleSettings.ObstacleType.Poly
 QgsPalLayerSettings.PolygonWhole = QgsLabelObstacleSettings.ObstacleType.PolygonWhole
 
 
-def get_obstacle_type(self):
+def _get_obstacle_type(self):
     return self.obstacleSettings().type()
 
 
-def set_obstacle_type(self, _type):
+def _set_obstacle_type(self, _type):
     self.obstacleSettings().setType(QgsLabelObstacleSettings.ObstacleType(_type))
 
 
-QgsPalLayerSettings.obstacleType = property(get_obstacle_type)
-QgsPalLayerSettings.obstacleType = QgsPalLayerSettings.obstacleType.setter(set_obstacle_type)
+QgsPalLayerSettings.obstacleType = property(_get_obstacle_type)
+QgsPalLayerSettings.obstacleType = QgsPalLayerSettings.obstacleType.setter(_set_obstacle_type)
 
 
-def get_display_all(self):
+def _get_display_all(self):
     return self.placementSettings().overlapHandling() == Qgis.LabelOverlapHandling.AllowOverlapIfRequired
 
 
-def set_display_all(self, enabled):
+def _set_display_all(self, enabled):
     self.placementSettings().setOverlapHandling(Qgis.LabelOverlapHandling.AllowOverlapIfRequired if enabled else Qgis.LabelOverlapHandling.PreventOverlap)
     self.placementSettings().setAllowDegradedPlacement(enabled)
 
 
-QgsPalLayerSettings.displayAll = property(get_display_all)
-QgsPalLayerSettings.displayAll = QgsPalLayerSettings.displayAll.setter(set_display_all)
+QgsPalLayerSettings.displayAll = property(_get_display_all)
+QgsPalLayerSettings.displayAll = QgsPalLayerSettings.displayAll.setter(_set_display_all)
 
 QgsLocatorResult.userData = property(QgsLocatorResult._userData)
 QgsLocatorResult.userData = QgsLocatorResult.userData.setter(QgsLocatorResult.setUserData)
 
 
-def get_pixel_transparency(self):
+def _get_pixel_transparency(self):
     return (1.0 - self.opacity) * 100
 
 
-def set_pixel_transparency(self, transparency):
+def _set_pixel_transparency(self, transparency):
     self.opacity = 1.0 - (transparency / 100)
 
 
-QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = property(get_pixel_transparency)
-QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent.setter(set_pixel_transparency)
-QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = property(get_pixel_transparency)
-QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent.setter(set_pixel_transparency)
+QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = property(_get_pixel_transparency)
+QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent = QgsRasterTransparency.TransparentThreeValuePixel.percentTransparent.setter(_set_pixel_transparency)
+QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = property(_get_pixel_transparency)
+QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent = QgsRasterTransparency.TransparentSingleValuePixel.percentTransparent.setter(_set_pixel_transparency)
+
+QgsCsException.__doc__ = "Custom exception class for Coordinate Reference System related exceptions."
+QgsProcessingException.__doc__ = "Custom exception class for processing related exceptions."
+QgsProviderConnectionException.__doc__ = "Custom exception class for provider connection related exceptions."
+QgsNotSupportedException.__doc__ = "Custom exception class which is raised when an operation is not supported."
+QgsSettingsException.__doc__ = "Custom exception class for settings related exceptions."
+QgsException.__doc__ = "Defines a QGIS exception class."
+
+try:
+   import numpy as _numpy
+   def _qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> _typing.Optional[_numpy.dtype]:
+      qgis_to_numpy_dtype_dict = {
+       Qgis.DataType.UnknownDataType: None,
+       Qgis.DataType.Byte: _numpy.byte,
+       Qgis.DataType.Int8: _numpy.int8,
+       Qgis.DataType.UInt16: _numpy.uint16,
+       Qgis.DataType.Int16: _numpy.int16,
+       Qgis.DataType.UInt32: _numpy.uint32,
+       Qgis.DataType.Int32: _numpy.int32,
+       Qgis.DataType.Float32: _numpy.float32,
+       Qgis.DataType.Float64: _numpy.float64,
+       Qgis.DataType.CInt16: None,
+       Qgis.DataType.CInt32: None,
+       Qgis.DataType.CFloat32: _numpy.complex64,
+       Qgis.DataType.CFloat64: _numpy.complex128,
+       Qgis.DataType.ARGB32: None,
+       Qgis.DataType.ARGB32_Premultiplied: None
+       }
+      return qgis_to_numpy_dtype_dict[dataType]
+
+   def _raster_block_as_numpy(self, use_masking:bool = True) -> _typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]:
+      raster_dtype = _qgis_data_type_to_numeric_data_type(self.dataType())
+      if not raster_dtype:
+         raise ValueError(f"The raster block data type '{str(self.dataType())}' is not compatible with NumPy arrays.")
+      src_array = _numpy.frombuffer(self.data(), dtype=raster_dtype)
+      src_array = src_array.reshape((self.height(), self.width()))
+      if not self.hasNoDataValue() or not use_masking:
+         return src_array
+      else:
+         no_data_value = self.noDataValue() if isinstance(self.noDataValue(), raster_dtype) else 0
+         return _numpy.ma.masked_equal(src_array, no_data_value)
+
+   QgsRasterBlock.as_numpy = _raster_block_as_numpy
+
+   def _raster_layer_as_numpy(self, use_masking=True, bands: _typing.Optional[_typing.List[int]] = None) -> _typing.List[_typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]]:
+      arrays = []
+      band_range = bands if bands else range(self.bandCount())
+
+      for band in band_range:
+          block = self.dataProvider().block(band + 1, self.extent(), self.width(), self.height())
+          src_array = block.as_numpy(use_masking=use_masking)
+          arrays.append(src_array)
+
+      return _numpy.array(arrays)  # This converts any maskedArrays to numpy.array
+
+   QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+
+   def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
+       wkb_type = self.wkbType()
+       hasM = QgsWkbTypes.hasM(wkb_type)
+       hasZ = QgsWkbTypes.hasZ(wkb_type)
+       geometry_type = self.type()
+
+       def get_xyzm_coordinates(pt):
+                 if hasZ and hasM:
+                     return _numpy.array([pt.x(), pt.y(), pt.z(), pt.m()])
+                 elif hasZ:
+                     return _numpy.array([pt.x(), pt.y(), pt.z()])
+                 elif hasM:
+                     return _numpy.array([pt.x(), pt.y(), pt.m()])
+                 else:
+                     return _numpy.array([pt.x(), pt.y()])
+
+       def fill_structure_with_elements(lst: _typing.List, elements: _typing.List, idx: int=0):
+           for i in range(len(lst)):
+               if isinstance(lst[i], list):
+                    idx = fill_structure_with_elements(lst[i], elements, idx)
+               else:
+                   lst[i] = _numpy.array(elements[idx])
+                   idx += 1
+           return idx
+
+       if self.isMultipart():
+            elements = [get_xyzm_coordinates(i) for i in self.vertices()]
+
+            if geometry_type == QgsWkbTypes.PointGeometry:
+                skeleton = self.asMultiPoint()
+                fill_structure_with_elements(skeleton, elements)
+                return skeleton
+
+            elif geometry_type == QgsWkbTypes.LineGeometry:
+                skeleton = self.asMultiPolyline()
+                fill_structure_with_elements(skeleton, elements)
+                return skeleton
+
+            elif geometry_type == QgsWkbTypes.PolygonGeometry:
+                skeleton = self.asMultiPolygon()
+                fill_structure_with_elements(skeleton, elements)
+                return skeleton
+       else:
+            if geometry_type == QgsWkbTypes.PointGeometry:
+                return _numpy.array([get_xyzm_coordinates(i) for i in self.vertices()][0])
+            elif geometry_type == QgsWkbTypes.LineGeometry:
+                line = self.vertices()
+                return _numpy.array([get_xyzm_coordinates(pt) for pt in line])
+            elif geometry_type == QgsWkbTypes.PolygonGeometry:
+                skeleton = self.asPolygon()
+                elements = [get_xyzm_coordinates(i) for i in self.vertices()]
+                fill_structure_with_elements(skeleton, elements)
+                return _numpy.array(skeleton)
+
+
+   QgsGeometry.as_numpy = _qgsgeometry_as_numpy
+   
+except ModuleNotFoundError:
+   def _raster_block_as_numpy(self, use_masking:bool = True):
+       raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
+
+   QgsRasterBlock.as_numpy = _raster_block_as_numpy
+
+   def _raster_layer_as_numpy(self, use_masking:bool = True, bands: _typing.Optional[_typing.List[int]] = None):
+       raise QgsNotSupportedException('QgsRasterLayer.as_numpy is not available, numpy is not installed on the system')
+
+   QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+   
+   def _geometry_as_numpy(self):
+      raise QgsNotSupportedException('QgsGeometry.as_numpy is not available, numpy is not installed on the system')
+
+   QgsGeometry.as_numpy = _geometry_as_numpy
+
+try:
+   import shapely as _shapely
+   import shapely.geometry as _sg
+
+   def _geometry_as_shapely(self) -> _sg.base.BaseGeometry:
+      wkb_qbytearray = self.asWkb()  # Get the geometry in WKB format (QByteArray)
+      shapely_geom = _shapely.from_wkb(wkb_qbytearray.data())
+
+      return shapely_geom
+
+   QgsGeometry.as_shapely = _geometry_as_shapely
+
+except ModuleNotFoundError:
+   def _geometry_as_shapely(self):
+       raise QgsNotSupportedException('QgsGeometry.as_shapely is not available, shapely is not installed on the system')
+
+   QgsGeometry.as_shapely = _geometry_as_shapely
+
+
+QgsRasterBlock.as_numpy.__doc__ = """
+Returns the block data as a numpy array.
+
+If `use_masking` is `True` then the returned array will be a numpy masked array, masking the raster block's nodata values.
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
+
+QgsRasterLayer.as_numpy.__doc__ = """
+Returns the layer data as a numpy array.
+
+If `use_masking` is `True` then the returned arrays will be numpy masked arrays, masking the raster block's nodata values.
+
+If `bands` is provided, only the specified bands will be included in the returned array; otherwise, all bands will be used.
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
+
+QgsGeometry.as_numpy.__doc__ = """
+Returns the geometry data as a numpy array or list of numpy arrays.
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
+
+QgsGeometry.as_shapely.__doc__ = """
+Returns the geometry data as a shapely object.
+
+:raises QgsNotSupportedException: if shapely is not available on the system
+
+.. versionadded:: 3.40
+"""

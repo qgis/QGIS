@@ -218,9 +218,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode
 
   protected:
 
-    /**
-     * Constructor.
-     */
     QgsPointCloudExpressionNode() = default;
 
     //! Copy constructor

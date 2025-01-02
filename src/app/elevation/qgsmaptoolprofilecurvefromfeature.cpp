@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolprofilecurvefromfeature.h"
+#include "moc_qgsmaptoolprofilecurvefromfeature.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsidentifymenu.h"
 #include "qgsmapmouseevent.h"
@@ -38,7 +39,7 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
     e->ignore();
 
     const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { Qgis::GeometryType::Line } );
-    if ( results.empty( ) )
+    if ( results.empty() )
       return;
 
     QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
@@ -66,4 +67,3 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
     }
   }
 }
-

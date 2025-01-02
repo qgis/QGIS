@@ -15,25 +15,27 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import re
 
-from qgis.core import (QgsDataProvider,
-                       QgsRasterLayer,
-                       QgsWkbTypes,
-                       QgsVectorLayer,
-                       QgsProject,
-                       QgsSettings,
-                       QgsProcessingContext,
-                       QgsProcessingUtils,
-                       QgsFeatureRequest,
-                       QgsExpressionContext,
-                       QgsExpressionContextUtils,
-                       QgsExpressionContextScope)
+from qgis.core import (
+    QgsDataProvider,
+    QgsRasterLayer,
+    QgsWkbTypes,
+    QgsVectorLayer,
+    QgsProject,
+    QgsSettings,
+    QgsProcessingContext,
+    QgsProcessingUtils,
+    QgsFeatureRequest,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsExpressionContextScope,
+)
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
@@ -51,29 +53,33 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
+# changing this signature? make sure you update the signature in
+# python/processing/__init__.py too!
+# Docstring for this function is in python/processing/__init__.py
 def createContext(feedback=None):
-    """
-    Creates a default processing context
-
-    :param feedback: Optional existing QgsProcessingFeedback object, or None to use a default feedback object
-    :type feedback: Optional[QgsProcessingFeedback]
-
-    :returns: New QgsProcessingContext object
-    :rtype: QgsProcessingContext
-    """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
     context.setFeedback(feedback)
 
-    invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+    invalid_features_method = ProcessingConfig.getSetting(
+        ProcessingConfig.FILTER_INVALID_GEOMETRIES
+    )
     if invalid_features_method is None:
-        invalid_features_method = QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid
+        invalid_features_method = (
+            QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid
+        )
     else:
-        invalid_features_method = QgsFeatureRequest.InvalidGeometryCheck(int(invalid_features_method))
+        invalid_features_method = QgsFeatureRequest.InvalidGeometryCheck(
+            int(invalid_features_method)
+        )
     context.setInvalidGeometryCheck(invalid_features_method)
 
     settings = QgsSettings()
-    context.setDefaultEncoding(QgsProcessingUtils.resolveDefaultEncoding(settings.value("/Processing/encoding")))
+    context.setDefaultEncoding(
+        QgsProcessingUtils.resolveDefaultEncoding(
+            settings.value("/Processing/encoding")
+        )
+    )
 
     context.setExpressionContext(createExpressionContext())
 
@@ -89,16 +95,18 @@ def createExpressionContext():
     context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
 
     if iface and iface.mapCanvas():
-        context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
+        context.appendScope(
+            QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings())
+        )
 
     processingScope = QgsExpressionContextScope()
 
     if iface and iface.mapCanvas():
         extent = iface.mapCanvas().fullExtent()
-        processingScope.setVariable('fullextent_minx', extent.xMinimum())
-        processingScope.setVariable('fullextent_miny', extent.yMinimum())
-        processingScope.setVariable('fullextent_maxx', extent.xMaximum())
-        processingScope.setVariable('fullextent_maxy', extent.yMaximum())
+        processingScope.setVariable("fullextent_minx", extent.xMinimum())
+        processingScope.setVariable("fullextent_miny", extent.yMinimum())
+        processingScope.setVariable("fullextent_maxx", extent.xMaximum())
+        processingScope.setVariable("fullextent_maxy", extent.yMaximum())
 
     context.appendScope(processingScope)
     return context
@@ -113,7 +121,11 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
     """
 
     from warnings import warn
-    warn("processing.load is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
+    warn(
+        "processing.load is deprecated and will be removed in QGIS 4.0",
+        DeprecationWarning,
+    )
 
     if fileName is None:
         return
@@ -124,7 +136,7 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
     if isRaster:
         options = QgsRasterLayer.LayerOptions()
         options.skipCrsValidation = True
-        qgslayer = QgsRasterLayer(fileName, name, 'gdal', options)
+        qgslayer = QgsRasterLayer(fileName, name, "gdal", options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -133,23 +145,32 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
         else:
-            raise RuntimeError(QCoreApplication.translate('dataobject',
-                                                          'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(
-                fileName))
+            raise RuntimeError(
+                QCoreApplication.translate(
+                    "dataobject",
+                    "Could not load layer: {0}\nCheck the processing framework log to look for errors.",
+                ).format(fileName)
+            )
     else:
         options = QgsVectorLayer.LayerOptions()
         options.skipCrsValidation = True
-        qgslayer = QgsVectorLayer(fileName, name, 'ogr', options)
+        qgslayer = QgsVectorLayer(fileName, name, "ogr", options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
             if style is None:
                 if qgslayer.geometryType() == QgsWkbTypes.GeometryType.PointGeometry:
-                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
+                    style = ProcessingConfig.getSetting(
+                        ProcessingConfig.VECTOR_POINT_STYLE
+                    )
                 elif qgslayer.geometryType() == QgsWkbTypes.GeometryType.LineGeometry:
-                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
+                    style = ProcessingConfig.getSetting(
+                        ProcessingConfig.VECTOR_LINE_STYLE
+                    )
                 else:
-                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
+                    style = ProcessingConfig.getSetting(
+                        ProcessingConfig.VECTOR_POLYGON_STYLE
+                    )
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
 
@@ -162,27 +183,36 @@ def getRasterSublayer(path, param):
     try:
         # If the layer is a raster layer and has multiple sublayers, let the user chose one.
         # Based on QgisApp::askUserForGDALSublayers
-        if layer and param.showSublayersDialog and layer.dataProvider().name() == "gdal" and len(layer.subLayers()) > 1:
+        if (
+            layer
+            and param.showSublayersDialog
+            and layer.dataProvider().name() == "gdal"
+            and len(layer.subLayers()) > 1
+        ):
             layers = []
             subLayerNum = 0
             # simplify raster sublayer name
             for subLayer in layer.subLayers():
                 # if netcdf/hdf use all text after filename
-                if bool(re.match('netcdf', subLayer, re.I)) or bool(re.match('hdf', subLayer, re.I)):
+                if bool(re.match("netcdf", subLayer, re.I)) or bool(
+                    re.match("hdf", subLayer, re.I)
+                ):
                     subLayer = subLayer.split(path)[1]
                     subLayer = subLayer[1:]
                 else:
                     # remove driver name and file name
-                    subLayer.replace(subLayer.split(QgsDataProvider.SUBLAYER_SEPARATOR)[0], "")
+                    subLayer.replace(
+                        subLayer.split(QgsDataProvider.SUBLAYER_SEPARATOR)[0], ""
+                    )
                     subLayer.replace(path, "")
                 # remove any : or " left over
                 if subLayer.startswith(":"):
                     subLayer = subLayer[1:]
-                if subLayer.startswith("\""):
+                if subLayer.startswith('"'):
                     subLayer = subLayer[1:]
                 if subLayer.endswith(":"):
                     subLayer = subLayer[:-1]
-                if subLayer.endswith("\""):
+                if subLayer.endswith('"'):
                     subLayer = subLayer[:-1]
 
                 ld = QgsSublayersDialog.LayerDefinition()
@@ -193,7 +223,9 @@ def getRasterSublayer(path, param):
 
             # Use QgsSublayersDialog
             # Would be good if QgsSublayersDialog had an option to allow only one sublayer to be selected
-            chooseSublayersDialog = QgsSublayersDialog(QgsSublayersDialog.ProviderType.Gdal, "gdal")
+            chooseSublayersDialog = QgsSublayersDialog(
+                QgsSublayersDialog.ProviderType.Gdal, "gdal"
+            )
             chooseSublayersDialog.populateLayerTable(layers)
 
             if chooseSublayersDialog.exec():

@@ -54,12 +54,11 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     Q_PROPERTY( QgsTextFormat textFormat READ textFormat WRITE setTextFormat NOTIFY changed )
 
   public:
-
     //! Available button modes.
     enum Mode
     {
-      ModeTextRenderer,  //!< Configure font settings for use with QgsTextRenderer
-      ModeQFont, //!< Configure font settings for use with QFont objects
+      ModeTextRenderer, //!< Configure font settings for use with QgsTextRenderer
+      ModeQFont,        //!< Configure font settings for use with QFont objects
     };
 
     Q_ENUM( Mode )
@@ -273,7 +272,6 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     void changed();
 
   protected:
-
     bool event( QEvent *e ) override;
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
@@ -307,7 +305,6 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     void addRecentColor( const QColor &color );
 
   private:
-
     QgsScreenHelper *mScreenHelper = nullptr;
 
     QSize mSizeHint;
@@ -325,7 +322,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     QMenu *mMenu = nullptr;
 
-    QPointer< QgsVectorLayer > mLayer;
+    QPointer<QgsVectorLayer> mLayer;
 
     QSize mIconSize;
 
@@ -333,8 +330,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     bool mShowNoFormat = false;
     QString mNullFormatString;
-    QPointer< QAction > mNullFormatAction;
-    QPointer< QgsTextFormatPanelWidget > mActivePanel;
+    QPointer<QAction> mNullFormatAction;
+    QPointer<QgsTextFormatPanelWidget> mActivePanel;
 
     /**
      * Attempts to parse \a mimeData as a text format.

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscheckboxwidgetwrapper.h"
+#include "moc_qgscheckboxwidgetwrapper.cpp"
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -29,7 +30,7 @@ QVariant QgsCheckboxWidgetWrapper::value() const
     return QVariant();
   }
 
-  if ( field().type() == QVariant::Bool )
+  if ( field().type() == QMetaType::Type::Bool )
   {
     if ( mGroupBox )
     {
@@ -75,25 +76,23 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, &QCheckBox::stateChanged, this, [ = ]( int state )
-  {
-    if ( !mIndeterminateStateEnabled && mCheckBox->checkState() != Qt::PartiallyChecked )
-    {
-      mCheckBox->setTristate( false );
-    }
-    Q_NOWARN_DEPRECATED_PUSH
-    emit valueChanged( state != Qt::Unchecked );
-    Q_NOWARN_DEPRECATED_POP
-    emit valuesChanged( state != Qt::Unchecked );
-  } );
+    connect( mCheckBox, &QCheckBox::stateChanged, this, [=]( int state ) {
+      if ( !mIndeterminateStateEnabled && mCheckBox->checkState() != Qt::PartiallyChecked )
+      {
+        mCheckBox->setTristate( false );
+      }
+      Q_NOWARN_DEPRECATED_PUSH
+      emit valueChanged( state != Qt::Unchecked );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( state != Qt::Unchecked );
+    } );
   if ( mGroupBox )
-    connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state )
-  {
-    Q_NOWARN_DEPRECATED_PUSH
-    emit valueChanged( state );
-    Q_NOWARN_DEPRECATED_POP
-    emit valuesChanged( state );
-  } );
+    connect( mGroupBox, &QGroupBox::toggled, this, [=]( bool state ) {
+      Q_NOWARN_DEPRECATED_PUSH
+      emit valueChanged( state );
+      Q_NOWARN_DEPRECATED_POP
+      emit valuesChanged( state );
+    } );
 }
 
 bool QgsCheckboxWidgetWrapper::valid() const
@@ -111,7 +110,7 @@ void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVaria
   }
   else
   {
-    if ( field().type() == QVariant::Bool )
+    if ( field().type() == QMetaType::Type::Bool )
     {
       state = value.toBool() ? Qt::Checked : Qt::Unchecked;
     }

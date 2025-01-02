@@ -45,10 +45,6 @@ foreach(_library_type MODULE STATIC)
   # require c++17
   target_compile_features(${_library_name} PRIVATE cxx_std_17)
 
-  include_directories(${_library_name} SYSTEM PUBLIC
-    ${POSTGRES_INCLUDE_DIR}
-  )
-
   target_include_directories(${_library_name} PUBLIC
     ${CMAKE_SOURCE_DIR}/src/server
     ${CMAKE_SOURCE_DIR}/src/server/services

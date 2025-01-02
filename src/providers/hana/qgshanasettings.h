@@ -22,14 +22,14 @@
 
 struct QgsHanaIdentifierType
 {
-  enum Value
-  {
-    InstanceNumber = 0,
-    PortNumber = 1
-  };
+    enum Value
+    {
+      InstanceNumber = 0,
+      PortNumber = 1
+    };
 
-  static bool isValid( uint ) noexcept;
-  static Value fromInt( uint );
+    static bool isValid( uint ) noexcept;
+    static Value fromInt( uint );
 };
 
 enum class QgsHanaConnectionType : uint
@@ -149,6 +149,15 @@ class QgsHanaSettings
     void setAllowGeometrylessTables( bool allowGeometrylessTables )
     {
       mAllowGeometrylessTables = allowGeometrylessTables;
+    }
+
+    /**
+     * Specifies whether estimated metadata from e.g. an index can be used or not.
+     */
+    bool useEstimatedMetadata() const { return mUseEstimatedMetadata; }
+    void setUseEstimatedMetadata( bool useEstimatedMetadata )
+    {
+      mUseEstimatedMetadata = useEstimatedMetadata;
     }
 
     /**
@@ -278,7 +287,7 @@ class QgsHanaSettings
     /**
      * Constructs an instance of QgsDataSourceUri with values of the current object.
      */
-    QgsDataSourceUri toDataSourceUri() const ;
+    QgsDataSourceUri toDataSourceUri() const;
 
     /**
      * Loads HANA connection settings from /HANA/connections/{connection_name}.
@@ -289,6 +298,12 @@ class QgsHanaSettings
      * Saves HANA connection settings to /HANA/connections/{connection_name}.
      */
     void save();
+
+    /**
+     * Duplicates \a src connection settings to a new \a dst connection.
+     * \since QGIS 3.40
+     */
+    static void duplicateConnection( const QString &src, const QString &dst );
 
     static QStringList getConnectionNames();
     static QString getSelectedConnection();
@@ -317,6 +332,7 @@ class QgsHanaSettings
     bool mSavePassword = false;
     bool mUserTablesOnly = true;
     bool mAllowGeometrylessTables = false;
+    bool mUseEstimatedMetadata = false;
     QMap<QString, QMap<QString, QStringList>> mKeyColumns;
     // SSL parameters
     bool mSslEnabled = false;

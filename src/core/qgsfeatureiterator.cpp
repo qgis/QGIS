@@ -102,7 +102,7 @@ void QgsAbstractFeatureIterator::geometryToDestinationCrs( QgsFeature &feature, 
     try
     {
       QgsGeometry g = feature.geometry();
-      g.transform( transform );
+      g.transform( transform, Qgis::TransformDirection::Forward, transform.hasVerticalComponent() );
       feature.setGeometry( g );
     }
     catch ( QgsCsException & )

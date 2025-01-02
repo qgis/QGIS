@@ -520,7 +520,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available
-  const thread_local QRegularExpression urlRegEx( QStringLiteral( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" ) );
+  const thread_local QRegularExpression urlRegEx( QStringLiteral( "((?:(?:http|https|ftp|file)://[^\\s]+[^\\s,.]+)|(?:\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/)))))" ) );
   const thread_local QRegularExpression protoRegEx( QStringLiteral( "^(?:f|ht)tps?://|file://" ) );
   const thread_local QRegularExpression emailRegEx( QStringLiteral( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" ) );
 
@@ -743,6 +743,23 @@ QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLe
 #else
   return QStringView( string ).first( truncateFrom ) + QString( QChar( 0x2026 ) ) + QStringView( string ).sliced( truncateFrom + charactersToTruncate + 1 );
 #endif
+}
+
+bool QgsStringUtils::containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity )
+{
+  if ( candidate.trimmed().isEmpty() )
+    return false;
+
+  const thread_local QRegularExpression rxWhitespace( QStringLiteral( "\\s+" ) );
+  const QStringList parts = words.split( rxWhitespace, Qt::SkipEmptyParts );
+  if ( parts.empty() )
+    return false;
+  for ( const QString &word : parts )
+  {
+    if ( !candidate.contains( word, sensitivity ) )
+      return false;
+  }
+  return true;
 }
 
 QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )

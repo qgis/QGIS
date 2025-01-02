@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgspointxy.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -45,12 +45,10 @@ Use cases for which :py:class:`QgsPointXY` is NOT a valid choice include:
     static const QMetaObject staticMetaObject;
 
   public:
+
     QgsPointXY();
 
     QgsPointXY( const QgsPointXY &p ) /HoldGIL/;
-%Docstring
-Create a point from another point
-%End
 
     QgsPointXY( double x, double y ) /HoldGIL/;
 %Docstring
@@ -222,7 +220,7 @@ Compares this point with another point with a fuzzy tolerance using distance com
 .. versionadded:: 3.36
 %End
 
-    bool operator==( const QgsPointXY &other ) /HoldGIL/;
+    bool operator==( const QgsPointXY &other ) const /HoldGIL/;
 
     bool operator!=( const QgsPointXY &other ) const /HoldGIL/;
 
@@ -292,11 +290,10 @@ Multiply x and y by the given value
 
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
  * src/core/qgspointxy.h                                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

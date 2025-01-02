@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledsceneelevationpropertieswidget.h"
+#include "moc_qgstiledsceneelevationpropertieswidget.cpp"
 #include "qgstiledscenerendererpropertieswidget.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
@@ -31,8 +32,8 @@ QgsTiledSceneElevationPropertiesWidget::QgsTiledSceneElevationPropertiesWidget( 
 
   syncToLayer( layer );
 
-  connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsTiledSceneElevationPropertiesWidget::onChanged );
-  connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsTiledSceneElevationPropertiesWidget::onChanged );
+  connect( mOffsetZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsTiledSceneElevationPropertiesWidget::onChanged );
+  connect( mScaleZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsTiledSceneElevationPropertiesWidget::onChanged );
   connect( mShiftZAxisButton, &QPushButton::clicked, this, &QgsTiledSceneElevationPropertiesWidget::shiftSceneZAxis );
 
   // setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#elevation-properties" ) );
@@ -40,11 +41,11 @@ QgsTiledSceneElevationPropertiesWidget::QgsTiledSceneElevationPropertiesWidget( 
 
 void QgsTiledSceneElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = qobject_cast< QgsTiledSceneLayer * >( layer );
+  mLayer = qobject_cast<QgsTiledSceneLayer *>( layer );
   if ( !mLayer )
     return;
 
-  const QgsTiledSceneLayerElevationProperties *properties = qgis::down_cast< const QgsTiledSceneLayerElevationProperties * >( mLayer->elevationProperties() );
+  const QgsTiledSceneLayerElevationProperties *properties = qgis::down_cast<const QgsTiledSceneLayerElevationProperties *>( mLayer->elevationProperties() );
 
   mBlockUpdates = true;
   mOffsetZSpinBox->setValue( properties->zOffset() );
@@ -58,7 +59,7 @@ void QgsTiledSceneElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsTiledSceneLayerElevationProperties *properties = qgis::down_cast< QgsTiledSceneLayerElevationProperties * >( mLayer->elevationProperties() );
+  QgsTiledSceneLayerElevationProperties *properties = qgis::down_cast<QgsTiledSceneLayerElevationProperties *>( mLayer->elevationProperties() );
 
   const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() )
                                           || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );
@@ -98,7 +99,7 @@ QgsTiledSceneElevationPropertiesWidgetFactory::QgsTiledSceneElevationPropertiesW
 
 QgsMapLayerConfigWidget *QgsTiledSceneElevationPropertiesWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
 {
-  return new QgsTiledSceneElevationPropertiesWidget( qobject_cast< QgsTiledSceneLayer * >( layer ), canvas, parent );
+  return new QgsTiledSceneElevationPropertiesWidget( qobject_cast<QgsTiledSceneLayer *>( layer ), canvas, parent );
 }
 
 bool QgsTiledSceneElevationPropertiesWidgetFactory::supportLayerPropertiesDialog() const
@@ -120,4 +121,3 @@ QString QgsTiledSceneElevationPropertiesWidgetFactory::layerPropertiesPagePositi
 {
   return QStringLiteral( "mOptsPage_Metadata" );
 }
-

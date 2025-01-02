@@ -79,7 +79,7 @@ void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QStri
   }
 
   const QVariant newProps = QgsXmlUtils::readVariant( propsNode.firstChildElement() );
-  if ( newProps.type() == QVariant::Map )
+  if ( newProps.userType() == QMetaType::Type::QVariantMap )
   {
     mMap.insert( newProps.toMap() );
   }

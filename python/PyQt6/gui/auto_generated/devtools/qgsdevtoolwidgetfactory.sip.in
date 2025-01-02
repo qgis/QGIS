@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/devtools/qgsdevtoolwidgetfactory.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ Factory class for creating custom developer/debugging tool pages
 #include "qgsdevtoolwidgetfactory.h"
 %End
   public:
-
     QgsDevToolWidgetFactory( const QString &title = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Constructor for a QgsDevToolWidgetFactory with the specified ``title`` and ``icon``.
@@ -69,5 +68,5 @@ The ``parent`` argument gives the correct parent for the newly created widget.
  *                                                                      *
  * src/gui/devtools/qgsdevtoolwidgetfactory.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

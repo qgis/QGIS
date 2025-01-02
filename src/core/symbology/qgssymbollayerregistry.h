@@ -126,16 +126,16 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     {}
 
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsSymbolLayerCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsSymbolLayerWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
+    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const SIP_SKIP { return mCreateFromSldFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; } SIP_SKIP
+    QgsSymbolLayerPathResolverFunc pathResolverFunction() const SIP_SKIP { return mPathResolverFunc; }
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
 
     QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
     QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
@@ -186,9 +186,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QgsSymbolLayerRegistry();
     ~QgsSymbolLayerRegistry();
 
-    //! QgsSymbolLayerRegistry cannot be copied.
     QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry &rh ) = delete;
-    //! QgsSymbolLayerRegistry cannot be copied.
     QgsSymbolLayerRegistry &operator=( const QgsSymbolLayerRegistry &rh ) = delete;
 
     //! Returns metadata for specified symbol layer. Returns NULLPTR if not found

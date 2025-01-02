@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgswindowmanagerinterface.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -29,7 +29,6 @@ the :py:class:`QgsGui` instance, via :py:func:`QgsGui.windowManager()`.
 #include "qgswindowmanagerinterface.h"
 %End
   public:
-
     enum StandardDialog
     {
       DialogStyleManager,
@@ -46,7 +45,6 @@ existing instance to the foreground.
 Returns the dialog if shown, or ``None`` if the dialog either could not be
 created or is not supported by the window manager implementation.
 %End
-
 };
 
 
@@ -55,5 +53,5 @@ created or is not supported by the window manager implementation.
  *                                                                      *
  * src/gui/qgswindowmanagerinterface.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

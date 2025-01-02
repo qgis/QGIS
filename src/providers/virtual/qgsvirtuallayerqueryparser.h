@@ -42,11 +42,11 @@ namespace QgsVirtualLayerQueryParser
       ColumnDef() = default;
       ColumnDef( const QString &name, Qgis::WkbType aWkbType, long aSrid )
         : mName( name )
-        , mType( QVariant::UserType )
+        , mType( QMetaType::Type::User )
         , mWkbType( aWkbType )
         , mSrid( aSrid )
       {}
-      ColumnDef( const QString &name, QVariant::Type aType )
+      ColumnDef( const QString &name, QMetaType::Type aType )
         : mName( name )
         , mType( aType )
         , mWkbType( Qgis::WkbType::NoGeometry )
@@ -55,18 +55,26 @@ namespace QgsVirtualLayerQueryParser
       QString name() const { return mName; }
       void setName( const QString &name ) { mName = name; }
 
-      bool isGeometry() const { return mType == QVariant::UserType; }
-      void setGeometry( Qgis::WkbType wkbType ) { mType = QVariant::UserType; mWkbType = wkbType; }
+      bool isGeometry() const { return mType == QMetaType::Type::User; }
+      void setGeometry( Qgis::WkbType wkbType )
+      {
+        mType = QMetaType::Type::User;
+        mWkbType = wkbType;
+      }
       long srid() const { return mSrid; }
       void setSrid( long srid ) { mSrid = srid; }
 
-      void setScalarType( QVariant::Type t ) { mType = t; mWkbType = Qgis::WkbType::NoGeometry; }
-      QVariant::Type scalarType() const { return mType; }
+      void setScalarType( QMetaType::Type t )
+      {
+        mType = t;
+        mWkbType = Qgis::WkbType::NoGeometry;
+      }
+      QMetaType::Type scalarType() const { return mType; }
       Qgis::WkbType wkbType() const { return mWkbType; }
 
     private:
       QString mName;
-      QVariant::Type mType = QVariant::Invalid;
+      QMetaType::Type mType = QMetaType::Type::UnknownType;
       Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
       long mSrid = -1;
   };
@@ -89,6 +97,6 @@ namespace QgsVirtualLayerQueryParser
   //! Gets the column types of a virtual table
   TableDef tableDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName );
 
-}
+} // namespace QgsVirtualLayerQueryParser
 
 #endif

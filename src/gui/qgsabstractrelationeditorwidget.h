@@ -28,9 +28,9 @@
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsrelationeditorwidget.h"
-% End
+//%End
 #endif
 
 class QgsFeature;
@@ -44,7 +44,6 @@ class QgsVectorLayer;
  */
 class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
@@ -57,8 +56,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     Q_OBJECT
 
   public:
-
-
     /**
      * Constructor
      */
@@ -84,13 +81,13 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * Returns the relation
      * \since QGIS 3.18
      */
-    QgsRelation relation() const {return mRelation;}
+    QgsRelation relation() const { return mRelation; }
 
     /**
      * Returns the nm relation
      * \since QGIS 3.18
      */
-    QgsRelation nmRelation() const {return mNmRelation;}
+    QgsRelation nmRelation() const { return mNmRelation; }
 
     /**
      * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
@@ -114,17 +111,17 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     /**
      * Returns the attribute editor context.
      */
-    QgsAttributeEditorContext editorContext( ) const;
+    QgsAttributeEditorContext editorContext() const;
 
     /**
      * Defines if a title label should be shown for this widget.
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED bool showLabel() const SIP_DEPRECATED;
 
     /**
      * Defines if a title label should be shown for this widget.
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED void setShowLabel( bool showLabel ) SIP_DEPRECATED;
 
@@ -141,7 +138,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Determines the label of this element
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED QString label() const SIP_DEPRECATED;
 
@@ -234,8 +231,9 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Links a new feature to the relation
+     * \param filterExpression to filter the available features in the link dialog since QGIS 3.40
      */
-    void linkFeature();
+    void linkFeature( const QString &filterExpression = QString() );
 
     /**
      * Called when the link feature dialog is confirmed by the user
@@ -258,7 +256,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void duplicateFeatures( const QgsFeatureIds &fids );
 
   protected:
-
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
@@ -275,7 +272,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Updates the title contents to reflect the current state of the widget
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED void updateTitle() SIP_DEPRECATED;
 
@@ -301,7 +298,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Sets the title of the widget, if it is wrapped within a QgsCollapsibleGroupBox
-     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
+     * \deprecated QGIS 3.20. Label is handled directly in QgsAttributeForm.
      */
     Q_DECL_DEPRECATED virtual void setTitle( const QString &title ) SIP_DEPRECATED;
 
@@ -342,7 +339,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
  */
 class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsRelationEditorConfigWidget *>( sipCpp ) )
@@ -354,7 +350,6 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 
     Q_OBJECT
   public:
-
     /**
      * Create a new configuration widget
      *
@@ -424,7 +419,6 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 class GUI_EXPORT QgsAbstractRelationEditorWidgetFactory
 {
   public:
-
     /**
      * Creates a new relation widget factory with given \a name
      */

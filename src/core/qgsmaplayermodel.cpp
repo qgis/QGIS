@@ -16,6 +16,7 @@
 #include <QIcon>
 
 #include "qgsmaplayermodel.h"
+#include "moc_qgsmaplayermodel.cpp"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"
@@ -24,7 +25,7 @@
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )
-  , mProject( project ? project : QgsProject::instance() )
+  , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
 {
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
@@ -32,7 +33,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )
-  , mProject( project ? project : QgsProject::instance() )
+  , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
 {
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
@@ -50,7 +51,7 @@ void QgsMapLayerModel::setProject( QgsProject *project )
     disconnect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   }
 
-  mProject = project ? project : QgsProject::instance();
+  mProject = project ? project : QgsProject::instance(); // skip-keyword-check
 
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
@@ -373,10 +374,15 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
         title = "<b>" + title + "</b>";
         if ( layer->isSpatial() && layer->crs().isValid() )
         {
+          QString layerCrs = layer->crs().authid();
+          if ( !std::isnan( layer->crs().coordinateEpoch() ) )
+          {
+            layerCrs += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
+          }
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
+            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layerCrs );
           else
-            title = tr( "%1 (%2) " ).arg( title, layer->crs().authid() );
+            title = tr( "%1 (%2)" ).arg( title, layerCrs );
         }
         parts << title;
 

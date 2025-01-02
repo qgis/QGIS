@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsextentwidget.h"
+#include "moc_qgsextentwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
@@ -239,6 +240,45 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
     case Qgis::DistanceUnit::Centimeters:
     case Qgis::DistanceUnit::Millimeters:
     case Qgis::DistanceUnit::Inches:
+    case Qgis::DistanceUnit::ChainsInternational:
+    case Qgis::DistanceUnit::ChainsBritishBenoit1895A:
+    case Qgis::DistanceUnit::ChainsBritishBenoit1895B:
+    case Qgis::DistanceUnit::ChainsBritishSears1922Truncated:
+    case Qgis::DistanceUnit::ChainsBritishSears1922:
+    case Qgis::DistanceUnit::ChainsClarkes:
+    case Qgis::DistanceUnit::ChainsUSSurvey:
+    case Qgis::DistanceUnit::FeetBritish1865:
+    case Qgis::DistanceUnit::FeetBritish1936:
+    case Qgis::DistanceUnit::FeetBritishBenoit1895A:
+    case Qgis::DistanceUnit::FeetBritishBenoit1895B:
+    case Qgis::DistanceUnit::FeetBritishSears1922Truncated:
+    case Qgis::DistanceUnit::FeetBritishSears1922:
+    case Qgis::DistanceUnit::FeetClarkes:
+    case Qgis::DistanceUnit::FeetGoldCoast:
+    case Qgis::DistanceUnit::FeetIndian:
+    case Qgis::DistanceUnit::FeetIndian1937:
+    case Qgis::DistanceUnit::FeetIndian1962:
+    case Qgis::DistanceUnit::FeetIndian1975:
+    case Qgis::DistanceUnit::FeetUSSurvey:
+    case Qgis::DistanceUnit::LinksInternational:
+    case Qgis::DistanceUnit::LinksBritishBenoit1895A:
+    case Qgis::DistanceUnit::LinksBritishBenoit1895B:
+    case Qgis::DistanceUnit::LinksBritishSears1922Truncated:
+    case Qgis::DistanceUnit::LinksBritishSears1922:
+    case Qgis::DistanceUnit::LinksClarkes:
+    case Qgis::DistanceUnit::LinksUSSurvey:
+    case Qgis::DistanceUnit::YardsBritishBenoit1895A:
+    case Qgis::DistanceUnit::YardsBritishBenoit1895B:
+    case Qgis::DistanceUnit::YardsBritishSears1922Truncated:
+    case Qgis::DistanceUnit::YardsBritishSears1922:
+    case Qgis::DistanceUnit::YardsClarkes:
+    case Qgis::DistanceUnit::YardsIndian:
+    case Qgis::DistanceUnit::YardsIndian1937:
+    case Qgis::DistanceUnit::YardsIndian1962:
+    case Qgis::DistanceUnit::YardsIndian1975:
+    case Qgis::DistanceUnit::MilesUSSurvey:
+    case Qgis::DistanceUnit::Fathoms:
+    case Qgis::DistanceUnit::MetersGermanLegal:
       decimals = 4;
       break;
   }
@@ -247,10 +287,7 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   mYMinLineEdit->setText( QLocale().toString( extent.yMinimum(), 'f', decimals ) );
   mYMaxLineEdit->setText( QLocale().toString( extent.yMaximum(), 'f', decimals ) );
 
-  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( QString::number( extent.xMinimum(), 'f', decimals ),
-                      QString::number( extent.xMaximum(), 'f', decimals ),
-                      QString::number( extent.yMinimum(), 'f', decimals ),
-                      QString::number( extent.yMaximum(), 'f', decimals ) );
+  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( QString::number( extent.xMinimum(), 'f', decimals ), QString::number( extent.xMaximum(), 'f', decimals ), QString::number( extent.yMinimum(), 'f', decimals ), QString::number( extent.yMaximum(), 'f', decimals ) );
   condensed += QStringLiteral( " [%1]" ).arg( mOutputCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
   mCondensedLineEdit->setText( condensed );
 
@@ -349,14 +386,13 @@ void QgsExtentWidget::layerMenuAboutToShow()
     const QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
     QAction *act = new QAction( icon, text, mLayerMenu );
     act->setToolTip( mMapLayerModel->data( index, Qt::ToolTipRole ).toString() );
-    const QString layerId = mMapLayerModel->data( index, static_cast< int >( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
+    const QString layerId = mMapLayerModel->data( index, static_cast<int>( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
     if ( mExtentState == ProjectLayerExtent && mExtentLayer && mExtentLayer->id() == layerId )
     {
       act->setCheckable( true );
       act->setChecked( true );
     }
-    connect( act, &QAction::triggered, this, [this, layerId]
-    {
+    connect( act, &QAction::triggered, this, [this, layerId] {
       setExtentToLayerExtent( layerId );
     } );
     mLayerMenu->addAction( act );
@@ -373,7 +409,7 @@ void QgsExtentWidget::layoutMenuAboutToShow()
     const QList<QgsPrintLayout *> layouts = manager->printLayouts();
     for ( const QgsPrintLayout *layout : layouts )
     {
-      QList< QgsLayoutItemMap * > maps;
+      QList<QgsLayoutItemMap *> maps;
       layout->layoutItems( maps );
       if ( maps.empty() )
         continue;
@@ -399,10 +435,10 @@ void QgsExtentWidget::bookmarkMenuAboutToShow()
   if ( !mBookmarkModel )
     mBookmarkModel = new QgsBookmarkManagerProxyModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
 
-  QMap< QString, QMenu * > groupMenus;
+  QMap<QString, QMenu *> groupMenus;
   for ( int i = 0; i < mBookmarkModel->rowCount(); ++i )
   {
-    const QString group = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast< int >( QgsBookmarkManagerModel::CustomRole::Group ) ).toString();
+    const QString group = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Group ) ).toString();
     QMenu *destMenu = mBookmarkMenu;
     if ( !group.isEmpty() )
     {
@@ -410,12 +446,12 @@ void QgsExtentWidget::bookmarkMenuAboutToShow()
       if ( !destMenu )
       {
         destMenu = new QMenu( group, mBookmarkMenu );
-        groupMenus[ group ] = destMenu;
+        groupMenus[group] = destMenu;
       }
     }
-    QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast< int >( QgsBookmarkManagerModel::CustomRole::Name ) ).toString(), mBookmarkMenu );
-    const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast< int >( QgsBookmarkManagerModel::CustomRole::Extent ) ).value< QgsReferencedRectangle >();
-    connect( action, &QAction::triggered, this, [ = ] { setOutputExtentFromUser( extent, extent.crs() ); } );
+    QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Name ) ).toString(), mBookmarkMenu );
+    const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Extent ) ).value<QgsReferencedRectangle>();
+    connect( action, &QAction::triggered, this, [this, extent] { setOutputExtentFromUser( extent, extent.crs() ); } );
     destMenu->addAction( action );
   }
 
@@ -526,13 +562,17 @@ QgsRectangle QgsExtentWidget::outputExtent() const
 {
   bool ok;
   const double xmin = QgsDoubleValidator::toDouble( mXMinLineEdit->text(), &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
   const double ymin = QgsDoubleValidator::toDouble( mYMinLineEdit->text(), &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
   const double xmax = QgsDoubleValidator::toDouble( mXMaxLineEdit->text(), &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
   const double ymax = QgsDoubleValidator::toDouble( mYMaxLineEdit->text(), &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
@@ -546,8 +586,7 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
     mCurrentExtentButton->setVisible( true );
 
     mUseCanvasExtentAction->setVisible( true );
-    if ( drawOnCanvasOption )
-      mDrawOnCanvasAction->setVisible( true );
+    mDrawOnCanvasAction->setVisible( drawOnCanvasOption && !mBlockDrawOnCanvas );
 
     mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
     mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
@@ -627,4 +666,21 @@ void QgsExtentWidget::dropEvent( QDropEvent *event )
   }
   mCondensedLineEdit->setHighlighted( false );
   update();
+}
+
+void QgsExtentWidget::showEvent( QShowEvent * )
+{
+  if ( mFirstShow )
+  {
+    // we don't support select on canvas if the dialog is modal
+    if ( QWidget *parentWindow = window() )
+    {
+      if ( parentWindow->isModal() )
+      {
+        mBlockDrawOnCanvas = true;
+        mDrawOnCanvasAction->setVisible( false );
+      }
+    }
+    mFirstShow = false;
+  }
 }

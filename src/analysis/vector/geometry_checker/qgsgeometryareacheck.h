@@ -30,7 +30,14 @@ class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
 {
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryAreaCheck )
   public:
-    enum ResolutionMethod { MergeLongestEdge, MergeLargestArea, MergeIdenticalAttribute, Delete, NoChange };
+    enum ResolutionMethod
+    {
+      MergeLongestEdge,
+      MergeLargestArea,
+      MergeIdenticalAttribute,
+      Delete,
+      NoChange
+    };
 
     QgsGeometryAreaCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )
@@ -43,14 +50,14 @@ class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() {return {Qgis::GeometryType::Polygon}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
-    static QString factoryDescription() { return tr( "Minimal area" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryAreaCheck" ); }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
   private:
+    static QString factoryId() { return QStringLiteral( "QgsGeometryAreaCheck" ); }
+    static QString factoryDescription() { return tr( "Minimal area" ); }
     virtual bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const;
     bool mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const;
 

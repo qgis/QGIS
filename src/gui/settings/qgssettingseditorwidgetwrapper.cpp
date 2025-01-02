@@ -15,10 +15,12 @@
 
 
 #include "qgssettingseditorwidgetwrapper.h"
+#include "moc_qgssettingseditorwidgetwrapper.cpp"
 
 #include "qgslogger.h"
 #include "qgssettingsentry.h"
 
+#include <QDialog>
 #include <QWidget>
 
 
@@ -55,7 +57,24 @@ bool QgsSettingsEditorWidgetWrapper::configureEditor( QWidget *editor, const Qgs
   bool ok = configureEditorPrivate( editor, setting );
 
   if ( ok )
+  {
     editor->setProperty( "SETTING-EDITOR-WIDGET-WRAPPER", QVariant::fromValue( this ) );
-
+    setWidgetFromSetting();
+  }
   return ok;
+}
+
+void QgsSettingsEditorWidgetWrapper::configureAutomaticUpdate( QDialog *dialog )
+{
+  setWidgetFromSetting();
+  if ( dialog )
+  {
+    QObject::connect( dialog, &QDialog::accepted, this, [=]() {
+      setSettingFromWidget();
+    } );
+  }
+  else
+  {
+    enableAutomaticUpdatePrivate();
+  }
 }

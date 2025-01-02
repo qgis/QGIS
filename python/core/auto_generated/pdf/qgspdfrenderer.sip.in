@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/pdf/qgspdfrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -74,5 +74,5 @@ The ``painterRect`` argument specifies the target rectangle for the PDF page in
  *                                                                      *
  * src/core/pdf/qgspdfrenderer.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

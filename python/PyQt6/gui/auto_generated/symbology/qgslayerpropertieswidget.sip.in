@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/symbology/qgslayerpropertieswidget.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -12,12 +12,17 @@
 
 class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
+%Docstring(signature="appended")
+A widget which allows configuration of the properties of a single :py:class:`QgsSymbolLayer`.
+
+This widget includes a combobox box for selection of the symbol layer type, and a panel for
+showing configuration properties for the selected symbol layer type.
+%End
 
 %TypeHeaderCode
 #include "qgslayerpropertieswidget.h"
 %End
   public:
-
     QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayerPropertiesWidget.
@@ -58,8 +63,16 @@ widgets and not open dialogs
     void emitSignalChanged();
 
   signals:
+
     void changed();
-    void changeLayer( QgsSymbolLayer * );
+%Docstring
+Emitted when the symbol layer configuration is changed in the widget.
+%End
+
+    void changeLayer( QgsSymbolLayer *layer );
+%Docstring
+Emitted when the symbol ``layer`` is changed in the widget.
+%End
 
   protected:
     void populateLayerTypes();
@@ -85,5 +98,5 @@ and help text for the associated property.
  *                                                                      *
  * src/gui/symbology/qgslayerpropertieswidget.h                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/layout/qgslayoutviewtooladditem.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -18,7 +18,6 @@ Layout view tool for adding items to a layout.
 #include "qgslayoutviewtooladditem.h"
 %End
   public:
-
     QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructs a QgsLayoutViewToolAddItem for the given layout ``view``.
@@ -87,5 +86,5 @@ Emitted when an item has been created using the tool.
  *                                                                      *
  * src/gui/layout/qgslayoutviewtooladditem.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

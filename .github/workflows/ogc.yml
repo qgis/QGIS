@@ -56,7 +56,7 @@ jobs:
 
       - name: Build Docker Container
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           context: .ci/ogc

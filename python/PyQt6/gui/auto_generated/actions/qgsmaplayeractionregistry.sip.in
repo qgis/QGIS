@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/actions/qgsmaplayeractionregistry.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ This class tracks map layer actions.
 #include "qgsmaplayeractionregistry.h"
 %End
   public:
-
     QgsMapLayerActionRegistry( QObject *parent = 0 );
 %Docstring
 Constructor for QgsMapLayerActionRegistry.
@@ -61,7 +60,6 @@ Returns the default action for a layer
 
   protected:
 
-
   signals:
     void changed();
 %Docstring
@@ -75,5 +73,5 @@ Triggered when an action is added or removed from the registry
  *                                                                      *
  * src/gui/actions/qgsmaplayeractionregistry.h                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/scalebar/qgsnumericscalebarrenderer.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -20,9 +20,6 @@ A scale bar style that draws text in the form of '1:XXXXX'.
   public:
 
     QgsNumericScaleBarRenderer();
-%Docstring
-Constructor for QgsNumericScaleBarRenderer.
-%End
 
     virtual QString id() const;
 
@@ -43,8 +40,14 @@ Constructor for QgsNumericScaleBarRenderer.
                              const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
- virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const /Deprecated/;
+ virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const /Deprecated="Since 3.14. Use the one with render context instead."/;
 
+%Docstring
+
+.. deprecated:: 3.14
+
+   Use the one with render context instead.
+%End
 
 };
 
@@ -53,5 +56,5 @@ Constructor for QgsNumericScaleBarRenderer.
  *                                                                      *
  * src/core/scalebar/qgsnumericscalebarrenderer.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,14 +3,14 @@
  *                                                                      *
  * src/analysis/interpolation/qgstininterpolator.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
 
 
 
-class QgsTinInterpolator: QgsInterpolator
+class QgsTinInterpolator : QgsInterpolator
 {
 %Docstring(signature="appended")
 Interpolation in a triangular irregular network
@@ -20,7 +20,6 @@ Interpolation in a triangular irregular network
 #include "qgstininterpolator.h"
 %End
   public:
-
     enum TinInterpolation /BaseType=IntEnum/
     {
       Linear,
@@ -64,5 +63,5 @@ those returned by :py:func:`~QgsTinInterpolator.triangulationFields`.
  *                                                                      *
  * src/analysis/interpolation/qgstininterpolator.h                      *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsapplication.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -265,9 +265,23 @@ Returns the path to the settings directory in user's home dir
 Returns the path to the user qgis.db file.
 %End
 
-    static QString qgisAuthDatabaseFilePath();
+ static QString qgisAuthDatabaseFilePath() /Deprecated="Since 3.30. Use qgisAuthDatabaseUri() instead."/;
 %Docstring
 Returns the path to the user authentication database file: qgis-auth.db.
+
+.. deprecated:: 3.30
+
+   Use :py:func:`~QgsApplication.qgisAuthDatabaseUri` instead.
+%End
+
+    static QString qgisAuthDatabaseUri();
+%Docstring
+Returns the URI to the user authentication database.
+The URI is be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
+where DATABASE is just the path to the file for SQLite databases. If DRIVER is omitted, PSQLITE is assumed.
+Optional SCHEMA can be specified as a query parameter.
+
+.. versionadded:: 3.40
 %End
 
     static QString splashPath();
@@ -684,14 +698,15 @@ Returns the application's task manager, used for managing application
 wide background task handling.
 %End
 
- static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference,Deprecated/;
+ static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference,Deprecated="Since 3.30. Use QgsSettings.treeRoot() instead."/;
 %Docstring
 Returns the application's settings registry, used for managing application settings.
 
 .. versionadded:: 3.20
 
-.. deprecated:: QGIS 3.30
-   use :py:func:`QgsSettings.treeRoot()` instead
+.. deprecated:: 3.30
+
+   Use :py:func:`QgsSettings.treeRoot()` instead.
 %End
 
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
@@ -885,6 +900,13 @@ Returns the application's authentication manager instance
 .. seealso:: :py:func:`initQgis`
 %End
 
+    static QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry();
+%Docstring
+Returns the application's authentication configuration storage registry
+
+.. versionadded:: 3.40
+%End
+
     static QgsProcessingRegistry *processingRegistry();
 %Docstring
 Returns the application's processing registry, used for managing processing providers,
@@ -945,6 +967,13 @@ Gets the registry of available scalebar renderers.
 .. versionadded:: 3.14
 %End
 
+    static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() /KeepReference/;
+%Docstring
+Gets the registry of available labeling engine rules.
+
+.. versionadded:: 3.40
+%End
+
     static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;
 %Docstring
 Returns registry of available project storage implementations.
@@ -966,6 +995,13 @@ Returns registry of available external storage implementations.
 .. versionadded:: 3.20
 %End
 
+    static QgsProfileSourceRegistry *profileSourceRegistry() /KeepReference/;
+%Docstring
+Returns registry of available profile source implementations.
+
+.. versionadded:: 3.38
+%End
+
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
 %Docstring
 Returns the registry of data repositories
@@ -979,17 +1015,32 @@ differently across work stations.
 
     static QString nullRepresentation();
 %Docstring
-This string is used to represent the value `NULL` throughout QGIS.
+Returns the string used to represent the value `NULL` throughout QGIS.
 
-In general, when passing values around, prefer to use a null QVariant
-`QVariant( field.type() )` or `QVariant( QVariant.Int )`. This value
-should only be used in the final presentation step when showing values
-in a widget or sending it to a web browser.
+.. note::
+
+   In general, when passing values around, prefer to use an invalid QVariant.
+   The :py:func:`~QgsApplication.nullRepresentation` value should only be used in the final presentation step when showing values
+   in a widget or sending it to a web browser.
+
+.. seealso:: :py:func:`setNullRepresentation`
+
+.. seealso:: :py:func:`nullRepresentationChanged`
 %End
 
     static void setNullRepresentation( const QString &nullRepresentation );
 %Docstring
-\copydoc :py:func:`~QgsApplication.nullRepresentation`
+Sets the string used to represent the value `NULL` throughout QGIS.
+
+.. note::
+
+   In general, when passing values around, prefer to use an invalid QVariant.
+   The :py:func:`~QgsApplication.nullRepresentation` value should only be used in the final presentation step when showing values
+   in a widget or sending it to a web browser.
+
+.. seealso:: :py:func:`nullRepresentation`
+
+.. seealso:: :py:func:`nullRepresentationChanged`
 %End
 
     static QVariantMap customVariables();
@@ -1073,10 +1124,13 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 Emitted whenever a custom global variable changes.
 %End
 
-
     void nullRepresentationChanged();
 %Docstring
-\copydoc :py:func:`~QgsApplication.nullRepresentation`
+Emitted when the string representing the `NULL` value is changed.
+
+.. seealso:: :py:func:`setNullRepresentation`
+
+.. seealso:: :py:func:`nullRepresentation`
 %End
 
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );
@@ -1104,5 +1158,5 @@ Emitted when project locale has been changed.
  *                                                                      *
  * src/core/qgsapplication.h                                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

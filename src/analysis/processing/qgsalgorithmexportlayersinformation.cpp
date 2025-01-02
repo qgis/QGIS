@@ -64,7 +64,7 @@ QgsExportLayersInformationAlgorithm *QgsExportLayersInformationAlgorithm::create
 
 bool QgsExportLayersInformationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   for ( QgsMapLayer *layer : layers )
   {
     if ( !mCrs.isValid() )
@@ -94,25 +94,24 @@ bool QgsExportLayersInformationAlgorithm::prepareAlgorithm( const QVariantMap &p
 QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFields outFields;
-  outFields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "source" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "crs" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "provider" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "file_path" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "layer_name" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "subset" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "abstract" ), QVariant::String ) );
-  outFields.append( QgsField( QStringLiteral( "attribution" ), QVariant::String ) );
+  outFields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "source" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "crs" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "provider" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "file_path" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "layer_name" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "subset" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "abstract" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( QStringLiteral( "attribution" ), QMetaType::Type::QString ) );
 
   QString outputDest;
-  std::unique_ptr< QgsFeatureSink > outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields,
-      Qgis::WkbType::Polygon, mCrs ) );
+  std::unique_ptr<QgsFeatureSink> outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields, Qgis::WkbType::Polygon, mCrs ) );
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
   const double step = layers.size() > 0 ? 100.0 / layers.size() : 1;
   int i = 0;
-  for ( const std::unique_ptr< QgsMapLayer > &layer : mLayers )
+  for ( const std::unique_ptr<QgsMapLayer> &layer : mLayers )
   {
     i++;
     if ( feedback->isCanceled() )
@@ -132,9 +131,9 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     {
       const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->dataProvider()->name(), layer->source() );
       attributes << layer->dataProvider()->name()
-                 << parts[ QStringLiteral( "path" ) ]
-                 << parts[ QStringLiteral( "layerName" ) ]
-                 << parts[ QStringLiteral( "subset" ) ];
+                 << parts[QStringLiteral( "path" )]
+                 << parts[QStringLiteral( "layerName" )]
+                 << parts[QStringLiteral( "subset" )];
     }
     else
     {
@@ -167,6 +166,8 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     if ( !outputSink->addFeature( feature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
+
+  outputSink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), outputDest );

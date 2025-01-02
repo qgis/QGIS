@@ -50,8 +50,8 @@ class TestQgsDxfExport : public QObject
   private slots:
     void initTestCase();
     void cleanupTestCase();
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void init();    // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
     void testPoints();
     void testPointsDataDefinedSizeAngle();
     void testPointsDataDefinedSizeSymbol();
@@ -124,7 +124,7 @@ void TestQgsDxfExport::init()
   mPointLayerNoSymbols = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( mPointLayerNoSymbols->isValid() );
   mPointLayerNoSymbols->setRenderer( new QgsNullSymbolRenderer() );
-  mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with spaces'" ), QgsField( QStringLiteral( "Spacestest" ), QVariant::String ) );
+  mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with spaces'" ), QgsField( QStringLiteral( "Spacestest" ), QMetaType::Type::QString ) );
   QgsProject::instance()->addMapLayer( mPointLayerNoSymbols );
 
   //Point layer with geometry generator symbolizer
@@ -147,7 +147,7 @@ void TestQgsDxfExport::init()
   QgsProject::instance()->addMapLayer( mPointLayerGeometryGenerator );
 
   // Point layer with data-defined size and angle
-  mPointLayerDataDefinedSizeAngle = new  QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  mPointLayerDataDefinedSizeAngle = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   mPointLayerDataDefinedSizeAngle->setSubsetString( QStringLiteral( "\"Staff\" = 6" ) );
   QVERIFY( mPointLayerDataDefinedSizeAngle );
   QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Triangle, 10.0, 0 );
@@ -162,7 +162,7 @@ void TestQgsDxfExport::init()
   QgsProject::instance()->addMapLayer( mPointLayerDataDefinedSizeAngle );
 
   // Point layer with data-defined size and data defined svg symbol
-  mPointLayerDataDefinedSizeSymbol = new  QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  mPointLayerDataDefinedSizeSymbol = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( mPointLayerDataDefinedSizeSymbol );
   QgsSvgMarkerSymbolLayer *svgSymbolLayer = new QgsSvgMarkerSymbolLayer( QStringLiteral( "symbol.svg" ) );
   QgsPropertyCollection ddProperties;
@@ -203,7 +203,7 @@ void TestQgsDxfExport::cleanup()
 void TestQgsDxfExport::testPoints()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -224,7 +224,7 @@ void TestQgsDxfExport::testPoints()
   QVERIFY( !fileContainsText( file, QStringLiteral( "nan.0" ) ) );
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -233,7 +233,7 @@ void TestQgsDxfExport::testPoints()
 void TestQgsDxfExport::testPointsDataDefinedSizeAngle()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerDataDefinedSizeAngle ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerDataDefinedSizeAngle ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -259,7 +259,7 @@ void TestQgsDxfExport::testPointsDataDefinedSizeAngle()
 void TestQgsDxfExport::testPointsDataDefinedSizeSymbol()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerDataDefinedSizeSymbol, -1, true, -1 ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerDataDefinedSizeSymbol, -1, true, -1 ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -289,7 +289,7 @@ void TestQgsDxfExport::testPointsDataDefinedSizeSymbol()
 void TestQgsDxfExport::testPointsOverriddenName()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1, QStringLiteral( "My Point Layer" ) ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1, QStringLiteral( "My Point Layer" ) ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -311,7 +311,7 @@ void TestQgsDxfExport::testPointsOverriddenName()
   QVERIFY( !fileContainsText( file, mPointLayer->name() ) ); // "points"
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -323,7 +323,7 @@ void TestQgsDxfExport::testPointsOverriddenName()
 void TestQgsDxfExport::testLines()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mLineLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mLineLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -342,7 +342,7 @@ void TestQgsDxfExport::testLines()
   dxfFile.close();
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mLineLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
@@ -351,7 +351,7 @@ void TestQgsDxfExport::testLines()
 void TestQgsDxfExport::testPolygons()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -370,7 +370,7 @@ void TestQgsDxfExport::testPolygons()
   dxfFile.close();
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 12L );
   QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
@@ -379,12 +379,12 @@ void TestQgsDxfExport::testPolygons()
 void TestQgsDxfExport::testMultiSurface()
 {
   QgsDxfExport d;
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiSurface" ), QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiSurface" ), QString(), QStringLiteral( "memory" ) );
   const QgsGeometry g = QgsGeometry::fromWkt( "MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)))" );
   QgsFeature f;
   f.setGeometry( g );
   vl->dataProvider()->addFeatures( QgsFeatureList() << f );
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -403,7 +403,7 @@ void TestQgsDxfExport::testMultiSurface()
   dxfFile.close();
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 1L );
   QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
@@ -414,7 +414,7 @@ void TestQgsDxfExport::testMultiSurface()
 
 void TestQgsDxfExport::testMapTheme()
 {
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineString?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
   const QgsGeometry g = QgsGeometry::fromWkt( "LineString(2600000 1280000, 2680000 1280000, 2680000 1285000, 2600000 1285000, 2600000 1280000)" );
   QgsFeature f;
   f.setGeometry( g );
@@ -438,7 +438,7 @@ void TestQgsDxfExport::testMapTheme()
   dynamic_cast<QgsSingleSymbolRenderer *>( vl->renderer() )->symbol()->setColor( QColor( 255, 0, 0 ) );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
 
   QgsMapSettings mapSettings;
@@ -461,8 +461,10 @@ void TestQgsDxfExport::testMapTheme()
   QString debugInfo;
   // Verify that the style override worked by checking for green line color
   QVERIFY2( fileContainsText( file, "CONTINUOUS\n"
-                              " 62\n"
-                              "     3", &debugInfo ), debugInfo.toUtf8().constData() );
+                                    " 62\n"
+                                    "     3",
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testMtext()
@@ -486,7 +488,7 @@ void TestQgsDxfExport::testMtext()
   layer->setLabelsEnabled( true );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( layer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( layer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -507,31 +509,33 @@ void TestQgsDxfExport::testMtext()
 
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "MTEXT\n"
-                              "  5\n"
-                              "**no check**\n"
-                              "100\n"
-                              "AcDbEntity\n"
-                              "100\n"
-                              "AcDbMText\n"
-                              "  8\n"
-                              "points\n"
-                              "420\n"
-                              "**no check**\n"
-                              " 10\n"
-                              "**no check**\n"
-                              " 20\n"
-                              "**no check**\n"
-                              "  1\n"
-                              "REGEX ^\\\\fQGIS Vera Sans\\|i0\\|b1;\\\\H3\\.\\d+;Biplane\n"
-                              " 50\n"
-                              "0.0\n"
-                              " 41\n"
-                              "**no check**\n"
-                              " 71\n"
-                              "     7\n"
-                              "  7\n"
-                              "STANDARD\n"
-                              "  0", &debugInfo ), debugInfo.toUtf8().constData() );
+                                    "  5\n"
+                                    "**no check**\n"
+                                    "100\n"
+                                    "AcDbEntity\n"
+                                    "100\n"
+                                    "AcDbMText\n"
+                                    "  8\n"
+                                    "points\n"
+                                    "420\n"
+                                    "**no check**\n"
+                                    " 10\n"
+                                    "**no check**\n"
+                                    " 20\n"
+                                    "**no check**\n"
+                                    "  1\n"
+                                    "REGEX ^\\\\fQGIS Vera Sans\\|i0\\|b1;\\\\H3\\.\\d+;Biplane\n"
+                                    " 50\n"
+                                    "0.0\n"
+                                    " 41\n"
+                                    "**no check**\n"
+                                    " 71\n"
+                                    "     7\n"
+                                    "  7\n"
+                                    "STANDARD\n"
+                                    "  0",
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 
 
   QgsProject::instance()->removeMapLayer( layer );
@@ -548,17 +552,17 @@ void TestQgsDxfExport::testMtext_data()
   QVERIFY( pointLayer->isValid() );
 
   QTest::newRow( "MText" )
-      << pointLayer
-      << QStringLiteral( "mtext_dxf" );
+    << pointLayer
+    << QStringLiteral( "mtext_dxf" );
 
   QgsVectorLayer *pointLayerNoSymbols = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointLayerNoSymbols->isValid() );
   pointLayerNoSymbols->setRenderer( new QgsNullSymbolRenderer() );
-  pointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with spaces'" ), QgsField( QStringLiteral( "Spacestest" ), QVariant::String ) );
+  pointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with spaces'" ), QgsField( QStringLiteral( "Spacestest" ), QMetaType::Type::QString ) );
 
   QTest::newRow( "MText No Symbology" )
-      << pointLayerNoSymbols
-      << QStringLiteral( "mtext_no_symbology_dxf" );
+    << pointLayerNoSymbols
+    << QStringLiteral( "mtext_no_symbology_dxf" );
 }
 
 void TestQgsDxfExport::testMTextEscapeSpaces()
@@ -575,7 +579,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   mPointLayerNoSymbols->setLabelsEnabled( true );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -599,7 +603,7 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
 
 void TestQgsDxfExport::testMTextEscapeLineBreaks()
 {
-  const int field = mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with ' || char(13) || char(10) || 'line break'" ), QgsField( QStringLiteral( "linebreaktest" ), QVariant::String ) );
+  const int field = mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with ' || char(13) || char(10) || 'line break'" ), QgsField( QStringLiteral( "linebreaktest" ), QMetaType::Type::QString ) );
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "linebreaktest" );
@@ -613,7 +617,7 @@ void TestQgsDxfExport::testMTextEscapeLineBreaks()
   mPointLayerNoSymbols->setLabelsEnabled( true );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -653,7 +657,7 @@ void TestQgsDxfExport::testText()
   mPointLayer->setLabelsEnabled( true );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -675,35 +679,37 @@ void TestQgsDxfExport::testText()
 
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "TEXT\n"
-                              "  5\n"
-                              "**no check**\n"
-                              "100\n"
-                              "AcDbEntity\n"
-                              "100\n"
-                              "AcDbText\n"
-                              "  8\n"
-                              "points\n"
-                              "420\n"
-                              "**no check**\n"
-                              " 10\n"
-                              "**no check**\n"
-                              " 20\n"
-                              "**no check**\n"
-                              " 40\n"
-                              "**no check**\n"
-                              "  1\n"
-                              "Biplane\n"
-                              " 50\n"
-                              "0.0\n"
-                              "  7\n"
-                              "STANDARD\n"
-                              "100\n"
-                              "AcDbText", &debugInfo ), debugInfo.toUtf8().constData() );
+                                    "  5\n"
+                                    "**no check**\n"
+                                    "100\n"
+                                    "AcDbEntity\n"
+                                    "100\n"
+                                    "AcDbText\n"
+                                    "  8\n"
+                                    "points\n"
+                                    "420\n"
+                                    "**no check**\n"
+                                    " 10\n"
+                                    "**no check**\n"
+                                    " 20\n"
+                                    "**no check**\n"
+                                    " 40\n"
+                                    "**no check**\n"
+                                    "  1\n"
+                                    "Biplane\n"
+                                    " 50\n"
+                                    "0.0\n"
+                                    "  7\n"
+                                    "STANDARD\n"
+                                    "100\n"
+                                    "AcDbText",
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testTextAngle()
 {
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=ori:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:2056&field=ori:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   const QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
   const QgsGeometry g2 = QgsGeometry::fromWkt( "Point(2684692.322 1292192.534)" );
   QgsFeature f( vl->fields() );
@@ -732,7 +738,7 @@ void TestQgsDxfExport::testTextAngle()
   vl->setLabelsEnabled( true );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -754,30 +760,32 @@ void TestQgsDxfExport::testTextAngle()
 
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "TEXT\n"
-                              "  5\n"
-                              "**no check**\n"
-                              "100\n"
-                              "AcDbEntity\n"
-                              "100\n"
-                              "AcDbText\n"
-                              "  8\n"
-                              "vl\n"
-                              "420\n"
-                              "**no check**\n"
-                              " 10\n"
-                              "**no check**\n"
-                              " 20\n"
-                              "**no check**\n"
-                              " 40\n"
-                              "**no check**\n"
-                              "  1\n"
-                              "40\n"
-                              " 50\n"
-                              "320.0\n"
-                              "  7\n"
-                              "STANDARD\n"
-                              "100\n"
-                              "AcDbText", &debugInfo ), debugInfo.toUtf8().constData() );
+                                    "  5\n"
+                                    "**no check**\n"
+                                    "100\n"
+                                    "AcDbEntity\n"
+                                    "100\n"
+                                    "AcDbText\n"
+                                    "  8\n"
+                                    "vl\n"
+                                    "420\n"
+                                    "**no check**\n"
+                                    " 10\n"
+                                    "**no check**\n"
+                                    " 20\n"
+                                    "**no check**\n"
+                                    " 40\n"
+                                    "**no check**\n"
+                                    "  1\n"
+                                    "40\n"
+                                    " 50\n"
+                                    "320.0\n"
+                                    "  7\n"
+                                    "STANDARD\n"
+                                    "100\n"
+                                    "AcDbText",
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testTextAlign()
@@ -812,7 +820,7 @@ void TestQgsDxfExport::testTextAlign()
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   const QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
   QgsFeature f( vl->fields() );
   f.setGeometry( g );
@@ -831,7 +839,7 @@ void TestQgsDxfExport::testTextAlign()
   mapSettings.setDestinationCrs( vl->crs() );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
@@ -844,38 +852,41 @@ void TestQgsDxfExport::testTextAlign()
   dxfFile.close();
   QString debugInfo;
   QVERIFY2( fileContainsText( file, QStringLiteral( "TEXT\n"
-                              "  5\n"
-                              "**no check**\n"
-                              "100\n"
-                              "AcDbEntity\n"
-                              "100\n"
-                              "AcDbText\n"
-                              "  8\n"
-                              "vl\n"
-                              "420\n"
-                              "**no check**\n"
-                              " 10\n"
-                              "REGEX ^2684680\\.39\\d*\n"
-                              " 20\n"
-                              "REGEX ^1292183\\.52\\d*\n"
-                              " 11\n"
-                              "REGEX ^2684680\\.39\\d*\n"
-                              " 21\n"
-                              "REGEX ^1292183\\.52\\d*\n"
-                              " 40\n"
-                              "**no check**\n"
-                              "  1\n"
-                              "--- MY TEXT ---\n"
-                              " 50\n"
-                              "0.0\n"
-                              " 72\n"
-                              "     %1\n"
-                              "  7\n"
-                              "STANDARD\n"
-                              "100\n"
-                              "AcDbText\n"
-                              " 73\n"
-                              "     %2" ).arg( QString::number( static_cast<int>( dxfHali ) ), QString::number( static_cast<int>( dxfVali ) ) ), &debugInfo ), debugInfo.toUtf8().constData() );
+                                                    "  5\n"
+                                                    "**no check**\n"
+                                                    "100\n"
+                                                    "AcDbEntity\n"
+                                                    "100\n"
+                                                    "AcDbText\n"
+                                                    "  8\n"
+                                                    "vl\n"
+                                                    "420\n"
+                                                    "**no check**\n"
+                                                    " 10\n"
+                                                    "REGEX ^2684680\\.39\\d*\n"
+                                                    " 20\n"
+                                                    "REGEX ^1292183\\.52\\d*\n"
+                                                    " 11\n"
+                                                    "REGEX ^2684680\\.39\\d*\n"
+                                                    " 21\n"
+                                                    "REGEX ^1292183\\.52\\d*\n"
+                                                    " 40\n"
+                                                    "**no check**\n"
+                                                    "  1\n"
+                                                    "--- MY TEXT ---\n"
+                                                    " 50\n"
+                                                    "0.0\n"
+                                                    " 72\n"
+                                                    "     %1\n"
+                                                    "  7\n"
+                                                    "STANDARD\n"
+                                                    "100\n"
+                                                    "AcDbText\n"
+                                                    " 73\n"
+                                                    "     %2" )
+                                      .arg( QString::number( static_cast<int>( dxfHali ) ), QString::number( static_cast<int>( dxfVali ) ) ),
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testTextAlign_data()
@@ -886,46 +897,46 @@ void TestQgsDxfExport::testTextAlign_data()
   QTest::addColumn<QString>( "vali" );
 
   QTest::newRow( "Align left bottom" )
-      << QgsDxfExport::HAlign::HLeft
-      << QgsDxfExport::VAlign::VBottom
-      << QStringLiteral( "Left" )
-      << QStringLiteral( "Bottom" );
+    << QgsDxfExport::HAlign::HLeft
+    << QgsDxfExport::VAlign::VBottom
+    << QStringLiteral( "Left" )
+    << QStringLiteral( "Bottom" );
 
   QTest::newRow( "Align center bottom" )
-      << QgsDxfExport::HAlign::HCenter
-      << QgsDxfExport::VAlign::VBottom
-      << QStringLiteral( "Center" )
-      << QStringLiteral( "Bottom" );
+    << QgsDxfExport::HAlign::HCenter
+    << QgsDxfExport::VAlign::VBottom
+    << QStringLiteral( "Center" )
+    << QStringLiteral( "Bottom" );
 
   QTest::newRow( "Align right bottom" )
-      << QgsDxfExport::HAlign::HRight
-      << QgsDxfExport::VAlign::VBottom
-      << QStringLiteral( "Right" )
-      << QStringLiteral( "Bottom" );
+    << QgsDxfExport::HAlign::HRight
+    << QgsDxfExport::VAlign::VBottom
+    << QStringLiteral( "Right" )
+    << QStringLiteral( "Bottom" );
 
   QTest::newRow( "Align left top" )
-      << QgsDxfExport::HAlign::HLeft
-      << QgsDxfExport::VAlign::VTop
-      << QStringLiteral( "Left" )
-      << QStringLiteral( "Top" );
+    << QgsDxfExport::HAlign::HLeft
+    << QgsDxfExport::VAlign::VTop
+    << QStringLiteral( "Left" )
+    << QStringLiteral( "Top" );
 
   QTest::newRow( "Align right cap" )
-      << QgsDxfExport::HAlign::HRight
-      << QgsDxfExport::VAlign::VTop
-      << QStringLiteral( "Right" )
-      << QStringLiteral( "Cap" );
+    << QgsDxfExport::HAlign::HRight
+    << QgsDxfExport::VAlign::VTop
+    << QStringLiteral( "Right" )
+    << QStringLiteral( "Cap" );
 
   QTest::newRow( "Align left base" )
-      << QgsDxfExport::HAlign::HLeft
-      << QgsDxfExport::VAlign::VBaseLine
-      << QStringLiteral( "Left" )
-      << QStringLiteral( "Base" );
+    << QgsDxfExport::HAlign::HLeft
+    << QgsDxfExport::VAlign::VBaseLine
+    << QStringLiteral( "Left" )
+    << QStringLiteral( "Base" );
 
   QTest::newRow( "Align center half" )
-      << QgsDxfExport::HAlign::HCenter
-      << QgsDxfExport::VAlign::VMiddle
-      << QStringLiteral( "Center" )
-      << QStringLiteral( "Half" );
+    << QgsDxfExport::HAlign::HCenter
+    << QgsDxfExport::VAlign::VMiddle
+    << QStringLiteral( "Center" )
+    << QStringLiteral( "Half" );
 }
 
 void TestQgsDxfExport::testTextQuadrant()
@@ -953,7 +964,7 @@ void TestQgsDxfExport::testTextQuadrant()
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   const QgsGeometry g = QgsGeometry::fromWkt( "Point(2685025.687 1292145.297)" );
   QgsFeature f( vl->fields() );
   f.setGeometry( g );
@@ -972,7 +983,7 @@ void TestQgsDxfExport::testTextQuadrant()
   mapSettings.setDestinationCrs( vl->crs() );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setMapSettings( mapSettings );
   d.setSymbologyScale( 1000 );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
@@ -985,38 +996,42 @@ void TestQgsDxfExport::testTextQuadrant()
   dxfFile.close();
   QString debugInfo;
   QVERIFY2( fileContainsText( file, QStringLiteral( "TEXT\n"
-                              "  5\n"
-                              "**no check**\n"
-                              "100\n"
-                              "AcDbEntity\n"
-                              "100\n"
-                              "AcDbText\n"
-                              "  8\n"
-                              "vl\n"
-                              "420\n"
-                              "**no check**\n"
-                              " 10\n"
-                              "REGEX ^2685025\\.68\\d*\n"
-                              " 20\n"
-                              "REGEX ^1292145\\.29\\d*\n"
-                              " 11\n"
-                              "REGEX ^2685025\\.68\\d*\n"
-                              " 21\n"
-                              "REGEX ^1292145\\.29\\d*\n"
-                              " 40\n"
-                              "**no check**\n"
-                              "  1\n"
-                              "182\n"
-                              " 50\n"
-                              "%1\n"
-                              " 72\n"
-                              "     %2\n"
-                              "  7\n"
-                              "STANDARD\n"
-                              "100\n"
-                              "AcDbText\n"
-                              " 73\n"
-                              "     %3" ).arg( QString::number( fmod( 360 - angle, 360 ), 'f', 1 ) ).arg( QString::number( static_cast<int>( dxfHali ) ), QString::number( static_cast<int>( dxfVali ) ) ), &debugInfo ), debugInfo.toUtf8().constData() );
+                                                    "  5\n"
+                                                    "**no check**\n"
+                                                    "100\n"
+                                                    "AcDbEntity\n"
+                                                    "100\n"
+                                                    "AcDbText\n"
+                                                    "  8\n"
+                                                    "vl\n"
+                                                    "420\n"
+                                                    "**no check**\n"
+                                                    " 10\n"
+                                                    "REGEX ^2685025\\.68\\d*\n"
+                                                    " 20\n"
+                                                    "REGEX ^1292145\\.29\\d*\n"
+                                                    " 11\n"
+                                                    "REGEX ^2685025\\.68\\d*\n"
+                                                    " 21\n"
+                                                    "REGEX ^1292145\\.29\\d*\n"
+                                                    " 40\n"
+                                                    "**no check**\n"
+                                                    "  1\n"
+                                                    "182\n"
+                                                    " 50\n"
+                                                    "%1\n"
+                                                    " 72\n"
+                                                    "     %2\n"
+                                                    "  7\n"
+                                                    "STANDARD\n"
+                                                    "100\n"
+                                                    "AcDbText\n"
+                                                    " 73\n"
+                                                    "     %3" )
+                                      .arg( QString::number( fmod( 360 - angle, 360 ), 'f', 1 ) )
+                                      .arg( QString::number( static_cast<int>( dxfHali ) ), QString::number( static_cast<int>( dxfVali ) ) ),
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testTextQuadrant_data()
@@ -1027,70 +1042,70 @@ void TestQgsDxfExport::testTextQuadrant_data()
   QTest::addColumn<double>( "angle" );
 
   QTest::newRow( "Above Left, no rotation" )
-      << 0
-      << QgsDxfExport::HAlign::HRight
-      << QgsDxfExport::VAlign::VBottom
-      << 0.0;
+    << 0
+    << QgsDxfExport::HAlign::HRight
+    << QgsDxfExport::VAlign::VBottom
+    << 0.0;
 
   QTest::newRow( "Above, no rotation" )
-      << 1
-      << QgsDxfExport::HAlign::HCenter
-      << QgsDxfExport::VAlign::VBottom
-      << 0.0;
+    << 1
+    << QgsDxfExport::HAlign::HCenter
+    << QgsDxfExport::VAlign::VBottom
+    << 0.0;
 
   QTest::newRow( "Above Right, no rotation" )
-      << 2
-      << QgsDxfExport::HAlign::HLeft
-      << QgsDxfExport::VAlign::VBottom
-      << 0.0;
+    << 2
+    << QgsDxfExport::HAlign::HLeft
+    << QgsDxfExport::VAlign::VBottom
+    << 0.0;
 
   QTest::newRow( "Left, no rotation" )
-      << 3
-      << QgsDxfExport::HAlign::HRight
-      << QgsDxfExport::VAlign::VMiddle
-      << 0.0;
+    << 3
+    << QgsDxfExport::HAlign::HRight
+    << QgsDxfExport::VAlign::VMiddle
+    << 0.0;
 
   QTest::newRow( "Over, no rotation" )
-      << 4
-      << QgsDxfExport::HAlign::HCenter
-      << QgsDxfExport::VAlign::VMiddle
-      << 0.0;
+    << 4
+    << QgsDxfExport::HAlign::HCenter
+    << QgsDxfExport::VAlign::VMiddle
+    << 0.0;
 
   QTest::newRow( "Right, no rotation" )
-      << 5
-      << QgsDxfExport::HAlign::HLeft
-      << QgsDxfExport::VAlign::VMiddle
-      << 0.0;
+    << 5
+    << QgsDxfExport::HAlign::HLeft
+    << QgsDxfExport::VAlign::VMiddle
+    << 0.0;
 
   QTest::newRow( "Below Left, no rotation" )
-      << 6
-      << QgsDxfExport::HAlign::HRight
-      << QgsDxfExport::VAlign::VTop
-      << 0.0;
+    << 6
+    << QgsDxfExport::HAlign::HRight
+    << QgsDxfExport::VAlign::VTop
+    << 0.0;
 
   QTest::newRow( "Below, no rotation" )
-      << 7
-      << QgsDxfExport::HAlign::HCenter
-      << QgsDxfExport::VAlign::VTop
-      << 0.0;
+    << 7
+    << QgsDxfExport::HAlign::HCenter
+    << QgsDxfExport::VAlign::VTop
+    << 0.0;
 
   QTest::newRow( "Below Right, no rotation" )
-      << 8
-      << QgsDxfExport::HAlign::HLeft
-      << QgsDxfExport::VAlign::VTop
-      << 0.0;
+    << 8
+    << QgsDxfExport::HAlign::HLeft
+    << QgsDxfExport::VAlign::VTop
+    << 0.0;
 
   QTest::newRow( "Below, 20°" )
-      << 7
-      << QgsDxfExport::HAlign::HCenter
-      << QgsDxfExport::VAlign::VTop
-      << 20.0;
+    << 7
+    << QgsDxfExport::HAlign::HCenter
+    << QgsDxfExport::VAlign::VTop
+    << 20.0;
 }
 
 void TestQgsDxfExport::testGeometryGeneratorExport()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerGeometryGenerator ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerGeometryGenerator ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1119,12 +1134,12 @@ void TestQgsDxfExport::testCurveExport()
   QFETCH( QString, dxfText );
 
   QgsDxfExport d;
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( wktType, QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( wktType, QString(), QStringLiteral( "memory" ) );
   const QgsGeometry g = QgsGeometry::fromWkt( wkt );
   QgsFeature f;
   f.setGeometry( g );
   vl->dataProvider()->addFeatures( QgsFeatureList() << f );
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1154,96 +1169,95 @@ void TestQgsDxfExport::testCurveExport_data()
 
   // curved segment
   QTest::newRow( "circular string" )
-      << QStringLiteral( "CompoundCurve (CircularString (220236.7836819862422999 150406.56493463439983316, 220237.85162031010258943 150412.10612405074061826, 220242.38532074165414087 150409.6075513684481848))" )
-      << QStringLiteral( "CircularString" )
-      << QStringLiteral( "SECTION\n"
-                         "  2\n"
-                         "ENTITIES\n"
-                         "  0\n"
-                         "LWPOLYLINE\n"
-                         "  5\n"
-                         "82\n"
-                         "  8\n"
-                         "0\n"
-                         "100\n"
-                         "AcDbEntity\n"
-                         "100\n"
-                         "AcDbPolyline\n"
-                         "  6\n"
-                         "CONTINUOUS\n"
-                         "420\n"
-                         "     0\n"
-                         " 90\n"
-                         "     2\n"
-                         " 70\n"
-                         "   130\n"
-                         " 43\n"
-                         "-1.0\n"
-                         " 10\n"
-                         "220236.7836819862422999\n"
-                         " 20\n"
-                         "150406.56493463439983316\n"
-                         " 42\n"
-                         "-1.37514344818771517\n"
-                         " 10\n"
-                         "220242.38532074165414087\n"
-                         " 20\n"
-                         "150409.6075513684481848\n"
-                         "  0\n"
-                         "ENDSEC" );
+    << QStringLiteral( "CompoundCurve (CircularString (220236.7836819862422999 150406.56493463439983316, 220237.85162031010258943 150412.10612405074061826, 220242.38532074165414087 150409.6075513684481848))" )
+    << QStringLiteral( "CircularString" )
+    << QStringLiteral( "SECTION\n"
+                       "  2\n"
+                       "ENTITIES\n"
+                       "  0\n"
+                       "LWPOLYLINE\n"
+                       "  5\n"
+                       "82\n"
+                       "  8\n"
+                       "0\n"
+                       "100\n"
+                       "AcDbEntity\n"
+                       "100\n"
+                       "AcDbPolyline\n"
+                       "  6\n"
+                       "CONTINUOUS\n"
+                       "420\n"
+                       "     0\n"
+                       " 90\n"
+                       "     2\n"
+                       " 70\n"
+                       "   130\n"
+                       " 43\n"
+                       "-1.0\n"
+                       " 10\n"
+                       "220236.7836819862422999\n"
+                       " 20\n"
+                       "150406.56493463439983316\n"
+                       " 42\n"
+                       "-1.37514344818771517\n"
+                       " 10\n"
+                       "220242.38532074165414087\n"
+                       " 20\n"
+                       "150409.6075513684481848\n"
+                       "  0\n"
+                       "ENDSEC" );
 
   // Contains straight and curved segments
   QTest::newRow( "mixed curve polygon" )
-      << QStringLiteral( "CurvePolygon (CompoundCurve ((-1.58053402239448748 0.39018087855297157, -1.49267872523686473 0.39362618432385876, -1.24806201550387597 0.65719207579672689),CircularString (-1.24806201550387597 0.65719207579672689, -0.63479758828596045 0.49870801033591727, -0.61584840654608097 0.32644272179155898),(-0.61584840654608097 0.32644272179155898, -1.58053402239448748 0.39018087855297157)))" )
-      << QStringLiteral( "CurvePolygon" )
-      << QStringLiteral( "SECTION\n"
-                         "  2\n"
-                         "ENTITIES\n"
-                         "  0\n"
-                         "LWPOLYLINE\n"
-                         "  5\n"
-                         "82\n"
-                         "  8\n"
-                         "0\n"
-                         "100\n"
-                         "AcDbEntity\n"
-                         "100\n"
-                         "AcDbPolyline\n"
-                         "  6\n"
-                         "CONTINUOUS\n"
-                         "420\n"
-                         "     0\n"
-                         " 90\n"
-                         "     5\n"
-                         " 70\n"
-                         "   131\n"
-                         " 43\n"
-                         "-1.0\n"
-                         " 10\n"
-                         "-1.58053402239448748\n"
-                         " 20\n"
-                         "0.39018087855297157\n"
-                         " 10\n"
-                         "-1.49267872523686473\n"
-                         " 20\n"
-                         "0.39362618432385876\n"
-                         " 10\n"
-                         "-1.24806201550387597\n"
-                         " 20\n"
-                         "0.65719207579672689\n"
-                         " 42\n"
-                         "-0.69027811746778556\n"
-                         " 10\n"
-                         "-0.61584840654608097\n"
-                         " 20\n"
-                         "0.32644272179155898\n"
-                         " 10\n"
-                         "-1.58053402239448748\n"
-                         " 20\n"
-                         "0.39018087855297157\n"
-                         "  0\n"
-                         "ENDSEC" );
-
+    << QStringLiteral( "CurvePolygon (CompoundCurve ((-1.58053402239448748 0.39018087855297157, -1.49267872523686473 0.39362618432385876, -1.24806201550387597 0.65719207579672689),CircularString (-1.24806201550387597 0.65719207579672689, -0.63479758828596045 0.49870801033591727, -0.61584840654608097 0.32644272179155898),(-0.61584840654608097 0.32644272179155898, -1.58053402239448748 0.39018087855297157)))" )
+    << QStringLiteral( "CurvePolygon" )
+    << QStringLiteral( "SECTION\n"
+                       "  2\n"
+                       "ENTITIES\n"
+                       "  0\n"
+                       "LWPOLYLINE\n"
+                       "  5\n"
+                       "82\n"
+                       "  8\n"
+                       "0\n"
+                       "100\n"
+                       "AcDbEntity\n"
+                       "100\n"
+                       "AcDbPolyline\n"
+                       "  6\n"
+                       "CONTINUOUS\n"
+                       "420\n"
+                       "     0\n"
+                       " 90\n"
+                       "     5\n"
+                       " 70\n"
+                       "   131\n"
+                       " 43\n"
+                       "-1.0\n"
+                       " 10\n"
+                       "-1.58053402239448748\n"
+                       " 20\n"
+                       "0.39018087855297157\n"
+                       " 10\n"
+                       "-1.49267872523686473\n"
+                       " 20\n"
+                       "0.39362618432385876\n"
+                       " 10\n"
+                       "-1.24806201550387597\n"
+                       " 20\n"
+                       "0.65719207579672689\n"
+                       " 42\n"
+                       "-0.69027811746778556\n"
+                       " 10\n"
+                       "-0.61584840654608097\n"
+                       " 20\n"
+                       "0.32644272179155898\n"
+                       " 10\n"
+                       "-1.58053402239448748\n"
+                       " 20\n"
+                       "0.39018087855297157\n"
+                       "  0\n"
+                       "ENDSEC" );
 }
 
 void TestQgsDxfExport::testDashedLine()
@@ -1257,7 +1271,7 @@ void TestQgsDxfExport::testDashedLine()
   QgsLineSymbol *symbol = new QgsLineSymbol();
   symbol->changeSymbolLayer( 0, symbolLayer.release() );
 
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "CompoundCurve?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurve?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
   const QgsGeometry g = QgsGeometry::fromWkt( "CompoundCurve ((2689563.84200000017881393 1283531.23699999996460974, 2689563.42499999981373549 1283537.55499999993480742, 2689563.19900000002235174 1283540.52399999997578561, 2689562.99800000013783574 1283543.42999999993480742, 2689562.66900000022724271 1283548.56000000005587935, 2689562.43399999989196658 1283555.287999999942258))" );
   QgsFeature f;
   f.setGeometry( g );
@@ -1266,7 +1280,7 @@ void TestQgsDxfExport::testDashedLine()
   vl->setRenderer( renderer );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
 
   QgsMapSettings mapSettings;
@@ -1288,83 +1302,84 @@ void TestQgsDxfExport::testDashedLine()
   QString debugInfo;
 
   // Make sure the style definition for the dashed line is there
-  QVERIFY2( fileContainsText( file,
-                              "LTYPE\n"
-                              "  5\n"
-                              "6c\n"
-                              "100\n"
-                              "AcDbSymbolTableRecord\n"
-                              "100\n"
-                              "AcDbLinetypeTableRecord\n"
-                              "  2\n"
-                              "symbolLayer0\n"
-                              " 70\n"
-                              "    64\n"
-                              "  3\n"
-                              "\n"
-                              " 72\n"
-                              "    65\n"
-                              " 73\n"
-                              "     2\n"
-                              " 40\n"
-                              "REGEX ^0\\.8[0-9]*\n"
-                              " 49\n"
-                              "0.5\n"
-                              " 74\n"
-                              "     0\n"
-                              " 49\n"
-                              "REGEX ^-0\\.3[0-9]*\n"
-                              " 74\n"
-                              "     0", &debugInfo ), debugInfo.toUtf8().constData() );
+  QVERIFY2( fileContainsText( file, "LTYPE\n"
+                                    "  5\n"
+                                    "6c\n"
+                                    "100\n"
+                                    "AcDbSymbolTableRecord\n"
+                                    "100\n"
+                                    "AcDbLinetypeTableRecord\n"
+                                    "  2\n"
+                                    "symbolLayer0\n"
+                                    " 70\n"
+                                    "    64\n"
+                                    "  3\n"
+                                    "\n"
+                                    " 72\n"
+                                    "    65\n"
+                                    " 73\n"
+                                    "     2\n"
+                                    " 40\n"
+                                    "REGEX ^0\\.8[0-9]*\n"
+                                    " 49\n"
+                                    "0.5\n"
+                                    " 74\n"
+                                    "     0\n"
+                                    " 49\n"
+                                    "REGEX ^-0\\.3[0-9]*\n"
+                                    " 74\n"
+                                    "     0",
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 
   // Make sure that the polyline references the style symbolLayer0
-  QVERIFY2( fileContainsText( file,
-                              "LWPOLYLINE\n"
-                              "  5\n"
-                              "83\n"
-                              "  8\n"
-                              "0\n"
-                              "100\n"
-                              "AcDbEntity\n"
-                              "100\n"
-                              "AcDbPolyline\n"
-                              "  6\n"
-                              "symbolLayer0\n"
-                              "420\n"
-                              "     0\n"
-                              " 90\n"
-                              "     6\n"
-                              " 70\n"
-                              "   128\n"
-                              " 43\n"
-                              "0.11\n"
-                              " 10\n"
-                              "REGEX ^2689563.84[0-9]*\n"
-                              " 20\n"
-                              "REGEX ^1283531.23[0-9]*\n"
-                              " 10\n"
-                              "REGEX ^2689563.42[0-9]*\n"
-                              " 20\n"
-                              "REGEX ^1283537.55[0-9]*\n"
-                              " 10\n"
-                              "REGEX ^2689563.19[0-9]*\n"
-                              " 20\n"
-                              "REGEX ^1283540.52[0-9]*\n"
-                              " 10\n"
-                              "REGEX ^2689562.99[0-9]*\n"
-                              " 20\n"
-                              "REGEX ^1283543.42[0-9]*\n"
-                              " 10\n"
-                              "REGEX ^2689562.66[0-9]*\n"
-                              " 20\n"
-                              "REGEX ^1283548.56[0-9]*\n"
-                              " 10\n"
-                              "REGEX ^2689562.43[0-9]*\n"
-                              " 20\n"
-                              "REGEX ^1283555.28[0-9]*\n"
-                              "  0\n"
-                              "ENDSEC"
-                              , &debugInfo ), debugInfo.toUtf8().constData() );
+  QVERIFY2( fileContainsText( file, "LWPOLYLINE\n"
+                                    "  5\n"
+                                    "83\n"
+                                    "  8\n"
+                                    "0\n"
+                                    "100\n"
+                                    "AcDbEntity\n"
+                                    "100\n"
+                                    "AcDbPolyline\n"
+                                    "  6\n"
+                                    "symbolLayer0\n"
+                                    "420\n"
+                                    "     0\n"
+                                    " 90\n"
+                                    "     6\n"
+                                    " 70\n"
+                                    "   128\n"
+                                    " 43\n"
+                                    "0.11\n"
+                                    " 10\n"
+                                    "REGEX ^2689563.84[0-9]*\n"
+                                    " 20\n"
+                                    "REGEX ^1283531.23[0-9]*\n"
+                                    " 10\n"
+                                    "REGEX ^2689563.42[0-9]*\n"
+                                    " 20\n"
+                                    "REGEX ^1283537.55[0-9]*\n"
+                                    " 10\n"
+                                    "REGEX ^2689563.19[0-9]*\n"
+                                    " 20\n"
+                                    "REGEX ^1283540.52[0-9]*\n"
+                                    " 10\n"
+                                    "REGEX ^2689562.99[0-9]*\n"
+                                    " 20\n"
+                                    "REGEX ^1283543.42[0-9]*\n"
+                                    " 10\n"
+                                    "REGEX ^2689562.66[0-9]*\n"
+                                    " 20\n"
+                                    "REGEX ^1283548.56[0-9]*\n"
+                                    " 10\n"
+                                    "REGEX ^2689562.43[0-9]*\n"
+                                    " 20\n"
+                                    "REGEX ^1283555.28[0-9]*\n"
+                                    "  0\n"
+                                    "ENDSEC",
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testTransform()
@@ -1378,7 +1393,7 @@ void TestQgsDxfExport::testTransform()
   QgsLineSymbol *symbol = new QgsLineSymbol();
   symbol->changeSymbolLayer( 0, symbolLayer.release() );
 
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Linestring?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Linestring?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LineString (2689564.82757076947018504 1283554.68540272791869938, 2689565.52996697928756475 1283531.49185784510336816)" ) );
   QgsFeature f;
   f.setGeometry( g );
@@ -1391,7 +1406,7 @@ void TestQgsDxfExport::testTransform()
   vl->setRenderer( renderer );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
 
   QgsMapSettings mapSettings;
@@ -1409,7 +1424,7 @@ void TestQgsDxfExport::testTransform()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "res" ) );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, QStringLiteral( "res" ) );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 2L );
   QgsFeature f2;
@@ -1426,7 +1441,7 @@ void TestQgsDxfExport::testTransform()
   QCOMPARE( d.writeToFile( &dxfFile2, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile2.close();
 
-  result = std::make_unique< QgsVectorLayer >( file2, QStringLiteral( "res" ) );
+  result = std::make_unique<QgsVectorLayer>( file2, QStringLiteral( "res" ) );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 1L );
   it = result->getFeatures();
@@ -1444,7 +1459,7 @@ void TestQgsDxfExport::testDataDefinedPoints()
   QgsMarkerSymbol *symbol = new QgsMarkerSymbol();
   symbol->changeSymbolLayer( 0, symbolLayer.release() );
 
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
   const QgsGeometry g1 = QgsGeometry::fromWkt( "POINT (2000000 1000000)" );
   QgsFeature f1;
   f1.setGeometry( g1 );
@@ -1457,7 +1472,7 @@ void TestQgsDxfExport::testDataDefinedPoints()
   vl->setRenderer( renderer );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( vl.get() ) );
   d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
 
   QgsMapSettings mapSettings;
@@ -1478,36 +1493,37 @@ void TestQgsDxfExport::testDataDefinedPoints()
 
   QString debugInfo;
 
-  QVERIFY2( fileContainsText( file,
-                              "CONTINUOUS\n"
-                              "420\n"
-                              "2302755\n"
-                              " 90\n"
-                              "     2\n"
-                              " 70\n"
-                              "     1\n"
-                              " 43\n"
-                              "0.0\n"
-                              " 10\n"
-                              "-100.0\n"
-                              " 20\n"
-                              "0.0\n"
-                              " 42\n"
-                              "1.0\n"
-                              " 10\n"
-                              "100.0\n"
-                              " 20\n"
-                              "0.0\n"
-                              " 42\n"
-                              "1.0\n"
-                              "  0\n"
-                              "ENDBLK", &debugInfo ), debugInfo.toUtf8().constData() );
+  QVERIFY2( fileContainsText( file, "CONTINUOUS\n"
+                                    "420\n"
+                                    "2302755\n"
+                                    " 90\n"
+                                    "     2\n"
+                                    " 70\n"
+                                    "     1\n"
+                                    " 43\n"
+                                    "0.0\n"
+                                    " 10\n"
+                                    "-100.0\n"
+                                    " 20\n"
+                                    "0.0\n"
+                                    " 42\n"
+                                    "1.0\n"
+                                    " 10\n"
+                                    "100.0\n"
+                                    " 20\n"
+                                    "0.0\n"
+                                    " 42\n"
+                                    "1.0\n"
+                                    "  0\n"
+                                    "ENDBLK",
+                              &debugInfo ),
+            debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testExtent()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1527,7 +1543,7 @@ void TestQgsDxfExport::testExtent()
   dxfFile1.close();
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file1, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file1, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 1L );
   QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
@@ -1548,7 +1564,7 @@ void TestQgsDxfExport::testSelectedPoints()
   QVERIFY( mPointLayer->selectedFeatureCount() > 0 );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1570,7 +1586,7 @@ void TestQgsDxfExport::testSelectedPoints()
   QVERIFY( !fileContainsText( file, QStringLiteral( "nan.0" ) ) );
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->selectedFeatureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -1586,7 +1602,7 @@ void TestQgsDxfExport::testSelectedPoints()
   QVERIFY( !fileContainsText( file2, QStringLiteral( "nan.0" ) ) );
 
   // reload and compare
-  result = std::make_unique< QgsVectorLayer >( file2, "dxf" );
+  result = std::make_unique<QgsVectorLayer>( file2, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QVERIFY( mPointLayer->selectedFeatureCount() > 0 );
@@ -1601,7 +1617,7 @@ void TestQgsDxfExport::testSelectedLines()
   QVERIFY( mLineLayer->selectedFeatureCount() > 0 );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mLineLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mLineLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1621,7 +1637,7 @@ void TestQgsDxfExport::testSelectedLines()
   dxfFile.close();
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mLineLayer->selectedFeatureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
@@ -1635,7 +1651,7 @@ void TestQgsDxfExport::testSelectedLines()
   dxfFile2.close();
 
   // reload and compare
-  result = std::make_unique< QgsVectorLayer >( file2, "dxf" );
+  result = std::make_unique<QgsVectorLayer>( file2, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mLineLayer->featureCount() );
   QVERIFY( mLineLayer->selectedFeatureCount() > 0 );
@@ -1650,7 +1666,7 @@ void TestQgsDxfExport::testSelectedPolygons()
   QVERIFY( mPolygonLayer->selectedFeatureCount() > 0 );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1670,7 +1686,7 @@ void TestQgsDxfExport::testSelectedPolygons()
   dxfFile.close();
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 8L );
   QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
@@ -1684,7 +1700,7 @@ void TestQgsDxfExport::testSelectedPolygons()
   dxfFile2.close();
 
   // reload and compare
-  result = std::make_unique< QgsVectorLayer >( file2, "dxf" );
+  result = std::make_unique<QgsVectorLayer>( file2, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 12L );
   QVERIFY( mPolygonLayer->selectedFeatureCount() > 0 );
@@ -1701,7 +1717,7 @@ void TestQgsDxfExport::testMultipleLayersWithSelection()
   QVERIFY( mLineLayer->selectedFeatureCount() > 0 );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) << QgsDxfExport::DxfLayer( mLineLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) << QgsDxfExport::DxfLayer( mLineLayer ) );
 
   QgsRectangle extent;
   extent = mPointLayer->extent();
@@ -1727,20 +1743,12 @@ void TestQgsDxfExport::testMultipleLayersWithSelection()
   QVERIFY( !fileContainsText( file, QStringLiteral( "nan.0" ) ) );
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QStringList subLayers = result->dataProvider()->subLayers();
   QCOMPARE( subLayers.count(), 2 );
-  QStringList subLayer1 = { QStringLiteral( "0" ),
-                            QStringLiteral( "entities" ),
-                            QStringLiteral( "8" ),
-                            QStringLiteral( "Point" )
-                          };
-  QStringList subLayer2 = { QStringLiteral( "0" ),
-                            QStringLiteral( "entities" ),
-                            QStringLiteral( "2" ),
-                            QStringLiteral( "LineString" )
-                          };
+  QStringList subLayer1 = { QStringLiteral( "0" ), QStringLiteral( "entities" ), QStringLiteral( "8" ), QStringLiteral( "Point" ) };
+  QStringList subLayer2 = { QStringLiteral( "0" ), QStringLiteral( "entities" ), QStringLiteral( "2" ), QStringLiteral( "LineString" ) };
   QVERIFY( subLayers.constFirst().startsWith( subLayer1.join( QgsDataProvider::sublayerSeparator() ) ) );
   QVERIFY( subLayers.constLast().startsWith( subLayer2.join( QgsDataProvider::sublayerSeparator() ) ) );
 
@@ -1753,20 +1761,12 @@ void TestQgsDxfExport::testMultipleLayersWithSelection()
   dxfFile2.close();
 
   // reload and compare
-  result = std::make_unique< QgsVectorLayer >( file2, "dxf" );
+  result = std::make_unique<QgsVectorLayer>( file2, "dxf" );
   QVERIFY( result->isValid() );
   subLayers = result->dataProvider()->subLayers();
   QCOMPARE( subLayers.count(), 2 );
-  subLayer1 = QStringList{ QStringLiteral( "0" ),
-                           QStringLiteral( "entities" ),
-                           QStringLiteral( "%1" ).arg( mPointLayer->featureCount() ),
-                           QStringLiteral( "Point" )
-                         };
-  subLayer2 = QStringList{ QStringLiteral( "0" ),
-                           QStringLiteral( "entities" ),
-                           QStringLiteral( "%1" ).arg( mLineLayer->featureCount() ),
-                           QStringLiteral( "LineString" )
-                         };
+  subLayer1 = QStringList { QStringLiteral( "0" ), QStringLiteral( "entities" ), QStringLiteral( "%1" ).arg( mPointLayer->featureCount() ), QStringLiteral( "Point" ) };
+  subLayer2 = QStringList { QStringLiteral( "0" ), QStringLiteral( "entities" ), QStringLiteral( "%1" ).arg( mLineLayer->featureCount() ), QStringLiteral( "LineString" ) };
   QVERIFY( subLayers.constFirst().startsWith( subLayer1.join( QgsDataProvider::sublayerSeparator() ) ) );
   QVERIFY( subLayers.constLast().startsWith( subLayer2.join( QgsDataProvider::sublayerSeparator() ) ) );
   QVERIFY( mPointLayer->selectedFeatureCount() > 0 );
@@ -1782,7 +1782,7 @@ void TestQgsDxfExport::testExtentWithSelection()
   QVERIFY( mPointLayer->selectedFeatureCount() > 0 );
 
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1803,7 +1803,7 @@ void TestQgsDxfExport::testExtentWithSelection()
   dxfFile.close();
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 3L ); // 4 in extent, 8 selected, 17 in total
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -1824,11 +1824,9 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   // A) All layer name options are set
   QgsDxfExport d;
   mPointLayer->serverProperties()->setTitle( layerTitle );
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer,
-               0, // Class attribute, 3 unique values
-               false,
-               -1,
-               layerOverriddenName ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer,
+                                                                          0, // Class attribute, 3 unique values
+                                                                          false, -1, layerOverriddenName ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -1853,7 +1851,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QVERIFY( !fileContainsText( file, mPointLayer->name() ) );
 
   // reload and compare
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, "dxf" );
+  std::unique_ptr<QgsVectorLayer> result = std::make_unique<QgsVectorLayer>( file, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -1864,7 +1862,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QVERIFY( values.contains( QVariant( "Biplane" ) ) );
 
   // B) No attribute given
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1, layerOverriddenName ) ); // this replaces layers
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1, layerOverriddenName ) ); // this replaces layers
 
   const QString file2 = getTempFileName( "name_precedence_b_no_attr_dxf" );
   QFile dxfFile2( file2 );
@@ -1877,7 +1875,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QVERIFY( !fileContainsText( file2, mPointLayer->name() ) );
 
   // reload and compare
-  result = std::make_unique< QgsVectorLayer >( file2, "dxf" );
+  result = std::make_unique<QgsVectorLayer>( file2, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -1887,7 +1885,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
 
   // C) No attribute given, no override
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1 ) ); // this replaces layers
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer, -1, false, -1 ) ); // this replaces layers
 
   const QString file3 = getTempFileName( "name_precedence_c_no_attr_no_override_dxf" );
   QFile dxfFile3( file3 );
@@ -1900,7 +1898,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QVERIFY( !fileContainsText( file3, mPointLayer->name() ) );
 
   // reload and compare
-  result = std::make_unique< QgsVectorLayer >( file3, "dxf" );
+  result = std::make_unique<QgsVectorLayer>( file3, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -1909,7 +1907,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QCOMPARE( result->uniqueValues( 0 ).count(), 1 ); // "Layer" field
 
   // D) No name options given, use default layer name
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) ); // This replaces layers
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) ); // This replaces layers
   d.setLayerTitleAsName( false );
 
   const QString file4 = getTempFileName( "name_precedence_d_no_anything_dxf" );
@@ -1923,7 +1921,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
   QVERIFY( fileContainsText( file4, mPointLayer->name() ) );
 
   // reload and compare
-  result = std::make_unique< QgsVectorLayer >( file4, "dxf" );
+  result = std::make_unique<QgsVectorLayer>( file4, "dxf" );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
@@ -1937,7 +1935,7 @@ void TestQgsDxfExport::testOutputLayerNamePrecedence()
 void TestQgsDxfExport::testMinimumLineWidthExport()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mLineLayer ) );
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mLineLayer ) );
 
   QgsMapSettings mapSettings;
   const QSize size( 640, 480 );
@@ -2012,8 +2010,7 @@ bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &tex
     }
     if ( found )
       return true;
-  }
-  while ( !line.isNull() );
+  } while ( !line.isNull() );
   if ( debugInfo )
   {
     while ( debugLines.size() > 10 )

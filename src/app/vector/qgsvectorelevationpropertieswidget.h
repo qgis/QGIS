@@ -24,12 +24,12 @@
 
 class QgsVectorLayer;
 class QgsPropertyOverrideButton;
+class QgsProjectionSelectionWidget;
 
 class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsVectorElevationPropertiesWidgetBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
-
     QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) final;
@@ -46,9 +46,9 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
     void bindingChanged();
     void toggleSymbolWidgets();
     void updateProperty();
+    void updateVerticalCrsOptions();
 
   private:
-
     // TODO -- consider moving these to a common elevation properties widget base class
 
     /**
@@ -67,11 +67,13 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
      * Updates a specific property override \a button to reflect the widgets's current properties.
      */
     void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    QgsProjectionSelectionWidget *mVerticalCrsWidget = nullptr;
+
     QgsPropertyCollection mPropertyCollection;
 
     QgsVectorLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
-
 };
 
 
@@ -87,7 +89,6 @@ class QgsVectorElevationPropertiesWidgetFactory : public QObject, public QgsMapL
     bool supportsLayer( QgsMapLayer *layer ) const override;
     QString layerPropertiesPagePositionHint() const override;
 };
-
 
 
 #endif // QGSVECTORELEVATIONPROPERTIESWIDGET_H

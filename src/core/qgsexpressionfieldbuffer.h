@@ -45,9 +45,6 @@ class CORE_EXPORT QgsExpressionFieldBuffer
       QgsField field;
     };
 
-    /**
-     * Constructor for QgsExpressionFieldBuffer.
-     */
     QgsExpressionFieldBuffer() = default;
 
     /**

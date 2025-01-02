@@ -122,7 +122,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>8</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -152,7 +152,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>903</height>
+                <height>1009</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -796,8 +796,11 @@
                    <layout class="QHBoxLayout" name="horizontalLayout_21">
                     <item>
                      <widget class="QLabel" name="label_33">
+                      <property name="toolTip">
+                       <string>Embedded Python code refers to macros and function expressions</string>
+                      </property>
                       <property name="text">
-                       <string>Enable macros</string>
+                       <string>Enable project's embedded Python code</string>
                       </property>
                      </widget>
                     </item>
@@ -968,8 +971,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>522</width>
-                <height>1054</height>
+                <width>843</width>
+                <height>1068</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1328,10 +1331,10 @@
                     <property name="title">
                      <string>Current environment variables (read-only - bold indicates modified at startup)</string>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1507,8 +1510,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>558</width>
-                <height>435</height>
+                <width>857</width>
+                <height>685</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1531,7 +1534,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
                   <item row="0" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="leLayerGlobalCrs">
                     <property name="enabled">
                      <bool>true</bool>
                     </property>
@@ -1637,7 +1640,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1751,8 +1754,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>533</width>
-                <height>99</height>
+                <width>857</width>
+                <height>685</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1835,7 +1838,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>715</height>
+                <height>772</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1857,14 +1860,10 @@
                   <string>Feature Attributes and Table</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_19">
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QCheckBox" name="cbxAttributeTableDocked">
-                    <property name="text">
-                     <string>Open attribute table as docked window</string>
-                    </property>
-                   </widget>
+                  <item row="7" column="1">
+                   <widget class="QLineEdit" name="leNullValue"/>
                   </item>
-                  <item row="3" column="1">
+                  <item row="4" column="1">
                    <widget class="QComboBox" name="cmbAttrTableBehavior">
                     <item>
                      <property name="text">
@@ -1873,7 +1872,34 @@
                     </item>
                    </widget>
                   </item>
-                  <item row="3" column="0">
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="label_46">
+                    <property name="text">
+                     <string>Default view</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QComboBox" name="mComboCopyFeatureFormat"/>
+                  </item>
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QCheckBox" name="cbxAttributeTableDocked">
+                    <property name="text">
+                     <string>Open attribute table as docked window</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QComboBox" name="mAttrTableViewComboBox"/>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="label_14">
+                    <property name="text">
+                     <string>Representation for NULL values</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
                    <widget class="QLabel" name="textLabel1_7">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1887,19 +1913,6 @@
                    </widget>
                   </item>
                   <item row="6" column="0">
-                   <widget class="QLabel" name="label_14">
-                    <property name="text">
-                     <string>Representation for NULL values</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="1">
-                   <widget class="QComboBox" name="mAttrTableViewComboBox"/>
-                  </item>
-                  <item row="6" column="1">
-                   <widget class="QLineEdit" name="leNullValue"/>
-                  </item>
-                  <item row="5" column="0">
                    <widget class="QLabel" name="textLabel1_12">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1912,7 +1925,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="1">
+                  <item row="6" column="1">
                    <widget class="QgsSpinBox" name="spinBoxAttrTableRowCache">
                     <property name="minimum">
                      <number>0</number>
@@ -1928,20 +1941,17 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QComboBox" name="mComboCopyFeatureFormat"/>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="label_46">
-                    <property name="text">
-                     <string>Default view</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
+                  <item row="3" column="0">
                    <widget class="QLabel" name="label_48">
                     <property name="text">
                      <string>Copy features as</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="2">
+                   <widget class="QCheckBox" name="cbxAutosizeAttributeTable">
+                    <property name="text">
+                     <string>Autosize all columns by default when opening attribute table</string>
                     </property>
                    </widget>
                   </item>
@@ -2216,8 +2226,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>415</width>
-                <height>403</height>
+                <width>457</width>
+                <height>419</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -2437,8 +2447,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>482</width>
-                <height>456</height>
+                <width>508</width>
+                <height>487</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2573,6 +2583,9 @@
                   </item>
                   <item row="0" column="1">
                    <widget class="QComboBox" name="cmbLegendDoubleClickAction">
+                    <property name="sizeAdjustPolicy">
+                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                    </property>
                     <item>
                      <property name="text">
                       <string>Open layer properties</string>
@@ -2588,9 +2601,6 @@
                       <string>Open layer styling dock</string>
                      </property>
                     </item>
-                    <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-                    </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -2604,7 +2614,7 @@
                    <widget class="QComboBox" name="mLayerTreeInsertionMethod">
                     <property name="sizeAdjustPolicy">
                      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-                    </property>                     
+                    </property>
                    </widget>
                   </item>
                   <item row="2" column="0" colspan="2">
@@ -2631,9 +2641,6 @@
                   <item row="4" column="1">
                    <widget class="QgsSpinBox" name="mLegendGraphicResolutionSpinBox">
                     <property name="toolTip">
-                     <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
-                    </property>
-                    <property name="whatsThis">
                      <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
                     </property>
                     <property name="suffix">
@@ -2680,7 +2687,7 @@
                     <property name="value">
                      <double>0.100000000000000</double>
                     </property>
-                    <property name="showClearButton" stdset="0">
+                    <property name="showClearButton">
                      <bool>true</bool>
                     </property>
                    </widget>
@@ -2718,7 +2725,7 @@
                     <property name="value">
                      <double>20.000000000000000</double>
                     </property>
-                    <property name="showClearButton" stdset="0">
+                    <property name="showClearButton">
                      <bool>true</bool>
                     </property>
                    </widget>
@@ -2742,9 +2749,6 @@
                   <item row="0" column="1">
                    <widget class="QgsSpinBox" name="mMapTipsDelaySpinBox">
                     <property name="toolTip">
-                     <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
-                    </property>
-                    <property name="whatsThis">
                      <string extracomment="MAP_RESOLUTION or DPI value overloading getMap default value (set 0 to use default)"/>
                     </property>
                     <property name="suffix">
@@ -2826,8 +2830,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>578</width>
-                <height>869</height>
+                <width>622</width>
+                <height>925</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3225,7 +3229,7 @@
                  <property name="title">
                   <string>Coordinate and Bearing Display</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_30" columnstretch="0,0,3,6">
@@ -3323,7 +3327,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     <property name="value">
                      <number>200</number>
                     </property>
-                    <property name="showClearButton" stdset="0">
+                    <property name="showClearButton">
                      <bool>true</bool>
                     </property>
                    </widget>
@@ -3489,9 +3493,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-256</y>
-                <width>843</width>
-                <height>971</height>
+                <y>0</y>
+                <width>575</width>
+                <height>1038</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4216,8 +4220,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>139</width>
-                <height>247</height>
+                <width>147</width>
+                <height>251</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4396,8 +4400,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>448</width>
-                <height>520</height>
+                <width>476</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4728,8 +4732,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>595</width>
-                <height>639</height>
+                <width>657</width>
+                <height>669</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4827,8 +4831,11 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    <layout class="QHBoxLayout" name="horizontalLayout_35">
                     <item>
                      <widget class="QLabel" name="lblUserAgent">
+                      <property name="toolTip">
+                       <string>This value will be prepended before the QGIS version and the OS, e.g. &quot;Mozilla/5.0 QGIS/33801/Ubuntu 22.04.4 LTS&quot;</string>
+                      </property>
                       <property name="text">
-                       <string>User-Agent</string>
+                       <string>User-Agent prefix</string>
                       </property>
                      </widget>
                     </item>
@@ -4859,7 +4866,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                       <item row="4" column="0">
                        <widget class="QLabel" name="label_11">
                         <property name="text">
-                         <string>Size [KiB]</string>
+                         <string>Size</string>
                         </property>
                        </widget>
                       </item>
@@ -4874,7 +4881,32 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <widget class="QLineEdit" name="mCacheDirectory"/>
                       </item>
                       <item row="4" column="1">
-                       <widget class="QgsSpinBox" name="mCacheSize"/>
+                       <widget class="QgsSpinBox" name="mCacheSize">
+                        <property name="toolTip">
+                         <string>Specify the cache size in megabytes. Clear the value to enable smart cache size, which sets the maximum cache size based on available space.</string>
+                        </property>
+                        <property name="specialValueText">
+                         <string>Smart cache size</string>
+                        </property>
+                        <property name="suffix">
+                         <string> MB</string>
+                        </property>
+                        <property name="minimum">
+                         <number>0</number>
+                        </property>
+                        <property name="maximum">
+                         <number>10000</number>
+                        </property>
+                        <property name="singleStep">
+                         <number>100</number>
+                        </property>
+                        <property name="showClearButton">
+                         <bool>true</bool>
+                        </property>
+                        <property name="clearValue">
+                         <bool>false</bool>
+                        </property>
+                       </widget>
                       </item>
                       <item row="0" column="2">
                        <widget class="QToolButton" name="mBrowseCacheDirectory">
@@ -4946,10 +4978,10 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <property name="checkable">
                   <bool>true</bool>
                  </property>
-                 <property name="collapsed" stdset="0">
+                 <property name="collapsed">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState" stdset="0">
+                 <property name="saveCollapsedState">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
@@ -5212,7 +5244,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -5606,6 +5638,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

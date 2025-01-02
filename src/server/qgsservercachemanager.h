@@ -40,7 +40,7 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
  */
 class SERVER_EXPORT QgsServerCacheManager
 {
-#ifdef   SIP_RUN
+#ifdef SIP_RUN
 #include "qgsservercachefilter.h"
 #endif
 
@@ -48,13 +48,8 @@ class SERVER_EXPORT QgsServerCacheManager
     //! Constructor
     QgsServerCacheManager( const QgsServerSettings &settings = QgsServerSettings() );
 
-    //! Copy constructor
     QgsServerCacheManager( const QgsServerCacheManager &copy );
-
-    //! Assignment operator
     QgsServerCacheManager &operator=( const QgsServerCacheManager &copy );
-
-    //! Destructor
     ~QgsServerCacheManager();
 
     /**

@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgslegendrenderer.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -14,7 +14,8 @@
 class QgsLegendRenderer
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLegendRenderer` class handles automatic layout and rendering of legend.
+Handles automatic layout and rendering of legends.
+
 The content is given by :py:class:`QgsLayerTreeModel` instance. Various layout properties can be configured
 within :py:class:`QgsLegendRenderer`.
 
@@ -30,6 +31,18 @@ All spacing and sizes are in millimeters.
 %Docstring
 Constructor for QgsLegendRenderer. The ownership of the legend model is not changed,
 and the model must exist for the lifetime of this renderer.
+%End
+    ~QgsLegendRenderer();
+
+
+    QgsLayerTreeFilterProxyModel *proxyModel();
+%Docstring
+Returns the filter proxy model used for filtering the legend model content during
+rendering.
+
+Filters can be set on the proxy model to filter rendered legend content.
+
+.. versionadded:: 3.40
 %End
 
     QSizeF minimumSize( QgsRenderContext *renderContext = 0 );
@@ -63,12 +76,13 @@ If the returned size is null, the legend will be drawn with the minimum possible
 .. seealso:: :py:func:`setLegendSize`
 %End
 
- void drawLegend( QPainter *painter ) /Deprecated/;
+ void drawLegend( QPainter *painter ) /Deprecated="Since 3.40. Use the variant which accepts a QgsRenderContext instead."/;
 %Docstring
 Draws the legend with given ``painter``. The legend will occupy the area reported in :py:func:`~QgsLegendRenderer.legendSize`.
 The ``painter`` should be scaled beforehand so that units correspond to millimeters.
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the variant which accepts a :py:class:`QgsRenderContext` instead.
 %End
 
@@ -100,6 +114,8 @@ Returns the style for the given ``node``, within the specified ``model``.
 .. seealso:: :py:func:`setNodeLegendStyle`
 %End
 
+  private:
+    QgsLegendRenderer( const QgsLegendRenderer &other );
 };
 
 /************************************************************************
@@ -107,5 +123,5 @@ Returns the style for the given ``node``, within the specified ``model``.
  *                                                                      *
  * src/core/qgslegendrenderer.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

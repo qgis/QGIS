@@ -70,6 +70,24 @@ class CORE_EXPORT QgsLabelPlacementSettings
     void setAllowDegradedPlacement( bool allow ) { mAllowDegradedPlacement = allow; }
 
     /**
+     * Returns the label prioritization technique.
+     *
+     * \see setPrioritization()
+     *
+     * \since QGIS 3.38
+     */
+    Qgis::LabelPrioritization prioritization() const { return mPrioritization; }
+
+    /**
+     * Sets the technique used to prioritize labels.
+     *
+     * \see prioritization()
+     *
+     * \since QGIS 3.38
+     */
+    void setPrioritization( Qgis::LabelPrioritization prioritization ) { mPrioritization = prioritization; }
+
+    /**
      * Updates the placement settings to respect any data defined properties
      * set within the specified \a properties collection.
      */
@@ -78,6 +96,7 @@ class CORE_EXPORT QgsLabelPlacementSettings
   private:
 
     Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
+    Qgis::LabelPrioritization mPrioritization = Qgis::LabelPrioritization::PreferCloser;
 
     bool mAllowDegradedPlacement = false;
 

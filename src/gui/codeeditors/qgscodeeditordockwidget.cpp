@@ -14,18 +14,17 @@
  ***************************************************************************/
 
 #include "qgscodeeditordockwidget.h"
+#include "moc_qgscodeeditordockwidget.cpp"
 #include "qgsdockablewidgethelper.h"
 
 QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &windowGeometrySettingsKey, bool usePersistentWidget )
   : QWidget( nullptr )
 {
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( true, tr( "Code Editor" ),
-      this, QgsDockableWidgetHelper::sOwnerWindow, Qt::BottomDockWidgetArea, QStringList(), true, windowGeometrySettingsKey, usePersistentWidget );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( true, tr( "Code Editor" ), this, QgsDockableWidgetHelper::sOwnerWindow, Qt::BottomDockWidgetArea, QStringList(), true, windowGeometrySettingsKey, usePersistentWidget );
 
   mDockToggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   mDockToggleButton->setToolTip( tr( "Dock Code Editor" ) );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
-  {
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [=]() {
     close();
   } );
 

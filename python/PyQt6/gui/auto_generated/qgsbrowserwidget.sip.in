@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsbrowserwidget.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -21,7 +21,6 @@ A widget showing a browser tree view along with toolbar and toggleable propertie
 #include "qgsbrowserwidget.h"
 %End
   public:
-
     explicit QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserWidget
@@ -80,5 +79,5 @@ Refreshes the browser model and view.
  *                                                                      *
  * src/gui/qgsbrowserwidget.h                                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

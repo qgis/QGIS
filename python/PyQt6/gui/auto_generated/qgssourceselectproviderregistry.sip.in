@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgssourceselectproviderregistry.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,12 +23,11 @@ When created, it automatically adds providers from data provider plugins (e.g. P
 #include "qgssourceselectproviderregistry.h"
 %End
   public:
-
     QgsSourceSelectProviderRegistry();
     ~QgsSourceSelectProviderRegistry();
 
 
-    QList< QgsSourceSelectProvider *> providers();
+    QList<QgsSourceSelectProvider *> providers();
 %Docstring
 Gets list of available providers
 %End
@@ -102,5 +101,5 @@ Emitted whenever a provider is removed from the registry.
  *                                                                      *
  * src/gui/qgssourceselectproviderregistry.h                            *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

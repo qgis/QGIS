@@ -30,9 +30,7 @@
  */
 class QgsKeepNBiggestPartsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsKeepNBiggestPartsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -50,19 +48,15 @@ class QgsKeepNBiggestPartsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     int mPartsToKeep = 1;
     bool mDynamicPartsToKeep = false;
     QgsProperty mPartsToKeepProperty;
-
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMKEEPNBIGGESTPARTS_H
-
-

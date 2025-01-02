@@ -1,0 +1,82 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsmeshterrainsettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsMeshTerrainSettings : QgsAbstractTerrainSettings
+{
+%Docstring(signature="appended")
+Terrain settings for a terrain generator that uses uses the Z values of a mesh layer to build a terrain.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsmeshterrainsettings.h"
+%End
+  public:
+    static QgsAbstractTerrainSettings *create() /Factory/;
+%Docstring
+Creates a new instance of a QgsMeshTerrainSettings object.
+%End
+
+    QgsMeshTerrainSettings();
+    ~QgsMeshTerrainSettings();
+    QgsMeshTerrainSettings *clone() const final /Factory/;
+    QString type() const final;
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
+    void resolveReferences( const QgsProject *project ) final;
+    bool equals( const QgsAbstractTerrainSettings *other ) const final;
+
+    void setLayer( QgsMeshLayer *layer );
+%Docstring
+Sets the mesh ``layer`` with elevation model to be used for terrain generation.
+
+.. seealso:: :py:func:`layer`
+%End
+
+    QgsMeshLayer *layer() const;
+%Docstring
+Returns the mesh layer with elevation model to be used for terrain generation.
+
+.. seealso:: :py:func:`setLayer`
+%End
+
+    QgsMesh3DSymbol *symbol() const;
+%Docstring
+Returns the symbol used to render the mesh as terrain.
+
+.. seealso:: :py:func:`setSymbol`
+%End
+
+    void setSymbol( QgsMesh3DSymbol *symbol /Transfer/ );
+%Docstring
+Sets the symbol used to render the mesh as terrain.
+
+.. seealso:: :py:func:`symbol`
+%End
+
+  private:
+    QgsMeshTerrainSettings( const QgsMeshTerrainSettings & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsmeshterrainsettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

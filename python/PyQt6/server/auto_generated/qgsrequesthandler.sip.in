@@ -3,7 +3,7 @@
  *                                                                      *
  * src/server/qgsrequesthandler.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -22,7 +22,6 @@ output from/to a wms request mechanism.
 #include "qgsrequesthandler.h"
 %End
   public:
-
     explicit QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response );
 %Docstring
 Constructor
@@ -177,5 +176,5 @@ Returns ``True`` if the HTTP headers were already sent to the client
  *                                                                      *
  * src/server/qgsrequesthandler.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

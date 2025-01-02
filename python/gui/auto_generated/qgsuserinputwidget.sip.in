@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsuserinputwidget.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -26,7 +26,6 @@ The widget is automatically hidden if it contains no widget.
 #include "qgsuserinputwidget.h"
 %End
   public:
-
     QgsUserInputWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsUserInputWidget
@@ -50,5 +49,5 @@ Add a widget to be displayed in the dock.
  *                                                                      *
  * src/gui/qgsuserinputwidget.h                                         *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

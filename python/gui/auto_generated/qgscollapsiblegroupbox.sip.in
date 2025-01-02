@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgscollapsiblegroupbox.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -105,8 +105,6 @@ Overridden to prepare base call and avoid crash due to specific QT versions
 %End
 
   protected:
-    void init();
-
     void collapseExpandFixes();
 %Docstring
 Visual fixes for when group box is collapsed/expanded
@@ -126,6 +124,7 @@ Visual fixes for when group box is collapsed/expanded
     void clearModifiers();
 
 
+
 };
 
 
@@ -137,7 +136,7 @@ By default, it auto-saves only its collapsed state to the global settings based 
 Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
 Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
 
-.. seealso:: :py:func:`basic`
+.. seealso:: :py:class:`QgsCollapsibleGroupBoxBasic` which does not auto-save states
 
 .. note::
 
@@ -204,11 +203,9 @@ The configuration path to which it is saved is defined by
 %End
 
   protected:
-    void init();
     virtual void showEvent( QShowEvent *event );
 
     QString saveKey() const;
-
 
 };
 
@@ -217,5 +214,5 @@ The configuration path to which it is saved is defined by
  *                                                                      *
  * src/gui/qgscollapsiblegroupbox.h                                     *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

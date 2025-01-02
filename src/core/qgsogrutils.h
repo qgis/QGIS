@@ -407,7 +407,7 @@ class CORE_EXPORT QgsOgrUtils
      * \note Not available in Python bindings
      * \since QGIS 3.26
      */
-    static void ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QVariant::Type &variantType, QVariant::Type &variantSubType ) SIP_SKIP;
+    static void ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubType ogrSubType, QMetaType::Type &variantType, QMetaType::Type &variantSubType ) SIP_SKIP;
 
     /**
      * Converts an QVariant type to the best matching OGR field type and sub type.
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsOgrUtils
      * \note Not available in Python bindings
      * \since QGIS 3.26
      */
-    static void variantTypeToOgrFieldType( QVariant::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType ) SIP_SKIP;
+    static void variantTypeToOgrFieldType( QMetaType::Type variantType, OGRFieldType &ogrType, OGRFieldSubType &ogrSubType ) SIP_SKIP;
 
     /**
      * Converts a string to a variant, using the provider OGR field \a type and \a subType to determine the most appropriate

@@ -7,6 +7,7 @@ QgsProcessingParameterPoint|coordinates|Lower left easting and northing coordina
 QgsProcessingParameterString|box|Width and height of boxes in grid|
 QgsProcessingParameterNumber|angle|Angle of rotation (in degrees counter-clockwise)|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
 QgsProcessingParameterNumber|breaks|Number of vertex points per grid cell|QgsProcessingParameterNumber.Integer|0|True|0|60
+QgsProcessingParameterEnum|type|Output feature type|point;line;area|False|2|True
 QgsProcessingParameterBoolean|-h|Create hexagons (default: rectangles)|False
-QgsProcessingParameterBoolean|-p|Create grid of points instead of areas and centroids|False
+QgsProcessingParameterBoolean|-a|Allow asymmetric hexagons|False
 QgsProcessingParameterVectorDestination|map|Grid

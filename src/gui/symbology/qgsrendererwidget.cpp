@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererwidget.h"
+#include "moc_qgsrendererwidget.cpp"
 
 #include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
@@ -69,10 +70,9 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
     contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );
   }
 
-  connect( contextMenu, &QMenu::aboutToShow, this, [ = ]
-  {
-    const std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
-    mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
+  connect( contextMenu, &QMenu::aboutToShow, this, [=] {
+    const std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    mPasteSymbolAction->setEnabled( static_cast<bool>( tempSymbol ) );
   } );
 }
 
@@ -103,14 +103,13 @@ void QgsRendererWidget::changeSymbolColor()
 
   const QColor currentColor = firstSymbol->color();
 
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast<QWidget *>( parent() ) );
   if ( panel && panel->dockMode() )
   {
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Change Symbol Color" ) );
     colorWidget->setAllowOpacity( true );
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & color )
-    {
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &color ) {
       for ( QgsSymbol *symbol : symbolList )
       {
         if ( symbol )
@@ -300,7 +299,6 @@ void QgsRendererWidget::changeSymbolAngle()
 
 void QgsRendererWidget::pasteSymbolToSelection()
 {
-
 }
 
 void QgsRendererWidget::copySymbol()
@@ -317,7 +315,7 @@ void QgsRendererWidget::copySymbol()
 void QgsRendererWidget::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsFeatureRenderer::Property key = static_cast< QgsFeatureRenderer::Property >( button->propertyKey() );
+  const QgsFeatureRenderer::Property key = static_cast<QgsFeatureRenderer::Property>( button->propertyKey() );
   renderer()->setDataDefinedProperty( key, button->toProperty() );
   emit widgetChanged();
 }
@@ -329,8 +327,7 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
   {
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r->legendSymbolItems(), r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
-    {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [=]() {
       setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
     } );
     panel->openPanel( widget );
@@ -391,16 +388,15 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWi
   return panel;
 }
 
-void QgsRendererWidget::setSymbolLevels( const QList< QgsLegendSymbolItem > &, bool )
+void QgsRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &, bool )
 {
-
 }
 
 void QgsRendererWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsFeatureRenderer::Property key )
 {
   // note that we don't specify the layer here -- we don't want to expose a choice of fields for renderer level buttons,
   // as the settings apply to the WHOLE layer and aren't evaluated on a feature-by-feature basis
-  button->init( static_cast< int >( key ), renderer()->dataDefinedProperties(), QgsFeatureRenderer::propertyDefinitions(), nullptr, true );
+  button->init( static_cast<int>( key ), renderer()->dataDefinedProperties(), QgsFeatureRenderer::propertyDefinitions(), nullptr, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRendererWidget::updateDataDefinedProperty );
 
   button->registerExpressionContextGenerator( this );
@@ -467,22 +463,16 @@ QgsSymbolWidgetContext QgsDataDefinedValueDialog::context() const
 QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( auto *lMapCanvas = mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( lMapCanvas->mapSettings() )
-               << new QgsExpressionContextScope( lMapCanvas->expressionContextScope() );
-
-    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( lMapCanvas->temporalController() ) )
-    {
-      expContext << generator->createExpressionContextScope();
-    }
+    expContext = lMapCanvas->createExpressionContext();
   }
   else
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )
@@ -545,7 +535,8 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
   if ( // shall we remove datadefined expressions for layers ?
     ( symbolDD && symbolDD.isActive() && !dd.isActive() )
     // shall we set the "en masse" expression for properties ?
-    || dd.isActive() )
+    || dd.isActive()
+  )
   {
     const auto constMSymbolList = mSymbolList;
     for ( QgsSymbol *it : constMSymbolList )
@@ -556,7 +547,7 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
 QgsDataDefinedSizeDialog::QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
   : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
 {
-  init( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+  init( static_cast<int>( QgsSymbolLayer::Property::Size ) );
   if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
   {
     mAssistantSymbol.reset( static_cast<const QgsMarkerSymbol *>( symbolList.at( 0 ) )->clone() );
@@ -585,7 +576,7 @@ void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol *symbol, const QgsPrope
 QgsDataDefinedRotationDialog::QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
   : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
 {
-  init( static_cast< int >( QgsSymbolLayer::Property::Angle ) );
+  init( static_cast<int>( QgsSymbolLayer::Property::Angle ) );
 }
 
 QgsProperty QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
@@ -608,7 +599,7 @@ void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsP
 QgsDataDefinedWidthDialog::QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
   : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
 {
-  init( static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) );
+  init( static_cast<int>( QgsSymbolLayer::Property::StrokeWidth ) );
 }
 
 QgsProperty QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
@@ -629,5 +620,4 @@ void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsProp
 
 void QgsRendererWidget::apply()
 {
-
 }

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmanualtable.h"
+#include "moc_qgslayoutitemmanualtable.cpp"
 #include "qgsconditionalstyle.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayouttablecolumn.h"
@@ -77,7 +78,7 @@ bool QgsLayoutItemManualTable::getTableContents( QgsLayoutTableContents &content
       {
         QVariant cellContent = row.at( columnNumber ).content();
 
-        if ( cellContent.userType() == QMetaType::type( "QgsProperty" ) )
+        if ( cellContent.userType() == qMetaTypeId<QgsProperty>() )
         {
           // expression based cell content, evaluate now
           QgsExpressionContextScopePopper popper( context, scopeForCell( rowNumber, columnNumber ) );
@@ -346,6 +347,20 @@ Qt::Alignment QgsLayoutItemManualTable::verticalAlignmentForCell( int row, int c
     return mContents.value( row ).value( column ).verticalAlignment();
 
   return QgsLayoutTable::verticalAlignmentForCell( row, column );
+}
+
+int QgsLayoutItemManualTable::rowSpan( int row, int column ) const
+{
+  if ( row < mContents.size() && column < mContents.at( row ).size() )
+    return mContents.value( row ).value( column ).rowSpan();
+  return 1;
+}
+
+int QgsLayoutItemManualTable::columnSpan( int row, int column ) const
+{
+  if ( row < mContents.size() && column < mContents.at( row ).size() )
+    return mContents.value( row ).value( column ).columnSpan();
+  return 1;
 }
 
 void QgsLayoutItemManualTable::refreshColumns()

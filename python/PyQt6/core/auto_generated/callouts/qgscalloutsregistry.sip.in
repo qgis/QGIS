@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/callouts/qgscalloutsregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -74,7 +74,7 @@ Create a callout of this type given the map of ``properties``.
 Ownership of the callout is transferred to the caller.
 %End
 
-    virtual QgsCalloutWidget *createCalloutWidget( QgsVectorLayer * );
+    virtual QgsCalloutWidget *createCalloutWidget( QgsMapLayer * );
 %Docstring
 Creates a widget for configuring callouts of this type. Can return ``None`` if there's no GUI required.
 
@@ -103,7 +103,7 @@ Convenience metadata class that uses static functions to create callouts and the
 
     virtual QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) /Factory/;
 
-    virtual QgsCalloutWidget *createCalloutWidget( QgsVectorLayer *vl ) /Factory/;
+    virtual QgsCalloutWidget *createCalloutWidget( QgsMapLayer *vl ) /Factory/;
 
 
   protected:
@@ -180,5 +180,5 @@ The caller takes ownership of the callout.
  *                                                                      *
  * src/core/callouts/qgscalloutsregistry.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

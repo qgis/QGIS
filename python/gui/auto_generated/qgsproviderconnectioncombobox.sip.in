@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsproviderconnectioncombobox.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,7 +28,6 @@ The :py:class:`QgsProviderConnectionComboBox` class is a combo box which display
 #include "qgsproviderconnectioncombobox.h"
 %End
   public:
-
     explicit QgsProviderConnectionComboBox( const QString &provider, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProviderConnectionComboBox, for the specified ``provider``.
@@ -94,5 +93,5 @@ Emitted whenever the currently selected connection changes.
  *                                                                      *
  * src/gui/qgsproviderconnectioncombobox.h                              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

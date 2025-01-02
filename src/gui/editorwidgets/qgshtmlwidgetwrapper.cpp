@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgshtmlwidgetwrapper.h"
+#include "moc_qgshtmlwidgetwrapper.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgswebframe.h"
 #include "qgsvaluerelationfieldformatter.h"
@@ -40,8 +41,7 @@ QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
   {
     mFormFeature = form->feature();
-    connect( form, &QgsAttributeForm::widgetValueChanged, this, [ = ]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
-    {
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, [=]( const QString &attribute, const QVariant &newValue, bool attributeChanged ) {
       if ( attributeChanged )
       {
         if ( mRequiresFormScope )
@@ -80,7 +80,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
   checkGeometryNeeds();
 }
 
-void QgsHtmlWidgetWrapper::reinitWidget( )
+void QgsHtmlWidgetWrapper::reinitWidget()
 {
   if ( !mWidget )
     return;
@@ -106,8 +106,7 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
   }
 
   auto frame = webView.page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [ frame, &evaluator ]
-  {
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, &evaluator] {
     frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), &evaluator );
   } );
 
@@ -134,7 +133,7 @@ void QgsHtmlWidgetWrapper::setHtmlCode( const QString &htmlCode )
   checkGeometryNeeds();
 }
 
-void QgsHtmlWidgetWrapper::setHtmlContext( )
+void QgsHtmlWidgetWrapper::setHtmlContext()
 {
   if ( !mWidget )
     return;
@@ -152,8 +151,7 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
   HtmlExpression *htmlExpression = new HtmlExpression();
   htmlExpression->setExpressionContext( expressionContext );
   auto frame = mWidget->page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [ = ]
-  {
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [=] {
     frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), htmlExpression );
   } );
 

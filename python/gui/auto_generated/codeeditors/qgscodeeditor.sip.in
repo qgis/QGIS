@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditor.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -24,7 +24,6 @@ An interface for code interpreters.
 #include "qgscodeeditor.h"
 %End
   public:
-
     virtual ~QgsCodeInterpreter();
 
     int exec( const QString &command );
@@ -49,7 +48,6 @@ interpreter, given a ``state``.
 %End
 
   protected:
-
     virtual int execCommandImpl( const QString &command ) = 0;
 %Docstring
 Pure virtual method for executing commands in the interpreter.
@@ -77,8 +75,6 @@ A text editor based on QScintilla2.
 %End
   public:
 
-
-
     enum class Mode
     {
       ScriptEditor,
@@ -87,7 +83,7 @@ A text editor based on QScintilla2.
     };
 
     enum class MarginRole
-      {
+    {
       LineNumbers,
       ErrorIndicators,
       FoldingControls,
@@ -144,22 +140,24 @@ Returns a user-friendly, translated name of the specified script ``language``.
 .. versionadded:: 3.30
 %End
 
- void setMarginVisible( bool margin ) /Deprecated/;
+ void setMarginVisible( bool margin ) /Deprecated="Since 3.40. Use base class methods for individual margins instead, or setLineNumbersVisible()."/;
 %Docstring
 Set margin visible state
 
 :param margin: Set margin in the editor
 
-.. deprecated::
-   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.setLineNumbersVisible`
+.. deprecated:: 3.40
+
+   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.setLineNumbersVisible`.
 %End
 
- bool marginVisible() /Deprecated/;
+ bool marginVisible() /Deprecated="Since 3.40. Use base class methods for individual margins instead, or lineNumbersVisible()."/;
 %Docstring
 Returns whether margins are in a visible state
 
-.. deprecated::
-   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.lineNumbersVisible`
+.. deprecated:: 3.40
+
+   Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.lineNumbersVisible`.
 %End
 
     void setLineNumbersVisible( bool visible );
@@ -364,6 +362,17 @@ Convenience function to set the selection using linear indexes
 .. versionadded:: 3.36
 %End
 
+    virtual void callTip();
+
+    int wrapPosition( int line = -1 );
+%Docstring
+Returns the linear position of the start of the last wrapped part for the specified line, or
+for the current line if line = -1
+If wrapping is disabled, returns -1 instead
+
+.. versionadded:: 3.40
+%End
+
   public slots:
 
     void runCommand( const QString &command, bool skipHistory = false );
@@ -506,8 +515,15 @@ Emitted when the persistent history of commands run in the editor is cleared.
 .. versionadded:: 3.30
 %End
 
-  protected:
 
+    void helpRequested( const QString &word );
+%Docstring
+Emitted when documentation was requested for the specified ``word``.
+
+.. versionadded:: 3.42
+%End
+
+  protected:
     static bool isFixedPitch( const QFont &font );
 %Docstring
 Returns ``True`` if a ``font`` is a fixed pitch font.
@@ -610,5 +626,5 @@ QFlags<QgsCodeEditor::Flag> operator|(QgsCodeEditor::Flag f1, QFlags<QgsCodeEdit
  *                                                                      *
  * src/gui/codeeditors/qgscodeeditor.h                                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

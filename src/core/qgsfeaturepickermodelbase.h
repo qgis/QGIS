@@ -54,7 +54,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeaturePickerModelBase, Role ) : int
     {
-      IdentifierValue SIP_MONKEYPATCH_COMPAT_NAME(IdentifierValueRole) = Qt::UserRole, //!< \deprecated Use IdentifierValuesRole instead
+      IdentifierValue SIP_MONKEYPATCH_COMPAT_NAME(IdentifierValueRole) = Qt::UserRole, //!< Used to retrieve the identifier value (primary key) of a feature. \deprecated QGIS 3.40. Use IdentifierValuesRole instead.
       IdentifierValues SIP_MONKEYPATCH_COMPAT_NAME(IdentifierValuesRole), //!< Used to retrieve the identifierValues (primary keys) of a feature.
       Value SIP_MONKEYPATCH_COMPAT_NAME(ValueRole), //!< Used to retrieve the displayExpression of a feature.
       Feature SIP_MONKEYPATCH_COMPAT_NAME(FeatureRole), //!< Used to retrieve the feature, it might be incomplete if the request doesn't fetch all attributes or geometry.
@@ -241,9 +241,9 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     void extraIdentifierValueIndexChanged( int index );
 
     /**
-     * Flag indicating that the extraIdentifierValue does not exist in the data.
+     * Notification whether the model has \a found a feature tied to the extraIdentifierValue or not.
      */
-    void extraValueDoesNotExistChanged();
+    void extraValueDoesNotExistChanged( bool found );
 
     /**
      * Notification that the model is about to be changed because a job was completed.

@@ -37,7 +37,6 @@ class QgsSubsetStringEditorInterface;
 class GUI_EXPORT QgsSubsetStringEditorProvider
 {
   public:
-    //! Destructor.
     virtual ~QgsSubsetStringEditorProvider();
 
     //! Provider key
@@ -63,7 +62,11 @@ class GUI_EXPORT QgsSubsetStringEditorProvider
      * whereas a dedicated plugin with a specific behavior for a OGR driver
      * will return true.
      */
-    virtual bool canHandleLayerStorageType( QgsVectorLayer *layer ) const { Q_UNUSED( layer ); return false; }
+    virtual bool canHandleLayerStorageType( QgsVectorLayer *layer ) const
+    {
+      Q_UNUSED( layer );
+      return false;
+    }
 
     /**
      * Creates a new dialog to edit the subset string of the provided \a layer.

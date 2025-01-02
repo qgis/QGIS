@@ -1,0 +1,66 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgsmaskpaintdevice.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMaskPaintDevice: QPaintDevice
+{
+%Docstring(signature="appended")
+Mask painter device that can be used to register everything painted into a QPainterPath
+used later as clip path
+
+.. deprecated:: 3.38
+
+   Use :py:class:`QgsGeometryPaintDevice` instead.
+%End
+
+%TypeHeaderCode
+#include "qgsmaskpaintdevice.h"
+%End
+  public:
+
+ QgsMaskPaintDevice( bool usePathStroker = false ) /Deprecated="Since 3.38. Use QgsGeometryPaintDevice instead."/;
+%Docstring
+!
+Constructor
+If ``usePathStroker`` is ``True``, path will be considered with a stroke regarding QPainter
+pen configuration
+
+.. deprecated:: 3.38
+
+   Use :py:class:`QgsGeometryPaintDevice` instead.
+%End
+
+    virtual QPaintEngine *paintEngine() const;
+
+
+    virtual int metric( PaintDeviceMetric metric ) const;
+
+
+ QPainterPath maskPainterPath() const /Deprecated="Since 3.40. Use QgsGeometryPaintDevice instead."/;
+%Docstring
+Returns the mask painter path painted on this paint device
+
+.. deprecated:: 3.40
+
+   Use :py:class:`QgsGeometryPaintDevice` instead.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgsmaskpaintdevice.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

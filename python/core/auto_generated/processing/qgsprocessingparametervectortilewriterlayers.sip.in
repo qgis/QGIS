@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingparametervectortilewriterlayers.h   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -77,5 +77,5 @@ Converts a single input layer to QVariant representation (a QVariantMap)
  *                                                                      *
  * src/core/processing/qgsprocessingparametervectortilewriterlayers.h   *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

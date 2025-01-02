@@ -15,8 +15,8 @@
 ***************************************************************************
 """
 
-__author__ = 'Juergen E. Fischer'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Juergen E. Fischer'
+__author__ = "Juergen E. Fischer"
+__date__ = "March 2016"
+__copyright__ = "(C) 2016, Juergen E. Fischer"
 
 import qgis.PyQt.uic.pyuic

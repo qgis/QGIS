@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/processing/qgsprocessingparametermeshdataset.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -186,5 +186,5 @@ If the value has the wrong type return an invalid QDatetime
  *                                                                      *
  * src/core/processing/qgsprocessingparametermeshdataset.h              *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

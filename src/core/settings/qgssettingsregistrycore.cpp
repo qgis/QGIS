@@ -115,6 +115,12 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsLayerParallelLoa
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerParallelLoading = new QgsSettingsEntryBool( QStringLiteral( "provider-parallel-loading" ), QgsSettingsTree::sTreeCore, true, QStringLiteral( "Load layers in parallel (only available for some providers (GDAL and PostgreSQL)" ), Qgis::SettingsOption() );
 
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsNetworkCacheDirectory = new QgsSettingsEntryString( QStringLiteral( "directory" ), QgsSettingsTree::sTreeNetworkCache, QString(), QStringLiteral( "Network disk cache directory" ) );
+
+const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSize = new QgsSettingsEntryInteger64( QStringLiteral( "size-bytes" ), QgsSettingsTree::sTreeNetworkCache, 0, QStringLiteral( "Network disk cache size in bytes (0 = automatic size)" ) );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {
@@ -142,8 +148,6 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueFromKey( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
   QgsProcessing::settingsTempPath->copyValueFromKey( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
-  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueFromKey( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueFromKey( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
 
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueFromKey( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
 
@@ -255,6 +259,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       continue;
     for ( const QString &connection : connections )
     {
+      if ( settings.value( QStringLiteral( "%1/url" ).arg( connection ) ).toString().isEmpty() )
+        continue;
+
       QgsOwsConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/url" ), {service.toLower(), connection}, true );
       QgsOwsConnection::settingsVersion->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/version" ), {service.toLower(), connection}, true );
       QgsOwsConnection::settingsIgnoreGetMapURI->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/ignoreGetMapURI" ), {service.toLower(), connection}, true );
@@ -271,8 +278,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       QgsOwsConnection::settingsInvertAxisOrientation->copyValueFromKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection}, true );
 
       Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( service );
+      settings.beginGroup( connection );
       QgsOwsConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), {service.toLower(), connection} );
+      settings.remove( QStringLiteral( "http-header" ) );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
 
@@ -291,6 +299,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     const QStringList connections = settings.childGroups();
     for ( const QString &connection : connections )
     {
+      if ( settings.value( QStringLiteral( "%1/url" ).arg( connection ) ).toString().isEmpty() )
+        continue;
+
       QgsVectorTileProviderConnection::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/url" ), {connection}, true );
       QgsVectorTileProviderConnection::settingsZmin->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmin" ), {connection}, true );
       QgsVectorTileProviderConnection::settingsZmax->copyValueFromKey( QStringLiteral( "qgis/connections-vector-tile/%1/zmax" ), {connection}, true );
@@ -302,6 +313,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( connection );
       QgsVectorTileProviderConnection::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
+      settings.remove( QStringLiteral( "http-header" ) );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
     }
@@ -314,6 +326,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
     const QStringList connections = settings.childGroups();
     for ( const QString &connection : connections )
     {
+      if ( settings.value( QStringLiteral( "%1/url" ).arg( connection ) ).toString().isEmpty() )
+        continue;
+
       QgsXyzConnectionSettings::settingsUrl->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/url" ), {connection}, true );
       QgsXyzConnectionSettings::settingsZmin->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/zmin" ), {connection}, true );
       QgsXyzConnectionSettings::settingsZmax->copyValueFromKey( QStringLiteral( "qgis/connections-xyz/%1/zmax" ), {connection}, true );
@@ -326,6 +341,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       Q_NOWARN_DEPRECATED_PUSH
       settings.beginGroup( connection );
       QgsXyzConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
+      settings.remove( QStringLiteral( "http-header" ) );
       settings.endGroup();
       Q_NOWARN_DEPRECATED_POP
     }
@@ -351,6 +367,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
         Q_NOWARN_DEPRECATED_PUSH
         settings.beginGroup( connection );
         QgsArcGisConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( settings ).headers(), connection );
+        settings.remove( QStringLiteral( "http-header" ) );
         settings.endGroup();
         Q_NOWARN_DEPRECATED_POP
       }
@@ -397,8 +414,6 @@ void QgsSettingsRegistryCore::backwardCompatibility()
 
   QgsProcessing::settingsPreferFilenameAsLayerName->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ) );
   QgsProcessing::settingsTempPath->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) );
-  QgsProcessing::settingsDefaultOutputVectorLayerExt->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ) );
-  QgsProcessing::settingsDefaultOutputRasterLayerExt->copyValueToKeyIfChanged( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ) );
 
   QgsNetworkAccessManager::settingsNetworkTimeout->copyValueToKeyIfChanged( QStringLiteral( "qgis/networkAndProxy/networkTimeout" ) );
 
@@ -483,10 +498,10 @@ void QgsSettingsRegistryCore::backwardCompatibility()
         QgsOwsConnection::settingsIgnoreAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {service.toLower(), connection} );
         QgsOwsConnection::settingsInvertAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection} );
 
-        if ( QgsOwsConnection::settingsHeaders->exists( connection ) )
+        if ( QgsOwsConnection::settingsHeaders->exists( {service.toLower(), connection} ) )
         {
           Q_NOWARN_DEPRECATED_PUSH
-          const QgsHttpHeaders headers = QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), service} ) );
+          const QgsHttpHeaders headers = QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), connection} ) );
           settings->beginGroup( QStringLiteral( "qgis/connections-%1/%2" ).arg( service.toLower(), connection ) );
           headers.updateSettings( *settings );
           settings->endGroup();

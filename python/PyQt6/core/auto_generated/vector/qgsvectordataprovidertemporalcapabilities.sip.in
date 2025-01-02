@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/vector/qgsvectordataprovidertemporalcapabilities.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -108,5 +108,5 @@ Sets the name of the end datetime ``field``, which stores the end time for the f
  *                                                                      *
  * src/core/vector/qgsvectordataprovidertemporalcapabilities.h          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

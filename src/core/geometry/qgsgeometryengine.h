@@ -25,6 +25,12 @@ email                : marco.hugentobler at sourcepole dot com
 
 class QgsAbstractGeometry;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsgeos.h>
+% End
+#endif
+
 /**
  * \ingroup core
  * \class QgsGeometryEngine
@@ -66,6 +72,16 @@ class QgsAbstractGeometry;
  */
 class CORE_EXPORT QgsGeometryEngine
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsGeos * >( sipCpp ) != NULL )
+      sipType = sipType_QgsGeos;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     /**

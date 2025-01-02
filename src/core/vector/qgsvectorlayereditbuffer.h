@@ -33,6 +33,7 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 /**
  * \ingroup core
  * \class QgsVectorLayerEditBuffer
+ * \brief Stores queued vector layer edit operations prior to committing changes to the layer's data provider.
  */
 class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 {
@@ -213,7 +214,10 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     //! Emitted when modifications has been done on layer
     void layerModified();
 
+    //! Emitted when a feature has been added to the buffer
     void featureAdded( QgsFeatureId fid );
+
+    //! Emitted when a feature was deleted from the buffer
     void featureDeleted( QgsFeatureId fid );
 
     /**
@@ -223,8 +227,19 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      */
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
 
-    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
+    /**
+     * Emitted when a feature's attribute value has been changed.
+     */
+    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+
+    /**
+     * Emitted when an attribute was added to the buffer.
+     */
     void attributeAdded( int idx );
+
+    /**
+     * Emitted when an attribute was deleted from the buffer.
+     */
     void attributeDeleted( int idx );
 
     /**
@@ -234,8 +249,14 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      */
     void attributeRenamed( int idx, const QString &newName );
 
-    //! Signals emitted after committing changes
+    /**
+     * Emitted after attribute deletion has been committed to the layer.
+     */
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
+
+    /**
+     * Emitted after attribute addition has been committed to the layer.
+     */
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
 
     /**
@@ -244,14 +265,29 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * \param renamedAttributes map of field index to new name
      */
     void committedAttributesRenamed( const QString &layerId, const QgsFieldNameMap &renamedAttributes );
+
+    /**
+     * Emitted after feature addition has been committed to the layer.
+     */
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
+
+    /**
+     * Emitted after feature removal has been committed to the layer.
+     */
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );
+
+    /**
+     * Emitted after feature attribute value changes have been committed to the layer.
+     */
     void committedAttributeValuesChanges( const QString &layerId, const QgsChangedAttributesMap &changedAttributesValues );
+
+    /**
+     * Emitted after feature geometry changes have been committed to the layer.
+     */
     void committedGeometriesChanges( const QString &layerId, const QgsGeometryMap &changedGeometries );
 
   protected:
 
-    //! Constructor for QgsVectorLayerEditBuffer
     QgsVectorLayerEditBuffer() = default;
 
     //! Update feature with uncommitted geometry updates

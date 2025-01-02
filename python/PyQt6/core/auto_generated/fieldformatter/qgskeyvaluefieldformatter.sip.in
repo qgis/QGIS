@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/fieldformatter/qgskeyvaluefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -25,9 +25,6 @@ E.g. "color: yellow, amount: 5"
   public:
 
     QgsKeyValueFieldFormatter();
-%Docstring
-Default constructor of field formatter for a key value field.
-%End
     virtual QString id() const;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
@@ -39,5 +36,5 @@ Default constructor of field formatter for a key value field.
  *                                                                      *
  * src/core/fieldformatter/qgskeyvaluefieldformatter.h                  *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

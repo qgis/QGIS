@@ -3,7 +3,7 @@
  *                                                                      *
  * src/analysis/raster/qgsrastermatrix.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -19,7 +19,6 @@ Represents a matrix in a raster calculator operation.
 #include "qgsrastermatrix.h"
 %End
   public:
-
     enum TwoArgOperator
     {
       opPLUS,
@@ -55,9 +54,6 @@ Represents a matrix in a raster calculator operation.
     };
 
     QgsRasterMatrix();
-%Docstring
-Takes ownership of data array
-%End
 
     QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();
@@ -143,5 +139,5 @@ Calculates the absolute value
  *                                                                      *
  * src/analysis/raster/qgsrastermatrix.h                                *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

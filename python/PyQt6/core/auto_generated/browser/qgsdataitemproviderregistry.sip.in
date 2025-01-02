@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/browser/qgsdataitemproviderregistry.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -15,6 +15,7 @@ class QgsDataItemProviderRegistry : QObject
 {
 %Docstring(signature="appended")
 This class keeps a list of data item providers that may add items to the browser tree.
+
 When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
 
 :py:class:`QgsDataItemProviderRegistry` is not usually directly created, but rather accessed through
@@ -38,7 +39,7 @@ Returns the list of available providers.
 
     QgsDataItemProvider *provider( const QString &providerName ) const;
 %Docstring
-Returns the (possibly NULL) data item provider named ``providerName``
+Returns the (possibly ``None``) data item provider named ``providerName``
 
 .. versionadded:: 3.14
 %End
@@ -89,5 +90,5 @@ Emitted when a data item provider is about to be removed
  *                                                                      *
  * src/core/browser/qgsdataitemproviderregistry.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

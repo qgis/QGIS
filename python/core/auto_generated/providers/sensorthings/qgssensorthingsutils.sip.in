@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/providers/sensorthings/qgssensorthingsutils.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -42,9 +42,31 @@ Converts a string value corresponding to a SensorThings entity set to a :py:clas
 Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could not be converted to a known entity set type.
 %End
 
+    static QString entityToSetString( Qgis::SensorThingsEntity type );
+%Docstring
+Converts a SensorThings entity set to a SensorThings entity set string.
+
+.. versionadded:: 3.38
+%End
+
+    static QStringList propertiesForEntityType( Qgis::SensorThingsEntity type );
+%Docstring
+Returns the SensorThings properties which correspond to a specified entity ``type``.
+
+.. versionadded:: 3.38
+%End
+
     static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
 %Docstring
 Returns the fields which correspond to a specified entity ``type``.
+%End
+
+    static QgsFields fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList< Qgis::SensorThingsEntity > &expandedTypes );
+%Docstring
+Returns the fields which correspond to a specified entity ``baseType``, expanded
+using the specified list of ``expandedTypes``.
+
+.. versionadded:: 3.38
 %End
 
     static QString geometryFieldForEntityType( Qgis::SensorThingsEntity type );
@@ -99,6 +121,212 @@ and entity ``type``.
 This method will block while network requests are made to the server.
 %End
 
+    static QList< Qgis::SensorThingsEntity > expandableTargets( Qgis::SensorThingsEntity type );
+%Docstring
+Returns a list of permissible expand targets for a given base entity ``type``.
+
+.. versionadded:: 3.38
+%End
+
+    static Qgis::RelationshipCardinality relationshipCardinality( Qgis::SensorThingsEntity baseType, Qgis::SensorThingsEntity relatedType, bool &valid /Out/ );
+%Docstring
+Returns the cardinality of the relationship between a base entity type and a related entity type.
+
+:param baseType: base entity type
+:param relatedType: related entity type
+
+:return: - relationship cardinality
+         - valid: ``True`` if a relationship exists between the entity types, or ``False`` if no relationship exists
+
+.. versionadded:: 3.38
+%End
+
+    static QString asQueryString( Qgis::SensorThingsEntity baseType, const QList< QgsSensorThingsExpansionDefinition > &expansions );
+%Docstring
+Returns a list of ``expansions`` as a valid SensorThings API query string, eg "$expand=Locations($orderby=id desc;$top=3;$expand=Datastreams($top=101))".
+
+The base entity type for the query must be specified.
+
+.. versionadded:: 3.38
+%End
+
+};
+
+
+class QgsSensorThingsExpansionDefinition
+{
+%Docstring(signature="appended")
+Encapsulates information about how relationships in a SensorThings API service should be expanded.
+
+.. versionadded:: 3.38
+%End
+
+%TypeHeaderCode
+#include "qgssensorthingsutils.h"
+%End
+  public:
+
+    QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
+                                        const QString &orderBy = QString(),
+                                        Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
+                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+                                        const QString &filter = QString() );
+%Docstring
+Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
+%End
+
+    static QgsSensorThingsExpansionDefinition defaultDefinitionForEntity( Qgis::SensorThingsEntity entity );
+%Docstring
+Returns an expansion definition for the specified ``entity`` type, populated with reasonable
+defaults which make sense for that entity type.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the definition is valid.
+%End
+
+    Qgis::SensorThingsEntity childEntity() const;
+%Docstring
+Returns the target child entity which should be expanded.
+
+.. seealso:: :py:func:`setChildEntity`
+%End
+
+    void setChildEntity( Qgis::SensorThingsEntity entity );
+%Docstring
+Sets the target child ``entity`` which should be expanded.
+
+.. seealso:: :py:func:`childEntity`
+%End
+
+    QString orderBy() const;
+%Docstring
+Returns the field name to order the expanded child entities by.
+
+.. seealso:: :py:func:`sortOrder`
+
+.. seealso:: :py:func:`setOrderBy`
+%End
+
+    void setOrderBy( const QString &field );
+%Docstring
+Sets the ``field`` name to order the expanded child entities by.
+
+.. seealso:: :py:func:`orderBy`
+
+.. seealso:: :py:func:`setSortOrder`
+%End
+
+    Qt::SortOrder sortOrder() const;
+%Docstring
+Returns the sort order for the expanded child entities.
+
+.. seealso:: :py:func:`orderBy`
+
+.. seealso:: :py:func:`setSortOrder`
+%End
+
+    void setSortOrder( Qt::SortOrder order );
+%Docstring
+Sets the sort order for the expanded child entities.
+
+.. seealso:: :py:func:`setOrderBy`
+
+.. seealso:: :py:func:`sortOrder`
+%End
+
+    int limit() const;
+%Docstring
+Returns the limit on the number of child features to fetch.
+
+Returns -1 if no limit is defined.
+
+.. seealso:: :py:func:`setLimit`
+%End
+
+    void setLimit( int limit );
+%Docstring
+Sets the ``limit`` on the number of child features to fetch.
+
+Set to -1 if no limit is desired.
+
+.. seealso:: :py:func:`limit`
+%End
+
+    QString filter() const;
+%Docstring
+Returns the the string filter to filter expanded child entities by.
+
+.. seealso:: :py:func:`setFilter`
+%End
+
+    void setFilter( const QString &filter );
+%Docstring
+Returns the the string ``filter`` to filter expanded child entities by.
+
+.. seealso:: :py:func:`filter`
+%End
+
+    QString toString() const;
+%Docstring
+Returns a string encapsulation of the expansion definition.
+
+.. seealso:: :py:func:`fromString`
+%End
+
+    static QgsSensorThingsExpansionDefinition fromString( const QString &string );
+%Docstring
+Returns a QgsSensorThingsExpansionDefinition from a string representation.
+
+.. seealso:: :py:func:`toString`
+%End
+
+    QString asQueryString( Qgis::SensorThingsEntity parentEntityType, const QStringList &additionalOptions = QStringList() ) const;
+%Docstring
+Returns the expansion as a valid SensorThings API query string, eg "$expand=Observations($orderby=phenomenonTime desc;$top=10)".
+
+The parent entity type for the expansion must be specified.
+
+Optionally a list of additional query options can be specified for the expansion.
+%End
+
+    bool operator==( const QgsSensorThingsExpansionDefinition &other ) const;
+    bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    if ( !sipCpp->isValid() )
+    {
+      sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" );
+    }
+    else
+    {
+      QString innerDefinition;
+      if ( !sipCpp->orderBy().isEmpty() )
+      {
+        innerDefinition = QStringLiteral( "by %1 (%2)" ).arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? QStringLiteral( "asc" ) : QStringLiteral( "desc" ) );
+      }
+      if ( sipCpp->limit() >= 0 )
+      {
+        if ( !innerDefinition.isEmpty() )
+          innerDefinition = QStringLiteral( "%1, limit %2" ).arg( innerDefinition ).arg( sipCpp->limit() );
+        else
+          innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
+      }
+      if ( !sipCpp->filter().isEmpty() )
+      {
+        if ( !innerDefinition.isEmpty() )
+          innerDefinition = QStringLiteral( "%1, filter '%2'" ).arg( innerDefinition ).arg( sipCpp->filter() );
+        else
+          innerDefinition = QStringLiteral( "filter '%1'" ).arg( sipCpp->filter() );
+      }
+
+      QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    }
+%End
+
 };
 
 /************************************************************************
@@ -106,5 +334,5 @@ This method will block while network requests are made to the server.
  *                                                                      *
  * src/core/providers/sensorthings/qgssensorthingsutils.h               *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -198,6 +198,9 @@ tests:
 
   - algorithm: gdal:gridaverage
     name: Moving average interpolation (gdal_grid)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       ANGLE: 0.0
       DATA_TYPE: 5
@@ -218,6 +221,9 @@ tests:
 
   - algorithm: gdal:griddatametrics
     name: Data metrics interpolation (gdal_grid)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       ANGLE: 0.0
       DATA_TYPE: 5
@@ -239,6 +245,9 @@ tests:
 
   - algorithm: gdal:gridinversedistance
     name: Inverse distance to a power interpolation (gdal_grid)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       ANGLE: 0.0
       DATA_TYPE: 5
@@ -262,6 +271,9 @@ tests:
 
   - algorithm: gdal:gridinversedistancenearestneighbor
     name: Inverse distance to a power with nearest neighbor searching (gdal_grid)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       DATA_TYPE: 5
       INPUT:
@@ -283,6 +295,9 @@ tests:
 
   - algorithm: gdal:gridlinear
     name: Linear interpolation (gdal_grid)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       DATA_TYPE: 5
       INPUT:
@@ -302,6 +317,9 @@ tests:
 
   - algorithm: gdal:gridnearestneighbor
     name: Nearest neighbor interpolation (gdal_grid)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       ANGLE: 0.0
       DATA_TYPE: 5
@@ -357,6 +375,9 @@ tests:
 
   - algorithm: gdal:rasterize
     name: Test (gdal:rasterize)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       BURN: 0.0
       DATA_TYPE: 5
@@ -379,6 +400,9 @@ tests:
 
   - algorithm: gdal:rasterize
     name: Test extent crs (gdal:rasterize)
+    condition:
+      gdal:
+        at_least: 3070000
     params:
       BURN: 0.0
       DATA_TYPE: 5

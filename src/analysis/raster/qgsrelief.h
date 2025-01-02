@@ -40,18 +40,17 @@ class ANALYSIS_EXPORT QgsRelief
   public:
     struct ReliefColor
     {
-      ReliefColor( const QColor &c, double min, double max ): color( c ), minElevation( min ), maxElevation( max ) { }
-      QColor color;
-      double minElevation;
-      double maxElevation;
+        ReliefColor( const QColor &c, double min, double max )
+          : color( c ), minElevation( min ), maxElevation( max ) {}
+        QColor color;
+        double minElevation;
+        double maxElevation;
     };
 
     QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
     ~QgsRelief();
 
-    //! QgsRelief cannot be copied
     QgsRelief( const QgsRelief &rh ) = delete;
-    //! QgsRelief cannot be copied
     QgsRelief &operator=( const QgsRelief &rh ) = delete;
 
     /**
@@ -66,14 +65,14 @@ class ANALYSIS_EXPORT QgsRelief
 
     void clearReliefColors();
     void addReliefColorClass( const QgsRelief::ReliefColor &color );
-    QList< QgsRelief::ReliefColor > reliefColors() const { return mReliefColors; }
-    void setReliefColors( const QList< QgsRelief::ReliefColor > &c ) { mReliefColors = c; }
+    QList<QgsRelief::ReliefColor> reliefColors() const { return mReliefColors; }
+    void setReliefColors( const QList<QgsRelief::ReliefColor> &c ) { mReliefColors = c; }
 
     /**
      * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
      * \returns TRUE in case of success
     */
-    QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
+    QList<QgsRelief::ReliefColor> calculateOptimizedReliefClasses();
 
     //! Write frequency of elevation values to file for manual inspection
     bool exportFrequencyDistributionToCsv( const QString &file );
@@ -96,17 +95,16 @@ class ANALYSIS_EXPORT QgsRelief
 
     double mZFactor = 1;
 
-    std::unique_ptr< QgsSlopeFilter > mSlopeFilter;
-    std::unique_ptr< QgsAspectFilter > mAspectFilter;
-    std::unique_ptr< QgsHillshadeFilter > mHillshadeFilter285;
-    std::unique_ptr< QgsHillshadeFilter > mHillshadeFilter300;
-    std::unique_ptr< QgsHillshadeFilter > mHillshadeFilter315;
+    std::unique_ptr<QgsSlopeFilter> mSlopeFilter;
+    std::unique_ptr<QgsAspectFilter> mAspectFilter;
+    std::unique_ptr<QgsHillshadeFilter> mHillshadeFilter285;
+    std::unique_ptr<QgsHillshadeFilter> mHillshadeFilter300;
+    std::unique_ptr<QgsHillshadeFilter> mHillshadeFilter315;
 
     //relief colors and corresponding elevations
-    QList< ReliefColor > mReliefColors;
+    QList<ReliefColor> mReliefColors;
 
-    bool processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9,
-                                unsigned char *red, unsigned char *green, unsigned char *blue );
+    bool processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9, unsigned char *red, unsigned char *green, unsigned char *blue );
 
     //! Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction
     gdal::dataset_unique_ptr openInputFile( int &nCellsX, int &nCellsY );
@@ -123,8 +121,10 @@ class ANALYSIS_EXPORT QgsRelief
     */
     gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
-    //! Sets elevation color
-    bool setElevationColor( double elevation, int *red, int *green, int *blue );
+    /**
+     * Retrieves the color corresponding to the specified \a elevation.
+     */
+    bool getElevationColor( double elevation, int *red, int *green, int *blue ) const;
 
     //! Sets relief colors
     void setDefaultReliefColors();
@@ -143,8 +143,7 @@ class ANALYSIS_EXPORT QgsRelief
      * \param a slope
      * \param b y value for x=0
      */
-    bool calculateRegression( const QList< QPair < int, double > > &input, double &a, double &b );
-
+    bool calculateRegression( const QList<QPair<int, double>> &input, double &a, double &b );
 };
 
 #endif // QGSRELIEF_H

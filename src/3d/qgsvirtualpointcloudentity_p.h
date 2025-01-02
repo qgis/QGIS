@@ -29,8 +29,9 @@
 //
 
 #include "qgscoordinatetransform.h"
-#include "qgschunkedentity_p.h"
-#include "qgs3dmapsceneentity_p.h"
+#include "qgschunkedentity.h"
+#include "qgs3dmapsceneentity.h"
+#include "qgs3drendercontext.h"
 
 class QgsAABB;
 class QgsChunkBoundsEntity;
@@ -56,8 +57,7 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     Q_OBJECT
   public:
     //! Constructs
-    QgsVirtualPointCloudEntity( QgsPointCloudLayer *layer, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
-                                double zValueScale, double zValueOffset, int pointBudget );
+    QgsVirtualPointCloudEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *layer, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
 
     //! This is called when the camera moves. It's responsible for loading new indexes and decides if subindex will be rendered as bbox or chunked entity.
     void handleSceneUpdate( const SceneContext &sceneContext ) override;
@@ -95,10 +95,8 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     QMap<int, QgsChunkedEntity *> mChunkedEntitiesMap;
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
     QList<QgsAABB> mBboxes;
-    const Qgs3DMapSettings &mMap;
     QgsCoordinateTransform mCoordinateTransform;
-    QgsPointCloudIndex *mPointCloudIndex;
-    std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
+    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
     int mPointBudget = 1000000;

@@ -63,6 +63,9 @@ QgsPalLayerSettings.MultiLineAlignment.__doc__ = ""
 QgsPalLayerSettings.TextOrientation = QgsPalLayerSettings.Property.TextOrientation
 QgsPalLayerSettings.TextOrientation.is_monkey_patched = True
 QgsPalLayerSettings.TextOrientation.__doc__ = ""
+QgsPalLayerSettings.TabStopDistance = QgsPalLayerSettings.Property.TabStopDistance
+QgsPalLayerSettings.TabStopDistance.is_monkey_patched = True
+QgsPalLayerSettings.TabStopDistance.__doc__ = "Tab stop distance, since QGIS 3.38"
 QgsPalLayerSettings.DirSymbDraw = QgsPalLayerSettings.Property.DirSymbDraw
 QgsPalLayerSettings.DirSymbDraw.is_monkey_patched = True
 QgsPalLayerSettings.DirSymbDraw.__doc__ = ""
@@ -240,6 +243,9 @@ QgsPalLayerSettings.OffsetUnits.__doc__ = ""
 QgsPalLayerSettings.LabelDistance = QgsPalLayerSettings.Property.LabelDistance
 QgsPalLayerSettings.LabelDistance.is_monkey_patched = True
 QgsPalLayerSettings.LabelDistance.__doc__ = ""
+QgsPalLayerSettings.MaximumDistance = QgsPalLayerSettings.Property.MaximumDistance
+QgsPalLayerSettings.MaximumDistance.is_monkey_patched = True
+QgsPalLayerSettings.MaximumDistance.__doc__ = "Maximum distance of label from feature"
 QgsPalLayerSettings.DistanceUnits = QgsPalLayerSettings.Property.DistanceUnits
 QgsPalLayerSettings.DistanceUnits.is_monkey_patched = True
 QgsPalLayerSettings.DistanceUnits.__doc__ = ""
@@ -293,19 +299,19 @@ QgsPalLayerSettings.LabelAllParts.is_monkey_patched = True
 QgsPalLayerSettings.LabelAllParts.__doc__ = "Whether all parts of multi-part features should be labeled"
 QgsPalLayerSettings.PolygonLabelOutside = QgsPalLayerSettings.Property.PolygonLabelOutside
 QgsPalLayerSettings.PolygonLabelOutside.is_monkey_patched = True
-QgsPalLayerSettings.PolygonLabelOutside.__doc__ = "Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)"
+QgsPalLayerSettings.PolygonLabelOutside.__doc__ = "Whether labels outside a polygon feature are permitted, or should be forced \n.. versionadded:: 3.14"
 QgsPalLayerSettings.LineAnchorPercent = QgsPalLayerSettings.Property.LineAnchorPercent
 QgsPalLayerSettings.LineAnchorPercent.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorPercent.__doc__ = "Portion along line at which labels should be anchored (since QGIS 3.16)"
+QgsPalLayerSettings.LineAnchorPercent.__doc__ = "Portion along line at which labels should be anchored \n.. versionadded:: 3.16"
 QgsPalLayerSettings.LineAnchorClipping = QgsPalLayerSettings.Property.LineAnchorClipping
 QgsPalLayerSettings.LineAnchorClipping.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorClipping.__doc__ = "Clipping mode for line anchor calculation (since QGIS 3.20)"
+QgsPalLayerSettings.LineAnchorClipping.__doc__ = "Clipping mode for line anchor calculation \n.. versionadded:: 3.20"
 QgsPalLayerSettings.LineAnchorType = QgsPalLayerSettings.Property.LineAnchorType
 QgsPalLayerSettings.LineAnchorType.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorType.__doc__ = "Line anchor type (since QGIS 3.26)"
+QgsPalLayerSettings.LineAnchorType.__doc__ = "Line anchor type \n.. versionadded:: 3.26"
 QgsPalLayerSettings.LineAnchorTextPoint = QgsPalLayerSettings.Property.LineAnchorTextPoint
 QgsPalLayerSettings.LineAnchorTextPoint.is_monkey_patched = True
-QgsPalLayerSettings.LineAnchorTextPoint.__doc__ = "Line anchor text point (since QGIS 3.26)"
+QgsPalLayerSettings.LineAnchorTextPoint.__doc__ = "Line anchor text point \n.. versionadded:: 3.26"
 QgsPalLayerSettings.ScaleVisibility = QgsPalLayerSettings.Property.ScaleVisibility
 QgsPalLayerSettings.ScaleVisibility.is_monkey_patched = True
 QgsPalLayerSettings.ScaleVisibility.__doc__ = ""
@@ -344,15 +350,174 @@ QgsPalLayerSettings.CalloutDraw.is_monkey_patched = True
 QgsPalLayerSettings.CalloutDraw.__doc__ = "Show callout"
 QgsPalLayerSettings.AllowDegradedPlacement = QgsPalLayerSettings.Property.AllowDegradedPlacement
 QgsPalLayerSettings.AllowDegradedPlacement.is_monkey_patched = True
-QgsPalLayerSettings.AllowDegradedPlacement.__doc__ = "Allow degraded label placements (since QGIS 3.26)"
+QgsPalLayerSettings.AllowDegradedPlacement.__doc__ = "Allow degraded label placements \n.. versionadded:: 3.26"
 QgsPalLayerSettings.OverlapHandling = QgsPalLayerSettings.Property.OverlapHandling
 QgsPalLayerSettings.OverlapHandling.is_monkey_patched = True
-QgsPalLayerSettings.OverlapHandling.__doc__ = "Overlap handling technique (since QGIS 3.26)"
+QgsPalLayerSettings.OverlapHandling.__doc__ = "Overlap handling technique \n.. versionadded:: 3.26"
 QgsPalLayerSettings.Show = QgsPalLayerSettings.Property.Show
 QgsPalLayerSettings.Show.is_monkey_patched = True
 QgsPalLayerSettings.Show.__doc__ = ""
 QgsPalLayerSettings.AlwaysShow = QgsPalLayerSettings.Property.AlwaysShow
 QgsPalLayerSettings.AlwaysShow.is_monkey_patched = True
 QgsPalLayerSettings.AlwaysShow.__doc__ = ""
-QgsPalLayerSettings.Property.__doc__ = "Data definable properties.\n\n" + '* ``Size``: ' + QgsPalLayerSettings.Property.Size.__doc__ + '\n' + '* ``Bold``: ' + QgsPalLayerSettings.Property.Bold.__doc__ + '\n' + '* ``Italic``: ' + QgsPalLayerSettings.Property.Italic.__doc__ + '\n' + '* ``Underline``: ' + QgsPalLayerSettings.Property.Underline.__doc__ + '\n' + '* ``Color``: ' + QgsPalLayerSettings.Property.Color.__doc__ + '\n' + '* ``Strikeout``: ' + QgsPalLayerSettings.Property.Strikeout.__doc__ + '\n' + '* ``Family``: ' + QgsPalLayerSettings.Property.Family.__doc__ + '\n' + '* ``FontStyle``: ' + QgsPalLayerSettings.Property.FontStyle.__doc__ + '\n' + '* ``FontSizeUnit``: ' + QgsPalLayerSettings.Property.FontSizeUnit.__doc__ + '\n' + '* ``FontTransp``: ' + QgsPalLayerSettings.Property.FontTransp.__doc__ + '\n' + '* ``FontOpacity``: ' + QgsPalLayerSettings.Property.FontOpacity.__doc__ + '\n' + '* ``FontCase``: ' + QgsPalLayerSettings.Property.FontCase.__doc__ + '\n' + '* ``FontLetterSpacing``: ' + QgsPalLayerSettings.Property.FontLetterSpacing.__doc__ + '\n' + '* ``FontWordSpacing``: ' + QgsPalLayerSettings.Property.FontWordSpacing.__doc__ + '\n' + '* ``FontBlendMode``: ' + QgsPalLayerSettings.Property.FontBlendMode.__doc__ + '\n' + '* ``FontStretchFactor``: ' + QgsPalLayerSettings.Property.FontStretchFactor.__doc__ + '\n' + '* ``MultiLineWrapChar``: ' + QgsPalLayerSettings.Property.MultiLineWrapChar.__doc__ + '\n' + '* ``AutoWrapLength``: ' + QgsPalLayerSettings.Property.AutoWrapLength.__doc__ + '\n' + '* ``MultiLineHeight``: ' + QgsPalLayerSettings.Property.MultiLineHeight.__doc__ + '\n' + '* ``MultiLineAlignment``: ' + QgsPalLayerSettings.Property.MultiLineAlignment.__doc__ + '\n' + '* ``TextOrientation``: ' + QgsPalLayerSettings.Property.TextOrientation.__doc__ + '\n' + '* ``DirSymbDraw``: ' + QgsPalLayerSettings.Property.DirSymbDraw.__doc__ + '\n' + '* ``DirSymbLeft``: ' + QgsPalLayerSettings.Property.DirSymbLeft.__doc__ + '\n' + '* ``DirSymbRight``: ' + QgsPalLayerSettings.Property.DirSymbRight.__doc__ + '\n' + '* ``DirSymbPlacement``: ' + QgsPalLayerSettings.Property.DirSymbPlacement.__doc__ + '\n' + '* ``DirSymbReverse``: ' + QgsPalLayerSettings.Property.DirSymbReverse.__doc__ + '\n' + '* ``NumFormat``: ' + QgsPalLayerSettings.Property.NumFormat.__doc__ + '\n' + '* ``NumDecimals``: ' + QgsPalLayerSettings.Property.NumDecimals.__doc__ + '\n' + '* ``NumPlusSign``: ' + QgsPalLayerSettings.Property.NumPlusSign.__doc__ + '\n' + '* ``BufferDraw``: ' + QgsPalLayerSettings.Property.BufferDraw.__doc__ + '\n' + '* ``BufferSize``: ' + QgsPalLayerSettings.Property.BufferSize.__doc__ + '\n' + '* ``BufferUnit``: ' + QgsPalLayerSettings.Property.BufferUnit.__doc__ + '\n' + '* ``BufferColor``: ' + QgsPalLayerSettings.Property.BufferColor.__doc__ + '\n' + '* ``BufferTransp``: ' + QgsPalLayerSettings.Property.BufferTransp.__doc__ + '\n' + '* ``BufferOpacity``: ' + QgsPalLayerSettings.Property.BufferOpacity.__doc__ + '\n' + '* ``BufferJoinStyle``: ' + QgsPalLayerSettings.Property.BufferJoinStyle.__doc__ + '\n' + '* ``BufferBlendMode``: ' + QgsPalLayerSettings.Property.BufferBlendMode.__doc__ + '\n' + '* ``MaskEnabled``: ' + QgsPalLayerSettings.Property.MaskEnabled.__doc__ + '\n' + '* ``MaskBufferSize``: ' + QgsPalLayerSettings.Property.MaskBufferSize.__doc__ + '\n' + '* ``MaskBufferUnit``: ' + QgsPalLayerSettings.Property.MaskBufferUnit.__doc__ + '\n' + '* ``MaskOpacity``: ' + QgsPalLayerSettings.Property.MaskOpacity.__doc__ + '\n' + '* ``MaskJoinStyle``: ' + QgsPalLayerSettings.Property.MaskJoinStyle.__doc__ + '\n' + '* ``ShapeDraw``: ' + QgsPalLayerSettings.Property.ShapeDraw.__doc__ + '\n' + '* ``ShapeKind``: ' + QgsPalLayerSettings.Property.ShapeKind.__doc__ + '\n' + '* ``ShapeSVGFile``: ' + QgsPalLayerSettings.Property.ShapeSVGFile.__doc__ + '\n' + '* ``ShapeSizeType``: ' + QgsPalLayerSettings.Property.ShapeSizeType.__doc__ + '\n' + '* ``ShapeSizeX``: ' + QgsPalLayerSettings.Property.ShapeSizeX.__doc__ + '\n' + '* ``ShapeSizeY``: ' + QgsPalLayerSettings.Property.ShapeSizeY.__doc__ + '\n' + '* ``ShapeSizeUnits``: ' + QgsPalLayerSettings.Property.ShapeSizeUnits.__doc__ + '\n' + '* ``ShapeRotationType``: ' + QgsPalLayerSettings.Property.ShapeRotationType.__doc__ + '\n' + '* ``ShapeRotation``: ' + QgsPalLayerSettings.Property.ShapeRotation.__doc__ + '\n' + '* ``ShapeOffset``: ' + QgsPalLayerSettings.Property.ShapeOffset.__doc__ + '\n' + '* ``ShapeOffsetUnits``: ' + QgsPalLayerSettings.Property.ShapeOffsetUnits.__doc__ + '\n' + '* ``ShapeRadii``: ' + QgsPalLayerSettings.Property.ShapeRadii.__doc__ + '\n' + '* ``ShapeRadiiUnits``: ' + QgsPalLayerSettings.Property.ShapeRadiiUnits.__doc__ + '\n' + '* ``ShapeTransparency``: ' + QgsPalLayerSettings.Property.ShapeTransparency.__doc__ + '\n' + '* ``ShapeOpacity``: ' + QgsPalLayerSettings.Property.ShapeOpacity.__doc__ + '\n' + '* ``ShapeBlendMode``: ' + QgsPalLayerSettings.Property.ShapeBlendMode.__doc__ + '\n' + '* ``ShapeFillColor``: ' + QgsPalLayerSettings.Property.ShapeFillColor.__doc__ + '\n' + '* ``ShapeStrokeColor``: ' + QgsPalLayerSettings.Property.ShapeStrokeColor.__doc__ + '\n' + '* ``ShapeStrokeWidth``: ' + QgsPalLayerSettings.Property.ShapeStrokeWidth.__doc__ + '\n' + '* ``ShapeStrokeWidthUnits``: ' + QgsPalLayerSettings.Property.ShapeStrokeWidthUnits.__doc__ + '\n' + '* ``ShapeJoinStyle``: ' + QgsPalLayerSettings.Property.ShapeJoinStyle.__doc__ + '\n' + '* ``ShadowDraw``: ' + QgsPalLayerSettings.Property.ShadowDraw.__doc__ + '\n' + '* ``ShadowUnder``: ' + QgsPalLayerSettings.Property.ShadowUnder.__doc__ + '\n' + '* ``ShadowOffsetAngle``: ' + QgsPalLayerSettings.Property.ShadowOffsetAngle.__doc__ + '\n' + '* ``ShadowOffsetDist``: ' + QgsPalLayerSettings.Property.ShadowOffsetDist.__doc__ + '\n' + '* ``ShadowOffsetUnits``: ' + QgsPalLayerSettings.Property.ShadowOffsetUnits.__doc__ + '\n' + '* ``ShadowRadius``: ' + QgsPalLayerSettings.Property.ShadowRadius.__doc__ + '\n' + '* ``ShadowRadiusUnits``: ' + QgsPalLayerSettings.Property.ShadowRadiusUnits.__doc__ + '\n' + '* ``ShadowTransparency``: ' + QgsPalLayerSettings.Property.ShadowTransparency.__doc__ + '\n' + '* ``ShadowOpacity``: ' + QgsPalLayerSettings.Property.ShadowOpacity.__doc__ + '\n' + '* ``ShadowScale``: ' + QgsPalLayerSettings.Property.ShadowScale.__doc__ + '\n' + '* ``ShadowColor``: ' + QgsPalLayerSettings.Property.ShadowColor.__doc__ + '\n' + '* ``ShadowBlendMode``: ' + QgsPalLayerSettings.Property.ShadowBlendMode.__doc__ + '\n' + '* ``CentroidWhole``: ' + QgsPalLayerSettings.Property.CentroidWhole.__doc__ + '\n' + '* ``OffsetQuad``: ' + QgsPalLayerSettings.Property.OffsetQuad.__doc__ + '\n' + '* ``OffsetXY``: ' + QgsPalLayerSettings.Property.OffsetXY.__doc__ + '\n' + '* ``OffsetUnits``: ' + QgsPalLayerSettings.Property.OffsetUnits.__doc__ + '\n' + '* ``LabelDistance``: ' + QgsPalLayerSettings.Property.LabelDistance.__doc__ + '\n' + '* ``DistanceUnits``: ' + QgsPalLayerSettings.Property.DistanceUnits.__doc__ + '\n' + '* ``OffsetRotation``: ' + QgsPalLayerSettings.Property.OffsetRotation.__doc__ + '\n' + '* ``CurvedCharAngleInOut``: ' + QgsPalLayerSettings.Property.CurvedCharAngleInOut.__doc__ + '\n' + '* ``PositionX``: ' + QgsPalLayerSettings.Property.PositionX.__doc__ + '\n' + '* ``PositionY``: ' + QgsPalLayerSettings.Property.PositionY.__doc__ + '\n' + '* ``PositionPoint``: ' + QgsPalLayerSettings.Property.PositionPoint.__doc__ + '\n' + '* ``Hali``: ' + QgsPalLayerSettings.Property.Hali.__doc__ + '\n' + '* ``Vali``: ' + QgsPalLayerSettings.Property.Vali.__doc__ + '\n' + '* ``Rotation``: ' + QgsPalLayerSettings.Property.Rotation.__doc__ + '\n' + '* ``LabelRotation``: ' + QgsPalLayerSettings.Property.LabelRotation.__doc__ + '\n' + '* ``RepeatDistance``: ' + QgsPalLayerSettings.Property.RepeatDistance.__doc__ + '\n' + '* ``RepeatDistanceUnit``: ' + QgsPalLayerSettings.Property.RepeatDistanceUnit.__doc__ + '\n' + '* ``Priority``: ' + QgsPalLayerSettings.Property.Priority.__doc__ + '\n' + '* ``PredefinedPositionOrder``: ' + QgsPalLayerSettings.Property.PredefinedPositionOrder.__doc__ + '\n' + '* ``LinePlacementOptions``: ' + QgsPalLayerSettings.Property.LinePlacementOptions.__doc__ + '\n' + '* ``OverrunDistance``: ' + QgsPalLayerSettings.Property.OverrunDistance.__doc__ + '\n' + '* ``LabelAllParts``: ' + QgsPalLayerSettings.Property.LabelAllParts.__doc__ + '\n' + '* ``PolygonLabelOutside``: ' + QgsPalLayerSettings.Property.PolygonLabelOutside.__doc__ + '\n' + '* ``LineAnchorPercent``: ' + QgsPalLayerSettings.Property.LineAnchorPercent.__doc__ + '\n' + '* ``LineAnchorClipping``: ' + QgsPalLayerSettings.Property.LineAnchorClipping.__doc__ + '\n' + '* ``LineAnchorType``: ' + QgsPalLayerSettings.Property.LineAnchorType.__doc__ + '\n' + '* ``LineAnchorTextPoint``: ' + QgsPalLayerSettings.Property.LineAnchorTextPoint.__doc__ + '\n' + '* ``ScaleVisibility``: ' + QgsPalLayerSettings.Property.ScaleVisibility.__doc__ + '\n' + '* ``MinScale``: ' + QgsPalLayerSettings.Property.MinScale.__doc__ + '\n' + '* ``MinimumScale``: ' + QgsPalLayerSettings.Property.MinimumScale.__doc__ + '\n' + '* ``MaxScale``: ' + QgsPalLayerSettings.Property.MaxScale.__doc__ + '\n' + '* ``MaximumScale``: ' + QgsPalLayerSettings.Property.MaximumScale.__doc__ + '\n' + '* ``FontLimitPixel``: ' + QgsPalLayerSettings.Property.FontLimitPixel.__doc__ + '\n' + '* ``FontMinPixel``: ' + QgsPalLayerSettings.Property.FontMinPixel.__doc__ + '\n' + '* ``FontMaxPixel``: ' + QgsPalLayerSettings.Property.FontMaxPixel.__doc__ + '\n' + '* ``IsObstacle``: ' + QgsPalLayerSettings.Property.IsObstacle.__doc__ + '\n' + '* ``ObstacleFactor``: ' + QgsPalLayerSettings.Property.ObstacleFactor.__doc__ + '\n' + '* ``ZIndex``: ' + QgsPalLayerSettings.Property.ZIndex.__doc__ + '\n' + '* ``CalloutDraw``: ' + QgsPalLayerSettings.Property.CalloutDraw.__doc__ + '\n' + '* ``AllowDegradedPlacement``: ' + QgsPalLayerSettings.Property.AllowDegradedPlacement.__doc__ + '\n' + '* ``OverlapHandling``: ' + QgsPalLayerSettings.Property.OverlapHandling.__doc__ + '\n' + '* ``Show``: ' + QgsPalLayerSettings.Property.Show.__doc__ + '\n' + '* ``AlwaysShow``: ' + QgsPalLayerSettings.Property.AlwaysShow.__doc__
+QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
+
+* ``Size``: Label size
+* ``Bold``: Use bold style
+* ``Italic``: Use italic style
+* ``Underline``: Use underline
+* ``Color``: Text color
+* ``Strikeout``: Use strikeout
+* ``Family``: Font family
+* ``FontStyle``: Font style name
+* ``FontSizeUnit``: Font size units
+* ``FontTransp``: Text transparency (deprecated)
+* ``FontOpacity``: Text opacity
+* ``FontCase``: Label text case
+* ``FontLetterSpacing``: Letter spacing
+* ``FontWordSpacing``: Word spacing
+* ``FontBlendMode``: Text blend mode
+* ``FontStretchFactor``: Font stretch factor, since QGIS 3.24
+* ``MultiLineWrapChar``: 
+* ``AutoWrapLength``: 
+* ``MultiLineHeight``: 
+* ``MultiLineAlignment``: 
+* ``TextOrientation``: 
+* ``TabStopDistance``: Tab stop distance, since QGIS 3.38
+* ``DirSymbDraw``: 
+* ``DirSymbLeft``: 
+* ``DirSymbRight``: 
+* ``DirSymbPlacement``: 
+* ``DirSymbReverse``: 
+* ``NumFormat``: 
+* ``NumDecimals``: 
+* ``NumPlusSign``: 
+* ``BufferDraw``: 
+* ``BufferSize``: 
+* ``BufferUnit``: 
+* ``BufferColor``: 
+* ``BufferTransp``: Buffer transparency (deprecated)
+* ``BufferOpacity``: Buffer opacity
+* ``BufferJoinStyle``: 
+* ``BufferBlendMode``: 
+* ``MaskEnabled``: Whether the mask is enabled
+* ``MaskBufferSize``: Mask buffer size
+* ``MaskBufferUnit``: Mask buffer size unit
+* ``MaskOpacity``: Mask opacity
+* ``MaskJoinStyle``: Mask join style
+* ``ShapeDraw``: 
+* ``ShapeKind``: 
+* ``ShapeSVGFile``: 
+* ``ShapeSizeType``: 
+* ``ShapeSizeX``: 
+* ``ShapeSizeY``: 
+* ``ShapeSizeUnits``: 
+* ``ShapeRotationType``: 
+* ``ShapeRotation``: 
+* ``ShapeOffset``: 
+* ``ShapeOffsetUnits``: 
+* ``ShapeRadii``: 
+* ``ShapeRadiiUnits``: 
+* ``ShapeTransparency``: Shape transparency (deprecated)
+* ``ShapeOpacity``: Shape opacity
+* ``ShapeBlendMode``: 
+* ``ShapeFillColor``: 
+* ``ShapeStrokeColor``: 
+* ``ShapeStrokeWidth``: 
+* ``ShapeStrokeWidthUnits``: 
+* ``ShapeJoinStyle``: 
+* ``ShadowDraw``: 
+* ``ShadowUnder``: 
+* ``ShadowOffsetAngle``: 
+* ``ShadowOffsetDist``: 
+* ``ShadowOffsetUnits``: 
+* ``ShadowRadius``: 
+* ``ShadowRadiusUnits``: 
+* ``ShadowTransparency``: Shadow transparency (deprecated)
+* ``ShadowOpacity``: Shadow opacity
+* ``ShadowScale``: 
+* ``ShadowColor``: 
+* ``ShadowBlendMode``: 
+* ``CentroidWhole``: 
+* ``OffsetQuad``: 
+* ``OffsetXY``: 
+* ``OffsetUnits``: 
+* ``LabelDistance``: 
+* ``MaximumDistance``: Maximum distance of label from feature
+* ``DistanceUnits``: 
+* ``OffsetRotation``: 
+* ``CurvedCharAngleInOut``: 
+* ``PositionX``: X-coordinate data defined label position
+* ``PositionY``: Y-coordinate data defined label position
+* ``PositionPoint``: Point-coordinate data defined label position
+* ``Hali``: Horizontal alignment for data defined label position (Left, Center, Right)
+* ``Vali``: Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
+* ``Rotation``: Label rotation (deprecated, for old project compatibility only)
+* ``LabelRotation``: Label rotation
+* ``RepeatDistance``: 
+* ``RepeatDistanceUnit``: 
+* ``Priority``: 
+* ``PredefinedPositionOrder``: 
+* ``LinePlacementOptions``: Line placement flags
+* ``OverrunDistance``: Distance which labels can extend past either end of linear features
+* ``LabelAllParts``: Whether all parts of multi-part features should be labeled
+* ``PolygonLabelOutside``: Whether labels outside a polygon feature are permitted, or should be forced
+
+  .. versionadded:: 3.14
+
+* ``LineAnchorPercent``: Portion along line at which labels should be anchored
+
+  .. versionadded:: 3.16
+
+* ``LineAnchorClipping``: Clipping mode for line anchor calculation
+
+  .. versionadded:: 3.20
+
+* ``LineAnchorType``: Line anchor type
+
+  .. versionadded:: 3.26
+
+* ``LineAnchorTextPoint``: Line anchor text point
+
+  .. versionadded:: 3.26
+
+* ``ScaleVisibility``: 
+* ``MinScale``: Min scale (deprecated, for old project compatibility only)
+* ``MinimumScale``: Minimum map scale (ie most \"zoomed out\")
+* ``MaxScale``: Max scale (deprecated, for old project compatibility only)
+* ``MaximumScale``: Maximum map scale (ie most \"zoomed in\")
+* ``FontLimitPixel``: 
+* ``FontMinPixel``: 
+* ``FontMaxPixel``: 
+* ``IsObstacle``: 
+* ``ObstacleFactor``: 
+* ``ZIndex``: 
+* ``CalloutDraw``: Show callout
+* ``AllowDegradedPlacement``: Allow degraded label placements
+
+  .. versionadded:: 3.26
+
+* ``OverlapHandling``: Overlap handling technique
+
+  .. versionadded:: 3.26
+
+* ``Show``: 
+* ``AlwaysShow``: 
+
+"""
 # --
+try:
+    QgsPalLayerSettings.__attribute_docs__ = {'drawLabels': 'Whether to draw labels for this layer. For some layers it may be desirable\nto register their features as obstacles for other labels without requiring\nlabels to be drawn for the layer itself. In this case drawLabels can be set\nto ``False`` and obstacle set to ``True``, which will result in the layer acting\nas an obstacle but having no labels of its own.', 'fieldName': 'Name of field (or an expression) to use for label text.\nIf fieldName is an expression, then isExpression should be set to ``True``.\n\n.. seealso:: :py:func:`isExpression`', 'isExpression': "``True`` if this label is made from a expression string, e.g., FieldName || 'mm'\n\n.. seealso:: :py:func:`fieldName`", 'previewBkgrdColor': '\n.. deprecated:: 3.10\n\n   Use :py:func:`QgsTextFormat.previewBackgroundColor()` instead.', 'substitutions': 'Substitution collection for automatic text substitution with labels', 'useSubstitutions': 'True if substitutions should be applied', 'wrapChar': 'Wrapping character string. If set, any occurrences of this string in the calculated\nlabel text will be replaced with new line characters.', 'autoWrapLength': 'If non-zero, indicates that label text should be automatically wrapped to (ideally) the specified\nnumber of characters. If zero, auto wrapping is disabled.\n\n.. seealso:: :py:func:`useMaxLineLengthForAutoWrap`\n\n.. versionadded:: 3.4', 'useMaxLineLengthForAutoWrap': 'If ``True``, indicates that when auto wrapping label text the autoWrapLength length indicates the maximum\nideal length of text lines. If ``False``, then autoWrapLength indicates the ideal minimum length of text\nlines.\n\nIf autoWrapLength is 0 then this value has no effect.\n\n.. seealso:: :py:func:`autoWrapLength`\n\n.. versionadded:: 3.4', 'multilineAlign': 'Horizontal alignment of multi-line labels.', 'formatNumbers': 'Set to ``True`` to format numeric label text as numbers (e.g. inserting thousand separators\nand fixed number of decimal places).\n\n.. seealso:: :py:func:`decimals`\n\n.. seealso:: :py:func:`plusSign`', 'decimals': 'Number of decimal places to show for numeric labels. formatNumbers must be ``True`` for this\nsetting to have an effect.\n\n.. seealso:: :py:func:`formatNumbers`', 'plusSign': "Whether '+' signs should be prepended to positive numeric labels. formatNumbers must be ``True`` for this\nsetting to have an effect.\n\n.. seealso:: :py:func:`formatNumbers`", 'placement': 'Label placement mode', 'centroidWhole': '``True`` if feature centroid should be calculated from the whole feature, or\n``False`` if only the visible part of the feature should be considered.', 'centroidInside': '``True`` if centroid positioned labels must be placed inside their corresponding\nfeature polygon, or ``False`` if centroids which fall outside the polygon\nare permitted.', 'fitInPolygonOnly': '``True`` if only labels which completely fit within a polygon are allowed.', 'dist': 'Distance from feature to the label. Units are specified via distUnits.\n\n.. seealso:: :py:func:`distUnits`\n\n.. seealso:: :py:func:`distMapUnitScale`', 'distUnits': 'Units the distance from feature to the label.\n\n.. seealso:: :py:func:`dist`\n\n.. seealso:: :py:func:`distMapUnitScale`', 'distMapUnitScale': 'Map unit scale for label feature distance.\n\n.. seealso:: :py:func:`dist`\n\n.. seealso:: :py:func:`distUnits`', 'offsetType': 'Offset type for layer (only applies in certain placement modes)', 'repeatDistance': 'Distance for repeating labels for a single feature.\n\n.. seealso:: :py:func:`repeatDistanceUnit`\n\n.. seealso:: :py:func:`repeatDistanceMapUnitScale`', 'repeatDistanceUnit': 'Units for repeating labels for a single feature.\n\n.. seealso:: :py:func:`repeatDistance`\n\n.. seealso:: :py:func:`repeatDistanceMapUnitScale`', 'repeatDistanceMapUnitScale': 'Map unit scale for repeating labels for a single feature.\n\n.. seealso:: :py:func:`repeatDistance`\n\n.. seealso:: :py:func:`repeatDistanceUnit`', 'xOffset': 'Horizontal offset of label. Units are specified via offsetUnits.\n\n.. seealso:: :py:func:`yOffset`\n\n.. seealso:: :py:func:`offsetUnits`\n\n.. seealso:: :py:func:`labelOffsetMapUnitScale`', 'yOffset': 'Vertical offset of label. Units are specified via offsetUnits.\n\n.. seealso:: :py:func:`xOffset`\n\n.. seealso:: :py:func:`offsetUnits`\n\n.. seealso:: :py:func:`labelOffsetMapUnitScale`', 'offsetUnits': 'Units for offsets of label.\n\n.. seealso:: :py:func:`xOffset`\n\n.. seealso:: :py:func:`yOffset`\n\n.. seealso:: :py:func:`labelOffsetMapUnitScale`', 'labelOffsetMapUnitScale': 'Map unit scale for label offset.\n\n.. seealso:: :py:func:`xOffset`\n\n.. seealso:: :py:func:`yOffset`\n\n.. seealso:: :py:func:`offsetUnits`', 'angleOffset': 'Label rotation, in degrees clockwise', 'preserveRotation': 'True if label rotation should be preserved during label pin/unpin operations.', 'maxCurvedCharAngleIn': 'Maximum angle between inside curved label characters (valid range 20.0 to 60.0).\n\n.. seealso:: :py:func:`maxCurvedCharAngleOut`', 'maxCurvedCharAngleOut': 'Maximum angle between outside curved label characters (valid range -20.0 to -95.0)\n\n.. seealso:: :py:func:`maxCurvedCharAngleIn`', 'priority': 'Label priority. Valid ranges are from 0 to 10, where 0 = lowest priority\nand 10 = highest priority.', 'scaleVisibility': 'Set to ``True`` to limit label visibility to a range of scales.\n\n.. seealso:: :py:func:`maximumScale`\n\n.. seealso:: :py:func:`minimumScale`', 'maximumScale': 'The maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no maximum scale visibility.\n\nThis setting is only considered if scaleVisibility is ``True``.\n\n.. seealso:: :py:func:`minimumScale`\n\n.. seealso:: :py:func:`scaleVisibility`', 'minimumScale': 'The minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.\nThe scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.\nA scale of 0 indicates no minimum scale visibility.\n\nThis setting is only considered if scaleVisibility is ``True``.\n\n.. seealso:: :py:func:`maximumScale`\n\n.. seealso:: :py:func:`scaleVisibility`', 'fontLimitPixelSize': '``True`` if label sizes should be limited by pixel size.\n\n.. seealso:: :py:func:`fontMinPixelSize`\n\n.. seealso:: :py:func:`fontMaxPixelSize`', 'fontMinPixelSize': 'Minimum pixel size for showing rendered map unit labels (1 - 1000).\n\n.. seealso:: :py:func:`fontLimitPixelSize`\n\n.. seealso:: :py:func:`fontMaxPixelSize`', 'fontMaxPixelSize': 'Maximum pixel size for showing rendered map unit labels (1 - 10000).\n\n.. seealso:: :py:func:`fontLimitPixelSize`\n\n.. seealso:: :py:func:`fontMinPixelSize`', 'upsidedownLabels': 'Controls whether upside down labels are displayed and how they are handled.', 'labelPerPart': '``True`` if every part of a multi-part feature should be labeled. If ``False``,\nonly the largest part will be labeled.', 'zIndex': 'Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index', 'geometryGenerator': 'The geometry generator expression. Null if disabled.', 'geometryGeneratorType': 'The type of the result geometry of the geometry generator.', 'geometryGeneratorEnabled': 'Defines if the geometry generator is enabled or not. If disabled, the standard geometry will be taken.', 'layerType': 'Geometry type of layers associated with these settings.\n\n.. versionadded:: 3.10'}
+    QgsPalLayerSettings.labelSettingsPreviewPixmap = staticmethod(QgsPalLayerSettings.labelSettingsPreviewPixmap)
+    QgsPalLayerSettings.__group__ = ['labeling']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsPalLabeling.staticWillUseLayer = staticmethod(QgsPalLabeling.staticWillUseLayer)
+    QgsPalLabeling.prepareGeometry = staticmethod(QgsPalLabeling.prepareGeometry)
+    QgsPalLabeling.geometryRequiresPreparation = staticmethod(QgsPalLabeling.geometryRequiresPreparation)
+    QgsPalLabeling.splitToLines = staticmethod(QgsPalLabeling.splitToLines)
+    QgsPalLabeling.splitToGraphemes = staticmethod(QgsPalLabeling.splitToGraphemes)
+    QgsPalLabeling.__group__ = ['labeling']
+except (NameError, AttributeError):
+    pass

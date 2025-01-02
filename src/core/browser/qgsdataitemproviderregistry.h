@@ -29,6 +29,7 @@ class QgsDataItemProvider;
 /**
  * \ingroup core
  * \brief This class keeps a list of data item providers that may add items to the browser tree.
+ *
  * When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
  *
  * QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
@@ -44,9 +45,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 
     ~QgsDataItemProviderRegistry();
 
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh ) = delete;
-    //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;
 
     /**
@@ -55,7 +54,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
     QList<QgsDataItemProvider *> providers() const;
 
     /**
-     * Returns the (possibly NULL) data item provider named \a providerName
+     * Returns the (possibly NULLPTR) data item provider named \a providerName
      * \since QGIS 3.14
      */
     QgsDataItemProvider *provider( const QString &providerName ) const;

@@ -100,6 +100,7 @@ typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
 /**
  * \ingroup core
  * \class QgsFeatureRenderer
+ * \brief Abstract base class for all 2D vector feature renderers.
  */
 class CORE_EXPORT QgsFeatureRenderer
 {
@@ -309,6 +310,13 @@ class CORE_EXPORT QgsFeatureRenderer
      * \endcode
      */
     virtual QgsFeatureRenderer::Capabilities capabilities() { return QgsFeatureRenderer::Capabilities(); }
+
+    /**
+     * Returns flags associated with the renderer.
+     *
+     * \since QGIS 3.40
+     */
+    virtual Qgis::FeatureRendererFlags flags() const;
 
     /**
      * Returns list of symbols used by the renderer.
@@ -528,7 +536,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \since QGIS 3.38
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
     * Sets the renderer's property collection, used for data defined overrides.
@@ -644,6 +652,14 @@ class CORE_EXPORT QgsFeatureRenderer
      * \since QGIS 3.22
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+
+    /**
+     * Returns the maximum extent buffer found in this renderer's symbols.
+     *
+     * \note Returns 0 if the renderer doesn't have any symbols.
+     * \since QGIS 3.42
+     */
+    double maximumExtentBuffer( QgsRenderContext &context ) const;
 
   protected:
     QgsFeatureRenderer( const QString &type );

@@ -3,8 +3,9 @@
  *                                                                      *
  * src/core/qgsmaplayerutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
+
 
 
 
@@ -80,6 +81,13 @@ Specifically this method:
 .. versionadded:: 3.28
 %End
 
+    static bool isOpenStreetMapLayer( QgsMapLayer *layer );
+%Docstring
+Returns ``True`` if the layer is served by OpenStreetMap server.
+
+.. versionadded:: 3.40
+%End
+
 };
 
 
@@ -89,5 +97,5 @@ Specifically this method:
  *                                                                      *
  * src/core/qgsmaplayerutils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

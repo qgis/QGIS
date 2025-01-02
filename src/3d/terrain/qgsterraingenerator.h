@@ -19,19 +19,20 @@
 #include "qgis_3d.h"
 
 #include "qgstilingscheme.h"
-#include "qgschunkloader_p.h"
+#include "qgschunkloader.h"
 
 class QgsAABB;
 class Qgs3DMapSettings;
+class Qgs3DRenderContext;
 class QgsRectangle;
 class QgsTerrainEntity;
+class QgsCoordinateTransformContext;
 
 class QDomElement;
 class QDomDocument;
 class QgsProject;
 
 #define SIP_NO_FILE
-
 
 /**
  * \ingroup 3d
@@ -49,18 +50,18 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 {
     Q_OBJECT
   public:
-
     //! Enumeration of the available terrain generators
     enum Type
     {
-      Flat,           //!< The whole terrain is flat area
-      Dem,            //!< Terrain is built from raster layer with digital elevation model
-      Online,         //!< Terrain is built from downloaded tiles with digital elevation model
-      Mesh            //!< Terrain is built from mesh layer with z value on vertices
+      Flat,          //!< The whole terrain is flat area
+      Dem,           //!< Terrain is built from raster layer with digital elevation model
+      Online,        //!< Terrain is built from downloaded tiles with digital elevation model
+      Mesh,          //!< Terrain is built from mesh layer with z value on vertices
+      QuantizedMesh, //!< Terrain is built from quantized mesh tiles
     };
 
     //! Sets terrain entity for the generator (does not transfer ownership)
-    void setTerrain( QgsTerrainEntity *t ) { mTerrain = t; }
+    virtual void setTerrain( QgsTerrainEntity *t ) { mTerrain = t; }
 
     //! Makes a copy of the current instance
     virtual QgsTerrainGenerator *clone() const = 0 SIP_FACTORY;
@@ -68,17 +69,14 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! What texture generator implementation is this
     virtual Type type() const = 0;
 
-    //! extent of the terrain in terrain's CRS, might be non-square and smaller than rootChunkExtent()
-    virtual QgsRectangle extent() const { return mExtent; }
-
     //! sets the extent of the terrain in terrain's CRS
     virtual void setExtent( const QgsRectangle &extent ) { Q_UNUSED( extent ) }
 
     //! extent of the terrain's root chunk in terrain's CRS
     virtual QgsRectangle rootChunkExtent() const = 0;
 
-    //! Returns bounding box of the root chunk
-    virtual QgsAABB rootChunkBbox( const Qgs3DMapSettings &map ) const;
+    //! Returns 3D box (in map coordinates) of the root chunk
+    virtual QgsBox3D rootChunkBox3D( const Qgs3DMapSettings &map ) const;
 
     //! Returns error of the root chunk in world coordinates
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const;
@@ -86,17 +84,8 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! Returns height range of the root chunk in world coordinates
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const;
 
-    //! Returns height at (x,y) in terrain's CRS
-    virtual float heightAt( double x, double y, const Qgs3DMapSettings &map ) const;
-
-    //! Write terrain generator's configuration to XML
-    virtual void writeXml( QDomElement &elem ) const = 0;
-
-    //! Read terrain generator's configuration from XML
-    virtual void readXml( const QDomElement &elem ) = 0;
-
-    //! After read of XML, resolve references to any layers that have been read as layer IDs
-    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
+    //! Returns height at (x,y) in map's CRS
+    virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const;
 
     //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );
@@ -104,8 +93,15 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! Returns tiling scheme of the terrain
     const QgsTilingScheme &tilingScheme() const { return mTerrainTilingScheme; }
 
+    /**
+     * Sets the CRS associated with the terrain.
+     *
+     * \see crs()
+     */
+    virtual void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+
     //! Returns CRS of the terrain
-    QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }
+    virtual QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }
 
     //! Returns whether the terrain generator is valid
     bool isValid() const;
@@ -116,13 +112,11 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     void terrainChanged();
 
   protected:
-
-    QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain
+    QgsTilingScheme mTerrainTilingScheme; //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
     QgsRectangle mExtent;
 
     bool mIsValid = true;
-
 };
 
 

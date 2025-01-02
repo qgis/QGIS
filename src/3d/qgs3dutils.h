@@ -31,6 +31,8 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+class QSurface;
+
 #include "qgs3dmapsettings.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
@@ -46,6 +48,7 @@ namespace Qt3DExtras
 
 #define SIP_NO_FILE
 
+class Qgs3DRenderContext;
 
 /**
  * \ingroup 3d
@@ -55,7 +58,6 @@ namespace Qt3DExtras
 class _3D_EXPORT Qgs3DUtils
 {
   public:
-
     /**
      * Captures image of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.
@@ -98,15 +100,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.8
      */
-    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings,
-                                 Qgs3DMapSettings &mapSettings,
-                                 int framesPerSecond,
-                                 const QString &outputDirectory,
-                                 const QString &fileNameTemplate,
-                                 const QSize &outputSize,
-                                 QString &error,
-                                 QgsFeedback *feedback = nullptr
-                               );
+    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings, Qgs3DMapSettings &mapSettings, int framesPerSecond, const QString &outputDirectory, const QString &fileNameTemplate, const QSize &outputSize, QString &error, QgsFeedback *feedback = nullptr );
 
     /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
@@ -130,11 +124,11 @@ class _3D_EXPORT Qgs3DUtils
     static Qgs3DTypes::CullingMode cullingModeFromString( const QString &str );
 
     //! Clamps altitude of a vertex according to the settings, returns Z value
-    static float clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const QgsPoint &centroid, const Qgs3DMapSettings &map );
+    static float clampAltitude( const QgsPoint &p, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const QgsPoint &centroid, const Qgs3DRenderContext &context );
     //! Clamps altitude of vertices of a linestring according to the settings
-    static void clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DMapSettings &map );
+    static void clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, const QgsPoint &centroid, float offset, const Qgs3DRenderContext &context );
     //! Clamps altitude of vertices of a polygon according to the settings
-    static bool clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const Qgs3DMapSettings &map );
+    static bool clampAltitudes( QgsPolygon *polygon, Qgis::AltitudeClamping altClamp, Qgis::AltitudeBinding altBind, float offset, const Qgs3DRenderContext &context );
 
     //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
@@ -142,7 +136,7 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
      * Returns TRUE if bbox is completely outside the current viewing volume.
@@ -150,9 +144,9 @@ class _3D_EXPORT Qgs3DUtils
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 
-    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts map coordinates to 3D world coordinates (applies offset)
     static QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin );
-    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts 3D world coordinates to map coordinates (applies offset)
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
     /**
@@ -174,14 +168,19 @@ class _3D_EXPORT Qgs3DUtils
     static QgsAABB mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin );
 
     /**
+     * Converts 3D box in map coordinates to AABB in world coordinates.
+     * \since QGIS 3.42
+     */
+    static QgsAABB mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &mapOrigin );
+
+    /**
      * Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
      * \since QGIS 3.12
      */
     static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
 
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
-    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
-        const QgsCoordinateTransformContext &context );
+    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
 
     /**
      * Try to estimate range of Z values used in the given vector layer and store that in zMin and zMax.
@@ -245,7 +244,7 @@ class _3D_EXPORT Qgs3DUtils
      * \note This function was formerly in Qgs3DAppUtils
      * \since QGIS 3.26
      */
-    static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
+    static std::unique_ptr<QgsPointCloudLayer3DRenderer> convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
 
     /**
      * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
@@ -304,6 +303,43 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.34
      */
     static Qt3DRender::QCullFace::CullingMode qt3DcullingMode( Qgs3DTypes::CullingMode mode );
+
+    /**
+     * Inserts some define macros into a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to add
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Removes some define macros from a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to remove
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Tries to decompose a 4x4 transform matrix into translation, rotation and scale components.
+     * It is expected that the matrix has been created by only applying these transforms, otherwise
+     * the results are undefined.
+     *
+     * \since QGIS 3.42
+     */
+    static void decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &translation, QQuaternion &rotation, QVector3D &scale );
+
+    /**
+     * Gets the maximum number of clip planes that can be used.
+     * This value depends on the OpenGL implementation. It should be at least 6.
+     *
+     * \since QGIS 3.42
+     */
+    static int openGlMaxClipPlanes( QSurface *surface );
 };
 
 #endif // QGS3DUTILS_H

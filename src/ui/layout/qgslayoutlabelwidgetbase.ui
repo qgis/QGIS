@@ -62,7 +62,7 @@
         <x>0</x>
         <y>0</y>
         <width>358</width>
-        <height>680</height>
+        <height>681</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -160,6 +160,26 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="4" column="0">
+           <widget class="QLabel" name="mVerticalAlignementLabel">
+            <property name="text">
+             <string>Vertical alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsAlignmentComboBox" name="mHAlignmentComboBox"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMarginYDoubleSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0" colspan="2">
            <widget class="QgsFontButton" name="mFontButton">
             <property name="sizePolicy">
@@ -173,62 +193,12 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <widget class="QRadioButton" name="mLeftRadioButton">
-              <property name="text">
-               <string>Left</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QRadioButton" name="mJustifyRadioButton">
-              <property name="text">
-               <string>Justify</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QRadioButton" name="mRightRadioButton">
-              <property name="text">
-               <string>Right</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QRadioButton" name="mCenterRadioButton">
-              <property name="text">
-               <string>Center</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup_2</string>
-              </attribute>
-             </widget>
-            </item>
-            <item row="0" column="4">
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mMarginYLabel">
+            <property name="text">
+             <string>Vertical margin</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="mMarginXLabel">
@@ -237,22 +207,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mMarginYLabel">
-            <property name="text">
-             <string>Vertical margin</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMarginYDoubleSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="minimum">
-             <double>-99.989999999999995</double>
-            </property>
-           </widget>
+          <item row="4" column="1">
+           <widget class="QgsAlignmentComboBox" name="mVAlignmentComboBox"/>
           </item>
           <item row="1" column="1">
            <widget class="QgsDoubleSpinBox" name="mMarginXDoubleSpinBox">
@@ -267,64 +223,10 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="3" column="0">
            <widget class="QLabel" name="mHorizontalAlignementLabel">
             <property name="text">
              <string>Horizontal alignment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QRadioButton" name="mTopRadioButton">
-              <property name="text">
-               <string>Top</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="mMiddleRadioButton">
-              <property name="text">
-               <string>Middle</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="mBottomRadioButton">
-              <property name="text">
-               <string>Bottom</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">buttonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QLabel" name="mVerticalAlignementLabel">
-            <property name="text">
-             <string>Vertical alignment</string>
             </property>
            </widget>
           </item>
@@ -351,15 +253,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAlignmentComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsalignmentcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -373,18 +280,11 @@
   <tabstop>mFontButton</tabstop>
   <tabstop>mMarginXDoubleSpinBox</tabstop>
   <tabstop>mMarginYDoubleSpinBox</tabstop>
-  <tabstop>mLeftRadioButton</tabstop>
-  <tabstop>mCenterRadioButton</tabstop>
-  <tabstop>mRightRadioButton</tabstop>
-  <tabstop>mJustifyRadioButton</tabstop>
-  <tabstop>mTopRadioButton</tabstop>
-  <tabstop>mMiddleRadioButton</tabstop>
-  <tabstop>mBottomRadioButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>

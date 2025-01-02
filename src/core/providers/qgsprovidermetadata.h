@@ -188,8 +188,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     {
       PriorityForUri = 1 << 0, //!< Indicates that the metadata can calculate a priority for a URI
       LayerTypesForUri = 1 << 1, //!< Indicates that the metadata can determine valid layer types for a URI
-      QuerySublayers = 1 << 2, //!< Indicates that the metadata can query sublayers for a URI (since QGIS 3.22)
-      CreateDatabase = 1 << 3, //!< Indicates that the metadata can create new empty databases (since QGIS 3.28)
+      QuerySublayers = 1 << 2, //!< Indicates that the metadata can query sublayers for a URI \since QGIS 3.22
+      CreateDatabase = 1 << 3, //!< Indicates that the metadata can create new empty databases \since QGIS 3.28
     };
     Q_DECLARE_FLAGS( ProviderMetadataCapabilities, ProviderMetadataCapability )
 
@@ -201,15 +201,15 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     enum ProviderCapability SIP_ENUM_BASETYPE( IntFlag )
     {
       FileBasedUris = 1 << 0, //!< Indicates that the provider can utilize URIs which are based on paths to files (as opposed to database or internet paths)
-      SaveLayerMetadata = 1 << 1, //!< Indicates that the provider supports saving native layer metadata (since QGIS 3.20)
-      ParallelCreateProvider = 1 << 2, //!< Indicates that the provider supports parallel creation, that is, can be created on another thread than the main thread (since QGIS 3.32)
+      SaveLayerMetadata = 1 << 1, //!< Indicates that the provider supports saving native layer metadata \since QGIS 3.20
+      ParallelCreateProvider = 1 << 2, //!< Indicates that the provider supports parallel creation, that is, can be created on another thread than the main thread \since QGIS 3.32
     };
     Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
 
     /**
      * Typedef for data provider creation function.
      */
-    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags & ) > CreateDataProviderFunction;
+    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions &, Qgis::DataProviderReadFlags & ) > CreateDataProviderFunction;
 
     /**
      * Constructor for provider metadata
@@ -226,7 +226,6 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     SIP_SKIP Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
-    //! dtor
     virtual ~QgsProviderMetadata();
 
     /**
@@ -314,7 +313,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
      *
-     * \deprecated QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+     * \deprecated QGIS 3.10. Providers may not need to be loaded from a library (empty string returned).
      */
     Q_DECL_DEPRECATED QString library() const SIP_DEPRECATED;
 
@@ -461,7 +460,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     virtual QgsDataProvider *createProvider( const QString &uri,
         const QgsDataProvider::ProviderOptions &options,
-        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
+        Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) SIP_FACTORY;
 
     /**
      * Sets the \a value into the \a uri \a parameter as a bool.
@@ -531,22 +530,26 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Creates mesh data source from a file name \a fileName and a driver \a driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * Since QGIS 3.38 the optional \a metadata argument can be used to pass metadata to the provider.
      * \since QGIS 3.16
      */
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString &fileName,
       const QString &driverName,
-      const QgsCoordinateReferenceSystem &crs ) const;
+      const QgsCoordinateReferenceSystem &crs,
+      const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 
     /**
      * Creates mesh data source from an \a uri, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * Since QGIS 3.38 the optional \a metadata argument can be used to pass metadata to the provider.
      * \since QGIS 3.22
      */
     virtual bool createMeshData(
       const QgsMesh &mesh,
       const QString &uri,
-      const QgsCoordinateReferenceSystem &crs ) const;
+      const QgsCoordinateReferenceSystem &crs,
+      const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 
     /**
      * Returns pyramid resampling methods available for provider
@@ -735,7 +738,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Searches and returns a (possibly NULL) connection from the stored provider connections.
+     * Searches and returns a (possibly NULLPTR) connection from the stored provider connections.
      * Ownership is not transferred.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \param name the connection name

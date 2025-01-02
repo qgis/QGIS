@@ -48,10 +48,7 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
   : QgsAbstractFeatureIteratorFromSource<QgsSensorThingsFeatureSource>( source, ownSource, request )
   , mInterruptionChecker( request.feedback() )
 {
-  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->sharedData()->crs() )
-  {
-    mTransform = QgsCoordinateTransform( mSource->sharedData()->crs(), mRequest.destinationCrs(), mRequest.transformContext() );
-  }
+  mTransform = mRequest.calculateTransform( mSource->sharedData()->crs() );
   try
   {
     mFilterRect = filterRectToSourceCrs( mTransform );

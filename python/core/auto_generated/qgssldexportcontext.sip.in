@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgssldexportcontext.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -28,10 +28,6 @@ Constructs a default SLD export context
     ~QgsSldExportContext();
 
     QgsSldExportContext( const QgsSldExportContext &other );
-%Docstring
-Constructs a copy of SLD export context ``other``
-%End
-
 
     QgsSldExportContext( const Qgis::SldExportOptions &options, const Qgis::SldExportVendorExtension &vendorExtension, const QString &filePath );
 %Docstring
@@ -79,5 +75,5 @@ Sets the export file path for the SLD to ``exportFilePath``
  *                                                                      *
  * src/core/qgssldexportcontext.h                                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

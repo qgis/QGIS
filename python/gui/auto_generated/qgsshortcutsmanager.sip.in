@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsshortcutsmanager.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -23,7 +23,6 @@ that have been registered and their shortcuts can be changed.
 #include "qgsshortcutsmanager.h"
 %End
   public:
-
     QgsShortcutsManager( QObject *parent /TransferThis/ = 0, const QString &settingsRoot = "/shortcuts/" );
 %Docstring
 Constructor for QgsShortcutsManager.
@@ -320,5 +319,5 @@ Return None if the key was not found
  *                                                                      *
  * src/gui/qgsshortcutsmanager.h                                        *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

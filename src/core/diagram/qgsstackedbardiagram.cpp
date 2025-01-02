@@ -22,6 +22,8 @@
 
 #include <QPainter>
 
+const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = QStringLiteral( "Stacked" );
+
 QgsStackedBarDiagram::QgsStackedBarDiagram()
 {
   mCategoryBrush.setStyle( Qt::SolidPattern );
@@ -117,7 +119,7 @@ double QgsStackedBarDiagram::legendSize( double value, const QgsDiagramSettings 
 
 QString QgsStackedBarDiagram::diagramName() const
 {
-  return DIAGRAM_NAME_STACKED;
+  return QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR;
 }
 
 QSizeF QgsStackedBarDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

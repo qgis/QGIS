@@ -32,38 +32,32 @@
  */
 class QgsExtractZMValuesAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsExtractZMValuesAlgorithmBase() = default;
     QString group() const override;
     QString groupId() const override;
     QList<int> inputLayerTypes() const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   protected:
-
     std::function<double( const QgsPoint & )> mExtractValFunc;
     std::function<bool( const QgsGeometry & )> mTestGeomFunc;
     QString mDefaultFieldPrefix;
-  private:
 
-    QList< Qgis::Statistic > mSelectedStats;
+  private:
+    QList<Qgis::Statistic> mSelectedStats;
     Qgis::Statistics mStats = Qgis::Statistic::All;
     QString mPrefix;
     QgsFields mNewFields;
-
-
 };
 
 /**
@@ -80,7 +74,6 @@ class QgsExtractZValuesAlgorithm : public QgsExtractZMValuesAlgorithmBase
     QStringList tags() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-
 };
 
 
@@ -98,11 +91,8 @@ class QgsExtractMValuesAlgorithm : public QgsExtractZMValuesAlgorithmBase
     QStringList tags() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXTRACTZMVALUES_H
-
-

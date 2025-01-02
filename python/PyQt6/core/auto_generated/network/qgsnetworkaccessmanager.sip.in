@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/network/qgsnetworkaccessmanager.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -31,9 +31,6 @@ Encapsulates parameters and properties of a network request.
     };
 
     QgsNetworkRequestParameters();
-%Docstring
-Default constructor.
-%End
 
     QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
                                  const QNetworkRequest &request,
@@ -474,10 +471,11 @@ Preprocesses request
 
   signals:
 
- void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
+ void requestAboutToBeCreated( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, QIODevice *device ) /Deprecated="Since 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
 %End
 
@@ -619,14 +617,18 @@ See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and p
 
 
 
- void requestCreated( QNetworkReply * ) /Deprecated/;
+ void requestCreated( QNetworkReply *reply ) /Deprecated="Since 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead."/;
 %Docstring
 
-.. deprecated::
+.. deprecated:: 3.40
+
    Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
 %End
 
-    void requestTimedOut( QNetworkReply * );
+    void requestTimedOut( QNetworkReply *reply );
+%Docstring
+Emitted when a request times out.
+%End
 
 
     void authBrowserAborted();
@@ -655,5 +657,5 @@ Emitted when the cookies changed.
  *                                                                      *
  * src/core/network/qgsnetworkaccessmanager.h                           *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

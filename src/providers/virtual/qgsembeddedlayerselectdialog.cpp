@@ -16,6 +16,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsembeddedlayerselectdialog.h"
+#include "moc_qgsembeddedlayerselectdialog.cpp"
 #include "qgsmaplayerproxymodel.h"
 #include "qgsmaplayermodel.h"
 #include "qgsgui.h"
@@ -44,7 +45,7 @@ QStringList QgsEmbeddedLayerSelectDialog::layers() const
   ids.reserve( selected.size() );
   for ( const QModelIndex &index : selected )
   {
-    ids << index.data( static_cast< int >( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
+    ids << index.data( static_cast<int>( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
   }
   return ids;
 }

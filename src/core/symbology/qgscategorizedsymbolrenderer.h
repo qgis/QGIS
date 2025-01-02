@@ -36,9 +36,6 @@ class CORE_EXPORT QgsRendererCategory
 {
   public:
 
-    /**
-     * Constructor for QgsRendererCategory.
-     */
     QgsRendererCategory() = default;
 
     /**
@@ -56,9 +53,6 @@ class CORE_EXPORT QgsRendererCategory
     */
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true, const QString &uuid = QString() );
 
-    /**
-     * Copy constructor.
-     */
     QgsRendererCategory( const QgsRendererCategory &cat );
     QgsRendererCategory &operator=( QgsRendererCategory cat );
     ~QgsRendererCategory();
@@ -158,8 +152,6 @@ class CORE_EXPORT QgsRendererCategory
     QString mLabel;
     bool mRender = true;
     QString mUuid;
-
-    void swap( QgsRendererCategory &other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
@@ -183,6 +175,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
     ~QgsCategorizedSymbolRenderer() override;
 
+    Qgis::FeatureRendererFlags flags() const override;
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
@@ -486,13 +479,13 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void rebuildHash();
 
     /**
-     * \deprecated No longer used, will be removed in QGIS 4.0
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
      */
     Q_DECL_DEPRECATED QgsSymbol *skipRender() SIP_DEPRECATED;
 
     /**
      * Returns the matching symbol corresponding to an attribute \a value.
-     * \deprecated use variant which takes a second bool argument instead.
+     * \deprecated QGIS 3.40. Use variant which takes a second bool argument instead.
      */
     Q_DECL_DEPRECATED QgsSymbol *symbolForValue( const QVariant &value ) const SIP_DEPRECATED;
 

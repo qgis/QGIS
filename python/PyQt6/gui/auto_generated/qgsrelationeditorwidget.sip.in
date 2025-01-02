@@ -3,7 +3,7 @@
  *                                                                      *
  * src/gui/qgsrelationeditorwidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -33,7 +33,6 @@ The default relation widget in QGIS.
 #include "qgsrelationeditorwidget.h"
 %End
   public:
-
     enum Button /BaseType=IntEnum/
     {
       NoButton,
@@ -94,12 +93,13 @@ Defines the buttons which are shown
 Returns the buttons which are shown
 %End
 
- void duplicateFeature() /Deprecated/;
+ void duplicateFeature() /Deprecated="Since 3.18. Use duplicateSelectedFeatures() instead."/;
 %Docstring
 Duplicates a feature
 
-.. deprecated:: QGIS 3.18
-  use :py:func:`~QgsRelationEditorWidget.duplicateSelectedFeatures` instead
+.. deprecated:: 3.18
+
+   Use :py:func:`~QgsRelationEditorWidget.duplicateSelectedFeatures` instead.
 %End
 
     void duplicateSelectedFeatures();
@@ -166,7 +166,6 @@ Creates a new configuration widget for the relation editor widget
 #include "qgsrelationeditorwidget.h"
 %End
   public:
-
     explicit QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget
@@ -191,6 +190,10 @@ Update the configuration widget to represent the given configuration.
 :param config: The configuration which should be represented by this widget
 %End
 
+    void mEditExpression_clicked();
+%Docstring
+Opens an expression dialog and sets its value as filter expression for the linking dialog
+%End
 };
 
 
@@ -201,5 +204,5 @@ Update the configuration widget to represent the given configuration.
  *                                                                      *
  * src/gui/qgsrelationeditorwidget.h                                    *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

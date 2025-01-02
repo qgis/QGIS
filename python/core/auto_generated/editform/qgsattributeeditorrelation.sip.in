@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/editform/qgsattributeeditorrelation.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -40,13 +40,13 @@ This element will load a relation editor onto the form.
  QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: QGIS 3.16
+.. deprecated:: 3.16
 %End
 
  QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: QGIS 3.16
+.. deprecated:: 3.16
 %End
 
     QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent );
@@ -169,5 +169,5 @@ QFlags<QgsAttributeEditorRelation::Button> operator|(QgsAttributeEditorRelation:
  *                                                                      *
  * src/core/editform/qgsattributeeditorrelation.h                       *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

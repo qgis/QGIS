@@ -8,9 +8,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Tim Sutton'
-__date__ = '20/08/2012'
-__copyright__ = 'Copyright 2012, The QGIS Project'
+
+__author__ = "Tim Sutton"
+__date__ = "20/08/2012"
+__copyright__ = "Copyright 2012, The QGIS Project"
 
 import glob
 import os
@@ -78,6 +79,7 @@ from qgis.core import (
     QgsVectorLayerJoinInfo,
     QgsVectorLayerSelectedFeatureSource,
     QgsVectorLayerSimpleLabeling,
+    QgsVectorLayerToolsContext,
     QgsWkbTypes,
 )
 from qgis.gui import QgsAttributeTableModel, QgsGui
@@ -99,14 +101,17 @@ def createEmptyLayer():
 
 
 def createEmptyLayerWithFields():
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory")
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+    )
     assert layer.featureCount() == 0
     return layer
 
 
 def createLayerWithOnePoint():
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                           "addfeat", "memory")
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+    )
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
@@ -117,8 +122,9 @@ def createLayerWithOnePoint():
 
 
 def createLayerWithTwoPoints():
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                           "addfeat", "memory")
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+    )
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
@@ -132,8 +138,9 @@ def createLayerWithTwoPoints():
 
 
 def createLayerWithFivePoints():
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                           "addfeat", "memory")
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+    )
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
@@ -158,7 +165,9 @@ def createLayerWithFivePoints():
 def createJoinLayer():
     joinLayer = QgsVectorLayer(
         "Point?field=x:string&field=y:integer&field=z:integer&field=date:datetime",
-        "joinlayer", "memory")
+        "joinlayer",
+        "memory",
+    )
     pr = joinLayer.dataProvider()
     f1 = QgsFeature()
     f1.setAttributes(["foo", 123, 321, QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0))])
@@ -199,9 +208,10 @@ def dumpEditBuffer(layer):
         return
     print("ADDED:")
     for fid, f in editBuffer.addedFeatures().items():
-        print("%d: %s | %s" % (
-            f.id(), formatAttributes(f.attributes()),
-            f.geometry().asWkt()))
+        print(
+            "%d: %s | %s"
+            % (f.id(), formatAttributes(f.attributes()), f.geometry().asWkt())
+        )
     print("CHANGED GEOM:")
     for fid, geom in editBuffer.changedGeometries().items():
         print("%d | %s" % (f.id(), f.geometry().asWkt()))
@@ -212,28 +222,74 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
-            'test', 'memory')
-        assert (vl.isValid())
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "test",
+            "memory",
+        )
+        assert vl.isValid()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
-        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        f1.setAttributes(
+            [
+                5,
+                -200,
+                NULL,
+                "NuLl",
+                "5",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)),
+                QDate(2020, 5, 2),
+                QTime(12, 13, 1),
+            ]
+        )
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-71.123 78.23)"))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
+        f2.setAttributes([3, 300, "Pear", "PEaR", "3", NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
-        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+        f3.setAttributes(
+            [
+                1,
+                100,
+                "Orange",
+                "oranGe",
+                "1",
+                QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)),
+                QDate(2020, 5, 3),
+                QTime(12, 13, 14),
+            ]
+        )
+        f3.setGeometry(QgsGeometry.fromWkt("Point (-70.332 66.33)"))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
-        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+        f4.setAttributes(
+            [
+                2,
+                200,
+                "Apple",
+                "Apple",
+                "2",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)),
+                QDate(2020, 5, 4),
+                QTime(12, 14, 14),
+            ]
+        )
+        f4.setGeometry(QgsGeometry.fromWkt("Point (-68.2 70.8)"))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
-        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+        f5.setAttributes(
+            [
+                4,
+                400,
+                "Honey",
+                "Honey",
+                "4",
+                QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)),
+                QDate(2021, 5, 4),
+                QTime(13, 13, 14),
+            ]
+        )
+        f5.setGeometry(QgsGeometry.fromWkt("Point (-65.32 78.3)"))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
         return vl
@@ -241,26 +297,26 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(TestQgsVectorLayer, cls).setUpClass()
+        super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def test_FeatureCount(self):
-        myPath = os.path.join(unitTestDataPath(), 'lines.shp')
-        myLayer = QgsVectorLayer(myPath, 'Lines', 'ogr')
+        myPath = os.path.join(unitTestDataPath(), "lines.shp")
+        myLayer = QgsVectorLayer(myPath, "Lines", "ogr")
         myCount = myLayer.featureCount()
         self.assertEqual(myCount, 6)
 
@@ -338,7 +394,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         """
         layer = createLayerWithOnePoint()
         layer.setCrs(QgsCoordinateReferenceSystem("epsg:3111"))
-        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry))
+        r = QgsSingleSymbolRenderer(
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry)
+        )
         layer.setRenderer(r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.SymbolType.Marker)
 
@@ -346,13 +404,13 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         options = QgsDataProvider.ProviderOptions()
         # change with layer of same type
-        points_path = os.path.join(unitTestDataPath(), 'points.shp')
-        layer.setDataSource(points_path, 'new name', 'ogr', options)
+        points_path = os.path.join(unitTestDataPath(), "points.shp")
+        layer.setDataSource(points_path, "new name", "ogr", options)
 
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.name(), 'new name')
+        self.assertEqual(layer.name(), "new name")
         self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.Point)
-        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertEqual(layer.crs().authid(), "EPSG:4326")
         self.assertIn(points_path, layer.dataProvider().dataSourceUri())
         self.assertEqual(len(spy), 1)
 
@@ -360,13 +418,13 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.renderer(), r)
 
         # layer with different type
-        lines_path = os.path.join(unitTestDataPath(), 'rectangles.shp')
-        layer.setDataSource(lines_path, 'new name2', 'ogr', options)
+        lines_path = os.path.join(unitTestDataPath(), "rectangles.shp")
+        layer.setDataSource(lines_path, "new name2", "ogr", options)
 
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.name(), "new name2")
         self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.MultiPolygon)
-        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertEqual(layer.crs().authid(), "EPSG:4326")
         self.assertIn(lines_path, layer.dataProvider().dataSourceUri())
         self.assertEqual(len(spy), 2)
 
@@ -375,14 +433,14 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.SymbolType.Fill)
 
         # reset layer to a non-spatial layer
-        lines_path = os.path.join(unitTestDataPath(), 'nonspatial.dbf')
-        layer.setDataSource(lines_path, 'new name2', 'ogr', options)
+        lines_path = os.path.join(unitTestDataPath(), "nonspatial.dbf")
+        layer.setDataSource(lines_path, "new name2", "ogr", options)
 
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.name(), "new name2")
         self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertFalse(layer.crs().isValid())
-        self.assertIn('nonspatial.dbf', layer.dataProvider().dataSourceUri())
+        self.assertIn("nonspatial.dbf", layer.dataProvider().dataSourceUri())
         self.assertEqual(len(spy), 3)
         # should have REMOVED renderer
         self.assertIsNone(layer.renderer())
@@ -393,30 +451,32 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         """
         layer = createLayerWithOnePoint()
         layer.setCrs(QgsCoordinateReferenceSystem("epsg:3111"))
-        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry))
+        r = QgsSingleSymbolRenderer(
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry)
+        )
         layer.setRenderer(r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.SymbolType.Marker)
 
         # change to invalid path
         options = QgsDataProvider.ProviderOptions()
-        layer.setDataSource('nothing', 'new name', 'ogr', options)
+        layer.setDataSource("nothing", "new name", "ogr", options)
 
         self.assertFalse(layer.isValid())
         # these properties should be kept intact!
-        self.assertEqual(layer.name(), 'new name')
+        self.assertEqual(layer.name(), "new name")
         self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.Point)
-        self.assertEqual(layer.crs().authid(), 'EPSG:3111')
+        self.assertEqual(layer.crs().authid(), "EPSG:3111")
         # should have kept the same renderer!
         self.assertEqual(layer.renderer(), r)
 
         # set to a valid path
-        points_path = os.path.join(unitTestDataPath(), 'points.shp')
-        layer.setDataSource(points_path, 'new name2', 'ogr', options)
+        points_path = os.path.join(unitTestDataPath(), "points.shp")
+        layer.setDataSource(points_path, "new name2", "ogr", options)
 
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.name(), "new name2")
         self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.Point)
-        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertEqual(layer.crs().authid(), "EPSG:4326")
         self.assertIn(points_path, layer.dataProvider().dataSourceUri())
 
         # should STILL have kept renderer!
@@ -427,38 +487,38 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         Test setting a custom property of the layer
         """
         layer = createLayerWithOnePoint()
-        layer.setCustomProperty('Key_0', 'Value_0')
-        layer.setCustomProperty('Key_1', 'Value_1')
+        layer.setCustomProperty("Key_0", "Value_0")
+        layer.setCustomProperty("Key_1", "Value_1")
 
         spy = QSignalSpy(layer.customPropertyChanged)
 
         # change nothing by setting the same value
-        layer.setCustomProperty('Key_0', 'Value_0')
-        layer.setCustomProperty('Key_1', 'Value_1')
+        layer.setCustomProperty("Key_0", "Value_0")
+        layer.setCustomProperty("Key_1", "Value_1")
         self.assertEqual(len(spy), 0)
 
         # change one
-        layer.setCustomProperty('Key_0', 'Value zero')
+        layer.setCustomProperty("Key_0", "Value zero")
         self.assertEqual(len(spy), 1)
 
         # add one
-        layer.setCustomProperty('Key_2', 'Value two')
+        layer.setCustomProperty("Key_2", "Value two")
         self.assertEqual(len(spy), 2)
 
         # add a null one and an empty one
-        layer.setCustomProperty('Key_3', None)
-        layer.setCustomProperty('Key_4', '')
+        layer.setCustomProperty("Key_3", None)
+        layer.setCustomProperty("Key_4", "")
         self.assertEqual(len(spy), 4)
 
         # remove one
-        layer.removeCustomProperty('Key_0')
+        layer.removeCustomProperty("Key_0")
         self.assertEqual(len(spy), 5)
 
-        self.assertEqual(layer.customProperty('Key_0', 'no value'), 'no value')
-        self.assertEqual(layer.customProperty('Key_1', 'no value'), 'Value_1')
-        self.assertEqual(layer.customProperty('Key_2', 'no value'), 'Value two')
-        self.assertEqual(layer.customProperty('Key_3', 'no value'), None)
-        self.assertEqual(layer.customProperty('Key_4', 'no value'), '')
+        self.assertEqual(layer.customProperty("Key_0", "no value"), "no value")
+        self.assertEqual(layer.customProperty("Key_1", "no value"), "Value_1")
+        self.assertEqual(layer.customProperty("Key_2", "no value"), "Value two")
+        self.assertEqual(layer.customProperty("Key_3", "no value"), None)
+        self.assertEqual(layer.customProperty("Key_4", "no value"), "")
 
         self.assertEqual(len(spy), 5)
 
@@ -467,37 +527,39 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         Test that layer wkb types are restored for projects with invalid layer paths
         """
         layer = createLayerWithOnePoint()
-        layer.setName('my test layer')
-        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry))
-        r.symbol().setColor(QColor('#123456'))
+        layer.setName("my test layer")
+        r = QgsSingleSymbolRenderer(
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry)
+        )
+        r.symbol().setColor(QColor("#123456"))
         layer.setRenderer(r)
-        self.assertEqual(layer.renderer().symbol().color().name(), '#123456')
+        self.assertEqual(layer.renderer().symbol().color().name(), "#123456")
 
         p = QgsProject()
         p.addMapLayer(layer)
 
         # reset layer to a bad path
         options = QgsDataProvider.ProviderOptions()
-        layer.setDataSource('nothing', 'new name', 'ogr', options)
+        layer.setDataSource("nothing", "new name", "ogr", options)
         # should have kept the same renderer and wkb type!
         self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.Point)
-        self.assertEqual(layer.renderer().symbol().color().name(), '#123456')
+        self.assertEqual(layer.renderer().symbol().color().name(), "#123456")
 
         # save project to a temporary file
         temp_path = tempfile.mkdtemp()
-        temp_project_path = os.path.join(temp_path, 'temp.qgs')
+        temp_project_path = os.path.join(temp_path, "temp.qgs")
         self.assertTrue(p.write(temp_project_path))
 
         # restore project
         p2 = QgsProject()
         self.assertTrue(p2.read(temp_project_path))
 
-        l2 = p2.mapLayersByName('new name')[0]
+        l2 = p2.mapLayersByName("new name")[0]
         self.assertFalse(l2.isValid())
 
         # should have kept the same renderer and wkb type!
         self.assertEqual(l2.wkbType(), QgsWkbTypes.Type.Point)
-        self.assertEqual(l2.renderer().symbol().color().name(), '#123456')
+        self.assertEqual(l2.renderer().symbol().color().name(), "#123456")
 
         shutil.rmtree(temp_path, True)
 
@@ -505,7 +567,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         """
         Test fallback CRS and WKB types are used when layer path is invalid
         """
-        vl = QgsVectorLayer('this is an outrage!!!')
+        vl = QgsVectorLayer("this is an outrage!!!")
         self.assertFalse(vl.isValid())  # I'd certainly hope so...
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Unknown)
         self.assertFalse(vl.crs().isValid())
@@ -517,23 +579,23 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         vl = QgsVectorLayer("i'm the moon", options=options)
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.CircularString)
-        self.assertEqual(vl.crs().authid(), 'EPSG:3111')
+        self.assertEqual(vl.crs().authid(), "EPSG:3111")
 
     def test_layer_crs(self):
         """
         Test that spatial layers have CRS, and non-spatial don't
         """
-        vl = QgsVectorLayer('Point?crs=epsg:3111&field=pk:integer', 'test', 'memory')
+        vl = QgsVectorLayer("Point?crs=epsg:3111&field=pk:integer", "test", "memory")
         self.assertTrue(vl.isSpatial())
         self.assertTrue(vl.crs().isValid())
-        self.assertEqual(vl.crs().authid(), 'EPSG:3111')
+        self.assertEqual(vl.crs().authid(), "EPSG:3111")
 
-        vl = QgsVectorLayer('None?field=pk:integer', 'test', 'memory')
+        vl = QgsVectorLayer("None?field=pk:integer", "test", "memory")
         self.assertFalse(vl.isSpatial())
         self.assertFalse(vl.crs().isValid())
 
         # even if provider has a crs - we don't respect it for non-spatial layers!
-        vl = QgsVectorLayer('None?crs=epsg:3111&field=pk:integer', 'test', 'memory')
+        vl = QgsVectorLayer("None?crs=epsg:3111&field=pk:integer", "test", "memory")
         self.assertFalse(vl.isSpatial())
         self.assertFalse(vl.crs().isValid())
 
@@ -541,8 +603,8 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         # We use this particular shapefile because we need a layer with an
         # epsg != 4326
-        p = os.path.join(unitTestDataPath(), 'bug5598.shp')
-        vl0 = QgsVectorLayer(p, 'test', 'ogr')
+        p = os.path.join(unitTestDataPath(), "bug5598.shp")
+        vl0 = QgsVectorLayer(p, "test", "ogr")
 
         extent = vl0.extent()
         wgs84_extent = vl0.wgs84Extent()
@@ -566,9 +628,19 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         f = QgsFeature()
         f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
-        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
-                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
-                                                  QgsPointXY(2484588, 2425732)]]))
+        f.setGeometry(
+            QgsGeometry.fromPolygonXY(
+                [
+                    [
+                        QgsPointXY(2484588, 2425732),
+                        QgsPointXY(2482767, 2398853),
+                        QgsPointXY(2520109, 2397715),
+                        QgsPointXY(2520792, 2425494),
+                        QgsPointXY(2484588, 2425732),
+                    ]
+                ]
+            )
+        )
         vl1.addFeature(f)
         vl1.updateExtents()
 
@@ -594,9 +666,19 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         f = QgsFeature()
         f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
-        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
-                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
-                                                  QgsPointXY(2484588, 2425732)]]))
+        f.setGeometry(
+            QgsGeometry.fromPolygonXY(
+                [
+                    [
+                        QgsPointXY(2484588, 2425732),
+                        QgsPointXY(2482767, 2398853),
+                        QgsPointXY(2520109, 2397715),
+                        QgsPointXY(2520792, 2425494),
+                        QgsPointXY(2484588, 2425732),
+                    ]
+                ]
+            )
+        )
         vl2.addFeature(f)
         vl2.updateExtents()
 
@@ -1022,8 +1104,10 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         joinLayer.startEditing()
         joinLayer2.startEditing()
 
-        filter = QgsExpression.createFieldEqualityExpression('fldint', '123')
-        feature = next(layer.getFeatures(QgsFeatureRequest().setFilterExpression(filter)))
+        filter = QgsExpression.createFieldEqualityExpression("fldint", "123")
+        feature = next(
+            layer.getFeatures(QgsFeatureRequest().setFilterExpression(filter))
+        )
         layer.deleteFeature(feature.id())
 
         # check number of features
@@ -1139,6 +1223,41 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertTrue(layer.commitChanges())
         checkAfter()
 
+    def test_ChangeAttributeValuesWithContext(self):
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+        )
+
+        layer.setDefaultValueDefinition(
+            0, QgsDefaultValue("geom_to_wkt(@current_parent_geometry)", True)
+        )
+
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+
+        assert layer.dataProvider().addFeatures([f])
+        assert layer.featureCount() == 1
+        fid = 1
+
+        fields = QgsFields()
+        fields.append(QgsField("parenttxt", QVariant.String))
+        fields.append(QgsField("parentinteger", QVariant.Int))
+        pf = QgsFeature(fields)
+        pf.setAttributes(["parent", 789])
+        pf.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+
+        layer.startEditing()
+
+        expressionContext = layer.createExpressionContext()
+        expressionContext.appendScope(QgsExpressionContextUtils.parentFormScope(pf))
+        context = QgsVectorLayerToolsContext()
+        context.setExpressionContext(expressionContext)
+        self.assertTrue(layer.changeAttributeValues(fid, {1: 100}, {}, False, context))
+
+        f = layer.getFeature(1)
+        self.assertEqual(f.attributes(), ["Point (1 2)", 100])
+
     def test_ChangeAttributeAfterAddFeature(self):
         layer = createLayerWithOnePoint()
         layer.dataProvider().deleteFeatures([1])  # no need for this feature
@@ -1212,7 +1331,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
             self.assertEqual(f.geometry().asPoint(), QgsPointXY(100, 200))
 
         # try to change geometry without editing mode
-        self.assertFalse(layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400))))
+        self.assertFalse(
+            layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400)))
+        )
 
         repaint_spy = QSignalSpy(layer.repaintRequested)
 
@@ -1221,7 +1342,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         # change geometry
         layer.startEditing()
         layer.beginEditCommand("ChangeGeometry")
-        self.assertTrue(layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400))))
+        self.assertTrue(
+            layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400)))
+        )
         layer.endEditCommand()
         self.assertEqual(len(repaint_spy), 1)
 
@@ -1264,7 +1387,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer.startEditing()
         layer.beginEditCommand("ChangeGeometry + ChangeAttribute")
         self.assertTrue(layer.changeAttributeValue(fid, 0, "changed"))
-        self.assertTrue(layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400))))
+        self.assertTrue(
+            layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 400)))
+        )
         layer.endEditCommand()
 
         checkAfter()
@@ -1305,7 +1430,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer.startEditing()
         layer.beginEditCommand("AddFeature+ChangeGeometry")
         self.assertTrue(layer.addFeature(newF))
-        self.assertTrue(layer.changeGeometry(newF.id(), QgsGeometry.fromPointXY(QgsPointXY(2, 2))))
+        self.assertTrue(
+            layer.changeGeometry(newF.id(), QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
+        )
         layer.endEditCommand()
 
         checkAfter()
@@ -1342,14 +1469,14 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         # change geometry and attributes
         f = features[0]
-        f.setAttributes(['new', 321])
+        f.setAttributes(["new", 321])
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-200, -200)))
         self.assertTrue(layer.updateFeature(f))
         self.assertGreaterEqual(len(repaint_spy), 1)
         prev_spy_count = len(repaint_spy)
 
         new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
-        self.assertEqual(new_feature.attributes(), ['new', 321])
+        self.assertEqual(new_feature.attributes(), ["new", 321])
         self.assertEqual(new_feature.geometry().asPoint(), QgsPointXY(-200, -200))
 
         # add feature with no geometry
@@ -1367,7 +1494,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertGreaterEqual(len(repaint_spy), prev_spy_count)
         prev_spy_count = len(repaint_spy)
         new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
-        self.assertEqual(new_feature.attributes(), ['test6', 555])
+        self.assertEqual(new_feature.attributes(), ["test6", 555])
         self.assertTrue(new_feature.hasGeometry())
         self.assertEqual(new_feature.geometry().asPoint(), QgsPointXY(-350, -250))
 
@@ -1377,7 +1504,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertTrue(layer.updateFeature(f))
         self.assertGreaterEqual(len(repaint_spy), prev_spy_count)
         new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
-        self.assertEqual(new_feature.attributes(), ['test2', 457])
+        self.assertEqual(new_feature.attributes(), ["test2", 457])
         self.assertFalse(new_feature.hasGeometry())
 
     # ADD ATTRIBUTE
@@ -1513,9 +1640,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
     def test_DeleteAttribute(self):
         layer = createLayerWithOnePoint()
         layer.dataProvider().addAttributes(
-            [QgsField("flddouble", QVariant.Double, "double")])
-        layer.dataProvider().changeAttributeValues(
-            {1: {2: 5.5}})
+            [QgsField("flddouble", QVariant.Double, "double")]
+        )
+        layer.dataProvider().changeAttributeValues({1: {2: 5.5}})
 
         # without editing mode
         self.assertFalse(layer.deleteAttribute(0))
@@ -1737,7 +1864,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer = createLayerWithOnePoint()
 
         # without editing mode
-        self.assertFalse(layer.renameAttribute(0, 'renamed'))
+        self.assertFalse(layer.renameAttribute(0, "renamed"))
 
         def checkFieldNames(names):
             flds = layer.fields()
@@ -1751,45 +1878,45 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         layer.startEditing()
 
-        checkFieldNames(['fldtxt', 'fldint'])
+        checkFieldNames(["fldtxt", "fldint"])
 
-        self.assertFalse(layer.renameAttribute(-1, 'fldtxt2'))
-        self.assertFalse(layer.renameAttribute(10, 'fldtxt2'))
-        self.assertFalse(layer.renameAttribute(0, 'fldint'))  # duplicate name
+        self.assertFalse(layer.renameAttribute(-1, "fldtxt2"))
+        self.assertFalse(layer.renameAttribute(10, "fldtxt2"))
+        self.assertFalse(layer.renameAttribute(0, "fldint"))  # duplicate name
 
-        self.assertTrue(layer.renameAttribute(0, 'fldtxt2'))
-        checkFieldNames(['fldtxt2', 'fldint'])
+        self.assertTrue(layer.renameAttribute(0, "fldtxt2"))
+        checkFieldNames(["fldtxt2", "fldint"])
 
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint'])
+        checkFieldNames(["fldtxt", "fldint"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt2', 'fldint'])
+        checkFieldNames(["fldtxt2", "fldint"])
 
         # change two fields
-        self.assertTrue(layer.renameAttribute(1, 'fldint2'))
-        checkFieldNames(['fldtxt2', 'fldint2'])
+        self.assertTrue(layer.renameAttribute(1, "fldint2"))
+        checkFieldNames(["fldtxt2", "fldint2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt2', 'fldint'])
+        checkFieldNames(["fldtxt2", "fldint"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint'])
+        checkFieldNames(["fldtxt", "fldint"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt2', 'fldint'])
+        checkFieldNames(["fldtxt2", "fldint"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt2', 'fldint2'])
+        checkFieldNames(["fldtxt2", "fldint2"])
 
         # two renames
-        self.assertTrue(layer.renameAttribute(0, 'fldtxt3'))
-        checkFieldNames(['fldtxt3', 'fldint2'])
-        self.assertTrue(layer.renameAttribute(0, 'fldtxt4'))
-        checkFieldNames(['fldtxt4', 'fldint2'])
+        self.assertTrue(layer.renameAttribute(0, "fldtxt3"))
+        checkFieldNames(["fldtxt3", "fldint2"])
+        self.assertTrue(layer.renameAttribute(0, "fldtxt4"))
+        checkFieldNames(["fldtxt4", "fldint2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt3', 'fldint2'])
+        checkFieldNames(["fldtxt3", "fldint2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt2', 'fldint2'])
+        checkFieldNames(["fldtxt2", "fldint2"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt3', 'fldint2'])
+        checkFieldNames(["fldtxt3", "fldint2"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt4', 'fldint2'])
+        checkFieldNames(["fldtxt4", "fldint2"])
 
     def test_RenameAttributeAfterAdd(self):
         layer = createLayerWithOnePoint()
@@ -1806,52 +1933,55 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         layer.startEditing()
 
-        checkFieldNames(['fldtxt', 'fldint'])
-        self.assertTrue(layer.renameAttribute(1, 'fldint2'))
-        checkFieldNames(['fldtxt', 'fldint2'])
+        checkFieldNames(["fldtxt", "fldint"])
+        self.assertTrue(layer.renameAttribute(1, "fldint2"))
+        checkFieldNames(["fldtxt", "fldint2"])
         # add an attribute
-        self.assertTrue(layer.addAttribute(QgsField("flddouble", QVariant.Double, "double")))
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble'])
+        self.assertTrue(
+            layer.addAttribute(QgsField("flddouble", QVariant.Double, "double"))
+        )
+        checkFieldNames(["fldtxt", "fldint2", "flddouble"])
         # rename it
-        self.assertTrue(layer.renameAttribute(2, 'flddouble2'))
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2'])
+        self.assertTrue(layer.renameAttribute(2, "flddouble2"))
+        checkFieldNames(["fldtxt", "fldint2", "flddouble2"])
         self.assertTrue(layer.addAttribute(QgsField("flddate", QVariant.Date, "date")))
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2', 'flddate'])
-        self.assertTrue(layer.renameAttribute(2, 'flddouble3'))
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate'])
-        self.assertTrue(layer.renameAttribute(3, 'flddate2'))
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate2'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble2", "flddate"])
+        self.assertTrue(layer.renameAttribute(2, "flddouble3"))
+        checkFieldNames(["fldtxt", "fldint2", "flddouble3", "flddate"])
+        self.assertTrue(layer.renameAttribute(3, "flddate2"))
+        checkFieldNames(["fldtxt", "fldint2", "flddouble3", "flddate2"])
 
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble3", "flddate"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2', 'flddate'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble2", "flddate"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint2'])
+        checkFieldNames(["fldtxt", "fldint2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint'])
+        checkFieldNames(["fldtxt", "fldint"])
 
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt', 'fldint2'])
+        checkFieldNames(["fldtxt", "fldint2"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble2"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble2', 'flddate'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble2", "flddate"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble3", "flddate"])
         layer.undoStack().redo()
-        checkFieldNames(['fldtxt', 'fldint2', 'flddouble3', 'flddate2'])
+        checkFieldNames(["fldtxt", "fldint2", "flddouble3", "flddate2"])
 
     def test_RenameAttributeAndDelete(self):
         layer = createLayerWithOnePoint()
         layer.dataProvider().addAttributes(
-            [QgsField("flddouble", QVariant.Double, "double")])
+            [QgsField("flddouble", QVariant.Double, "double")]
+        )
         layer.updateFields()
 
         def checkFieldNames(names):
@@ -1866,40 +1996,40 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         layer.startEditing()
 
-        checkFieldNames(['fldtxt', 'fldint', 'flddouble'])
-        self.assertTrue(layer.renameAttribute(0, 'fldtxt2'))
-        checkFieldNames(['fldtxt2', 'fldint', 'flddouble'])
-        self.assertTrue(layer.renameAttribute(2, 'flddouble2'))
-        checkFieldNames(['fldtxt2', 'fldint', 'flddouble2'])
+        checkFieldNames(["fldtxt", "fldint", "flddouble"])
+        self.assertTrue(layer.renameAttribute(0, "fldtxt2"))
+        checkFieldNames(["fldtxt2", "fldint", "flddouble"])
+        self.assertTrue(layer.renameAttribute(2, "flddouble2"))
+        checkFieldNames(["fldtxt2", "fldint", "flddouble2"])
 
         # delete an attribute
         self.assertTrue(layer.deleteAttribute(0))
-        checkFieldNames(['fldint', 'flddouble2'])
+        checkFieldNames(["fldint", "flddouble2"])
         # rename remaining
-        self.assertTrue(layer.renameAttribute(0, 'fldint2'))
-        checkFieldNames(['fldint2', 'flddouble2'])
-        self.assertTrue(layer.renameAttribute(1, 'flddouble3'))
-        checkFieldNames(['fldint2', 'flddouble3'])
+        self.assertTrue(layer.renameAttribute(0, "fldint2"))
+        checkFieldNames(["fldint2", "flddouble2"])
+        self.assertTrue(layer.renameAttribute(1, "flddouble3"))
+        checkFieldNames(["fldint2", "flddouble3"])
         # delete an attribute
         self.assertTrue(layer.deleteAttribute(0))
-        checkFieldNames(['flddouble3'])
-        self.assertTrue(layer.renameAttribute(0, 'flddouble4'))
-        checkFieldNames(['flddouble4'])
+        checkFieldNames(["flddouble3"])
+        self.assertTrue(layer.renameAttribute(0, "flddouble4"))
+        checkFieldNames(["flddouble4"])
 
         layer.undoStack().undo()
-        checkFieldNames(['flddouble3'])
+        checkFieldNames(["flddouble3"])
         layer.undoStack().undo()
-        checkFieldNames(['fldint2', 'flddouble3'])
+        checkFieldNames(["fldint2", "flddouble3"])
         layer.undoStack().undo()
-        checkFieldNames(['fldint2', 'flddouble2'])
+        checkFieldNames(["fldint2", "flddouble2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldint', 'flddouble2'])
+        checkFieldNames(["fldint", "flddouble2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt2', 'fldint', 'flddouble2'])
+        checkFieldNames(["fldtxt2", "fldint", "flddouble2"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt2', 'fldint', 'flddouble'])
+        checkFieldNames(["fldtxt2", "fldint", "flddouble"])
         layer.undoStack().undo()
-        checkFieldNames(['fldtxt', 'fldint', 'flddouble'])
+        checkFieldNames(["fldtxt", "fldint", "flddouble"])
 
         # layer.undoStack().redo()
         # checkFieldNames(['fldtxt2', 'fldint'])
@@ -1908,13 +2038,15 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
     def test_RenameExpressionField(self):
         layer = createLayerWithOnePoint()
-        exp_field_idx = layer.addExpressionField('1+1', QgsField('math_is_hard', QVariant.Int))
+        exp_field_idx = layer.addExpressionField(
+            "1+1", QgsField("math_is_hard", QVariant.Int)
+        )
 
         # rename and check
-        self.assertTrue(layer.renameAttribute(exp_field_idx, 'renamed'))
-        self.assertEqual(layer.fields()[exp_field_idx].name(), 'renamed')
+        self.assertTrue(layer.renameAttribute(exp_field_idx, "renamed"))
+        self.assertEqual(layer.fields()[exp_field_idx].name(), "renamed")
         f = next(layer.getFeatures())
-        self.assertEqual(f.fields()[exp_field_idx].name(), 'renamed')
+        self.assertEqual(f.fields()[exp_field_idx].name(), "renamed")
 
     def test_fields(self):
         layer = createLayerWithOnePoint()
@@ -1943,8 +2075,8 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         # getFeature(fid)
         feat = layer2.getFeature(4)
         self.assertTrue(feat.isValid())
-        self.assertEqual(feat['fldtxt'], 'test3')
-        self.assertEqual(feat['fldint'], -1)
+        self.assertEqual(feat["fldtxt"], "test3")
+        self.assertEqual(feat["fldint"], -1)
         feat = layer2.getFeature(10)
         self.assertFalse(feat.isValid())
 
@@ -2018,7 +2150,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(f2[3], 321)
 
     def test_JoinStats(self):
-        """ test calculating min/max/uniqueValues on joined field """
+        """test calculating min/max/uniqueValues on joined field"""
         joinLayer = createJoinLayer()
         layer = createLayerWithTwoPoints()
         QgsProject.instance().addMapLayers([joinLayer, layer])
@@ -2043,9 +2175,19 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.minimumAndMaximumValue(3), (111, 321))
 
         # dates (maximumValue also tests we properly handle null values by skipping those)
-        self.assertEqual(layer.minimumValue(4), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)))
-        self.assertEqual(layer.maximumValue(4), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)))
-        self.assertEqual(layer.minimumAndMaximumValue(4), (QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0))))
+        self.assertEqual(
+            layer.minimumValue(4), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0))
+        )
+        self.assertEqual(
+            layer.maximumValue(4), QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0))
+        )
+        self.assertEqual(
+            layer.minimumAndMaximumValue(4),
+            (
+                QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)),
+                QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)),
+            ),
+        )
 
         self.assertEqual(set(layer.uniqueValues(3)), {111, 321})
 
@@ -2060,19 +2202,23 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         tmp_dir = QTemporaryDir()
         tmp_path = tmp_dir.path()
 
-        myPath = os.path.join(unitTestDataPath(), 'joins.qgs')
+        myPath = os.path.join(unitTestDataPath(), "joins.qgs")
         shutil.copy2(myPath, tmp_path)
 
-        for file in glob.glob(os.path.join(unitTestDataPath(), 'polys_overlapping_with_id.*')):
+        for file in glob.glob(
+            os.path.join(unitTestDataPath(), "polys_overlapping_with_id.*")
+        ):
             shutil.copy(file, tmp_path)
 
-        for file in glob.glob(os.path.join(unitTestDataPath(), 'polys_with_id.*')):
+        for file in glob.glob(os.path.join(unitTestDataPath(), "polys_with_id.*")):
             shutil.copy(file, tmp_path)
 
-        rc = QgsProject.instance().read(os.path.join(tmp_path, 'joins.qgs'))
+        rc = QgsProject.instance().read(os.path.join(tmp_path, "joins.qgs"))
 
         layer = QgsProject.instance().mapLayersByName("polys_with_id")[0]
-        join_layer = QgsProject.instance().mapLayersByName("polys_overlapping_with_id")[0]
+        join_layer = QgsProject.instance().mapLayersByName("polys_overlapping_with_id")[
+            0
+        ]
 
         # create an attribute table for the main_layer and the
         # joined layer
@@ -2091,7 +2237,10 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         join_model_index = join_am.idToIndex(fid)
         join_feature_model = join_am.feature(join_model_index)
 
-        self.assertEqual(feature_model.attribute(attr_idx), join_feature_model.attribute(join_attr_idx))
+        self.assertEqual(
+            feature_model.attribute(attr_idx),
+            join_feature_model.attribute(join_attr_idx),
+        )
 
         # change attribute value for a feature of the joined layer
         join_layer.startEditing()
@@ -2120,7 +2269,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         join_layer.commitChanges()
 
     def testUniqueValue(self):
-        """ test retrieving unique values """
+        """test retrieving unique values"""
         layer = createLayerWithFivePoints()
 
         # test layer with just provider features
@@ -2149,10 +2298,12 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         f1_id = next(layer.getFeatures()).id()
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 481523))
         # note - this isn't 100% accurate, since 123 no longer exists - but it avoids looping through all features
-        self.assertEqual(set(layer.uniqueValues(1)), {123, 457, 888, -1, 0, 999, 9999, 481523})
+        self.assertEqual(
+            set(layer.uniqueValues(1)), {123, 457, 888, -1, 0, 999, 9999, 481523}
+        )
 
     def testUniqueStringsMatching(self):
-        """ test retrieving unique strings matching subset """
+        """test retrieving unique strings matching subset"""
         layer = QgsVectorLayer("Point?field=fldtxt:string", "addfeat", "memory")
         pr = layer.dataProvider()
         f = QgsFeature()
@@ -2169,7 +2320,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         assert layer.featureCount() == 5
 
         # test layer with just provider features
-        self.assertEqual(set(layer.uniqueStringsMatching(0, 'N')), {'orange', 'BanaNa'})
+        self.assertEqual(set(layer.uniqueStringsMatching(0, "N")), {"orange", "BanaNa"})
 
         # add feature with new value
         layer.startEditing()
@@ -2178,26 +2329,37 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertTrue(layer.addFeature(f1))
 
         # should be included in unique values
-        self.assertEqual(set(layer.uniqueStringsMatching(0, 'N')), {'orange', 'BanaNa', 'waterMelon'})
+        self.assertEqual(
+            set(layer.uniqueStringsMatching(0, "N")), {"orange", "BanaNa", "waterMelon"}
+        )
         # add it again, should be no change
         f2 = QgsFeature()
         f2.setAttributes(["waterMelon"])
         self.assertTrue(layer.addFeature(f1))
-        self.assertEqual(set(layer.uniqueStringsMatching(0, 'N')), {'orange', 'BanaNa', 'waterMelon'})
-        self.assertEqual(set(layer.uniqueStringsMatching(0, 'aN')), {'orange', 'BanaNa'})
+        self.assertEqual(
+            set(layer.uniqueStringsMatching(0, "N")), {"orange", "BanaNa", "waterMelon"}
+        )
+        self.assertEqual(
+            set(layer.uniqueStringsMatching(0, "aN")), {"orange", "BanaNa"}
+        )
         # add another feature
         f3 = QgsFeature()
         f3.setAttributes(["pineapple"])
         self.assertTrue(layer.addFeature(f3))
-        self.assertEqual(set(layer.uniqueStringsMatching(0, 'n')), {'orange', 'BanaNa', 'waterMelon', 'pineapple'})
+        self.assertEqual(
+            set(layer.uniqueStringsMatching(0, "n")),
+            {"orange", "BanaNa", "waterMelon", "pineapple"},
+        )
 
         # change an attribute value to a new unique value
         f = QgsFeature()
         f1_id = next(layer.getFeatures()).id()
-        self.assertTrue(layer.changeAttributeValue(f1_id, 0, 'coconut'))
+        self.assertTrue(layer.changeAttributeValue(f1_id, 0, "coconut"))
         # note - this isn't 100% accurate, since orange no longer exists - but it avoids looping through all features
-        self.assertEqual(set(layer.uniqueStringsMatching(0, 'n')),
-                         {'orange', 'BanaNa', 'waterMelon', 'pineapple', 'coconut'})
+        self.assertEqual(
+            set(layer.uniqueStringsMatching(0, "n")),
+            {"orange", "BanaNa", "waterMelon", "pineapple", "coconut"},
+        )
 
     def test_subsetString(self):
         subset_string_changed = False
@@ -2206,15 +2368,15 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
             nonlocal subset_string_changed
             subset_string_changed = True
 
-        path = os.path.join(unitTestDataPath(), 'lines.shp')
-        layer = QgsVectorLayer(path, 'test', 'ogr')
+        path = os.path.join(unitTestDataPath(), "lines.shp")
+        layer = QgsVectorLayer(path, "test", "ogr")
         layer.subsetStringChanged.connect(onSubsetStringChanged)
         layer.setSubsetString("\"Name\" = 'Highway'")
         self.assertTrue(subset_string_changed)
         self.assertEqual(layer.featureCount(), 2)
 
     def testMinValue(self):
-        """ test retrieving minimum values """
+        """test retrieving minimum values"""
         layer = createLayerWithFivePoints()
 
         # test layer with just provider features
@@ -2245,7 +2407,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.minimumValue(1), -1001)
 
     def testMaxValue(self):
-        """ test retrieving maximum values """
+        """test retrieving maximum values"""
         layer = createLayerWithFivePoints()
 
         # test layer with just provider features
@@ -2276,7 +2438,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.maximumValue(1), 1001)
 
     def testMinAndMaxValue(self):
-        """ test retrieving minimum and maximum values at once"""
+        """test retrieving minimum and maximum values at once"""
         layer = createLayerWithFivePoints()
 
         # test layer with just provider features
@@ -2339,7 +2501,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer = QgsVectorLayer("Point?field=fldstr:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        int_values = ['2010-01-01', None, '2020-01-01']
+        int_values = ["2010-01-01", None, "2020-01-01"]
         features = []
         for i in int_values:
             f = QgsFeature()
@@ -2348,12 +2510,14 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        field = QgsField('virtual', QVariant.Date)
+        field = QgsField("virtual", QVariant.Date)
         layer.addExpressionField('to_date("fldstr")', field)
         self.assertEqual(len(layer.getFeature(1).attributes()), 2)
         self.assertEqual(layer.minimumValue(1), QDate(2010, 1, 1))
         self.assertEqual(layer.maximumValue(1), QDate(2020, 1, 1))
-        self.assertEqual(layer.minimumAndMaximumValue(1), (QDate(2010, 1, 1), QDate(2020, 1, 1)))
+        self.assertEqual(
+            layer.minimumAndMaximumValue(1), (QDate(2010, 1, 1), QDate(2020, 1, 1))
+        )
 
     def test_InvalidOperations(self):
         layer = createLayerWithOnePoint()
@@ -2374,8 +2538,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         # CHANGE GEOMETRY
 
-        self.assertFalse(layer.changeGeometry(
-            -333, QgsGeometry.fromPointXY(QgsPointXY(1, 1))))
+        self.assertFalse(
+            layer.changeGeometry(-333, QgsGeometry.fromPointXY(QgsPointXY(1, 1)))
+        )
 
         # CHANGE VALUE
 
@@ -2400,8 +2565,12 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer.blendModeChanged.connect(self.onBlendModeChanged)
         layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
 
-        self.assertEqual(self.blendModeTest, QPainter.CompositionMode.CompositionMode_Screen)
-        self.assertEqual(layer.blendMode(), QPainter.CompositionMode.CompositionMode_Screen)
+        self.assertEqual(
+            self.blendModeTest, QPainter.CompositionMode.CompositionMode_Screen
+        )
+        self.assertEqual(
+            layer.blendMode(), QPainter.CompositionMode.CompositionMode_Screen
+        )
 
     def test_setFeatureBlendMode(self):
         layer = createLayerWithOnePoint()
@@ -2410,15 +2579,19 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer.featureBlendModeChanged.connect(self.onBlendModeChanged)
         layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
 
-        self.assertEqual(self.blendModeTest, QPainter.CompositionMode.CompositionMode_Screen)
-        self.assertEqual(layer.featureBlendMode(), QPainter.CompositionMode.CompositionMode_Screen)
+        self.assertEqual(
+            self.blendModeTest, QPainter.CompositionMode.CompositionMode_Screen
+        )
+        self.assertEqual(
+            layer.featureBlendMode(), QPainter.CompositionMode.CompositionMode_Screen
+        )
 
     def test_ExpressionField(self):
         layer = createLayerWithOnePoint()
 
         cnt = layer.fields().count()
 
-        idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))
+        idx = layer.addExpressionField("5", QgsField("test", QVariant.LongLong))
 
         fet = next(layer.getFeatures())
         self.assertEqual(fet[idx], 5)
@@ -2430,7 +2603,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         fet = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(1)))
         self.assertEqual(fet.fields(), layer.fields())
 
-        layer.updateExpressionField(idx, '9')
+        layer.updateExpressionField(idx, "9")
 
         self.assertEqual(next(layer.getFeatures())[idx], 9)
 
@@ -2439,17 +2612,25 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.fields().count(), cnt)
 
         # expression field which references itself
-        idx = layer.addExpressionField('sum(test2)', QgsField('test2', QVariant.LongLong))
+        idx = layer.addExpressionField(
+            "sum(test2)", QgsField("test2", QVariant.LongLong)
+        )
         fet = next(layer.getFeatures())
-        self.assertEqual(fet['test2'], 0)
+        self.assertEqual(fet["test2"], 0)
 
     def test_ExpressionFieldEllipsoidLengthCalculation(self):
         # create a temporary layer
-        temp_layer = QgsVectorLayer("LineString?crs=epsg:3111&field=pk:int", "vl", "memory")
+        temp_layer = QgsVectorLayer(
+            "LineString?crs=epsg:3111&field=pk:int", "vl", "memory"
+        )
         self.assertTrue(temp_layer.isValid())
         f1 = QgsFeature(temp_layer.dataProvider().fields(), 1)
         f1.setAttribute("pk", 1)
-        f1.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853)]))
+        f1.setGeometry(
+            QgsGeometry.fromPolylineXY(
+                [QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853)]
+            )
+        )
         temp_layer.dataProvider().addFeatures([f1])
 
         # set project CRS and ellipsoid
@@ -2458,28 +2639,42 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         QgsProject.instance().setEllipsoid("WGS84")
         QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceUnit.DistanceMeters)
 
-        idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))  # NOQA
+        idx = temp_layer.addExpressionField(
+            "$length", QgsField("length", QVariant.Double)
+        )  # NOQA
 
         # check value
         f = next(temp_layer.getFeatures())
         expected = 26932.156
-        self.assertAlmostEqual(f['length'], expected, 3)
+        self.assertAlmostEqual(f["length"], expected, 3)
 
         # change project length unit, check calculation respects unit
         QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceUnit.DistanceFeet)
         f = next(temp_layer.getFeatures())
         expected = 88360.0918635
-        self.assertAlmostEqual(f['length'], expected, 3)
+        self.assertAlmostEqual(f["length"], expected, 3)
 
     def test_ExpressionFieldEllipsoidAreaCalculation(self):
         # create a temporary layer
-        temp_layer = QgsVectorLayer("Polygon?crs=epsg:3111&field=pk:int", "vl", "memory")
+        temp_layer = QgsVectorLayer(
+            "Polygon?crs=epsg:3111&field=pk:int", "vl", "memory"
+        )
         self.assertTrue(temp_layer.isValid())
         f1 = QgsFeature(temp_layer.dataProvider().fields(), 1)
         f1.setAttribute("pk", 1)
-        f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853),
-                                                   QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
-                                                   QgsPointXY(2484588, 2425722)]]))
+        f1.setGeometry(
+            QgsGeometry.fromPolygonXY(
+                [
+                    [
+                        QgsPointXY(2484588, 2425722),
+                        QgsPointXY(2482767, 2398853),
+                        QgsPointXY(2520109, 2397715),
+                        QgsPointXY(2520792, 2425494),
+                        QgsPointXY(2484588, 2425722),
+                    ]
+                ]
+            )
+        )
         temp_layer.dataProvider().addFeatures([f1])
 
         # set project CRS and ellipsoid
@@ -2488,35 +2683,43 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         QgsProject.instance().setEllipsoid("WGS84")
         QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaUnit.AreaSquareMeters)
 
-        idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))  # NOQA
+        idx = temp_layer.addExpressionField(
+            "$area", QgsField("area", QVariant.Double)
+        )  # NOQA
 
         # check value
         f = next(temp_layer.getFeatures())
         expected = 1005755617.8191342
-        self.assertAlmostEqual(f['area'], expected, delta=1.0)
+        self.assertAlmostEqual(f["area"], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
         QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaUnit.AreaSquareMiles)
         f = next(temp_layer.getFeatures())
         expected = 388.3244150061589
-        self.assertAlmostEqual(f['area'], expected, 3)
+        self.assertAlmostEqual(f["area"], expected, 3)
 
     def test_ExpressionFilter(self):
         layer = createLayerWithOnePoint()
 
-        idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))  # NOQA
+        idx = layer.addExpressionField("5", QgsField("test", QVariant.LongLong))  # NOQA
 
-        features = layer.getFeatures(QgsFeatureRequest().setFilterExpression('"test" = 6'))
+        features = layer.getFeatures(
+            QgsFeatureRequest().setFilterExpression('"test" = 6')
+        )
 
-        assert (len(list(features)) == 0)
+        assert len(list(features)) == 0
 
-        features = layer.getFeatures(QgsFeatureRequest().setFilterExpression('"test" = 5'))
+        features = layer.getFeatures(
+            QgsFeatureRequest().setFilterExpression('"test" = 5')
+        )
 
-        assert (len(list(features)) == 1)
+        assert len(list(features)) == 1
 
     def testSelectByIds(self):
-        """ Test selecting by ID"""
-        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+        """Test selecting by ID"""
+        layer = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "points.shp"), "Points", "ogr"
+        )
 
         # SetSelection
         layer.selectByIds([1, 3, 5, 7], QgsVectorLayer.SelectBehavior.SetSelection)
@@ -2532,9 +2735,13 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(set(layer.selectedFeatureIds()), {1, 2, 3, 4, 5, 6})
 
         # IntersectSelection
-        layer.selectByIds([1, 3, 5, 6], QgsVectorLayer.SelectBehavior.IntersectSelection)
+        layer.selectByIds(
+            [1, 3, 5, 6], QgsVectorLayer.SelectBehavior.IntersectSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {1, 3, 5, 6})
-        layer.selectByIds([1, 2, 5, 6], QgsVectorLayer.SelectBehavior.IntersectSelection)
+        layer.selectByIds(
+            [1, 2, 5, 6], QgsVectorLayer.SelectBehavior.IntersectSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {1, 5, 6})
 
         # RemoveFromSelection
@@ -2544,87 +2751,146 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(set(layer.selectedFeatureIds()), set())
 
     def testSelectByExpression(self):
-        """ Test selecting by expression """
-        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+        """Test selecting by expression"""
+        layer = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "points.shp"), "Points", "ogr"
+        )
 
         # SetSelection
-        layer.selectByExpression('"Class"=\'B52\' and "Heading" > 10 and "Heading" <70', QgsVectorLayer.SelectBehavior.SetSelection)
+        layer.selectByExpression(
+            '"Class"=\'B52\' and "Heading" > 10 and "Heading" <70',
+            QgsVectorLayer.SelectBehavior.SetSelection,
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {10, 11})
         # check that existing selection is cleared
-        layer.selectByExpression('"Class"=\'Biplane\'', QgsVectorLayer.SelectBehavior.SetSelection)
+        layer.selectByExpression(
+            "\"Class\"='Biplane'", QgsVectorLayer.SelectBehavior.SetSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {1, 5, 6, 7, 8})
         # SetSelection no matching
-        layer.selectByExpression('"Class"=\'A380\'', QgsVectorLayer.SelectBehavior.SetSelection)
+        layer.selectByExpression(
+            "\"Class\"='A380'", QgsVectorLayer.SelectBehavior.SetSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), set())
 
         # AddToSelection
-        layer.selectByExpression('"Importance"=3', QgsVectorLayer.SelectBehavior.AddToSelection)
+        layer.selectByExpression(
+            '"Importance"=3', QgsVectorLayer.SelectBehavior.AddToSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {0, 2, 3, 4, 14})
-        layer.selectByExpression('"Importance"=4', QgsVectorLayer.SelectBehavior.AddToSelection)
+        layer.selectByExpression(
+            '"Importance"=4', QgsVectorLayer.SelectBehavior.AddToSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {0, 2, 3, 4, 13, 14})
 
         # IntersectSelection
-        layer.selectByExpression('"Heading"<100', QgsVectorLayer.SelectBehavior.IntersectSelection)
+        layer.selectByExpression(
+            '"Heading"<100', QgsVectorLayer.SelectBehavior.IntersectSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {0, 2, 3, 4})
-        layer.selectByExpression('"Cabin Crew"=1', QgsVectorLayer.SelectBehavior.IntersectSelection)
+        layer.selectByExpression(
+            '"Cabin Crew"=1', QgsVectorLayer.SelectBehavior.IntersectSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {2, 3})
 
         # RemoveFromSelection
-        layer.selectByExpression('"Heading"=85', QgsVectorLayer.SelectBehavior.RemoveFromSelection)
+        layer.selectByExpression(
+            '"Heading"=85', QgsVectorLayer.SelectBehavior.RemoveFromSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {3})
-        layer.selectByExpression('"Heading"=95', QgsVectorLayer.SelectBehavior.RemoveFromSelection)
+        layer.selectByExpression(
+            '"Heading"=95', QgsVectorLayer.SelectBehavior.RemoveFromSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), set())
 
         # test using specific expression context
-        layer.selectByExpression('"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading', QgsVectorLayer.SelectBehavior.SetSelection)
+        layer.selectByExpression(
+            '"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading',
+            QgsVectorLayer.SelectBehavior.SetSelection,
+        )
         # default built context won't have variables used in the expression
         self.assertFalse(layer.selectedFeatureIds())
 
-        context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
-        context.lastScope().setVariable('class', 'B52')
-        context.lastScope().setVariable('low_heading', 10)
-        context.lastScope().setVariable('high_heading', 70)
+        context = QgsExpressionContext(
+            QgsExpressionContextUtils.globalProjectLayerScopes(layer)
+        )
+        context.lastScope().setVariable("class", "B52")
+        context.lastScope().setVariable("low_heading", 10)
+        context.lastScope().setVariable("high_heading", 70)
         # using custom context should allow the expression to be evaluated correctly
-        layer.selectByExpression('"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading',
-                                 QgsVectorLayer.SelectBehavior.SetSelection, context)
+        layer.selectByExpression(
+            '"Class"=@class and "Heading" > @low_heading and "Heading" <@high_heading',
+            QgsVectorLayer.SelectBehavior.SetSelection,
+            context,
+        )
         self.assertCountEqual(layer.selectedFeatureIds(), [10, 11])
 
     def testSelectByRect(self):
-        """ Test selecting by rectangle """
-        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+        """Test selecting by rectangle"""
+        layer = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "points.shp"), "Points", "ogr"
+        )
 
         # SetSelection
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.SelectBehavior.SetSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.SelectBehavior.SetSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {2, 3, 7, 10, 11, 15})
         # check that existing selection is cleared
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.SelectBehavior.SetSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.SelectBehavior.SetSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {2, 3, 10, 15})
         # SetSelection no matching
-        layer.selectByRect(QgsRectangle(112, 30, 115, 45), QgsVectorLayer.SelectBehavior.SetSelection)
+        layer.selectByRect(
+            QgsRectangle(112, 30, 115, 45), QgsVectorLayer.SelectBehavior.SetSelection
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), set())
 
         # AddToSelection
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.SelectBehavior.AddToSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 37),
+            QgsVectorLayer.SelectBehavior.AddToSelection,
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {2, 3, 10, 15})
-        layer.selectByRect(QgsRectangle(-112, 37, -94, 45), QgsVectorLayer.SelectBehavior.AddToSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 37, -94, 45),
+            QgsVectorLayer.SelectBehavior.AddToSelection,
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {2, 3, 7, 10, 11, 15})
 
         # IntersectSelection
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.SelectBehavior.IntersectSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 37),
+            QgsVectorLayer.SelectBehavior.IntersectSelection,
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {2, 3, 10, 15})
         layer.selectByIds([2, 10, 13])
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.SelectBehavior.IntersectSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 37),
+            QgsVectorLayer.SelectBehavior.IntersectSelection,
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {2, 10})
 
         # RemoveFromSelection
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.SelectBehavior.SetSelection)
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 37), QgsVectorLayer.SelectBehavior.RemoveFromSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.SelectBehavior.SetSelection
+        )
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 37),
+            QgsVectorLayer.SelectBehavior.RemoveFromSelection,
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), {7, 11})
-        layer.selectByRect(QgsRectangle(-112, 30, -94, 45), QgsVectorLayer.SelectBehavior.RemoveFromSelection)
+        layer.selectByRect(
+            QgsRectangle(-112, 30, -94, 45),
+            QgsVectorLayer.SelectBehavior.RemoveFromSelection,
+        )
         self.assertEqual(set(layer.selectedFeatureIds()), set())
 
     def testReselect(self):
-        layer = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
+        layer = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "points.shp"), "Points", "ogr"
+        )
 
         layer.selectByIds([1, 3, 5, 7], QgsVectorLayer.SelectBehavior.SetSelection)
         self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
@@ -2674,33 +2940,37 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
     def testGetFeaturesVirtualFieldsSubset(self):
         """Test that when a subset is requested virtual fields are returned nullified"""
 
-        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'Points', 'ogr')
-        virt_field_idx = vl.addExpressionField('\'Importance: \' || Importance', QgsField('virt_1', QVariant.String))
+        vl = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "points.shp"), "Points", "ogr"
+        )
+        virt_field_idx = vl.addExpressionField(
+            "'Importance: ' || Importance", QgsField("virt_1", QVariant.String)
+        )
 
-        self.assertEqual(vl.fields().lookupField('virt_1'), virt_field_idx)
+        self.assertEqual(vl.fields().lookupField("virt_1"), virt_field_idx)
 
         req = QgsFeatureRequest()
         req.setSubsetOfAttributes([0, 1])
         attrs = next(vl.getFeatures(req)).attributes()
-        self.assertEqual(attrs, ['Jet', 90, None, None, None, None, None])
+        self.assertEqual(attrs, ["Jet", 90, None, None, None, None, None])
 
         attrs = next(vl.getFeatures()).attributes()
-        self.assertEqual(attrs, ['Jet', 90, 3.0, 2, 0, 2, 'Importance: 3'])
+        self.assertEqual(attrs, ["Jet", 90, 3.0, 2, 0, 2, "Importance: 3"])
 
         req.setSubsetOfAttributes([0, 2])
         attrs = next(vl.getFeatures(req)).attributes()
-        self.assertEqual(attrs, ['Jet', None, 3.0, None, None, None, None])
+        self.assertEqual(attrs, ["Jet", None, 3.0, None, None, None, None])
 
         req.setSubsetOfAttributes([0, 1, 6])
         attrs = next(vl.getFeatures(req)).attributes()
-        self.assertEqual(attrs, ['Jet', 90, 3.0, None, None, None, 'Importance: 3'])
+        self.assertEqual(attrs, ["Jet", 90, 3.0, None, None, None, "Importance: 3"])
 
         req.setSubsetOfAttributes([6])
         attrs = next(vl.getFeatures(req)).attributes()
-        self.assertEqual(attrs, [None, None, 3.0, None, None, None, 'Importance: 3'])
+        self.assertEqual(attrs, [None, None, 3.0, None, None, None, "Importance: 3"])
 
     def testAggregate(self):
-        """ Test aggregate calculation """
+        """Test aggregate calculation"""
         layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
         pr = layer.dataProvider()
 
@@ -2713,24 +2983,25 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        tests = [[QgsAggregateCalculator.Aggregate.Count, 6],
-                 [QgsAggregateCalculator.Aggregate.Sum, 24],
-                 [QgsAggregateCalculator.Aggregate.Mean, 4],
-                 [QgsAggregateCalculator.Aggregate.StDev, 2.0816],
-                 [QgsAggregateCalculator.Aggregate.StDevSample, 2.2803],
-                 [QgsAggregateCalculator.Aggregate.Min, 2],
-                 [QgsAggregateCalculator.Aggregate.Max, 8],
-                 [QgsAggregateCalculator.Aggregate.Range, 6],
-                 [QgsAggregateCalculator.Aggregate.Median, 3.5],
-                 [QgsAggregateCalculator.Aggregate.CountDistinct, 5],
-                 [QgsAggregateCalculator.Aggregate.CountMissing, 1],
-                 [QgsAggregateCalculator.Aggregate.FirstQuartile, 2],
-                 [QgsAggregateCalculator.Aggregate.ThirdQuartile, 5.0],
-                 [QgsAggregateCalculator.Aggregate.InterQuartileRange, 3.0]
-                 ]
+        tests = [
+            [QgsAggregateCalculator.Aggregate.Count, 6],
+            [QgsAggregateCalculator.Aggregate.Sum, 24],
+            [QgsAggregateCalculator.Aggregate.Mean, 4],
+            [QgsAggregateCalculator.Aggregate.StDev, 2.0816],
+            [QgsAggregateCalculator.Aggregate.StDevSample, 2.2803],
+            [QgsAggregateCalculator.Aggregate.Min, 2],
+            [QgsAggregateCalculator.Aggregate.Max, 8],
+            [QgsAggregateCalculator.Aggregate.Range, 6],
+            [QgsAggregateCalculator.Aggregate.Median, 3.5],
+            [QgsAggregateCalculator.Aggregate.CountDistinct, 5],
+            [QgsAggregateCalculator.Aggregate.CountMissing, 1],
+            [QgsAggregateCalculator.Aggregate.FirstQuartile, 2],
+            [QgsAggregateCalculator.Aggregate.ThirdQuartile, 5.0],
+            [QgsAggregateCalculator.Aggregate.InterQuartileRange, 3.0],
+        ]
 
         for t in tests:
-            val, ok = layer.aggregate(t[0], 'fldint')
+            val, ok = layer.aggregate(t[0], "fldint")
             self.assertTrue(ok)
             if isinstance(t[1], int):
                 self.assertEqual(val, t[1])
@@ -2741,7 +3012,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        string_values = ['this', 'is', 'a', 'test', 'a', 'nice', 'test']
+        string_values = ["this", "is", "a", "test", "a", "nice", "test"]
         features = []
         for s in string_values:
             f = QgsFeature()
@@ -2750,13 +3021,19 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
             features.append(f)
         assert pr.addFeatures(features)
         params = QgsAggregateCalculator.AggregateParameters()
-        params.delimiter = ' '
-        val, ok = layer.aggregate(QgsAggregateCalculator.Aggregate.StringConcatenate, 'fldstring', params)
+        params.delimiter = " "
+        val, ok = layer.aggregate(
+            QgsAggregateCalculator.Aggregate.StringConcatenate, "fldstring", params
+        )
         self.assertTrue(ok)
-        self.assertEqual(val, 'this is a test a nice test')
-        val, ok = layer.aggregate(QgsAggregateCalculator.Aggregate.StringConcatenateUnique, 'fldstring', params)
+        self.assertEqual(val, "this is a test a nice test")
+        val, ok = layer.aggregate(
+            QgsAggregateCalculator.Aggregate.StringConcatenateUnique,
+            "fldstring",
+            params,
+        )
         self.assertTrue(ok)
-        self.assertEqual(val, 'this is a test nice')
+        self.assertEqual(val, "this is a test nice")
 
     def testAggregateInVirtualField(self):
         """
@@ -2774,13 +3051,13 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        field = QgsField('virtual', QVariant.Double)
-        layer.addExpressionField('sum(fldint*2)', field)
-        vals = [f['virtual'] for f in layer.getFeatures()]
+        field = QgsField("virtual", QVariant.Double)
+        layer.addExpressionField("sum(fldint*2)", field)
+        vals = [f["virtual"] for f in layer.getFeatures()]
         self.assertEqual(vals, [48, 48, 48, 48, 48, 48, 48])
 
     def testAggregateFilter(self):
-        """ Test aggregate calculation """
+        """Test aggregate calculation"""
         layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
         pr = layer.dataProvider()
 
@@ -2793,7 +3070,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        val, ok = layer.aggregate(QgsAggregateCalculator.Aggregate.Sum, 'fldint', fids=[1, 2])
+        val, ok = layer.aggregate(
+            QgsAggregateCalculator.Aggregate.Sum, "fldint", fids=[1, 2]
+        )
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
@@ -2818,13 +3097,15 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.rendererChanged = False
         layer.rendererChanged.connect(self.onRendererChanged)
 
-        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry))
+        r = QgsSingleSymbolRenderer(
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry)
+        )
         layer.setRenderer(r)
         self.assertTrue(self.rendererChanged)
         self.assertEqual(layer.renderer(), r)
 
     def testGetSetAliases(self):
-        """ test getting and setting aliases """
+        """test getting and setting aliases"""
         layer = createLayerWithOnePoint()
 
         self.assertEqual(len(layer.attributeAliases()), 2)
@@ -2861,7 +3142,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertFalse(layer.fields().at(1).alias())
 
     def testSaveRestoreAliases(self):
-        """ test saving and restoring aliases from xml"""
+        """test saving and restoring aliases from xml"""
         layer = createLayerWithOnePoint()
 
         # no default expressions
@@ -2890,7 +3171,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer3.fields().at(1).alias(), "test2")
 
     def testGetSetDefaults(self):
-        """ test getting and setting default expressions """
+        """test getting and setting default expressions"""
         layer = createLayerWithOnePoint()
 
         self.assertFalse(layer.defaultValueDefinition(0))
@@ -2907,7 +3188,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertFalse(layer.defaultValueDefinition(1).applyOnUpdate())
         self.assertFalse(layer.defaultValueDefinition(2))
         self.assertFalse(layer.defaultValueDefinition(2).applyOnUpdate())
-        self.assertEqual(layer.fields().at(0).defaultValueDefinition().expression(), "'test'")
+        self.assertEqual(
+            layer.fields().at(0).defaultValueDefinition().expression(), "'test'"
+        )
 
         layer.setDefaultValueDefinition(1, QgsDefaultValue("2+2"))
         self.assertEqual(layer.defaultValueDefinition(0).expression(), "'test'")
@@ -2916,19 +3199,27 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertFalse(layer.defaultValueDefinition(1).applyOnUpdate())
         self.assertFalse(layer.defaultValueDefinition(2))
         self.assertFalse(layer.defaultValueDefinition(2).applyOnUpdate())
-        self.assertEqual(layer.fields().at(0).defaultValueDefinition().expression(), "'test'")
-        self.assertEqual(layer.fields().at(1).defaultValueDefinition().expression(), "2+2")
+        self.assertEqual(
+            layer.fields().at(0).defaultValueDefinition().expression(), "'test'"
+        )
+        self.assertEqual(
+            layer.fields().at(1).defaultValueDefinition().expression(), "2+2"
+        )
 
         layer.setDefaultValueDefinition(1, QgsDefaultValue("2+2", True))
         self.assertEqual(layer.defaultValueDefinition(0).expression(), "'test'")
         self.assertFalse(layer.defaultValueDefinition(0).applyOnUpdate())
         self.assertEqual(layer.defaultValueDefinition(1).expression(), "2+2")
         self.assertTrue(layer.defaultValueDefinition(1).applyOnUpdate())
-        self.assertEqual(layer.fields().at(0).defaultValueDefinition().expression(), "'test'")
-        self.assertEqual(layer.fields().at(1).defaultValueDefinition().expression(), "2+2")
+        self.assertEqual(
+            layer.fields().at(0).defaultValueDefinition().expression(), "'test'"
+        )
+        self.assertEqual(
+            layer.fields().at(1).defaultValueDefinition().expression(), "2+2"
+        )
 
     def testSaveRestoreDefaults(self):
-        """ test saving and restoring default expressions from xml"""
+        """test saving and restoring default expressions from xml"""
         layer = createLayerWithOnePoint()
 
         # no default expressions
@@ -2953,59 +3244,67 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(layer3.defaultValueDefinition(0).expression(), "'test'")
         self.assertEqual(layer3.defaultValueDefinition(1).expression(), "2+2")
-        self.assertEqual(layer3.fields().at(0).defaultValueDefinition().expression(), "'test'")
-        self.assertEqual(layer3.fields().at(1).defaultValueDefinition().expression(), "2+2")
+        self.assertEqual(
+            layer3.fields().at(0).defaultValueDefinition().expression(), "'test'"
+        )
+        self.assertEqual(
+            layer3.fields().at(1).defaultValueDefinition().expression(), "2+2"
+        )
 
     def testEvaluatingDefaultExpressions(self):
-        """ tests calculation of default values"""
+        """tests calculation of default values"""
         layer = createLayerWithOnePoint()
         layer.setDefaultValueDefinition(0, QgsDefaultValue("'test'"))
         layer.setDefaultValueDefinition(1, QgsDefaultValue("2+2"))
-        self.assertEqual(layer.defaultValue(0), 'test')
+        self.assertEqual(layer.defaultValue(0), "test")
         self.assertEqual(layer.defaultValue(1), 4)
 
         # using feature
-        layer.setDefaultValueDefinition(1, QgsDefaultValue('$id * 2'))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("$id * 2"))
         feature = QgsFeature(4)
         feature.setValid(True)
         feature.setFields(layer.fields())
         # no feature:
         self.assertFalse(layer.defaultValue(1))
         # with feature:
-        self.assertEqual(layer.defaultValue(0, feature), 'test')
+        self.assertEqual(layer.defaultValue(0, feature), "test")
         self.assertEqual(layer.defaultValue(1, feature), 8)
 
         # using feature geometry
-        layer.setDefaultValueDefinition(1, QgsDefaultValue('$x * 2'))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("$x * 2"))
         feature.setGeometry(QgsGeometry(QgsPoint(6, 7)))
         self.assertEqual(layer.defaultValue(1, feature), 12)
 
         # using contexts
         scope = QgsExpressionContextScope()
-        scope.setVariable('var1', 16)
+        scope.setVariable("var1", 16)
         context = QgsExpressionContext()
         context.appendScope(scope)
-        layer.setDefaultValueDefinition(1, QgsDefaultValue('$id + @var1'))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("$id + @var1"))
         self.assertEqual(layer.defaultValue(1, feature, context), 20)
 
         # if no scope passed, should use a default constructed one including layer variables
-        QgsExpressionContextUtils.setLayerVariable(layer, 'var2', 4)
-        QgsExpressionContextUtils.setProjectVariable(QgsProject.instance(), 'var3', 8)
-        layer.setDefaultValueDefinition(1, QgsDefaultValue('to_int(@var2) + to_int(@var3) + $id'))
+        QgsExpressionContextUtils.setLayerVariable(layer, "var2", 4)
+        QgsExpressionContextUtils.setProjectVariable(QgsProject.instance(), "var3", 8)
+        layer.setDefaultValueDefinition(
+            1, QgsDefaultValue("to_int(@var2) + to_int(@var3) + $id")
+        )
         self.assertEqual(layer.defaultValue(1, feature), 16)
 
         # bad expression
-        layer.setDefaultValueDefinition(1, QgsDefaultValue('not a valid expression'))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("not a valid expression"))
         self.assertFalse(layer.defaultValue(1))
 
     def testApplyOnUpdateDefaultExpressions(self):
         """tests apply on update of default values"""
         layer = createLayerWithOnePoint()
 
-        layer.setDefaultValueDefinition(0, QgsDefaultValue("CONCAT('l: ', @number, ',f: ', \"fldint\" )", True))
+        layer.setDefaultValueDefinition(
+            0, QgsDefaultValue("CONCAT('l: ', @number, ',f: ', \"fldint\" )", True)
+        )
         layer.setDefaultValueDefinition(1, QgsDefaultValue("1 * @number", False))
 
-        QgsExpressionContextUtils.setLayerVariable(layer, 'number', 4)
+        QgsExpressionContextUtils.setLayerVariable(layer, "number", 4)
 
         layer.startEditing()
         feature = QgsFeature()
@@ -3018,28 +3317,28 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         self.assertTrue(layer.addFeature(feature))
         fid = feature.id()
-        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 4')
-        self.assertEqual(layer.getFeature(fid)['fldint'], 4)
+        self.assertEqual(layer.getFeature(fid)["fldtxt"], "l: 4,f: 4")
+        self.assertEqual(layer.getFeature(fid)["fldint"], 4)
 
         # ApplyOnUpdateDefaultValue should be set on changeAttributeValue
         layer.changeAttributeValue(fid, 1, 20)
-        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 20')
-        self.assertEqual(layer.getFeature(fid)['fldint'], 20)
+        self.assertEqual(layer.getFeature(fid)["fldtxt"], "l: 4,f: 20")
+        self.assertEqual(layer.getFeature(fid)["fldint"], 20)
 
         # When changing the value of the "derived" attribute, only this one
         # should be updated
-        QgsExpressionContextUtils.setLayerVariable(layer, 'number', 8)
+        QgsExpressionContextUtils.setLayerVariable(layer, "number", 8)
         layer.changeAttributeValue(fid, 0, 0)
-        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 8,f: 20')
-        self.assertEqual(layer.getFeature(fid)['fldint'], 20)
+        self.assertEqual(layer.getFeature(fid)["fldtxt"], "l: 8,f: 20")
+        self.assertEqual(layer.getFeature(fid)["fldint"], 20)
 
         # Check update on geometry change
         layer.setDefaultValueDefinition(1, QgsDefaultValue("x($geometry)", True))
         layer.changeGeometry(fid, QgsGeometry.fromPointXY(QgsPointXY(300, 200)))
-        self.assertEqual(layer.getFeature(fid)['fldint'], 300)
+        self.assertEqual(layer.getFeature(fid)["fldint"], 300)
 
     def testGetSetConstraints(self):
-        """ test getting and setting field constraints """
+        """test getting and setting field constraints"""
         layer = createLayerWithOnePoint()
 
         self.assertFalse(layer.fieldConstraints(0))
@@ -3047,59 +3346,144 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertFalse(layer.fieldConstraints(2))
 
         layer.setFieldConstraint(0, QgsFieldConstraints.Constraint.ConstraintNotNull)
-        self.assertEqual(layer.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertEqual(
+            layer.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull
+        )
         self.assertFalse(layer.fieldConstraints(1))
         self.assertFalse(layer.fieldConstraints(2))
-        self.assertEqual(layer.fields().at(0).constraints().constraints(), QgsFieldConstraints.Constraint.ConstraintNotNull)
-        self.assertEqual(layer.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
-        self.assertEqual(layer.fieldConstraintsAndStrength(0)[QgsFieldConstraints.Constraint.ConstraintNotNull],
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
+        self.assertEqual(
+            layer.fields().at(0).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintNotNull,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(0)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(0)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
+        self.assertEqual(
+            layer.fieldConstraintsAndStrength(0)[
+                QgsFieldConstraints.Constraint.ConstraintNotNull
+            ],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
         self.assertEqual(len(layer.fieldConstraintsAndStrength(1)), 0)
         self.assertEqual(len(layer.fieldConstraintsAndStrength(2)), 0)
 
         layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintNotNull)
         layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique)
-        self.assertEqual(layer.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull)
-        self.assertEqual(layer.fieldConstraints(1),
-                         QgsFieldConstraints.Constraint.ConstraintNotNull | QgsFieldConstraints.Constraint.ConstraintUnique)
+        self.assertEqual(
+            layer.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull
+        )
+        self.assertEqual(
+            layer.fieldConstraints(1),
+            QgsFieldConstraints.Constraint.ConstraintNotNull
+            | QgsFieldConstraints.Constraint.ConstraintUnique,
+        )
         self.assertFalse(layer.fieldConstraints(2))
-        self.assertEqual(layer.fields().at(0).constraints().constraints(), QgsFieldConstraints.Constraint.ConstraintNotNull)
-        self.assertEqual(layer.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
-        self.assertEqual(layer.fields().at(1).constraints().constraints(),
-                         QgsFieldConstraints.Constraint.ConstraintNotNull | QgsFieldConstraints.Constraint.ConstraintUnique)
-        self.assertEqual(layer.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintUnique),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
-        self.assertEqual(layer.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintUnique),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
+        self.assertEqual(
+            layer.fields().at(0).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintNotNull,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(0)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(0)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
+        self.assertEqual(
+            layer.fields().at(1).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintNotNull
+            | QgsFieldConstraints.Constraint.ConstraintUnique,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(1)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(1)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintUnique),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(1)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(1)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintUnique),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
 
         layer.removeFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintNotNull)
         layer.removeFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique)
-        self.assertEqual(layer.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertEqual(
+            layer.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull
+        )
         self.assertFalse(layer.fieldConstraints(1))
         self.assertFalse(layer.fieldConstraints(2))
-        self.assertEqual(layer.fields().at(0).constraints().constraints(), QgsFieldConstraints.Constraint.ConstraintNotNull)
-        self.assertEqual(layer.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
+        self.assertEqual(
+            layer.fields().at(0).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintNotNull,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(0)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(0)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
         self.assertFalse(layer.fields().at(1).constraints().constraints())
-        self.assertEqual(layer.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginNotSet)
-        self.assertEqual(layer.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
+        self.assertEqual(
+            layer.fields()
+            .at(1)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginNotSet,
+        )
+        self.assertEqual(
+            layer.fields()
+            .at(1)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
+        )
 
     def testSaveRestoreConstraints(self):
-        """ test saving and restoring constraints from xml"""
+        """test saving and restoring constraints from xml"""
         layer = createLayerWithOnePoint()
 
         # no constraints
@@ -3116,7 +3500,11 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         # set some constraints
         layer.setFieldConstraint(0, QgsFieldConstraints.Constraint.ConstraintNotNull)
-        layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintNotNull, QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
+        layer.setFieldConstraint(
+            1,
+            QgsFieldConstraints.Constraint.ConstraintNotNull,
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
         layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique)
 
         doc = QDomDocument("testdoc")
@@ -3125,63 +3513,126 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         layer3 = createLayerWithOnePoint()
         self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
-        self.assertEqual(layer3.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull)
-        self.assertEqual(layer3.fieldConstraints(1),
-                         QgsFieldConstraints.Constraint.ConstraintNotNull | QgsFieldConstraints.Constraint.ConstraintUnique)
-        self.assertEqual(layer3.fields().at(0).constraints().constraints(), QgsFieldConstraints.Constraint.ConstraintNotNull)
-        self.assertEqual(layer3.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer3.fields().at(0).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
-        self.assertEqual(layer3.fieldConstraintsAndStrength(0)[QgsFieldConstraints.Constraint.ConstraintNotNull],
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
-        self.assertEqual(layer3.fields().at(1).constraints().constraints(),
-                         QgsFieldConstraints.Constraint.ConstraintNotNull | QgsFieldConstraints.Constraint.ConstraintUnique)
-        self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintUnique),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer3.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
-        self.assertEqual(layer3.fields().at(1).constraints().constraintStrength(QgsFieldConstraints.Constraint.ConstraintUnique),
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
-        self.assertEqual(layer3.fieldConstraintsAndStrength(1)[QgsFieldConstraints.Constraint.ConstraintNotNull],
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
-        self.assertEqual(layer3.fieldConstraintsAndStrength(1)[QgsFieldConstraints.Constraint.ConstraintUnique],
-                         QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
+        self.assertEqual(
+            layer3.fieldConstraints(0), QgsFieldConstraints.Constraint.ConstraintNotNull
+        )
+        self.assertEqual(
+            layer3.fieldConstraints(1),
+            QgsFieldConstraints.Constraint.ConstraintNotNull
+            | QgsFieldConstraints.Constraint.ConstraintUnique,
+        )
+        self.assertEqual(
+            layer3.fields().at(0).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintNotNull,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(0)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(0)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
+        self.assertEqual(
+            layer3.fieldConstraintsAndStrength(0)[
+                QgsFieldConstraints.Constraint.ConstraintNotNull
+            ],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
+        self.assertEqual(
+            layer3.fields().at(1).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintNotNull
+            | QgsFieldConstraints.Constraint.ConstraintUnique,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(1)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(1)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintUnique),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(1)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(1)
+            .constraints()
+            .constraintStrength(QgsFieldConstraints.Constraint.ConstraintUnique),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
+        self.assertEqual(
+            layer3.fieldConstraintsAndStrength(1)[
+                QgsFieldConstraints.Constraint.ConstraintNotNull
+            ],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
+        self.assertEqual(
+            layer3.fieldConstraintsAndStrength(1)[
+                QgsFieldConstraints.Constraint.ConstraintUnique
+            ],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
 
     def testGetSetConstraintExpressions(self):
-        """ test getting and setting field constraint expressions """
+        """test getting and setting field constraint expressions"""
         layer = createLayerWithOnePoint()
 
         self.assertFalse(layer.constraintExpression(0))
         self.assertFalse(layer.constraintExpression(1))
         self.assertFalse(layer.constraintExpression(2))
 
-        layer.setConstraintExpression(0, '1+2')
-        self.assertEqual(layer.constraintExpression(0), '1+2')
+        layer.setConstraintExpression(0, "1+2")
+        self.assertEqual(layer.constraintExpression(0), "1+2")
         self.assertFalse(layer.constraintExpression(1))
         self.assertFalse(layer.constraintExpression(2))
-        self.assertEqual(layer.fields().at(0).constraints().constraintExpression(), '1+2')
+        self.assertEqual(
+            layer.fields().at(0).constraints().constraintExpression(), "1+2"
+        )
 
-        layer.setConstraintExpression(1, '3+4', 'desc')
-        self.assertEqual(layer.constraintExpression(0), '1+2')
-        self.assertEqual(layer.constraintExpression(1), '3+4')
-        self.assertEqual(layer.constraintDescription(1), 'desc')
+        layer.setConstraintExpression(1, "3+4", "desc")
+        self.assertEqual(layer.constraintExpression(0), "1+2")
+        self.assertEqual(layer.constraintExpression(1), "3+4")
+        self.assertEqual(layer.constraintDescription(1), "desc")
         self.assertFalse(layer.constraintExpression(2))
-        self.assertEqual(layer.fields().at(0).constraints().constraintExpression(), '1+2')
-        self.assertEqual(layer.fields().at(1).constraints().constraintExpression(), '3+4')
-        self.assertEqual(layer.fields().at(1).constraints().constraintDescription(), 'desc')
+        self.assertEqual(
+            layer.fields().at(0).constraints().constraintExpression(), "1+2"
+        )
+        self.assertEqual(
+            layer.fields().at(1).constraints().constraintExpression(), "3+4"
+        )
+        self.assertEqual(
+            layer.fields().at(1).constraints().constraintDescription(), "desc"
+        )
 
         layer.setConstraintExpression(1, None)
-        self.assertEqual(layer.constraintExpression(0), '1+2')
+        self.assertEqual(layer.constraintExpression(0), "1+2")
         self.assertFalse(layer.constraintExpression(1))
         self.assertFalse(layer.constraintExpression(2))
-        self.assertEqual(layer.fields().at(0).constraints().constraintExpression(), '1+2')
+        self.assertEqual(
+            layer.fields().at(0).constraints().constraintExpression(), "1+2"
+        )
         self.assertFalse(layer.fields().at(1).constraints().constraintExpression())
 
     def testSaveRestoreConstraintExpressions(self):
-        """ test saving and restoring constraint expressions from xml"""
+        """test saving and restoring constraint expressions from xml"""
         layer = createLayerWithOnePoint()
 
         # no constraints
@@ -3195,8 +3646,8 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertFalse(layer2.constraintExpression(1))
 
         # set some constraints
-        layer.setConstraintExpression(0, '1+2')
-        layer.setConstraintExpression(1, '3+4', 'desc')
+        layer.setConstraintExpression(0, "1+2")
+        layer.setConstraintExpression(1, "3+4", "desc")
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
@@ -3204,21 +3655,43 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         layer3 = createLayerWithOnePoint()
         self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
-        self.assertEqual(layer3.constraintExpression(0), '1+2')
-        self.assertEqual(layer3.constraintExpression(1), '3+4')
-        self.assertEqual(layer3.constraintDescription(1), 'desc')
-        self.assertEqual(layer3.fields().at(0).constraints().constraintExpression(), '1+2')
-        self.assertEqual(layer3.fields().at(1).constraints().constraintExpression(), '3+4')
-        self.assertEqual(layer3.fields().at(1).constraints().constraintDescription(), 'desc')
-        self.assertEqual(layer3.fields().at(0).constraints().constraints(), QgsFieldConstraints.Constraint.ConstraintExpression)
-        self.assertEqual(layer3.fields().at(1).constraints().constraints(), QgsFieldConstraints.Constraint.ConstraintExpression)
-        self.assertEqual(layer3.fields().at(0).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintExpression),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
-        self.assertEqual(layer3.fields().at(1).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintExpression),
-                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer)
+        self.assertEqual(layer3.constraintExpression(0), "1+2")
+        self.assertEqual(layer3.constraintExpression(1), "3+4")
+        self.assertEqual(layer3.constraintDescription(1), "desc")
+        self.assertEqual(
+            layer3.fields().at(0).constraints().constraintExpression(), "1+2"
+        )
+        self.assertEqual(
+            layer3.fields().at(1).constraints().constraintExpression(), "3+4"
+        )
+        self.assertEqual(
+            layer3.fields().at(1).constraints().constraintDescription(), "desc"
+        )
+        self.assertEqual(
+            layer3.fields().at(0).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintExpression,
+        )
+        self.assertEqual(
+            layer3.fields().at(1).constraints().constraints(),
+            QgsFieldConstraints.Constraint.ConstraintExpression,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(0)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintExpression),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
+        self.assertEqual(
+            layer3.fields()
+            .at(1)
+            .constraints()
+            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintExpression),
+            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginLayer,
+        )
 
     def testGetFeatureLimitWithEdits(self):
-        """ test getting features with a limit, when edits are present """
+        """test getting features with a limit, when edits are present"""
         layer = createLayerWithOnePoint()
         # now has one feature with id 0
 
@@ -3247,20 +3720,26 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         # change an attribute value required by filter
         layer.startEditing()
-        req = QgsFeatureRequest().setFilterExpression('fldint=3').setLimit(2)
+        req = QgsFeatureRequest().setFilterExpression("fldint=3").setLimit(2)
         self.assertTrue(layer.changeAttributeValue(2, 1, 4))
         self.assertEqual(len(list(layer.getFeatures(req))), 2)
         layer.rollBack()
 
         layer.startEditing()
-        req = QgsFeatureRequest().setFilterRect(QgsRectangle(50, 100, 150, 300)).setLimit(2)
-        self.assertTrue(layer.changeGeometry(2, QgsGeometry.fromPointXY(QgsPointXY(500, 600))))
+        req = (
+            QgsFeatureRequest()
+            .setFilterRect(QgsRectangle(50, 100, 150, 300))
+            .setLimit(2)
+        )
+        self.assertTrue(
+            layer.changeGeometry(2, QgsGeometry.fromPointXY(QgsPointXY(500, 600)))
+        )
         self.assertEqual(len(list(layer.getFeatures(req))), 2)
         layer.rollBack()
 
     def test_server_properties(self):
-        """ Test server properties. """
-        layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
+        """Test server properties."""
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer_1", "memory")
         self.assertIsInstance(layer.serverProperties(), QgsMapLayerServerProperties)
 
     def testClone(self):
@@ -3285,38 +3764,38 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         # init layer
         layer = createLayerWithTwoPoints()
         layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
-        layer.styleManager().addStyle('style0', style0)
-        layer.styleManager().addStyle('style1', style1)
-        layer.setName('MyName')
-        layer.setShortName('MyShortName')
+        layer.styleManager().addStyle("style0", style0)
+        layer.styleManager().addStyle("style1", style1)
+        layer.setName("MyName")
+        layer.setShortName("MyShortName")
         layer.setMaximumScale(0.5)
         layer.setMinimumScale(1.5)
         layer.setScaleBasedVisibility(True)
-        layer.setTitle('MyTitle')
-        layer.setAbstract('MyAbstract')
-        layer.setKeywordList('MyKeywordList')
-        layer.setDataUrl('MyDataUrl')
-        layer.setDataUrlFormat('MyDataUrlFormat')
-        layer.setAttribution('MyAttribution')
-        layer.setAttributionUrl('MyAttributionUrl')
-        layer.setMetadataUrl('MyMetadataUrl')
-        layer.setMetadataUrlType('MyMetadataUrlType')
-        layer.setMetadataUrlFormat('MyMetadataUrlFormat')
-        layer.setLegendUrl('MyLegendUrl')
-        layer.setLegendUrlFormat('MyLegendUrlFormat')
+        layer.setTitle("MyTitle")
+        layer.setAbstract("MyAbstract")
+        layer.setKeywordList("MyKeywordList")
+        layer.setDataUrl("MyDataUrl")
+        layer.setDataUrlFormat("MyDataUrlFormat")
+        layer.setAttribution("MyAttribution")
+        layer.setAttributionUrl("MyAttributionUrl")
+        layer.setMetadataUrl("MyMetadataUrl")
+        layer.setMetadataUrlType("MyMetadataUrlType")
+        layer.setMetadataUrlFormat("MyMetadataUrlFormat")
+        layer.setLegendUrl("MyLegendUrl")
+        layer.setLegendUrlFormat("MyLegendUrlFormat")
         layer.setDependencies([dep])
         layer.setCrs(srs)
-        layer.setSubsetString('fldint = 457')
+        layer.setSubsetString("fldint = 457")
 
-        layer.setCustomProperty('MyKey0', 'MyValue0')
-        layer.setCustomProperty('MyKey1', 'MyValue1')
+        layer.setCustomProperty("MyKey0", "MyValue0")
+        layer.setCustomProperty("MyKey1", "MyValue1")
 
         layer.setOpacity(0.66)
-        layer.setProviderEncoding('latin9')
-        layer.setDisplayExpression('MyDisplayExpression')
-        layer.setMapTipTemplate('MyMapTipTemplate')
-        layer.setExcludeAttributesWfs(['MyExcludeAttributeWFS'])
-        layer.setExcludeAttributesWms(['MyExcludeAttributeWMS'])
+        layer.setProviderEncoding("latin9")
+        layer.setDisplayExpression("MyDisplayExpression")
+        layer.setMapTipTemplate("MyMapTipTemplate")
+        layer.setExcludeAttributesWfs(["MyExcludeAttributeWFS"])
+        layer.setExcludeAttributesWms(["MyExcludeAttributeWMS"])
 
         layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Xor)
 
@@ -3329,8 +3808,8 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         simplify.setThreshold(0.333)
         layer.setSimplifyMethod(simplify)
 
-        layer.setFieldAlias(0, 'MyAlias0')
-        layer.setFieldAlias(1, 'MyAlias1')
+        layer.setFieldAlias(0, "MyAlias0")
+        layer.setFieldAlias(1, "MyAlias1")
 
         jl0 = createLayerWithTwoPoints()
         j0 = QgsVectorLayerJoinInfo()
@@ -3378,20 +3857,26 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer.setEditorWidgetSetup(0, widget_setup)
 
         layer.setConstraintExpression(0, "MyFieldConstraintExpression")
-        layer.setFieldConstraint(0, QgsFieldConstraints.Constraint.ConstraintUnique, QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
+        layer.setFieldConstraint(
+            0,
+            QgsFieldConstraints.Constraint.ConstraintUnique,
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard,
+        )
         layer.setDefaultValueDefinition(0, QgsDefaultValue("MyDefaultValueExpression"))
 
-        action = QgsAction(QgsAction.ActionType.Unix, "MyActionDescription", "MyActionCmd")
+        action = QgsAction(
+            QgsAction.ActionType.Unix, "MyActionDescription", "MyActionCmd"
+        )
         layer.actions().addAction(action)
 
         metadata = QgsLayerMetadata()
-        metadata.setFees('a handful of roos')
+        metadata.setFees("a handful of roos")
         layer.setMetadata(metadata)
 
         # clone layer
         clone = layer.clone()
 
-        self.assertEqual(layer.metadata().fees(), 'a handful of roos')
+        self.assertEqual(layer.metadata().fees(), "a handful of roos")
 
         # generate xml from layer
         layer_doc = QDomDocument("doc")
@@ -3424,8 +3909,11 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         test QgsVectorLayerSelectedFeatureSource
         """
 
-        layer = QgsVectorLayer("Point?crs=epsg:3111&field=fldtxt:string&field=fldint:integer",
-                               "addfeat", "memory")
+        layer = QgsVectorLayer(
+            "Point?crs=epsg:3111&field=fldtxt:string&field=fldint:integer",
+            "addfeat",
+            "memory",
+        )
         pr = layer.dataProvider()
         f1 = QgsFeature(1)
         f1.setAttributes(["test", 123])
@@ -3446,7 +3934,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.featureCount(), 5)
 
         source = QgsVectorLayerSelectedFeatureSource(layer)
-        self.assertEqual(source.sourceCrs().authid(), 'EPSG:3111')
+        self.assertEqual(source.sourceCrs().authid(), "EPSG:3111")
         self.assertEqual(source.wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(source.fields(), layer.fields())
 
@@ -3464,13 +3952,24 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(ids, {f1.id(), f3.id(), f5.id()})
 
         # test that requesting subset of ids intersects this request with the selected ids
-        ids = {f.id() for f in source.getFeatures(QgsFeatureRequest().setFilterFids([f1.id(), f2.id(), f5.id()]))}
+        ids = {
+            f.id()
+            for f in source.getFeatures(
+                QgsFeatureRequest().setFilterFids([f1.id(), f2.id(), f5.id()])
+            )
+        }
         self.assertEqual(ids, {f1.id(), f5.id()})
 
         # test that requesting id works
-        ids = {f.id() for f in source.getFeatures(QgsFeatureRequest().setFilterFid(f1.id()))}
+        ids = {
+            f.id()
+            for f in source.getFeatures(QgsFeatureRequest().setFilterFid(f1.id()))
+        }
         self.assertEqual(ids, {f1.id()})
-        ids = {f.id() for f in source.getFeatures(QgsFeatureRequest().setFilterFid(f5.id()))}
+        ids = {
+            f.id()
+            for f in source.getFeatures(QgsFeatureRequest().setFilterFid(f5.id()))
+        }
         self.assertEqual(ids, {f5.id()})
 
         # test that source has stored snapshot of selected features
@@ -3486,9 +3985,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
     def testFeatureRequestWithReprojectionAndVirtualFields(self):
         layer = self.getSource()
-        field = QgsField('virtual', QVariant.Double)
-        layer.addExpressionField('$x', field)
-        virtual_values = [f['virtual'] for f in layer.getFeatures()]
+        field = QgsField("virtual", QVariant.Double)
+        layer.addExpressionField("$x", field)
+        virtual_values = [f["virtual"] for f in layer.getFeatures()]
         self.assertAlmostEqual(virtual_values[0], -71.123, 2)
         self.assertEqual(virtual_values[1], NULL)
         self.assertAlmostEqual(virtual_values[2], -70.332, 2)
@@ -3496,59 +3995,102 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertAlmostEqual(virtual_values[4], -65.32, 2)
 
         # repeat, with reprojection on request
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem.fromEpsgId(3785),
-                                                        QgsProject.instance().transformContext())
+        request = QgsFeatureRequest().setDestinationCrs(
+            QgsCoordinateReferenceSystem.fromEpsgId(3785),
+            QgsProject.instance().transformContext(),
+        )
         features = [f for f in layer.getFeatures(request)]
         # virtual field value should not change, even though geometry has
-        self.assertAlmostEqual(features[0]['virtual'], -71.123, 2)
+        self.assertAlmostEqual(features[0]["virtual"], -71.123, 2)
         self.assertAlmostEqual(features[0].geometry().constGet().x(), -7917376, -5)
-        self.assertEqual(features[1]['virtual'], NULL)
+        self.assertEqual(features[1]["virtual"], NULL)
         self.assertFalse(features[1].hasGeometry())
-        self.assertAlmostEqual(features[2]['virtual'], -70.332, 2)
+        self.assertAlmostEqual(features[2]["virtual"], -70.332, 2)
         self.assertAlmostEqual(features[2].geometry().constGet().x(), -7829322, -5)
-        self.assertAlmostEqual(features[3]['virtual'], -68.2, 2)
+        self.assertAlmostEqual(features[3]["virtual"], -68.2, 2)
         self.assertAlmostEqual(features[3].geometry().constGet().x(), -7591989, -5)
-        self.assertAlmostEqual(features[4]['virtual'], -65.32, 2)
+        self.assertAlmostEqual(features[4]["virtual"], -65.32, 2)
         self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
 
     def testPrecision(self):
         layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
         layer.geometryOptions().setGeometryPrecision(10)
-        geom = QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))')
+        geom = QgsGeometry.fromWkt(
+            "Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))"
+        )
         feature = QgsFeature(layer.fields())
         feature.setGeometry(geom)
         layer.startEditing()
         layer.addFeature(feature)
-        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
+        self.assertGeometriesEqual(
+            QgsGeometry.fromWkt(
+                "Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))"
+            ),
+            feature.geometry(),
+            "geometry with unsnapped nodes",
+            "fixed geometry",
+        )
         layer.geometryOptions().setGeometryPrecision(0.0)
-        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))'))
+        feature.setGeometry(
+            QgsGeometry.fromWkt(
+                "Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))"
+            )
+        )
         layer.addFeature(feature)
-        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))'), feature.geometry(), 'geometry with duplicates', 'unchanged geometry')
+        self.assertGeometriesEqual(
+            QgsGeometry.fromWkt(
+                "Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))"
+            ),
+            feature.geometry(),
+            "geometry with duplicates",
+            "unchanged geometry",
+        )
 
     def testRemoveDuplicateNodes(self):
         layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
         layer.geometryOptions().setRemoveDuplicateNodes(True)
-        geom = QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))')
+        geom = QgsGeometry.fromWkt("Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))")
         feature = QgsFeature(layer.fields())
         feature.setGeometry(geom)
         layer.startEditing()
         layer.addFeature(feature)
-        self.assertGeometriesEqual(feature.geometry(), QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 60 50, 70 80))'), 'fixed geometry', 'geometry with duplicates')
+        self.assertGeometriesEqual(
+            feature.geometry(),
+            QgsGeometry.fromWkt("Polygon ((70 80, 80 90, 60 50, 70 80))"),
+            "fixed geometry",
+            "geometry with duplicates",
+        )
         layer.geometryOptions().setRemoveDuplicateNodes(False)
-        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))'))
+        feature.setGeometry(
+            QgsGeometry.fromWkt("Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))")
+        )
         layer.addFeature(feature)
-        self.assertGeometriesEqual(feature.geometry(), QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))'), 'unchanged geometry', 'geometry with duplicates')
+        self.assertGeometriesEqual(
+            feature.geometry(),
+            QgsGeometry.fromWkt("Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))"),
+            "unchanged geometry",
+            "geometry with duplicates",
+        )
 
     def testPrecisionAndDuplicateNodes(self):
         layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
         layer.geometryOptions().setGeometryPrecision(10)
         layer.geometryOptions().setRemoveDuplicateNodes(True)
-        geom = QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596402 1224653, 2596405 1224640, 2596410 1224641, 2596411 1224654))')
+        geom = QgsGeometry.fromWkt(
+            "Polygon ((2596411 1224654, 2596400 1224652, 2596402 1224653, 2596405 1224640, 2596410 1224641, 2596411 1224654))"
+        )
         feature = QgsFeature(layer.fields())
         feature.setGeometry(geom)
         layer.startEditing()
         layer.addFeature(feature)
-        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
+        self.assertGeometriesEqual(
+            QgsGeometry.fromWkt(
+                "Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))"
+            ),
+            feature.geometry(),
+            "geometry with unsnapped nodes",
+            "fixed geometry",
+        )
 
     def testDefaultDisplayExpression(self):
         """
@@ -3556,45 +4098,105 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         """
         layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
         self.assertEqual(layer.displayExpression(), '"pk"')
-        self.assertEqual(layer.displayField(), 'pk')
-        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int", "vl", "memory")
+        self.assertEqual(layer.displayField(), "pk")
+        layer = QgsVectorLayer(
+            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int",
+            "vl",
+            "memory",
+        )
         self.assertEqual(layer.displayExpression(), '"DESCRIPTION"')
-        self.assertEqual(layer.displayField(), 'DESCRIPTION')
-        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=NAME:string", "vl", "memory")
+        self.assertEqual(layer.displayField(), "DESCRIPTION")
+        layer = QgsVectorLayer(
+            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=NAME:string",
+            "vl",
+            "memory",
+        )
         self.assertEqual(layer.displayExpression(), '"NAME"')
-        self.assertEqual(layer.displayField(), 'NAME')
-        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=NAME:string", "vl", "memory")
+        self.assertEqual(layer.displayField(), "NAME")
+        layer = QgsVectorLayer(
+            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=NAME:string",
+            "vl",
+            "memory",
+        )
         self.assertEqual(layer.displayExpression(), '"BETTER_NAME"')
-        self.assertEqual(layer.displayField(), 'BETTER_NAME')
+        self.assertEqual(layer.displayField(), "BETTER_NAME")
 
 
-class TestQgsVectorLayerSourceAddedFeaturesInBuffer(QgisTestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceAddedFeaturesInBuffer(
+    QgisTestCase, FeatureSourceTestCase
+):
 
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
-            'test', 'memory')
-        assert (vl.isValid())
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "test",
+            "memory",
+        )
+        assert vl.isValid()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
-        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        f1.setAttributes(
+            [
+                5,
+                -200,
+                NULL,
+                "NuLl",
+                "5",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)),
+                QDate(2020, 5, 2),
+                QTime(12, 13, 1),
+            ]
+        )
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-71.123 78.23)"))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
+        f2.setAttributes([3, 300, "Pear", "PEaR", "3", NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
-        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+        f3.setAttributes(
+            [
+                1,
+                100,
+                "Orange",
+                "oranGe",
+                "1",
+                QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)),
+                QDate(2020, 5, 3),
+                QTime(12, 13, 14),
+            ]
+        )
+        f3.setGeometry(QgsGeometry.fromWkt("Point (-70.332 66.33)"))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
-        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+        f4.setAttributes(
+            [
+                2,
+                200,
+                "Apple",
+                "Apple",
+                "2",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)),
+                QDate(2020, 5, 4),
+                QTime(12, 14, 14),
+            ]
+        )
+        f4.setGeometry(QgsGeometry.fromWkt("Point (-68.2 70.8)"))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
-        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+        f5.setAttributes(
+            [
+                4,
+                400,
+                "Honey",
+                "Honey",
+                "4",
+                QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)),
+                QDate(2021, 5, 4),
+                QTime(13, 13, 14),
+            ]
+        )
+        f5.setGeometry(QgsGeometry.fromWkt("Point (-65.32 78.3)"))
 
         # create a layer with features only in the added features buffer - not the provider
         vl.startEditing()
@@ -3605,70 +4207,118 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(QgisTestCase, FeatureSourceT
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer for FeatureSourceTestCase
-        super(TestQgsVectorLayerSourceAddedFeaturesInBuffer, cls).setUpClass()
+        super().setUpClass()
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testOrderBy(self):
-        """ Skip order by tests - edited features are not sorted in iterators.
+        """Skip order by tests - edited features are not sorted in iterators.
         (Maybe they should be??)
         """
         pass
 
     def testMinimumValue(self):
-        """ Skip min values test - due to inconsistencies in how null values are treated by providers.
+        """Skip min values test - due to inconsistencies in how null values are treated by providers.
         They are included here, but providers don't include them.... which is right?
         """
         pass
 
 
-class TestQgsVectorLayerSourceChangedGeometriesInBuffer(QgisTestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedGeometriesInBuffer(
+    QgisTestCase, FeatureSourceTestCase
+):
 
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
-            'test', 'memory')
-        assert (vl.isValid())
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "test",
+            "memory",
+        )
+        assert vl.isValid()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
+        f1.setAttributes(
+            [
+                5,
+                -200,
+                NULL,
+                "NuLl",
+                "5",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)),
+                QDate(2020, 5, 2),
+                QTime(12, 13, 1),
+            ]
+        )
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
-        f2.setGeometry(QgsGeometry.fromWkt('Point (-70.5 65.2)'))
+        f2.setAttributes([3, 300, "Pear", "PEaR", "3", NULL, NULL, NULL])
+        f2.setGeometry(QgsGeometry.fromWkt("Point (-70.5 65.2)"))
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
+        f3.setAttributes(
+            [
+                1,
+                100,
+                "Orange",
+                "oranGe",
+                "1",
+                QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)),
+                QDate(2020, 5, 3),
+                QTime(12, 13, 14),
+            ]
+        )
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
+        f4.setAttributes(
+            [
+                2,
+                200,
+                "Apple",
+                "Apple",
+                "2",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)),
+                QDate(2020, 5, 4),
+                QTime(12, 14, 14),
+            ]
+        )
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
+        f5.setAttributes(
+            [
+                4,
+                400,
+                "Honey",
+                "Honey",
+                "4",
+                QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)),
+                QDate(2021, 5, 4),
+                QTime(13, 13, 14),
+            ]
+        )
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
 
-        ids = {f['pk']: f.id() for f in vl.getFeatures()}
+        ids = {f["pk"]: f.id() for f in vl.getFeatures()}
 
         # modify geometries in buffer
         vl.startEditing()
-        vl.changeGeometry(ids[5], QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        vl.changeGeometry(ids[5], QgsGeometry.fromWkt("Point (-71.123 78.23)"))
         vl.changeGeometry(ids[3], QgsGeometry())
-        vl.changeGeometry(ids[1], QgsGeometry.fromWkt('Point (-70.332 66.33)'))
-        vl.changeGeometry(ids[2], QgsGeometry.fromWkt('Point (-68.2 70.8)'))
-        vl.changeGeometry(ids[4], QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+        vl.changeGeometry(ids[1], QgsGeometry.fromWkt("Point (-70.332 66.33)"))
+        vl.changeGeometry(ids[2], QgsGeometry.fromWkt("Point (-68.2 70.8)"))
+        vl.changeGeometry(ids[4], QgsGeometry.fromWkt("Point (-65.32 78.3)"))
 
         return vl
 
@@ -3676,99 +4326,166 @@ class TestQgsVectorLayerSourceChangedGeometriesInBuffer(QgisTestCase, FeatureSou
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer for FeatureSourceTestCase
-        super(TestQgsVectorLayerSourceChangedGeometriesInBuffer, cls).setUpClass()
+        super().setUpClass()
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testOrderBy(self):
-        """ Skip order by tests - edited features are not sorted in iterators.
+        """Skip order by tests - edited features are not sorted in iterators.
         (Maybe they should be??)
         """
         pass
 
 
-class TestQgsVectorLayerSourceChangedAttributesInBuffer(QgisTestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedAttributesInBuffer(
+    QgisTestCase, FeatureSourceTestCase
+):
 
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
-            'test', 'memory')
-        assert (vl.isValid())
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "test",
+            "memory",
+        )
+        assert vl.isValid()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, 200, 'a', 'b', 'c', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
-        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        f1.setAttributes(
+            [
+                5,
+                200,
+                "a",
+                "b",
+                "c",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-71.123 78.23)"))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, -200, 'd', 'e', 'f', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+        f2.setAttributes(
+            [
+                3,
+                -200,
+                "d",
+                "e",
+                "f",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
 
         f3 = QgsFeature()
-        f3.setAttributes([1, -100, 'g', 'h', 'i', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
-        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+        f3.setAttributes(
+            [
+                1,
+                -100,
+                "g",
+                "h",
+                "i",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
+        f3.setGeometry(QgsGeometry.fromWkt("Point (-70.332 66.33)"))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, -200, 'j', 'k', 'l', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
-        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+        f4.setAttributes(
+            [
+                2,
+                -200,
+                "j",
+                "k",
+                "l",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
+        f4.setGeometry(QgsGeometry.fromWkt("Point (-68.2 70.8)"))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'm', 'n', 'o', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
-        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+        f5.setAttributes(
+            [
+                4,
+                400,
+                "m",
+                "n",
+                "o",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
+        f5.setGeometry(QgsGeometry.fromWkt("Point (-65.32 78.3)"))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
 
-        ids = {f['pk']: f.id() for f in vl.getFeatures()}
+        ids = {f["pk"]: f.id() for f in vl.getFeatures()}
 
         # modify geometries in buffer
         vl.startEditing()
         vl.changeAttributeValue(ids[5], 1, -200)
         vl.changeAttributeValue(ids[5], 2, NULL)
-        vl.changeAttributeValue(ids[5], 3, 'NuLl')
-        vl.changeAttributeValue(ids[5], 4, '5')
-        vl.changeAttributeValue(ids[5], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[5], 3, "NuLl")
+        vl.changeAttributeValue(ids[5], 4, "5")
+        vl.changeAttributeValue(
+            ids[5], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14))
+        )
         vl.changeAttributeValue(ids[5], 6, QDate(2020, 5, 2))
         vl.changeAttributeValue(ids[5], 7, QTime(12, 13, 1))
 
         vl.changeAttributeValue(ids[3], 1, 300)
-        vl.changeAttributeValue(ids[3], 2, 'Pear')
-        vl.changeAttributeValue(ids[3], 3, 'PEaR')
-        vl.changeAttributeValue(ids[3], 4, '3')
+        vl.changeAttributeValue(ids[3], 2, "Pear")
+        vl.changeAttributeValue(ids[3], 3, "PEaR")
+        vl.changeAttributeValue(ids[3], 4, "3")
         vl.changeAttributeValue(ids[3], 5, NULL)
         vl.changeAttributeValue(ids[3], 6, NULL)
         vl.changeAttributeValue(ids[3], 7, NULL)
 
         vl.changeAttributeValue(ids[1], 1, 100)
-        vl.changeAttributeValue(ids[1], 2, 'Orange')
-        vl.changeAttributeValue(ids[1], 3, 'oranGe')
-        vl.changeAttributeValue(ids[1], 4, '1')
-        vl.changeAttributeValue(ids[1], 5, QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[1], 2, "Orange")
+        vl.changeAttributeValue(ids[1], 3, "oranGe")
+        vl.changeAttributeValue(ids[1], 4, "1")
+        vl.changeAttributeValue(
+            ids[1], 5, QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14))
+        )
         vl.changeAttributeValue(ids[1], 6, QDate(2020, 5, 3))
         vl.changeAttributeValue(ids[1], 7, QTime(12, 13, 14))
 
         vl.changeAttributeValue(ids[2], 1, 200)
-        vl.changeAttributeValue(ids[2], 2, 'Apple')
-        vl.changeAttributeValue(ids[2], 3, 'Apple')
-        vl.changeAttributeValue(ids[2], 4, '2')
-        vl.changeAttributeValue(ids[2], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)))
+        vl.changeAttributeValue(ids[2], 2, "Apple")
+        vl.changeAttributeValue(ids[2], 3, "Apple")
+        vl.changeAttributeValue(ids[2], 4, "2")
+        vl.changeAttributeValue(
+            ids[2], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14))
+        )
         vl.changeAttributeValue(ids[2], 6, QDate(2020, 5, 4))
         vl.changeAttributeValue(ids[2], 7, QTime(12, 14, 14))
 
         vl.changeAttributeValue(ids[4], 1, 400)
-        vl.changeAttributeValue(ids[4], 2, 'Honey')
-        vl.changeAttributeValue(ids[4], 3, 'Honey')
-        vl.changeAttributeValue(ids[4], 4, '4')
-        vl.changeAttributeValue(ids[4], 5, QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        vl.changeAttributeValue(ids[4], 2, "Honey")
+        vl.changeAttributeValue(ids[4], 3, "Honey")
+        vl.changeAttributeValue(ids[4], 4, "4")
+        vl.changeAttributeValue(
+            ids[4], 5, QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14))
+        )
         vl.changeAttributeValue(ids[4], 6, QDate(2021, 5, 4))
         vl.changeAttributeValue(ids[4], 7, QTime(13, 13, 14))
 
@@ -3777,119 +4494,183 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(QgisTestCase, FeatureSou
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(TestQgsVectorLayerSourceChangedAttributesInBuffer, cls).setUpClass()
+        super().setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testOrderBy(self):
-        """ Skip order by tests - edited features are not sorted in iterators.
+        """Skip order by tests - edited features are not sorted in iterators.
         (Maybe they should be??)
         """
         pass
 
     def testUniqueValues(self):
-        """ Skip unique values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip unique values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
     def testMinimumValue(self):
-        """ Skip min values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip min values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
     def testMaximumValue(self):
-        """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip max values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
 
-class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(QgisTestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(
+    QgisTestCase, FeatureSourceTestCase
+):
 
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
-            'test', 'memory')
-        assert (vl.isValid())
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk",
+            "test",
+            "memory",
+        )
+        assert vl.isValid()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, 200, 'a', 'b', 'c', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+        f1.setAttributes(
+            [
+                5,
+                200,
+                "a",
+                "b",
+                "c",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
 
         f2 = QgsFeature()
-        f2.setAttributes([3, -200, 'd', 'e', 'f', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
-        f2.setGeometry(QgsGeometry.fromWkt('Point (-70.5 65.2)'))
+        f2.setAttributes(
+            [
+                3,
+                -200,
+                "d",
+                "e",
+                "f",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
+        f2.setGeometry(QgsGeometry.fromWkt("Point (-70.5 65.2)"))
 
         f3 = QgsFeature()
-        f3.setAttributes([1, -100, 'g', 'h', 'i', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+        f3.setAttributes(
+            [
+                1,
+                -100,
+                "g",
+                "h",
+                "i",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
 
         f4 = QgsFeature()
-        f4.setAttributes([2, -200, 'j', 'k', 'l', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+        f4.setAttributes(
+            [
+                2,
+                -200,
+                "j",
+                "k",
+                "l",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'm', 'n', 'o', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
+        f5.setAttributes(
+            [
+                4,
+                400,
+                "m",
+                "n",
+                "o",
+                QDateTime(2020, 4, 5, 1, 2, 3),
+                QDate(2020, 4, 5),
+                QTime(1, 2, 3),
+            ]
+        )
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
 
-        ids = {f['pk']: f.id() for f in vl.getFeatures()}
+        ids = {f["pk"]: f.id() for f in vl.getFeatures()}
 
         # modify geometries in buffer
         vl.startEditing()
-        vl.changeGeometry(ids[5], QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        vl.changeGeometry(ids[5], QgsGeometry.fromWkt("Point (-71.123 78.23)"))
         vl.changeGeometry(ids[3], QgsGeometry())
-        vl.changeGeometry(ids[1], QgsGeometry.fromWkt('Point (-70.332 66.33)'))
-        vl.changeGeometry(ids[2], QgsGeometry.fromWkt('Point (-68.2 70.8)'))
-        vl.changeGeometry(ids[4], QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+        vl.changeGeometry(ids[1], QgsGeometry.fromWkt("Point (-70.332 66.33)"))
+        vl.changeGeometry(ids[2], QgsGeometry.fromWkt("Point (-68.2 70.8)"))
+        vl.changeGeometry(ids[4], QgsGeometry.fromWkt("Point (-65.32 78.3)"))
 
         # modify attributes in buffer
         vl.changeAttributeValue(ids[5], 1, -200)
         vl.changeAttributeValue(ids[5], 2, NULL)
-        vl.changeAttributeValue(ids[5], 3, 'NuLl')
-        vl.changeAttributeValue(ids[5], 4, '5')
-        vl.changeAttributeValue(ids[5], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[5], 3, "NuLl")
+        vl.changeAttributeValue(ids[5], 4, "5")
+        vl.changeAttributeValue(
+            ids[5], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14))
+        )
         vl.changeAttributeValue(ids[5], 6, QDate(2020, 5, 2))
         vl.changeAttributeValue(ids[5], 7, QTime(12, 13, 1))
 
         vl.changeAttributeValue(ids[3], 1, 300)
-        vl.changeAttributeValue(ids[3], 2, 'Pear')
-        vl.changeAttributeValue(ids[3], 3, 'PEaR')
-        vl.changeAttributeValue(ids[3], 4, '3')
+        vl.changeAttributeValue(ids[3], 2, "Pear")
+        vl.changeAttributeValue(ids[3], 3, "PEaR")
+        vl.changeAttributeValue(ids[3], 4, "3")
         vl.changeAttributeValue(ids[3], 5, NULL)
         vl.changeAttributeValue(ids[3], 6, NULL)
         vl.changeAttributeValue(ids[3], 7, NULL)
 
         vl.changeAttributeValue(ids[1], 1, 100)
-        vl.changeAttributeValue(ids[1], 2, 'Orange')
-        vl.changeAttributeValue(ids[1], 3, 'oranGe')
-        vl.changeAttributeValue(ids[1], 4, '1')
-        vl.changeAttributeValue(ids[1], 5, QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[1], 2, "Orange")
+        vl.changeAttributeValue(ids[1], 3, "oranGe")
+        vl.changeAttributeValue(ids[1], 4, "1")
+        vl.changeAttributeValue(
+            ids[1], 5, QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14))
+        )
         vl.changeAttributeValue(ids[1], 6, QDate(2020, 5, 3))
         vl.changeAttributeValue(ids[1], 7, QTime(12, 13, 14))
 
         vl.changeAttributeValue(ids[2], 1, 200)
-        vl.changeAttributeValue(ids[2], 2, 'Apple')
-        vl.changeAttributeValue(ids[2], 3, 'Apple')
-        vl.changeAttributeValue(ids[2], 4, '2')
-        vl.changeAttributeValue(ids[2], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)))
+        vl.changeAttributeValue(ids[2], 2, "Apple")
+        vl.changeAttributeValue(ids[2], 3, "Apple")
+        vl.changeAttributeValue(ids[2], 4, "2")
+        vl.changeAttributeValue(
+            ids[2], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14))
+        )
         vl.changeAttributeValue(ids[2], 6, QDate(2020, 5, 4))
         vl.changeAttributeValue(ids[2], 7, QTime(12, 14, 14))
 
         vl.changeAttributeValue(ids[4], 1, 400)
-        vl.changeAttributeValue(ids[4], 2, 'Honey')
-        vl.changeAttributeValue(ids[4], 3, 'Honey')
-        vl.changeAttributeValue(ids[4], 4, '4')
-        vl.changeAttributeValue(ids[4], 5, QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        vl.changeAttributeValue(ids[4], 2, "Honey")
+        vl.changeAttributeValue(ids[4], 3, "Honey")
+        vl.changeAttributeValue(ids[4], 4, "4")
+        vl.changeAttributeValue(
+            ids[4], 5, QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14))
+        )
         vl.changeAttributeValue(ids[4], 6, QDate(2021, 5, 4))
         vl.changeAttributeValue(ids[4], 7, QTime(13, 13, 14))
 
@@ -3898,96 +4679,196 @@ class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(QgisTestCas
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer, cls).setUpClass()
+        super().setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testOrderBy(self):
-        """ Skip order by tests - edited features are not sorted in iterators.
+        """Skip order by tests - edited features are not sorted in iterators.
         (Maybe they should be??)
         """
         pass
 
     def testUniqueValues(self):
-        """ Skip unique values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip unique values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
     def testMinimumValue(self):
-        """ Skip min values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip min values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
     def testMaximumValue(self):
-        """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip max values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
 
-class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(QgisTestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(
+    QgisTestCase, FeatureSourceTestCase
+):
 
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&&key=pk',
-            'test', 'memory')
-        assert (vl.isValid())
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&&key=pk",
+            "test",
+            "memory",
+        )
+        assert vl.isValid()
 
         # add a bunch of similar features to the provider
         b1 = QgsFeature()
-        b1.setAttributes([5, -300, 'Apple', 'PEaR', '1', QDateTime(QDate(2020, 5, 5), QTime(12, 11, 14)), QDate(2020, 5, 1), QTime(10, 13, 1)])
-        b1.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+        b1.setAttributes(
+            [
+                5,
+                -300,
+                "Apple",
+                "PEaR",
+                "1",
+                QDateTime(QDate(2020, 5, 5), QTime(12, 11, 14)),
+                QDate(2020, 5, 1),
+                QTime(10, 13, 1),
+            ]
+        )
+        b1.setGeometry(QgsGeometry.fromWkt("Point (-70.332 66.33)"))
 
         b2 = QgsFeature()
-        b2.setAttributes([3, 100, 'Orange', 'NuLl', '2', QDateTime(QDate(2020, 5, 1), QTime(12, 13, 14)), QDate(2020, 5, 9), QTime(9, 13, 1)])
-        b2.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        b2.setAttributes(
+            [
+                3,
+                100,
+                "Orange",
+                "NuLl",
+                "2",
+                QDateTime(QDate(2020, 5, 1), QTime(12, 13, 14)),
+                QDate(2020, 5, 9),
+                QTime(9, 13, 1),
+            ]
+        )
+        b2.setGeometry(QgsGeometry.fromWkt("Point (-71.123 78.23)"))
 
         b3 = QgsFeature()
-        b3.setAttributes([1, -200, 'Honey', 'oranGe', '5', QDateTime(QDate(2020, 5, 1), QTime(12, 13, 14)), QDate(2020, 5, 19), QTime(2, 13, 1)])
+        b3.setAttributes(
+            [
+                1,
+                -200,
+                "Honey",
+                "oranGe",
+                "5",
+                QDateTime(QDate(2020, 5, 1), QTime(12, 13, 14)),
+                QDate(2020, 5, 19),
+                QTime(2, 13, 1),
+            ]
+        )
 
         b4 = QgsFeature()
-        b4.setAttributes([2, 400, 'Pear', 'Honey', '3', QDateTime(QDate(2020, 4, 4), QTime(12, 13, 14)), QDate(2020, 4, 2), QTime(4, 13, 1)])
-        b4.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+        b4.setAttributes(
+            [
+                2,
+                400,
+                "Pear",
+                "Honey",
+                "3",
+                QDateTime(QDate(2020, 4, 4), QTime(12, 13, 14)),
+                QDate(2020, 4, 2),
+                QTime(4, 13, 1),
+            ]
+        )
+        b4.setGeometry(QgsGeometry.fromWkt("Point (-65.32 78.3)"))
 
         b5 = QgsFeature()
-        b5.setAttributes([4, 200, NULL, 'oranGe', '3', QDateTime(QDate(2019, 5, 4), QTime(12, 13, 14)), QDate(2019, 5, 2), QTime(1, 13, 1)])
-        b5.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+        b5.setAttributes(
+            [
+                4,
+                200,
+                NULL,
+                "oranGe",
+                "3",
+                QDateTime(QDate(2019, 5, 4), QTime(12, 13, 14)),
+                QDate(2019, 5, 2),
+                QTime(1, 13, 1),
+            ]
+        )
+        b5.setGeometry(QgsGeometry.fromWkt("Point (-68.2 70.8)"))
 
         vl.dataProvider().addFeatures([b1, b2, b3, b4, b5])
 
-        bad_ids = [f['pk'] for f in vl.getFeatures()]
+        bad_ids = [f["pk"] for f in vl.getFeatures()]
 
         # here's our good features
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
-        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+        f1.setAttributes(
+            [
+                5,
+                -200,
+                NULL,
+                "NuLl",
+                "5",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)),
+                QDate(2020, 5, 2),
+                QTime(12, 13, 1),
+            ]
+        )
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-71.123 78.23)"))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
+        f2.setAttributes([3, 300, "Pear", "PEaR", "3", NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
-        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+        f3.setAttributes(
+            [
+                1,
+                100,
+                "Orange",
+                "oranGe",
+                "1",
+                QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)),
+                QDate(2020, 5, 3),
+                QTime(12, 13, 14),
+            ]
+        )
+        f3.setGeometry(QgsGeometry.fromWkt("Point (-70.332 66.33)"))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
-        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+        f4.setAttributes(
+            [
+                2,
+                200,
+                "Apple",
+                "Apple",
+                "2",
+                QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)),
+                QDate(2020, 5, 4),
+                QTime(12, 14, 14),
+            ]
+        )
+        f4.setGeometry(QgsGeometry.fromWkt("Point (-68.2 70.8)"))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
-        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+        f5.setAttributes(
+            [
+                4,
+                400,
+                "Honey",
+                "Honey",
+                "4",
+                QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)),
+                QDate(2021, 5, 4),
+                QTime(13, 13, 14),
+            ]
+        )
+        f5.setGeometry(QgsGeometry.fromWkt("Point (-65.32 78.3)"))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
 
@@ -3999,41 +4880,38 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(QgisTestCase, FeatureSourc
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(TestQgsVectorLayerSourceDeletedFeaturesInBuffer, cls).setUpClass()
+        super().setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
-        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        """Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testOrderBy(self):
-        """ Skip order by tests - edited features are not sorted in iterators.
+        """Skip order by tests - edited features are not sorted in iterators.
         (Maybe they should be??)
         """
         pass
 
     def testUniqueValues(self):
-        """ Skip unique values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip unique values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
     def testMinimumValue(self):
-        """ Skip min values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip min values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
     def testMaximumValue(self):
-        """ Skip max values test - as noted in the docs this is unreliable when features are in the buffer
-        """
+        """Skip max values test - as noted in the docs this is unreliable when features are in the buffer"""
         pass
 
 
@@ -4043,69 +4921,153 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         """Prepare tc"""
         super().setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem.fromEpsgId(4326),
-                                        QgsCoordinateReferenceSystem.fromEpsgId(3857), 'test')
+        self.ctx.addCoordinateOperation(
+            QgsCoordinateReferenceSystem.fromEpsgId(4326),
+            QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            "test",
+        )
 
     def testTransformContextIsSetInCtor(self):
         """Test transform context can be set from ctor"""
 
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-            'test', 'memory')
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk",
+            "test",
+            "memory",
+        )
+        self.assertFalse(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
         options = QgsVectorLayer.LayerOptions(self.ctx)
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-            'test', 'memory', options)
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk",
+            "test",
+            "memory",
+            options,
+        )
+        self.assertTrue(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
     def testTransformContextInheritsFromProject(self):
         """Test that when a layer is added to a project it inherits its context"""
 
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-            'test', 'memory')
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk",
+            "test",
+            "memory",
+        )
+        self.assertFalse(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
         p = QgsProject()
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertFalse(
+            p.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertTrue(
+            p.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
         p.addMapLayers([vl])
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertTrue(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
     def testTransformContextIsSyncedFromProject(self):
         """Test that when a layer is synced when project context changes"""
 
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-            'test', 'memory')
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk",
+            "test",
+            "memory",
+        )
+        self.assertFalse(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
         p = QgsProject()
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertFalse(
+            p.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertTrue(
+            p.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
         p.addMapLayers([vl])
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertTrue(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
         # Now change the project context
         tc2 = QgsCoordinateTransformContext()
         p.setTransformContext(tc2)
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertFalse(
+            p.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
+        self.assertFalse(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertTrue(
+            p.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
+        self.assertTrue(
+            vl.transformContext().hasTransform(
+                QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                QgsCoordinateReferenceSystem.fromEpsgId(3857),
+            )
+        )
 
     def testDeletedFeaturesAreNotSelected(self):
         """Test that when features are deleted are also removed from selected before
-           featuresDeleted is emitted"""
+        featuresDeleted is emitted"""
 
-        layer = QgsVectorLayer("point?crs=epsg:4326&field=id:integer", "Scratch point layer", "memory")
+        layer = QgsVectorLayer(
+            "point?crs=epsg:4326&field=id:integer", "Scratch point layer", "memory"
+        )
         layer.startEditing()
         layer.addFeature(QgsFeature(layer.fields()))
         layer.commitChanges()
@@ -4117,7 +5079,9 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         def onFeaturesDeleted(deleted_fids):
             selected = layer.selectedFeatureIds()
             for fid in selected:
-                test_errors.append(f'Feature with id {fid} was deleted but is still selected')
+                test_errors.append(
+                    f"Feature with id {fid} was deleted but is still selected"
+                )
 
         layer.featuresDeleted.connect(onFeaturesDeleted)
 
@@ -4138,17 +5102,22 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         temp_fids = []
 
         def onFeaturesDeleted(deleted_fids):
-            self.assertEqual(len(deleted_fids), len(temp_fids),
-                             msg=f'featuresDeleted returned {len(deleted_fids)} instead of 2 deleted feature IDs: '
-                             f'{deleted_fids}')
+            self.assertEqual(
+                len(deleted_fids),
+                len(temp_fids),
+                msg=f"featuresDeleted returned {len(deleted_fids)} instead of 2 deleted feature IDs: "
+                f"{deleted_fids}",
+            )
             for d in deleted_fids:
                 self.assertIn(d, temp_fids)
 
-        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        layer = QgsVectorLayer(
+            "point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory"
+        )
         layer.featuresDeleted.connect(onFeaturesDeleted)
 
         layer.startEditing()
-        layer.beginEditCommand('add 2 features')
+        layer.beginEditCommand("add 2 features")
         layer.addFeature(QgsFeature(layer.fields()))
         layer.addFeature(QgsFeature(layer.fields()))
         layer.endEditCommand()
@@ -4160,36 +5129,36 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         """
         Test that subset strings can be set on invalid layers, and retrieved later...
         """
-        vl = QgsVectorLayer(
-            'nope',
-            'test', 'no')
+        vl = QgsVectorLayer("nope", "test", "no")
         self.assertFalse(vl.isValid())
         self.assertIsNone(vl.dataProvider())
-        vl.setSubsetString('xxxxxxxxx')
-        self.assertEqual(vl.subsetString(), 'xxxxxxxxx')
+        vl.setSubsetString("xxxxxxxxx")
+        self.assertEqual(vl.subsetString(), "xxxxxxxxx")
 
         # invalid layer subset strings must be persisted via xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
         self.assertTrue(vl.writeXml(elem, doc, QgsReadWriteContext()))
 
-        vl2 = QgsVectorLayer(
-            'nope',
-            'test', 'no')
+        vl2 = QgsVectorLayer("nope", "test", "no")
         vl2.readXml(elem, QgsReadWriteContext())
-        self.assertEqual(vl2.subsetString(), 'xxxxxxxxx')
+        self.assertEqual(vl2.subsetString(), "xxxxxxxxx")
 
     def testLayerTypeFlags(self):
         """Basic API test, DB providers that support query layers should test the flag individually"""
 
-        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        layer = QgsVectorLayer(
+            "point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory"
+        )
         self.assertEqual(layer.vectorLayerTypeFlags(), Qgis.VectorLayerTypeFlags())
 
     def test_renderer_with_animated_symbol(self):
         """
         Test that setting a renderer with an animated symbol leads to redraw signals on the correct interval
         """
-        layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
+        layer = QgsVectorLayer(
+            "point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory"
+        )
 
         # renderer with an animated symbol
         marker_symbol = QgsMarkerSymbol()
@@ -4233,34 +5202,43 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         """
 
         with tempfile.TemporaryDirectory() as temp:
-            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.DAT', temp + '/fill_styles.DAT')
-            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.ID', temp + '/fill_styles.ID')
-            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.MAP', temp + '/fill_styles.MAP')
-            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.TAB', temp + '/fill_styles.TAB')
+            shutil.copy(
+                TEST_DATA_DIR + "/mapinfo/fill_styles.DAT", temp + "/fill_styles.DAT"
+            )
+            shutil.copy(
+                TEST_DATA_DIR + "/mapinfo/fill_styles.ID", temp + "/fill_styles.ID"
+            )
+            shutil.copy(
+                TEST_DATA_DIR + "/mapinfo/fill_styles.MAP", temp + "/fill_styles.MAP"
+            )
+            shutil.copy(
+                TEST_DATA_DIR + "/mapinfo/fill_styles.TAB", temp + "/fill_styles.TAB"
+            )
 
-            layer = QgsVectorLayer(temp + '/fill_styles.TAB', 'test', 'ogr')
+            layer = QgsVectorLayer(temp + "/fill_styles.TAB", "test", "ogr")
             self.assertTrue(layer.isValid())
             # should take a default embedded renderer from provider
             self.assertIsInstance(layer.renderer(), QgsEmbeddedSymbolRenderer)
 
             from qgis.core import QgsFillSymbol
-            symbol = QgsFillSymbol.createSimple({'color': '#ff00ff'})
+
+            symbol = QgsFillSymbol.createSimple({"color": "#ff00ff"})
             layer.setRenderer(QgsSingleSymbolRenderer(symbol))
 
             message, ok = layer.saveDefaultStyle()
             self.assertTrue(ok)
 
             del layer
-            layer = QgsVectorLayer(temp + '/fill_styles.TAB', 'test', 'ogr')
+            layer = QgsVectorLayer(temp + "/fill_styles.TAB", "test", "ogr")
             self.assertTrue(layer.isValid())
             # now we should load the .qml default style instead of the provider default
             self.assertIsInstance(layer.renderer(), QgsSingleSymbolRenderer)
-            self.assertEqual(layer.renderer().symbol().color().name(), '#ff00ff')
+            self.assertEqual(layer.renderer().symbol().color().name(), "#ff00ff")
 
             # remove qml default
-            os.remove(temp + '/fill_styles.qml')
+            os.remove(temp + "/fill_styles.qml")
             del layer
-            layer = QgsVectorLayer(temp + '/fill_styles.TAB', 'test', 'ogr')
+            layer = QgsVectorLayer(temp + "/fill_styles.TAB", "test", "ogr")
             self.assertTrue(layer.isValid())
 
             # should return to a default embedded renderer from provider
@@ -4269,7 +5247,9 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
     def testSldTextSymbolizerExport(self):
         """Test issue GH #35561"""
 
-        vl = QgsVectorLayer('Point?crs=epsg:4326&field=name:string(0)', 'test', 'memory')
+        vl = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=name:string(0)", "test", "memory"
+        )
 
         text_format = QgsTextFormat()
         text_format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
@@ -4293,19 +5273,19 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.capabilitiesString()
         layer.dataComment()
         layer.displayField()
-        layer.setDisplayExpression('')
+        layer.setDisplayExpression("")
         layer.displayExpression()
         layer.dataProvider()
         layer.temporalProperties()
-        layer.setProviderEncoding('utf-8')
+        layer.setProviderEncoding("utf-8")
         layer.setCoordinateSystem()
         layer.addJoin(QgsVectorLayerJoinInfo())
-        layer.removeJoin('id')
+        layer.removeJoin("id")
         layer.joinBuffer()
         layer.vectorJoins()
         layer.setDependencies([])
         layer.dependencies()
-        idx = layer.addExpressionField('1+1', QgsField('foo'))
+        idx = layer.addExpressionField("1+1", QgsField("foo"))
         # layer.expressionField(idx)
         # layer.updateExpressionField(idx, '')
         # layer.removeExpressionField(idx)
@@ -4313,7 +5293,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.serverProperties()
         layer.selectedFeatureCount()
         layer.selectByRect(QgsRectangle())
-        layer.selectByExpression('1')
+        layer.selectByExpression("1")
         layer.selectByIds([0])
         layer.modifySelection([], [])
         layer.invertSelection()
@@ -4344,14 +5324,14 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         elem = doc.createElement("maplayer")
         layer.writeXml(elem, doc, QgsReadWriteContext())
         layer.readXml(elem, QgsReadWriteContext())
-        layer.encodedSource('', QgsReadWriteContext())
-        layer.decodedSource('', 'invalid_provider', QgsReadWriteContext())
+        layer.encodedSource("", QgsReadWriteContext())
+        layer.decodedSource("", "invalid_provider", QgsReadWriteContext())
         layer.resolveReferences(QgsProject())
-        layer.saveStyleToDatabase('name', 'description', False, 'uiFileContent')
+        layer.saveStyleToDatabase("name", "description", False, "uiFileContent")
         layer.listStylesInDatabase()
-        layer.getStyleFromDatabase('id')
-        layer.deleteStyleFromDatabase('id')
-        layer.loadNamedStyle('uri', False)
+        layer.getStyleFromDatabase("id")
+        layer.deleteStyleFromDatabase("id")
+        layer.loadNamedStyle("uri", False)
         layer.loadAuxiliaryLayer(QgsAuxiliaryStorage())
         layer.setAuxiliaryLayer(None)
         layer.auxiliaryLayer()
@@ -4407,12 +5387,12 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.setReadOnly(False)
         layer.supportsEditing()
         layer.changeGeometry(0, QgsGeometry())
-        layer.changeAttributeValue(0, 0, '')
+        layer.changeAttributeValue(0, 0, "")
         layer.changeAttributeValues(0, {})
-        layer.addAttribute(QgsField('foo'))
-        layer.setFieldAlias(0, 'bar')
+        layer.addAttribute(QgsField("foo"))
+        layer.setFieldAlias(0, "bar")
         layer.removeFieldAlias(0)
-        layer.renameAttribute(0, 'bar')
+        layer.renameAttribute(0, "bar")
         layer.attributeAlias(0)
         layer.attributeDisplayName(0)
         layer.attributeAliases()
@@ -4425,7 +5405,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.rollBack()
         layer.referencingRelations(0)
         layer.editBuffer()
-        layer.beginEditCommand('foo')
+        layer.beginEditCommand("foo")
         layer.endEditCommand()
         layer.destroyEditCommand()
         layer.updateFields()
@@ -4437,15 +5417,15 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.removeFieldConstraint(0, QgsFieldConstraints.Constraint.ConstraintUnique)
         layer.constraintExpression(0)
         layer.constraintDescription(0)
-        layer.setConstraintExpression(0, '1')
-        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Hidden', {}))
+        layer.setConstraintExpression(0, "1")
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup("Hidden", {}))
         layer.editorWidgetSetup(0)
         layer.uniqueValues(0)
         layer.uniqueStringsMatching(0, None)
         layer.minimumValue(0)
         layer.maximumValue(0)
         layer.minimumAndMaximumValue(0)
-        layer.aggregate(QgsAggregateCalculator.Aggregate.Count, 'foo')
+        layer.aggregate(QgsAggregateCalculator.Aggregate.Count, "foo")
         layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
         layer.featureBlendMode()
         layer.htmlMetadata()
@@ -4455,7 +5435,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.attributeTableConfig()
         layer.setAttributeTableConfig(layer.attributeTableConfig())
         layer.mapTipTemplate()
-        layer.setMapTipTemplate('')
+        layer.setMapTipTemplate("")
         layer.createExpressionContext()
         layer.editFormConfig()
         layer.setEditFormConfig(layer.editFormConfig())
@@ -4476,13 +5456,13 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         # layer.accept(QgsStyleEntityVisitorInterface())
 
     def testMapTips(self):
-        vl = QgsVectorLayer('Point?crs=epsg:3111&field=pk:integer', 'test', 'memory')
+        vl = QgsVectorLayer("Point?crs=epsg:3111&field=pk:integer", "test", "memory")
         self.assertEqual(vl.displayExpression(), '"pk"')
         # layer has map tips because display expression will be used
         self.assertTrue(vl.hasMapTips())
 
-        vl.setMapTipTemplate('some template')
-        self.assertEqual(vl.mapTipTemplate(), 'some template')
+        vl.setMapTipTemplate("some template")
+        self.assertEqual(vl.mapTipTemplate(), "some template")
         self.assertTrue(vl.hasMapTips())
 
         vl.setMapTipTemplate(None)
@@ -4490,12 +5470,12 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         self.assertTrue(vl.hasMapTips())
 
         # layer with no fields
-        vl = QgsVectorLayer('Point?crs=epsg:3111', 'test', 'memory')
+        vl = QgsVectorLayer("Point?crs=epsg:3111", "test", "memory")
         self.assertFalse(vl.displayExpression())
         self.assertFalse(vl.hasMapTips())
 
-        vl.setMapTipTemplate('some template')
-        self.assertEqual(vl.mapTipTemplate(), 'some template')
+        vl.setMapTipTemplate("some template")
+        self.assertEqual(vl.mapTipTemplate(), "some template")
         self.assertTrue(vl.hasMapTips())
 
         vl.setMapTipTemplate(None)
@@ -4503,7 +5483,11 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         self.assertFalse(vl.hasMapTips())
 
     def test_split_policies(self):
-        vl = QgsVectorLayer('Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer', 'test', 'memory')
+        vl = QgsVectorLayer(
+            "Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer",
+            "test",
+            "memory",
+        )
         self.assertTrue(vl.isValid())
 
         with self.assertRaises(KeyError):
@@ -4516,39 +5500,51 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         vl.setFieldSplitPolicy(2, Qgis.FieldDomainSplitPolicy.UnsetField)
         vl.setFieldSplitPolicy(3, Qgis.FieldDomainSplitPolicy.GeometryRatio)
 
-        self.assertEqual(vl.fields()[0].splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.DefaultValue)
-        self.assertEqual(vl.fields()[1].splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.Duplicate)
-        self.assertEqual(vl.fields()[2].splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.UnsetField)
-        self.assertEqual(vl.fields()[3].splitPolicy(),
-                         Qgis.FieldDomainSplitPolicy.GeometryRatio)
+        self.assertEqual(
+            vl.fields()[0].splitPolicy(), Qgis.FieldDomainSplitPolicy.DefaultValue
+        )
+        self.assertEqual(
+            vl.fields()[1].splitPolicy(), Qgis.FieldDomainSplitPolicy.Duplicate
+        )
+        self.assertEqual(
+            vl.fields()[2].splitPolicy(), Qgis.FieldDomainSplitPolicy.UnsetField
+        )
+        self.assertEqual(
+            vl.fields()[3].splitPolicy(), Qgis.FieldDomainSplitPolicy.GeometryRatio
+        )
 
         p = QgsProject()
         p.addMapLayer(vl)
 
         # test saving and restoring split policies
         with tempfile.TemporaryDirectory() as temp:
-            self.assertTrue(p.write(temp + '/test.qgs'))
+            self.assertTrue(p.write(temp + "/test.qgs"))
 
             p2 = QgsProject()
-            self.assertTrue(p2.read(temp + '/test.qgs'))
+            self.assertTrue(p2.read(temp + "/test.qgs"))
 
             vl2 = list(p2.mapLayers().values())[0]
             self.assertEqual(vl2.name(), vl.name())
 
-            self.assertEqual(vl2.fields()[0].splitPolicy(),
-                             Qgis.FieldDomainSplitPolicy.DefaultValue)
-            self.assertEqual(vl2.fields()[1].splitPolicy(),
-                             Qgis.FieldDomainSplitPolicy.Duplicate)
-            self.assertEqual(vl2.fields()[2].splitPolicy(),
-                             Qgis.FieldDomainSplitPolicy.UnsetField)
-            self.assertEqual(vl2.fields()[3].splitPolicy(),
-                             Qgis.FieldDomainSplitPolicy.GeometryRatio)
+            self.assertEqual(
+                vl2.fields()[0].splitPolicy(), Qgis.FieldDomainSplitPolicy.DefaultValue
+            )
+            self.assertEqual(
+                vl2.fields()[1].splitPolicy(), Qgis.FieldDomainSplitPolicy.Duplicate
+            )
+            self.assertEqual(
+                vl2.fields()[2].splitPolicy(), Qgis.FieldDomainSplitPolicy.UnsetField
+            )
+            self.assertEqual(
+                vl2.fields()[3].splitPolicy(), Qgis.FieldDomainSplitPolicy.GeometryRatio
+            )
 
     def test_duplicate_policies(self):
-        vl = QgsVectorLayer('Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer', 'test', 'memory')
+        vl = QgsVectorLayer(
+            "Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer",
+            "test",
+            "memory",
+        )
         self.assertTrue(vl.isValid())
 
         with self.assertRaises(KeyError):
@@ -4560,87 +5556,180 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         vl.setFieldDuplicatePolicy(1, Qgis.FieldDuplicatePolicy.Duplicate)
         vl.setFieldDuplicatePolicy(2, Qgis.FieldDuplicatePolicy.UnsetField)
 
-        self.assertEqual(vl.fields()[0].duplicatePolicy(),
-                         Qgis.FieldDuplicatePolicy.DefaultValue)
-        self.assertEqual(vl.fields()[1].duplicatePolicy(),
-                         Qgis.FieldDuplicatePolicy.Duplicate)
-        self.assertEqual(vl.fields()[2].duplicatePolicy(),
-                         Qgis.FieldDuplicatePolicy.UnsetField)
+        self.assertEqual(
+            vl.fields()[0].duplicatePolicy(), Qgis.FieldDuplicatePolicy.DefaultValue
+        )
+        self.assertEqual(
+            vl.fields()[1].duplicatePolicy(), Qgis.FieldDuplicatePolicy.Duplicate
+        )
+        self.assertEqual(
+            vl.fields()[2].duplicatePolicy(), Qgis.FieldDuplicatePolicy.UnsetField
+        )
 
         p = QgsProject()
         p.addMapLayer(vl)
 
         # test saving and restoring split policies
         with tempfile.TemporaryDirectory() as temp:
-            self.assertTrue(p.write(temp + '/test.qgs'))
+            self.assertTrue(p.write(temp + "/test.qgs"))
 
             p2 = QgsProject()
-            self.assertTrue(p2.read(temp + '/test.qgs'))
+            self.assertTrue(p2.read(temp + "/test.qgs"))
 
             vl2 = list(p2.mapLayers().values())[0]
             self.assertEqual(vl2.name(), vl.name())
 
-            self.assertEqual(vl2.fields()[0].duplicatePolicy(),
-                             Qgis.FieldDuplicatePolicy.DefaultValue)
-            self.assertEqual(vl2.fields()[1].duplicatePolicy(),
-                             Qgis.FieldDuplicatePolicy.Duplicate)
-            self.assertEqual(vl2.fields()[2].duplicatePolicy(),
-                             Qgis.FieldDuplicatePolicy.UnsetField)
+            self.assertEqual(
+                vl2.fields()[0].duplicatePolicy(),
+                Qgis.FieldDuplicatePolicy.DefaultValue,
+            )
+            self.assertEqual(
+                vl2.fields()[1].duplicatePolicy(), Qgis.FieldDuplicatePolicy.Duplicate
+            )
+            self.assertEqual(
+                vl2.fields()[2].duplicatePolicy(), Qgis.FieldDuplicatePolicy.UnsetField
+            )
 
     def test_selection_properties(self):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer',
-            'test', 'memory')
+            "Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer",
+            "test",
+            "memory",
+        )
         self.assertTrue(vl.isValid())
 
         self.assertFalse(vl.selectionProperties().selectionColor().isValid())
         self.assertFalse(vl.selectionProperties().selectionSymbol())
-        vl.selectionProperties().setSelectionColor(
-            QColor(255, 0, 0)
-        )
-        self.assertEqual(vl.selectionProperties().selectionColor(),
-                         QColor(255, 0, 0))
+        vl.selectionProperties().setSelectionColor(QColor(255, 0, 0))
+        self.assertEqual(vl.selectionProperties().selectionColor(), QColor(255, 0, 0))
         vl.selectionProperties().setSelectionRenderingMode(
-            Qgis.SelectionRenderingMode.CustomColor)
+            Qgis.SelectionRenderingMode.CustomColor
+        )
 
         p = QgsProject()
         p.addMapLayer(vl)
 
         # test saving and restoring
         with tempfile.TemporaryDirectory() as temp:
-            self.assertTrue(p.write(temp + '/test.qgs'))
+            self.assertTrue(p.write(temp + "/test.qgs"))
 
             p2 = QgsProject()
-            self.assertTrue(p2.read(temp + '/test.qgs'))
+            self.assertTrue(p2.read(temp + "/test.qgs"))
 
             vl2 = list(p2.mapLayers().values())[0]
             self.assertEqual(vl2.name(), vl.name())
 
-            self.assertEqual(vl2.selectionProperties().selectionRenderingMode(),
-                             Qgis.SelectionRenderingMode.CustomColor)
+            self.assertEqual(
+                vl2.selectionProperties().selectionRenderingMode(),
+                Qgis.SelectionRenderingMode.CustomColor,
+            )
 
-            self.assertEqual(vl2.selectionProperties().selectionColor(),
-                             QColor(255, 0, 0))
+            self.assertEqual(
+                vl2.selectionProperties().selectionColor(), QColor(255, 0, 0)
+            )
 
         selected_symbol = QgsMarkerSymbol()
         selected_symbol.setColor(QColor(25, 26, 27))
-        vl.selectionProperties().setSelectionSymbol(
-            selected_symbol
-        )
+        vl.selectionProperties().setSelectionSymbol(selected_symbol)
 
         with tempfile.TemporaryDirectory() as temp:
-            self.assertTrue(p.write(temp + '/test.qgs'))
+            self.assertTrue(p.write(temp + "/test.qgs"))
 
             p2 = QgsProject()
-            self.assertTrue(p2.read(temp + '/test.qgs'))
+            self.assertTrue(p2.read(temp + "/test.qgs"))
 
             vl2 = list(p2.mapLayers().values())[0]
             self.assertEqual(vl2.name(), vl.name())
 
-            self.assertEqual(vl2.selectionProperties().selectionSymbol().color(),
-                             QColor(25, 26, 27))
-            self.assertEqual(vl2.selectionProperties().selectionColor(),
-                             QColor(255, 0, 0))
+            self.assertEqual(
+                vl2.selectionProperties().selectionSymbol().color(), QColor(25, 26, 27)
+            )
+            self.assertEqual(
+                vl2.selectionProperties().selectionColor(), QColor(255, 0, 0)
+            )
+
+    def testConstraintsotSet(self):
+        """Test that a NotSet constraint does not become a Hard constraint
+        when saving and loading a layer style, see issue GH #58431"""
+
+        # Create a memory layer with unique constraints
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "test_unique", "memory"
+        )
+        self.assertTrue(layer.isValid())
+
+        # Se not constraints on fldtxt
+        layer.setFieldConstraint(
+            0,
+            QgsFieldConstraints.Constraint.ConstraintNotNull,
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
+        layer.setFieldConstraint(
+            0,
+            QgsFieldConstraints.Constraint.ConstraintUnique,
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
+        )
+
+        # Check constraints at the field level
+        field = layer.fields().at(0)
+        constraints = field.constraints()
+        self.assertEqual(
+            constraints.constraintStrength(
+                QgsFieldConstraints.Constraint.ConstraintNotNull
+            ),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
+        self.assertEqual(
+            constraints.constraintStrength(
+                QgsFieldConstraints.Constraint.ConstraintUnique
+            ),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
+        )
+
+        # Check constraints at the layer level
+        constraints = layer.fieldConstraintsAndStrength(0)
+        self.assertEqual(
+            constraints[QgsFieldConstraints.Constraint.ConstraintNotNull],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
+        self.assertEqual(
+            constraints[QgsFieldConstraints.Constraint.ConstraintUnique],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
+        )
+
+        # Export the style to QML and reload it
+        style = QgsMapLayerStyle()
+        temp_file = tempfile.mktemp(suffix=".qml")
+        layer.saveNamedStyle(temp_file)
+        layer.loadNamedStyle(temp_file)
+
+        # Check constraints at the field level
+        field = layer.fields().at(0)
+        constraints = field.constraints()
+        self.assertEqual(
+            constraints.constraintStrength(
+                QgsFieldConstraints.Constraint.ConstraintNotNull
+            ),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
+        self.assertEqual(
+            constraints.constraintStrength(
+                QgsFieldConstraints.Constraint.ConstraintUnique
+            ),
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
+        )
+
+        # Check constraints at the layer level
+        constraints = layer.fieldConstraintsAndStrength(0)
+        self.assertEqual(
+            constraints[QgsFieldConstraints.Constraint.ConstraintNotNull],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft,
+        )
+        self.assertEqual(
+            constraints[QgsFieldConstraints.Constraint.ConstraintUnique],
+            QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
+        )
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
@@ -4648,5 +5737,5 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
 # - import
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

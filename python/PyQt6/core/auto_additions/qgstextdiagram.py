@@ -4,3 +4,7 @@ QgsTextDiagram.Rectangle = QgsTextDiagram.Shape.Rectangle
 QgsTextDiagram.Triangle = QgsTextDiagram.Shape.Triangle
 QgsTextDiagram.Horizontal = QgsTextDiagram.Orientation.Horizontal
 QgsTextDiagram.Vertical = QgsTextDiagram.Orientation.Vertical
+try:
+    QgsTextDiagram.__group__ = ['diagram']
+except (NameError, AttributeError):
+    pass

@@ -48,10 +48,7 @@ class CORE_EXPORT QgsProfileExporter
                         const QgsProfileRequest &request,
                         Qgis::ProfileExportType type );
 
-    //! QgsProfileExporter cannot be copied
     QgsProfileExporter( const QgsProfileExporter &other ) = delete;
-
-    //! QgsProfileExporter cannot be copied
     QgsProfileExporter &operator=( const QgsProfileExporter &other ) = delete;
 
     ~QgsProfileExporter();

@@ -21,8 +21,12 @@
 #include <QTextStream>
 #include <QRegularExpression>
 
-bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items, QgsColorRampShader::Type &type, QStringList &errors )
+bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items, Qgis::ShaderInterpolationMethod &type, QStringList &errors )
 {
+  type = Qgis::ShaderInterpolationMethod::Discrete;
+  errors.clear();
+  items.clear();
+
   QFile inputFile( path );
   if ( !inputFile.open( QFile::ReadOnly ) )
   {
@@ -52,15 +56,15 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
           {
             if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "INTERPOLATED" ), Qt::CaseInsensitive ) == 0 )
             {
-              type = QgsColorRampShader::Interpolated;
+              type = Qgis::ShaderInterpolationMethod::Linear;
             }
             else if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "DISCRETE" ), Qt::CaseInsensitive ) == 0 )
             {
-              type = QgsColorRampShader::Discrete;
+              type = Qgis::ShaderInterpolationMethod::Discrete;
             }
             else
             {
-              type = QgsColorRampShader::Exact;
+              type = Qgis::ShaderInterpolationMethod::Exact;
             }
           }
           else
@@ -93,7 +97,7 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
   return res;
 }
 
-bool QgsRasterRendererUtils::saveColorMapFile( const QString &path, const QList<QgsColorRampShader::ColorRampItem> &items, QgsColorRampShader::Type type )
+bool QgsRasterRendererUtils::saveColorMapFile( const QString &path, const QList<QgsColorRampShader::ColorRampItem> &items, Qgis::ShaderInterpolationMethod type )
 {
   QFile outputFile( path );
   if ( outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
@@ -103,13 +107,13 @@ bool QgsRasterRendererUtils::saveColorMapFile( const QString &path, const QList<
     outputStream << "INTERPOLATION:";
     switch ( type )
     {
-      case QgsColorRampShader::Interpolated:
+      case Qgis::ShaderInterpolationMethod::Linear:
         outputStream << "INTERPOLATED\n";
         break;
-      case QgsColorRampShader::Discrete:
+      case Qgis::ShaderInterpolationMethod::Discrete:
         outputStream << "DISCRETE\n";
         break;
-      case QgsColorRampShader::Exact:
+      case Qgis::ShaderInterpolationMethod::Exact:
         outputStream << "EXACT\n";
         break;
     }

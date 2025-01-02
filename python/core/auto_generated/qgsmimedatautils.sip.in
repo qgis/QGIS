@@ -3,7 +3,7 @@
  *                                                                      *
  * src/core/qgsmimedatautils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
 
 
@@ -11,6 +11,9 @@
 
 class QgsMimeDataUtils
 {
+%Docstring(signature="appended")
+Contains utility functions for working with MIME data.
+%End
 
 %TypeHeaderCode
 #include "qgsmimedatautils.h"
@@ -136,5 +139,5 @@ instance.
  *                                                                      *
  * src/core/qgsmimedatautils.h                                          *
  *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappgpsdigitizing.h"
+#include "moc_qgsappgpsdigitizing.cpp"
 #include "qgsrubberband.h"
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"
@@ -41,7 +42,6 @@ QgsUpdateGpsDetailsAction::QgsUpdateGpsDetailsAction( QgsAppGpsConnection *conne
   , mConnection( connection )
   , mDigitizing( digitizing )
 {
-
 }
 
 bool QgsUpdateGpsDetailsAction::canRunUsingLayer( QgsMapLayer * ) const
@@ -58,7 +58,7 @@ bool QgsUpdateGpsDetailsAction::canRunUsingLayer( QgsMapLayer *layer, const QgsM
 void QgsUpdateGpsDetailsAction::triggerForFeature( QgsMapLayer *layer, const QgsFeature &, const QgsMapLayerActionContext &context )
 {
   QgsVectorLayer *vlayer = QgsProject::instance()->gpsSettings()->destinationLayer();
-  if ( !vlayer || ! mConnection || !mConnection->isConnected()
+  if ( !vlayer || !mConnection || !mConnection->isConnected()
        || layer != vlayer )
     return;
 
@@ -89,8 +89,7 @@ void QgsUpdateGpsDetailsAction::triggerForFeature( QgsMapLayer *layer, const Qgs
   catch ( QgsCsException & )
   {
     if ( QgsMessageBar *messageBar = context.messageBar() )
-      messageBar->pushCritical( QString(),
-                                tr( "Error reprojecting GPS location to layer CRS." ) );
+      messageBar->pushCritical( QString(), tr( "Error reprojecting GPS location to layer CRS." ) );
     return;
   }
 
@@ -126,12 +125,10 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mUpdateGpsDetailsAction );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
-  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
-  {
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] {
     mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   } );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [=] {
     setTransformContext( QgsProject::instance()->transformContext() );
     mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, transformContext() );
   } );
@@ -139,8 +136,7 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
 
   setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [=] {
     setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
@@ -150,28 +146,25 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsAppGpsDigitizing::gpsSettingsChanged );
   gpsSettingsChanged();
 
-  connect( QgisApp::instance(), &QgisApp::activeLayerChanged, this, [ = ]( QgsMapLayer * layer )
-  {
+  connect( QgisApp::instance(), &QgisApp::activeLayerChanged, this, [=]( QgsMapLayer *layer ) {
     if ( QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
     {
-      QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( layer ) );
+      QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast<QgsVectorLayer *>( layer ) );
     }
   } );
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationFollowsActiveLayerChanged, this, [ = ]( bool enabled )
-  {
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationFollowsActiveLayerChanged, this, [=]( bool enabled ) {
     if ( enabled )
     {
-      QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( QgisApp::instance()->activeLayer() ) );
+      QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() ) );
     }
   } );
   if ( QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
   {
-    QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast< QgsVectorLayer *> ( QgisApp::instance()->activeLayer() ) );
+    QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() ) );
   }
 
   setAutomaticallyAddTrackVertices( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [ = ]( bool enabled )
-  {
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [=]( bool enabled ) {
     setAutomaticallyAddTrackVertices( enabled );
   } );
 
@@ -205,7 +198,7 @@ QgsAttributeMap QgsAppGpsDigitizing::derivedAttributes() const
     const QVariant ts = timestamp( vlayer, idx );
     if ( ts.isValid() )
     {
-      attrMap[ idx ] = ts;
+      attrMap[idx] = ts;
     }
   }
   return attrMap;
@@ -270,8 +263,7 @@ void QgsAppGpsDigitizing::createFeature()
   }
   catch ( QgsCsException & )
   {
-    QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ),
-        tr( "Error reprojecting feature to layer CRS." ) );
+    QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "Error reprojecting feature to layer CRS." ) );
     return;
   }
 
@@ -338,8 +330,8 @@ void QgsAppGpsDigitizing::createFeature()
               QgisApp::instance()->messageBar()->pushCritical(
                 tr( "Save Layer Edits" ),
                 tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                .arg( vlayer->name(),
-                      vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+                  .arg( vlayer->name(), vlayer->commitErrors().join( QLatin1String( "\n  " ) ) )
+              );
             }
 
             vlayer->startEditing();
@@ -375,10 +367,7 @@ void QgsAppGpsDigitizing::createFeature()
           {
             if ( !vlayer->commitChanges() )
             {
-              QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ),
-                  tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                  .arg( vlayer->name(),
-                        vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+              QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ), tr( "Could not commit changes to layer %1\n\nErrors: %2\n" ).arg( vlayer->name(), vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
             }
 
             vlayer->startEditing();
@@ -399,7 +388,6 @@ void QgsAppGpsDigitizing::createFeature()
         case QgsFeatureAction::AddFeatureResult::FeatureError:
           QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Could not create new feature in layer %1" ).arg( vlayer->name() ) );
           break;
-
       }
       mBlockGpsStateChanged--;
 
@@ -439,7 +427,7 @@ void QgsAppGpsDigitizing::updateTrackAppearance()
   {
     doc.setContent( trackLineSymbolXml );
     elem = doc.documentElement();
-    std::unique_ptr< QgsLineSymbol > trackLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
+    std::unique_ptr<QgsLineSymbol> trackLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
     if ( trackLineSymbol )
     {
       mRubberBand->setSymbol( trackLineSymbol.release() );
@@ -476,10 +464,10 @@ QVariant QgsAppGpsDigitizing::timestamp( QgsVectorLayer *vlayer, int idx ) const
     // Only string and datetime fields are supported
     switch ( vlayer->fields().at( idx ).type() )
     {
-      case QVariant::String:
+      case QMetaType::Type::QString:
         value = timestamp.toString( Qt::DateFormat::ISODate );
         break;
-      case QVariant::DateTime:
+      case QMetaType::Type::QDateTime:
         value = timestamp;
         break;
       default:

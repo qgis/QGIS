@@ -37,7 +37,6 @@ class QgsVirtualLayerSourceWidget : public QWidget
     Q_OBJECT
 
   public:
-
     QgsVirtualLayerSourceWidget( QWidget *parent = nullptr );
     void setBrowserModel( QgsBrowserModel *model );
 
@@ -52,8 +51,8 @@ class QgsVirtualLayerSourceWidget : public QWidget
   public slots:
 
     void browseForLayer();
-  private:
 
+  private:
     QLineEdit *mLineEdit = nullptr;
     QString mProvider;
     QgsBrowserModel *mBrowserModel = nullptr;
@@ -65,7 +64,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
     ~QgsVirtualLayerSourceSelect() override;
 
     void setBrowserModel( QgsBrowserModel *model ) override;
@@ -89,7 +88,6 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void rowSourceChanged();
 
   private:
-
     enum LayerColumn
     {
       Name = 0,

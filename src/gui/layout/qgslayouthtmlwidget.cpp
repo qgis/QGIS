@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayouthtmlwidget.h"
+#include "moc_qgslayouthtmlwidget.cpp"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayout.h"
@@ -27,8 +28,8 @@
 #include <QUrl>
 
 QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
-  : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast< QgsLayoutItemHtml* >( frame->multiFrame() ) : nullptr )
-  , mHtml( frame ? qobject_cast< QgsLayoutItemHtml* >( frame->multiFrame() ) : nullptr )
+  : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemHtml *>( frame->multiFrame() ) : nullptr )
+  , mHtml( frame ? qobject_cast<QgsLayoutItemHtml *>( frame->multiFrame() ) : nullptr )
   , mFrame( frame )
 {
   setupUi( this );
@@ -37,7 +38,7 @@ QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   connect( mResizeModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutHtmlWidget::mResizeModeComboBox_currentIndexChanged );
   connect( mEvaluateExpressionsCheckbox, &QCheckBox::toggled, this, &QgsLayoutHtmlWidget::mEvaluateExpressionsCheckbox_toggled );
   connect( mUseSmartBreaksCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutHtmlWidget::mUseSmartBreaksCheckBox_toggled );
-  connect( mMaxDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutHtmlWidget::mMaxDistanceSpinBox_valueChanged );
+  connect( mMaxDistanceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutHtmlWidget::mMaxDistanceSpinBox_valueChanged );
   connect( mUserStylesheetCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutHtmlWidget::mUserStylesheetCheckBox_toggled );
   connect( mRadioManualSource, &QRadioButton::clicked, this, &QgsLayoutHtmlWidget::mRadioManualSource_clicked );
   connect( mRadioUrlSource, &QRadioButton::clicked, this, &QgsLayoutHtmlWidget::mRadioUrlSource_clicked );
@@ -93,7 +94,7 @@ void QgsLayoutHtmlWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayou
 
 bool QgsLayoutHtmlWidget::setNewItem( QgsLayoutItem *item )
 {
-  QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( item );
+  QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item );
   if ( !frame )
     return false;
 
@@ -109,7 +110,7 @@ bool QgsLayoutHtmlWidget::setNewItem( QgsLayoutItem *item )
     disconnect( mHtml, &QgsLayoutObject::changed, this, &QgsLayoutHtmlWidget::setGuiElementValues );
   }
 
-  mHtml = qobject_cast< QgsLayoutItemHtml * >( multiFrame );
+  mHtml = qobject_cast<QgsLayoutItemHtml *>( multiFrame );
   mFrame = frame;
   mItemPropertiesWidget->setItem( frame );
 
@@ -180,7 +181,7 @@ void QgsLayoutHtmlWidget::mResizeModeComboBox_currentIndexChanged( int index )
   }
 
   mHtml->beginCommand( tr( "Change Resize Mode" ) );
-  mHtml->setResizeMode( static_cast< QgsLayoutMultiFrame::ResizeMode >( mResizeModeComboBox->itemData( index ).toInt() ) );
+  mHtml->setResizeMode( static_cast<QgsLayoutMultiFrame::ResizeMode>( mResizeModeComboBox->itemData( index ).toInt() ) );
   mHtml->endCommand();
 
   mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsLayoutMultiFrame::UseExistingFrames );
@@ -364,7 +365,6 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
       blockSignals( false );
     }
   }
-
 }
 
 void QgsLayoutHtmlWidget::mReloadPushButton_clicked()

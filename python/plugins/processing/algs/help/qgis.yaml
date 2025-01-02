@@ -4,13 +4,6 @@ qgis:advancedpythonfieldcalculator: >
 qgis:barplot: >
   This algorithm creates a bar plot from a category and a layer field.
 
-qgis:basicstatisticsforfields: >
-  This algorithm generates basic statistics from the analysis of a values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported.
-
-  The statistics returned will depend on the field type.
-
-  Statistics are generated as an HTML file.
-
 qgis:boxplot: >
   This algorithm creates a box plot from a category and a layer field.
 

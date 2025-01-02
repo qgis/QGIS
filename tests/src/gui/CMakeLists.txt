@@ -25,6 +25,7 @@ endif()
 
 set(TESTS
   testqgsadvanceddigitizingdockwidget.cpp
+  testqgsadvanceddigitizingtoolsregistry.cpp
   testqgsannotationitemguiregistry.cpp
   testqgsmaptoolzoom.cpp
   testqgsmaptooledit.cpp
@@ -74,6 +75,9 @@ set(TESTS
   testqgsexternalresourcewidgetwrapper.cpp
   testqgsquerybuilder.cpp
   testqgsqueryresultwidget.cpp
+  testqgscompoundcolorwidget.cpp
+  testqgsmaskingwidget.cpp
+  testqgssvgselectorwidget.cpp
 )
 
 foreach(TESTSRC ${TESTS})
