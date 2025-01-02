@@ -1,12 +1,13 @@
 ---
 name: 🍎 Build - MacOS Qt6
 on:
-  # push:
-  #   branches:
-  #     - main
-  # pull_request:
-  # release:
-  #   types: ['published']
+  push:
+    branches:
+      - main
+      - release-*
+  pull_request:
+  release:
+    types: ['published']
   workflow_dispatch:
 
 concurrency:
@@ -18,9 +19,9 @@ jobs:
     strategy:
       matrix:
         include:
-#          - os: macos-13
-#            triplet: x64-osx
-#            deployment-target: "10.15"
+          - os: macos-13
+            triplet: x64-osx-dynamic-release
+            deployment-target: "10.15"
           - os: macos-14
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
@@ -58,6 +59,19 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: 🛍️ Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 1G
+          key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          save: ${{ github.event_name == 'push' }}
+
+      - name: 🛍️ Tune ccache configuration
+        shell: bash
+        run: |
+          # To make ccache work properly with precompiled headers
+          ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
+
       - name: 🌱 Install dependencies and generate project files
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
@@ -75,10 +89,12 @@ jobs:
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
+                -D ENABLE_UNITY_BUILDS=ON \
                 -D NUGET_USERNAME=${{ github.actor }} \
+                -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
 
-                fdupes -r -1 build/vcpkg_installed/arm64-osx-dynamic/lib | grep libQt | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
+                fdupes -q -r -1 build/vcpkg_installed/${{ matrix.triplet }}/lib | grep libQt | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
 
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
@@ -105,4 +121,18 @@ jobs:
 
       - name: 🌋 Build
         run: |
+          # We make sure the target "all" is built before bundling
+          # Ideally, we would specify each target that is required to be installed, but this workaround is sufficient for now
           cmake --build build
+          cmake --build build --target bundle
+
+      - name: 📤 Upload dmg
+     #   if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: qgis-dmg-${{ matrix.triplet }}
+          path: |
+            build/QGIS-Installer.dmg
+     # - name: Setup tmate session
+     #   uses: mxschmitt/action-tmate@v3
+     #   if: always()
