@@ -170,6 +170,6 @@ jobs:
             ### 🍎 MacOS Qt6 builds
             Download testable builds for this pull request
             - Download [MacOS Qt6 arm64 (M series)](${{ needs.build.outputs.artifact-arm64-url }})
-            - Download [MacOS Qt6 x64 (Intel)](${{ needs.build.outputs.artifact-arm64-url }})
+            - Download [MacOS Qt6 x64 (Intel)](${{ needs.build.outputs.artifact-x64-url }})
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}
