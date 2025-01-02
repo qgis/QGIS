@@ -141,7 +141,7 @@ Returns ``True`` if this range overlaps another range.
 
 
 
-typedef QgsRange<double> QgsRangedoubleBase;
+typedef QgsRange<double> QgsRangedoubleBase /NoTypeName/;
 
 class QgsDoubleRange : QgsRangedoubleBase
 {
@@ -210,7 +210,7 @@ Returns ``True`` if the range consists of all possible values.
 
 
 
-typedef QgsRange<int> QgsRangeintBase;
+typedef QgsRange<int> QgsRangeintBase /NoTypeName/;
 
 class QgsIntRange : QgsRangeintBase
 {

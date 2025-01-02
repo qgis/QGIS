@@ -13,7 +13,7 @@
 
 
 
-typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
+typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase /NoTypeName/;
 
 class QgsOptionalExpression : QgsOptionalQgsExpressionBase
 {
