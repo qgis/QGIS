@@ -514,13 +514,7 @@ if (ANDROID)
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 else()
-  if(APPLE)
-    set (CREATE_MACOSX_BUNDLE TRUE CACHE BOOL "Create macosx bundle during build. Disable for development to avoid copying libraries and ease debugging.")
-    if(CREATE_MACOSX_BUNDLE)
-      set(MACOSX_BUNDLE "MACOSX_BUNDLE")
-    endif()
-  endif()
-  add_executable(${QGIS_APP_NAME} ${MACOSX_BUNDLE} WIN32 ${QGIS_APPMAIN_SRCS})
+  add_executable(${QGIS_APP_NAME} WIN32 ${QGIS_APPMAIN_SRCS})
 
   if(WIN32 AND BUILD_WITH_QT6)
     qt_disable_unicode_defines(${QGIS_APP_NAME})
@@ -673,13 +667,6 @@ if (NOT WIN32)
 target_link_libraries(${QGIS_APP_NAME} QTSignal)
 endif()
 
-if (APPLE)
-  set_target_properties(${QGIS_APP_NAME} PROPERTIES
-    INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
-    INSTALL_RPATH_USE_LINK_PATH true
-    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/app.info.plist.in")
-endif()
-
 if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   find_library(EXECINFO_LIBRARY NAMES execinfo)
   target_link_libraries(${QGIS_APP_NAME} ${EXECINFO_LIBRARY})
@@ -697,7 +684,6 @@ install(TARGETS qgis_app
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
   PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
 install(TARGETS ${QGIS_APP_NAME}
@@ -705,9 +691,4 @@ install(TARGETS ${QGIS_APP_NAME}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
   PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-if (APPLE)
-  install(CODE "execute_process(COMMAND /bin/echo -n \"APPLQGIS\" OUTPUT_FILE \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/../PkgInfo\")")
-endif()

@@ -7,9 +7,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/providers/grass
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-include_directories (SYSTEM
-  ${POSTGRES_INCLUDE_DIR}
-)
 
 #
 # GRASS library
@@ -75,29 +72,9 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       set(GRASS_OFF_T_SIZE_DEF "")
     endif()
 
-    if(QGIS_MACAPP_FRAMEWORK)
-      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
-        CLEAN_DIRECT_OUTPUT 1
-        FRAMEWORK 1
-        FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-        MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-        MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-        MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_grass
-        COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
-      )
-    else()
-        set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
-        CLEAN_DIRECT_OUTPUT 1
-        FRAMEWORK 0
-        COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
-      )
-    endif()
-
-    if (APPLE)
-      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
-        LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
-        )
-    endif()
+    set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+      COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
+    )
 
     #generate unversioned libs for android
     if (NOT ANDROID)
@@ -138,10 +115,6 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       target_link_libraries(qgisgrass${GRASS_BUILD_VERSION}
         qgis_gui
       )
-    endif()
-
-    if (APPLE)
-      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
     endif()
 
     GENERATE_EXPORT_HEADER(
@@ -288,8 +261,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
 
     install(TARGETS qgisgrass${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_BIN_DIR}
-      LIBRARY DESTINATION ${QGIS_LIB_DIR}
-      FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR})
+      LIBRARY DESTINATION ${QGIS_LIB_DIR})
 
     install(TARGETS provider_grass${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
