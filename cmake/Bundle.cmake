@@ -58,7 +58,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND QGIS_MAC_BUNDLE)
   configure_file(${CMAKE_SOURCE_DIR}/platform/macos/CPackMacDeployQt.cmake.in "${CMAKE_BINARY_DIR}/CPackExternal.cmake" @ONLY)
   set(CPACK_EXTERNAL_PACKAGE_SCRIPT "${CMAKE_BINARY_DIR}/CPackExternal.cmake")
   set(CPACK_EXTERNAL_ENABLE_STAGING ON)
-  set(CPACK_PACKAGING_INSTALL_PREFIX "${QGIS_APP_NAME}.app")
+  set(CPACK_PACKAGING_INSTALL_PREFIX "/${QGIS_APP_NAME}.app")
 endif()
 
 include(CPack)
