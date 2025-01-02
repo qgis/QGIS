@@ -87,7 +87,7 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, in
       if ( progress > 0 )
       {
         progressBar->setMaximum( 100 );
-        progressBar->setValue( static_cast<int>( std::round( progress ) ) );
+        progressBar->setValue( static_cast<int>( progress ) );
       }
       else
         progressBar->setMaximum( 0 );
@@ -641,7 +641,7 @@ void QgsTaskManagerStatusBarWidget::toggleDisplay()
 
 void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
 {
-  mProgressBar->setValue( static_cast<int>( std::round( progress ) ) );
+  mProgressBar->setValue( static_cast<int>( progress ) );
   if ( qgsDoubleNear( progress, 0.0 ) )
     mProgressBar->setMaximum( 0 );
   else if ( mProgressBar->maximum() == 0 )
