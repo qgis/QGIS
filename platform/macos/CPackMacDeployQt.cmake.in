@@ -1,0 +1,34 @@
+execute_process(COMMAND install_name_tool -add_rpath @loader_path/../Frameworks ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app/Contents/MacOS/QGIS
+                  WORKING_DIRECTORY @CMAKE_BINARY_DIR@
+                  COMMAND_ERROR_IS_FATAL ANY
+                  )
+
+if(NOT "$ENV{MACOS_CODE_SIGN_IDENTITY}" STREQUAL "")
+  # -appstore-compliant will strip away odbc, psql and webengine plugins
+  execute_process(COMMAND "@MACDEPLOYQT_EXECUTABLE@" @QGIS_APP_NAME@.app -codesign=${MACOS_CODE_SIGN_IDENTITY} -sign-for-notarization=${MACOS_CODE_SIGN_IDENTITY}
+                  WORKING_DIRECTORY ${CPACK_TEMPORARY_DIRECTORY}
+                  COMMAND_ERROR_IS_FATAL ANY
+                  )
+
+  execute_process(COMMAND create-dmg --volname "@QGIS_APP_NAME@ Installer" --hide-extension @QGIS_APP_NAME@.app --volicon "@CMAKE_SOURCE_DIR@/images/icons/mac/qgis.icns" --background "@CMAKE_SOURCE_DIR@/platform/macos/installer_background.png" --window-pos 200 120 --window-size 512 320 --icon-size 100 --icon "@QGIS_APP_NAME@.app" 130 160 --app-drop-link 400 155 --codesign "${MACOS_CODE_SIGN_IDENTITY}" @CMAKE_BINARY_DIR@/@QGIS_APP_NAME@-Installer.dmg  ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app
+                  RESULT_VARIABLE CREATE_DMG_FAILURE)
+
+  if(CREATE_DMG_FAILURE)
+  message(STATUS "Creating dmg failed. Retrying ...")
+  execute_process(COMMAND create-dmg --volname "@QGIS_APP_NAME@ Installer" --hide-extension @QGIS_APP_NAME@.app --volicon "@CMAKE_SOURCE_DIR@/images/icons/mac/qgis.icns" --background "@CMAKE_SOURCE_DIR@/platform/macos/installer_background.png" --window-pos 200 120 --window-size 512 320 --icon-size 100 --icon "@QGIS_APP_NAME@.app" 130 160 --app-drop-link 400 155 --codesign "${MACOS_CODE_SIGN_IDENTITY}" @CMAKE_BINARY_DIR@/@QGIS_APP_NAME@-Installer.dmg  ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app
+                  COMMAND_ERROR_IS_FATAL ANY)
+  endif()
+else()
+  # -appstore-compliant will strip away odbc, psql and webengine plugins
+  execute_process(COMMAND "@MACDEPLOYQT_EXECUTABLE@" "@QGIS_APP_NAME@.app"
+                  WORKING_DIRECTORY ${CPACK_TEMPORARY_DIRECTORY}
+                  COMMAND_ERROR_IS_FATAL ANY
+                  )
+
+  execute_process(COMMAND create-dmg --volname "@QGIS_APP_NAME@ Installer" --hide-extension @QGIS_APP_NAME@.app --volicon "@CMAKE_SOURCE_DIR@/images/icons/mac/qgis.icns" --background "@CMAKE_SOURCE_DIR@/platform/macos/installer_background.png" --window-pos 200 120 --window-size 512 320 --icon-size 100 --icon "@QGIS_APP_NAME@.app" 130 160 --app-drop-link 400 155 @CMAKE_BINARY_DIR@/@QGIS_APP_NAME@-Installer.dmg ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app
+                  RESULT_VARIABLE CREATE_DMG_FAILURE)
+
+  if(CREATE_DMG_FAILURE)
+    message(STATUS "Creating dmg failed.")
+  endif()
+endif()

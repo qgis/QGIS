@@ -351,8 +351,11 @@ void QgsApplication::init( QString profileFolder )
     {
       if ( sPrefixPath()->isNull() )
       {
-#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) && !defined(QGIS_MAC_BUNDLE)
         setPrefixPath( applicationDirPath(), true );
+#elif defined(QGIS_MAC_BUNDLE)
+        QDir myDir( applicationDirPath() + QLatin1String( "/../.." ) );
+        setPrefixPath( myDir.absolutePath(), true );
 #elif defined(ANDROID)
         // this is "/data/data/org.qgis.qgis" in android
         QDir myDir( QDir::homePath() );

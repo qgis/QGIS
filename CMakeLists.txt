@@ -43,10 +43,11 @@ else()
 endif()
 
 if(WITH_VCPKG)
+  set(TARGET_SYSROOT "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}")
   if(WIN32)
-    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/tools/python3/Scripts/")
+    list(APPEND CMAKE_PROGRAM_PATH "${TARGET_SYSROOT}/tools/python3/Scripts/")
   else()
-    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/bin")
+    list(APPEND CMAKE_PROGRAM_PATH "${TARGET_SYSROOT}/bin")
   endif()
   set(PREFER_INTERNAL_LIBS FALSE)
 else()
@@ -884,6 +885,27 @@ if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
   include("cmake/modules/linker.cmake")
 endif()
 
+set(MIN_PYTHON_VERSION "3.9")
+set(Python_FIND_FRAMEWORK "LAST")
+
+if (WITH_BINDINGS)
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+else()
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter)
+endif()
+
+# Fix python site-packages for Fedora
+# See https://github.com/qgis/QGIS/issues/54348#issuecomment-1694216152
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  if(EXISTS "/etc/fedora-release")
+    EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "import sysconfig;print(sysconfig.get_path(\"platlib\", \"rpm_prefix\"), end=\"\")" OUTPUT_VARIABLE Python_SITEARCH)
+  endif()
+endif()
+
+message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
+message("-- Python library: ${Python_LIBRARIES}")
+message("-- Python site-packages: ${Python_SITEARCH}")
+
 #############################################################
 # platform specific stuff
 if (WITH_CORE)
@@ -920,61 +942,32 @@ if (WITH_CORE)
     endif()
   else()
 
-    if (APPLE)
-      if (POLICY CMP0042) # in CMake 3.0.0+
-        set (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
-      endif()
-      if (POLICY CMP0068) # in CMake 3.9.0+
-        cmake_policy(SET CMP0068 NEW)
-      endif()
-      # for Mac OS X, everything is put inside an application bundle
-      # save the root install prefix for the app later
-      set (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-      set (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
-      # common prefix for components, let cmake handle it
-      set (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
-      # 5 bundling levels, each includes previous
-      #  -1  nothing
-      #   0  fixup the library paths for all QGIS libraries with @loader_path
-      #   1  Qt frameworks
-      #   2  non-system libraries, "standard"
-      #   3  non-system frameworks, "standalone"
-      set (QGIS_MACAPP_BUNDLE 1 CACHE STRING "What to bundle into app package")
-      set (QGIS_MACAPP_BUNDLE_USER "" CACHE STRING "Path to user bundling script")
-      set (QGIS_MACAPP_INSTALL_DEV FALSE CACHE BOOL "Install developer frameworks")
-      set (QGIS_MACAPP_DEV_PREFIX "/Library/Frameworks" CACHE STRING "Path to install developer frameworks")
+    if(APPLE)
+      set(QGIS_MAC_BUNDLE TRUE CACHE BOOL "Install into a mac bundle")
+    endif()
 
-      set (DEFAULT_BIN_SUBDIR      bin)
-      set (QGIS_BIN_SUBDIR_REV     ..)
-      set (DEFAULT_CGIBIN_SUBDIR   fcgi-bin)
-      set (QGIS_CGIBIN_SUBDIR_REV  ..)
-      set (DEFAULT_LIB_SUBDIR      lib)
-      set (QGIS_LIB_SUBDIR_REV     ..)
-      set (QGIS_FW_SUBDIR          ../Frameworks)
-      set (QGIS_FW_SUBDIR_REV      ../MacOS)
-      set (DEFAULT_DATA_SUBDIR     ../Resources)
-      set (QGIS_DATA_SUBDIR_REV    ../MacOS)
-      set (DEFAULT_LIBEXEC_SUBDIR  lib/qgis)
-      set (QGIS_LIBEXEC_SUBDIR_REV ../..)
-      set (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
-      set (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
-      set (DEFAULT_INCLUDE_SUBDIR  include/qgis)
-      set (DEFAULT_QML_SUBDIR     qml)
+    if (APPLE AND QGIS_MAC_BUNDLE)
+      set(CMAKE_MACOSX_RPATH ON) # If this is off, the path will be stripped (completely) at install time, we want to preserve the `@rpath` prefix
+      set(CMAKE_SKIP_INSTALL_RPATH TRUE)
 
-      # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
-      set (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
+      set(CMAKE_INSTALL_PREFIX "${QGIS_APP_NAME}.app")
 
-      # path for framework references when running from build directory
-      # changed later to reference in-app resources upon install
-      set (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
-      # recent cmakes force SDKs, recent SDKs don't have user symlinks
-      # need to find non-system frameworks
-      # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
-      # a framework, so these need to be manually handled with LINK_FLAGS options
-      set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -F/Library/Frameworks")
-      set (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -F/Library/Frameworks")
-      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -F/Library/Frameworks")
+      set(APP_CONTENTS_DIR "Contents")
+      set(APP_MACOS_DIR "${APP_CONTENTS_DIR}/MacOS")
+      set(APP_FRAMEWORKS_DIR "${APP_CONTENTS_DIR}/Frameworks")
+      set(APP_RESOURCES_DIR "${APP_CONTENTS_DIR}/Resources")
+      set(APP_PLUGINS_DIR "${APP_CONTENTS_DIR}/PlugIns")
 
+      cmake_path(RELATIVE_PATH Python_SITEARCH BASE_DIRECTORY "${TARGET_SYSROOT}" OUTPUT_VARIABLE _RELATIVE_SITEARCH)
+
+      set(DEFAULT_BIN_SUBDIR      ${APP_MACOS_DIR})
+      set(DEFAULT_LIB_SUBDIR      ${APP_FRAMEWORKS_DIR})
+      set(DEFAULT_DATA_SUBDIR     ${APP_RESOURCES_DIR}/qgis)
+      set(DEFAULT_LIBEXEC_SUBDIR  ${APP_MACOS_DIR})
+      set(DEFAULT_PLUGIN_SUBDIR   ${APP_PLUGINS_DIR}/qgis)
+      set(DEFAULT_INCLUDE_SUBDIR  include/qgis)
+      set(DEFAULT_QML_SUBDIR      ${APP_RESOURCES_DIR}/qgis/qml)
+      set(DEFAULT_PYTHON_SUBDIR   ${APP_FRAMEWORKS_DIR}/${_RELATIVE_SITEARCH})
     else()
       # UNIX
       set (DEFAULT_BIN_SUBDIR     bin)
@@ -1086,28 +1079,6 @@ option(ENABLE_UNITY_BUILDS "Enable Unity builds, that is compiling several .cpp 
 #############################################################
 # Python
 
-set(MIN_PYTHON_VERSION "3.9")
-set(Python_FIND_FRAMEWORK "LAST")
-
-
-if (WITH_BINDINGS)
-  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
-else()
-  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter)
-endif()
-
-# Fix python site-packages for Fedora
-# See https://github.com/qgis/QGIS/issues/54348#issuecomment-1694216152
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  if(EXISTS "/etc/fedora-release")
-    EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "import sysconfig;print(sysconfig.get_path(\"platlib\", \"rpm_prefix\"), end=\"\")" OUTPUT_VARIABLE Python_SITEARCH)
-  endif()
-endif()
-
-message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
-message("-- Python library: ${Python_LIBRARIES}")
-message("-- Python site-packages: ${Python_SITEARCH}")
-
 if (WITH_CORE AND WITH_BINDINGS)
   set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
   set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
@@ -1140,8 +1111,12 @@ if (WITH_CORE AND WITH_BINDINGS)
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
   set(SIP_CONCAT_PARTS 25)
 
-  if (NOT BINDINGS_GLOBAL_INSTALL)
-    set(Python_SITEARCH ${QGIS_DATA_DIR}/python)
+  if(BINDINGS_GLOBAL_INSTALL)
+    set(QGIS_PYTHON_INSTALL_DIR ${Python_SITEARCH})
+  elseif(DEFINED DEFAULT_PYTHON_SUBDIR)
+    set(QGIS_PYTHON_INSTALL_DIR ${DEFAULT_PYTHON_SUBDIR})
+  else()
+    set(QGIS_PYTHON_INSTALL_DIR ${QGIS_DATA_DIR}/python)
   endif()
 
   if (WITH_CUSTOM_WIDGETS)
@@ -1238,8 +1213,8 @@ endif()
 #############################################################
 # Enable packaging
 if (WITH_CORE)
-  include(Bundle)
   include(VcpkgInstallDeps)
+  include(Bundle)
 endif()
 
 if (UNIX AND NOT APPLE)
