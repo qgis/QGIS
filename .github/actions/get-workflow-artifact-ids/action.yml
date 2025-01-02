@@ -1,0 +1,34 @@
+name: 'Get Workflow Artifact IDs'
+description: 'Generates consistent artifact IDs and names based on workflow trigger'
+
+outputs:
+  filename:
+    description: 'Filename to use for artifacts (e.g. pr123)'
+    value: ${{ steps.generate-ids.outputs.filename }}
+  display-name:
+    description: 'Human readable name (e.g. PR123)'
+    value: ${{ steps.generate-ids.outputs.display_name }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: generate-ids
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          ID="pr${{ github.event.pull_request.number }}"
+          DISPLAY_ID="PR${{ github.event.pull_request.number }}"
+        elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+          TAG=${GITHUB_REF#refs/tags/}
+          ID="$TAG"
+          DISPLAY_ID="$TAG"
+        else
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          ID="$BRANCH_NAME-$SHORT_SHA"
+          DISPLAY_ID="$BRANCH_NAME build $SHORT_SHA"
+        fi
+
+        # Set outputs
+        echo "filename=$ID" >> $GITHUB_OUTPUT
+        echo "display_name=$DISPLAY_ID" >> $GITHUB_OUTPUT

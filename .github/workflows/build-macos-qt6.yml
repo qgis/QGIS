@@ -3,7 +3,7 @@ name: 🍎 Build - MacOS Qt6
 on:
   push:
     branches:
-      - main
+      - master
       - release-*
   pull_request:
   release:
@@ -16,6 +16,9 @@ concurrency:
 
 jobs:
   build:
+    outputs:
+      artifact-x64-url: ${{ steps.artifact-url.outputs.x64-osx-dynamic-release }}
+      artifact-arm64-url: ${{ steps.artifact-url.outputs.arm64-osx-dynamic-release }}
     strategy:
       matrix:
         include:
@@ -42,6 +45,10 @@ jobs:
       - name: 🎡 Setup vcpkg
         id: setup-vcpkg
         uses: ./.github/actions/setup-vcpkg
+
+      - name: 🎲 Get artifact ids
+        id: workflow-artifact-ids
+        uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 🔨 Prepare build env
         run: |
@@ -81,11 +88,11 @@ jobs:
           cmake -S . \
                 -G Ninja \
                 -B build \
+                -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
                 -D BUILD_WITH_QT6=ON \
                 -D WITH_QTWEBKIT=OFF \
                 -D WITH_BINDINGS=ON \
-                -D QGIS_MACAPP_FRAMEWORK=OFF \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
@@ -115,7 +122,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: kadas-albireo2-sdk-${{ matrix.triplet }}
+          name: qgis-sdk-${{ matrix.triplet }}
           path: |
             sdk/vcpkg-export-*.zip
 
@@ -127,12 +134,42 @@ jobs:
           cmake --build build --target bundle
 
       - name: 📤 Upload dmg
-     #   if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@v4
+        id: artifact-dmg-upload
         with:
-          name: qgis-dmg-${{ matrix.triplet }}
+          name: qgis-dmg-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}
           path: |
-            build/QGIS-Installer.dmg
-     # - name: Setup tmate session
-     #   uses: mxschmitt/action-tmate@v3
-     #   if: always()
+            build/*.dmg
+
+      - name: Export artifact url
+        id: artifact-url
+        run: |
+          echo "${{ matrix.triplet }}=${{ steps.artifact-dmg-upload.outputs.artifact-url }}" >> $GITHUB_OUTPUT
+
+      - name: Upload release assets
+        uses: AButler/upload-release-assets@v3.0
+        if: ${{ github.event_name == 'release' }}
+        with:
+          files: build/*.dmg
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  schedule_download_comment:
+    name: Comment pull request
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@v4
+
+      - name: Schedule download comment
+        uses: ./.github/actions/post_sticky_comment
+        if: github.event_name == 'pull_request'
+        with:
+          marker: macos-qt6
+          body: |
+            ### 🍎 MacOS Qt6 builds
+            Download testable builds for this pull request
+            - Download [MacOS Qt6 arm64 (M series)](${{ needs.build.outputs.artifact-arm64-url }})
+            - Download [MacOS Qt6 x64 (Intel)](${{ needs.build.outputs.artifact-arm64-url }})
+            *(Built from commit ${{ github.event.pull_request.head.sha }})*
+          pr: ${{ github.event.number }}
