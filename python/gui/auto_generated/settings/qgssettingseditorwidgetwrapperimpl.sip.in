@@ -76,7 +76,7 @@ To be re-implemented to implemeent type specific configuration (e.g. opacity for
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase /NoTypeName/;
 
 class QgsSettingsStringLineEditWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
 {
@@ -122,7 +122,7 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase /NoTypeName/;
 
 class QgsSettingsStringComboBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase
 {
@@ -179,7 +179,7 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase /NoTypeName/;
 
 class QgsSettingsBoolCheckBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
 {
@@ -223,7 +223,7 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 };
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase /NoTypeName/;
 
 class QgsSettingsIntegerSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
 {
@@ -268,7 +268,7 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase /NoTypeName/;
 
 class QgsSettingsDoubleSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
 {
@@ -313,7 +313,7 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase /NoTypeName/;
 
 class QgsSettingsColorButtonWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
 {

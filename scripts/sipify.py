@@ -1884,7 +1884,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             f'\n%TypeHeaderCode\n#include "{os.path.basename(CONTEXT.header_file)}"'
         )
 
-        # for template based inheritance, add a typedef to define the base type
+        # for template based inheritance, add a typedef to define the base type,
+        # since SIP doesn't allow inheriting from template classes directly
         while template_inheritance_template:
             tpl = template_inheritance_template.pop()
             cls1 = template_inheritance_class1.pop()
@@ -1892,11 +1893,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             cls3 = template_inheritance_class3.pop()
 
             if cls2 == "":
-                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base;\n\n{CONTEXT.current_line}"
+                # We use /NoTypeName/ to say that this typedef is not present in actual QGIS headers
+                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1}> {tpl}{cls1}Base /NoTypeName/;\n\n{CONTEXT.current_line}"
             elif cls3 == "":
-                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base;\n\n{CONTEXT.current_line}"
+                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2}> {tpl}{cls1}{cls2}Base /NoTypeName/;\n\n{CONTEXT.current_line}"
             else:
-                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base;\n\n{CONTEXT.current_line}"
+                CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base /NoTypeName/;\n\n{CONTEXT.current_line}"
 
             if tpl not in CONTEXT.declared_classes:
                 tpl_header = f"{tpl.lower()}.h"

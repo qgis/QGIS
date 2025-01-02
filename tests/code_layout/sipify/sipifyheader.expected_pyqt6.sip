@@ -56,7 +56,7 @@ typedef QVector<QVariant> QgsSuperClass;
 }
 
 
-typedef QtClass<QVariant> QtClassQVariantBase;
+typedef QtClass<QVariant> QtClassQVariantBase /NoTypeName/;
 
 class QgsSipifyHeader : QtClassQVariantBase
 {
@@ -406,7 +406,7 @@ QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<Qgs
 
 
 
-typedef QgsTemplate<Something> QgsTemplateSomethingBase;
+typedef QgsTemplate<Something> QgsTemplateSomethingBase /NoTypeName/;
 
 class TemplateInheritance1 : QgsTemplateSomethingBase
 {
@@ -425,7 +425,7 @@ class TemplateInheritance2
 %End
 }
 
-typedef QgsTemplate<Something> QgsTemplateSomethingBase;
+typedef QgsTemplate<Something> QgsTemplateSomethingBase /NoTypeName/;
 
 class TemplateInheritance3 : QgsTemplateSomethingBase, SomethingElse
 {
@@ -451,7 +451,7 @@ class TemplateInheritance5 : SomethingElse
 %End
 }
 
-typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase;
+typedef YourSuperTemplate<Abc,Def,Ghi> YourSuperTemplateAbcDefGhiBase /NoTypeName/;
 
 class TemplateInheritance6 : SomethingElse, YourSuperTemplateAbcDefGhiBase
 {
