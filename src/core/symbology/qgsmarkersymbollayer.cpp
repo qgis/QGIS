@@ -3620,7 +3620,7 @@ QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &con
       if ( mVerticalAnchorMode == VerticalAnchorMode::Baseline )
       {
         const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-        charOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
+        charOffset = QPointF( charWidth / 2.0, -sizePixels / 2.0 );
       }
       else
       {
