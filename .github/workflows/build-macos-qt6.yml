@@ -16,9 +16,6 @@ concurrency:
 
 jobs:
   build:
-    outputs:
-      artifact-x64-url: ${{ steps.artifact-url.outputs.x64-osx-dynamic-release }}
-      artifact-arm64-url: ${{ steps.artifact-url.outputs.arm64-osx-dynamic-release }}
     strategy:
       matrix:
         include:
@@ -52,7 +49,7 @@ jobs:
 
       - name: 🔨 Prepare build env
         run: |
-          brew install automake bison flex gnu-sed create-dmg autoconf-archive nasm libtool fdupes
+          brew install automake bison flex gnu-sed autoconf-archive nasm libtool fdupes
           echo $(brew --prefix bison)/bin >> $GITHUB_PATH
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
@@ -133,33 +130,74 @@ jobs:
           cmake --build build
           cmake --build build --target bundle
 
-      - name: 📤 Upload dmg
+      - name: 📤 Upload app
         uses: actions/upload-artifact@v4
-        id: artifact-dmg-upload
         with:
-          name: qgis-dmg-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}
+          name: qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}
           path: |
-            build/*.dmg
+            build/_CPack_Packages/Darwin/External/*.app
 
       - name: Export artifact url
         id: artifact-url
         run: |
           echo "${{ matrix.triplet }}=${{ steps.artifact-dmg-upload.outputs.artifact-url }}" >> $GITHUB_OUTPUT
 
-      - name: Upload release assets
-        uses: AButler/upload-release-assets@v3.0
-        if: ${{ github.event_name == 'release' }}
-        with:
-          files: build/*.dmg
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
   schedule_download_comment:
-    name: Comment pull request
+    name: Create dmg
     runs-on: ubuntu-24.04
     needs: build
     steps:
       - name: 🐣 Checkout
         uses: actions/checkout@v4
+
+      - name: 🔨 Prepare build env
+        run: |
+          brew install create-dmg
+
+      - name: 📤 Download app
+        uses: actions/download-artifact@v4
+        with:
+          name: qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-x64-osx-dynamic-release
+          path: |
+            x64
+
+      - name: 📤 Download app
+        uses: actions/download-artifact@v4
+        with:
+          name: qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-arm64-osx-dynamic-release
+          path: |
+            arm64
+
+      - name: 🎲 Get artifact ids
+        id: workflow-artifact-ids
+        uses: ./.github/actions/get-workflow-artifact-ids
+
+      - name: Create universal app
+        run: |
+          wget https://raw.githubusercontent.com/faaxm/lipo-dir-merge/refs/heads/main/lipo-dir-merge.py
+          python lipo-dir-merge.py x64 arm64 universal
+
+      - name: Create dmg
+        run: |
+          QGIS_APP_NAME=QGIS-"${{steps.workflow-artifact-ids.outputs.display-name}}"
+          create-dmg --volname "${QGIS_APP_NAME} Installer" \
+            --hide-extension ${QGIS_APP_NAME}.app \
+            --volicon "./images/icons/mac/qgis.icns \
+            --background "./platform/macos/installer_background.png" \
+            --window-pos 200 120 \
+            --window-size 512 320 \
+            --icon-size 100 \
+            --icon "${QGIS_APP_NAME}.app" 130 160 \
+            --app-drop-link 400 155 \
+            ${QGIS_APP_NAME}-Installer.dmg \
+            universal/${QGIS_APP_NAME}.app
+
+      - name: Upload release assets
+        uses: AButler/upload-release-assets@v3.0
+        if: ${{ github.event_name == 'release' }}
+        with:
+          files: '*.dmg'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Schedule download comment
         uses: ./.github/actions/post_sticky_comment
