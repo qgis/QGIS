@@ -396,7 +396,7 @@ void TestQgsVectorTileLayer::test_relativePathsXyz()
   contextRel.setPathResolver( QgsPathResolver( "/home/qgis/project.qgs" ) );
   const QgsReadWriteContext contextAbs;
 
-  const QString srcXyzLocal = "type=xyz&url=file%3A%2F%2F%2Fhome%2Fqgis%2F%257Bz%257D%2F%257Bx%257D%2F%257By%257D.pbf";
+  const QString srcXyzLocal = "type=xyz&url=file%3A%2F%2F%2Fhome%2Fqgis%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf";
   const QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
 
   auto layer = std::make_unique<QgsVectorTileLayer>( srcXyzLocal );
@@ -404,7 +404,7 @@ void TestQgsVectorTileLayer::test_relativePathsXyz()
 
   // encode source: converting absolute paths to relative
   const QString srcXyzLocalRel = layer->encodedSource( srcXyzLocal, contextRel );
-  QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file%3A.%2F%257Bz%257D%2F%257Bx%257D%2F%257By%257D.pbf" ) );
+  QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file%3A.%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf" ) );
   QCOMPARE( layer->encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
 
   // encode source: keeping absolute paths
@@ -440,7 +440,8 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUriXyz()
 
   QString absoluteUri = dsAbs.encodedUri();
   QString relativeUri = dsRel.encodedUri();
-  QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QString absToRelUri = vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context );
+  QCOMPARE( absToRelUri, relativeUri );
   QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
