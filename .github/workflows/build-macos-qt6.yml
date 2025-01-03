@@ -135,7 +135,7 @@ jobs:
         with:
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}
           path: |
-            build/_CPack_Packages/Darwin/External/*.app
+            build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: Export artifact url
         id: artifact-url
@@ -144,7 +144,7 @@ jobs:
 
   schedule_download_comment:
     name: Create dmg
-    runs-on: ubuntu-24.04
+    runs-on: macos-latest
     needs: build
     steps:
       - name: 🐣 Checkout
@@ -153,6 +153,11 @@ jobs:
       - name: 🔨 Prepare build env
         run: |
           brew install create-dmg
+
+
+      - name: 🎲 Get artifact ids
+        id: workflow-artifact-ids
+        uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 📤 Download app
         uses: actions/download-artifact@v4
@@ -168,10 +173,6 @@ jobs:
           path: |
             arm64
 
-      - name: 🎲 Get artifact ids
-        id: workflow-artifact-ids
-        uses: ./.github/actions/get-workflow-artifact-ids
-
       - name: Create universal app
         run: |
           wget https://raw.githubusercontent.com/faaxm/lipo-dir-merge/refs/heads/main/lipo-dir-merge.py
@@ -182,15 +183,15 @@ jobs:
           QGIS_APP_NAME=QGIS-"${{steps.workflow-artifact-ids.outputs.display-name}}"
           create-dmg --volname "${QGIS_APP_NAME} Installer" \
             --hide-extension ${QGIS_APP_NAME}.app \
-            --volicon "./images/icons/mac/qgis.icns \
-            --background "./platform/macos/installer_background.png" \
+            --volicon "$(pwd)/images/icons/mac/qgis.icns" \
+            --background "$(pwd)/platform/macos/installer_background.png" \
             --window-pos 200 120 \
             --window-size 512 320 \
             --icon-size 100 \
             --icon "${QGIS_APP_NAME}.app" 130 160 \
             --app-drop-link 400 155 \
             ${QGIS_APP_NAME}-Installer.dmg \
-            universal/${QGIS_APP_NAME}.app
+            universal/*/*.app
 
       - name: Upload release assets
         uses: AButler/upload-release-assets@v3.0
