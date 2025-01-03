@@ -129,4 +129,11 @@ class CORE_EXPORT QgsOptional
     T mData;
 };
 
+// These typedefs are in place to work around a SIP bug:
+// https://github.com/Python-SIP/sip/issues/66
+#ifndef SIP_RUN
+#include "qgsexpression.h"
+typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
+#endif
+
 #endif // QGSOPTIONAL_H
