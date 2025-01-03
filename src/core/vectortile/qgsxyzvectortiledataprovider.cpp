@@ -315,7 +315,7 @@ QString QgsXyzVectorTileDataProviderMetadata::absoluteToRelativeUri( const QStri
     // relative path will become "file:./x.txt"
     const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
     dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString( QUrl::DecodeReserved ) );
     return dsUri.encodedUri();
   }
 
@@ -334,7 +334,7 @@ QString QgsXyzVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStri
   {
     const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
     dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString( QUrl::DecodeReserved ) );
     return dsUri.encodedUri();
   }
 
