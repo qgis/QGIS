@@ -256,7 +256,7 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::VectorTile } );
 
   // query sublayers
-  QString localMbtilesPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/vector_tile/mbtiles_vt.mbtiles") ) );
+  QString localMbtilesPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral( "/vector_tile/mbtiles_vt.mbtiles" ) ) );
   QList<QgsProviderSublayerDetails> sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
 
   QCOMPARE( sublayers.size(), 1 );
@@ -295,7 +295,7 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
 
   // fast scan mode means that any mbtile file will be reported, including those with only raster tiles
   // (we are skipping a potentially expensive db open and format check)
-  QString localIsleOfManPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/isle_of_man.mbtiles") ) );
+  QString localIsleOfManPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral( "/isle_of_man.mbtiles" ) ) );
 
   sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
@@ -332,7 +332,7 @@ void TestQgsVectorTileLayer::test_relativePathsMbTiles()
   QgsReadWriteContext contextRel;
   contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
   const QgsReadWriteContext contextAbs;
-  QString localMbtilesPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/vector_tile/mbtiles_vt.mbtiles") ) );
+  QString localMbtilesPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral( "/vector_tile/mbtiles_vt.mbtiles" ) ) );
 
   const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1" ).arg( localMbtilesPath );
 
@@ -449,7 +449,7 @@ void TestQgsVectorTileLayer::testVtpkProviderMetadata()
   QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
 
   // vtpk uris
-  QString localVtpkPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/testvtpk.vtpk") ) );
+  QString localVtpkPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral( "/testvtpk.vtpk" ) ) );
 
   QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) ), 100 );
   QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) ), { Qgis::LayerType::VectorTile } );
@@ -495,7 +495,7 @@ void TestQgsVectorTileLayer::test_relativePathsVtpk()
   contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
   const QgsReadWriteContext contextAbs;
 
-  QString localVtpkPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/testvtpk.vtpk") ) );
+  QString localVtpkPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral( "/testvtpk.vtpk" ) ) );
 
   const QString srcVtpk = QStringLiteral( "type=vtpk&url=%1" ).arg( localVtpkPath );
 
