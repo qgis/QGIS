@@ -45,11 +45,12 @@ endif()
 
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND QGIS_MAC_BUNDLE)
+  set(CREATE_DMG FALSE CACHE BOOL "Create a dmg bundle")
   # TODO HINT relative to VCPKG_HOST_DIR
-  find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "../../macdeployqt-standalone/build/bin/" NO_DEFAULT_PATH)
+  find_program(MACDEPLOYQT_EXECUTABLE macdeployqt NO_DEFAULT_PATH)
 
   configure_file("${CMAKE_SOURCE_DIR}/platform/macos/Info.plist.in" "${CMAKE_BINARY_DIR}/platform//macos/Info.plist" @ONLY)
-  install(FILES "${CMAKE_BINARY_DIR}/platform//macos/Info.plist" DESTINATION "${APP_CONTENTS_DIR}")
+  install(FILES "${CMAKE_BINARY_DIR}/platform/macos/Info.plist" DESTINATION "${APP_CONTENTS_DIR}")
 
   set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
   set(CPACK_DMG_FORMAT "UDBZ")
