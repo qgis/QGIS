@@ -1123,9 +1123,9 @@ Sets the stroke join ``style``.
 
     void setVerticalAnchorMode( VerticalAnchorMode verticalAnchorMode );
 %Docstring
-Sets the vertical anchor mode wheter it should considers the baseline as fix point
+Sets the vertical anchor mode whether it should considers the baseline as fix point
 
-:param vertical: anchor mode how to handle the anchor point
+:param verticalAnchorMode: the mode how to handle the anchor point
 
 .. seealso:: :py:func:`verticalAnchorMode`
 
@@ -1134,7 +1134,7 @@ Sets the vertical anchor mode wheter it should considers the baseline as fix poi
 
     VerticalAnchorMode verticalAnchorMode() const;
 %Docstring
-Returns wheter it should considers the baseline as fix point
+Returns whether it should considers the baseline as fix point
 
 .. seealso:: :py:func:`setVerticalAnchorMode`
 
