@@ -2,5 +2,5 @@
 try:
     QgsMapLayerComboBox.__attribute_docs__ = {'layerChanged': 'Emitted whenever the currently selected layer changes.\n'}
     QgsMapLayerComboBox.__signal_arguments__ = {'layerChanged': ['layer: QgsMapLayer']}
-except NameError:
+except (NameError, AttributeError):
     pass

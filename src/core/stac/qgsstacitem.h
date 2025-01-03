@@ -24,6 +24,7 @@
 #include "qgsstacasset.h"
 #include "qgsgeometry.h"
 #include "qgsbox3d.h"
+#include "qgsmimedatautils.h"
 
 /**
  * \ingroup core
@@ -113,6 +114,24 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
      */
     QgsDateTimeRange dateTimeRange() const;
 
+    /**
+     * Returns an optional human readable title describing the Item.
+     * \since QGIS 3.42
+     */
+    QString title() const;
+
+    /**
+     * Returns a Detailed multi-line description to fully explain the Item.
+     * CommonMark 0.29 syntax may be used for rich text representation.
+     * \since QGIS 3.42
+     */
+    QString description() const;
+
+    /**
+     * Returns a list of uris of all assets that have a cloud optimized format like COG or COPC
+     * \since QGIS 3.42
+     */
+    QgsMimeDataUtils::UriList uris() const;
 
   private:
     QgsGeometry mGeometry;

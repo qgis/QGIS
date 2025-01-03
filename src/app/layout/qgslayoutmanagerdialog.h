@@ -32,7 +32,7 @@ class QgsLayoutManagerProxyModel;
 /**
  * A dialog that allows management of layouts within a project.
 */
-class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
+class QgsLayoutManagerDialog : public QDialog, private Ui::QgsLayoutManagerBase
 {
     Q_OBJECT
   public:
@@ -45,7 +45,6 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     void activate();
 
   private:
-
     /**
      * Returns the default templates (key: template name, value: absolute path to template file)
      * \param fromUser whether to return user templates from [profile folder]/composer_templates
@@ -64,7 +63,6 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
 
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
-    QPushButton *mCreateReportButton = nullptr;
     QgsLayoutManagerModel *mModel = nullptr;
     QgsLayoutManagerProxyModel *mProxyModel = nullptr;
 

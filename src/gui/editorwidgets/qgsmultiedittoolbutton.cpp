@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmultiedittoolbutton.h"
+#include "moc_qgsmultiedittoolbutton.cpp"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
@@ -29,7 +30,7 @@ QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   setIconSize( QSize( iconSize, iconSize ) );
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
-  setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+  setFixedSize( 2 * static_cast<int>( 1.25 * iconSize / 2.0 ), 2 * static_cast<int>( iconSize * 1.1 / 2.0 ) );
 
   setPopupMode( QToolButton::InstantPopup );
 
@@ -56,7 +57,7 @@ void QgsMultiEditToolButton::aboutToShowMenu()
     case MixedValues:
     {
       const QString title = !mField.name().isEmpty() ? tr( "Set %1 for All Selected Features" ).arg( mField.name() )
-                            : tr( "Set field for all selected features" );
+                                                     : tr( "Set field for all selected features" );
       QAction *setFieldAction = mMenu->addAction( title );
       connect( setFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::setFieldTriggered );
       break;

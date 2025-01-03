@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsphongtexturedmaterialwidget.h"
+#include "moc_qgsphongtexturedmaterialwidget.cpp"
 
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgis.h"
@@ -32,8 +33,7 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
 
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [ = ]
-  {
+  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
     updateWidgetState();
     emit changed();
   } );
@@ -50,7 +50,7 @@ QgsMaterialSettingsWidget *QgsPhongTexturedMaterialWidget::create()
 
 void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
 {
-  const QgsPhongTexturedMaterialSettings *phongMaterial = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( settings );
+  const QgsPhongTexturedMaterialSettings *phongMaterial = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( settings );
   if ( !phongMaterial )
     return;
   btnAmbient->setColor( phongMaterial->ambient() );
@@ -68,7 +68,7 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
 
 QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
 {
-  std::unique_ptr< QgsPhongTexturedMaterialSettings > m = std::make_unique< QgsPhongTexturedMaterialSettings >();
+  std::unique_ptr<QgsPhongTexturedMaterialSettings> m = std::make_unique<QgsPhongTexturedMaterialSettings>();
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );

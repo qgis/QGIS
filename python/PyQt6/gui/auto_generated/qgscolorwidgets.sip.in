@@ -23,7 +23,6 @@ set to a color with an ambiguous hue (e.g., black or white shades).
 #include "qgscolorwidgets.h"
 %End
   public:
-
     enum ColorComponent /BaseType=IntEnum/
     {
       Multiple,
@@ -73,7 +72,7 @@ Returns the color component which the widget controls
 .. seealso:: :py:func:`setComponent`
 %End
 
- int componentValue() const /Deprecated/;
+ int componentValue() const /Deprecated="Since 3.40. Use componentValueF() instead."/;
 %Docstring
 Returns the current value of the widget's color component
 
@@ -137,7 +136,7 @@ Sets the color component which the widget controls
 .. seealso:: :py:func:`component`
 %End
 
- virtual void setComponentValue( int value ) /Deprecated/;
+ virtual void setComponentValue( int value ) /Deprecated="Since 3.40. Use setComponentValueF() instead."/;
 %Docstring
 Alters the widget's color by setting the value for the widget's color component
 
@@ -195,7 +194,6 @@ Emitted when mouse hovers over widget.
 
 
 
-
     int componentRange() const;
 %Docstring
 Returns the range of valid values for the color widget's component
@@ -210,7 +208,7 @@ Returns the range of valid values a color component
 :return: maximum value allowed for color component
 %End
 
- int componentValue( ColorComponent component ) const /Deprecated/;
+ int componentValue( ColorComponent component ) const /Deprecated="Since 3.40. Use componentValueF() instead."/;
 %Docstring
 Returns the value of a component of the widget's current color. This method correctly
 handles hue values when the color has an ambiguous hue (e.g., black or white shades)
@@ -241,7 +239,7 @@ handles hue values when the color has an ambiguous hue (e.g., black or white sha
 .. versionadded:: 3.40
 %End
 
- int hue() const /Deprecated/;
+ int hue() const /Deprecated="Since 3.40. Use hueF() instead."/;
 %Docstring
 Returns the hue for the widget. This may differ from the hue for the QColor returned by :py:func:`~QgsColorWidget.color`,
 as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
@@ -263,7 +261,7 @@ as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the satu
 .. versionadded:: 3.40
 %End
 
- static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) /Deprecated/;
+ static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) /Deprecated="Since 3.40. Use alterColorF() instead."/;
 %Docstring
 Alters a color by modifying the value of a specific color component
 
@@ -323,7 +321,7 @@ Generates a checkboard pattern pixmap for use as a background to transparent col
 
 
 
-class QgsColorWidgetAction: QWidgetAction
+class QgsColorWidgetAction : QWidgetAction
 {
 %Docstring(signature="appended")
 An action containing a color widget, which can be embedded into a menu.
@@ -335,7 +333,6 @@ An action containing a color widget, which can be embedded into a menu.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color widget action.
@@ -383,7 +380,6 @@ Emitted when a color has been selected from the widget
 
 
 
-
 class QgsColorWheel : QgsColorWidget
 {
 %Docstring(signature="appended")
@@ -395,7 +391,6 @@ inner rotating triangle which allows for saturation and value selection.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorWheel( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructs a new color wheel widget.
@@ -416,7 +411,6 @@ Constructs a new color wheel widget.
 
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );
@@ -442,7 +436,6 @@ axis.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorBox( QWidget *parent /TransferThis/ = 0, ColorComponent component = Value );
 %Docstring
 Construct a new color box widget.
@@ -468,7 +461,6 @@ Construct a new color box widget.
 
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );
@@ -493,16 +485,13 @@ its length by a single color component (e.g., varying saturation from 0 to 100%)
 #include "qgscolorwidgets.h"
 %End
   public:
-
     enum Orientation /BaseType=IntEnum/
     {
       Horizontal,
       Vertical
     };
 
-    QgsColorRampWidget( QWidget *parent /TransferThis/ = 0,
-                        ColorComponent component = QgsColorWidget::Red,
-                        Orientation orientation = QgsColorRampWidget::Horizontal );
+    QgsColorRampWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = QgsColorWidget::Red, Orientation orientation = QgsColorRampWidget::Horizontal );
 %Docstring
 Construct a new color ramp widget.
 
@@ -579,7 +568,7 @@ Sets the size for drawing the triangular markers on the ramp
 
   signals:
 
- void valueChanged( int value ) /Deprecated/;
+ void valueChanged( int value ) /Deprecated="Since 3.40. Use valueChangedF() instead."/;
 %Docstring
 Emitted when the widget's color component value changes
 
@@ -600,7 +589,6 @@ Emitted when the widget's color component value changes
 %End
 
   protected:
-
     virtual void mouseMoveEvent( QMouseEvent *event );
 
     virtual void wheelEvent( QWheelEvent *event );
@@ -626,7 +614,6 @@ A composite horizontal color ramp widget and associated spinbox for manual value
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorSliderWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = QgsColorWidget::Red );
 %Docstring
 Construct a new color slider widget.
@@ -657,7 +644,6 @@ of colors.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     enum ColorTextFormat /BaseType=IntEnum/
     {
       HexRgb,
@@ -702,7 +688,6 @@ A preview box which displays one or two colors as swatches.
 #include "qgscolorwidgets.h"
 %End
   public:
-
     QgsColorPreviewWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color preview widget.
@@ -742,7 +727,6 @@ Sets the second color for the widget
 %End
 
   protected:
-
     virtual void mousePressEvent( QMouseEvent *e );
 
 

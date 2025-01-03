@@ -62,6 +62,11 @@
      <addaction name="separator"/>
      <addaction name="mActionDwgImport"/>
     </widget>
+    <widget class="QMenu" name="mMenuProjectModels">
+     <property name="title">
+      <string>Models</string>
+     </property>
+    </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="separator"/>
@@ -84,6 +89,8 @@
     <addaction name="mActionNewReport"/>
     <addaction name="mActionShowLayoutManager"/>
     <addaction name="mLayoutsMenu"/>
+    <addaction name="separator"/>
+    <addaction name="mMenuProjectModels"/>
     <addaction name="separator"/>
     <addaction name="mActionExit"/>
    </widget>
@@ -221,6 +228,7 @@
      <addaction name="mActionAddVectorTileLayer"/>
      <addaction name="mActionAddPointCloudLayer"/>
      <addaction name="mActionAddGpsLayer"/>
+     <addaction name="mActionAddStacLayer"/>
     </widget>
     <widget class="QMenu" name="mMenuFilterTable">
      <property name="title">
@@ -467,6 +475,7 @@
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
+   <addaction name="mActionAddStacLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
@@ -1168,6 +1177,12 @@ Shift+O to turn segments into straight or curve lines.</string>
    </property>
    <property name="text">
     <string>Trim/Extend Feature</string>
+   </property>
+   <property name="toolTip">
+    <string>Trim/Extend Feature
+- Click to set the reference segment
+- Click on another segment to trim it or extend it to the reference segment (Use Shift to keep the reference segment active)
+Note : Segment snapping must be enabled in the snapping Toolbar</string>
    </property>
   </action>
   <action name="mActionSnappingOptions">
@@ -2222,6 +2237,15 @@ Acts on all layers.</string>
    <property name="text">
     <string>Offset Curve</string>
    </property>
+   <property name="toolTip">
+    <string>Offset Curve
+Creates an offset or an offset copy of a geometry:
+Click to select a geometry to offset.
+2nd click to specify offset distance.
+Ctrl+2nd click to offset a copy of the selected geometry.
+Ctrl+click with snapping to select another layer's geometry to copy and offset.
+</string>
+   </property>
   </action>
   <action name="mActionCopyStyle">
    <property name="icon">
@@ -2654,7 +2678,10 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>Fill Ring</string>
    </property>
    <property name="toolTip">
-    <string>Fill Ring</string>
+    <string>Fill Ring
+Creates a hole in a polygon and fills it with a new feature:
+Click+click to draw a new inner ring in a polygon and right click to finish and fill ring.
+Shift+click on existing inner ring to fill.</string>
    </property>
   </action>
   <action name="mActionAddLayerDefinition">
@@ -3343,6 +3370,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Elevation Controller Panel</string>
+   </property>
+  </action>
+  <action name="mActionAddStacLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconStac.svg</normaloff>:/images/themes/default/mIconStac.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Layer from STAC Catalog…</string>
    </property>
   </action>
  </widget>

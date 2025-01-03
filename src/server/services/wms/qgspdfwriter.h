@@ -26,9 +26,7 @@ namespace QgsWms
    * Output GetMap response in PDF format
    * \since QGIS 3.36
    */
-  void writeAsPdf( QgsServerInterface *serverIface, const QgsProject *project,
-                   const QgsWmsRequest &request,
-                   QgsServerResponse &response );
+  void writeAsPdf( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
 
 } // namespace QgsWms
 

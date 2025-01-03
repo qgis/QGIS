@@ -15,6 +15,7 @@
 
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
+#include "moc_qgsmaptooladvanceddigitizing.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsvectorlayer.h"
@@ -145,14 +146,14 @@ QgsMapLayer *QgsMapToolAdvancedDigitizing::layer() const
 
 bool QgsMapToolAdvancedDigitizing::useSnappingIndicator() const
 {
-  return static_cast< bool >( mSnapIndicator.get() );
+  return static_cast<bool>( mSnapIndicator.get() );
 }
 
 void QgsMapToolAdvancedDigitizing::setUseSnappingIndicator( bool enabled )
 {
   if ( enabled && !mSnapIndicator )
   {
-    mSnapIndicator = std::make_unique< QgsSnapIndicator >( mCanvas );
+    mSnapIndicator = std::make_unique<QgsSnapIndicator>( mCanvas );
   }
   else if ( !enabled && mSnapIndicator )
   {
@@ -164,7 +165,7 @@ void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 {
   Q_UNUSED( point )
   QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
-  qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
+  qApp->postEvent( mCanvas->viewport(), ev ); // event queue will delete the event when processed
 }
 
 void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()

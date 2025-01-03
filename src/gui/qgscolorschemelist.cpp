@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorschemelist.h"
+#include "moc_qgscolorschemelist.cpp"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
@@ -235,8 +236,7 @@ void QgsColorSchemeList::mousePressEvent( QMouseEvent *event )
 
 void QgsColorSchemeList::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( ( event->button() == Qt::LeftButton ) &&
-       ( event->pos() - mDragStartPosition ).manhattanLength() <= QApplication::startDragDistance() )
+  if ( ( event->button() == Qt::LeftButton ) && ( event->pos() - mDragStartPosition ).manhattanLength() <= QApplication::startDragDistance() )
   {
     //just a click, not a drag
 
@@ -366,7 +366,7 @@ QVariant QgsColorSchemeModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  const QPair< QColor, QString > namedColor = mColors.at( index.row() );
+  const QPair<QColor, QString> namedColor = mColors.at( index.row() );
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -393,7 +393,7 @@ Qt::ItemFlags QgsColorSchemeModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  if ( ! index.isValid() )
+  if ( !index.isValid() )
   {
     return flags | Qt::ItemIsDropEnabled;
   }
@@ -428,13 +428,13 @@ bool QgsColorSchemeModel::setData( const QModelIndex &index, const QVariant &val
   switch ( index.column() )
   {
     case ColorSwatch:
-      mColors[ index.row()].first = value.value<QColor>();
+      mColors[index.row()].first = value.value<QColor>();
       emit dataChanged( index, index );
       mIsDirty = true;
       return true;
 
     case ColorLabel:
-      mColors[ index.row()].second = value.toString();
+      mColors[index.row()].second = value.toString();
       emit dataChanged( index, index );
       mIsDirty = true;
       return true;
@@ -553,7 +553,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
   for ( ; colorIt != droppedColors.constEnd(); ++colorIt )
   {
     //dest color
-    const QPair< QColor, QString > color = qMakePair( ( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName( ( *colorIt ).first ) );
+    const QPair<QColor, QString> color = qMakePair( ( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName( ( *colorIt ).first ) );
     //if color already exists, remove it
     const int existingIndex = mColors.indexOf( color );
     if ( existingIndex >= 0 )
@@ -637,7 +637,7 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex &par
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   for ( int i = row; i < row + count; ++i )
   {
-    const QPair< QColor, QString > newColor;
+    const QPair<QColor, QString> newColor;
     mColors.insert( i, newColor );
   }
   endInsertRows();
@@ -655,7 +655,7 @@ void QgsColorSchemeModel::addColor( const QColor &color, const QString &label, b
   if ( !allowDuplicate )
   {
     //matches existing color? if so, remove it first
-    const QPair< QColor, QString > newColor = qMakePair( color, !label.isEmpty() ? label : QgsSymbolLayerUtils::colorToName( color ) );
+    const QPair<QColor, QString> newColor = qMakePair( color, !label.isEmpty() ? label : QgsSymbolLayerUtils::colorToName( color ) );
     //if color already exists, remove it
     const int existingIndex = mColors.indexOf( newColor );
     if ( existingIndex >= 0 )
@@ -683,7 +683,6 @@ QgsColorSwatchDelegate::QgsColorSwatchDelegate( QWidget *parent )
   : QAbstractItemDelegate( parent )
   , mParent( parent )
 {
-
 }
 
 void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -697,13 +696,12 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
     }
     else
     {
-      painter->setBrush( QBrush( option.widget->palette().color( QPalette::Inactive,
-                                 QPalette::Highlight ) ) );
+      painter->setBrush( QBrush( option.widget->palette().color( QPalette::Inactive, QPalette::Highlight ) ) );
     }
     painter->drawRect( option.rect );
   }
 
-  const QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
+  QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
   if ( !color.isValid() )
   {
     return;
@@ -728,11 +726,21 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
     const QBrush checkBrush = QBrush( transparentBackground() );
     painter->setBrush( checkBrush );
     painter->drawRoundedRect( rect, cornerSize, cornerSize );
+    //draw semi-transparent color on top
+    painter->setBrush( color );
+    painter->drawRoundedRect( rect, cornerSize, cornerSize );
+    //draw fully opaque color on the left side
+    const QRectF clipRect( rect.left(), rect.top(), static_cast<qreal>( rect.width() ) / 2.0, rect.height() );
+    painter->setClipRect( clipRect );
+    color.setAlpha( 255 );
+    painter->setBrush( color );
+    painter->drawRoundedRect( rect, cornerSize, cornerSize );
   }
-
-  //draw semi-transparent color on top
-  painter->setBrush( color );
-  painter->drawRoundedRect( rect, cornerSize, cornerSize );
+  else
+  {
+    painter->setBrush( color );
+    painter->drawRoundedRect( rect, cornerSize, cornerSize );
+  }
 }
 
 QPixmap QgsColorSwatchDelegate::transparentBackground() const
@@ -766,7 +774,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
 
     const QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
 
-    QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+    QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast<QWidget *>( parent() ) );
     if ( panel && panel->dockMode() )
     {
       QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
@@ -792,9 +800,9 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
 
 void QgsColorSwatchDelegate::colorChanged()
 {
-  if ( QgsCompoundColorWidget *colorWidget = qobject_cast< QgsCompoundColorWidget * >( sender() ) )
+  if ( QgsCompoundColorWidget *colorWidget = qobject_cast<QgsCompoundColorWidget *>( sender() ) )
   {
     const QModelIndex index = colorWidget->property( "index" ).toModelIndex();
-    const_cast< QAbstractItemModel * >( index.model() )->setData( index, colorWidget->color(), Qt::EditRole );
+    const_cast<QAbstractItemModel *>( index.model() )->setData( index, colorWidget->color(), Qt::EditRole );
   }
 }

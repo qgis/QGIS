@@ -37,7 +37,6 @@ class QDomElement;
 class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsSimpleLineMaterialSettings() = default;
 
     QString type() const override;
@@ -53,6 +52,7 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsSimpleLineMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     /**
      * Returns the ambient color component.
@@ -75,7 +75,7 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
     QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
 #else
     void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
@@ -85,12 +85,11 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
     // TODO c++20 - replace with = default
     bool operator==( const QgsSimpleLineMaterialSettings &other ) const
     {
-      return mAmbient == other.mAmbient;
+      return mAmbient == other.mAmbient && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
-    QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
-
+    QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
 };
 
 

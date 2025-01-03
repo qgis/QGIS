@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthimportcertdialog.h"
+#include "moc_qgsauthimportcertdialog.cpp"
 
 #include <QDir>
 #include <QFileDialog>
@@ -30,9 +31,7 @@
 #include "qgsapplication.h"
 
 
-QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
-    QgsAuthImportCertDialog::CertFilter filter,
-    QgsAuthImportCertDialog::CertInput input )
+QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImportCertDialog::CertFilter filter, QgsAuthImportCertDialog::CertInput input )
   : QDialog( parent )
   , mFilter( filter )
   , mInput( input )
@@ -187,9 +186,7 @@ void QgsAuthImportCertDialog::validateCertificates()
     }
   }
 
-  valid = ( certssize > 0
-            && ( allowinvalid || certssize == validcerts )
-            && ( !filterCAs || nixcerts.size() < certssize ) );
+  valid = ( certssize > 0 && ( allowinvalid || certssize == validcerts ) && ( !filterCAs || nixcerts.size() < certssize ) );
 
   if ( !nixcerts.isEmpty() )
   {
@@ -207,16 +204,18 @@ void QgsAuthImportCertDialog::validateCertificates()
   {
     teValidation->setStyleSheet(
       valid ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QTextEdit" ) )
-      : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QTextEdit" ) ) );
+            : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QTextEdit" ) )
+    );
   }
 
   QString msg = tr( "Certificates found: %1\n"
-                    "Certificates valid: %2" ).arg( certssize ).arg( validcerts );
+                    "Certificates valid: %2" )
+                  .arg( certssize )
+                  .arg( validcerts );
 
   if ( filterCAs )
   {
-    msg += tr( "\nAuthorities/Issuers: %1%2" ).arg( cas )
-           .arg( !nixcerts.isEmpty() && nixcerts.size() < certssize ? " (others not imported)" : "" );
+    msg += tr( "\nAuthorities/Issuers: %1%2" ).arg( cas ).arg( !nixcerts.isEmpty() && nixcerts.size() < certssize ? " (others not imported)" : "" );
   }
 
   teValidation->setText( msg );
@@ -226,7 +225,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
 void QgsAuthImportCertDialog::btnImportFile_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Certificate File" ), tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leImportFile->setText( fn );

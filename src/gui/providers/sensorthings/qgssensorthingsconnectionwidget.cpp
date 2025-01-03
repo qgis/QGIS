@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingsconnectionwidget.h"
+#include "moc_qgssensorthingsconnectionwidget.cpp"
 #include "qgsproviderregistry.h"
 #include "qgssensorthingsprovider.h"
 

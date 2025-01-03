@@ -14,28 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthsettingswidget.h"
+#include "moc_qgsauthsettingswidget.cpp"
 #include "qgsauthmanager.h"
 #include "qgsauthconfig.h"
 #include "qgsapplication.h"
 
 #include <QDateTime>
 
-QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
-    const QString &configId,
-    const QString &username,
-    const QString &password,
-    const QString &dataprovider )
+QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent, const QString &configId, const QString &username, const QString &password, const QString &dataprovider )
   : QWidget( parent )
   , mDataprovider( dataprovider )
 {
   setupUi( this );
   txtPassword->setText( password );
   txtUserName->setText( username );
-  if ( ! dataprovider.isEmpty( ) )
+  if ( !dataprovider.isEmpty() )
   {
     mAuthConfigSelect->setDataProviderKey( dataprovider );
   }
-  if ( ! configId.isEmpty( ) )
+  if ( !configId.isEmpty() )
   {
     mAuthConfigSelect->setConfigId( configId );
   }
@@ -62,7 +59,7 @@ void QgsAuthSettingsWidget::setBasicText( const QString &basicText )
 {
   lblBasic->setText( basicText );
   // hide unused widget so its word wrapping does not add to parent widget's height
-  lblBasic->setVisible( ! basicText.isEmpty() );
+  lblBasic->setVisible( !basicText.isEmpty() );
 }
 
 QString QgsAuthSettingsWidget::username() const
@@ -124,7 +121,7 @@ QString QgsAuthSettingsWidget::configId() const
 
 bool QgsAuthSettingsWidget::btnConvertToEncryptedIsEnabled() const
 {
-  return btnConvertToEncrypted->isEnabled( );
+  return btnConvertToEncrypted->isEnabled();
 }
 
 void QgsAuthSettingsWidget::showStoreCheckboxes( bool enabled )
@@ -153,36 +150,36 @@ void QgsAuthSettingsWidget::setStorePasswordChecked( bool checked )
 
 bool QgsAuthSettingsWidget::storePasswordIsChecked() const
 {
-  return cbStorePassword->isChecked( );
+  return cbStorePassword->isChecked();
 }
 
 bool QgsAuthSettingsWidget::storeUsernameIsChecked() const
 {
-  return cbStoreUsername->isChecked( );
+  return cbStoreUsername->isChecked();
 }
 
 bool QgsAuthSettingsWidget::configurationTabIsSelected()
 {
-  return tabAuth->currentIndex( ) == tabAuth->indexOf( tabConfigurations );
+  return tabAuth->currentIndex() == tabAuth->indexOf( tabConfigurations );
 }
 
-bool QgsAuthSettingsWidget::convertToEncrypted( )
+bool QgsAuthSettingsWidget::convertToEncrypted()
 {
   tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
   QgsAuthMethodConfig config( QStringLiteral( "Basic" ) );
-  config.setName( tr( "Converted config %1" ).arg( QDateTime::currentDateTime().toString( ) ) );
+  config.setName( tr( "Converted config %1" ).arg( QDateTime::currentDateTime().toString() ) );
   config.setConfig( QStringLiteral( "username" ), txtUserName->text() );
   config.setConfig( QStringLiteral( "password" ), txtPassword->text() );
-  if ( ! QgsApplication::authManager()->storeAuthenticationConfig( config ) )
+  if ( !QgsApplication::authManager()->storeAuthenticationConfig( config ) )
   {
     mAuthConfigSelect->showMessage( tr( "Couldn't create a Basic authentication configuration!" ) );
     return false;
   }
   else
   {
-    txtUserName->setText( QString( ) );
-    txtPassword->setText( QString( ) );
-    mAuthConfigSelect->setConfigId( config.id( ) );
+    txtUserName->setText( QString() );
+    txtPassword->setText( QString() );
+    mAuthConfigSelect->setConfigId( config.id() );
     return true;
   }
 }
@@ -203,16 +200,16 @@ void QgsAuthSettingsWidget::passwordTextChanged( const QString &text )
 
 void QgsAuthSettingsWidget::updateConvertBtnState()
 {
-  btnConvertToEncrypted->setEnabled( ! txtUserName->text().isEmpty() || ! txtPassword->text().isEmpty() );
+  btnConvertToEncrypted->setEnabled( !txtUserName->text().isEmpty() || !txtPassword->text().isEmpty() );
 }
 
 void QgsAuthSettingsWidget::updateSelectedTab()
 {
-  if ( ! mAuthConfigSelect->configId().isEmpty( ) )
+  if ( !mAuthConfigSelect->configId().isEmpty() )
   {
     tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
   }
-  else if ( !( txtUserName->text( ).isEmpty() && txtPassword->text( ).isEmpty( ) ) )
+  else if ( !( txtUserName->text().isEmpty() && txtPassword->text().isEmpty() ) )
   {
     tabAuth->setCurrentIndex( tabAuth->indexOf( tabBasic ) );
   }

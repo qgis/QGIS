@@ -26,6 +26,9 @@ Examples are storing a layer extent or the current view extent of a map
 #include "qgsrectangle.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
 
@@ -117,7 +120,7 @@ A null rectangle is also empty by definition.
 .. versionadded:: 3.34
 %End
 
- void setMinimal() /Deprecated/;
+ void setMinimal() /Deprecated="Since 3.34. Will be removed in QGIS 4.0. Use setNull()."/;
 %Docstring
 Set a rectangle so that min corner is at max
 and max corner is at min. It is NOT normalized.

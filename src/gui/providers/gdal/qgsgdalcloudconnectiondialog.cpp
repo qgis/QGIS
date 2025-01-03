@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgdalcloudconnectiondialog.h"
+#include "moc_qgsgdalcloudconnectiondialog.cpp"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsgdalcredentialoptionswidget.h"
@@ -36,8 +37,7 @@ QgsGdalCloudConnectionDialog::QgsGdalCloudConnectionDialog( QWidget *parent )
   mCredentialsGroupBox->setLayout( hlayout );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
-  {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );

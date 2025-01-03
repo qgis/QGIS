@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrelationshipsitem.h"
+#include "moc_qgsrelationshipsitem.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsapplication.h"

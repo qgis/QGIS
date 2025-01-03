@@ -42,7 +42,6 @@ class QgsFilteredTableWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * \brief QgsFilteredTableWidget constructor
      * \param parent
@@ -138,7 +137,6 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsValueRelationWidgetWrapper.
      *
@@ -196,6 +194,17 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
+    /**
+     * Set widget wrapper value, called by updateValues()
+     * \param value new value to update the widget with
+     * \param forceComboInsertion if TRUE \a value would be inserted even if it doesn't exist in
+     * combobox items and would appear as '(value)', else value would not be inserted. This has
+     * no effects for widgets other than combobox because other widgets have different behavior:
+     *
+     * - line edit displays '(no selection)' if value doesn't exist
+     * - table widget would check only items existing in value
+     */
+    void updateValue( const QVariant &value, bool forceComboInsertion );
 
     /**
      * Returns the value configured in `NofColumns` or 1 if not
@@ -207,7 +216,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QMetaType::Type fkType() const;
 
     //! Sets the values for the widgets, re-creates the cache when required
-    void populate( );
+    void populate();
 
     QComboBox *mComboBox = nullptr;
     QgsFilteredTableWidget *mTableWidget = nullptr;
@@ -215,14 +224,12 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     int mSubWidgetSignalBlocking = 0; //! Set to non-zero when a endless loop of notifications could happen.
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-    QgsVectorLayer *mLayer = nullptr;
 
     bool mEnabled = true;
     QString mExpression;
 
     friend class QgsValueRelationWidgetFactory;
     friend class TestQgsValueRelationWidgetWrapper;
-
 };
 
 #endif // QGSVALUERELATIONWIDGETWRAPPER_H

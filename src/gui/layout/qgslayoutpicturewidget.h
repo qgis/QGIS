@@ -34,7 +34,7 @@ class QgsLayoutItemPicture;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPictureWidgetBase
+class GUI_EXPORT QgsLayoutPictureWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPictureWidgetBase
 {
     Q_OBJECT
 
@@ -51,7 +51,6 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
     void mAnchorPointComboBox_currentIndexChanged( int index );
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   protected slots:
@@ -74,11 +73,10 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
     void sourceChanged( const QString &source );
     void setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters );
     void modeChanged( bool checked );
+
   private:
-    QPointer< QgsLayoutItemPicture > mPicture;
+    QPointer<QgsLayoutItemPicture> mPicture;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
-    int mIconSize = 30;
-    int mBlockSvgModelChanges = 0;
 
     void updateSvgParamGui( bool resetValues = true );
 };

@@ -9,7 +9,7 @@ class O0_EXPORT O2Gft: public O2Google{
     Q_OBJECT
 
 public:
-    explicit O2Gft(QObject *parent = 0);
+    explicit O2Gft(QObject *parent = nullptr);
 };
 
 #endif // O2GFT_H

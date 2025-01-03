@@ -27,19 +27,15 @@ namespace QgsWmts
 {
   namespace
   {
-    void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement,
-                              QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
-                              const QgsProject *project );
+    void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement, QList<layerDef> wmtsLayers, QList<tileMatrixSetDef> tmsList, const QgsProject *project );
 
-    void appendTileMatrixSetElements( QDomDocument &doc, QDomElement &contentsElement,
-                                      QList< tileMatrixSetDef > tmsList );
-  }
+    void appendTileMatrixSetElements( QDomDocument &doc, QDomElement &contentsElement, QList<tileMatrixSetDef> tmsList );
+  } // namespace
 
   /**
    * Output WMTS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                             const QgsServerRequest &request, QgsServerResponse &response )
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
@@ -72,15 +68,14 @@ namespace QgsWmts
   }
 
 
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-      const QgsServerRequest &request )
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request )
   {
     Q_UNUSED( version )
 
     QDomDocument doc;
 
     //wmts:Capabilities element
-    QDomElement wmtsCapabilitiesElement = doc.createElement( QStringLiteral( "Capabilities" )/*wmts:Capabilities*/ );
+    QDomElement wmtsCapabilitiesElement = doc.createElement( QStringLiteral( "Capabilities" ) /*wmts:Capabilities*/ );
     wmtsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns" ), WMTS_NAMESPACE );
     wmtsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:gml" ), GML_NAMESPACE );
     wmtsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:ows" ), OWS_NAMESPACE );
@@ -103,7 +98,6 @@ namespace QgsWmts
     wmtsCapabilitiesElement.appendChild( getContentsElement( doc, serverIface, project ) );
 
     return doc;
-
   }
 
   QDomElement getServiceIdentificationElement( QDomDocument &doc, const QgsProject *project )
@@ -203,10 +197,7 @@ namespace QgsWmts
     const QString contactPosition = QgsServerProjectUtils::owsServiceContactPosition( *project );
     const QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );
     const QString contactPhone = QgsServerProjectUtils::owsServiceContactPhone( *project );
-    if ( !contactPerson.isEmpty() ||
-         !contactPosition.isEmpty() ||
-         !contactMail.isEmpty() ||
-         !contactPhone.isEmpty() )
+    if ( !contactPerson.isEmpty() || !contactPosition.isEmpty() || !contactMail.isEmpty() || !contactPhone.isEmpty() )
     {
       QDomElement serviceContactElem = doc.createElement( QStringLiteral( "ows:ServiceContact" ) );
       if ( !contactPerson.isEmpty() )
@@ -223,8 +214,7 @@ namespace QgsWmts
         contactPositionElem.appendChild( contactPositionText );
         serviceContactElem.appendChild( contactPositionElem );
       }
-      if ( !contactMail.isEmpty() ||
-           !contactPhone.isEmpty() )
+      if ( !contactMail.isEmpty() || !contactPhone.isEmpty() )
       {
         QDomElement contactInfoElem = doc.createElement( QStringLiteral( "ows:ContactInfo" ) );
         if ( !contactMail.isEmpty() )
@@ -257,17 +247,17 @@ namespace QgsWmts
   QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings )
   {
     //ows:OperationsMetadata element
-    QDomElement operationsMetadataElement = doc.createElement( QStringLiteral( "ows:OperationsMetadata" )/*ows:OperationsMetadata*/ );
+    QDomElement operationsMetadataElement = doc.createElement( QStringLiteral( "ows:OperationsMetadata" ) /*ows:OperationsMetadata*/ );
 
     //ows:Operation element with name GetCapabilities
-    QDomElement getCapabilitiesElement = doc.createElement( QStringLiteral( "ows:Operation" )/*ows:Operation*/ );
+    QDomElement getCapabilitiesElement = doc.createElement( QStringLiteral( "ows:Operation" ) /*ows:Operation*/ );
     getCapabilitiesElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetCapabilities" ) );
     operationsMetadataElement.appendChild( getCapabilitiesElement );
 
     //ows:DCP
-    QDomElement dcpElement = doc.createElement( QStringLiteral( "ows:DCP" )/*ows:DCP*/ );
+    QDomElement dcpElement = doc.createElement( QStringLiteral( "ows:DCP" ) /*ows:DCP*/ );
     getCapabilitiesElement.appendChild( dcpElement );
-    QDomElement httpElement = doc.createElement( QStringLiteral( "ows:HTTP" )/*ows:HTTP*/ );
+    QDomElement httpElement = doc.createElement( QStringLiteral( "ows:HTTP" ) /*ows:HTTP*/ );
     dcpElement.appendChild( httpElement );
 
     // Get service URL
@@ -278,12 +268,12 @@ namespace QgsWmts
     hrefString.append( href.hasQuery() ? '&' : '?' );
 
     //ows:Get
-    QDomElement getElement = doc.createElement( QStringLiteral( "ows:Get" )/*ows:Get*/ );
+    QDomElement getElement = doc.createElement( QStringLiteral( "ows:Get" ) /*ows:Get*/ );
     getElement.setAttribute( QStringLiteral( "xlink:href" ), hrefString );
-    QDomElement constraintElement = doc.createElement( QStringLiteral( "ows:Constraint" )/*ows:Constraint*/ );
+    QDomElement constraintElement = doc.createElement( QStringLiteral( "ows:Constraint" ) /*ows:Constraint*/ );
     constraintElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetEncoding" ) );
-    QDomElement allowedValuesElement = doc.createElement( QStringLiteral( "ows:AllowedValues" )/*ows:AllowedValues*/ );
-    QDomElement valueElement = doc.createElement( QStringLiteral( "ows:Value" )/*ows:Value*/ );
+    QDomElement allowedValuesElement = doc.createElement( QStringLiteral( "ows:AllowedValues" ) /*ows:AllowedValues*/ );
+    QDomElement valueElement = doc.createElement( QStringLiteral( "ows:Value" ) /*ows:Value*/ );
     const QDomText valueText = doc.createTextNode( QStringLiteral( "KVP" ) );
     valueElement.appendChild( valueText );
     allowedValuesElement.appendChild( valueElement );
@@ -292,12 +282,12 @@ namespace QgsWmts
     httpElement.appendChild( getElement );
 
     //ows:Operation element with name GetTile
-    QDomElement getTileElement = getCapabilitiesElement.cloneNode().toElement();//this is the same as 'GetCapabilities'
+    QDomElement getTileElement = getCapabilitiesElement.cloneNode().toElement(); //this is the same as 'GetCapabilities'
     getTileElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetTile" ) );
     operationsMetadataElement.appendChild( getTileElement );
 
     //ows:Operation element with name GetFeatureInfo
-    QDomElement getFeatureInfoElement = getCapabilitiesElement.cloneNode().toElement();//this is the same as 'GetCapabilities'
+    QDomElement getFeatureInfoElement = getCapabilitiesElement.cloneNode().toElement(); //this is the same as 'GetCapabilities'
     getFeatureInfoElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetFeatureInfo" ) );
     operationsMetadataElement.appendChild( getFeatureInfoElement );
 
@@ -310,13 +300,13 @@ namespace QgsWmts
     /*
      * Adding layer list in ContentMetadata
      */
-    QDomElement contentsElement = doc.createElement( QStringLiteral( "Contents" )/*wmts:Contents*/ );
+    QDomElement contentsElement = doc.createElement( QStringLiteral( "Contents" ) /*wmts:Contents*/ );
 
-    const QList< tileMatrixSetDef > tmsList = getTileMatrixSetList( project );
+    const QList<tileMatrixSetDef> tmsList = getTileMatrixSetList( project );
     if ( !tmsList.isEmpty() )
     {
       // get layer list
-      const QList< layerDef > wmtsLayers = getWmtsLayerList( serverIface, project );
+      const QList<layerDef> wmtsLayers = getWmtsLayerList( serverIface, project );
       if ( !wmtsLayers.isEmpty() )
       {
         appendLayerElements( doc, contentsElement, wmtsLayers, tmsList, project );
@@ -330,15 +320,12 @@ namespace QgsWmts
   }
   namespace
   {
-    void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement,
-                              QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
-                              const QgsProject *project )
+    void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement, QList<layerDef> wmtsLayers, QList<tileMatrixSetDef> tmsList, const QgsProject *project )
     {
       const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
       // Define InfoFormat helper
-      const std::function < void ( QDomElement &, const QString & ) > appendInfoFormat = [&doc]( QDomElement & elem, const QString & format )
-      {
-        QDomElement formatElem = doc.createElement( QStringLiteral( "InfoFormat" )/*wmts:InfoFormat*/ );
+      const std::function<void( QDomElement &, const QString & )> appendInfoFormat = [&doc]( QDomElement &elem, const QString &format ) {
+        QDomElement formatElem = doc.createElement( QStringLiteral( "InfoFormat" ) /*wmts:InfoFormat*/ );
         formatElem.appendChild( doc.createTextNode( format ) );
         elem.appendChild( formatElem );
       };
@@ -490,7 +477,7 @@ namespace QgsWmts
           }
 
           //wmts:TileMatrixSetLink
-          QDomElement tmslElement = doc.createElement( QStringLiteral( "TileMatrixSetLink" )/*wmts:TileMatrixSetLink*/ );
+          QDomElement tmslElement = doc.createElement( QStringLiteral( "TileMatrixSetLink" ) /*wmts:TileMatrixSetLink*/ );
 
           QDomElement identifierElem = doc.createElement( QStringLiteral( "TileMatrixSet" ) );
           const QDomText identifierText = doc.createTextNode( tms.ref );
@@ -498,11 +485,11 @@ namespace QgsWmts
           tmslElement.appendChild( identifierElem );
 
           //wmts:TileMatrixSetLimits
-          QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" )/*wmts:TileMatrixSetLimits*/ );
+          QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" ) /*wmts:TileMatrixSetLimits*/ );
 
           for ( auto it = tmsl.tileMatrixLimits.constBegin(); it != tmsl.tileMatrixLimits.constEnd(); it++ )
           {
-            QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" )/*wmts:TileMatrixLimits*/ );
+            QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" ) /*wmts:TileMatrixLimits*/ );
 
             QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "TileMatrix" ) );
             const QDomText tmIdentifierText = doc.createTextNode( QString::number( it.key() ) );
@@ -542,13 +529,12 @@ namespace QgsWmts
       }
     }
 
-    void appendTileMatrixSetElements( QDomDocument &doc, QDomElement &contentsElement,
-                                      QList< tileMatrixSetDef > tmsList )
+    void appendTileMatrixSetElements( QDomDocument &doc, QDomElement &contentsElement, QList<tileMatrixSetDef> tmsList )
     {
       for ( const tileMatrixSetDef &tms : tmsList )
       {
         //wmts:TileMatrixSet
-        QDomElement tmsElement = doc.createElement( QStringLiteral( "TileMatrixSet" )/*wmts:TileMatrixSet*/ );
+        QDomElement tmsElement = doc.createElement( QStringLiteral( "TileMatrixSet" ) /*wmts:TileMatrixSet*/ );
 
         QDomElement identifierElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
         const QDomText identifierText = doc.createTextNode( tms.ref );
@@ -571,7 +557,7 @@ namespace QgsWmts
         int tmIdx = 0;
         for ( const tileMatrixDef &tm : tms.tileMatrixList )
         {
-          QDomElement tmElement = doc.createElement( QStringLiteral( "TileMatrix" )/*wmts:TileMatrix*/ );
+          QDomElement tmElement = doc.createElement( QStringLiteral( "TileMatrix" ) /*wmts:TileMatrix*/ );
 
           QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
           const QDomText tmIdentifierText = doc.createTextNode( QString::number( tmIdx ) );

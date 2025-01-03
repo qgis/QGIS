@@ -20,7 +20,6 @@ Wraps a QQuickWidget to display QML code
 #include "qgsqmlwidgetwrapper.h"
 %End
   public:
-
     QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 %Docstring
 Create a qml widget wrapper

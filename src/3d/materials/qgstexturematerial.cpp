@@ -24,6 +24,7 @@
 #include <Qt3DRender/QTexture>
 
 #include "qgstexturematerial.h"
+#include "moc_qgstexturematerial.cpp"
 
 ///@cond PRIVATE
 QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
@@ -42,8 +43,7 @@ QgsTextureMaterial::~QgsTextureMaterial() = default;
 
 void QgsTextureMaterial::init()
 {
-  connect( mTextureParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsTextureMaterial::handleTextureChanged );
+  connect( mTextureParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsTextureMaterial::handleTextureChanged );
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect();
 

@@ -23,8 +23,6 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-class QgsMapCanvas;
-
 /**
  * \ingroup gui
  * \class QgsCalloutWidget
@@ -36,7 +34,6 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCalloutWidget.
      * \param vl associated map layer
@@ -78,7 +75,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      *
      * \deprecated QGIS 3.40. Use layer() instead.
      */
-    Q_DECL_DEPRECATED const QgsVectorLayer *vectorLayer() const SIP_DEPRECATED { return qobject_cast< QgsVectorLayer * >( mLayer ); }
+    Q_DECL_DEPRECATED const QgsVectorLayer *vectorLayer() const SIP_DEPRECATED { return qobject_cast<QgsVectorLayer *>( mLayer ); }
 
     /**
      * Returns the vector layer associated with the widget.
@@ -93,7 +90,6 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
     virtual void setGeometryType( Qgis::GeometryType type ) = 0;
 
   protected:
-
     /**
      * Registers a data defined override button. Handles setting up connections
      * for the button and initializing the button to show the correct descriptions
@@ -105,8 +101,6 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
 
   private:
     QgsMapLayer *mLayer = nullptr;
-
-    QgsMapCanvas *mMapCanvas = nullptr;
 
   signals:
 
@@ -140,7 +134,6 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     Q_OBJECT
 
   public:
-
     QgsSimpleLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsSimpleLineCalloutWidget( vl ); }
@@ -166,8 +159,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     void drawToAllPartsToggled( bool active );
 
   private:
-    std::unique_ptr< QgsSimpleLineCallout > mCallout;
-
+    std::unique_ptr<QgsSimpleLineCallout> mCallout;
 };
 
 class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidget
@@ -175,11 +167,9 @@ class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidg
     Q_OBJECT
 
   public:
-
     QgsManhattanLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); } // cppcheck-suppress duplInheritedMember
-
 };
 
 
@@ -194,7 +184,6 @@ class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private U
     Q_OBJECT
 
   public:
-
     QgsCurvedLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsCurvedLineCalloutWidget( vl ); }
@@ -220,8 +209,7 @@ class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private U
     void drawToAllPartsToggled( bool active );
 
   private:
-    std::unique_ptr< QgsCurvedLineCallout > mCallout;
-
+    std::unique_ptr<QgsCurvedLineCallout> mCallout;
 };
 
 
@@ -236,7 +224,6 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
     Q_OBJECT
 
   public:
-
     QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsBalloonCalloutWidget( vl ); }
@@ -257,8 +244,7 @@ class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::
     void mCalloutBlendComboBox_currentIndexChanged( int index );
 
   private:
-    std::unique_ptr< QgsBalloonCallout > mCallout;
-
+    std::unique_ptr<QgsBalloonCallout> mCallout;
 };
 
 #endif

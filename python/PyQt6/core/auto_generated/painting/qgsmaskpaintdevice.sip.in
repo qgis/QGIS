@@ -27,7 +27,7 @@ used later as clip path
 %End
   public:
 
- QgsMaskPaintDevice( bool usePathStroker = false ) /Deprecated/;
+ QgsMaskPaintDevice( bool usePathStroker = false ) /Deprecated="Since 3.38. Use QgsGeometryPaintDevice instead."/;
 %Docstring
 !
 Constructor
@@ -45,7 +45,7 @@ pen configuration
     virtual int metric( PaintDeviceMetric metric ) const;
 
 
- QPainterPath maskPainterPath() const /Deprecated/;
+ QPainterPath maskPainterPath() const /Deprecated="Since 3.40. Use QgsGeometryPaintDevice instead."/;
 %Docstring
 Returns the mask painter path painted on this paint device
 

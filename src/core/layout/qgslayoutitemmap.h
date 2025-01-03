@@ -396,7 +396,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     // for now, map items behave a bit differently and don't implement draw. TODO - see if we can avoid this
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+
+    /**
+     * \deprecated QGIS 3.10
+     */
     Q_DECL_DEPRECATED int numberExportLayers() const override SIP_DEPRECATED;
+
     void startLayeredExport() override;
     void stopLayeredExport() override;
     bool nextExportPart() override;

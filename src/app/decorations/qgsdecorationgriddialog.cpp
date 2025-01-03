@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationgriddialog.h"
+#include "moc_qgsdecorationgriddialog.cpp"
 
 #include "qgsdecorationgrid.h"
 
@@ -37,7 +38,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationGridDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationGridDialog::buttonBox_rejected );
-  connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateSymbolButtons(); } );
+  connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int ) { updateSymbolButtons(); } );
   connect( mPbtnUpdateFromExtents, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromExtents_clicked );
   connect( mPbtnUpdateFromLayer, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationGridDialog::showHelp );
@@ -46,7 +47,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   mLineSymbolButton->setSymbolType( Qgis::SymbolType::Line );
 
   grpEnable->setChecked( mDeco.enabled() );
-  connect( grpEnable, &QGroupBox::toggled, this, [ = ] { updateSymbolButtons(); } );
+  connect( grpEnable, &QGroupBox::toggled, this, [=] { updateSymbolButtons(); } );
 
   // mXMinLineEdit->setValidator( new QDoubleValidator( mXMinLineEdit ) );
 
@@ -56,14 +57,10 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   // mAnnotationPositionComboBox->insertItem( QgsDecorationGrid::InsideMapFrame, tr( "Inside frame" ) );
   // mAnnotationPositionComboBox->insertItem( QgsDecorationGrid::OutsideMapFrame, tr( "Outside frame" ) );
 
-  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Horizontal,
-      tr( "Horizontal" ) );
-  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Vertical,
-      tr( "Vertical" ) );
-  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::HorizontalAndVertical,
-      tr( "Horizontal and Vertical" ) );
-  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::BoundaryDirection,
-      tr( "Boundary direction" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Horizontal, tr( "Horizontal" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Vertical, tr( "Vertical" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::HorizontalAndVertical, tr( "Horizontal and Vertical" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::BoundaryDirection, tr( "Boundary direction" ) );
 
   updateGuiElements();
 
@@ -82,7 +79,6 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 
 void QgsDecorationGridDialog::updateGuiElements()
 {
-
   grpEnable->setChecked( mDeco.enabled() );
 
   mIntervalXEdit->setValue( mDeco.gridIntervalX() );
@@ -92,7 +88,7 @@ void QgsDecorationGridDialog::updateGuiElements()
 
   mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findData( mDeco.gridStyle() ) );
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
-  mAnnotationDirectionComboBox->setCurrentIndex( static_cast< int >( mDeco.gridAnnotationDirection() ) );
+  mAnnotationDirectionComboBox->setCurrentIndex( static_cast<int>( mDeco.gridAnnotationDirection() ) );
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
 
   mDistanceToMapFrameSpinBox->setValue( mDeco.annotationFrameDistance() );
@@ -121,7 +117,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   mDeco.setGridIntervalY( mIntervalYEdit->value() );
   mDeco.setGridOffsetX( mOffsetXEdit->value() );
   mDeco.setGridOffsetY( mOffsetYEdit->value() );
-  mDeco.setGridStyle( static_cast< QgsDecorationGrid::GridStyle >( mGridTypeComboBox->currentData().toInt() ) );
+  mDeco.setGridStyle( static_cast<QgsDecorationGrid::GridStyle>( mGridTypeComboBox->currentData().toInt() ) );
 
   mDeco.setTextFormat( mAnnotationFontButton->textFormat() );
   mDeco.setAnnotationFrameDistance( mDistanceToMapFrameSpinBox->value() );
@@ -144,8 +140,8 @@ void QgsDecorationGridDialog::updateDecoFromGui()
     mDeco.setGridAnnotationDirection( QgsDecorationGrid::BoundaryDirection );
   }
   mDeco.setGridAnnotationPrecision( mCoordinatePrecisionSpinBox->value() );
-  mDeco.setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
-  mDeco.setMarkerSymbol( mMarkerSymbolButton->clonedSymbol< QgsMarkerSymbol >() );
+  mDeco.setLineSymbol( mLineSymbolButton->clonedSymbol<QgsLineSymbol>() );
+  mDeco.setMarkerSymbol( mMarkerSymbolButton->clonedSymbol<QgsMarkerSymbol>() );
 }
 
 void QgsDecorationGridDialog::showHelp()

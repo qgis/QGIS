@@ -22,9 +22,10 @@ class QgsRendererRasterPropertiesTestCases(TestCase):
 
         try:
             from utilities import unitTestDataPath
-            path = pathlib.Path(unitTestDataPath()) / 'landsat_4326.tif'
+
+            path = pathlib.Path(unitTestDataPath()) / "landsat_4326.tif"
         except ModuleNotFoundError:
-            path = pathlib.Path(__file__).parent / 'landsat_4326.tif'
+            path = pathlib.Path(__file__).parent / "landsat_4326.tif"
 
         assert isinstance(path, pathlib.Path) and path.is_file()
         lyr = QgsRasterLayer(path.as_posix())
@@ -73,5 +74,5 @@ class QgsRendererRasterPropertiesTestCases(TestCase):
         assert r.usesBands() == [3, 1, 2]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

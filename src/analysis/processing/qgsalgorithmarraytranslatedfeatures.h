@@ -30,9 +30,7 @@
  */
 class QgsArrayTranslatedFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsArrayTranslatedFeaturesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -48,13 +46,12 @@ class QgsArrayTranslatedFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgo
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
 
   private:
-
     int mCount = 0;
     bool mDynamicCount = false;
     QgsProperty mCountProperty;
@@ -74,12 +71,9 @@ class QgsArrayTranslatedFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgo
     double mDeltaM = 0.0;
     bool mDynamicDeltaM = false;
     QgsProperty mDeltaMProperty;
-
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMARRAYTRANSLATEDFEATURES_H
-
-

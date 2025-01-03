@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgseffectstackpropertieswidget.h"
+#include "moc_qgseffectstackpropertieswidget.cpp"
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
@@ -99,7 +100,6 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   , mStack( stack )
 
 {
-
 // TODO
 #ifdef Q_OS_MAC
   //setWindowModality( Qt::WindowModal );
@@ -110,7 +110,7 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mEffectsList->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
+  mEffectsList->setMaximumHeight( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
   mEffectsList->setMinimumHeight( mEffectsList->maximumHeight() );
   lblPreview->setMaximumWidth( mEffectsList->maximumHeight() );
 
@@ -308,7 +308,7 @@ void QgsEffectStackPropertiesWidget::removeEffect()
 
 void QgsEffectStackPropertiesWidget::moveEffectDown()
 {
-  moveEffectByOffset( + 1 );
+  moveEffectByOffset( +1 );
 }
 
 void QgsEffectStackPropertiesWidget::moveEffectUp()
@@ -334,7 +334,7 @@ void QgsEffectStackPropertiesWidget::moveEffectByOffset( int offset )
   QList<QStandardItem *> toMove = root->takeRow( row );
   root->insertRows( row + offset, toMove );
 
-  const QModelIndex newIdx = toMove[ 0 ]->index();
+  const QModelIndex newIdx = toMove[0]->index();
   mEffectsList->setCurrentIndex( newIdx );
 
   updatePreview();
@@ -463,7 +463,7 @@ void QgsEffectStackCompactWidget::showDialog()
     return;
 
   QgsEffectStack *clone = mStack->clone();
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast<QWidget *>( parent() ) );
   if ( panel && panel->dockMode() )
   {
     QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
@@ -503,7 +503,7 @@ void QgsEffectStackCompactWidget::updateAcceptWidget( QgsPanelWidget *panel )
   QgsEffectStackPropertiesWidget *widget = qobject_cast<QgsEffectStackPropertiesWidget *>( panel );
   *mStack = *widget->stack();
   emit changed();
-//    delete widget->stack();
+  //    delete widget->stack();
 }
 
 void QgsEffectStackCompactWidget::updateEffectLive()

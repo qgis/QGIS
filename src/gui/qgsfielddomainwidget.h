@@ -44,7 +44,6 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractFieldDomainWidget, with the specified \a parent widget.
      */
@@ -79,7 +78,6 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
      * Emitted whenever the field domain configuration in the widget changes.
      */
     void changed();
-
 };
 
 /**
@@ -96,7 +94,6 @@ class GUI_EXPORT QgsRangeDomainWidget : public QgsAbstractFieldDomainWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRangeDomainWidget, with the specified \a parent widget.
      */
@@ -105,7 +102,6 @@ class GUI_EXPORT QgsRangeDomainWidget : public QgsAbstractFieldDomainWidget, pri
     void setFieldDomain( const QgsFieldDomain *domain ) override;
     QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
     bool isValid() const override;
-
 };
 
 /**
@@ -122,11 +118,10 @@ class GUI_EXPORT QgsGlobDomainWidget : public QgsAbstractFieldDomainWidget, priv
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGlobDomainWidget, with the specified \a parent widget.
      */
-    QgsGlobDomainWidget( QWidget *parent SIP_TRANSFERTHIS  = nullptr );
+    QgsGlobDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
     QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
@@ -145,7 +140,6 @@ class GUI_EXPORT QgsCodedValueTableModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodedValueTableModel, with the specified \a parent object.
      */
@@ -165,17 +159,16 @@ class GUI_EXPORT QgsCodedValueTableModel : public QAbstractTableModel
      *
      * \see values()
      */
-    void setValues( const QList< QgsCodedValue > &values );
+    void setValues( const QList<QgsCodedValue> &values );
 
     /**
      * Returns the values from the model.
      *
      * \see setValues()
      */
-    QList< QgsCodedValue > values() const { return mValues; }
+    QList<QgsCodedValue> values() const { return mValues; }
 
   private:
-
     QList<QgsCodedValue> mValues;
 };
 
@@ -194,20 +187,17 @@ class GUI_EXPORT QgsCodedFieldDomainWidget : public QgsAbstractFieldDomainWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodedFieldDomainWidget, with the specified \a parent widget.
      */
-    QgsCodedFieldDomainWidget( QWidget *parent SIP_TRANSFERTHIS  = nullptr );
+    QgsCodedFieldDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
     QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
     bool isValid() const override;
 
   private:
-
     QgsCodedValueTableModel *mModel = nullptr;
-
 };
 #endif
 
@@ -222,7 +212,6 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldDomainWidget for the given domain \a type, with the specified \a parent widget.
      */
@@ -261,10 +250,8 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
     void validityChanged( bool isValid );
 
   private:
-
     QgsAbstractFieldDomainWidget *mDomainWidget = nullptr;
 };
-
 
 
 /**
@@ -273,12 +260,11 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
  *
  * \since QGIS 3.26
  */
-class GUI_EXPORT QgsFieldDomainDialog: public QDialog
+class GUI_EXPORT QgsFieldDomainDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldDomainDialog for the given domain \a type, with the specified \a parent widget and window \a flags.
      */

@@ -30,9 +30,7 @@
  */
 class QgsPdalClipAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalClipAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -43,8 +41,7 @@ class QgsPdalClipAlgorithm : public QgsPdalAlgorithmBase
     QString shortHelpString() const override;
     QgsPdalClipAlgorithm *createInstance() const override SIP_FACTORY;
 
-    QStringList createArgumentLists( const QVariantMap &parameters,
-                                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     friend class TestQgsProcessingPdalAlgs;
 };

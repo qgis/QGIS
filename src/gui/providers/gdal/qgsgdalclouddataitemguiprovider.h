@@ -30,11 +30,9 @@ class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "GDAL Cloud" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void editConnection( QgsGdalCloudConnectionItem *item );
@@ -42,7 +40,6 @@ class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
     static void newConnection( QgsDataItem *item, const QgsGdalUtils::VsiNetworkFileSystemDetails &driver );
     static void saveConnections();
     static void loadConnections( QgsGdalCloudRootItem *item );
-
 };
 
 ///@endcond

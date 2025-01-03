@@ -67,7 +67,7 @@ QgsCoordinateReferenceSystem QgsDropGeometryAlgorithm::outputCrs( const QgsCoord
 
 bool QgsDropGeometryAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  return qobject_cast< const QgsVectorLayer * >( l );
+  return qobject_cast<const QgsVectorLayer *>( l );
 }
 
 Qgis::WkbType QgsDropGeometryAlgorithm::outputWkbType( Qgis::WkbType ) const

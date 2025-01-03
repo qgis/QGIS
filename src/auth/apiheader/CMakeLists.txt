@@ -16,11 +16,7 @@ if (WITH_GUI)
     gui/qgsauthapiheaderedit.h
   )
   set(AUTH_APIHEADER_UIS gui/qgsauthapiheaderedit.ui)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(AUTH_APIHEADER_UIS_H ${AUTH_APIHEADER_UIS})
-  else()
-    QT5_WRAP_UI(AUTH_APIHEADER_UIS_H ${AUTH_APIHEADER_UIS})
-  endif()
+  qt_wrap_ui(AUTH_APIHEADER_UIS_H ${AUTH_APIHEADER_UIS})
 endif()
 
 

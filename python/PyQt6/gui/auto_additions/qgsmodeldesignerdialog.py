@@ -13,9 +13,9 @@ QgsModelDesignerDialog.SaveAction.__doc__ = """Save action.
 # --
 try:
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsModelChildDependenciesWidget.__group__ = ['processing', 'models']
-except NameError:
+except (NameError, AttributeError):
     pass

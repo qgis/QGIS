@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutshapewidget.h"
+#include "moc_qgslayoutshapewidget.cpp"
 #include "qgslayoutitemshape.h"
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
@@ -32,7 +33,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
 
   setupUi( this );
   connect( mShapeComboBox, &QComboBox::currentTextChanged, this, &QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged );
-  connect( mCornerRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutShapeWidget::mCornerRadiusSpinBox_valueChanged );
+  connect( mCornerRadiusSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutShapeWidget::mCornerRadiusSpinBox_valueChanged );
   setPanelTitle( tr( "Shape Properties" ) );
 
   //add widget for general composer item properties
@@ -45,7 +46,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   blockAllSignals( true );
 
   //shape types
-  mShapeComboBox->addItem( tr( "Rectangle" ),  QgsLayoutItemShape::Rectangle );
+  mShapeComboBox->addItem( tr( "Rectangle" ), QgsLayoutItemShape::Rectangle );
   mShapeComboBox->addItem( tr( "Ellipse" ), QgsLayoutItemShape::Ellipse );
   mShapeComboBox->addItem( tr( "Triangle" ), QgsLayoutItemShape::Triangle );
 
@@ -86,7 +87,7 @@ bool QgsLayoutShapeWidget::setNewItem( QgsLayoutItem *item )
     disconnect( mShape, &QgsLayoutObject::changed, this, &QgsLayoutShapeWidget::setGuiElementValues );
   }
 
-  mShape = qobject_cast< QgsLayoutItemShape * >( item );
+  mShape = qobject_cast<QgsLayoutItemShape *>( item );
   mItemPropertiesWidget->setItem( mShape );
 
   if ( mShape )
@@ -168,7 +169,7 @@ void QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged( const QString & )
   }
 
   mShape->layout()->undoStack()->beginCommand( mShape, tr( "Change Shape Type" ) );
-  const QgsLayoutItemShape::Shape shape = static_cast< QgsLayoutItemShape::Shape >( mShapeComboBox->currentData().toInt() );
+  const QgsLayoutItemShape::Shape shape = static_cast<QgsLayoutItemShape::Shape>( mShapeComboBox->currentData().toInt() );
   mShape->setShapeType( shape );
   toggleRadiusSpin( shape );
   mShape->update();

@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgslayertreemodellegendnode.h"
+#include "moc_qgslayertreemodellegendnode.cpp"
 
 #include "qgsdatadefinedsizelegend.h"
 #include "qgslayertreemodel.h"
@@ -681,8 +682,10 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   }
 
   //Consider symbol size for point markers
-  const double desiredHeight = ctx && ctx->patchSize.height() > 0 ? ctx->patchSize.height() : settings.symbolSize().height();
-  const double desiredWidth = ctx && ctx->patchSize.width() > 0 ? ctx->patchSize.width() : settings.symbolSize().width();
+  const bool hasFixedWidth = ctx && ctx->patchSize.width() > 0;
+  const bool hasFixedHeight = ctx && ctx->patchSize.height() > 0;
+  const double desiredHeight = hasFixedHeight ? ctx->patchSize.height() : settings.symbolSize().height();
+  const double desiredWidth = hasFixedWidth ? ctx->patchSize.width() : settings.symbolSize().width();
   double height = desiredHeight;
   double width = desiredWidth;
 
@@ -698,16 +701,24 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     const double size = markerSymbol->size( *context ) / context->scaleFactor();
     if ( size > 0 )
     {
-      height = size;
-      width = size;
+      if ( !hasFixedHeight )
+        height = size;
+      if ( !hasFixedWidth )
+        width = size;
     }
   }
 
   bool restrictedSizeSymbolOK;
-  const std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, width, height, &restrictedSizeSymbolOK ) );
+  double restrictedSymbolWidth = width;
+  double restrictedSymbolHeight = height;
+  const std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, restrictedSymbolWidth, restrictedSymbolHeight, &restrictedSizeSymbolOK ) );
   if ( minMaxSizeSymbol )
   {
     s = minMaxSizeSymbol.get();
+    if ( !hasFixedHeight )
+      height = restrictedSymbolHeight;
+    if ( !hasFixedWidth )
+      width = restrictedSymbolWidth;
   }
 
   if ( s->type() == Qgis::SymbolType::Marker )
@@ -824,7 +835,6 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   {
     json[ QStringLiteral( "scaleMinDenom" ) ] = mItem.scaleMinDenom();
   }
-  mItem.scaleMaxDenom();
 
   const QgsSymbol *s = mCustomSymbol ? mCustomSymbol.get() : mItem.symbol();
   if ( !s )

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsinvertedpolygonrendererwidget.h"
+#include "moc_qgsinvertedpolygonrendererwidget.cpp"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
@@ -41,7 +42,8 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
     QGridLayout *layout = new QGridLayout( this );
     QLabel *label = new QLabel( tr( "The inverted polygon renderer only applies to polygon and multipolygon layers. \n"
                                     "'%1' is not a polygon layer and then cannot be displayed" )
-                                .arg( layer->name() ), this );
+                                  .arg( layer->name() ),
+                                this );
     this->setLayout( layout );
     layout->addWidget( label );
     return;
@@ -57,7 +59,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   {
     mRenderer.reset( QgsInvertedPolygonRenderer::convertFromRenderer( renderer ) );
   }
-  if ( ! mRenderer )
+  if ( !mRenderer )
   {
     mRenderer.reset( new QgsInvertedPolygonRenderer() );
     if ( renderer )
@@ -133,7 +135,7 @@ void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( in
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
-    const std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    const std::unique_ptr<QgsFeatureRenderer> oldRenderer( mRenderer->embeddedRenderer()->clone() );
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsInvertedPolygonRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );

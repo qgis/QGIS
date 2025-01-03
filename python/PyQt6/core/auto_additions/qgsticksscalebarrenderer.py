@@ -4,5 +4,5 @@ QgsTicksScaleBarRenderer.TicksDown = QgsTicksScaleBarRenderer.TickPosition.Ticks
 QgsTicksScaleBarRenderer.TicksMiddle = QgsTicksScaleBarRenderer.TickPosition.TicksMiddle
 try:
     QgsTicksScaleBarRenderer.__group__ = ['scalebar']
-except NameError:
+except (NameError, AttributeError):
     pass

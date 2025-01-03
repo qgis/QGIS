@@ -15,7 +15,7 @@
 
 
 
-class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
+class QgsMapCanvasAnnotationItem : QObject, QgsMapCanvasItem
 {
 %Docstring(signature="appended")
 An interactive map canvas item which displays a :py:class:`QgsAnnotation`.
@@ -34,7 +34,6 @@ An interactive map canvas item which displays a :py:class:`QgsAnnotation`.
       sipType = nullptr;
 %End
   public:
-
     enum MouseMoveAction
     {
       NoAction,

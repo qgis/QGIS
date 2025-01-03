@@ -19,13 +19,13 @@
 #include <QStringListModel>
 
 #include "qgsmetadataurlitemdelegate.h"
+#include "moc_qgsmetadataurlitemdelegate.cpp"
 
 ///@cond PRIVATE
 
 MetadataUrlItemDelegate::MetadataUrlItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
-
 }
 
 QWidget *MetadataUrlItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -35,7 +35,7 @@ QWidget *MetadataUrlItemDelegate::createEditor( QWidget *parent, const QStyleOpt
     // Type
     QComboBox *typeEditor = new QComboBox( parent );
     QStringList types;
-    types << QString( ) << QStringLiteral( "FGDC" ) << QStringLiteral( "TC211" );
+    types << QString() << QStringLiteral( "FGDC" ) << QStringLiteral( "TC211" );
     QStringListModel *model = new QStringListModel( parent );
     model->setStringList( types );
     typeEditor->setModel( model );
@@ -46,7 +46,7 @@ QWidget *MetadataUrlItemDelegate::createEditor( QWidget *parent, const QStyleOpt
     // Format
     QComboBox *typeFormat = new QComboBox( parent );
     QStringList formats;
-    formats << QString( ) << QStringLiteral( "text/plain" ) << QStringLiteral( "text/xml" );
+    formats << QString() << QStringLiteral( "text/plain" ) << QStringLiteral( "text/xml" );
     QStringListModel *model = new QStringListModel( parent );
     model->setStringList( formats );
     typeFormat->setModel( model );

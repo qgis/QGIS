@@ -37,8 +37,7 @@ namespace QgsWcs
   /**
    * Output WCS DescribeCoverage response
    */
-  void writeGetCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                         const QgsServerRequest &request, QgsServerResponse &response )
+  void writeGetCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
   {
     Q_UNUSED( version )
 
@@ -53,7 +52,7 @@ namespace QgsWcs
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-    ( void )serverIface;
+    ( void ) serverIface;
 #endif
     //defining coverage name
     QString coveName;
@@ -217,6 +216,3 @@ namespace QgsWcs
   }
 
 } // namespace QgsWcs
-
-
-

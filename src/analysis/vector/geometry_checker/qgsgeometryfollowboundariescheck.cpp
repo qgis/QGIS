@@ -57,7 +57,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
     QgsGeometry geomt( geom->clone() );
     geomt.transform( crst );
 
-    std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geomt.constGet(), mContext->tolerance );
+    std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( geomt.constGet(), mContext->tolerance ) );
 
     // Get potential reference features
     QgsRectangle searchBounds = geomt.constGet()->boundingBox();
@@ -79,7 +79,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
       while ( refFeatureIt.nextFeature( refFeature ) )
       {
         const QgsAbstractGeometry *refGeom = refFeature.geometry().constGet();
-        std::unique_ptr<QgsGeometryEngine> refgeomEngine( QgsGeometryCheckerUtils::createGeomEngine( refGeom, mContext->tolerance ) );
+        std::unique_ptr<QgsGeometryEngine> refgeomEngine( QgsGeometry::createGeometryEngine( refGeom, mContext->tolerance ) );
         const QgsGeometry reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );
         if ( !( geomEngine->contains( reducedRefGeom.constGet() ) || geomEngine->disjoint( reducedRefGeom.constGet() ) ) )
         {

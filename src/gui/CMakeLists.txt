@@ -18,6 +18,8 @@ set(QGIS_GUI_SRCS
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
+  raster/qgsrasterlabelingwidget.cpp
+  raster/qgsrasterlabelsettingswidget.cpp
   raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterlayertemporalpropertieswidget.cpp
   raster/qgsrasterminmaxwidget.cpp
@@ -80,6 +82,7 @@ set(QGIS_GUI_SRCS
   symbology/qgssymbolbuffersettingswidget.cpp
   symbology/qgssymbollayerwidget.cpp
   symbology/qgssymbollevelsdialog.cpp
+  symbology/qgsextentbufferdialog.cpp
   symbology/qgssymbolslistwidget.cpp
   symbology/qgssymbolselectordialog.cpp
   symbology/qgssymbolwidgetcontext.cpp
@@ -207,6 +210,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgslistconfigdlg.cpp
   editorwidgets/qgsmultiedittoolbutton.cpp
+  editorwidgets/qgsqmlwidgetwrapper.cpp
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
   editorwidgets/qgsrangewidgetfactory.cpp
@@ -267,6 +271,7 @@ set(QGIS_GUI_SRCS
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
   labeling/qgsrulebasedlabelingwidget.cpp
+  labeling/qgstabpositionwidget.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -508,7 +513,11 @@ set(QGIS_GUI_SRCS
   stac/qgsstacconnectiondialog.cpp
   stac/qgsstacdataitemguiprovider.cpp
   stac/qgsstacdownloadassetsdialog.cpp
+  stac/qgsstacitemlistmodel.cpp
   stac/qgsstacobjectdetailsdialog.cpp
+  stac/qgsstacsearchparametersdialog.cpp
+  stac/qgsstacsourceselect.cpp
+  stac/qgsstacsourceselectprovider.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -1180,6 +1189,7 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgslistwidgetfactory.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
+  editorwidgets/qgsqmlwidgetwrapper.h
   editorwidgets/qgsrangeconfigdlg.h
   editorwidgets/qgsrangewidgetfactory.h
   editorwidgets/qgsrangewidgetwrapper.h
@@ -1245,6 +1255,7 @@ set(QGIS_GUI_HDRS
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
   labeling/qgsrulebasedlabelingwidget.h
+  labeling/qgstabpositionwidget.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
@@ -1488,6 +1499,8 @@ set(QGIS_GUI_HDRS
   raster/qgsrasterbandcombobox.h
   raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
+  raster/qgsrasterlabelingwidget.h
+  raster/qgsrasterlabelsettingswidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
   raster/qgsrastertransparencywidget.h
@@ -1549,6 +1562,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolbuffersettingswidget.h
   symbology/qgssymbollayerwidget.h
   symbology/qgssymbollevelsdialog.h
+  symbology/qgsextentbufferdialog.h
   symbology/qgssymbolselectordialog.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
@@ -1568,7 +1582,11 @@ set(QGIS_GUI_HDRS
   stac/qgsstacconnectiondialog.h
   stac/qgsstacdataitemguiprovider.h
   stac/qgsstacdownloadassetsdialog.h
+  stac/qgsstacitemlistmodel.h
   stac/qgsstacobjectdetailsdialog.h
+  stac/qgsstacsearchparametersdialog.h
+  stac/qgsstacsourceselect.h
+  stac/qgsstacsourceselectprovider.h
 
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
@@ -1603,22 +1621,7 @@ set(QGIS_GUI_PRIVATE_HDRS
 
 find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml QuickWidgets UiTools REQUIRED)
 
-if(${QT_VERSION_BASE}Qml_FOUND)
-  add_definitions(-DWITH_QML)
-  set(QGIS_GUI_HDRS
-    ${QGIS_GUI_HDRS}
-    editorwidgets/qgsqmlwidgetwrapper.h
-  )
-endif()
-
 # for installing headers
-
-if(${QT_VERSION_BASE}Qml_FOUND)
-  set(QGIS_GUI_SRCS
-    ${QGIS_GUI_SRCS}
-    editorwidgets/qgsqmlwidgetwrapper.cpp
-  )
-endif()
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
 
@@ -1676,20 +1679,16 @@ add_library(qgis_gui ${LIBRARY_TYPE}
 # require c++17
 target_compile_features(qgis_gui PRIVATE cxx_std_17)
 
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_gui PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_gui PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
 )
-
-target_include_directories(qgis_gui SYSTEM PRIVATE
-  ${QT_QTUITOOLS_INCLUDE_DIR}
-)
-
-if (BUILD_WITH_QT6)
-  target_include_directories(qgis_gui SYSTEM PRIVATE
-    ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  )
-endif()
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
@@ -1807,12 +1806,13 @@ add_dependencies(qgis_gui ui)
 target_link_libraries(qgis_gui
   qgis_core
   qgis_native
-  ${QT_VERSION_BASE}::UiTools
+  Qt::UiTools
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
-  ${QT_VERSION_BASE}::QuickWidgets
-  ${QT_VERSION_BASE}::Multimedia
-  ${QT_VERSION_BASE}::MultimediaWidgets
+  Qt::Qml
+  Qt::QuickWidgets
+  Qt::Multimedia
+  Qt::MultimediaWidgets
 )
 
 if (BUILD_WITH_QT6)
@@ -1822,9 +1822,16 @@ if (BUILD_WITH_QT6)
   )
 endif()
 
+if (WITH_QTWEBENGINE)
+  find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)
+  target_link_libraries(qgis_gui
+    Qt::WebEngineWidgets
+  )
+endif()
+
 if (WITH_QTGAMEPAD)
     target_link_libraries(qgis_gui
-      ${QT_VERSION_BASE}::Gamepad
+      Qt::Gamepad
     )
 endif()
 
@@ -1850,7 +1857,7 @@ if (FORCE_STATIC_LIBS)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_gui ${QT_VERSION_BASE}::Test)
+  target_link_libraries(qgis_gui Qt::Test)
 endif()
 
 # We use private headers from core that need this

@@ -28,7 +28,7 @@
 
 #include <Qt3DCore/QEntity>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -45,40 +45,42 @@
 /// @cond PRIVATE
 
 
-QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity )
+QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType )
+  : mMapSettings( &map )
+  , mEngine( engine )
+  , mGeometryType( geometryType )
 {
-  mMapSettings = &map;
-  mEngine = engine;
-
-  // Rubberband line
-  mLineEntity = new Qt3DCore::QEntity( parentEntity );
-
-  QgsLineVertexData dummyLineData;
-  mGeometry = dummyLineData.createGeometry( mLineEntity );
-
-  Q_ASSERT( mGeometry->attributes().count() == 2 );
-  mPositionAttribute = mGeometry->attributes()[0];
-  mIndexAttribute = mGeometry->attributes()[1];
-
-  mGeomRenderer = new Qt3DRender::QGeometryRenderer;
-  mGeomRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
-  mGeomRenderer->setGeometry( mGeometry );
-  mGeomRenderer->setPrimitiveRestartEnabled( true );
-  mGeomRenderer->setRestartIndexValue( 0 );
-
-  mLineEntity->addComponent( mGeomRenderer );
-
-  mLineMaterial = new QgsLineMaterial;
-  mLineMaterial->setLineWidth( 3 );
-  mLineMaterial->setLineColor( Qt::red );
-
-  QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this, engine]
+  if ( mGeometryType == Qgis::GeometryType::Line )
   {
-    mLineMaterial->setViewportSize( engine->size() );
-  } );
-  mLineMaterial->setViewportSize( engine->size() );
+    // Rubberband line
+    mLineEntity = new Qt3DCore::QEntity( parentEntity );
 
-  mLineEntity->addComponent( mLineMaterial );
+    QgsLineVertexData dummyLineData;
+    mGeometry = dummyLineData.createGeometry( mLineEntity );
+
+    Q_ASSERT( mGeometry->attributes().count() == 2 );
+    mPositionAttribute = mGeometry->attributes().at( 0 );
+    mIndexAttribute = mGeometry->attributes().at( 1 );
+
+    mLineGeomRenderer = new Qt3DRender::QGeometryRenderer;
+    mLineGeomRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+    mLineGeomRenderer->setGeometry( mGeometry );
+    mLineGeomRenderer->setPrimitiveRestartEnabled( true );
+    mLineGeomRenderer->setRestartIndexValue( 0 );
+
+    mLineEntity->addComponent( mLineGeomRenderer );
+
+    mLineMaterial = new QgsLineMaterial;
+    mLineMaterial->setLineWidth( mWidth );
+    mLineMaterial->setLineColor( mColor );
+
+    QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this, engine] {
+      mLineMaterial->setViewportSize( engine->size() );
+    } );
+    mLineMaterial->setViewportSize( engine->size() );
+
+    mLineEntity->addComponent( mLineMaterial );
+  }
 
   // Rubberband vertex markers
   mMarkerEntity = new Qt3DCore::QEntity( parentEntity );
@@ -88,47 +90,56 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
   mMarkerGeometryRenderer->setGeometry( mMarkerGeometry );
   mMarkerGeometryRenderer->setVertexCount( mMarkerGeometry->count() );
 
-  const QVariantMap props
-  {
-    {QStringLiteral( "color" ), QStringLiteral( "red" ) },
-    {QStringLiteral( "size" ), 6 },
-    {QStringLiteral( "outline_color" ), QStringLiteral( "green" ) },
-    {QStringLiteral( "outline_width" ), 0.5 }
-  };
-
-  mMarkerSymbol = QgsMarkerSymbol::createSimple( props );
-  updateMarkerMaterial();
+  setMarkerType( mMarkerType );
   mMarkerEntity->addComponent( mMarkerGeometryRenderer );
 }
 
 QgsRubberBand3D::~QgsRubberBand3D()
 {
-  delete mLineEntity;
-  delete mMarkerEntity;
-  delete mMarkerSymbol;
+  if ( mLineEntity )
+    mLineEntity->deleteLater();
+  mMarkerEntity->deleteLater();
 }
 
 float QgsRubberBand3D::width() const
 {
-  return mLineMaterial->lineWidth();
+  return mWidth;
 }
 
 void QgsRubberBand3D::setWidth( float width )
 {
-  mLineMaterial->setLineWidth( width );
+  mWidth = width;
+
+  if ( mGeometryType == Qgis::GeometryType::Line )
+  {
+    // when highlighting lines, the vertex markers should be wider
+    mLineMaterial->setLineWidth( width );
+    width *= 3;
+  }
+
   mMarkerSymbol->setSize( width );
   updateMarkerMaterial();
 }
 
 QColor QgsRubberBand3D::color() const
 {
-  return mLineMaterial->lineColor();
+  return mColor;
 }
 
 void QgsRubberBand3D::setColor( QColor color )
 {
-  mLineMaterial->setLineColor( color );
-  mMarkerSymbol->setColor( color.lighter( 130 ) );
+  mColor = color;
+
+  if ( mGeometryType == Qgis::GeometryType::Line )
+  {
+    mLineMaterial->setLineColor( color );
+    mMarkerSymbol->setColor( color.lighter( 130 ) );
+  }
+  else
+  {
+    mMarkerSymbol->setColor( color );
+  }
+
   if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == QLatin1String( "SimpleMarker" ) )
   {
     static_cast<QgsMarkerSymbolLayer *>( mMarkerSymbol->symbolLayer( 0 ) )->setStrokeColor( color );
@@ -136,10 +147,31 @@ void QgsRubberBand3D::setColor( QColor color )
   updateMarkerMaterial();
 }
 
+void QgsRubberBand3D::setMarkerType( MarkerType marker )
+{
+  mMarkerType = marker;
+
+  const QVariantMap props {
+    { QStringLiteral( "color" ), mGeometryType == Qgis::GeometryType::Line ? mColor.lighter( 130 ).name() : mColor.name() },
+    { QStringLiteral( "size_unit" ), QStringLiteral( "pixel" ) },
+    { QStringLiteral( "size" ), QString::number( mGeometryType == Qgis::GeometryType::Line ? mWidth * 3.f : mWidth ) },
+    { QStringLiteral( "outline_color" ), mColor.name() },
+    { QStringLiteral( "outline_width" ), QString::number( mGeometryType == Qgis::GeometryType::Line ? 0.5 : 1 ) },
+    { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
+  };
+
+  mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( props ) );
+  updateMarkerMaterial();
+}
+
+QgsRubberBand3D::MarkerType QgsRubberBand3D::markerType() const
+{
+  return mMarkerType;
+}
+
 void QgsRubberBand3D::reset()
 {
   mLineString.clear();
-  mShowLastMarker = false;
   updateGeometry();
 }
 
@@ -167,18 +199,21 @@ void QgsRubberBand3D::updateGeometry()
 {
   QgsLineVertexData lineData;
   lineData.withAdjacency = true;
-  lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
+  lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mMapSettings->origin() );
   lineData.addLineString( mLineString );
 
-  mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
-  mIndexAttribute->buffer()->setData( lineData.createIndexBuffer() );
-  mGeomRenderer->setVertexCount( lineData.indexes.count() );
+  if ( mGeometryType == Qgis::GeometryType::Line )
+  {
+    mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
+    mIndexAttribute->buffer()->setData( lineData.createIndexBuffer() );
+    mLineGeomRenderer->setVertexCount( lineData.indexes.count() );
+  }
 
   // first entry is empty for primitive restart
   lineData.vertices.pop_front();
 
   // we may not want a marker on the last point as it's tracked by the mouse cursor
-  if ( !mShowLastMarker && !lineData.vertices.isEmpty() )
+  if ( mHideLastMarker && !lineData.vertices.isEmpty() )
     lineData.vertices.pop_back();
 
   mMarkerGeometry->setPoints( lineData.vertices );
@@ -187,14 +222,12 @@ void QgsRubberBand3D::updateGeometry()
 
 void QgsRubberBand3D::updateMarkerMaterial()
 {
-  delete mMarkerMaterial;
   mMarkerMaterial = new QgsPoint3DBillboardMaterial();
-  mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol, Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
+  mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol.get(), Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
   mMarkerEntity->addComponent( mMarkerMaterial );
 
   //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
-  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this]
-  {
+  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] {
     mMarkerMaterial->setViewportSize( mEngine->size() );
   } );
   mMarkerMaterial->setViewportSize( mEngine->size() );

@@ -11,7 +11,6 @@
 
 
 
-
 class QgsServerApi
 {
 %Docstring(signature="appended")
@@ -62,7 +61,6 @@ of the API will be invoked.
 #include "qgsserverapi.h"
 %End
   public:
-
     QgsServerApi( QgsServerInterface *serverIface );
 %Docstring
 Creates a QgsServerApi object
@@ -110,8 +108,6 @@ Returns the server interface
 %End
 
 };
-
-
 
 
 /************************************************************************

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicitem.h"
+#include "moc_qgsmodelgraphicitem.cpp"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
@@ -37,7 +38,7 @@ QgsModelDesignerFlatButtonGraphicItem::QgsModelDesignerFlatButtonGraphicItem( QG
 
 void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  if ( QgsModelGraphicsScene *modelScene = qobject_cast< QgsModelGraphicsScene * >( scene() ) )
+  if ( QgsModelGraphicsScene *modelScene = qobject_cast<QgsModelGraphicsScene *>( scene() ) )
   {
     if ( modelScene->flags() & QgsModelGraphicsScene::FlagHideControls )
       return;
@@ -46,14 +47,12 @@ void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QSty
   if ( mHoverState )
   {
     painter->setPen( QPen( Qt::transparent, 1.0 ) );
-    painter->setBrush( QBrush( QColor( 55, 55, 55, 33 ),
-                               Qt::SolidPattern ) );
+    painter->setBrush( QBrush( QColor( 55, 55, 55, 33 ), Qt::SolidPattern ) );
   }
   else
   {
     painter->setPen( QPen( Qt::transparent, 1.0 ) );
-    painter->setBrush( QBrush( Qt::transparent,
-                               Qt::SolidPattern ) );
+    painter->setBrush( QBrush( Qt::transparent, Qt::SolidPattern ) );
   }
   const QPointF topLeft = mPosition - QPointF( std::floor( mSize.width() / 2 ), std::floor( mSize.height() / 2 ) );
   const QRectF rect = QRectF( topLeft.x(), topLeft.y(), mSize.width(), mSize.height() );
@@ -63,10 +62,7 @@ void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QSty
 
 QRectF QgsModelDesignerFlatButtonGraphicItem::boundingRect() const
 {
-  return QRectF( mPosition.x() - std::floor( mSize.width() / 2 ),
-                 mPosition.y() - std::floor( mSize.height() / 2 ),
-                 mSize.width(),
-                 mSize.height() );
+  return QRectF( mPosition.x() - std::floor( mSize.width() / 2 ), mPosition.y() - std::floor( mSize.height() / 2 ), mSize.width(), mSize.height() );
 }
 
 void QgsModelDesignerFlatButtonGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
@@ -124,7 +120,7 @@ void QgsModelDesignerFlatButtonGraphicItem::setPosition( const QPointF &position
 
 QgsModelGraphicsView *QgsModelDesignerFlatButtonGraphicItem::view()
 {
-  return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );
+  return qobject_cast<QgsModelGraphicsView *>( scene()->views().first() );
 }
 
 void QgsModelDesignerFlatButtonGraphicItem::setPicture( const QPicture &picture )
@@ -171,4 +167,3 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
 }
 
 ///@endcond
-

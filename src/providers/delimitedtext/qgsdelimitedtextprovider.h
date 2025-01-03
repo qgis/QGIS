@@ -59,12 +59,11 @@ class QgsSpatialIndex;
  * between QgsDelimitedTextFile and QgsDelimitedTextProvider.
  *
  */
-class QgsDelimitedTextProvider final: public QgsVectorDataProvider
+class QgsDelimitedTextProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-
     static const QString TEXT_PROVIDER_KEY;
     static const QString TEXT_PROVIDER_DESCRIPTION;
 
@@ -154,8 +153,6 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     void onFileUpdated();
 
   private:
-
-
     //some of these methods const, as they need to be called from const methods such as extent()
     void rescanFile() const;
     void resetCachedSubset() const;
@@ -180,14 +177,14 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     mutable bool mValid = false;
 
     //! Text file
-    std::unique_ptr< QgsDelimitedTextFile > mFile;
+    std::unique_ptr<QgsDelimitedTextFile> mFile;
 
     // Fields
     GeomRepresentationType mGeomRep = GeomNone;
     mutable QList<int> attributeColumns;
     QgsFields attributeFields;
 
-    int mFieldCount = 0;  // Note: this includes field count for wkt field
+    int mFieldCount = 0; // Note: this includes field count for wkt field
     QString mWktFieldName;
     QString mXFieldName;
     QString mYFieldName;
@@ -217,7 +214,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 
     QString mSubsetString;
     mutable QString mCachedSubsetString;
-    std::unique_ptr< QgsExpression > mSubsetExpression;
+    std::unique_ptr<QgsExpression> mSubsetExpression;
     bool mBuildSubsetIndex = true;
     mutable QList<quintptr> mSubsetIndex;
     mutable bool mUseSubsetIndex = false;
@@ -243,7 +240,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     bool mBuildSpatialIndex = false;
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
-    mutable std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
+    mutable std::unique_ptr<QgsSpatialIndex> mSpatialIndex;
 
     // Store user-defined column types (i.e. types that are not automatically determined)
     QgsStringMap mUserDefinedFieldTypes;
@@ -255,7 +252,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     friend class QgsDelimitedTextFeatureSource;
 };
 
-class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
+class QgsDelimitedTextProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -267,7 +264,7 @@ class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     ProviderCapabilities providerCapabilities() const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif

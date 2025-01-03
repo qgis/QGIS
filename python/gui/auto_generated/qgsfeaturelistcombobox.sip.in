@@ -22,7 +22,6 @@ and whenever text is typed into the combobox, the completer and popup will adjus
 #include "qgsfeaturelistcombobox.h"
 %End
   public:
-
     QgsFeatureListComboBox( QWidget *parent = 0 );
 %Docstring
 Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
@@ -77,7 +76,7 @@ An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
 %End
 
- QVariant identifierValue() const /Deprecated/;
+ QVariant identifierValue() const /Deprecated="Since 3.10. "/;
 %Docstring
 The identifier value of the currently selected feature. A value from the
 identifierField.
@@ -94,7 +93,7 @@ identifierField.
 %End
 
 
- void setIdentifierValue( const QVariant &identifierValue ) /Deprecated/;
+ void setIdentifierValue( const QVariant &identifierValue ) /Deprecated="Since 3.10. Use setIdentifierValues."/;
 %Docstring
 The identifier value of the currently selected feature. A value from the
 identifierField.
@@ -150,7 +149,7 @@ If set to 0, no limit is applied when fetching
 .. versionadded:: 3.32
 %End
 
- QString identifierField() const /Deprecated/;
+ QString identifierField() const /Deprecated="Since 3.10. "/;
 %Docstring
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
@@ -166,7 +165,7 @@ Normally the primary key of the layer.
 .. versionadded:: 3.10
 %End
 
- void setIdentifierField( const QString &identifierField ) /Deprecated/;
+ void setIdentifierField( const QString &identifierField ) /Deprecated="Since 3.10. "/;
 %Docstring
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
@@ -251,7 +250,6 @@ Emitted when the feature picker model changes its feature ``found`` state
 %End
 
 };
-
 
 
 /************************************************************************

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewnonremovableindicator.h"
+#include "moc_qgslayertreeviewnonremovableindicator.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -40,7 +41,7 @@ QString QgsLayerTreeViewNonRemovableIndicatorProvider::tooltipText( QgsMapLayer 
 
 bool QgsLayerTreeViewNonRemovableIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  return ! layer->flags().testFlag( QgsMapLayer::LayerFlag::Removable );
+  return !layer->flags().testFlag( QgsMapLayer::LayerFlag::Removable );
 }
 
 void QgsLayerTreeViewNonRemovableIndicatorProvider::connectSignals( QgsMapLayer *layer )
@@ -54,4 +55,3 @@ void QgsLayerTreeViewNonRemovableIndicatorProvider::disconnectSignals( QgsMapLay
   QgsLayerTreeViewIndicatorProvider::disconnectSignals( layer );
   disconnect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onLayerChanged );
 }
-

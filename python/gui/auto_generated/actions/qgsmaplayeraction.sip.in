@@ -24,7 +24,6 @@ The class can be used in two manners:
 #include "qgsmaplayeraction.h"
 %End
   public:
-
     QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 %Docstring
 Creates a map layer action which can run on any layer
@@ -51,7 +50,7 @@ Creates a map layer action which can run on a specific type of layer
 Layer behavior flags.
 %End
 
- virtual bool canRunUsingLayer( QgsMapLayer *layer ) const /Deprecated/;
+ virtual bool canRunUsingLayer( QgsMapLayer *layer ) const /Deprecated="Since 3.40. Use the version with QgsMapLayerActionContext instead."/;
 %Docstring
 Returns ``True`` if the action can run using the specified layer.
 
@@ -71,7 +70,7 @@ Returns ``True`` if the action can run using the specified layer.
 .. versionadded:: 3.30
 %End
 
- virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated/;
+ virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated="Since 3.40. Use the version with QgsMapLayerActionContext instead."/;
 %Docstring
 Triggers the action with the specified layer and list of feature.
 
@@ -80,7 +79,7 @@ Triggers the action with the specified layer and list of feature.
    Use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
- virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated/;
+ virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated="Since 3.40. Use the version with QgsMapLayerActionContext instead."/;
 %Docstring
 Triggers the action with the specified layer and feature.
 
@@ -89,7 +88,7 @@ Triggers the action with the specified layer and feature.
    Use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
- virtual void triggerForLayer( QgsMapLayer *layer ) /Deprecated/;
+ virtual void triggerForLayer( QgsMapLayer *layer ) /Deprecated="Since 3.40. Use the version with QgsMapLayerActionContext instead."/;
 %Docstring
 Triggers the action with the specified layer.
 
@@ -135,7 +134,7 @@ Returns ``True`` if the action is only enabled for layers in editable mode.
 
   signals:
 
- void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated/;
+ void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList ) /Deprecated="Since 3.40. Use the version with QgsMapLayerActionContext instead."/;
 %Docstring
 Triggered when action has been run for a specific list of features
 
@@ -144,7 +143,7 @@ Triggered when action has been run for a specific list of features
    Use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
- void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated/;
+ void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature ) /Deprecated="Since 3.40. Use the version with QgsMapLayerActionContext instead."/;
 %Docstring
 Triggered when action has been run for a specific feature
 
@@ -153,7 +152,7 @@ Triggered when action has been run for a specific feature
    Use the version with :py:class:`QgsMapLayerActionContext` instead.
 %End
 
- void triggeredForLayer( QgsMapLayer *layer ) /Deprecated/;
+ void triggeredForLayer( QgsMapLayer *layer ) /Deprecated="Since 3.40. Use the version with QgsMapLayerActionContext instead."/;
 %Docstring
 Triggered when action has been run for a specific layer
 

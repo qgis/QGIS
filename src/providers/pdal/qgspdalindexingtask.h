@@ -19,7 +19,7 @@
 #include <QObject>
 #include "qgstaskmanager.h"
 
-class QgsPdalIndexingTask: public QgsTask
+class QgsPdalIndexingTask : public QgsTask
 {
     Q_OBJECT
 

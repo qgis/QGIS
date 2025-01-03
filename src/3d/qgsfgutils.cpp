@@ -51,16 +51,14 @@ QString QgsFgUtils::formatIdName( FgDumpContext context, const Qt3DRender::QAbst
 {
   QString fixedName = texture->objectName().isEmpty() ? QLatin1String( "<no_name>" ) : texture->objectName();
   return QLatin1String( "{%1[%2]/%3" )
-         .arg( QString::number( texture->id().id() - context.lowestId )
-               , QString( QMetaEnum::fromType<Qt3DRender::QAbstractTexture::TextureFormat>().valueToKey( texture->format() ) )
-               , fixedName );
+    .arg( QString::number( texture->id().id() - context.lowestId ), QString( QMetaEnum::fromType<Qt3DRender::QAbstractTexture::TextureFormat>().valueToKey( texture->format() ) ), fixedName );
 }
 
 QString QgsFgUtils::formatNode( FgDumpContext context, const Qt3DCore::QNode *node )
 {
   QString res = QLatin1String( "(%1%2)" )
-                .arg( QLatin1String( node->metaObject()->className() ) )
-                .arg( formatIdName( context, node->id().id(), node->objectName() ) );
+                  .arg( QLatin1String( node->metaObject()->className() ) )
+                  .arg( formatIdName( context, node->id().id(), node->objectName() ) );
   if ( !node->isEnabled() )
     res += QLatin1String( " [D]" );
   return res;
@@ -96,8 +94,7 @@ QString QgsFgUtils::formatField( const QString &name, const QString &value )
 
 QString QgsFgUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity *node, int level )
 {
-  auto extractTextureParam = []( FgDumpContext context, const QVector<Qt3DRender::QParameter *> &params, QStringList & fl )
-  {
+  auto extractTextureParam = []( FgDumpContext context, const QVector<Qt3DRender::QParameter *> &params, QStringList &fl ) {
     for ( const auto *param : params )
     {
       if ( strstr( param->value().typeName(), "QAbstractTexture*" ) )
@@ -111,7 +108,7 @@ QString QgsFgUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity
 
   QString res = formatNode( context, node );
   const auto &components = node->components();
-  if ( ! components.isEmpty() )
+  if ( !components.isEmpty() )
   {
     QStringList componentNames;
     for ( const auto &comp : components )
@@ -126,8 +123,9 @@ QString QgsFgUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity
           for ( const auto *texImg : texImages )
           {
             fl += formatField(
-                    texImg->metaObject()->className(),
-                    formatIdName( context, texImg->id().id(), texImg->objectName() ) );
+              texImg->metaObject()->className(),
+              formatIdName( context, texImg->id().id(), texImg->objectName() )
+            );
           }
         }
       }
@@ -192,16 +190,14 @@ QString QgsFgUtils::dumpFGNode( FgDumpContext context, const Qt3DRender::QFrameG
     }
 
     QStringList fl;
-    fl += formatField( QMetaEnum::fromType<Qt3DRender::QLayerFilter::FilterMode>().valueToKey( lf->filterMode() )
-                       , formatList( sl ) );
+    fl += formatField( QMetaEnum::fromType<Qt3DRender::QLayerFilter::FilterMode>().valueToKey( lf->filterMode() ), formatList( sl ) );
     res += QString( " %1" ).arg( formatList( fl ) );
   }
 
   else if ( const auto *cs = qobject_cast<const Qt3DRender::QCameraSelector *>( node ) )
   {
     QStringList fl;
-    fl +=  formatField( cs->camera()->metaObject()->className(),
-                        formatIdName( context, cs->camera()->id().id(), cs->camera()->objectName() ) );
+    fl += formatField( cs->camera()->metaObject()->className(), formatIdName( context, cs->camera()->id().id(), cs->camera()->objectName() ) );
     res += QString( " %1" ).arg( formatList( fl ) );
   }
 
@@ -277,12 +273,10 @@ QString QgsFgUtils::dumpFGNode( FgDumpContext context, const Qt3DRender::QFrameG
       const auto outputs = rs->target()->outputs();
       for ( auto output : outputs )
       {
-        sl += formatField( QMetaEnum::fromType<Qt3DRender::QRenderTargetOutput::AttachmentPoint>().valueToKey( output->attachmentPoint() ),
-                           formatIdName( context, output->texture() ) );
+        sl += formatField( QMetaEnum::fromType<Qt3DRender::QRenderTargetOutput::AttachmentPoint>().valueToKey( output->attachmentPoint() ), formatIdName( context, output->texture() ) );
       }
       QStringList fl;
-      fl +=  formatField( QLatin1String( "outputs" ),
-                          formatList( sl ) );
+      fl += formatField( QLatin1String( "outputs" ), formatList( sl ) );
       res += QString( " %1" ).arg( formatList( fl ) );
     }
   }

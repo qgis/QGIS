@@ -17,8 +17,10 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
+#include <QTimer>
 
 #include "qgsdoublespinbox.h"
+#include "moc_qgsdoublespinbox.cpp"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -46,11 +48,15 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   setLineEdit( mLineEdit );
 
   const QSize msz = minimumSizeHint();
-  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
-                  std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
+  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2, std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsDoubleSpinBox::clear );
-  connect( this, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
+  connect( this, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
+
+  mLastEditTimer = new QTimer( this );
+  mLastEditTimer->setSingleShot( true );
+  mLastEditTimer->setInterval( 1000 );
+  connect( mLastEditTimer, &QTimer::timeout, this, &QgsDoubleSpinBox::onLastEditTimeout );
 }
 
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
@@ -98,6 +104,12 @@ void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
   setSingleStep( step );
 }
 
+void QgsDoubleSpinBox::focusOutEvent( QFocusEvent *event )
+{
+  QDoubleSpinBox::focusOutEvent( event );
+  onLastEditTimeout();
+}
+
 void QgsDoubleSpinBox::timerEvent( QTimerEvent *event )
 {
   // Process all events, which may include a mouse release event
@@ -129,9 +141,31 @@ void QgsDoubleSpinBox::stepBy( int steps )
   QDoubleSpinBox::stepBy( steps );
 }
 
+int QgsDoubleSpinBox::editingTimeoutInterval() const
+{
+  return mLastEditTimer->interval();
+}
+
+void QgsDoubleSpinBox::setEditingTimeoutInterval( int timeout )
+{
+  mLastEditTimer->setInterval( timeout );
+}
+
 void QgsDoubleSpinBox::changed( double value )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
+  mLastEditTimer->start();
+}
+
+void QgsDoubleSpinBox::onLastEditTimeout()
+{
+  mLastEditTimer->stop();
+  const double currentValue = value();
+  if ( std::isnan( mLastEditTimeoutValue ) || mLastEditTimeoutValue != currentValue )
+  {
+    mLastEditTimeoutValue = currentValue;
+    emit editingTimeout( mLastEditTimeoutValue );
+  }
 }
 
 void QgsDoubleSpinBox::clear()
@@ -280,4 +314,9 @@ bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
     return false;
   }
   return value != clearValue();
+}
+
+bool QgsDoubleSpinBox::isCleared() const
+{
+  return value() == clearValue();
 }

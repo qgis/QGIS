@@ -425,6 +425,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsAttributeList pkAttributeIndexes() const;
 
     /**
+     * Returns the name of the column storing geometry, if applicable.
+     *
+     * \since QGIS 3.42
+     */
+    virtual QString geometryColumnName() const;
+
+    /**
      * Returns list of indexes to names for QgsPalLabeling fix
      *
      * \deprecated QGIS 3.32. This method is unused and will always return an empty hash.
@@ -552,7 +559,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0 - use reloadData instead.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0 - use reloadData() instead.
      */
     Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 

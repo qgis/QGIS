@@ -59,6 +59,9 @@ A :py:class:`QgsRectangle` with associated coordinate reference system.
 #include "qgsreferencedgeometry.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 %Docstring

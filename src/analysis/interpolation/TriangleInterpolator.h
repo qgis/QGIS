@@ -42,11 +42,3 @@ class ANALYSIS_EXPORT TriangleInterpolator
 };
 
 #endif
-
-
-
-
-
-
-
-

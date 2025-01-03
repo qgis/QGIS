@@ -15,29 +15,38 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import warnings
 from pathlib import Path
 
-from qgis.core import (QgsSettings,
-                       QgsProcessing,
-                       QgsVectorFileWriter,
-                       QgsProviderRegistry,
-                       QgsProcessingModelChildParameterSource)
+from qgis.core import (
+    QgsSettings,
+    QgsProcessing,
+    QgsVectorFileWriter,
+    QgsProviderRegistry,
+    QgsProcessingModelChildParameterSource,
+)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
-from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QAbstractItemView,
+    QPushButton,
+    QDialogButtonBox,
+    QFileDialog,
+)
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
+        os.path.join(pluginPath, "ui", "DlgMultipleSelection.ui")
+    )
 
 
 class MultipleInputDialog(BASE, WIDGET):
@@ -58,48 +67,63 @@ class MultipleInputDialog(BASE, WIDGET):
         self.selectedoptions = selectedoptions or []
 
         # Additional buttons
-        self.btnSelectAll = QPushButton(self.tr('Select All'))
-        self.buttonBox.addButton(self.btnSelectAll,
-                                 QDialogButtonBox.ButtonRole.ActionRole)
-        self.btnClearSelection = QPushButton(self.tr('Clear Selection'))
-        self.buttonBox.addButton(self.btnClearSelection,
-                                 QDialogButtonBox.ButtonRole.ActionRole)
-        self.btnToggleSelection = QPushButton(self.tr('Toggle Selection'))
-        self.buttonBox.addButton(self.btnToggleSelection,
-                                 QDialogButtonBox.ButtonRole.ActionRole)
+        self.btnSelectAll = QPushButton(self.tr("Select All"))
+        self.buttonBox.addButton(
+            self.btnSelectAll, QDialogButtonBox.ButtonRole.ActionRole
+        )
+        self.btnClearSelection = QPushButton(self.tr("Clear Selection"))
+        self.buttonBox.addButton(
+            self.btnClearSelection, QDialogButtonBox.ButtonRole.ActionRole
+        )
+        self.btnToggleSelection = QPushButton(self.tr("Toggle Selection"))
+        self.buttonBox.addButton(
+            self.btnToggleSelection, QDialogButtonBox.ButtonRole.ActionRole
+        )
         if self.datatype is not None:
-            btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add File(s)…'))
+            btnAddFile = QPushButton(
+                QCoreApplication.translate("MultipleInputDialog", "Add File(s)…")
+            )
             btnAddFile.clicked.connect(self.addFiles)
-            self.buttonBox.addButton(btnAddFile,
-                                     QDialogButtonBox.ButtonRole.ActionRole)
+            self.buttonBox.addButton(btnAddFile, QDialogButtonBox.ButtonRole.ActionRole)
 
-            btnAddDir = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add Directory…'))
+            btnAddDir = QPushButton(
+                QCoreApplication.translate("MultipleInputDialog", "Add Directory…")
+            )
             btnAddDir.clicked.connect(self.addDirectory)
-            self.buttonBox.addButton(btnAddDir,
-                                     QDialogButtonBox.ButtonRole.ActionRole)
+            self.buttonBox.addButton(btnAddDir, QDialogButtonBox.ButtonRole.ActionRole)
 
         self.btnSelectAll.clicked.connect(lambda: self.selectAll(True))
         self.btnClearSelection.clicked.connect(lambda: self.selectAll(False))
         self.btnToggleSelection.clicked.connect(self.toggleSelection)
 
         self.settings = QgsSettings()
-        self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
+        self.restoreGeometry(
+            self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray())
+        )
 
-        self.lstLayers.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.lstLayers.setSelectionMode(
+            QAbstractItemView.SelectionMode.ExtendedSelection
+        )
         self.lstLayers.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
 
         self.populateList()
         self.finished.connect(self.saveWindowGeometry)
 
     def saveWindowGeometry(self):
-        self.settings.setValue("/Processing/multipleInputDialogGeometry", self.saveGeometry())
+        self.settings.setValue(
+            "/Processing/multipleInputDialogGeometry", self.saveGeometry()
+        )
 
     def populateList(self):
         self.model = QStandardItemModel()
         for value, text in self.options:
             item = QStandardItem(text)
             item.setData(value, Qt.ItemDataRole.UserRole)
-            item.setCheckState(Qt.CheckState.Checked if value in self.selectedoptions else Qt.CheckState.Unchecked)
+            item.setCheckState(
+                Qt.CheckState.Checked
+                if value in self.selectedoptions
+                else Qt.CheckState.Unchecked
+            )
             item.setCheckable(True)
             item.setDropEnabled(False)
             self.model.appendRow(item)
@@ -143,12 +167,16 @@ class MultipleInputDialog(BASE, WIDGET):
 
     def selectAll(self, value):
         for item in self.getItemsToModify():
-            item.setCheckState(Qt.CheckState.Checked if value else Qt.CheckState.Unchecked)
+            item.setCheckState(
+                Qt.CheckState.Checked if value else Qt.CheckState.Unchecked
+            )
 
     def toggleSelection(self):
         for item in self.getItemsToModify():
             checked = item.checkState() == Qt.CheckState.Checked
-            item.setCheckState(Qt.CheckState.Unchecked if checked else Qt.CheckState.Checked)
+            item.setCheckState(
+                Qt.CheckState.Unchecked if checked else Qt.CheckState.Checked
+            )
 
     def getFileFilter(self, datatype):
         """
@@ -159,25 +187,29 @@ class MultipleInputDialog(BASE, WIDGET):
         if datatype == QgsProcessing.SourceType.TypeRaster:
             return QgsProviderRegistry.instance().fileRasterFilters()
         elif datatype == QgsProcessing.SourceType.TypeFile:
-            return self.tr('All files (*.*)')
+            return self.tr("All files (*.*)")
         else:
             exts = QgsVectorFileWriter.supportedFormatExtensions()
             for i in range(len(exts)):
-                exts[i] = self.tr('{0} files (*.{1})').format(exts[i].upper(), exts[i].lower())
-            return self.tr('All files (*.*)') + ';;' + ';;'.join(exts)
+                exts[i] = self.tr("{0} files (*.{1})").format(
+                    exts[i].upper(), exts[i].lower()
+                )
+            return self.tr("All files (*.*)") + ";;" + ";;".join(exts)
 
     def addFiles(self):
         filter = self.getFileFilter(self.datatype)
 
         settings = QgsSettings()
-        path = str(settings.value('/Processing/LastInputPath'))
+        path = str(settings.value("/Processing/LastInputPath"))
 
-        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select File(s)'),
-                                                            path, filter)
+        ret, selected_filter = QFileDialog.getOpenFileNames(
+            self, self.tr("Select File(s)"), path, filter
+        )
         if ret:
             files = list(ret)
-            settings.setValue('/Processing/LastInputPath',
-                              os.path.dirname(str(files[0])))
+            settings.setValue(
+                "/Processing/LastInputPath", os.path.dirname(str(files[0]))
+            )
             for filename in files:
                 item = QStandardItem(filename)
                 item.setData(filename, Qt.ItemDataRole.UserRole)
@@ -188,17 +220,19 @@ class MultipleInputDialog(BASE, WIDGET):
 
     def addDirectory(self):
         settings = QgsSettings()
-        path = str(settings.value('/Processing/LastInputPath'))
+        path = str(settings.value("/Processing/LastInputPath"))
 
-        ret = QFileDialog.getExistingDirectory(self, self.tr('Select File(s)'), path)
+        ret = QFileDialog.getExistingDirectory(self, self.tr("Select File(s)"), path)
         if ret:
             exts = []
 
             if self.datatype == QgsProcessing.SourceType.TypeVector:
                 exts = QgsVectorFileWriter.supportedFormatExtensions()
             elif self.datatype == QgsProcessing.SourceType.TypeRaster:
-                for t in QgsProviderRegistry.instance().fileRasterFilters().split(';;')[1:]:
-                    for e in t[t.index('(') + 1:-1].split(' '):
+                for t in (
+                    QgsProviderRegistry.instance().fileRasterFilters().split(";;")[1:]
+                ):
+                    for e in t[t.index("(") + 1 : -1].split(" "):
                         if e != "*.*" and e.startswith("*."):
                             exts.append(e[2:])
 
@@ -214,7 +248,7 @@ class MultipleInputDialog(BASE, WIDGET):
 
                 files.append(p)
 
-            settings.setValue('/Processing/LastInputPath', ret)
+            settings.setValue("/Processing/LastInputPath", ret)
 
             for filename in files:
                 item = QStandardItem(filename)

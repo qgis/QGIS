@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmssqlgeomcolumntypethread.h"
+#include "moc_qgsmssqlgeomcolumntypethread.cpp"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -48,7 +49,7 @@ void QgsMssqlGeomColumnTypeThread::run()
   mStopped = false;
 
   for ( QList<QgsMssqlLayerProperty>::iterator it = layerProperties.begin(),
-        end = layerProperties.end();
+                                               end = layerProperties.end();
         it != end; ++it )
   {
     QgsMssqlLayerProperty &layerProperty = *it;
@@ -56,8 +57,7 @@ void QgsMssqlGeomColumnTypeThread::run()
     if ( !mStopped )
     {
       const QString table = QStringLiteral( "%1[%2]" )
-                            .arg( layerProperty.schemaName.isEmpty() ? QString() : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
-                                  layerProperty.tableName );
+                              .arg( layerProperty.schemaName.isEmpty() ? QString() : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ), layerProperty.tableName );
 
       const QString query = QStringLiteral( "SELECT %3"
                                             " UPPER([%1].STGeometryType()),"
@@ -67,10 +67,7 @@ void QgsMssqlGeomColumnTypeThread::run()
                                             " FROM %2"
                                             " WHERE [%1] IS NOT NULL %4"
                                             " GROUP BY [%1].STGeometryType(), [%1].STSrid, [%1].HasZ, [%1].HasM" )
-                            .arg( layerProperty.geometryColName,
-                                  table,
-                                  mUseEstimatedMetadata ? "TOP 1" : "",
-                                  layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
+                              .arg( layerProperty.geometryColName, table, mUseEstimatedMetadata ? "TOP 1" : "", layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
       std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
@@ -99,9 +96,9 @@ void QgsMssqlGeomColumnTypeThread::run()
         {
           const bool hasZ { q.value( 2 ).toString() == '1' };
           const bool hasM { q.value( 3 ).toString() == '1' };
-          const int dimensions { 2 + ( ( hasZ &&hasM ) ? 2 : ( ( hasZ || hasM ) ? 1 : 0 ) ) };
+          const int dimensions { 2 + ( ( hasZ && hasM ) ? 2 : ( ( hasZ || hasM ) ? 1 : 0 ) ) };
           QString typeName { q.value( 0 ).toString().toUpper() };
-          if ( hasM && ! typeName.endsWith( 'M' ) )
+          if ( hasM && !typeName.endsWith( 'M' ) )
           {
             typeName.append( 'M' );
           }

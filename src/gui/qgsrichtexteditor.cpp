@@ -29,6 +29,7 @@
 ****************************************************************************/
 
 #include "qgsrichtexteditor.h"
+#include "moc_qgsrichtexteditor.cpp"
 #include "qgsguiutils.h"
 #include "qgscolorbutton.h"
 #include "qgscodeeditor.h"
@@ -164,7 +165,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mParagraphStyleCombo->addItem( tr( "Heading 4" ), ParagraphHeading4 );
   mParagraphStyleCombo->addItem( tr( "Monospace" ), ParagraphMonospace );
 
-  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
+  connect( mParagraphStyleCombo, qOverload<int>( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
   if ( mode == Mode::QTextDocument )
   {
     mToolBar->addWidget( mParagraphStyleCombo );
@@ -180,7 +181,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mFontSizeCombo = new QComboBox();
   mFontSizeCombo->setEditable( true );
 
-  const QList< int > sizes = QFontDatabase::standardSizes();
+  const QList<int> sizes = QFontDatabase::standardSizes();
   for ( const int size : sizes )
     mFontSizeCombo->addItem( QString::number( size ), size );
 
@@ -439,10 +440,7 @@ void QgsRichTextEditor::textLink( bool checked )
   {
     const QString url = mTextEdit->currentCharFormat().anchorHref();
     bool ok;
-    const QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ),
-                           tr( "Link URL:" ), QLineEdit::Normal,
-                           url,
-                           &ok );
+    const QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ), tr( "Link URL:" ), QLineEdit::Normal, url, &ok );
     if ( ok )
     {
       format.setAnchor( true );
@@ -482,7 +480,7 @@ void QgsRichTextEditor::textStyle( int )
   cursor.setCharFormat( format );
   mTextEdit->setCurrentCharFormat( format );
 
-  const ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
+  const ParagraphItems style = static_cast<ParagraphItems>( mParagraphStyleCombo->currentData().toInt() );
 
   switch ( style )
   {
@@ -606,8 +604,7 @@ void QgsRichTextEditor::mergeFormatOnWordOrSelection( const QTextCharFormat &for
 void QgsRichTextEditor::slotCursorPositionChanged()
 {
   QTextList *l = mTextEdit->textCursor().currentList();
-  if ( mLastBlockList && ( l == mLastBlockList || ( l && mLastBlockList
-                           && l->format().style() == mLastBlockList->format().style() ) ) )
+  if ( mLastBlockList && ( l == mLastBlockList || ( l && mLastBlockList && l->format().style() == mLastBlockList->format().style() ) ) )
   {
     return;
   }
@@ -772,10 +769,7 @@ void QgsRichTextEditor::insertImage()
 {
   const QSettings s;
   const QString attdir = s.value( QStringLiteral( "general/filedialog-path" ) ).toString();
-  const QString file = QFileDialog::getOpenFileName( this,
-                       tr( "Select an image" ),
-                       attdir,
-                       tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
+  const QString file = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
   if ( file.isEmpty() )
     return;
 

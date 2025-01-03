@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsreportsectionmodel.h"
+#include "moc_qgsreportsectionmodel.cpp"
 #include "functional"
 #include "qgsguiutils.h"
 
@@ -190,7 +191,7 @@ QgsAbstractReportSection *QgsReportSectionModel::sectionForIndex( const QModelIn
     return nullptr;
 
   if ( !index.internalPointer() ) // top level item
-    return mReport; // IMPORTANT - QgsReport uses multiple inheritance, so cannot static cast the void*!
+    return mReport;               // IMPORTANT - QgsReport uses multiple inheritance, so cannot static cast the void*!
 
   return static_cast<QgsAbstractReportSection *>( index.internalPointer() );
 }
@@ -200,8 +201,7 @@ QModelIndex QgsReportSectionModel::indexForSection( QgsAbstractReportSection *se
   if ( !section )
     return QModelIndex();
 
-  std::function< QModelIndex( const QModelIndex &parent, QgsAbstractReportSection *section ) > findIndex = [&]( const QModelIndex & parent, QgsAbstractReportSection * section )->QModelIndex
-  {
+  std::function<QModelIndex( const QModelIndex &parent, QgsAbstractReportSection *section )> findIndex = [&]( const QModelIndex &parent, QgsAbstractReportSection *section ) -> QModelIndex {
     for ( int row = 0; row < rowCount( parent ); ++row )
     {
       QModelIndex current = index( row, 0, parent );
@@ -235,7 +235,6 @@ void QgsReportSectionModel::setEditedSection( QgsAbstractReportSection *section 
     const QModelIndex newSection = indexForSection( mEditedSection );
     emit dataChanged( newSection, newSection, QVector<int>() << Qt::DecorationRole );
   }
-
 }
 
 bool QgsReportSectionModel::removeRows( int row, int count, const QModelIndex &parent )
@@ -270,4 +269,3 @@ void QgsReportSectionModel::addSection( const QModelIndex &parent, std::unique_p
   parentSection->appendChild( section.release() );
   endInsertRows();
 }
-

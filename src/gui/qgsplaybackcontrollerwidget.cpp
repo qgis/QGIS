@@ -14,9 +14,10 @@
 ***************************************************************************/
 
 #include "qgsplaybackcontrollerwidget.h"
+#include "moc_qgsplaybackcontrollerwidget.cpp"
 
 QgsPlaybackControllerWidget::QgsPlaybackControllerWidget( QWidget *parent )
-  : QWidget{parent}
+  : QWidget { parent }
 {
   setupUi( this );
 

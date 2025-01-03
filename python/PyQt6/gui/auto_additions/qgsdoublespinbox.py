@@ -3,8 +3,8 @@ QgsDoubleSpinBox.MinimumValue = QgsDoubleSpinBox.ClearValueMode.MinimumValue
 QgsDoubleSpinBox.MaximumValue = QgsDoubleSpinBox.ClearValueMode.MaximumValue
 QgsDoubleSpinBox.CustomValue = QgsDoubleSpinBox.ClearValueMode.CustomValue
 try:
-    QgsDoubleSpinBox.__attribute_docs__ = {'returnPressed': 'Emitted when the Return or Enter key is used in the line edit.\n\n.. versionadded:: 3.40\n', 'textEdited': 'Emitted when the the value has been manually edited via line edit.\n\n.. versionadded:: 3.40\n'}
-    QgsDoubleSpinBox.__signal_arguments__ = {'textEdited': ['text: str']}
+    QgsDoubleSpinBox.__attribute_docs__ = {'returnPressed': 'Emitted when the Return or Enter key is used in the line edit.\n\n.. versionadded:: 3.40\n', 'textEdited': 'Emitted when the the value has been manually edited via line edit.\n\n.. versionadded:: 3.40\n', 'editingTimeout': 'Emitted when either:\n\n1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)\n2. or, immediately after the widget has lost focus after its value was changed.\n\nThis signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly\nwhile the user in the middle of setting the value.\n\n.. seealso:: :py:func:`editingTimeoutInterval`\n\n.. versionadded:: 3.42\n'}
+    QgsDoubleSpinBox.__signal_arguments__ = {'textEdited': ['text: str'], 'editingTimeout': ['value: float']}
     QgsDoubleSpinBox.__group__ = ['editorwidgets']
-except NameError:
+except (NameError, AttributeError):
     pass

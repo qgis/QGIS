@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerrenderer.h"
+#include "moc_qgsrasterlayerrenderer.cpp"
 
 #include "qgsmessagelog.h"
 #include "qgsrasterdataprovider.h"
@@ -38,6 +39,8 @@
 #include "qgsinterval.h"
 #include "qgsunittypes.h"
 #include "qgsrasternuller.h"
+#include "qgsrenderedlayerstatistics.h"
+#include "qgsrasterlabeling.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -272,7 +275,27 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
        && !( rendererContext.flags() & Qgis::RenderContextFlag::RenderPreviewJob )
        && !( rendererContext.flags() & Qgis::RenderContextFlag::Render3DMap ) )
   {
-    layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
+    if ( rasterRenderer->needsRefresh( rendererContext.extent() ) )
+    {
+      QList<double> minValues;
+      QList<double> maxValues;
+      const QgsRasterMinMaxOrigin &minMaxOrigin = rasterRenderer->minMaxOrigin();
+      for ( const int bandIdx : rasterRenderer->usesBands() )
+      {
+        double min;
+        double max;
+        layer->computeMinMax( bandIdx, minMaxOrigin, minMaxOrigin.limits(),
+                              rendererContext.extent(), static_cast<int>( QgsRasterLayer::SAMPLE_SIZE ),
+                              min, max );
+        minValues.append( min );
+        maxValues.append( max );
+      }
+
+      rasterRenderer->refresh( rendererContext.extent(), minValues, maxValues );
+      QgsRenderedLayerStatistics *layerStatistics = new QgsRenderedLayerStatistics( layer->id(), minValues, maxValues );
+      layerStatistics->setBoundingBox( rendererContext.extent() );
+      appendRenderedItemDetails( layerStatistics );
+    }
   }
 
   mPipe->evaluateDataDefinedProperties( rendererContext.expressionContext() );
@@ -426,6 +449,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     }
   }
 
+  prepareLabeling( layer );
+
   mFeedback->setRenderContext( rendererContext );
 
   mPipe->moveToThread( nullptr );
@@ -529,6 +554,18 @@ bool QgsRasterLayerRenderer::render()
   if ( mDrawElevationMap )
     drawElevationMap();
 
+  renderingProfile.reset();
+
+  if ( mLabelProvider && !renderContext()->renderingStopped() )
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > labelingProfile;
+    if ( mEnableProfile )
+    {
+      labelingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Labeling" ), QStringLiteral( "rendering" ) );
+    }
+    drawLabeling();
+  }
+
   if ( restoreOldResamplingStage )
   {
     mPipe->setResamplingStage( oldResamplingState );
@@ -570,6 +607,35 @@ bool QgsRasterLayerRenderer::forceRasterRender() const
   }
 
   return false;
+}
+
+void QgsRasterLayerRenderer::prepareLabeling( QgsRasterLayer *layer )
+{
+  QgsRenderContext &context = *renderContext();
+
+  if ( QgsLabelingEngine *engine2 = context.labelingEngine() )
+  {
+    if ( QgsAbstractRasterLayerLabeling *labeling = layer->labeling() )
+    {
+      if ( layer->labelsEnabled() && labeling->isInScaleRange( context.rendererScale() ) )
+      {
+        std::unique_ptr< QgsRasterLayerLabelProvider > provider = labeling->provider( layer );
+        if ( provider )
+        {
+          // engine takes ownership
+          mLabelProvider = provider.release();
+          mLabelProvider->startRender( context );
+          engine2->addProvider( mLabelProvider );
+        }
+      }
+    }
+  }
+}
+
+void QgsRasterLayerRenderer::drawLabeling()
+{
+  if ( mLabelProvider )
+    mLabelProvider->generateLabels( *renderContext(), mPipe.get(), mRasterViewPort, mFeedback );
 }
 
 void QgsRasterLayerRenderer::drawElevationMap()

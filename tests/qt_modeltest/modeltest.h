@@ -64,10 +64,10 @@ class CORE_EXPORT ModelTest : public QObject
 
     struct Changing
     {
-      QModelIndex parent;
-      int oldSize;
-      QVariant last;
-      QVariant next;
+        QModelIndex parent;
+        int oldSize;
+        QVariant last;
+        QVariant next;
     };
     QStack<Changing> insert;
     QStack<Changing> remove;

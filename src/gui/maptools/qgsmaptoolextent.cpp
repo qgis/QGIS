@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 
-
 #include "qgsmaptoolextent.h"
+#include "moc_qgsmaptoolextent.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 

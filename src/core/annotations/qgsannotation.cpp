@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsannotation.h"
+#include "moc_qgsannotation.cpp"
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"

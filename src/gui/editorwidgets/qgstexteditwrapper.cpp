@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstexteditwrapper.h"
+#include "moc_qgstexteditwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
@@ -65,10 +66,7 @@ QVariant QgsTextEditWrapper::value() const
     v = mLineEdit->text();
   }
 
-  if ( ( v.isEmpty() && ( field().type() == QMetaType::Type::Int
-                          || field().type() == QMetaType::Type::Double
-                          || field().type() == QMetaType::Type::LongLong
-                          || field().type() == QMetaType::Type::QDate ) )
+  if ( ( v.isEmpty() && ( field().type() == QMetaType::Type::Int || field().type() == QMetaType::Type::Double || field().type() == QMetaType::Type::LongLong || field().type() == QMetaType::Type::QDate ) )
        || v == QgsApplication::nullRepresentation() )
   {
     return QgsVariantUtils::createNullVariant( field().type() );
@@ -107,7 +105,7 @@ QVariant QgsTextEditWrapper::value() const
       return qjson;
     }
     else
-      // return null value if json is invalid
+    // return null value if json is invalid
     {
       if ( v.length() > 0 )
       {
@@ -181,8 +179,7 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
-    {
+    connect( mLineEdit, &QLineEdit::textChanged, this, [=]( const QString &value ) {
       Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( value );
       Q_NOWARN_DEPRECATED_POP
@@ -212,7 +209,7 @@ void QgsTextEditWrapper::showIndeterminateState()
   }
 
   //note - this is deliberately a zero length string, not a null string!
-  setWidgetValue( QLatin1String( "" ) );  // skip-keyword-check
+  setWidgetValue( QLatin1String( "" ) ); // skip-keyword-check
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );
@@ -318,12 +315,12 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   // "Wrong sequence detection with Postgres"
   bool canConvertToDouble;
   QLocale().toDouble( v, &canConvertToDouble );
-  if ( canConvertToDouble && layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && field().isNumeric() )
+  if ( canConvertToDouble && layer() && layer()->isEditable() && !QLocale().groupSeparator().isNull() && field().isNumeric() )
   {
     v = v.remove( QLocale().groupSeparator() );
   }
 
-  const QVariant currentValue = value( );
+  const QVariant currentValue = value();
   // Note: comparing QVariants leads to funny (and wrong) results:
   // QVariant(0.0) == QVariant(QVariant.Double) -> True
   const bool changed { val != currentValue || QgsVariantUtils::isNull( val ) != QgsVariantUtils::isNull( currentValue ) };

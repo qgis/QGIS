@@ -49,7 +49,6 @@ for highlighting features or geometries on a map canvas.
 %End
   public:
 
-
     QgsHighlight( QgsMapCanvas *mapCanvas /TransferThis/, const QgsGeometry &geom, QgsMapLayer *layer );
 %Docstring
 Constructor for QgsHighlight
@@ -70,7 +69,7 @@ and renderer.
 %End
     ~QgsHighlight();
 
-    QColor color( ) const;
+    QColor color() const;
 %Docstring
 Returns the line/stroke color
 
@@ -83,7 +82,7 @@ Set line/stroke to color, polygon fill to color with alpha = 63.
 This is legacy function, use :py:func:`~QgsHighlight.setFillColor` after :py:func:`~QgsHighlight.setColor` if different fill color is required.
 %End
 
-    QColor fillColor( ) const;
+    QColor fillColor() const;
 %Docstring
 Returns the fill color
 
@@ -96,7 +95,7 @@ Fill color for the highlight.
 Will be used for polygons and points.
 %End
 
-    int width( ) const;
+    int width() const;
 %Docstring
 Returns the stroke width
 
@@ -112,7 +111,7 @@ Set stroke width.
    Ignored in feature mode.
 %End
 
-    double buffer( ) const;
+    double buffer() const;
 %Docstring
 Returns the buffer
 

@@ -39,11 +39,11 @@ class QMenu;
 class QAction;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsplottool.h"
 #include "qgsplottoolpan.h"
 #include "qgsplottoolzoom.h"
-% End
+//%End
 #endif
 
 
@@ -56,7 +56,6 @@ class QAction;
  */
 class GUI_EXPORT QgsPlotTool : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsPlotToolPan *>( sipCpp ) != nullptr )
@@ -73,7 +72,6 @@ class GUI_EXPORT QgsPlotTool : public QObject
     Q_OBJECT
 
   public:
-
     ~QgsPlotTool() override;
 
     /**
@@ -232,7 +230,6 @@ class GUI_EXPORT QgsPlotTool : public QObject
     void deactivated();
 
   protected:
-
     //! Constructor takes a plot canvas as a parameter.
     QgsPlotTool( QgsPlotCanvas *canvas SIP_TRANSFERTHIS, const QString &name );
 
@@ -270,7 +267,7 @@ class GUI_EXPORT QgsPlotTool : public QObject
     QString mToolName;
 
     //! Optional action associated with tool
-    QPointer< QAction > mAction;
+    QPointer<QAction> mAction;
 
     //! Cursor used by tool
     QCursor mCursor = Qt::ArrowCursor;

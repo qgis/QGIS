@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerselectionproperties.h"
+#include "moc_qgsvectorlayerselectionproperties.cpp"
 #include "qgscolorutils.h"
 #include "qgssymbollayerutils.h"
 

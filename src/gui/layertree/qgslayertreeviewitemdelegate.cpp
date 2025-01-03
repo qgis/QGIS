@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewitemdelegate.h"
+#include "moc_qgslayertreeviewitemdelegate.cpp"
 
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
@@ -84,7 +85,7 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   const QColor baseColor = opt.palette.base().color();
   const QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
 
-  const bool shouldShowLayerMark = tRect.left() < 0;  // Layer/group node icon not visible anymore?
+  const bool shouldShowLayerMark = tRect.left() < 0; // Layer/group node icon not visible anymore?
   if ( shouldShowLayerMark )
   {
     const int tPadding = tRect.height() / 10;
@@ -95,9 +96,9 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
     QBrush b = QBrush( opt.palette.mid() );
     QColor bc = b.color();
     // mix mid color with base color for a less dominant, yet still opaque, version of the color
-    bc.setRed( static_cast< int >( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
-    bc.setGreen( static_cast< int >( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
-    bc.setBlue( static_cast< int >( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
+    bc.setRed( static_cast<int>( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
+    bc.setGreen( static_cast<int>( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
+    bc.setBlue( static_cast<int>( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
     b.setColor( bc );
     painter->setBrush( b );
     painter->drawRect( mRect );
@@ -133,9 +134,9 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
     const QPen pp = painter->pen();
     QBrush b = QBrush( opt.palette.midlight() );
     QColor bc = b.color();
-    bc.setRed( static_cast< int >( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
-    bc.setGreen( static_cast< int >( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
-    bc.setBlue( static_cast< int >( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
+    bc.setRed( static_cast<int>( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
+    bc.setGreen( static_cast<int>( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
+    bc.setBlue( static_cast<int>( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
     b.setColor( bc );
     painter->setBrush( b );
     painter->setPen( QPen( QBrush( opt.palette.mid() ), 0.25 ) );
@@ -204,7 +205,7 @@ void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
   if ( indicators.isEmpty() )
     return;
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   QStyleOptionViewItem opt( mLayerTreeView->viewOptions() );
 #else
   QStyleOptionViewItem opt;

@@ -34,8 +34,8 @@ class TestQgsProjectExpressions : public QObject
     TestQgsProjectExpressions();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void projectExpressions();
 
@@ -99,8 +99,8 @@ void TestQgsProjectExpressions::projectExpressions()
 
   QCOMPARE( count_project_loaded - count_before_project, 1 ); // myprojectfunction
 
-  exp = myExpression; // Re-parse it
-  QCOMPARE( exp.evaluate().toInt(), 2 );  // Different result because now it's from project
+  exp = myExpression;                    // Re-parse it
+  QCOMPARE( exp.evaluate().toInt(), 2 ); // Different result because now it's from project
 
   // Unload expressions from project, reload user ones
   QgsProject::instance()->cleanFunctionsFromProject();
@@ -108,7 +108,7 @@ void TestQgsProjectExpressions::projectExpressions()
   QCOMPARE( count_before_project, count_project_unloaded ); // myprojectfunction is gone
 
   QCOMPARE( QgsExpression::functionIndex( QStringLiteral( "myprojectfunction" ) ), -1 );
-  exp = myExpression; // Re-parse it
+  exp = myExpression;                    // Re-parse it
   QCOMPARE( exp.evaluate().toInt(), 1 ); // Original result, coming from user function
 }
 

@@ -35,7 +35,6 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
       * \param parent is the parent widget

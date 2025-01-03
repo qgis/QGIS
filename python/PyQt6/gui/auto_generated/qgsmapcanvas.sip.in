@@ -39,7 +39,6 @@ Map canvas is a class for displaying all GIS data types on a canvas.
       sipType = nullptr;
 %End
   public:
-
     QgsMapCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -265,7 +264,7 @@ If ``magnified`` is ``False`` then scale lock settings will be ignored, and the 
 rectangle will ALWAYS be visible in the canvas.
 %End
 
-    bool setReferencedExtent( const QgsReferencedRectangle &extent ) throw( QgsCsException );
+    bool setReferencedExtent( const QgsReferencedRectangle &extent );
 %Docstring
 Sets the canvas to the specified ``extent``.
 
@@ -360,9 +359,7 @@ Pan to the combined extent of the selected features of all provided (vector) lay
 .. versionadded:: 3.18
 %End
 
-    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
-                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
-                          int flashes = 3, int duration = 500 );
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
 %Docstring
 Causes a set of features with matching ``ids`` from a vector ``layer`` to flash
 within the canvas.
@@ -377,9 +374,7 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 .. seealso:: :py:func:`flashGeometries`
 %End
 
-    void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
-                          int flashes = 3, int duration = 500 );
+    void flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
 %Docstring
 Causes a set of ``geometries`` to flash within the canvas.
 
@@ -485,7 +480,7 @@ all their child layers.
 
     void freeze( bool frozen = true );
 %Docstring
-Freeze/thaw the map canvas. This is used to prevent the canvas from
+Freezes/thaws the map canvas. This is used to prevent the canvas from
 responding to events while layers are being added/removed etc.
 
 :param frozen: Boolean specifying if the canvas should be frozen (``True``) or
@@ -493,19 +488,27 @@ responding to events while layers are being added/removed etc.
 
 .. seealso:: :py:func:`isFrozen`
 
-.. seealso:: :py:func:`setRenderFlag` freeze() should be used to programmatically halt map updates,
-               while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
+.. seealso:: :py:func:`setRenderFlag`
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.freeze` should be used to programmatically halt map updates,
+   while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 
     bool isFrozen() const;
 %Docstring
 Returns ``True`` if canvas is frozen.
 
-.. seealso:: :py:func:`renderFlag` isFrozen() should be used to determine whether map updates
-have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
-determine whether a user has disabled rendering via GUI.
-
 .. seealso:: :py:func:`freeze`
+
+.. seealso:: :py:func:`renderFlag`
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.isFrozen` should be used to determine whether map updates
+   have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
+   determine whether a user has disabled rendering via GUI.
 %End
 
     bool renderFlag() const;
@@ -515,9 +518,13 @@ renders via the GUI.
 
 .. seealso:: :py:func:`setRenderFlag`
 
-.. seealso:: :py:func:`isFrozen` isFrozen() should be used to determine whether map updates
-have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
-determine whether a user has disabled rendering via GUI.
+.. seealso:: :py:func:`isFrozen`
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.isFrozen` should be used to determine whether map updates
+   have been halted programmatically, while :py:func:`~QgsMapCanvas.renderFlag` should be used to
+   determine whether a user has disabled rendering via GUI.
 %End
 
     Qgis::DistanceUnit mapUnits() const;
@@ -777,7 +784,7 @@ Sets segmentation tolerance type (maximum angle or maximum difference between cu
 :param type: the segmentation tolerance typename
 %End
 
-    QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
+    QList<QgsMapCanvasAnnotationItem *> annotationItems() const;
 %Docstring
 Returns a list of all annotation items in the canvas.
 %End
@@ -946,8 +953,12 @@ Sets whether a user has disabled canvas renders via the GUI.
 
 .. seealso:: :py:func:`renderFlag`
 
-.. seealso:: :py:func:`freeze` freeze() should be used to programmatically halt map updates,
-             while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
+.. seealso:: :py:func:`freeze`
+
+.. note::
+
+   :py:func:`~QgsMapCanvas.freeze` should be used to programmatically halt map updates,
+   while :py:func:`~QgsMapCanvas.setRenderFlag` should only be used when users disable rendering via GUI.
 %End
 
     void stopRendering();
@@ -1263,7 +1274,6 @@ Can be used to extend the context menu.
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void keyPressEvent( QKeyEvent *e );

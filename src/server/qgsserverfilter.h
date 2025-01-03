@@ -34,17 +34,10 @@ class QgsServerInterface;
  * \brief Class defining I/O filters for QGIS Server and
  * implemented in plugins.
  *
- * Filters can define any (or none) of the following hooks:
- *
- * - requestReady() - called when request is ready
- * - responseComplete() - called when the response is complete after core services have returned to main loop
- * - sendResponse() - called just before sending output to FGCI
  */
 class SERVER_EXPORT QgsServerFilter
 {
-
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors
@@ -141,10 +134,8 @@ class SERVER_EXPORT QgsServerFilter
     virtual bool onSendResponse();
 
 
-
   private:
     QgsServerInterface *mServerInterface = nullptr;
-
 };
 
 typedef QMultiMap<int, QgsServerFilter *> QgsServerFiltersMap;

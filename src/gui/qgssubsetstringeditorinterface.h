@@ -30,14 +30,13 @@
  *
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsSubsetStringEditorInterface: public QDialog
+class GUI_EXPORT QgsSubsetStringEditorInterface : public QDialog
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsSubsetStringEditorInterface( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                    Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSubsetStringEditorInterface( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Returns the subset string entered in the dialog.
     virtual QString subsetString() const = 0;

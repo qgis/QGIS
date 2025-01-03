@@ -32,6 +32,8 @@ endif()
 # Static
 add_library(provider_spatialite_a STATIC ${SPATIALITE_SRCS})
 
+set_target_properties(provider_spatialite_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 target_include_directories(provider_spatialite_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/spatialite
 )
@@ -48,13 +50,11 @@ target_compile_definitions(provider_spatialite_a PRIVATE "CMAKE_SOURCE_DIR=\"${C
 target_compile_definitions(provider_spatialite_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})
-  else()
-    QT5_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})
-  endif()
+  qt_wrap_ui(SPATIALITE_UIS_H ${SPATIALITE_UIS})
 
   add_library(provider_spatialite_gui_a STATIC ${SPATIALITE_GUI_SRCS} ${SPATIALITE_UIS_H})
+
+  set_target_properties(provider_spatialite_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   target_include_directories(provider_spatialite_gui_a PUBLIC
     ${CMAKE_BINARY_DIR}/src/providers/spatialite
@@ -90,12 +90,14 @@ if (FORCE_STATIC_LIBS)
 else()
   add_library(provider_spatialite MODULE ${SPATIALITE_SRCS} ${SPATIALITE_GUI_SRCS} ${SPATIALITE_UIS_H})
 
+  set_target_properties(provider_spatialite PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
   # require c++17
   target_compile_features(provider_spatialite PRIVATE cxx_std_17)
   target_compile_definitions(provider_spatialite PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_compile_definitions(provider_spatialite PRIVATE "-DQT_NO_FOREACH")
-  
+
   target_link_libraries(provider_spatialite
     qgis_core
     spatialite::spatialite

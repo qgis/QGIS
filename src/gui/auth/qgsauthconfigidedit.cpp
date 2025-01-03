@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthconfigidedit.h"
+#include "moc_qgsauthconfigidedit.cpp"
 #include "ui_qgsauthconfigidedit.h"
 
 #include "qgsauthguiutils.h"
@@ -53,8 +54,7 @@ const QString QgsAuthConfigIdEdit::configId()
 bool QgsAuthConfigIdEdit::validate()
 {
   const QString authcfg( leAuthCfg->text() );
-  bool curvalid = ( ( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
-                    || ( mAllowEmpty && authcfg.isEmpty() ) );
+  bool curvalid = ( ( authcfg == mAuthCfgOrig && authcfg.size() == 7 ) || ( mAllowEmpty && authcfg.isEmpty() ) );
 
   if ( !QgsApplication::authManager()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
   {

@@ -64,12 +64,12 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
     /**
      * Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
-     * \deprecated QGIS 3.40. Use setOverviewCanvas instead.
+     * \deprecated QGIS 3.40. Use setOverviewCanvas() instead.
      */
     void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) SIP_DEPRECATED; // TODO QGIS 4.0 remove
-    % MethodCode
+    //%MethodCode
     sipCpp->setOverviewCanvas( a0 );
-    % End
+    //%End
 #endif
 
     /**
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
      * Emitted when the set of layers (or order of layers) visible in the
      * canvas changes.
      */
-    void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
+    void canvasLayersChanged( const QList<QgsMapLayer *> &layers );
 
   private slots:
     void nodeVisibilityChanged();
@@ -102,8 +102,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
   private:
     //! Fill canvasLayers and overviewLayers lists from node and its descendants
-    void setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers,
-                          QList<QgsMapLayer *> &allLayers );
+    void setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers, QList<QgsMapLayer *> &allLayers );
 
     void deferredSetCanvasLayers();
 
@@ -115,10 +114,8 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
     bool mAutoSetupOnFirstLayer;
 
-    bool mHasFirstLayer;
     bool mHasLayersLoaded;
     bool mHasValidLayersLoaded = false;
-    bool mUpdatingProjectLayerOrder = false;
 
     QgsCoordinateReferenceSystem mFirstCRS;
 };

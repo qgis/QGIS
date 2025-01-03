@@ -28,7 +28,7 @@
  * \class QgsFcgiServerRequest
  * \brief Class defining fcgi request
  */
-class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
+class SERVER_EXPORT QgsFcgiServerRequest : public QgsServerRequest
 {
   public:
     QgsFcgiServerRequest();
@@ -60,7 +60,7 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
     void fillUrl( QUrl &url ) const;
 
     QByteArray mData;
-    bool       mHasError = false;
+    bool mHasError = false;
 };
 
 #endif

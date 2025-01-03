@@ -30,10 +30,9 @@ class QgsFeature;
 /**
  * The QgsLandingPageHandler implements the landing page handler.
  */
-class QgsLandingPageHandler: public QgsServerOgcApiHandler
+class QgsLandingPageHandler : public QgsServerOgcApiHandler
 {
   public:
-
     QgsLandingPageHandler( const QgsServerSettings *settings );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
@@ -62,8 +61,6 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
 
 
   private:
-
-
     json projectsData( const QgsServerRequest &request ) const;
 
     const QgsServerSettings *mSettings = nullptr;
@@ -73,10 +70,9 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
 /**
  * The QgsLandingPageMapHandler implements the landing page map handler (JSON only).
  */
-class QgsLandingPageMapHandler: public QgsServerOgcApiHandler
+class QgsLandingPageMapHandler : public QgsServerOgcApiHandler
 {
   public:
-
     QgsLandingPageMapHandler( const QgsServerSettings *settings );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
@@ -97,7 +93,6 @@ class QgsLandingPageMapHandler: public QgsServerOgcApiHandler
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
 
   private:
-
     const QgsServerSettings *mSettings = nullptr;
 };
 

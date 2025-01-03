@@ -5,5 +5,5 @@ QgsLayoutItemAttributeTable.RelationChildren = QgsLayoutItemAttributeTable.Conte
 try:
     QgsLayoutItemAttributeTable.create = staticmethod(QgsLayoutItemAttributeTable.create)
     QgsLayoutItemAttributeTable.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

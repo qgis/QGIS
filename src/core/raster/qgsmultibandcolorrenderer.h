@@ -123,6 +123,22 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
 
+    /**
+     * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
+     * \a min and \a max size need to be at least 3.
+     * If \a min or \a max size is greater than 3, the last values are ignored.
+     * The first value is associated with the red contrast.
+     * The second value is associated with the green contrast.
+     * The third value is associated with the blue contrast.
+     * NaN values are ignored.
+     * If \a forceRefresh is TRUE, this will force the refresh even if needsRefresh() returns FALSE.
+     * \returns TRUE if the renderer has been refreshed
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    bool refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh = false ) override SIP_SKIP;
+
   private:
 #ifdef SIP_RUN
     QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & );

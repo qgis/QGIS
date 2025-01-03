@@ -29,9 +29,14 @@ class topolTest;
 class QgisInterface;
 class WKTReader;
 
-enum ValidateType { ValidateAll, ValidateExtent, ValidateSelected };
+enum ValidateType
+{
+  ValidateAll,
+  ValidateExtent,
+  ValidateSelected
+};
 
-typedef ErrorList( topolTest::*testFunction )( QgsVectorLayer *, QgsVectorLayer *, bool );
+typedef ErrorList ( topolTest::*testFunction )( QgsVectorLayer *, QgsVectorLayer *, bool );
 
 class TopologyRule
 {
@@ -57,12 +62,7 @@ class TopologyRule
      * Constructor
      * initializes the test to use both layers
      */
-    explicit TopologyRule( testFunction f0 = nullptr,
-                           bool useSecondLayer0 = true,
-                           bool useSpatialIndex0 = false,
-                           const QList<Qgis::GeometryType> &layer1SupportedTypes0 = QList<Qgis::GeometryType>(),
-                           const QList<Qgis::GeometryType> &layer2SupportedTypes0 = QList<Qgis::GeometryType>()
-                         )
+    explicit TopologyRule( testFunction f0 = nullptr, bool useSecondLayer0 = true, bool useSpatialIndex0 = false, const QList<Qgis::GeometryType> &layer1SupportedTypes0 = QList<Qgis::GeometryType>(), const QList<Qgis::GeometryType> &layer2SupportedTypes0 = QList<Qgis::GeometryType>() )
       : f( f0 )
       , useSecondLayer( useSecondLayer0 )
       , useSpatialIndex( useSpatialIndex0 )
@@ -77,7 +77,7 @@ class TopologyRule
 class PointComparer
 {
   public:
-    bool operator()( const QgsPointXY &p1, const QgsPointXY &p2 )const
+    bool operator()( const QgsPointXY &p1, const QgsPointXY &p2 ) const
     {
       if ( p1.x() < p2.x() )
       {
@@ -94,7 +94,7 @@ class PointComparer
 };
 
 
-class topolTest: public QObject
+class topolTest : public QObject
 {
     Q_OBJECT
 

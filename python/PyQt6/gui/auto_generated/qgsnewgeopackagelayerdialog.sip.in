@@ -9,7 +9,7 @@
 
 
 
-class QgsNewGeoPackageLayerDialog: QDialog
+class QgsNewGeoPackageLayerDialog : QDialog
 {
 %Docstring(signature="appended")
 Dialog to set up parameters to create a new GeoPackage layer, and on :py:func:`~accept` to create it and add it to the layers
@@ -19,7 +19,6 @@ Dialog to set up parameters to create a new GeoPackage layer, and on :py:func:`~
 #include "qgsnewgeopackagelayerdialog.h"
 %End
   public:
-
     enum OverwriteBehavior /BaseType=IntEnum/
     {
       Prompt,

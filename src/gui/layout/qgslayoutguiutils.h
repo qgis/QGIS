@@ -32,16 +32,12 @@ class QgsMapCanvas;
  */
 class GUI_EXPORT QgsLayoutGuiUtils
 {
-
   public:
-
     /**
      * Registers the GUI handlers for known layout item types.
      */
     static void registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas );
-
 };
-
 
 
 #endif // QGSLAYOUTGUIUTILS_H

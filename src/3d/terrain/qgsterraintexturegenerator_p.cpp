@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgsterraintexturegenerator_p.h"
+#include "moc_qgsterraintexturegenerator_p.cpp"
 
-#include <qgsmaprenderercustompainterjob.h>
-#include <qgsmaprenderersequentialjob.h>
-#include <qgsmapsettings.h>
-#include <qgsmapthemecollection.h>
-#include <qgsproject.h>
-
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettings.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgs3dmapsettings.h"
 
 #include "qgseventtracing.h"
@@ -30,7 +30,7 @@
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : mMap( map )
   , mLastJobId( 0 )
-  , mTextureSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) )
+  , mTextureSize( QSize( mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->mapTileResolution() ) )
 {
 }
 
@@ -114,7 +114,7 @@ void QgsTerrainTextureGenerator::waitForFinished()
       p.setPen( Qt::red );
       p.setBackgroundMode( Qt::OpaqueMode );
       QFont font = p.font();
-      font.setPixelSize( std::max( 30, mMap.mapTileResolution() / 6 ) );
+      font.setPixelSize( std::max( 30, mMap.terrainSettings()->mapTileResolution() / 6 ) );
       p.setFont( font );
       p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
       p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
@@ -148,7 +148,7 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
     p.setPen( Qt::red );
     p.setBackgroundMode( Qt::OpaqueMode );
     QFont font = p.font();
-    font.setPixelSize( std::max( 30, mMap.mapTileResolution() / 6 ) );
+    font.setPixelSize( std::max( 30, mMap.terrainSettings()->mapTileResolution() / 6 ) );
     p.setFont( font );
     p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
     p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
@@ -191,10 +191,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
     layers = mapThemes->mapThemeVisibleLayers( mapThemeName );
     mapSettings.setLayerStyleOverrides( mapThemes->mapThemeStyleOverrides( mapThemeName ) );
   }
-  layers.erase( std::remove_if( layers.begin(),
-                                layers.end(),
-  []( const QgsMapLayer * layer ) { return layer->renderer3D(); } ),
-  layers.end() );
+  layers.erase( std::remove_if( layers.begin(), layers.end(), []( const QgsMapLayer *layer ) { return layer->renderer3D(); } ), layers.end() );
   mapSettings.setLayers( layers );
 
   return mapSettings;

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsserverlogger.h"
+#include "moc_qgsserverlogger.cpp"
 
 QgsServerLogger *QgsServerLogger::sInstance = nullptr;
 
@@ -62,7 +63,7 @@ void QgsServerLogger::setLogFile( const QString &filename )
   mLogFile.close();
   mLogFile.setFileName( filename );
 
-  if ( ( ! filename.isEmpty() ) && mLogFile.open( QIODevice::Append ) )
+  if ( ( !filename.isEmpty() ) && mLogFile.open( QIODevice::Append ) )
   {
     mTextStream.setDevice( &mLogFile );
   }

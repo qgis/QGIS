@@ -31,7 +31,6 @@
  */
 class GUI_EXPORT QgsLayerMetadataSourceSelectProvider : public QgsSourceSelectProvider
 {
-
   public:
     QgsLayerMetadataSourceSelectProvider();
 

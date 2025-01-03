@@ -21,6 +21,7 @@ email                : sherman at mrcc.com
 #include "qgsvectordataprovider.h"
 #include "qgsogrproviderutils.h"
 
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 class QgsOgrLayer;
@@ -117,7 +118,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool createAttributeIndex( int field ) override;
     Qgis::VectorProviderCapabilities capabilities() const override;
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
-    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
+    QgsAttributeList pkAttributeIndexes() const override;
+    QString geometryColumnName() const override;
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
@@ -216,7 +218,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid = false;
-    mutable std::unique_ptr< OGREnvelope3D > mExtent2D;
+    mutable std::unique_ptr< OGREnvelope > mExtent2D;
     mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
     bool mForceRecomputeExtent = false;
 

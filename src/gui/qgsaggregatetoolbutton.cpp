@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsaggregatetoolbutton.h"
+#include "moc_qgsaggregatetoolbutton.cpp"
 #include "qgsaggregatecalculator.h"
 #include "qgis.h"
 
@@ -50,16 +51,14 @@ void QgsAggregateToolButton::aboutToShowMenu()
   mMenu->clear();
 
   QAction *action = mMenu->addAction( tr( "Exclude" ) );
-  connect( action, &QAction::triggered, this, [ this ]
-  {
+  connect( action, &QAction::triggered, this, [this] {
     setActive( false );
   } );
 
   for ( const auto &aggregate : std::as_const( mAvailableAggregates ) )
   {
     QAction *action = mMenu->addAction( aggregate.name );
-    connect( action, &QAction::triggered, this, [ this, aggregate ]
-    {
+    connect( action, &QAction::triggered, this, [this, aggregate] {
       setText( aggregate.name );
       setAggregate( aggregate.function );
     } );

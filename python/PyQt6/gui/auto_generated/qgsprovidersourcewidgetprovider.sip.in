@@ -22,7 +22,6 @@ An interface for providers of widgets designed to configure a data provider's so
 #include "qgsprovidersourcewidgetprovider.h"
 %End
   public:
-
     virtual ~QgsProviderSourceWidgetProvider();
 
     virtual QString providerKey() const = 0;

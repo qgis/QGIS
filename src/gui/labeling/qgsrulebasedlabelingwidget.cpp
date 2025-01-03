@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabelingwidget.h"
+#include "moc_qgsrulebasedlabelingwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -93,7 +94,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   {
     // copy simple label settings to first rule
     mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
-    std::unique_ptr< QgsPalLayerSettings > newSettings = std::make_unique< QgsPalLayerSettings >( mLayer->labeling()->settings() );
+    std::unique_ptr<QgsPalLayerSettings> newSettings = std::make_unique<QgsPalLayerSettings>( mLayer->labeling()->settings() );
     newSettings->drawLabels = true; // otherwise we may be trying to copy a "blocking" setting to a rule - which is confusing for users!
     mRootRule->appendChild( new QgsRuleBasedLabeling::Rule( newSettings.release() ) );
   }
@@ -250,7 +251,6 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabelingWidget::currentRule()
 QgsLabelingRulePropsDialog::QgsLabelingRulePropsDialog( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *mapCanvas )
   : QDialog( parent )
 {
-
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
@@ -312,9 +312,7 @@ Qt::ItemFlags QgsRuleBasedLabelingModel::flags( const QModelIndex &index ) const
 
   const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
-         Qt::ItemIsEditable | checkable |
-         Qt::ItemIsDragEnabled | drop;
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | checkable | Qt::ItemIsDragEnabled | drop;
 }
 
 QVariant QgsRuleBasedLabelingModel::data( const QModelIndex &index, int role ) const
@@ -352,7 +350,7 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex &index, int role ) c
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->settings() )
   {
     const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-    return QgsPalLayerSettings::labelSettingsPreviewPixmap( *rule->settings(), QSize( iconSize, iconSize ), QString(),  static_cast< int >( iconSize * ICON_PADDING_FACTOR ) );
+    return QgsPalLayerSettings::labelSettingsPreviewPixmap( *rule->settings(), QSize( iconSize, iconSize ), QString(), static_cast<int>( iconSize * ICON_PADDING_FACTOR ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
@@ -648,8 +646,7 @@ void QgsRuleBasedLabelingModel::insertRule( const QModelIndex &parent, int befor
 
 void QgsRuleBasedLabelingModel::updateRule( const QModelIndex &parent, int row )
 {
-  emit dataChanged( index( row, 0, parent ),
-                    index( row, columnCount( parent ), parent ) );
+  emit dataChanged( index( row, 0, parent ), index( row, columnCount( parent ), parent ) );
 }
 
 /////////
@@ -678,8 +675,7 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   {
     groupScale->setChecked( true );
     // caution: rule uses scale denom, scale widget uses true scales
-    mScaleRangeWidget->setScaleRange( std::max( rule->minimumScale(), 0.0 ),
-                                      std::max( rule->maximumScale(), 0.0 ) );
+    mScaleRangeWidget->setScaleRange( std::max( rule->minimumScale(), 0.0 ), std::max( rule->maximumScale(), 0.0 ) );
   }
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
 
@@ -694,7 +690,7 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
     mSettings = new QgsPalLayerSettings;
   }
 
-  mLabelingGui = new QgsLabelingGui( nullptr, mMapCanvas, *mSettings, this );
+  mLabelingGui = new QgsLabelingGui( mMapCanvas, *mSettings, this );
   mLabelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mLabelingGui );
@@ -711,8 +707,8 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
-  connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
+  connect( mFilterRadio, &QRadioButton::toggled, this, [=]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [=]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) ); } );
 }
 
 QgsLabelingRulePropsWidget::~QgsLabelingRulePropsWidget()
@@ -734,7 +730,7 @@ void QgsLabelingRulePropsWidget::testFilter()
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Test Filter" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ), tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
     return;
   }
 

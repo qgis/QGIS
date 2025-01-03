@@ -28,7 +28,6 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
@@ -208,72 +207,134 @@ This setting dictates which layers are to be rendered using their 3D rendering c
 
 
 
-    void setTerrainVerticalScale( double zScale );
+    const QgsAbstractTerrainSettings *terrainSettings() const;
+%Docstring
+Returns the terrain settings.
+
+.. warning::
+
+   Modifications should never be made to the returned object. Instead use :py:func:`~Qgs3DMapSettings.setTerrainSettings`, so that
+   the corresponding changed signals are correctly emitted.
+
+.. seealso:: :py:func:`setTerrainSettings`
+
+.. versionadded:: 3.42
+%End
+
+    void setTerrainSettings( QgsAbstractTerrainSettings *settings /Transfer/ );
+%Docstring
+Sets the terrain settings.
+
+.. seealso:: :py:func:`terrainSettings`
+
+.. versionadded:: 3.42
+%End
+
+ void setTerrainVerticalScale( double zScale ) /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Sets vertical scale (exaggeration) of terrain
 (1 = true scale, > 1 = hills get more pronounced)
-%End
-    double terrainVerticalScale() const;
-%Docstring
-Returns vertical scale (exaggeration) of terrain
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    void setMapTileResolution( int res );
+ double terrainVerticalScale() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
+%Docstring
+Returns vertical scale (exaggeration) of terrain
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
+%End
+
+ void setMapTileResolution( int res ) /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Sets resolution (in pixels) of the texture of a terrain tile
 
 .. seealso:: :py:func:`mapTileResolution`
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    int mapTileResolution() const;
+ int mapTileResolution() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Returns resolution (in pixels) of the texture of a terrain tile. This parameter influences
 how many zoom levels for terrain tiles there will be (together with :py:func:`~Qgs3DMapSettings.maxTerrainGroundError`)
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    void setMaxTerrainScreenError( float error );
+ void setMaxTerrainScreenError( double error ) /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Sets maximum allowed screen error of terrain tiles in pixels.
 
 .. seealso:: :py:func:`maxTerrainScreenError`
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    float maxTerrainScreenError() const;
+ double maxTerrainScreenError() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Returns maximum allowed screen error of terrain tiles in pixels. This parameter decides
 how aggressively less detailed terrain tiles are swapped to more detailed ones as camera gets closer.
 Each tile has its error defined in world units - this error gets projected to screen pixels
 according to camera view and if the tile's error is greater than the allowed error, it will
 be swapped by more detailed tiles with lower error.
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    void setMaxTerrainGroundError( float error );
+ void setMaxTerrainGroundError( double error ) /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
-Returns maximum ground error of terrain tiles in world units.
+Sets the maximum ground error of terrain tiles in world units.
 
 .. seealso:: :py:func:`maxTerrainGroundError`
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    float maxTerrainGroundError() const;
+ double maxTerrainGroundError() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Returns maximum ground error of terrain tiles in world units. This parameter influences
 how many zoom levels there will be (together with :py:func:`~Qgs3DMapSettings.mapTileResolution`).
 This value tells that when the given ground error is reached (e.g. 10 meters), it makes no sense
 to further split terrain tiles into finer ones because they will not add extra details anymore.
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    void setTerrainElevationOffset( float offset );
+ void setTerrainElevationOffset( double offset ) /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Sets the terrain elevation offset (used to move the terrain up or down)
 
 .. seealso:: :py:func:`terrainElevationOffset`
 
-.. versionadded:: 3.18
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
-    float terrainElevationOffset() const;
+ double terrainElevationOffset() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
 Returns the elevation offset of the terrain (used to move the terrain up or down)
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettings` instead.
 %End
 
 
@@ -440,6 +501,24 @@ Sets the eye dome lighting distance value (contributes to the contrast of the im
     int eyeDomeLightingDistance() const;
 %Docstring
 Returns the eye dome lighting distance value (contributes to the contrast of the image)
+%End
+
+    void setStopUpdates( bool enabled );
+%Docstring
+Sets whether scene updates on camera movement should be enabled
+
+.. note::
+
+   By default, scene is updating on camera movement. Useful for debugging purposes.
+
+.. versionadded:: 3.42
+%End
+
+    bool stopUpdates() const;
+%Docstring
+Returns whether the scene updates on camera movement
+
+.. versionadded:: 3.42
 %End
 
     void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
@@ -705,6 +784,20 @@ Sets whether the extent is displayed on the main 2D map canvas
 .. versionadded:: 3.32
 %End
 
+    void setShowDebugPanel( bool enabled );
+%Docstring
+Sets whether the debug side panel is shown
+
+.. versionadded:: 3.42
+%End
+
+    bool showDebugPanel() const;
+%Docstring
+Returns whether the debug side panel is shown
+
+.. versionadded:: 3.42
+%End
+
   signals:
 
     void settingsChanged();
@@ -736,28 +829,57 @@ Emitted when the list of map layers for 3d rendering has changed.
 %Docstring
 Emitted when the terrain generator has changed
 %End
-    void terrainVerticalScaleChanged();
+
+    void terrainSettingsChanged();
 %Docstring
-Emitted when the vertical scale of the terrain has changed
-%End
-    void mapTileResolutionChanged();
-%Docstring
-Emitted when the map tile resoulution has changed
-%End
-    void maxTerrainScreenErrorChanged();
-%Docstring
-Emitted when the maximum terrain screen error has changed
-%End
-    void maxTerrainGroundErrorChanged();
-%Docstring
-Emitted when the maximum terrain ground error has changed
+Emitted when the terrain settings are changed.
+
+.. versionadded:: 3.42
 %End
 
-    void terrainElevationOffsetChanged( float newElevation );
+ void terrainVerticalScaleChanged() /Deprecated="Since 3.42. Use terrainSettingsChanged() instead."/;
+%Docstring
+Emitted when the vertical scale of the terrain has changed
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettingsChanged` instead.
+%End
+
+ void mapTileResolutionChanged() /Deprecated="Since 3.42. Use terrainSettingsChanged() instead."/;
+%Docstring
+Emitted when the map tile resoulution has changed
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettingsChanged` instead.
+%End
+
+ void maxTerrainScreenErrorChanged() /Deprecated="Since 3.42. Use terrainSettingsChanged() instead."/;
+%Docstring
+Emitted when the maximum terrain screen error has changed
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettingsChanged` instead.
+%End
+
+ void maxTerrainGroundErrorChanged() /Deprecated="Since 3.42. Use terrainSettingsChanged() instead."/;
+%Docstring
+Emitted when the maximum terrain ground error has changed
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettingsChanged` instead.
+%End
+
+ void terrainElevationOffsetChanged( double newElevation ) /Deprecated="Since 3.42. Use terrainSettingsChanged() instead."/;
 %Docstring
 Emitted when the terrain elevation offset is changed
 
-.. versionadded:: 3.16
+.. deprecated:: 3.42
+
+   Use :py:func:`~Qgs3DMapSettings.terrainSettingsChanged` instead.
 %End
 
     void terrainShadingChanged();
@@ -814,6 +936,13 @@ Emitted when the flag whether light source origins are shown has changed.
     void showLabelsChanged();
 %Docstring
 Emitted when the flag whether labels are displayed on terrain tiles has changed
+%End
+
+    void stopUpdatesChanged();
+%Docstring
+Emitted when the flag whether to keep updating scene has changed
+
+.. versionadded:: 3.42
 %End
 
     void eyeDomeLightingEnabledChanged();
@@ -966,6 +1095,24 @@ Emitted when the parameter to display 3d view's extent in the 2D canvas has chan
 .. seealso:: :py:func:`setShowExtentIn2DView`
 
 .. versionadded:: 3.32
+%End
+
+    void showDebugPanelChanged( bool shown );
+%Docstring
+Emitted when the Show debug panel checkbox changes value
+
+.. seealso:: :py:func:`setShowDebugPanel`
+
+.. versionadded:: 3.42
+%End
+
+    void originChanged();
+%Docstring
+Emitted when the world's origin point has been shifted
+
+.. seealso:: :py:func:`setOrigin`
+
+.. versionadded:: 3.42
 %End
 
   private:

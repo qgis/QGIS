@@ -1,0 +1,358 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgsmesh3dsymbol.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMesh3DSymbol : QgsAbstract3DSymbol
+{
+%Docstring(signature="appended")
+3D symbol that draws mesh geometry as planar triangles.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmesh3dsymbol.h"
+%End
+  public:
+    enum class RenderingStyle
+    {
+      SingleColor,
+      ColorRamp,
+      ColorRamp2DRendering,
+    };
+
+    enum class ZValueType
+    {
+      VerticesZValue,
+      ScalarDatasetZvalue,
+    };
+
+    QgsMesh3DSymbol();
+%Docstring
+Constructor for QgsMesh3DSymbol
+%End
+    ~QgsMesh3DSymbol();
+
+    virtual QString type() const;
+    virtual QgsMesh3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    bool isEnabled() const;
+%Docstring
+Returns if the 3d rendering is enabled
+
+.. versionadded:: 3.14
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets if the 3d rendering is enabled
+
+.. versionadded:: 3.14
+%End
+
+    Qgs3DTypes::CullingMode cullingMode() const;
+%Docstring
+Returns culling mode
+
+.. versionadded:: 3.34
+%End
+
+    void setCullingMode( const Qgs3DTypes::CullingMode &mode );
+%Docstring
+Sets culling mode
+
+.. versionadded:: 3.34
+%End
+
+    Qgis::AltitudeClamping altitudeClamping() const;
+%Docstring
+Returns method that determines altitude (whether to clamp to feature to terrain)
+%End
+    void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
+%Docstring
+Sets method that determines altitude (whether to clamp to feature to terrain)
+%End
+
+    float height() const;
+%Docstring
+Returns height (altitude) of the symbol (in map units)
+%End
+    void setHeight( float height );
+%Docstring
+Sets height (altitude) of the symbol (in map units)
+%End
+
+    QgsAbstractMaterialSettings *materialSettings() const;
+%Docstring
+Returns material settings used for shading of the symbol
+%End
+
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings /Transfer/ );
+%Docstring
+Sets the ``material`` settings used for shading of the symbol.
+
+Ownership of ``material`` is transferred to the symbol.
+%End
+
+    bool addBackFaces() const;
+%Docstring
+Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+%End
+
+    void setAddBackFaces( bool add );
+%Docstring
+Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+%End
+
+    bool smoothedTriangles() const;
+%Docstring
+Returns if mesh triangle are smoothed
+
+.. versionadded:: 3.12
+%End
+
+    void setSmoothedTriangles( bool smoothTriangles );
+%Docstring
+Sets if the mesh triangles have to been smoothed
+
+.. versionadded:: 3.12
+%End
+
+    bool wireframeEnabled() const;
+%Docstring
+Returns if the mesh wireframe
+
+.. versionadded:: 3.12
+%End
+
+    void setWireframeEnabled( bool wireframeEnabled );
+%Docstring
+Sets if the mesh wireframe
+
+.. versionadded:: 3.12
+%End
+
+    double wireframeLineWidth() const;
+%Docstring
+Returns wireframe line width
+
+.. versionadded:: 3.12
+%End
+
+    void setWireframeLineWidth( double wireframeLineWidth );
+%Docstring
+Sets wireframe line width
+
+.. versionadded:: 3.12
+%End
+
+    QColor wireframeLineColor() const;
+%Docstring
+Returns wireframe line color
+
+.. versionadded:: 3.12
+%End
+
+    void setWireframeLineColor( const QColor &wireframeLineColor );
+%Docstring
+Sets wireframe line color
+
+.. versionadded:: 3.12
+%End
+
+    double verticalScale() const;
+%Docstring
+Returns mesh vertical scale
+
+.. versionadded:: 3.12
+%End
+
+    void setVerticalScale( double verticalScale );
+%Docstring
+Sets mesh vertical scale
+
+.. versionadded:: 3.12
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns the color ramp shader used to render the color
+
+.. versionadded:: 3.12
+%End
+
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+%Docstring
+Sets the color ramp shader used to render the color
+
+.. versionadded:: 3.12
+%End
+
+    QColor singleMeshColor() const;
+%Docstring
+Returns the single color
+
+.. versionadded:: 3.12
+%End
+
+    void setSingleMeshColor( const QColor &singleMeshColor );
+%Docstring
+Sets the single color
+
+.. versionadded:: 3.12
+%End
+
+    QgsMesh3DSymbol::RenderingStyle renderingStyle() const;
+%Docstring
+Returns the rendering style
+
+.. versionadded:: 3.12
+%End
+
+    void setRenderingStyle( const QgsMesh3DSymbol::RenderingStyle &textureType );
+%Docstring
+Sets the rendering style
+
+.. versionadded:: 3.12
+%End
+
+    int verticalDatasetGroupIndex() const;
+%Docstring
+Returns the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
+
+.. versionadded:: 3.14
+%End
+
+    void setVerticalDatasetGroupIndex( int verticalDatasetGroupIndex );
+%Docstring
+Sets the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
+
+.. versionadded:: 3.14
+%End
+
+    bool isVerticalMagnitudeRelative() const;
+%Docstring
+Returns if the vertical component of the mesh is relative to the mesh vertices Z value
+
+.. versionadded:: 3.14
+%End
+
+    void setIsVerticalMagnitudeRelative( bool isVerticalMagnitudeRelative );
+%Docstring
+Sets if the vertical component of the mesh is relative to the mesh vertices Z value
+
+.. versionadded:: 3.14
+%End
+
+    bool arrowsEnabled() const;
+%Docstring
+Returns if arrows are enabled for 3D rendering
+
+.. versionadded:: 3.14
+%End
+
+    void setArrowsEnabled( bool arrowsEnabled );
+%Docstring
+Sets if arrows are enabled for 3D rendering
+
+.. versionadded:: 3.14
+%End
+
+    double arrowsSpacing() const;
+%Docstring
+Returns the arrow spacing
+
+.. versionadded:: 3.14
+%End
+
+    void setArrowsSpacing( double arrowsSpacing );
+%Docstring
+Sets the arrow spacing
+
+.. versionadded:: 3.14
+%End
+
+    int maximumTextureSize() const;
+%Docstring
+Returns the maximum texture size supported by the hardware
+Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
+before creating the entity
+
+.. versionadded:: 3.14
+%End
+
+    void setMaximumTextureSize( int maximumTextureSize );
+%Docstring
+Sets the maximum texture size supported by the hardware
+Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
+before creating the entity
+
+.. versionadded:: 3.14
+%End
+
+    bool arrowsFixedSize() const;
+%Docstring
+Returns if the arrow size is fixed
+
+.. versionadded:: 3.14
+%End
+
+    void setArrowsFixedSize( bool arrowsFixedSize );
+%Docstring
+Sets if the arrow size is fixed
+
+.. versionadded:: 3.14
+%End
+
+    int levelOfDetailIndex() const;
+%Docstring
+Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
+
+.. seealso:: :py:class:`QgsMeshSimplificationSettings`
+
+.. versionadded:: 3.18
+%End
+
+    void setLevelOfDetailIndex( int lod );
+%Docstring
+Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
+
+.. seealso:: :py:class:`QgsMeshSimplificationSettings`
+
+.. versionadded:: 3.18
+%End
+
+    bool operator==( const QgsMesh3DSymbol &other ) const;
+    bool operator!=( const QgsMesh3DSymbol &other ) const;
+
+  private:
+    QgsMesh3DSymbol( const QgsMesh3DSymbol & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgsmesh3dsymbol.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

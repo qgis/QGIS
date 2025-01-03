@@ -402,7 +402,7 @@ void MDAL::Driver2dm::save( const std::string &fileName, const std::string &, MD
     for ( size_t j = 0; j < 2; ++j )
     {
       line.append( " " );
-      line.append( MDAL::coordinateToString( vertex[j] ) );
+      line.append( MDAL::doubleToString( vertex[j], 8, true ) );
     }
     line.append( " " );
     line.append( MDAL::doubleToString( vertex[2] ) );

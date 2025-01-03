@@ -24,12 +24,11 @@
 #include <QTableView>
 
 #include "qgsoptionsdialoghighlightwidget.h"
+#include "moc_qgsoptionsdialoghighlightwidget.cpp"
 #include "qgsmessagebaritem.h"
 #include "qgsfilterlineedit.h"
 
 #include "qgsoptionsdialoghighlightwidgetsimpl.h"
-
-
 
 
 QgsOptionsDialogHighlightWidget::QgsOptionsDialogHighlightWidget( QWidget *widget )
@@ -43,8 +42,7 @@ QgsOptionsDialogHighlightWidget *QgsOptionsDialogHighlightWidget::createWidget( 
   {
     // do not register message bar content, items disappear and causes QGIS to crash
     // do not register QgsFilterLineEdit's child widgets, the clear button might be deleted
-    if ( qobject_cast< QgsMessageBarItem * >( parent ) ||
-         qobject_cast< QgsFilterLineEdit * >( parent ) )
+    if ( qobject_cast<QgsMessageBarItem *>( parent ) || qobject_cast<QgsFilterLineEdit *>( parent ) )
     {
       // return invalid widget
       return nullptr;
@@ -120,7 +118,6 @@ bool QgsOptionsDialogHighlightWidget::searchHighlight( const QString &text )
 
   if ( found )
   {
-
     if ( !mWidget->isVisible() )
     {
       mEventFilter = new QgsOptionsDialogHighlightWidgetEventFilter( this );
@@ -134,7 +131,6 @@ bool QgsOptionsDialogHighlightWidget::searchHighlight( const QString &text )
 
   return found;
 }
-
 
 
 ///@cond PRIVATE
@@ -157,8 +153,7 @@ bool QgsOptionsDialogHighlightWidgetEventFilter::eventFilter( QObject *obj, QEve
     mHighlightWidget->mChangedStyle = mHighlightWidget->highlightText( mHighlightWidget->mSearchText );
     return true;
 #else
-    QTimer::singleShot( 500, this, [ = ]
-    {
+    QTimer::singleShot( 500, this, [=] {
       mChangedStyle = highlightText( mSearchText );
     } );
 #endif
@@ -167,5 +162,3 @@ bool QgsOptionsDialogHighlightWidgetEventFilter::eventFilter( QObject *obj, QEve
 }
 
 ///@endcond
-
-

@@ -9,7 +9,7 @@
 
 
 
-class QgsNewAuxiliaryFieldDialog: QDialog
+class QgsNewAuxiliaryFieldDialog : QDialog
 {
 %Docstring(signature="appended")
 
@@ -20,7 +20,6 @@ A dialog to create a new auxiliary field
 #include "qgsnewauxiliaryfielddialog.h"
 %End
   public:
-
     QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinition &definition, QgsVectorLayer *layer, bool nameOnly = true, QWidget *parent = 0 );
 %Docstring
 Constructor.

@@ -40,14 +40,12 @@ class QgsCoordinateReferenceSystemModelGroupNode;
  */
 class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
 {
-
   public:
-
     //! Enumeration of possible model node types
     enum NodeType
     {
       NodeGroup, //!< Group node
-      NodeCrs, //!< CRS node
+      NodeCrs,   //!< CRS node
     };
 
     virtual ~QgsCoordinateReferenceSystemModelNode();
@@ -97,10 +95,8 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
     QgsCoordinateReferenceSystemModelGroupNode *getChildGroupNode( const QString &id );
 
   private:
-
     QgsCoordinateReferenceSystemModelNode *mParent = nullptr;
     QList<QgsCoordinateReferenceSystemModelNode *> mChildren;
-
 };
 
 /**
@@ -111,9 +107,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
  */
 class GUI_EXPORT QgsCoordinateReferenceSystemModelGroupNode : public QgsCoordinateReferenceSystemModelNode
 {
-
   public:
-
     /**
      * Constructor for QgsCoordinateReferenceSystemModelGroupNode.
      */
@@ -137,11 +131,9 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelGroupNode : public QgsCoordina
     NodeType nodeType() const override { return NodeGroup; }
 
   private:
-
     QString mId;
     QString mName;
     QIcon mIcon;
-
 };
 
 /**
@@ -152,9 +144,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelGroupNode : public QgsCoordina
  */
 class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinateReferenceSystemModelNode
 {
-
   public:
-
     /**
      * Constructor for QgsCoordinateReferenceSystemModelCrsNode, associated
      * with the specified \a record.
@@ -204,12 +194,44 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinate
      */
     QString proj() const { return mProj; }
 
-  private:
+    /**
+     * Sets the CRS's group name.
+     *
+     * \see group()
+     * \since QGIS 3.42
+     */
+    void setGroup( const QString &group ) { mGroup = group; }
 
+    /**
+     * Returns the CRS's group name.
+     *
+     * \see setGroup()
+     * \since QGIS 3.42
+     */
+    QString group() const { return mGroup; }
+
+    /**
+     * Sets the CRS's projection name.
+     *
+     * \see projection()
+     * \since QGIS 3.42
+     */
+    void setProjection( const QString &projection ) { mProjection = projection; }
+
+    /**
+     * Returns the CRS's projection name.
+     *
+     * \see setProjection()
+     * \since QGIS 3.42
+     */
+    QString projection() const { return mProjection; }
+
+  private:
     const QgsCrsDbRecord mRecord;
     QString mWkt;
     QString mProj;
-
+    QString mGroup;
+    QString mProjection;
 };
 
 #endif
@@ -226,7 +248,6 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -237,14 +258,16 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystemModel, Roles ) : int
     {
-      NodeType SIP_MONKEYPATCH_COMPAT_NAME(RoleNodeType) = Qt::UserRole, //!< Corresponds to the node's type
-      Name SIP_MONKEYPATCH_COMPAT_NAME(RoleName) = Qt::UserRole + 1, //!< The coordinate reference system name
-      AuthId SIP_MONKEYPATCH_COMPAT_NAME(RoleAuthId) = Qt::UserRole + 2, //!< The coordinate reference system authority name and id
-      Deprecated SIP_MONKEYPATCH_COMPAT_NAME(RoleDeprecated) = Qt::UserRole + 3, //!< TRUE if the CRS is deprecated
-      Type SIP_MONKEYPATCH_COMPAT_NAME(RoleType)= Qt::UserRole + 4, //!< The coordinate reference system type
-      GroupId SIP_MONKEYPATCH_COMPAT_NAME(RoleGroupId) = Qt::UserRole + 5, //!< The node ID (for group nodes)
-      Wkt SIP_MONKEYPATCH_COMPAT_NAME(RoleWkt) = Qt::UserRole + 6, //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
-      Proj SIP_MONKEYPATCH_COMPAT_NAME(RoleProj) = Qt::UserRole + 7, //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      NodeType SIP_MONKEYPATCH_COMPAT_NAME( RoleNodeType ) = Qt::UserRole,         //!< Corresponds to the node's type
+      Name SIP_MONKEYPATCH_COMPAT_NAME( RoleName ) = Qt::UserRole + 1,             //!< The coordinate reference system name
+      AuthId SIP_MONKEYPATCH_COMPAT_NAME( RoleAuthId ) = Qt::UserRole + 2,         //!< The coordinate reference system authority name and id
+      Deprecated SIP_MONKEYPATCH_COMPAT_NAME( RoleDeprecated ) = Qt::UserRole + 3, //!< TRUE if the CRS is deprecated
+      Type SIP_MONKEYPATCH_COMPAT_NAME( RoleType ) = Qt::UserRole + 4,             //!< The coordinate reference system type
+      GroupId SIP_MONKEYPATCH_COMPAT_NAME( RoleGroupId ) = Qt::UserRole + 5,       //!< The node ID (for group nodes)
+      Wkt SIP_MONKEYPATCH_COMPAT_NAME( RoleWkt ) = Qt::UserRole + 6,               //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      Proj SIP_MONKEYPATCH_COMPAT_NAME( RoleProj ) = Qt::UserRole + 7,             //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      Group = Qt::UserRole + 8,                                                    //!< Group name. \since QGIS 3.42
+      Projection = Qt::UserRole + 9,                                               //!< Projection name. \since QGIS 3.42
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -285,7 +308,6 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
     void userCrsChanged( const QString &id );
 
   private:
-
     QgsCoordinateReferenceSystemModelCrsNode *addRecord( const QgsCrsDbRecord &record );
 
     QgsCoordinateReferenceSystemModelNode *index2node( const QModelIndex &index ) const;
@@ -293,10 +315,9 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
     QModelIndex indexOfParentTreeNode( QgsCoordinateReferenceSystemModelNode *parentNode ) const;
 
 
-    std::unique_ptr< QgsCoordinateReferenceSystemModelGroupNode > mRootNode;
+    std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> mRootNode;
 
-    QList< QgsCrsDbRecord > mCrsDbRecords;
-
+    QList<QgsCrsDbRecord> mCrsDbRecords;
 };
 
 
@@ -306,18 +327,17 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
  * \ingroup gui
  * \since QGIS 3.34
  */
-class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel: public QSortFilterProxyModel
+class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
     //! Available filter flags for filtering the model
     enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       FilterHorizontal = 1 << 1, //!< Include horizontal CRS (excludes compound CRS containing a horizontal component)
-      FilterVertical = 1 << 2, //!< Include vertical CRS (excludes compound CRS containing a vertical component)
-      FilterCompound = 1 << 3, //!< Include compound CRS
+      FilterVertical = 1 << 2,   //!< Include vertical CRS (excludes compound CRS containing a vertical component)
+      FilterCompound = 1 << 3,   //!< Include compound CRS
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
@@ -371,14 +391,14 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel: public QSortFilterProxy
      *
      * \see filterAuthIds()
     */
-    void setFilterAuthIds( const QSet< QString > &filter );
+    void setFilterAuthIds( const QSet<QString> &filter );
 
     /**
      * Returns the current filter list of auth ID strings, if set.
      *
      * \see setFilterString()
      */
-    QSet< QString > filterAuthIds() const { return mFilterAuthIds; }
+    QSet<QString> filterAuthIds() const { return mFilterAuthIds; }
 
     /**
      * Sets whether deprecated CRS should be filtered from the results.
@@ -398,10 +418,9 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel: public QSortFilterProxy
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
-
     QgsCoordinateReferenceSystemModel *mModel = nullptr;
     QString mFilterString;
-    QSet< QString > mFilterAuthIds;
+    QSet<QString> mFilterAuthIds;
     bool mFilterDeprecated = false;
     Filters mFilters = Filters();
 };

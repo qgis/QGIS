@@ -25,6 +25,16 @@
 #include <QSize>
 #include <QtMath>
 
+static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
+{
+  return qgsDoubleNear( v1.x(), v2.x(), eps ) && qgsDoubleNear( v1.y(), v2.y(), eps ) && qgsDoubleNear( v1.z(), v2.z(), eps );
+}
+
+static bool qgsQuaternionNear( const QQuaternion &q1, const QQuaternion &q2, double eps )
+{
+  return qgsDoubleNear( q1.x(), q2.x(), eps ) && qgsDoubleNear( q1.y(), q2.y(), eps ) && qgsDoubleNear( q1.z(), q2.z(), eps ) && qgsDoubleNear( q1.scalar(), q2.scalar(), eps );
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -33,11 +43,12 @@ class TestQgs3DUtils : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgs3DUtils() : QgsTest( QStringLiteral( "3D Utils" ), QStringLiteral( "3d" ) ) { }
+    TestQgs3DUtils()
+      : QgsTest( QStringLiteral( "3D Utils" ), QStringLiteral( "3d" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testTransforms();
     void testRayFromScreenPoint();
@@ -45,6 +56,8 @@ class TestQgs3DUtils : public QgsTest
     void testQgsRay3D();
     void testExportToObj();
     void testDefinesToShaderCode();
+    void testDecomposeTransformMatrix();
+
   private:
 };
 
@@ -66,7 +79,7 @@ void TestQgs3DUtils::testTransforms()
   const QgsVector3D map123( 1, 2, 3 );
 
   const QgsVector3D world123 = Qgs3DUtils::mapToWorldCoordinates( map123, QgsVector3D() );
-  QCOMPARE( world123, QgsVector3D( 1, 3, -2 ) );
+  QCOMPARE( world123, QgsVector3D( 1, 2, 3 ) );
 
   const QgsVector3D world123map = Qgs3DUtils::worldToMapCoordinates( world123, QgsVector3D() );
   QCOMPARE( world123map, map123 );
@@ -76,7 +89,7 @@ void TestQgs3DUtils::testTransforms()
   const QgsVector3D origin( -10, -20, -30 );
 
   const QgsVector3D world123x = Qgs3DUtils::mapToWorldCoordinates( map123, origin );
-  QCOMPARE( world123x, QgsVector3D( 11, 33, -22 ) );
+  QCOMPARE( world123x, QgsVector3D( 11, 22, 33 ) );
 
   const QgsVector3D world123xmap = Qgs3DUtils::worldToMapCoordinates( world123x, origin );
   QCOMPARE( world123xmap, map123 );
@@ -85,11 +98,11 @@ void TestQgs3DUtils::testTransforms()
   // transform world point from one system to another
   //
 
-  const QgsVector3D worldPoint1( 5, 7, -6 );
+  const QgsVector3D worldPoint1( 5, 6, 7 );
   const QgsVector3D origin1( 10, 20, 30 );
   const QgsVector3D origin2( 1, 2, 3 );
   const QgsVector3D worldPoint2 = Qgs3DUtils::transformWorldCoordinates( worldPoint1, origin1, QgsCoordinateReferenceSystem(), origin2, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext() );
-  QCOMPARE( worldPoint2, QgsVector3D( 14, 34, -24 ) );
+  QCOMPARE( worldPoint2, QgsVector3D( 14, 24, 34 ) );
   // verify that both are the same map point
   const QgsVector3D mapPoint1 = Qgs3DUtils::worldToMapCoordinates( worldPoint1, origin1 );
   const QgsVector3D mapPoint2 = Qgs3DUtils::worldToMapCoordinates( worldPoint2, origin2 );
@@ -98,7 +111,6 @@ void TestQgs3DUtils::testTransforms()
 
 void TestQgs3DUtils::testRayFromScreenPoint()
 {
-
   Qt3DRender::QCamera camera;
   {
     camera.setFieldOfView( 45.0f );
@@ -191,8 +203,8 @@ void TestQgs3DUtils::testQgsRay3D()
     QCOMPARE( p2.y(), projP2.y() );
     QCOMPARE( p2.z(), projP2.z() );
 
-    QVERIFY( qFuzzyIsNull( ( float )ray.angleToPoint( p1 ) ) );
-    QVERIFY( qFuzzyIsNull( ( float )ray.angleToPoint( p2 ) ) );
+    QVERIFY( qFuzzyIsNull( ( float ) ray.angleToPoint( p1 ) ) );
+    QVERIFY( qFuzzyIsNull( ( float ) ray.angleToPoint( p2 ) ) );
 
     QVERIFY( ray.isInFront( p1 ) );
     QVERIFY( !ray.isInFront( p2 ) );
@@ -223,43 +235,41 @@ void TestQgs3DUtils::testQgsRay3D()
 void TestQgs3DUtils::testExportToObj()
 {
   // all vertice positions
-  QVector<float> positionData =
-  {
+  QVector<float> positionData = {
     -0.456616, 0.00187836, -0.413774,
-      -0.4718, 0.00187836, -0.0764642,
-      -0.25705, 0.00187836, -0.230477,
-      -0.25705, 0.00187836, -0.230477,
-      -0.4718, 0.00187836, -0.0764642,
-      0.0184382, 0.00187836, 0.177332,
-      -0.25705, 0.00187836, -0.230477,
-      0.0184382, 0.00187836, 0.177332,
-      -0.25705, -0.00187836, -0.230477,
-      -0.25705, -0.00187836, -0.230477,
-      0.0184382, 0.00187836, 0.177332,
-      0.0184382, -0.00187836, 0.177332,
-      0.0184382, 0.00187836, 0.177332,
-      -0.4718, 0.00187836, -0.0764642,
-      0.0184382, -0.00187836, 0.177332,
-      0.0184382, -0.00187836, 0.177332,
-      -0.4718, 0.00187836, -0.0764642,
-      -0.4718, -0.00187836, -0.0764642,
-      -0.4718, 0.00187836, -0.0764642,
-      -0.456616, 0.00187836, -0.413774,
-      -0.4718, -0.00187836, -0.0764642,
-      -0.4718, -0.00187836, -0.0764642,
-      -0.456616, 0.00187836, -0.413774,
-      -0.456616, -0.00187836, -0.413774,
-      -0.456616, 0.00187836, -0.413774,
-      -0.25705, 0.00187836, -0.230477,
-      -0.456616, -0.00187836, -0.413774,
-      -0.456616, -0.00187836, -0.413774,
-      -0.25705, 0.00187836, -0.230477,
-      -0.25705, -0.00187836, -0.230477
-    };
+    -0.4718, 0.00187836, -0.0764642,
+    -0.25705, 0.00187836, -0.230477,
+    -0.25705, 0.00187836, -0.230477,
+    -0.4718, 0.00187836, -0.0764642,
+    0.0184382, 0.00187836, 0.177332,
+    -0.25705, 0.00187836, -0.230477,
+    0.0184382, 0.00187836, 0.177332,
+    -0.25705, -0.00187836, -0.230477,
+    -0.25705, -0.00187836, -0.230477,
+    0.0184382, 0.00187836, 0.177332,
+    0.0184382, -0.00187836, 0.177332,
+    0.0184382, 0.00187836, 0.177332,
+    -0.4718, 0.00187836, -0.0764642,
+    0.0184382, -0.00187836, 0.177332,
+    0.0184382, -0.00187836, 0.177332,
+    -0.4718, 0.00187836, -0.0764642,
+    -0.4718, -0.00187836, -0.0764642,
+    -0.4718, 0.00187836, -0.0764642,
+    -0.456616, 0.00187836, -0.413774,
+    -0.4718, -0.00187836, -0.0764642,
+    -0.4718, -0.00187836, -0.0764642,
+    -0.456616, 0.00187836, -0.413774,
+    -0.456616, -0.00187836, -0.413774,
+    -0.456616, 0.00187836, -0.413774,
+    -0.25705, 0.00187836, -0.230477,
+    -0.456616, -0.00187836, -0.413774,
+    -0.456616, -0.00187836, -0.413774,
+    -0.25705, 0.00187836, -0.230477,
+    -0.25705, -0.00187836, -0.230477
+  };
 
   // all vertice normals
-  QVector<float> normalsData =
-  {
+  QVector<float> normalsData = {
     0, 1, 0,
     0, 1, 0,
     0, 1, 0,
@@ -291,36 +301,53 @@ void TestQgs3DUtils::testExportToObj()
     0.676449, 0, -0.736489,
     0.676449, 0, -0.736489
   };
-  float scale = 1.0f;
-  QVector3D translation( 0.0f, 0.0f, 0.0f );
 
   const QString myTmpDir = QDir::tempPath() + '/';
 
   // case where all vertices are used
   {
     Qgs3DExportObject object( "all_faces" );
-    object.setupPositionCoordinates( positionData, scale, translation );
+    object.setupPositionCoordinates( positionData, QMatrix4x4() );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
     // exported vertice indexes
-    QVector<uint> indexData =
-    {
-      0, 1, 2,
-      3, 4, 5,
-      6, 7, 8,
-      9, 10, 11,
-      12, 13, 14,
-      15, 16, 17,
-      18, 19, 20,
-      21, 22, 23,
-      24, 25, 26,
-      27, 28, 29,
+    QVector<uint> indexData = {
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
     };
 
     object.setupFaces( indexData );
     QCOMPARE( object.indexes().size(), indexData.size() );
 
-    object.setupNormalCoordinates( normalsData );
+    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
 
@@ -329,7 +356,7 @@ void TestQgs3DUtils::testExportToObj()
     QTextStream out( &file );
 
     out << "o " << object.name() << "\n";
-    object.saveTo( out, scale, translation, 3 );
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
 
     out.flush();
     out.seek( 0 );
@@ -341,8 +368,7 @@ void TestQgs3DUtils::testExportToObj()
   // case where only a subset of vertices are used
   {
     // exported vertice indexes
-    QVector<uint> indexData =
-    {
+    QVector<uint> indexData = {
       // 0, 1, 2,
       // 3, 4, 5,
       6, 7, 8,
@@ -356,20 +382,20 @@ void TestQgs3DUtils::testExportToObj()
     };
 
     Qgs3DExportObject object( "sparse_faces" );
-    object.setupPositionCoordinates( positionData, scale, translation );
+    object.setupPositionCoordinates( positionData, QMatrix4x4() );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
     object.setupFaces( indexData );
     QCOMPARE( object.indexes().size(), indexData.size() );
 
-    object.setupNormalCoordinates( normalsData );
+    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
     QFile file( myTmpDir + "sparse_faces.obj" );
     file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
     QTextStream out( &file );
     out << "o " << object.name() << "\n";
-    object.saveTo( out, scale, translation, 3 );
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
 
     out.flush();
     out.seek( 0 );
@@ -397,7 +423,7 @@ void TestQgs3DUtils::testDefinesToShaderCode()
   const QByteArray shaderCodeWithBaseColorMap = Qt3DRender::QShaderProgram::loadSource( QUrl::fromLocalFile( testDataPath( "/3d/shader/sample_with_basecolormap.frag" ) ) );
   QVERIFY( !shaderCodeWithBaseColorMap.isEmpty() );
 
-  const QStringList definesList( {"BASE_COLOR_MAP", "ROUGHNESS_MAP"} );
+  const QStringList definesList( { "BASE_COLOR_MAP", "ROUGHNESS_MAP" } );
 
 
   // =============================================
@@ -426,10 +452,10 @@ void TestQgs3DUtils::testDefinesToShaderCode()
   QCOMPARE( actualShaderCodeWithoutDefines, shaderCode );
 
   // remove defines one by one
-  const   QByteArray actualShaderCodeWithBaseColorMap = Qgs3DUtils::removeDefinesFromShaderCode( shaderCodeWithDefines, QStringList {"ROUGHNESS_MAP"} );
+  const QByteArray actualShaderCodeWithBaseColorMap = Qgs3DUtils::removeDefinesFromShaderCode( shaderCodeWithDefines, QStringList { "ROUGHNESS_MAP" } );
   QCOMPARE( actualShaderCodeWithBaseColorMap, shaderCodeWithBaseColorMap );
 
-  const QByteArray actualShaderCode = Qgs3DUtils::removeDefinesFromShaderCode( actualShaderCodeWithBaseColorMap, QStringList {"BASE_COLOR_MAP"} );
+  const QByteArray actualShaderCode = Qgs3DUtils::removeDefinesFromShaderCode( actualShaderCodeWithBaseColorMap, QStringList { "BASE_COLOR_MAP" } );
   QCOMPARE( actualShaderCode, shaderCode );
 
   // shader code without a #version - this should not happen
@@ -441,6 +467,32 @@ void TestQgs3DUtils::testDefinesToShaderCode()
   // result should be empty
   const QByteArray actualEmpty = Qgs3DUtils::removeDefinesFromShaderCode( QByteArray(), definesList );
   QCOMPARE( actualEmpty, QByteArray() );
+}
+
+void TestQgs3DUtils::testDecomposeTransformMatrix()
+{
+  QMatrix4x4 m1;
+  m1.translate( QVector3D( 100, 200, 300 ) );
+  m1.scale( QVector3D( 2, 5, 7 ) );
+  QVector3D t1, s1;
+  QQuaternion r1;
+  Qgs3DUtils::decomposeTransformMatrix( m1, t1, r1, s1 );
+
+  QCOMPARE( s1, QVector3D( 2, 5, 7 ) );
+  QCOMPARE( t1, QVector3D( 100, 200, 300 ) );
+  QCOMPARE( r1, QQuaternion() );
+
+  QMatrix4x4 m2;
+  m2.translate( QVector3D( 500, 600, 700 ) );
+  QQuaternion q2 = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 );
+  m2.rotate( q2 );
+  QVector3D t2, s2;
+  QQuaternion r2;
+  Qgs3DUtils::decomposeTransformMatrix( m2, t2, r2, s2 );
+
+  QVERIFY( qgsVectorNear( s2, QVector3D( 1, 1, 1 ), 1e-6 ) );
+  QVERIFY( qgsVectorNear( t2, QVector3D( 500, 600, 700 ), 1e-6 ) );
+  QVERIFY( qgsQuaternionNear( r2, q2, 1e-6 ) );
 }
 
 

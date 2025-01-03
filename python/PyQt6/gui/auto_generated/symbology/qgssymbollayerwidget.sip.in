@@ -17,7 +17,6 @@ class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsSymbolLayerWidget( QWidget *parent /TransferThis/, QgsVectorLayer *vl = 0 );
 %Docstring
 Constructor for QgsSymbolLayerWidget.
@@ -51,7 +50,6 @@ Returns the vector layer associated with the widget.
 %End
 
   protected:
-
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 %Docstring
 Registers a data defined override button. Handles setting up connections
@@ -93,7 +91,6 @@ class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSimpleLineSymbolLayerWidget.
@@ -137,7 +134,6 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsSimpleMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayerWidget.
@@ -178,7 +174,6 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSimpleFillSymbolLayerWidget.
@@ -221,7 +216,6 @@ Widget for configuring :py:class:`QgsFilledMarkerSymbolLayer` symbol layers.
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsFilledMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFilledMarkerSymbolLayerWidget.
@@ -257,7 +251,6 @@ class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsGradientFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGradientFillSymbolLayerWidget.
@@ -304,7 +297,6 @@ class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsShapeburstFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsShapeburstFillSymbolLayerWidget.
@@ -343,7 +335,6 @@ class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMarkerLineSymbolLayerWidget.
@@ -373,7 +364,6 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 
   protected:
 
-
 };
 
 
@@ -391,7 +381,6 @@ Widget for controlling the properties of a :py:class:`QgsHashedLineSymbolLayer`.
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsHashedLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsHashedLineSymbolLayerWidget.
@@ -426,7 +415,6 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSvgMarkerSymbolLayerWidget.
@@ -464,7 +452,7 @@ Sets the dynamic SVG parameters
 
   protected:
 
- void populateList() /Deprecated/;
+ void populateList() /Deprecated="Since 3.16. "/;
 %Docstring
 This method does nothing anymore, the loading is automatic
 
@@ -498,7 +486,6 @@ Widget for configuring :py:class:`QgsRasterMarkerSymbolLayer` symbol layers.
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsRasterMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterMarkerSymbolLayerWidget.
@@ -523,7 +510,6 @@ Creates a new QgsRasterMarkerSymbolLayerWidget.
 
   protected:
 
-
 };
 
 
@@ -542,7 +528,6 @@ Widget for configuring :py:class:`QgsAnimatedMarkerSymbolLayer` symbol layers.
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsAnimatedMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAnimatedMarkerSymbolLayerWidget.
@@ -567,7 +552,6 @@ Creates a new QgsAnimatedMarkerSymbolLayerWidget.
 
   protected:
 
-
 };
 
 
@@ -581,7 +565,6 @@ class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsRasterFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterFillSymbolLayerWidget.
@@ -622,7 +605,6 @@ Widget for configuring :py:class:`QgsRasterLineSymbolLayer` symbol layers.
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsRasterLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterLineSymbolLayerWidget.
@@ -645,7 +627,6 @@ Creates a new QgsRasterLineSymbolLayerWidget.
 
   protected:
 
-
 };
 
 
@@ -664,7 +645,6 @@ Widget for configuring :py:class:`QgsLineburstSymbolLayer` symbol layers.
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLineburstSymbolLayerWidget.
@@ -686,8 +666,6 @@ Creates a new QgsLineburstSymbolLayerWidget.
 
 
   protected:
-
-
 };
 
 
@@ -706,7 +684,6 @@ A widget for configuring :py:class:`QgsFilledLineSymbolLayer`.
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsFilledLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFilledLineSymbolLayerWidget.
@@ -742,7 +719,6 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSVGFillSymbolLayerWidget.
@@ -788,7 +764,6 @@ class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsLinePatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLinePatternFillSymbolLayerWidget.
@@ -816,14 +791,13 @@ Creates a new QgsLinePatternFillSymbolLayerWidget.
 
 
 
-class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerWidget
+class QgsPointPatternFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 
 %TypeHeaderCode
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsPointPatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPointPatternFillSymbolLayerWidget.
@@ -852,7 +826,7 @@ Creates a new QgsPointPatternFillSymbolLayerWidget.
 
 
 
-class QgsRandomMarkerFillSymbolLayerWidget: QgsSymbolLayerWidget
+class QgsRandomMarkerFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
 
@@ -865,7 +839,6 @@ Widget for controlling the properties of a :py:class:`QgsRandomMarkerFillSymbolL
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsRandomMarkerFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRandomMarkerFillSymbolLayerWidget.
@@ -898,7 +871,6 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFontMarkerSymbolLayerWidget.
@@ -962,7 +934,6 @@ class QgsCentroidFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsCentroidFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCentroidFillSymbolLayerWidget.
@@ -1003,7 +974,6 @@ Widget for controlling the properties of a :py:class:`QgsLinearReferencingSymbol
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsLinearReferencingSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLinearReferencingSymbolLayerWidget.
@@ -1037,7 +1007,6 @@ class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
-
     QgsGeometryGeneratorSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeometryGeneratorSymbolLayerWidget.

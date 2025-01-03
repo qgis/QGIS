@@ -24,7 +24,6 @@ An interface for code interpreters.
 #include "qgscodeeditor.h"
 %End
   public:
-
     virtual ~QgsCodeInterpreter();
 
     int exec( const QString &command );
@@ -49,7 +48,6 @@ interpreter, given a ``state``.
 %End
 
   protected:
-
     virtual int execCommandImpl( const QString &command ) = 0;
 %Docstring
 Pure virtual method for executing commands in the interpreter.
@@ -77,8 +75,6 @@ A text editor based on QScintilla2.
 %End
   public:
 
-
-
     enum class Mode
     {
       ScriptEditor,
@@ -87,7 +83,7 @@ A text editor based on QScintilla2.
     };
 
     enum class MarginRole /BaseType=IntEnum/
-      {
+    {
       LineNumbers,
       ErrorIndicators,
       FoldingControls,
@@ -144,7 +140,7 @@ Returns a user-friendly, translated name of the specified script ``language``.
 .. versionadded:: 3.30
 %End
 
- void setMarginVisible( bool margin ) /Deprecated/;
+ void setMarginVisible( bool margin ) /Deprecated="Since 3.40. Use base class methods for individual margins instead, or setLineNumbersVisible()."/;
 %Docstring
 Set margin visible state
 
@@ -155,7 +151,7 @@ Set margin visible state
    Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.setLineNumbersVisible`.
 %End
 
- bool marginVisible() /Deprecated/;
+ bool marginVisible() /Deprecated="Since 3.40. Use base class methods for individual margins instead, or lineNumbersVisible()."/;
 %Docstring
 Returns whether margins are in a visible state
 
@@ -519,8 +515,15 @@ Emitted when the persistent history of commands run in the editor is cleared.
 .. versionadded:: 3.30
 %End
 
-  protected:
 
+    void helpRequested( const QString &word );
+%Docstring
+Emitted when documentation was requested for the specified ``word``.
+
+.. versionadded:: 3.42
+%End
+
+  protected:
     static bool isFixedPitch( const QFont &font );
 %Docstring
 Returns ``True`` if a ``font`` is a fixed pitch font.

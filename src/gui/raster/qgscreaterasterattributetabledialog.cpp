@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscreaterasterattributetabledialog.h"
+#include "moc_qgscreaterasterattributetabledialog.cpp"
 #include "qgsrasterlayer.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
@@ -50,7 +51,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
           nativeRatSupported = false;
           existingRatsInfo.push_back( tr( "The data provider supports attribute table storage but some drivers do not support 'thematic' types, for this reason the option is disabled." ) );
         }
-        if ( ! rat->filePath().isEmpty() )
+        if ( !rat->filePath().isEmpty() )
         {
           existingRatsInfo.push_back( tr( "Raster band %1 already has an associated attribute table at %2." ).arg( QString::number( bandNo ), rat->filePath() ) );
         }
@@ -62,14 +63,14 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
     }
   }
 
-  if ( ! existingRatsInfo.isEmpty() )
+  if ( !existingRatsInfo.isEmpty() )
   {
     mCreateInfoLabel->setText( mCreateInfoLabel->text().append( QStringLiteral( "<br><ul><li>" ) + existingRatsInfo.join( QLatin1String( "</li><li>" ) ) ).append( QStringLiteral( "</ul>" ) ) );
     mCreateInfoLabel->adjustSize();
     mCreateInfoLabel->show();
   }
 
-  if ( ! nativeRatSupported )
+  if ( !nativeRatSupported )
   {
     mNativeRadioButton->setEnabled( false );
     mDbfRadioButton->setChecked( true );
@@ -77,9 +78,9 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
   else
   {
     mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
-    if ( QFile::exists( mRasterLayer->dataProvider()->dataSourceUri( ) ) )
+    if ( QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) )
     {
-      mDbfPathWidget->setFilePath( mRasterLayer->dataProvider()->dataSourceUri( ) + ".vat.dbf" );
+      mDbfPathWidget->setFilePath( mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" );
     }
   }
 
@@ -113,7 +114,7 @@ void QgsCreateRasterAttributeTableDialog::setMessageBar( QgsMessageBar *bar )
 
 void QgsCreateRasterAttributeTableDialog::setOpenWhenDoneVisible( bool visible )
 {
-  if ( ! visible )
+  if ( !visible )
   {
     mOpenRat->setChecked( false );
   }
@@ -128,11 +129,9 @@ void QgsCreateRasterAttributeTableDialog::accept()
   QgsRasterAttributeTable *rat { QgsRasterAttributeTable::createFromRaster( mRasterLayer, &bandNumber ) };
   bool success { false };
 
-  if ( ! rat )
+  if ( !rat )
   {
-    notify( tr( "Error Creating Raster Attribute Table" ),
-            tr( "The raster attribute table could not be created." ),
-            Qgis::MessageLevel::Critical );
+    notify( tr( "Error Creating Raster Attribute Table" ), tr( "The raster attribute table could not be created." ), Qgis::MessageLevel::Critical );
   }
   else
   {
@@ -143,14 +142,12 @@ void QgsCreateRasterAttributeTableDialog::accept()
     if ( storageIsFile )
     {
       const QString destinationPath { filePath() };
-      if ( ! QFile::exists( destinationPath ) || QMessageBox::warning( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( destinationPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+      if ( !QFile::exists( destinationPath ) || QMessageBox::warning( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( destinationPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
       {
         success = rat->writeToFile( destinationPath, &errorMessage );
-        if ( ! success )
+        if ( !success )
         {
-          notify( tr( "Error Saving Raster Attribute Table" ),
-                  errorMessage,
-                  Qgis::MessageLevel::Critical );
+          notify( tr( "Error Saving Raster Attribute Table" ), errorMessage, Qgis::MessageLevel::Critical );
           mRasterLayer->dataProvider()->setAttributeTable( bandNumber, nullptr );
         }
       }
@@ -158,22 +155,17 @@ void QgsCreateRasterAttributeTableDialog::accept()
     else
     {
       success = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage ); //#spellok
-      if ( ! success )
+      if ( !success )
       {
-        notify( tr( "Error Saving Raster Attribute Table" ),
-                errorMessage,
-                Qgis::MessageLevel::Critical );
+        notify( tr( "Error Saving Raster Attribute Table" ), errorMessage, Qgis::MessageLevel::Critical );
         mRasterLayer->dataProvider()->setAttributeTable( bandNumber, nullptr );
-
       }
     }
   }
 
   if ( success )
   {
-    notify( tr( "Raster Attribute Table Saved" ),
-            tr( "The new Raster Attribute Table was successfully created." ),
-            Qgis::MessageLevel::Success );
+    notify( tr( "Raster Attribute Table Saved" ), tr( "The new Raster Attribute Table was successfully created." ), Qgis::MessageLevel::Success );
   }
 
   QDialog::accept();

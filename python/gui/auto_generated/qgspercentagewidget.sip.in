@@ -21,7 +21,6 @@ A widget for setting a percentage value.
 #include "qgspercentagewidget.h"
 %End
   public:
-
     explicit QgsPercentageWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPercentageWidget.

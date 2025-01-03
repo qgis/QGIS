@@ -452,6 +452,79 @@ Returns the height (number of rows) of the raster block.
 .. seealso:: :py:func:`width`
 %End
 
+    bool minimum( double &minimum /Out/, int &row /Out/, int &column /Out/ ) const;
+%Docstring
+Returns the minimum value present in the raster block.
+
+.. note::
+
+   If the minimum value is present multiple times in the raster block then the calculated row and column
+   will refer to any instance of this minimum.
+
+
+:return: - ``True`` if a minimum value was found, or ``False`` if it could not be found (eg due to non-numeric data types).
+         - minimum: minimum value present
+         - row: row containing minimum value pixel
+         - column: column containing minimum value pixel
+
+.. seealso:: :py:func:`maximum`
+
+.. seealso:: :py:func:`minimumMaximum`
+
+.. versionadded:: 3.42
+%End
+
+    bool maximum( double &maximum /Out/, int &row /Out/, int &column /Out/ ) const;
+%Docstring
+Returns the maximum value present in the raster block.
+
+.. note::
+
+   If the maximum value is present multiple times in the raster block then the calculated row and column
+   will refer to any instance only of this maximum.
+
+
+:return: - ``True`` if a maximum value was found, or ``False`` if it could not be found (eg due to non-numeric data types).
+         - maximum: maximum value present
+         - row: row containing maximum value pixel
+         - column: column containing maximum value pixel
+
+.. seealso:: :py:func:`minimum`
+
+.. seealso:: :py:func:`minimumMaximum`
+
+.. versionadded:: 3.42
+%End
+
+    bool minimumMaximum( double &minimum /Out/, int &minimumRow /Out/, int &minimumColumn /Out/, double &maximum /Out/, int &maximumRow /Out/, int &maximumColumn /Out/ ) const;
+%Docstring
+Returns the minimum and maximum value present in the raster block.
+
+.. note::
+
+   This method is more efficient than calling :py:func:`~QgsRasterBlock.minimum` and :py:func:`~QgsRasterBlock.maximum` separately.
+
+.. note::
+
+   If the minimum or maximum value is present multiple times in the raster block then the calculated row and column
+   will refer to any of instances of these values.
+
+
+:return: - ``True`` if a minimum and maximum value were found, or ``False`` if they could not be found (eg due to non-numeric data types).
+         - minimum: minimum value present
+         - minimumRow: row containing minimum value pixel
+         - minimumColumn: column containing minimum value pixel
+         - maximum: maximum value present
+         - maximumRow: row containing maximum value pixel
+         - maximumColumn: column containing maximum value pixel
+
+.. seealso:: :py:func:`minimum`
+
+.. seealso:: :py:func:`maximum`
+
+.. versionadded:: 3.42
+%End
+
 };
 
 

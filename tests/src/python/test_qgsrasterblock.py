@@ -9,9 +9,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = 'Till Frankenbach'
-__date__ = '24/07/2024'
-__copyright__ = 'Copyright 2024, The QGIS Project'
+__author__ = "Till Frankenbach"
+__date__ = "24/07/2024"
+__copyright__ = "Copyright 2024, The QGIS Project"
 
 import numpy
 
@@ -56,5 +56,5 @@ class TestQgsRasterBlock(QgisTestCase):
         self.assertTrue((block.as_numpy(use_masking=False) == expected_array).all())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

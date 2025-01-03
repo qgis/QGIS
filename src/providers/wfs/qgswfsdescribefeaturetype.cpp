@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsdescribefeaturetype.h"
+#include "moc_qgswfsdescribefeaturetype.cpp"
 #include "qgsmessagelog.h"
 #include <QUrlQuery>
 
@@ -22,8 +23,7 @@ QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
 {
 }
 
-bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
-    const QString &typeName, const QgsWfsCapabilities::Capabilities &caps )
+bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion, const QString &typeName, const QgsWfsCapabilities::Capabilities &caps )
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
   QUrlQuery query( url );

@@ -60,7 +60,6 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 class SERVER_EXPORT QgsServerInterface
 {
   public:
-
     //! Constructor
     QgsServerInterface() SIP_SKIP;
 

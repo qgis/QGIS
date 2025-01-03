@@ -141,7 +141,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * Returns a clone of the method.
      * Implementation can take advantage of copyBase method which copies the parameters of the base class
      */
-    virtual QgsClassificationMethod *clone() const = 0 SIP_FACTORY;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const = 0;
 
     //! The readable and translate name of the method
     virtual QString name() const = 0;
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * \param element the DOM element
      * \param context the read/write context
      */
-    static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr< QgsClassificationMethod > create( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint

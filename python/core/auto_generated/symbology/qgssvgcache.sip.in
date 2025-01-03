@@ -212,7 +212,7 @@ in the same thread to ensure provided the image.
 
   signals:
 
- void statusChanged( const QString  &statusQString ) /Deprecated/;
+ void statusChanged( const QString  &statusQString ) /Deprecated="Since 3.6. No longer emitted."/;
 %Docstring
 Emit a signal to be caught by qgisapp and display a msg on status bar.
 

@@ -2,13 +2,7 @@ include_directories(SYSTEM
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
-  QT6_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
-else()
-  QT5_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
-  QT5_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
-endif()
+qt_wrap_ui(CRASH_UIS_H qgscrashdialog.ui)
 
 set(IMAGE_RCCS ../../images/images.qrc)
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsterrainentity.h"
+#include "moc_qgsterrainentity.cpp"
 
 #include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
@@ -26,6 +27,7 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
 
 #include "qgscoordinatetransform.h"
 
@@ -58,7 +60,7 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
 
 
 QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *parent )
-  : QgsChunkedEntity( map, map->maxTerrainScreenError(), map->terrainGenerator(), false, std::numeric_limits<int>::max(), parent )
+  : QgsChunkedEntity( map, map->terrainSettings()->maximumScreenError(), map->terrainGenerator(), false, std::numeric_limits<int>::max(), parent )
 {
   map->terrainGenerator()->setTerrain( this );
   mIsValid = map->terrainGenerator()->isValid();
@@ -69,7 +71,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
+  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
 
   connectToLayersRepaintRequest();
 
@@ -79,7 +81,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, map->terrainElevationOffset(), 0.0f ) );
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, 0.0f, map->terrainSettings()->elevationOffset() ) );
   addComponent( mTerrainTransform );
 }
 
@@ -102,10 +104,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
   {
     case QgsTerrainGenerator::Flat:
     {
-      if ( ray.direction().y() == 0 )
-        break;  // the ray is parallel to the flat terrain
+      if ( ray.direction().z() == 0 )
+        break; // the ray is parallel to the flat terrain
 
-      const float dist = static_cast<float>( mMapSettings->terrainElevationOffset() - ray.origin().y() ) / ray.direction().y();
+      const float dist = static_cast<float>( mMapSettings->terrainSettings()->elevationOffset() - ray.origin().z() ) / ray.direction().z();
       const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMapSettings->origin() );
       if ( mMapSettings->extent().contains( mapCoords.x(), mapCoords.y() ) )
@@ -120,9 +122,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
       const QList<QgsChunkNode *> activeNodes = this->activeNodes();
       for ( QgsChunkNode *node : activeNodes )
       {
-        if ( node->entity() &&
-             ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-             QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+        QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
+
+        if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
         {
           Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
           auto *geom = rend->geometry();
@@ -209,14 +211,15 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
   }
 }
 
-void QgsTerrainEntity::onTerrainElevationOffsetChanged( float newOffset )
+void QgsTerrainEntity::onTerrainElevationOffsetChanged()
 {
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
+  float newOffset = qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset();
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
 float QgsTerrainEntity::terrainElevationOffset() const
 {
-  return mMapSettings->terrainElevationOffset();
+  return mMapSettings->terrainSettings()->elevationOffset();
 }
 
 

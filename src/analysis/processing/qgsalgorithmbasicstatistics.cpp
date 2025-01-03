@@ -21,7 +21,6 @@
 #include "qgsstringstatisticalsummary.h"
 
 
-
 ///@cond PRIVATE
 
 QString QgsBasicStatisticsAlgorithm::name() const
@@ -61,10 +60,10 @@ QgsBasicStatisticsAlgorithm *QgsBasicStatisticsAlgorithm::createInstance() const
 
 void QgsBasicStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_LAYER" ), QObject::tr( "Input layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_LAYER" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field to calculate statistics on" ), QVariant(), QStringLiteral( "INPUT_LAYER" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Statistics" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ),  QObject::tr( "Statistics report" ), QObject::tr( "'HTML files (*.html)" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "Statistics report" ), QObject::tr( "'HTML files (*.html)" ), QVariant(), true ) );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "COUNT" ), QObject::tr( "Count" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNIQUE" ), QObject::tr( "Number of unique values" ) ) );
@@ -90,7 +89,7 @@ void QgsBasicStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT_LAYER" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT_LAYER" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_LAYER" ) ) );
 
@@ -163,7 +162,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   QString destId;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
   if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -184,6 +183,8 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     outputs = calculateStringStatistics( fieldIndex, features, count, sink.get(), data, feedback );
   }
+  if ( sink )
+    sink->finalize();
 
   if ( !outputHtml.isEmpty() )
   {
@@ -191,7 +192,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       out.setCodec( "UTF-8" );
 #endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
@@ -276,23 +277,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const int f
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) )
-                     << outputs.value( QStringLiteral( "UNIQUE" ) )
-                     << outputs.value( QStringLiteral( "EMPTY" ) )
-                     << outputs.value( QStringLiteral( "FILLED" ) )
-                     << outputs.value( QStringLiteral( "MIN" ) )
-                     << outputs.value( QStringLiteral( "MAX" ) )
-                     << outputs.value( QStringLiteral( "RANGE" ) )
-                     << outputs.value( QStringLiteral( "SUM" ) )
-                     << outputs.value( QStringLiteral( "MEAN" ) )
-                     << outputs.value( QStringLiteral( "MEDIAN" ) )
-                     << outputs.value( QStringLiteral( "STD_DEV" ) )
-                     << outputs.value( QStringLiteral( "CV" ) )
-                     << outputs.value( QStringLiteral( "MINORITY" ) )
-                     << outputs.value( QStringLiteral( "MAJORITY" ) )
-                     << outputs.value( QStringLiteral( "FIRSTQUARTILE" ) )
-                     << outputs.value( QStringLiteral( "THIRDQUARTILE" ) )
-                     << outputs.value( QStringLiteral( "IQR" ) ) );
+    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "RANGE" ) ) << outputs.value( QStringLiteral( "SUM" ) ) << outputs.value( QStringLiteral( "MEAN" ) ) << outputs.value( QStringLiteral( "MEDIAN" ) ) << outputs.value( QStringLiteral( "STD_DEV" ) ) << outputs.value( QStringLiteral( "CV" ) ) << outputs.value( QStringLiteral( "MINORITY" ) ) << outputs.value( QStringLiteral( "MAJORITY" ) ) << outputs.value( QStringLiteral( "FIRSTQUARTILE" ) ) << outputs.value( QStringLiteral( "THIRDQUARTILE" ) ) << outputs.value( QStringLiteral( "IQR" ) ) );
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   }
 
@@ -340,13 +325,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const int 
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) )
-                     << outputs.value( QStringLiteral( "UNIQUE" ) )
-                     << outputs.value( QStringLiteral( "EMPTY" ) )
-                     << outputs.value( QStringLiteral( "FILLED" ) )
-                     << outputs.value( QStringLiteral( "MIN" ) )
-                     << outputs.value( QStringLiteral( "MAX" ) )
-                     << outputs.value( QStringLiteral( "RANGE" ) ) );
+    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "RANGE" ) ) );
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   }
 
@@ -402,17 +381,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const int fi
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) )
-                     << outputs.value( QStringLiteral( "UNIQUE" ) )
-                     << outputs.value( QStringLiteral( "EMPTY" ) )
-                     << outputs.value( QStringLiteral( "FILLED" ) )
-                     << outputs.value( QStringLiteral( "MIN" ) )
-                     << outputs.value( QStringLiteral( "MAX" ) )
-                     << outputs.value( QStringLiteral( "MIN_LENGTH" ) )
-                     << outputs.value( QStringLiteral( "MAX_LENGTH" ) )
-                     << outputs.value( QStringLiteral( "MEAN_LENGTH" ) )
-                     << outputs.value( QStringLiteral( "MINORITY" ) )
-                     << outputs.value( QStringLiteral( "MAJORITY" ) ) );
+    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "MIN_LENGTH" ) ) << outputs.value( QStringLiteral( "MAX_LENGTH" ) ) << outputs.value( QStringLiteral( "MEAN_LENGTH" ) ) << outputs.value( QStringLiteral( "MINORITY" ) ) << outputs.value( QStringLiteral( "MAJORITY" ) ) );
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   }
 

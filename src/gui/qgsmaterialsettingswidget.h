@@ -40,7 +40,6 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMaterialSettingsWidget with the specified \a parent widget.
      */

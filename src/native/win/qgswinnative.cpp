@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswinnative.h"
+#include "moc_qgswinnative.cpp"
 #include <QCoreApplication>
 #include <QDebug>
 #include <QString>
@@ -23,7 +24,7 @@
 #include <QWindow>
 #include <QProcess>
 #include <QAbstractEventDispatcher>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <QtWinExtras/QWinTaskbarButton>
 #include <QtWinExtras/QWinTaskbarProgress>
 #include <QtWinExtras/QWinJumpList>
@@ -36,22 +37,21 @@
 #include <type_traits>
 
 #ifdef UNICODE
-#define _T(x) L##x
+#define _T( x ) L##x
 #else
-#define _T(x) x
+#define _T( x ) x
 #endif
 
 
 struct LPITEMIDLISTDeleter
 {
-  void operator()( LPITEMIDLIST pidl ) const
-  {
-    ILFree( pidl );
-  }
+    void operator()( LPITEMIDLIST pidl ) const
+    {
+      ILFree( pidl );
+    }
 };
 
-using ITEMIDLIST_unique_ptr = std::unique_ptr< std::remove_pointer_t< LPITEMIDLIST >, LPITEMIDLISTDeleter>;
-
+using ITEMIDLIST_unique_ptr = std::unique_ptr<std::remove_pointer_t<LPITEMIDLIST>, LPITEMIDLISTDeleter>;
 
 
 QgsNative::Capabilities QgsWinNative::capabilities() const
@@ -59,13 +59,10 @@ QgsNative::Capabilities QgsWinNative::capabilities() const
   return mCapabilities;
 }
 
-void QgsWinNative::initializeMainWindow( QWindow *window,
-    const QString &applicationName,
-    const QString &organizationName,
-    const QString &version )
+void QgsWinNative::initializeMainWindow( QWindow *window, const QString &applicationName, const QString &organizationName, const QString &version )
 {
   mWindow = window;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   if ( mTaskButton )
     return; // already initialized!
 
@@ -81,10 +78,8 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
 
   WinToastLib::WinToast::instance()->setAppName( appName.toStdWString() );
   WinToastLib::WinToast::instance()->setAppUserModelId(
-    WinToastLib::WinToast::configureAUMI( organizationName.toStdWString(),
-                                          applicationName.toStdWString(),
-                                          applicationName.toStdWString(),
-                                          version.toStdWString() ) );
+    WinToastLib::WinToast::configureAUMI( organizationName.toStdWString(), applicationName.toStdWString(), applicationName.toStdWString(), version.toStdWString() )
+  );
   if ( WinToastLib::WinToast::instance()->initialize() )
   {
     mWinToastInitialized = true;
@@ -103,19 +98,19 @@ void QgsWinNative::cleanup()
   mWindow = nullptr;
 }
 
-std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
+std::unique_ptr<wchar_t[]> pathToWChar( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );
 
-  std::unique_ptr< wchar_t[] > pathArray( new wchar_t[static_cast< uint>( nativePath.length() + 1 )] );
+  std::unique_ptr<wchar_t[]> pathArray( new wchar_t[static_cast<uint>( nativePath.length() + 1 )] );
   nativePath.toWCharArray( pathArray.get() );
-  pathArray[static_cast< size_t >( nativePath.length() )] = 0;
+  pathArray[static_cast<size_t>( nativePath.length() )] = 0;
   return pathArray;
 }
 
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
-  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  std::unique_ptr<wchar_t[]> pathArray = pathToWChar( path );
   ITEMIDLIST_unique_ptr pidl( ILCreateFromPathW( pathArray.get() ) );
   if ( pidl )
   {
@@ -126,11 +121,11 @@ void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 
 void QgsWinNative::showFileProperties( const QString &path )
 {
-  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  std::unique_ptr<wchar_t[]> pathArray = pathToWChar( path );
   ITEMIDLIST_unique_ptr pidl( ILCreateFromPathW( pathArray.get() ) );
   if ( pidl )
   {
-    SHELLEXECUTEINFO info{ sizeof( info ) };
+    SHELLEXECUTEINFO info { sizeof( info ) };
     if ( mWindow )
       info.hwnd = reinterpret_cast<HWND>( mWindow->winId() );
     info.nShow = SW_SHOWNORMAL;
@@ -144,7 +139,7 @@ void QgsWinNative::showFileProperties( const QString &path )
 
 void QgsWinNative::showUndefinedApplicationProgress()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   mTaskProgress->setMaximum( 0 );
   mTaskProgress->show();
 #endif
@@ -152,23 +147,23 @@ void QgsWinNative::showUndefinedApplicationProgress()
 
 void QgsWinNative::setApplicationProgress( double progress )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   mTaskProgress->setMaximum( 100 );
   mTaskProgress->show();
-  mTaskProgress->setValue( static_cast< int >( std::round( progress ) ) );
+  mTaskProgress->setValue( static_cast<int>( std::round( progress ) ) );
 #endif
 }
 
 void QgsWinNative::hideApplicationProgress()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   mTaskProgress->hide();
 #endif
 }
 
 void QgsWinNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentProjectProperties> &recentProjects )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   QWinJumpList jumplist;
   jumplist.recent()->clear();
   for ( const RecentProjectProperties &recentProject : recentProjects )
@@ -186,7 +181,6 @@ void QgsWinNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentP
 class NotificationHandler : public WinToastLib::IWinToastHandler
 {
   public:
-
     void toastActivated() const override {}
 
     void toastActivated( int ) const override {}
@@ -235,10 +229,9 @@ bool QgsWinNative::openTerminalAtPath( const QString &path )
 
   QProcess process;
   process.setProgram( term );
-  process.setCreateProcessArgumentsModifier( []( QProcess::CreateProcessArguments * args )
-  {
+  process.setCreateProcessArgumentsModifier( []( QProcess::CreateProcessArguments *args ) {
     args->flags |= CREATE_NEW_CONSOLE;
-    args->startupInfo->dwFlags &= ~ STARTF_USESTDHANDLES;
+    args->startupInfo->dwFlags &= ~STARTF_USESTDHANDLES;
   } );
   process.setWorkingDirectory( path );
 
@@ -246,13 +239,13 @@ bool QgsWinNative::openTerminalAtPath( const QString &path )
   return process.startDetached( &pid );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, long * )
 #else
 bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, qintptr * )
 #endif
 {
-  static const QByteArray sWindowsGenericMSG{ "windows_generic_MSG" };
+  static const QByteArray sWindowsGenericMSG { "windows_generic_MSG" };
   if ( !message || eventType != sWindowsGenericMSG )
     return false;
 
@@ -286,7 +279,7 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
 
       // need to handle disks with multiple partitions -- these are given by a single event
       unsigned long unitmask = broadcastVolume->dbcv_unitmask;
-      std::vector< QString > drives;
+      std::vector<QString> drives;
       char driveName[] = "A:/";
       unitmask &= 0x3ffffff;
       while ( unitmask )

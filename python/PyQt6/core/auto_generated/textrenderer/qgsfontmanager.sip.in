@@ -209,7 +209,7 @@ Enables font downloads the the current QGIS session.
    Ensure that the :py:class:`QgsApplication` is fully initialized before calling this method.
 %End
 
- QString urlForFontDownload( const QString &family, QString &matchedFamily /Out/ ) const /Deprecated/;
+ QString urlForFontDownload( const QString &family, QString &matchedFamily /Out/ ) const /Deprecated="Since 3.38. Use detailsForFontDownload() instead."/;
 %Docstring
 Returns the URL at which the font ``family`` can be downloaded.
 
@@ -244,7 +244,7 @@ return an invalid :py:class:`QgsFontDownloadDetails` for any font families not p
 .. versionadded:: 3.38
 %End
 
- void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() ) /Deprecated/;
+ void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() ) /Deprecated="Since 3.38. Use the version which takes a QgsFontDownloadDetails argument instead."/;
 %Docstring
 Downloads a font and installs in the user's profile/fonts directory as an application font,
 where the font family can be downloaded via a single ``url``.

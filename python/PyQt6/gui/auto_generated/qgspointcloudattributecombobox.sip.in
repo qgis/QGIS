@@ -24,7 +24,6 @@ It might be combined with a :py:class:`QgsMapLayerComboBox` to automatically upd
 #include "qgspointcloudattributecombobox.h"
 %End
   public:
-
     explicit QgsPointCloudAttributeComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsPointCloudAttributeComboBox creates a combo box to display the fields of a layer.

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprojecttimesettings.h"
+#include "moc_qgsprojecttimesettings.cpp"
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include <QDomElement>

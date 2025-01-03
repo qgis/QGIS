@@ -28,7 +28,6 @@ selection widgets.
 #include "qgsabstractdatasourcewidget.h"
 %End
   public:
-
     virtual void setBrowserModel( QgsBrowserModel *model );
 %Docstring
 Sets a browser ``model`` to use with the widget.
@@ -106,7 +105,7 @@ This signal is normally forwarded the app and used to refresh browser items
 Emitted when a DB layer has been selected for addition
 %End
 
- void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) /Deprecated/;
+ void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a raster layer has been selected for addition
 
@@ -124,7 +123,7 @@ Emitted when one or more GDAL supported layers are selected for addition
 .. versionadded:: 3.20
 %End
 
- void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) /Deprecated/;
+ void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a vector layer has been selected for addition.
 
@@ -136,7 +135,7 @@ will be used.
    Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
- void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
+ void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a mesh layer has been selected for addition.
 
@@ -145,7 +144,7 @@ Emitted when a mesh layer has been selected for addition.
    Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
- void addVectorTileLayer( const QString &url, const QString &baseName ) /Deprecated/;
+ void addVectorTileLayer( const QString &url, const QString &baseName ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a vector tile layer has been selected for addition.
 
@@ -154,7 +153,7 @@ Emitted when a vector tile layer has been selected for addition.
    Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
- void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
+ void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a point cloud layer has been selected for addition.
 
@@ -196,7 +195,7 @@ Emitted when a layer needs to be replaced
 :param provider: key
 %End
 
- void progress( int, int ) /Deprecated/;
+ void progress( int, int ) /Deprecated="Since 3.4. This signal is no longer used. Use QgsProxyProgressTask instead to show progress reports."/;
 %Docstring
 Emitted when a progress dialog is shown by the provider dialog.
 
@@ -223,7 +222,6 @@ Emitted when a ``message`` with ``title`` and ``level`` must be shown to the use
 %End
 
   protected:
-
     QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 %Docstring
 Constructor
@@ -246,7 +244,7 @@ Returns the associated browser model (may be ``None``).
 Connect the ok and apply/add buttons to the slots
 %End
 
-    QPushButton *addButton( ) const;
+    QPushButton *addButton() const;
 %Docstring
 Returns the add Button
 %End

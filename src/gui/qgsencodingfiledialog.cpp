@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
+#include "moc_qgsencodingfiledialog.cpp"
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
@@ -26,12 +27,10 @@
 #include <QTextCodec>
 #include <QDialogButtonBox>
 
-QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
-    const QString &caption, const QString &directory,
-    const QString &filter, const QString &encoding )
+QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent, const QString &caption, const QString &directory, const QString &filter, const QString &encoding )
   : QFileDialog( parent, caption, directory, filter )
 {
-  mCancelAll       = false;
+  mCancelAll = false;
   mCancelAllButton = nullptr;
   mEncodingComboBox = new QComboBox( this );
   QLabel *l = new QLabel( tr( "Encoding:" ), this );
@@ -84,7 +83,7 @@ void QgsEncodingFileDialog::saveUsedEncoding()
 
 void QgsEncodingFileDialog::addCancelAll()
 {
-  if ( ! mCancelAllButton )
+  if ( !mCancelAllButton )
   {
     mCancelAllButton = new QPushButton( tr( "Cancel &All" ), nullptr );
     layout()->addWidget( mCancelAllButton ); // Ownership transferred, no need to delete later on
@@ -124,8 +123,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   hLayout->addWidget( mEncodingComboBox, 1 );
   layout->addLayout( hLayout );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-      Qt::Horizontal, this );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Ok )->setDefault( true );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );

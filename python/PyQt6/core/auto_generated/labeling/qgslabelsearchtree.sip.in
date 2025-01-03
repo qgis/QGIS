@@ -27,7 +27,7 @@ A class to query the labeling structure at a given point (small wrapper around p
     ~QgsLabelSearchTree();
 
 
- void clear() /Deprecated/;
+ void clear() /Deprecated="Since 3.40. Has no effect since QGIS 3.12."/;
 %Docstring
 Removes and deletes all the entries.
 

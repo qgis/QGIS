@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatetimeeditwrapper.h"
+#include "moc_qgsdatetimeeditwrapper.cpp"
 #include "qgsdatetimeeditfactory.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
@@ -98,7 +99,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   }
   else
   {
-    connect( mQDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this,  &QgsDateTimeEditWrapper::dateTimeChanged );
+    connect( mQDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEditWrapper::dateTimeChanged );
   }
 }
 
@@ -204,7 +205,7 @@ QVariant QgsDateTimeEditWrapper::value() const
         return dateTime.toString( fieldFormat );
       }
   }
-#ifndef _MSC_VER // avoid warnings
+#ifndef _MSC_VER     // avoid warnings
   return QVariant(); // avoid warnings
 #endif
 }

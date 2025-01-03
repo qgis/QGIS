@@ -4,5 +4,5 @@ QgsRuleBased3DRenderer.Rule.Inactive = QgsRuleBased3DRenderer.Rule.RegisterResul
 QgsRuleBased3DRenderer.Rule.Registered = QgsRuleBased3DRenderer.Rule.RegisterResult.Registered
 try:
     QgsRuleBased3DRenderer.Rule.create = staticmethod(QgsRuleBased3DRenderer.Rule.create)
-except NameError:
+except (NameError, AttributeError):
     pass

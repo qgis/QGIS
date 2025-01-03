@@ -293,14 +293,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
 
     /**
      * Returns a new linestring from a QPolygonF \a polygon input.
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromQPolygonF( const QPolygonF &polygon );
 #ifndef SIP_RUN
   private:
     bool fuzzyHelper( double epsilon,
@@ -992,6 +992,16 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     /**
+     * Divides the linestring into parts that don't share any points or lines.
+     *
+     * This method throws away Z and M coordinates.
+     *
+     * The ownership of returned pointers is transferred to the caller.
+     * \since QGIS 3.40
+     */
+    QVector<QgsLineString *> splitToDisjointXYParts() const SIP_FACTORY;
+
+    /**
      * Returns the length in 3D world of the line string.
      * If it is not a 3D line string, return its 2D length.
      * \see length()
@@ -1174,10 +1184,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Calculates the minimal 3D bounding box for the geometry.
-     * Deprecated: use calculateBoundingBox3D instead
      * \see calculateBoundingBox()
      * \since QGIS 3.26
-     * \deprecated QGIS 3.34
+     * \deprecated QGIS 3.34 use calculateBoundingBox3D() instead
      */
     Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
 
@@ -1194,7 +1203,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.36
      */
-    QgsLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
 
     /**
      * Returns a copy of this line with all missing (NaN) m values interpolated
@@ -1209,7 +1218,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see lineLocatePointByM()
      * \since QGIS 3.38
      */
-    QgsLineString *interpolateM( bool use3DDistance = true ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > interpolateM( bool use3DDistance = true ) const;
 
     /**
      * Attempts to locate a point on the linestring by m value.

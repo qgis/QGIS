@@ -28,6 +28,7 @@ class QgsPanelWidgetStack;
 class QgsTableEditorFormattingWidget;
 class QgsExpressionContextGenerator;
 class QgsMapLayer;
+class QgsLayoutItemManualTable;
 
 /**
  * \ingroup gui
@@ -44,7 +45,6 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorDialog with the specified \a parent widget.
      */
@@ -156,6 +156,18 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      */
     void setLayer( QgsMapLayer *layer );
 
+    /**
+     * Returns the manual table associated with the editor.
+     * \since QGIS 3.42
+     */
+    QgsLayoutItemManualTable *table() const SIP_SKIP;
+
+    /**
+     * Sets the \a table associated with the editor.
+     * \since QGIS 3.42
+     */
+    void setTable( QgsLayoutItemManualTable *table ) SIP_SKIP;
+
   signals:
 
     /**
@@ -169,7 +181,6 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     void includeHeaderChanged( bool included );
 
   protected:
-
     void closeEvent( QCloseEvent * ) override;
 
   private:
@@ -179,7 +190,8 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     QgsPanelWidgetStack *mPropertiesStack = nullptr;
     QgsTableEditorFormattingWidget *mFormattingWidget = nullptr;
     bool mBlockSignals = false;
-    QPointer< QgsMapLayer > mLayer;
+    QPointer<QgsMapLayer> mLayer;
+    QgsLayoutItemManualTable *mTable = nullptr;
 
     void updateActionsFromSelection();
 };

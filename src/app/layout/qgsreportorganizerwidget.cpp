@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportorganizerwidget.h"
+#include "moc_qgsreportorganizerwidget.cpp"
 #include "qgsreport.h"
 #include "qgsreportsectionmodel.h"
 #include "qgsreportsectionlayout.h"
@@ -88,7 +89,7 @@ void QgsReportOrganizerWidget::setEditedSection( QgsAbstractReportSection *secti
 
 void QgsReportOrganizerWidget::addLayoutSection()
 {
-  std::unique_ptr< QgsReportSectionLayout > section = std::make_unique< QgsReportSectionLayout >();
+  std::unique_ptr<QgsReportSectionLayout> section = std::make_unique<QgsReportSectionLayout>();
   QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
   const QModelIndex newIndex = mSectionModel->indexForSection( newSection );
@@ -97,7 +98,7 @@ void QgsReportOrganizerWidget::addLayoutSection()
 
 void QgsReportOrganizerWidget::addFieldGroupSection()
 {
-  std::unique_ptr< QgsReportSectionFieldGroup > section = std::make_unique< QgsReportSectionFieldGroup >();
+  std::unique_ptr<QgsReportSectionFieldGroup> section = std::make_unique<QgsReportSectionFieldGroup>();
   QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
   const QModelIndex newIndex = mSectionModel->indexForSection( newSection );
@@ -107,33 +108,30 @@ void QgsReportOrganizerWidget::addFieldGroupSection()
 void QgsReportOrganizerWidget::removeSection()
 {
   QgsAbstractReportSection *section = mSectionModel->sectionForIndex( mViewSections->currentIndex() );
-  if ( !section || dynamic_cast< QgsReport * >( section ) )
+  if ( !section || dynamic_cast<QgsReport *>( section ) )
     return; //report cannot be removed
 
-  const int res = QMessageBox::question( this, tr( "Remove Section" ),
-                                         tr( "Are you sure you want to remove the report section?" ),
-                                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  const int res = QMessageBox::question( this, tr( "Remove Section" ), tr( "Are you sure you want to remove the report section?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res == QMessageBox::No )
     return;
 
-  std::function< void( QgsAbstractReportSection *section ) > cleanup;
-  cleanup = [ =, &cleanup]( QgsAbstractReportSection * section )
-  {
+  std::function<void( QgsAbstractReportSection * section )> cleanup;
+  cleanup = [=, &cleanup]( QgsAbstractReportSection *section ) {
     if ( mDesigner->currentLayout() == section->header() || mDesigner->currentLayout() == section->footer() )
       mDesigner->setCurrentLayout( nullptr );
     if ( section->type() == QLatin1String( "SectionFieldGroup" ) )
     {
-      QgsReportSectionFieldGroup *fieldGroup = static_cast< QgsReportSectionFieldGroup * >( section );
+      QgsReportSectionFieldGroup *fieldGroup = static_cast<QgsReportSectionFieldGroup *>( section );
       if ( fieldGroup->body() == mDesigner->currentLayout() )
         mDesigner->setCurrentLayout( nullptr );
     }
     if ( section->type() == QLatin1String( "SectionLayout" ) )
     {
-      QgsReportSectionLayout *sectionLayout = static_cast< QgsReportSectionLayout * >( section );
+      QgsReportSectionLayout *sectionLayout = static_cast<QgsReportSectionLayout *>( section );
       if ( sectionLayout->body() == mDesigner->currentLayout() )
         mDesigner->setCurrentLayout( nullptr );
     }
-    const QList< QgsAbstractReportSection * > children = section->childSections();
+    const QList<QgsAbstractReportSection *> children = section->childSections();
     for ( QgsAbstractReportSection *child : children )
       cleanup( child );
   };
@@ -152,19 +150,19 @@ void QgsReportOrganizerWidget::selectionChanged( const QModelIndex &current, con
   mButtonRemoveSection->setEnabled( parent != mReport );
 
   delete mConfigWidget;
-  if ( QgsReportSectionLayout *section = dynamic_cast< QgsReportSectionLayout * >( parent ) )
+  if ( QgsReportSectionLayout *section = dynamic_cast<QgsReportSectionLayout *>( parent ) )
   {
     QgsReportLayoutSectionWidget *widget = new QgsReportLayoutSectionWidget( this, mDesigner, section );
     mSettingsFrame->layout()->addWidget( widget );
     mConfigWidget = widget;
   }
-  else if ( QgsReportSectionFieldGroup *section = dynamic_cast< QgsReportSectionFieldGroup * >( parent ) )
+  else if ( QgsReportSectionFieldGroup *section = dynamic_cast<QgsReportSectionFieldGroup *>( parent ) )
   {
     QgsReportSectionFieldGroupWidget *widget = new QgsReportSectionFieldGroupWidget( this, mDesigner, section );
     mSettingsFrame->layout()->addWidget( widget );
     mConfigWidget = widget;
   }
-  else if ( QgsReport *section = dynamic_cast< QgsReport * >( parent ) )
+  else if ( QgsReport *section = dynamic_cast<QgsReport *>( parent ) )
   {
     QgsReportSectionWidget *widget = new QgsReportSectionWidget( this, mDesigner, section );
     mSettingsFrame->layout()->addWidget( widget );

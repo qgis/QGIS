@@ -22,18 +22,17 @@ a source and destination coordinate reference system.
 #include "qgscoordinateoperationwidget.h"
 %End
   public:
-
     struct OperationDetails
     {
-      int sourceTransformId;
+        int sourceTransformId;
 
-      int destinationTransformId;
+        int destinationTransformId;
 
-      QString proj;
+        QString proj;
 
-      bool isAvailable;
+        bool isAvailable;
 
-      bool allowFallback;
+        bool allowFallback;
     };
 
     QgsCoordinateOperationWidget( QWidget *parent = 0 );
@@ -100,7 +99,7 @@ Returns ``True`` if the "make default" option is selected.
 Returns ``True`` if there is a valid selection in the widget.
 %End
 
-    QList< QgsCoordinateOperationWidget::OperationDetails > availableOperations() const;
+    QList<QgsCoordinateOperationWidget::OperationDetails> availableOperations() const;
 %Docstring
 Returns a list of the available operations shown in the widget.
 %End

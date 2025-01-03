@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingfeaturesourceoptionswidget.h"
+#include "moc_qgsprocessingfeaturesourceoptionswidget.cpp"
 #include "qgis.h"
 
 ///@cond NOT_STABLE
@@ -62,7 +63,7 @@ void QgsProcessingFeatureSourceOptionsWidget::setFilterExpression( const QString
 
 Qgis::InvalidGeometryCheck QgsProcessingFeatureSourceOptionsWidget::geometryCheckMethod() const
 {
-  return mComboInvalidFeatureFiltering->currentData().isValid() ? mComboInvalidFeatureFiltering->currentData().value< Qgis::InvalidGeometryCheck >() : Qgis::InvalidGeometryCheck::AbortOnInvalid;
+  return mComboInvalidFeatureFiltering->currentData().isValid() ? mComboInvalidFeatureFiltering->currentData().value<Qgis::InvalidGeometryCheck>() : Qgis::InvalidGeometryCheck::AbortOnInvalid;
 }
 
 bool QgsProcessingFeatureSourceOptionsWidget::isOverridingInvalidGeometryCheck() const

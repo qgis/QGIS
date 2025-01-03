@@ -383,7 +383,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void layerLegendChanged();
 
     /**
-     * Emitted when layer flags have changed.
+     * Triggered when layer flags have changed.
      * \since QGIS 3.18
      */
     void layerFlagsChanged();
@@ -393,6 +393,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void legendNodeDataChanged();
 
     void invalidateLegendMapBasedData();
+
+  private slots:
+
+    /**
+     * Triggered when layer elevation properties have changed.
+     * \since QGIS 3.42
+     */
+    void layerProfileGenerationPropertyChanged();
 
   protected:
     void removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer );

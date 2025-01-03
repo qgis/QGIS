@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include "qgspluginlayer.h"
 
 #include <QIcon>
 
@@ -111,14 +112,23 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::PointCloud:
-      case Qgis::LayerType::Plugin:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Group:
       case Qgis::LayerType::TiledScene:
       {
         return QgsIconUtils::iconForLayerType( layer->type() );
       }
-
+      case Qgis::LayerType::Plugin:
+      {
+        if ( const QgsPluginLayer *pl = qobject_cast<const QgsPluginLayer *>( layer ) )
+        {
+          const QIcon icon = pl->icon();
+          if ( !icon.isNull() )
+            return icon;
+        }
+        // fallback to default icon if layer did not provide a specific icon
+        return QgsIconUtils::iconForLayerType( layer->type() );
+      }
       case Qgis::LayerType::Vector:
       {
         const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer );

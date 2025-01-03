@@ -17,19 +17,12 @@ class QgsServerFilter
 %Docstring(signature="appended")
 Class defining I/O filters for QGIS Server and
 implemented in plugins.
-
-Filters can define any (or none) of the following hooks:
-
-- :py:func:`~requestReady` - called when request is ready
-- :py:func:`~responseComplete` - called when the response is complete after core services have returned to main loop
-- :py:func:`~sendResponse` - called just before sending output to FGCI
 %End
 
 %TypeHeaderCode
 #include "qgsserverfilter.h"
 %End
   public:
-
     QgsServerFilter( QgsServerInterface *serverInterface );
 %Docstring
 Constructor
@@ -44,7 +37,7 @@ and must be passed to QgsServerFilter instances.
 Returns the :py:class:`QgsServerInterface` instance
 %End
 
- virtual void requestReady() /Deprecated/;
+ virtual void requestReady() /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` is ready and populated with
 parameters, just before entering the main switch for core services.
@@ -57,7 +50,7 @@ be used instead.
    Will be removed in QGIS 4.0.
 %End
 
- virtual void responseComplete() /Deprecated/;
+ virtual void responseComplete() /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` processing has done and
 the response is ready, just after the main switch for core services
@@ -71,7 +64,7 @@ be used instead.
    Will be removed in QGIS 4.0.
 %End
 
- virtual void sendResponse() /Deprecated/;
+ virtual void sendResponse() /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` sends its data to FCGI stdout.
 This normally occurs at the end of core services processing just after
@@ -132,7 +125,6 @@ is called once for each feature before hitting :py:func:`~QgsServerFilter.respon
 
 .. versionadded:: 3.22
 %End
-
 
 
 };

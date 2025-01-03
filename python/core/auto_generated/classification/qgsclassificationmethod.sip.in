@@ -123,7 +123,7 @@ Creates a classification method.
 
     virtual ~QgsClassificationMethod();
 
-    virtual QgsClassificationMethod *clone() const = 0 /Factory/;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const = 0;
 %Docstring
 Returns a clone of the method.
 Implementation can take advantage of copyBase method which copies the parameters of the base class
@@ -240,7 +240,7 @@ Defines if the trailing 0 are trimmed in the label
 Transforms a list of classes to a list of breaks
 %End
 
- QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses ) /Deprecated/;
+ QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses ) /Deprecated="Since 3.38. Use classesV2() instead."/;
 %Docstring
 This will calculate the classes for a given layer to define the classes.
 
@@ -296,7 +296,7 @@ Saves the method to a DOM element and return it
 :param context: the read/write context
 %End
 
-    static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr< QgsClassificationMethod > create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the DOM element and return a new classification method from it
 

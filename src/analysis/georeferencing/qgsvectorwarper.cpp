@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorwarper.h"
+#include "moc_qgsvectorwarper.cpp"
 #include "qgsfeaturesink.h"
 #include "qgsfeedback.h"
 #include "qgsgcpgeometrytransformer.h"
@@ -28,7 +29,6 @@ QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod me
   , mPoints( points )
   , mDestinationCrs( destinationCrs )
 {
-
 }
 
 bool QgsVectorWarper::transformFeatures( QgsFeatureIterator &iterator, QgsFeatureSink *sink, const QgsCoordinateTransformContext &context, QgsFeedback *feedback ) const
@@ -87,14 +87,11 @@ bool QgsVectorWarper::transformFeatures( QgsFeatureIterator &iterator, QgsFeatur
 }
 
 
-
 //
 // QgsVectorWarperTask
 //
 
-QgsVectorWarperTask::QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
-    const QgsCoordinateReferenceSystem &destinationCrs,
-    QgsVectorLayer *layer, const QString &fileName )
+QgsVectorWarperTask::QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs, QgsVectorLayer *layer, const QString &fileName )
   : QgsTask( tr( "Warping %1" ).arg( fileName ), QgsTask::CanCancel )
   , mMethod( method )
   , mPoints( points )
@@ -121,14 +118,14 @@ void QgsVectorWarperTask::cancel()
 
 bool QgsVectorWarperTask::run()
 {
-  mFeedback = std::make_unique< QgsFeedback >();
+  mFeedback = std::make_unique<QgsFeedback>();
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
 
   const QString fileExtension = QFileInfo( mDestFileName ).completeSuffix();
   saveOptions.driverName = QgsVectorFileWriter::driverForExtension( fileExtension );
 
-  std::unique_ptr< QgsVectorFileWriter > exporter( QgsVectorFileWriter::create( mDestFileName, mFields, mWkbType, mDestinationCrs, mTransformContext, saveOptions ) );
+  std::unique_ptr<QgsVectorFileWriter> exporter( QgsVectorFileWriter::create( mDestFileName, mFields, mWkbType, mDestinationCrs, mTransformContext, saveOptions ) );
   if ( exporter->hasError() )
   {
     mErrorMessage = exporter->errorMessage();
@@ -138,11 +135,10 @@ bool QgsVectorWarperTask::run()
 
   QgsVectorWarper warper( mMethod, mPoints, mDestinationCrs );
 
-  connect( mFeedback.get(), &QgsFeedback::processedCountChanged, this, [ = ]( long long count )
-  {
+  connect( mFeedback.get(), &QgsFeedback::processedCountChanged, this, [=]( long long count ) {
     const double newProgress = 100.0 * count / mFeatureCount;
     // avoid flooding with too many events
-    if ( static_cast< int >( newProgress * 10 ) != static_cast< int >( mLastProgress * 10 ) )
+    if ( static_cast<int>( newProgress * 10 ) != static_cast<int>( mLastProgress * 10 ) )
     {
       mLastProgress = newProgress;
       emit progressChanged( newProgress );
@@ -161,4 +157,3 @@ bool QgsVectorWarperTask::run()
   mFeedback.reset();
   return mResult == Result::Success;
 }
-

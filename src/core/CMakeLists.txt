@@ -30,8 +30,6 @@ set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
   ${CMAKE_SOURCE_DIR}/external/nmea/tok.c
 
-  ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
-
   ${FLEX_QgsExpressionLexer_OUTPUTS}
   ${BISON_QgsExpressionParser_OUTPUTS}
   ${FLEX_QgsSqlStatementLexer_OUTPUTS}
@@ -85,6 +83,7 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsinformation.cpp
   gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
+  gps/qgsqtlocationconnection.cpp
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
@@ -214,6 +213,7 @@ set(QGIS_CORE_SRCS
   auth/qgsauthmethod.cpp
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
+  auth/qgsauthorizationsettings.cpp
 
   auth/qgsauthconfigurationstoragesqlite.cpp
   auth/qgsauthconfigurationstoragedb.cpp
@@ -365,6 +365,7 @@ set(QGIS_CORE_SRCS
   stac/qgsstacasset.cpp
   stac/qgsstaccatalog.cpp
   stac/qgsstaccollection.cpp
+  stac/qgsstaccollections.cpp
   stac/qgsstacconnection.cpp
   stac/qgsstaccontroller.cpp
   stac/qgsstacdataitems.cpp
@@ -579,6 +580,7 @@ set(QGIS_CORE_SRCS
   qgsremappingproxyfeaturesink.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
+  qgsrenderedlayerstatistics.cpp
   qgsrendereditemdetails.cpp
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
@@ -789,6 +791,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
+  raster/qgsrasterlabeling.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerelevationproperties.cpp
   raster/qgsrasterlayerprofilegenerator.cpp
@@ -1064,12 +1067,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
 endif()
 
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    gps/qgsqtlocationconnection.cpp
-  )
-endif()
-
 if(NOT MSVC)
   set_source_files_properties(
     ${FLEX_QgsExpressionLexer_OUTPUTS}
@@ -1281,6 +1278,7 @@ set(QGIS_CORE_HDRS
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrenderedfeaturehandlerinterface.h
+  qgsrenderedlayerstatistics.h
   qgsrendereditemdetails.h
   qgsrunprocess.h
   qgsruntimeprofiler.h
@@ -1388,6 +1386,7 @@ set(QGIS_CORE_HDRS
   auth/qgsauthmethod.h
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
+  auth/qgsauthorizationsettings.h
 
   auth/qgsauthconfigurationstoragesqlite.h
   auth/qgsauthconfigurationstoragedb.h
@@ -1545,6 +1544,8 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsinformation.h
   gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
+  gps/qgsqtlocationconnection.h
+  gps/qgsgpsconnectionregistry.h
   gps/qgssatelliteinformation.h
   gps/qgsvectorlayergpslogger.h
 
@@ -1921,6 +1922,7 @@ set(QGIS_CORE_HDRS
   raster/qgsrasteridentifyresult.h
   raster/qgsrasterinterface.h
   raster/qgsrasteriterator.h
+  raster/qgsrasterlabeling.h
   raster/qgsrasterlayer.h
   raster/qgsrasterlayerelevationproperties.h
   raster/qgsrasterlayerprofilegenerator.h
@@ -1960,6 +1962,7 @@ set(QGIS_CORE_HDRS
   stac/qgsstacasset.h
   stac/qgsstaccatalog.h
   stac/qgsstaccollection.h
+  stac/qgsstaccollections.h
   stac/qgsstacconnection.h
   stac/qgsstaccontroller.h
   stac/qgsstacdataitems.h
@@ -2164,13 +2167,6 @@ if (NOT WITH_QTWEBKIT)
   )
 endif()
 
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-    gps/qgsqtlocationconnection.h
-  )
-endif()
-
-
 if (HAVE_WEBENGINE)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
         web/qgswebenginepage.cpp
@@ -2184,7 +2180,9 @@ if(MSVC)
   set_source_files_properties(
       ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
       ${CMAKE_CURRENT_BINARY_DIR}/qgis_core_autogen/mocs_compilation.cpp
+      expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
+      textrenderer/qgsfontmanager.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 else()
@@ -2207,13 +2205,6 @@ endif()
 # install qgsconfig.h and plugin.h here so they can get into
 # the OS X framework target
 
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-    gps/qgsqtlocationconnection.h
-    gps/qgsgpsconnectionregistry.h
-  )
-endif()
-
 if (HAVE_OPENCL)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
         qgsopenclutils.cpp
@@ -2234,13 +2225,11 @@ if (WITH_EPT)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptprovider.cpp
       pointcloud/qgseptpointcloudindex.cpp
-      pointcloud/qgsremoteeptpointcloudindex.cpp
       pointcloud/qgseptpointcloudblockrequest.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptprovider.h
       pointcloud/qgseptpointcloudindex.h
-      pointcloud/qgsremoteeptpointcloudindex.h
       pointcloud/qgseptpointcloudblockrequest.h
   )
 
@@ -2256,7 +2245,6 @@ if (WITH_COPC)
       providers/copc/qgscopcprovider.cpp
       providers/vpc/qgsvirtualpointcloudprovider.cpp
       pointcloud/qgscopcpointcloudindex.cpp
-      pointcloud/qgsremotecopcpointcloudindex.cpp
       pointcloud/qgscopcpointcloudblockrequest.cpp
       pointcloud/qgscachedpointcloudblockrequest.cpp
   )
@@ -2264,7 +2252,6 @@ if (WITH_COPC)
       providers/copc/qgscopcprovider.h
       providers/vpc/qgsvirtualpointcloudprovider.h
       pointcloud/qgscopcpointcloudindex.h
-      pointcloud/qgsremotecopcpointcloudindex.h
       pointcloud/qgscopcpointcloudblockrequest.h
       pointcloud/qgscachedpointcloudblockrequest.h
   )
@@ -2339,6 +2326,32 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
 
+if(USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_core PRIVATE $<$<COMPILE_LANGUAGE:CXX>:qgis.h>)
+endif()
+
+set_target_properties(qgis_core PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
+# Exclude below files because they include tiny_gltf.h with different #define settings
+set_source_files_properties(tiledscene/qgsgltfutils.cpp
+                            tiledscene/qgsquantizedmeshtiles.cpp
+                            tiledscene/qgstiledscenelayerrenderer.cpp
+                            PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
+
+# Add meshoptimizer
+if(WITH_INTERNAL_MESHOPTIMIZER)
+  target_sources(qgis_core PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
+  )
+
+  target_include_directories(qgis_core PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/meshOptimizer
+  )
+else()
+  find_package(meshoptimizer CONFIG REQUIRED)
+  target_link_libraries(qgis_core meshoptimizer::meshoptimizer)
+endif()
+
 # require c++17
 target_compile_features(qgis_core PRIVATE cxx_std_17)
 
@@ -2351,18 +2364,9 @@ if (MSVC)
 endif()
 
 target_include_directories(qgis_core SYSTEM PUBLIC
-  ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Gui_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Xml_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Widgets_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Network_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Sql_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${QCA_INCLUDE_DIR}
-  ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
   ${EXIV2_INCLUDE_DIR}
@@ -2434,7 +2438,6 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
-  ${CMAKE_SOURCE_DIR}/external/meshOptimizer
   ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
@@ -2536,6 +2539,7 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
+  ${QT_VERSION_BASE}::Positioning
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   GEOS::geos_c
@@ -2563,7 +2567,6 @@ endif()
 
 if (WITH_QTPRINTER)
   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
-  target_include_directories(qgis_core SYSTEM PUBLIC ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS})
 endif()
 
 if (WITH_DRACO)
@@ -2645,15 +2648,9 @@ if (FORCE_STATIC_LIBS)
   endif()
 endif()
 
-if (${QT_VERSION_BASE}SerialPort_FOUND)
+if (WITH_QTSERIALPORT)
   target_link_libraries(qgis_core
     ${QT_VERSION_BASE}::SerialPort
-  )
-endif()
-
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  target_link_libraries(qgis_core
-    ${QT_VERSION_BASE}::Positioning
   )
 endif()
 

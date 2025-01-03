@@ -6,17 +6,17 @@ try:
     QgsPlotDefaultSettings.chartBackgroundSymbol = staticmethod(QgsPlotDefaultSettings.chartBackgroundSymbol)
     QgsPlotDefaultSettings.chartBorderSymbol = staticmethod(QgsPlotDefaultSettings.chartBorderSymbol)
     QgsPlotDefaultSettings.__group__ = ['plot']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsPlot.__group__ = ['plot']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsPlotAxis.__group__ = ['plot']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     Qgs2DPlot.__group__ = ['plot']
-except NameError:
+except (NameError, AttributeError):
     pass

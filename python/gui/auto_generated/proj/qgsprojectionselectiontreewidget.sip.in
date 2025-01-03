@@ -34,9 +34,7 @@ suitable to use the compact :py:class:`QgsProjectionSelectionWidget` widget.
 #include "qgsprojectionselectiontreewidget.h"
 %End
   public:
-
-    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0,
-                                      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionTreeWidget, with the specified ``parent`` widget.
 
@@ -152,7 +150,7 @@ by the given Coordinate Reference Systems.
                   in the widget.
 %End
 
- void pushProjectionToFront() /Deprecated/;
+ void pushProjectionToFront() /Deprecated="Since 3.40. Has no effect since QGIS 3.20."/;
 %Docstring
 Marks the current selected projection for push to front of recent projections list.
 
@@ -175,7 +173,7 @@ Clear the list of recent projections.
 Emitted when a projection is selected in the widget.
 %End
 
- void initialized() /Deprecated/;
+ void initialized() /Deprecated="Since 3.40. No longer emitted."/;
 %Docstring
 Notifies others that the widget is now fully initialized, including deferred selection of projection.
 
@@ -197,7 +195,6 @@ Emitted when the selection in the tree is changed from a valid selection to an i
 %End
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
 

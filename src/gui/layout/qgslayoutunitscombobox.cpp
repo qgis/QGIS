@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutunitscombobox.h"
+#include "moc_qgslayoutunitscombobox.cpp"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsunittypes.h"
 #include "qgis.h"
@@ -21,7 +22,7 @@
 QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
   : QComboBox( parent )
 {
-  QList< Qgis::LayoutUnit > units;
+  QList<Qgis::LayoutUnit> units;
   units << Qgis::LayoutUnit::Millimeters
         << Qgis::LayoutUnit::Centimeters
         << Qgis::LayoutUnit::Meters
@@ -34,7 +35,7 @@ QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
   const auto constUnits = units;
   for ( const Qgis::LayoutUnit u : constUnits )
   {
-    addItem( QgsUnitTypes::toAbbreviatedString( u ), static_cast< int >( u ) );
+    addItem( QgsUnitTypes::toAbbreviatedString( u ), static_cast<int>( u ) );
     setItemData( count() - 1, QgsUnitTypes::toString( u ), Qt::ToolTipRole );
   }
   connect( this, static_cast<void ( QgsLayoutUnitsComboBox::* )( int )>( &QgsLayoutUnitsComboBox::currentIndexChanged ), this, &QgsLayoutUnitsComboBox::indexChanged );
@@ -42,12 +43,12 @@ QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
 
 Qgis::LayoutUnit QgsLayoutUnitsComboBox::unit() const
 {
-  return static_cast< Qgis::LayoutUnit >( currentData().toInt() );
+  return static_cast<Qgis::LayoutUnit>( currentData().toInt() );
 }
 
 void QgsLayoutUnitsComboBox::setUnit( Qgis::LayoutUnit unit )
 {
-  setCurrentIndex( findData( static_cast< int >( unit ) ) );
+  setCurrentIndex( findData( static_cast<int>( unit ) ) );
 }
 
 void QgsLayoutUnitsComboBox::linkToWidget( QDoubleSpinBox *widget )
@@ -61,7 +62,7 @@ void QgsLayoutUnitsComboBox::indexChanged( int )
   if ( mConverter )
   {
     const auto constMLinkedSpinBoxes = mLinkedSpinBoxes;
-    for ( const QPointer< QDoubleSpinBox > &widget : constMLinkedSpinBoxes )
+    for ( const QPointer<QDoubleSpinBox> &widget : constMLinkedSpinBoxes )
     {
       if ( widget )
         whileBlocking( widget.data() )->setValue( mConverter->convert( QgsLayoutMeasurement( widget->value(), mOldUnit ), newUnit ).length() );

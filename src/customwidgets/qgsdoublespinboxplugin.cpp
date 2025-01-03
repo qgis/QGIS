@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsdoublespinboxplugin.h"
+#include "moc_qgsdoublespinboxplugin.cpp"
 #include "qgsdoublespinbox.h"
 
 
@@ -93,5 +94,5 @@ QString QgsDoubleSpinBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

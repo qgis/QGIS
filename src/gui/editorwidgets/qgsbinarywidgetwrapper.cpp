@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsbinarywidgetwrapper.h"
+#include "moc_qgsbinarywidgetwrapper.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfileutils.h"
@@ -112,7 +113,7 @@ bool QgsBinaryWidgetWrapper::valid() const
 
 void QgsBinaryWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  mValue = value.isValid() && !QgsVariantUtils::isNull( value ) && value.canConvert< QByteArray >() ? value.toByteArray() : QByteArray();
+  mValue = value.isValid() && !QgsVariantUtils::isNull( value ) && value.canConvert<QByteArray>() ? value.toByteArray() : QByteArray();
   if ( mValue.length() == 0 )
     mValue = QByteArray();
 
@@ -141,10 +142,7 @@ void QgsBinaryWidgetWrapper::saveContent()
   {
     const QgsFocusKeeper focusKeeper;
 
-    file = QFileDialog::getSaveFileName( nullptr,
-                                         tr( "Save Contents to File" ),
-                                         defaultPath(),
-                                         tr( "All files" ) + " (*.*)" );
+    file = QFileDialog::getSaveFileName( nullptr, tr( "Save Contents to File" ), defaultPath(), tr( "All files" ) + " (*.*)" );
   }
   if ( file.isEmpty() )
   {
@@ -160,8 +158,7 @@ void QgsBinaryWidgetWrapper::saveContent()
   fileOut.close();
 
   if ( mMessageBar )
-    mMessageBar->pushSuccess( QString(), tr( "Saved content to <a href=\"%1\">%2</a>" ).arg(
-                                QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
+    mMessageBar->pushSuccess( QString(), tr( "Saved content to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
 }
 
 void QgsBinaryWidgetWrapper::setContent()
@@ -172,10 +169,7 @@ void QgsBinaryWidgetWrapper::setContent()
   {
     const QgsFocusKeeper focusKeeper;
 
-    file = QFileDialog::getOpenFileName( nullptr,
-                                         tr( "Embed File" ),
-                                         defaultPath(),
-                                         tr( "All files" ) + " (*.*)" );
+    file = QFileDialog::getOpenFileName( nullptr, tr( "Embed File" ), defaultPath(), tr( "All files" ) + " (*.*)" );
   }
 
   const QFileInfo fi( file );
@@ -212,4 +206,3 @@ QString QgsBinaryWidgetWrapper::defaultPath()
 {
   return QgsSettings().value( QStringLiteral( "/UI/lastBinaryDir" ), QDir::homePath() ).toString();
 }
-

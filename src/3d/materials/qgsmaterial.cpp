@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaterial.h"
+#include "moc_qgsmaterial.cpp"
 #include "qgs3dutils.h"
 
 #include <Qt3DRender/QEffect>
@@ -29,7 +30,6 @@ const QString QgsMaterial::CLIP_PLANE_DEFINE = QStringLiteral( "CLIPPING" );
 QgsMaterial::QgsMaterial( QNode *parent )
   : QMaterial( parent )
 {
-
 }
 
 QgsMaterial::~QgsMaterial() = default;
@@ -76,7 +76,7 @@ void QgsMaterial::enableClipping( const QList<QVector4D> &clipPlanesEquations )
   {
     clipPlanesEquationsVariant << clipPlanesEquations[i];
   }
-  Qt3DRender::QParameter *clipPlane = new Qt3DRender::QParameter( QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME,   clipPlanesEquationsVariant );
+  Qt3DRender::QParameter *clipPlane = new Qt3DRender::QParameter( QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME, clipPlanesEquationsVariant );
   Qt3DRender::QParameter *clipPlaneNumber = new Qt3DRender::QParameter( QgsMaterial::CLIP_PLANE_MAX_PLANE_PARAMETER_NAME, nrClipPlanes );
 
   materialEffect->addParameter( clipPlane );
@@ -117,7 +117,7 @@ void QgsMaterial::disableClipping()
   for ( Qt3DRender::QParameter *parameter : materialEffect->parameters() )
   {
     const QString parameterName = parameter->name();
-    if ( parameterName == QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME ||  parameterName == QgsMaterial::CLIP_PLANE_MAX_PLANE_PARAMETER_NAME )
+    if ( parameterName == QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME || parameterName == QgsMaterial::CLIP_PLANE_MAX_PLANE_PARAMETER_NAME )
     {
       materialEffect->removeParameter( parameter );
       break;

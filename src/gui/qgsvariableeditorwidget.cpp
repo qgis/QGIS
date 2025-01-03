@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvariableeditorwidget.h"
+#include "moc_qgsvariableeditorwidget.cpp"
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
@@ -423,7 +424,7 @@ void QgsVariableEditorTree::refreshScopeItems( QgsExpressionContextScope *scope,
     scopeItem->setFlags( scopeItem->flags() ^ Qt::ItemIsEditable );
     scopeItem->setFirstColumnSpanned( true );
     QFont scopeFont = scopeItem->font( 0 );
-    scopeFont .setBold( true );
+    scopeFont.setBold( true );
     scopeItem->setFont( 0, scopeFont );
     scopeItem->setFirstColumnSpanned( true );
 
@@ -475,8 +476,7 @@ void QgsVariableEditorTree::emitChanged()
   emit scopeChanged();
 }
 
-void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewItem &option,
-                                     const QModelIndex &index ) const
+void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QStyleOptionViewItem opt = option;
   QTreeWidgetItem *item = itemFromIndex( index );
@@ -683,9 +683,7 @@ void QgsVariableEditorTree::mousePressEvent( QMouseEvent *event )
 // VariableEditorDelegate
 //
 
-QWidget *VariableEditorDelegate::createEditor( QWidget *parent,
-    const QStyleOptionViewItem &,
-    const QModelIndex &index ) const
+QWidget *VariableEditorDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
 {
   if ( !mParentTree )
     return nullptr;
@@ -711,21 +709,17 @@ QWidget *VariableEditorDelegate::createEditor( QWidget *parent,
   return lineEdit;
 }
 
-void VariableEditorDelegate::updateEditorGeometry( QWidget *editor,
-    const QStyleOptionViewItem &option,
-    const QModelIndex & ) const
+void VariableEditorDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & ) const
 {
   editor->setGeometry( option.rect.adjusted( 0, 0, 0, -1 ) );
 }
 
-QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option,
-                                        const QModelIndex &index ) const
+QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   return QItemDelegate::sizeHint( option, index ) + QSize( 3, 4 );
 }
 
-void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *model,
-    const QModelIndex &index ) const
+void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   Q_UNUSED( model )
 
@@ -737,7 +731,7 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
   if ( !item || !scope )
     return;
 
-  QLineEdit *lineEdit = qobject_cast< QLineEdit * >( widget );
+  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( widget );
   if ( !lineEdit )
     return;
 

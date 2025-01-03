@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscodeeditorr.h"
+#include "moc_qgscodeeditorr.cpp"
 
 #include <QWidget>
 #include <QString>
@@ -23,12 +24,7 @@
 
 
 QgsCodeEditorR::QgsCodeEditorR( QWidget *parent, Mode mode )
-  : QgsCodeEditor( parent,
-                   QString(),
-                   false,
-                   false,
-                   QgsCodeEditor::Flag::CodeFolding,
-                   mode )
+  : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding, mode )
 {
   if ( !parent )
   {
@@ -83,7 +79,6 @@ void QgsCodeEditorR::initializeLexer()
 QgsQsciLexerR::QgsQsciLexerR( QObject *parent )
   : QsciLexer( parent )
 {
-
 }
 
 const char *QgsQsciLexerR::language() const
@@ -153,7 +148,7 @@ const char *QgsQsciLexerR::keywords( int set ) const
              "approxfun apropos ar args arima array arrows asin asinh assign assocplot atan atanh attach attr attributes autoload autoloader "
              "ave axis backsolve barplot basename beta bindtextdomain binomial biplot bitmap bmp body box boxplot bquote break browser builtins "
              "bxp by bzfile c call cancor capabilities casefold cat category cbind ccf ceiling character charmatch chartr chol choose chull "
-             "citation class close cm cmdscale codes coef coefficients col colnames colors colorspaces colours comment complex confint "  //#spellok
+             "citation class close cm cmdscale codes coef coefficients col colnames colors colorspaces colours comment complex confint " //#spellok
              "conflicts contour contrasts contributors convolve cophenetic coplot cor cos cosh cov covratio cpgram crossprod cummax cummin "
              "cumprod cumsum curve cut cutree cycle data dataentry date dbeta dbinom dcauchy dchisq de debug debugger decompose delay deltat "
              "demo dendrapply density deparse deriv det detach determinant deviance dexp df dfbeta dfbetas dffits dgamma dgeom dget dhyper "

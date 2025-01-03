@@ -1,0 +1,211 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsabstractterrainsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractTerrainSettings /Abstract/
+{
+%Docstring(signature="appended")
+Base class for all terrain settings classes.
+
+:py:class:`QgsAbstractTerrainSettings` subclasses are responsible for storing the configuration
+of terrain generators.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsabstractterrainsettings.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == "flat" )
+      sipType = sipType_QgsFlatTerrainSettings;
+    else if ( sipCpp->type() == "dem" )
+      sipType = sipType_QgsDemTerrainSettings;
+    else if ( sipCpp->type() == "online" )
+      sipType = sipType_QgsOnlineDemTerrainSettings;
+    else if ( sipCpp->type() == "mesh" )
+      sipType = sipType_QgsMeshTerrainSettings;
+    else if ( sipCpp->type() == "quantizedmesh" )
+      sipType = sipType_QgsQuantizedMeshTerrainSettings;
+    else
+      sipType = 0;
+%End
+  public:
+    virtual ~QgsAbstractTerrainSettings();
+
+    virtual QgsAbstractTerrainSettings *clone() const = 0 /Factory/;
+%Docstring
+Returns a copy of the terrain settings.
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the unique type name for the terrain generator.
+%End
+
+    virtual bool equals( const QgsAbstractTerrainSettings *other ) const = 0;
+%Docstring
+Returns ``True`` if this settings is exactly equal to another ``other`` settings.
+%End
+
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads settings from a DOM ``element``.
+
+Subclasses should take care to call :py:func:`~QgsAbstractTerrainSettings.readCommonProperties` to read common properties from the element.
+
+.. seealso:: :py:func:`resolveReferences`
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Writes settings to a DOM ``element``.
+
+Subclasses should take care to call :py:func:`~QgsAbstractTerrainSettings.writeCommonProperties` to write common properties to the element.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual void resolveReferences( const QgsProject *project );
+%Docstring
+After reading settings from XML, resolves references to any layers in a ``project`` that have been read as layer IDs.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+
+
+    void setVerticalScale( double scale );
+%Docstring
+Sets the vertical ``scale`` (exaggeration) for terrain.
+
+(1 = true scale, > 1 = hills get more pronounced)
+
+.. seealso:: :py:func:`verticalScale`
+%End
+
+    double verticalScale() const;
+%Docstring
+Returns the vertical scale (exaggeration) for terrain.
+
+(1 = true scale, > 1 = hills get more pronounced)
+
+.. seealso:: :py:func:`setVerticalScale`
+%End
+
+    void setMapTileResolution( int resolution );
+%Docstring
+Sets the ``resolution`` (in pixels) of the texture of a terrain tile
+
+.. seealso:: :py:func:`mapTileResolution`
+%End
+
+    int mapTileResolution() const;
+%Docstring
+Returns the resolution (in pixels) of the texture of a terrain tile.
+
+This parameter influences how many zoom levels for terrain tiles there will be (together with :py:func:`~QgsAbstractTerrainSettings.maxTerrainGroundError`)
+
+.. seealso:: :py:func:`setMapTileResolution`
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum allowed screen ``error`` of terrain tiles in pixels.
+
+.. seealso:: :py:func:`maximumScreenError`
+%End
+
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum allowed screen error of terrain tiles in pixels.
+
+This parameter decides how aggressively less detailed terrain tiles are swapped to more detailed ones as camera gets closer.
+Each tile has its error defined in world units - this error gets projected to screen pixels
+according to camera view and if the tile's error is greater than the allowed error, it will
+be swapped by more detailed tiles with lower error.
+
+see :py:func:`~QgsAbstractTerrainSettings.setMaximumScreenError`
+%End
+
+    void setMaximumGroundError( double error );
+%Docstring
+Sets the maximum ground ``error`` of terrain tiles in world units.
+
+.. seealso:: :py:func:`maximumGroundError`
+%End
+
+    double maximumGroundError() const;
+%Docstring
+Returns the maximum ground error of terrain tiles in world units.
+
+This parameter influences how many zoom levels there will be (together with :py:func:`~QgsAbstractTerrainSettings.mapTileResolution`).
+This value tells that when the given ground error is reached (e.g. 10 meters), it makes no sense
+to further split terrain tiles into finer ones because they will not add extra details anymore.
+
+.. seealso:: :py:func:`setMaximumGroundError`
+%End
+
+    void setElevationOffset( double offset );
+%Docstring
+Sets the terrain elevation ``offset`` (used to move the terrain up or down).
+
+.. seealso:: :py:func:`elevationOffset`
+%End
+
+    double elevationOffset() const;
+%Docstring
+Returns the elevation offset of the terrain (used to move the terrain up or down).
+
+.. seealso:: :py:func:`setElevationOffset`
+%End
+
+  protected:
+    void writeCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes common properties from the base class into an XML ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    void readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads common properties from the base class from the given DOM ``element``.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    void copyCommonProperties( const QgsAbstractTerrainSettings *source );
+%Docstring
+Copies common properties from a ``source`` object.
+%End
+
+    bool equalsCommon( const QgsAbstractTerrainSettings *other ) const;
+%Docstring
+Returns ``True`` if common base class settings from ``other`` match this object.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/terrain/qgsabstractterrainsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

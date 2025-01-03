@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfieldconditionalformatwidget.h"
+#include "moc_qgsfieldconditionalformatwidget.cpp"
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgssymbol.h"
@@ -78,8 +79,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
     ruleWidget->setRule( QStringLiteral( "@value " ) );
   }
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::panelAccepted, this, [ = ]
-  {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::panelAccepted, this, [=] {
     if ( mPanelHandled )
     {
       // already handled the result of the panel, and the panel is being dismissed as a result
@@ -112,19 +112,16 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
     emit rulesUpdated( fieldName );
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleSaved, this, [ = ]
-  {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleSaved, this, [=] {
     ruleWidget->acceptPanel();
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::canceled, this, [ = ]
-  {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::canceled, this, [=] {
     mPanelHandled = true;
     ruleWidget->acceptPanel();
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleDeleted, this, [ = ]
-  {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleDeleted, this, [=] {
     deleteCurrentRule();
     mPanelHandled = true;
     ruleWidget->acceptPanel();
@@ -329,7 +326,7 @@ QgsConditionalStyle QgsEditConditionalFormatRuleWidget::currentStyle() const
   style.setTextColor( fontColor );
   if ( checkIcon->isChecked() )
   {
-    style.setSymbol( btnChangeIcon->clonedSymbol< QgsMarkerSymbol >() );
+    style.setSymbol( btnChangeIcon->clonedSymbol<QgsMarkerSymbol>() );
   }
   else
   {
@@ -420,7 +417,5 @@ void QgsEditConditionalFormatRuleWidget::setRule( const QString &rule )
 
 bool QgsEditConditionalFormatRuleWidget::isCustomSet()
 {
-  return ( btnBackgroundColor->color().isValid()
-           || btnTextColor->color().isValid()
-           || mFontButtons->checkedId() != -1 );
+  return ( btnBackgroundColor->color().isValid() || btnTextColor->color().isValid() || mFontButtons->checkedId() != -1 );
 }

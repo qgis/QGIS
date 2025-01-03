@@ -21,15 +21,15 @@
 #include "qgsziputils.h"
 #include "qgsapplication.h"
 
-class TestQgsZipUtils: public QObject
+class TestQgsZipUtils : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void unzipWithSubdirs();
     void unzipWithSubdirs2();
@@ -53,12 +53,10 @@ void TestQgsZipUtils::cleanupTestCase()
 
 void TestQgsZipUtils::init()
 {
-
 }
 
 void TestQgsZipUtils::cleanup()
 {
-
 }
 
 void TestQgsZipUtils::unzipWithSubdirs()
@@ -146,11 +144,11 @@ void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool in
 
   if ( includeFolders )
   {
-    dir.setFilter( QDir::Files |  QDir::NoDotAndDotDot | QDir::Dirs );
+    dir.setFilter( QDir::Files | QDir::NoDotAndDotDot | QDir::Dirs );
   }
   else
   {
-    dir.setFilter( QDir::Files |  QDir::NoDotAndDotDot );
+    dir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
   }
   // Get list of entries from the root folder
   QDirIterator it( dir, QDirIterator::Subdirectories );

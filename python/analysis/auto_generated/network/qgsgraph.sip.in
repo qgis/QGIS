@@ -22,7 +22,6 @@ This class implements a graph edge
 #include "qgsgraph.h"
 %End
   public:
-
     QgsGraphEdge();
 
     QVariant cost( int strategyIndex ) const;
@@ -32,7 +31,7 @@ Returns edge cost calculated using specified strategy
 :param strategyIndex: strategy index
 %End
 
-    QVector< QVariant > strategies() const;
+    QVector<QVariant> strategies() const;
 %Docstring
 Returns array of available strategies
 %End
@@ -54,7 +53,7 @@ Returns the index of the vertex at the start of this edge.
 };
 
 
-typedef QList< int > QgsGraphEdgeIds;
+typedef QList<int> QgsGraphEdgeIds;
 
 class QgsGraphVertex
 {
@@ -66,7 +65,6 @@ This class implements a graph vertex
 #include "qgsgraph.h"
 %End
   public:
-
     QgsGraphVertex();
 
 
@@ -107,7 +105,6 @@ Mathematical graph representation
 #include "qgsgraph.h"
 %End
   public:
-
     QgsGraph();
 
 
@@ -116,7 +113,7 @@ Mathematical graph representation
 Add a vertex to the graph
 %End
 
-    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
+    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector<QVariant> &strategies );
 %Docstring
 Add an edge to the graph, going from the ``fromVertexIdx``
 to ``toVertexIdx``.
@@ -267,7 +264,6 @@ Returns whether the vertex of the given index exists.
 %End
 
   protected:
-
 
 
 };

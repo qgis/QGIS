@@ -31,20 +31,19 @@ If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsM
 
     struct ActionData
     {
+        ActionData();
 
-      ActionData();
+        ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
 
-      ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
+        ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
 
-      ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
-
-      bool mIsValid;
-      bool mAllResults;
-      bool mIsExternalAction;
-      QgsMapLayer *mLayer;
-      QgsFeatureId mFeatureId;
-      QgsIdentifyMenu::MenuLevel mLevel;
-      QgsMapLayerAction *mMapLayerAction;
+        bool mIsValid;
+        bool mAllResults;
+        bool mIsExternalAction;
+        QgsMapLayer *mLayer;
+        QgsFeatureId mFeatureId;
+        QgsIdentifyMenu::MenuLevel mLevel;
+        QgsMapLayerAction *mMapLayerAction;
     };
 
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
@@ -155,7 +154,7 @@ exec
 :param pos: the position where the menu will be executed
 %End
 
- static void styleHighlight( QgsHighlight *highlight ) /Deprecated/;
+ static void styleHighlight( QgsHighlight *highlight ) /Deprecated="Since 3.40. Use QgsHighlight.applyDefaultStyle() instead."/;
 %Docstring
 Applies style from the settings to the highlight
 

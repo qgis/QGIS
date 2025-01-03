@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscalloutwidget.h"
+#include "moc_qgscalloutwidget.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsunitselectionwidget.h"
@@ -73,7 +74,7 @@ QgsSymbolWidgetContext QgsCalloutWidget::context() const
 
 void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key )
 {
-  button->init( static_cast< int >( key ), callout()->dataDefinedProperties(), QgsCallout::propertyDefinitions(), qobject_cast< QgsVectorLayer * >( mLayer ), true );
+  button->init( static_cast<int>( key ), callout()->dataDefinedProperties(), QgsCallout::propertyDefinitions(), qobject_cast<QgsVectorLayer *>( mLayer ), true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsCalloutWidget::updateDataDefinedProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsCalloutWidget::createAuxiliaryField );
 
@@ -83,7 +84,7 @@ void QgsCalloutWidget::registerDataDefinedButton( QgsPropertyOverrideButton *but
 void QgsCalloutWidget::createAuxiliaryField()
 {
   // try to create an auxiliary layer if not yet created
-  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( !vectorLayer )
     return;
 
@@ -98,8 +99,8 @@ void QgsCalloutWidget::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
-  const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast< int >( key )];
+  const QgsCallout::Property key = static_cast<QgsCallout::Property>( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast<int>( key )];
 
   // create property in auxiliary storage if necessary
   if ( !vectorLayer->auxiliaryLayer()->exists( def ) )
@@ -122,7 +123,7 @@ void QgsCalloutWidget::createAuxiliaryField()
 void QgsCalloutWidget::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
+  const QgsCallout::Property key = static_cast<QgsCallout::Property>( button->propertyKey() );
   callout()->dataDefinedProperties().setProperty( key, button->toProperty() );
   emit changed();
 }
@@ -143,48 +144,45 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsMapLayer *vl, QWidget
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
-  mCalloutLineStyleButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
-  mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                        << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                         << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mOffsetFromLabelUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                        << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mCalloutLineStyleButton->setLayer( qobject_cast<QgsVectorLayer *>( vl ) );
+  mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mOffsetFromLabelUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   connect( mMinCalloutWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::minimumLengthUnitWidgetChanged );
-  connect( mMinCalloutLengthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::minimumLengthChanged );
+  connect( mMinCalloutLengthSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::minimumLengthChanged );
 
   connect( mOffsetFromAnchorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::offsetFromAnchorUnitWidgetChanged );
-  connect( mOffsetFromAnchorSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromAnchorChanged );
+  connect( mOffsetFromAnchorSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromAnchorChanged );
   connect( mOffsetFromLabelUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineCalloutWidget::offsetFromLabelUnitWidgetChanged );
-  connect( mOffsetFromLabelSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromLabelChanged );
+  connect( mOffsetFromLabelSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineCalloutWidget::offsetFromLabelChanged );
 
   connect( mDrawToAllPartsCheck, &QCheckBox::toggled, this, &QgsSimpleLineCalloutWidget::drawToAllPartsToggled );
 
   // Anchor point options
-  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast< int >( QgsCallout::PoleOfInaccessibility ) );
-  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast< int >( QgsCallout::PointOnExterior ) );
-  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast< int >( QgsCallout::PointOnSurface ) );
-  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::Centroid ) );
+  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast<int>( QgsCallout::PoleOfInaccessibility ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast<int>( QgsCallout::PointOnExterior ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast<int>( QgsCallout::PointOnSurface ) );
+  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsCallout::Centroid ) );
   connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
 
-  mLabelAnchorPointComboBox->addItem( tr( "Closest Point" ), static_cast< int >( QgsCallout::LabelPointOnExterior ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::LabelCentroid ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Top Left" ), static_cast< int >( QgsCallout::LabelTopLeft ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Top Center" ), static_cast< int >( QgsCallout::LabelTopMiddle ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Top Right" ), static_cast< int >( QgsCallout::LabelTopRight ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Left Middle" ), static_cast< int >( QgsCallout::LabelMiddleLeft ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Right Middle" ), static_cast< int >( QgsCallout::LabelMiddleRight ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Bottom Left" ), static_cast< int >( QgsCallout::LabelBottomLeft ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Bottom Center" ), static_cast< int >( QgsCallout::LabelBottomMiddle ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Bottom Right" ), static_cast< int >( QgsCallout::LabelBottomRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Closest Point" ), static_cast<int>( QgsCallout::LabelPointOnExterior ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsCallout::LabelCentroid ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Left" ), static_cast<int>( QgsCallout::LabelTopLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Center" ), static_cast<int>( QgsCallout::LabelTopMiddle ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Right" ), static_cast<int>( QgsCallout::LabelTopRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Left Middle" ), static_cast<int>( QgsCallout::LabelMiddleLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Right Middle" ), static_cast<int>( QgsCallout::LabelMiddleRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Left" ), static_cast<int>( QgsCallout::LabelBottomLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Center" ), static_cast<int>( QgsCallout::LabelBottomMiddle ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Right" ), static_cast<int>( QgsCallout::LabelBottomRight ) );
   connect( mLabelAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mLabelAnchorPointComboBox_currentIndexChanged );
 
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
 
   connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
 
-  mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
+  mPlacementDDGroupBox->setVisible( qobject_cast<QgsVectorLayer *>( vl ) );
 }
 
 void QgsSimpleLineCalloutWidget::setCallout( const QgsCallout *callout )
@@ -218,8 +216,8 @@ void QgsSimpleLineCalloutWidget::setCallout( const QgsCallout *callout )
 
   whileBlocking( mDrawToAllPartsCheck )->setChecked( mCallout->drawCalloutToAllParts() );
 
-  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
-  whileBlocking( mLabelAnchorPointComboBox )->setCurrentIndex( mLabelAnchorPointComboBox->findData( static_cast< int >( callout->labelAnchorPoint() ) ) );
+  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast<int>( callout->anchorPoint() ) ) );
+  whileBlocking( mLabelAnchorPointComboBox )->setCurrentIndex( mLabelAnchorPointComboBox->findData( static_cast<int>( callout->labelAnchorPoint() ) ) );
 
   whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
 
@@ -294,7 +292,7 @@ void QgsSimpleLineCalloutWidget::offsetFromLabelChanged()
 
 void QgsSimpleLineCalloutWidget::lineSymbolChanged()
 {
-  mCallout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  mCallout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol<QgsLineSymbol>() );
   emit changed();
 }
 
@@ -330,7 +328,6 @@ void QgsSimpleLineCalloutWidget::drawToAllPartsToggled( bool active )
 QgsManhattanLineCalloutWidget::QgsManhattanLineCalloutWidget( QgsMapLayer *vl, QWidget *parent )
   : QgsSimpleLineCalloutWidget( vl, parent )
 {
-
 }
 
 
@@ -348,65 +345,60 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsMapLayer *vl, QWidget
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
-  mCalloutLineStyleButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
-  mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                        << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                         << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mOffsetFromLabelUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                        << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mCalloutLineStyleButton->setLayer( qobject_cast<QgsVectorLayer *>( vl ) );
+  mMinCalloutWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mOffsetFromLabelUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   connect( mMinCalloutWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsCurvedLineCalloutWidget::minimumLengthUnitWidgetChanged );
-  connect( mMinCalloutLengthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCurvedLineCalloutWidget::minimumLengthChanged );
+  connect( mMinCalloutLengthSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsCurvedLineCalloutWidget::minimumLengthChanged );
 
   connect( mOffsetFromAnchorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsCurvedLineCalloutWidget::offsetFromAnchorUnitWidgetChanged );
-  connect( mOffsetFromAnchorSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCurvedLineCalloutWidget::offsetFromAnchorChanged );
+  connect( mOffsetFromAnchorSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsCurvedLineCalloutWidget::offsetFromAnchorChanged );
   connect( mOffsetFromLabelUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsCurvedLineCalloutWidget::offsetFromLabelUnitWidgetChanged );
-  connect( mOffsetFromLabelSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCurvedLineCalloutWidget::offsetFromLabelChanged );
+  connect( mOffsetFromLabelSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsCurvedLineCalloutWidget::offsetFromLabelChanged );
 
   connect( mDrawToAllPartsCheck, &QCheckBox::toggled, this, &QgsCurvedLineCalloutWidget::drawToAllPartsToggled );
 
-  mOrientationComboBox->addItem( tr( "Automatic" ), static_cast< int >( QgsCurvedLineCallout::Automatic ) );
-  mOrientationComboBox->addItem( tr( "Clockwise" ), static_cast< int >( QgsCurvedLineCallout::Clockwise ) );
-  mOrientationComboBox->addItem( tr( "Counter Clockwise" ), static_cast< int >( QgsCurvedLineCallout::CounterClockwise ) );
-  connect( mOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
-  {
+  mOrientationComboBox->addItem( tr( "Automatic" ), static_cast<int>( QgsCurvedLineCallout::Automatic ) );
+  mOrientationComboBox->addItem( tr( "Clockwise" ), static_cast<int>( QgsCurvedLineCallout::Clockwise ) );
+  mOrientationComboBox->addItem( tr( "Counter Clockwise" ), static_cast<int>( QgsCurvedLineCallout::CounterClockwise ) );
+  connect( mOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
     mCallout->setOrientation( static_cast<QgsCurvedLineCallout::Orientation>( mOrientationComboBox->itemData( index ).toInt() ) );
     emit changed();
   } );
 
   // Anchor point options
-  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast< int >( QgsCallout::PoleOfInaccessibility ) );
-  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast< int >( QgsCallout::PointOnExterior ) );
-  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast< int >( QgsCallout::PointOnSurface ) );
-  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::Centroid ) );
+  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast<int>( QgsCallout::PoleOfInaccessibility ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast<int>( QgsCallout::PointOnExterior ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast<int>( QgsCallout::PointOnSurface ) );
+  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsCallout::Centroid ) );
   connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCurvedLineCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
 
-  mLabelAnchorPointComboBox->addItem( tr( "Closest Point" ), static_cast< int >( QgsCallout::LabelPointOnExterior ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::LabelCentroid ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Top Left" ), static_cast< int >( QgsCallout::LabelTopLeft ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Top Center" ), static_cast< int >( QgsCallout::LabelTopMiddle ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Top Right" ), static_cast< int >( QgsCallout::LabelTopRight ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Left Middle" ), static_cast< int >( QgsCallout::LabelMiddleLeft ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Right Middle" ), static_cast< int >( QgsCallout::LabelMiddleRight ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Bottom Left" ), static_cast< int >( QgsCallout::LabelBottomLeft ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Bottom Center" ), static_cast< int >( QgsCallout::LabelBottomMiddle ) );
-  mLabelAnchorPointComboBox->addItem( tr( "Bottom Right" ), static_cast< int >( QgsCallout::LabelBottomRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Closest Point" ), static_cast<int>( QgsCallout::LabelPointOnExterior ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsCallout::LabelCentroid ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Left" ), static_cast<int>( QgsCallout::LabelTopLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Center" ), static_cast<int>( QgsCallout::LabelTopMiddle ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Right" ), static_cast<int>( QgsCallout::LabelTopRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Left Middle" ), static_cast<int>( QgsCallout::LabelMiddleLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Right Middle" ), static_cast<int>( QgsCallout::LabelMiddleRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Left" ), static_cast<int>( QgsCallout::LabelBottomLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Center" ), static_cast<int>( QgsCallout::LabelBottomMiddle ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Right" ), static_cast<int>( QgsCallout::LabelBottomRight ) );
   connect( mLabelAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCurvedLineCalloutWidget::mLabelAnchorPointComboBox_currentIndexChanged );
 
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsCurvedLineCalloutWidget::lineSymbolChanged );
 
-  connect( mCurvatureSlider, &QSlider::valueChanged, this, [ = ]( int value ) { mCurvatureSpinBox->setValue( value / 10.0 ); } );
-  connect( mCurvatureSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { whileBlocking( mCurvatureSlider )->setValue( value * 10 ); } );
-  connect( mCurvatureSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  connect( mCurvatureSlider, &QSlider::valueChanged, this, [=]( int value ) { mCurvatureSpinBox->setValue( value / 10.0 ); } );
+  connect( mCurvatureSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) { whileBlocking( mCurvatureSlider )->setValue( value * 10 ); } );
+  connect( mCurvatureSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) {
     mCallout->setCurvature( value / 100.0 );
     emit changed();
   } );
 
   connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCurvedLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
 
-  mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
+  mPlacementDDGroupBox->setVisible( qobject_cast<QgsVectorLayer *>( vl ) );
 }
 
 void QgsCurvedLineCalloutWidget::setCallout( const QgsCallout *callout )
@@ -440,10 +432,10 @@ void QgsCurvedLineCalloutWidget::setCallout( const QgsCallout *callout )
 
   whileBlocking( mDrawToAllPartsCheck )->setChecked( mCallout->drawCalloutToAllParts() );
 
-  whileBlocking( mOrientationComboBox )->setCurrentIndex( mOrientationComboBox->findData( static_cast< int >( mCallout->orientation() ) ) );
+  whileBlocking( mOrientationComboBox )->setCurrentIndex( mOrientationComboBox->findData( static_cast<int>( mCallout->orientation() ) ) );
 
-  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
-  whileBlocking( mLabelAnchorPointComboBox )->setCurrentIndex( mLabelAnchorPointComboBox->findData( static_cast< int >( callout->labelAnchorPoint() ) ) );
+  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast<int>( callout->anchorPoint() ) ) );
+  whileBlocking( mLabelAnchorPointComboBox )->setCurrentIndex( mLabelAnchorPointComboBox->findData( static_cast<int>( callout->labelAnchorPoint() ) ) );
 
   whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
 
@@ -523,7 +515,7 @@ void QgsCurvedLineCalloutWidget::offsetFromLabelChanged()
 
 void QgsCurvedLineCalloutWidget::lineSymbolChanged()
 {
-  mCallout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  mCallout->setLineSymbol( mCalloutLineStyleButton->clonedSymbol<QgsLineSymbol>() );
   emit changed();
 }
 
@@ -572,16 +564,12 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *pare
   mMarkerSymbolButton->setShowNull( true );
   mMarkerSymbolButton->setToNull();
 
-  mCalloutFillStyleButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
-  mMarkerSymbolButton->setLayer( qobject_cast< QgsVectorLayer * >( vl ) );
-  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                         << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                               << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mWedgeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                   << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
-  mCornerRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                     << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mCalloutFillStyleButton->setLayer( qobject_cast<QgsVectorLayer *>( vl ) );
+  mMarkerSymbolButton->setLayer( qobject_cast<QgsVectorLayer *>( vl ) );
+  mOffsetFromAnchorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mWedgeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mCornerRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   mSpinBottomMargin->setClearValue( 0 );
   mSpinTopMargin->setClearValue( 0 );
@@ -591,79 +579,70 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *pare
   mCornerRadiusSpin->setClearValue( 0.0 );
 
   connect( mOffsetFromAnchorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsBalloonCalloutWidget::offsetFromAnchorUnitWidgetChanged );
-  connect( mOffsetFromAnchorSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsBalloonCalloutWidget::offsetFromAnchorChanged );
+  connect( mOffsetFromAnchorSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsBalloonCalloutWidget::offsetFromAnchorChanged );
 
   // Anchor point options
-  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast< int >( QgsCallout::PoleOfInaccessibility ) );
-  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast< int >( QgsCallout::PointOnExterior ) );
-  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast< int >( QgsCallout::PointOnSurface ) );
-  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::Centroid ) );
+  mAnchorPointComboBox->addItem( tr( "Pole of Inaccessibility" ), static_cast<int>( QgsCallout::PoleOfInaccessibility ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Exterior" ), static_cast<int>( QgsCallout::PointOnExterior ) );
+  mAnchorPointComboBox->addItem( tr( "Point on Surface" ), static_cast<int>( QgsCallout::PointOnSurface ) );
+  mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsCallout::Centroid ) );
   connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBalloonCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
 
   connect( mCalloutFillStyleButton, &QgsSymbolButton::changed, this, &QgsBalloonCalloutWidget::fillSymbolChanged );
   connect( mMarkerSymbolButton, &QgsSymbolButton::changed, this, &QgsBalloonCalloutWidget::markerSymbolChanged );
 
-  connect( mSpinBottomMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setBottom( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mSpinTopMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setTop( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mSpinLeftMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setLeft( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mSpinRightMargin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setRight( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mMarginUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
-  {
+  connect( mMarginUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
     mCallout->setMarginsUnit( mMarginUnitWidget->unit() );
     emit changed();
   } );
 
-  connect( mWedgeWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
-  {
+  connect( mWedgeWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
     mCallout->setWedgeWidthUnit( mWedgeWidthUnitWidget->unit() );
     mCallout->setWedgeWidthMapUnitScale( mWedgeWidthUnitWidget->getMapUnitScale() );
     emit changed();
   } );
-  connect( mWedgeWidthSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  connect( mWedgeWidthSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
     mCallout->setWedgeWidth( value );
     emit changed();
   } );
 
-  connect( mCornerRadiusUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
-  {
+  connect( mCornerRadiusUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
     mCallout->setCornerRadiusUnit( mCornerRadiusUnitWidget->unit() );
     mCallout->setCornerRadiusMapUnitScale( mCornerRadiusUnitWidget->getMapUnitScale() );
     emit changed();
   } );
-  connect( mCornerRadiusSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  connect( mCornerRadiusSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
     mCallout->setCornerRadius( value );
     emit changed();
   } );
 
   connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBalloonCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
 
-  mPlacementDDGroupBox->setVisible( qobject_cast< QgsVectorLayer * >( vl ) );
+  mPlacementDDGroupBox->setVisible( qobject_cast<QgsVectorLayer *>( vl ) );
 }
 
 void QgsBalloonCalloutWidget::setCallout( const QgsCallout *callout )
@@ -705,7 +684,7 @@ void QgsBalloonCalloutWidget::setCallout( const QgsCallout *callout )
   else
     whileBlocking( mMarkerSymbolButton )->setToNull();
 
-  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
+  whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast<int>( callout->anchorPoint() ) ) );
 
   whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
 
@@ -751,13 +730,13 @@ void QgsBalloonCalloutWidget::offsetFromAnchorChanged()
 
 void QgsBalloonCalloutWidget::fillSymbolChanged()
 {
-  mCallout->setFillSymbol( mCalloutFillStyleButton->clonedSymbol< QgsFillSymbol >() );
+  mCallout->setFillSymbol( mCalloutFillStyleButton->clonedSymbol<QgsFillSymbol>() );
   emit changed();
 }
 
 void QgsBalloonCalloutWidget::markerSymbolChanged()
 {
-  mCallout->setMarkerSymbol( mMarkerSymbolButton->isNull() ? nullptr : mMarkerSymbolButton->clonedSymbol< QgsMarkerSymbol >() );
+  mCallout->setMarkerSymbol( mMarkerSymbolButton->isNull() ? nullptr : mMarkerSymbolButton->clonedSymbol<QgsMarkerSymbol>() );
   emit changed();
 }
 
@@ -774,4 +753,3 @@ void QgsBalloonCalloutWidget::mCalloutBlendComboBox_currentIndexChanged( int )
 }
 
 ///@endcond
-

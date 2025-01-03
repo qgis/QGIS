@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsvalidateddoublespinbox.h"
+#include "moc_qgsvalidateddoublespinbox.cpp"
 
 QgsValidatedDoubleSpinBox::QgsValidatedDoubleSpinBox( QWidget *widget )
   : QDoubleSpinBox( widget )
-{ }
+{}
 
 QValidator::State QgsValidatedDoubleSpinBox::validate( QString &input, int &pos ) const
 {

@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgsfeature3dhandler_p.cpp
   qgsfgutils.cpp
   qgsframegraph.cpp
+  qgsgeotransform.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -96,12 +97,19 @@ set(QGIS_3D_SRCS
   symbols/qgspointcloud3dsymbol.cpp
   symbols/qgspointcloud3dsymbol_p.cpp
 
+  terrain/qgs3dterrainregistry.cpp
+  terrain/qgsabstractterrainsettings.cpp
   terrain/qgsdemterraingenerator.cpp
+  terrain/qgsdemterrainsettings.cpp
   terrain/qgsdemterraintilegeometry_p.cpp
   terrain/qgsdemterraintileloader_p.cpp
   terrain/qgsflatterraingenerator.cpp
+  terrain/qgsflatterrainsettings.cpp
+  terrain/qgsmeshterrainsettings.cpp
   terrain/qgsonlineterraingenerator.cpp
+  terrain/qgsonlinedemterrainsettings.cpp
   terrain/qgsquantizedmeshterraingenerator.cpp
+  terrain/qgsquantizedmeshterrainsettings.cpp
   terrain/qgsterraindownloader.cpp
   terrain/qgsterrainentity.cpp
   terrain/qgsterraingenerator.cpp
@@ -138,6 +146,7 @@ set(QGIS_3D_HDRS
   qgscamerapose.h
   qgsfgutils.h
   qgsframegraph.h
+  qgsgeotransform.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
@@ -186,10 +195,17 @@ set(QGIS_3D_HDRS
   symbols/qgspolygon3dsymbol.h
   symbols/qgspointcloud3dsymbol.h
 
+  terrain/qgs3dterrainregistry.h
+  terrain/qgsabstractterrainsettings.h
   terrain/qgsdemterraingenerator.h
+  terrain/qgsdemterrainsettings.h
   terrain/qgsflatterraingenerator.h
+  terrain/qgsflatterrainsettings.h
+  terrain/qgsmeshterrainsettings.h
   terrain/qgsonlineterraingenerator.h
+  terrain/qgsonlinedemterrainsettings.h
   terrain/qgsquantizedmeshterraingenerator.h
+  terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
   terrain/qgsterraintileloader.h
@@ -237,6 +253,12 @@ set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
 
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_3d PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 # require c++17
 target_compile_features(qgis_3d PRIVATE cxx_std_17)
 
@@ -266,11 +288,13 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
-if (BUILD_WITH_QT6)
-  target_link_libraries(qgis_3d Qt6::3DCore Qt6::3DRender Qt6::3DInput Qt6::3DLogic Qt6::3DExtras)
-else()
-  target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
-endif()
+target_link_libraries(qgis_3d
+  ${QT_VERSION_BASE}::3DCore
+  ${QT_VERSION_BASE}::3DRender
+  ${QT_VERSION_BASE}::3DInput
+  ${QT_VERSION_BASE}::3DLogic
+  ${QT_VERSION_BASE}::3DExtras
+)
 
 GENERATE_EXPORT_HEADER(
    qgis_3d

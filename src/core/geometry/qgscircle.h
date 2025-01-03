@@ -293,14 +293,14 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
 
     /**
-     * Inherited method. Use setRadius instead.
+     * Inherited method. Use setRadius() instead.
      * \see radius()
      * \see setRadius()
      */
     void setSemiMajorAxis( double semiMajorAxis ) override SIP_HOLDGIL;
 
     /**
-     * Inherited method. Use setRadius instead.
+     * Inherited method. Use setRadius() instead.
      * \see radius()
      * \see setRadius()
      */

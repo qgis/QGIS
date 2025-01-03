@@ -25,19 +25,15 @@ using "builder" design patter.
 #include "qgsgraphdirector.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast< QgsVectorLayerDirector * >( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsVectorLayerDirector *>( sipCpp ) != NULL )
       sipType = sipType_QgsVectorLayerDirector;
     else
       sipType = NULL;
 %End
   public:
-
     ~QgsGraphDirector();
 
-    virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                            const QVector< QgsPointXY > &additionalPoints,
-                            QVector< QgsPointXY > &snappedPoints /Out/,
-                            QgsFeedback *feedback = 0 ) const;
+    virtual void makeGraph( QgsGraphBuilderInterface *builder, const QVector<QgsPointXY> &additionalPoints, QVector<QgsPointXY> &snappedPoints /Out/, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Make a graph using :py:class:`QgsGraphBuilder`
 

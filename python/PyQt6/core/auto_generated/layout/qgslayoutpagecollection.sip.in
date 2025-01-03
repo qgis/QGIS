@@ -193,7 +193,7 @@ Ownership is not transferred, and a copy of the symbol is created internally.
 .. seealso:: :py:func:`pageStyleSymbol`
 %End
 
- const QgsFillSymbol *pageStyleSymbol() const /Deprecated/;
+ const QgsFillSymbol *pageStyleSymbol() const /Deprecated="Since 3.40. Use QgsLayoutItemPage.pageStyleSymbol() instead."/;
 %Docstring
 Returns the symbol to use for drawing pages in the collection.
 
@@ -367,6 +367,13 @@ Sets the collection's state from a DOM element. collectionElement is the DOM nod
 Returns a reference to the collection's guide collection, which manages page snap guides.
 %End
 
+
+    void applyPropertiesToAllOtherPages( int sourcePage );
+%Docstring
+Apply the source page properties (size & background color) to all other pages
+
+.. versionadded:: 3.42
+%End
 
   public slots:
 

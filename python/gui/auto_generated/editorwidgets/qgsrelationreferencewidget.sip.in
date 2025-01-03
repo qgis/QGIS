@@ -30,7 +30,6 @@ class QgsRelationReferenceWidget : QWidget
       sipType = NULL;
 %End
   public:
-
     enum CanvasExtent
     {
       Fixed,
@@ -46,7 +45,7 @@ class QgsRelationReferenceWidget : QWidget
 
     void setRelationEditable( bool editable );
 
- void setForeignKey( const QVariant &value ) /Deprecated/;
+ void setForeignKey( const QVariant &value ) /Deprecated="Since 3.10. Use setForeignKeys."/;
 %Docstring
 this sets the related feature using from the foreign key
 
@@ -62,7 +61,7 @@ Sets the related feature using the foreign keys
 .. versionadded:: 3.10
 %End
 
- QVariant foreignKey() const /Deprecated/;
+ QVariant foreignKey() const /Deprecated="Since 3.10. "/;
 %Docstring
 returns the related feature foreign key
 
@@ -271,7 +270,7 @@ unset the currently related feature
 
   signals:
 
- void foreignKeyChanged( const QVariant &key ) /Deprecated/;
+ void foreignKeyChanged( const QVariant &key ) /Deprecated="Since 3.10. "/;
 %Docstring
 Emitted when the foreign key changed
 

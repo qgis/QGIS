@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspoint3dsymbolwidget.h"
+#include "moc_qgspoint3dsymbolwidget.cpp"
 #include <QFileDialog>
 #include <QMessageBox>
 #include "qgslayoututils.h"
@@ -22,7 +23,7 @@
 #include "qgssymbolbutton.h"
 #include "qgsmarkersymbol.h"
 #include "qgsabstractmaterialsettings.h"
-#include "qgsvector3d.h"
+#include "qgs3dutils.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
@@ -73,11 +74,11 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( lineEditModel, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsPoint3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )( )>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
+  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )()>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
 
   // Sync between billboard height and TZ
-  connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ,  &QDoubleSpinBox::setValue );
-  connect( spinTZ, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight,  &QDoubleSpinBox::setValue );
+  connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ, &QDoubleSpinBox::setValue );
+  connect( spinTZ, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight, &QDoubleSpinBox::setValue );
 }
 
 Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
@@ -87,7 +88,7 @@ Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
 {
-  const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol *>( symbol );
+  const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
   if ( !pointSymbol )
     return;
 
@@ -149,44 +150,30 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
     widgetMaterial->setType( QStringLiteral( "null" ) );
   }
 
-  // decompose the transform matrix
-  // assuming the last row has values [0 0 0 1]
-  // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
-  // A point on the 2D plane (x', y') is transformed to (x, -z) in the 3D world.
-  // The formula from stackexchange need to be changed to take into account the 3D representation.
-  QMatrix4x4 m = pointSymbol->transform();
-  float *md = m.data();  // returns data in column-major order
-  const float sx = QVector3D( md[0], md[1], md[2] ).length();
-  const float sz = QVector3D( md[4], md[5], md[6] ).length();
-  const float sy = QVector3D( md[8], md[9], md[10] ).length();
-  float rd[9] =
-  {
-    md[0] / sx, md[4] / sy, md[8] / sz,
-    md[1] / sx, md[5] / sy, md[9] / sz,
-    md[2] / sx, md[6] / sy, md[10] / sz,
-  };
-  const QMatrix3x3 rot3x3( rd ); // takes data in row-major order
-  const QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
-  const QgsVector3D translationMapCoords( md[12], -md[14], md[13] );
+  QVector3D translation, scale;
+  QQuaternion rotation;
+  Qgs3DUtils::decomposeTransformMatrix( pointSymbol->transform(), translation, rotation, scale );
 
-  spinBillboardHeight->setValue( md[13] );
-  spinTX->setValue( translationMapCoords.x() );
-  spinTY->setValue( translationMapCoords.y() );
-  spinTZ->setValue( translationMapCoords.z() );
-  spinSX->setValue( sx );
-  spinSY->setValue( sy );
-  spinSZ->setValue( sz );
+  const QVector3D rot = rotation.toEulerAngles();
+
+  spinBillboardHeight->setValue( translation.z() );
+  spinTX->setValue( translation.x() );
+  spinTY->setValue( translation.y() );
+  spinTZ->setValue( translation.z() );
+  spinSX->setValue( scale.x() );
+  spinSY->setValue( scale.y() );
+  spinSZ->setValue( scale.z() );
   spinRX->setValue( QgsLayoutUtils::normalizedAngle( rot.x() ) );
-  spinRY->setValue( QgsLayoutUtils::normalizedAngle( 360.0 - rot.z() ) );
-  spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.y() ) );
+  spinRY->setValue( QgsLayoutUtils::normalizedAngle( rot.y() ) );
+  spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.z() ) );
 }
 
 QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 {
   QVariantMap vm;
-  std::unique_ptr< QgsPoint3DSymbol > sym = std::make_unique< QgsPoint3DSymbol >();
+  std::unique_ptr<QgsPoint3DSymbol> sym = std::make_unique<QgsPoint3DSymbol>();
   sym->setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
-  switch ( cboShape->currentData().value< Qgis::Point3DShape >() )
+  switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:
       vm[QStringLiteral( "radius" )] = spinRadius->value();
@@ -220,12 +207,9 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
       break;
   }
 
-  // A point on the 2D plane (x', y') is transformed to (x, -z) in the 3D world.
-  // The rotation, scale and translation values need to be converted in the 3D world.
-  const QgsVector3D translationWorldCoords( spinTX->value(), spinTZ->value(), -spinTY->value() );
-  const QQuaternion rot( QQuaternion::fromEulerAngles( static_cast<float>( spinRX->value() ), static_cast<float>( spinRZ->value() ), static_cast<float>( 360.0 - spinRY->value() ) ) );
-  const QVector3D sca( static_cast<float>( spinSX->value() ), static_cast<float>( spinSZ->value() ), static_cast<float>( spinSY->value() ) );
-  const QVector3D tra( static_cast<float>( translationWorldCoords.x() ), static_cast<float>( translationWorldCoords.y() ), static_cast<float>( translationWorldCoords.z() ) );
+  const QQuaternion rot( QQuaternion::fromEulerAngles( static_cast<float>( spinRX->value() ), static_cast<float>( spinRY->value() ), static_cast<float>( spinRZ->value() ) ) );
+  const QVector3D sca( static_cast<float>( spinSX->value() ), static_cast<float>( spinSY->value() ), static_cast<float>( spinSZ->value() ) );
+  const QVector3D tra( static_cast<float>( spinTX->value() ), static_cast<float>( spinTY->value() ), static_cast<float>( spinTZ->value() ) );
 
   QMatrix4x4 tr;
   tr.translate( tra );
@@ -233,7 +217,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   tr.rotate( rot );
 
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
-  sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value< Qgis::Point3DShape >() );
+  sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value<Qgis::Point3DShape>() );
   sym->setShapeProperties( vm );
   sym->setMaterialSettings( widgetMaterial->settings() );
   sym->setTransform( tr );
@@ -261,7 +245,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   transformationWidget->show();
   QList<QWidget *> activeWidgets;
   QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
-  switch ( cboShape->currentData().value< Qgis::Point3DShape >() )
+  switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:
       activeWidgets << labelRadius << spinRadius;

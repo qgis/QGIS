@@ -2,5 +2,5 @@
 QgsTextMaskSettings.MaskBuffer = QgsTextMaskSettings.MaskType.MaskBuffer
 try:
     QgsTextMaskSettings.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
     pass

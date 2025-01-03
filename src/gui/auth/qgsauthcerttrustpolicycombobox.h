@@ -31,7 +31,6 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * Construct a combo box for defining certificate trust policy
      * \param parent Parent widget
@@ -41,7 +40,8 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     explicit QgsAuthCertTrustPolicyComboBox(
       QWidget *parent SIP_TRANSFERTHIS = nullptr,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust
+    );
 
     //! Gets currently set trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();
@@ -61,7 +61,8 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
 
   private:
     const QString defaultTrustText(
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust
+    );
 };
 
 #endif // QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H

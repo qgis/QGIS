@@ -18,12 +18,11 @@ class QgsRelationWidgetWrapper : QgsWidgetWrapper
 #include "qgsrelationwidgetwrapper.h"
 %End
   public:
-
     QgsRelationWidgetWrapper(
       QgsVectorLayer *vl,
       const QgsRelation &relation,
       QWidget *editor /Constrained/ = 0,
-      QWidget *parent /TransferThis,Constrained/  = 0
+      QWidget *parent /TransferThis,Constrained/ = 0
     );
 %Docstring
 Constructor for QgsRelationWidgetWrapper
@@ -40,7 +39,7 @@ Constructor for QgsRelationWidgetWrapper
 Constructor for QgsRelationWidgetWrapper
 %End
 
- bool showLabel() const /Deprecated/;
+ bool showLabel() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Defines if a title label should be shown for this widget.
 Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
@@ -50,7 +49,7 @@ Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been ca
    Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
- void setShowLabel( bool showLabel ) /Deprecated/;
+ void setShowLabel( bool showLabel ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Defines if a title label should be shown for this widget.
 Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
@@ -60,7 +59,7 @@ Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been ca
    Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
- bool showLinkButton() const /Deprecated/;
+ bool showLinkButton() const /Deprecated="Since 3.16. Use visibleButtons() instead."/;
 %Docstring
 Determines if the "link feature" button should be shown
 
@@ -69,7 +68,7 @@ Determines if the "link feature" button should be shown
    Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
 %End
 
- void setShowLinkButton( bool showLinkButton ) /Deprecated/;
+ void setShowLinkButton( bool showLinkButton ) /Deprecated="Since 3.16. Use setVisibleButtons() instead."/;
 %Docstring
 Determines if the "link feature" button should be shown
 
@@ -78,7 +77,7 @@ Determines if the "link feature" button should be shown
    Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
 %End
 
- bool showUnlinkButton() const /Deprecated/;
+ bool showUnlinkButton() const /Deprecated="Since 3.16. Use visibleButtons() instead."/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
@@ -87,7 +86,7 @@ Determines if the "unlink feature" button should be shown
    Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
 %End
 
- void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
+ void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated="Since 3.16. Use setVisibleButtons() instead."/;
 %Docstring
 Determines if the "unlink feature" button should be shown
 
@@ -96,7 +95,7 @@ Determines if the "unlink feature" button should be shown
    Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
 %End
 
- void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
+ void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated="Since 3.16. Use setVisibleButtons() instead."/;
 %Docstring
 Determines if the "Save child layer edits" button should be shown
 
@@ -107,7 +106,7 @@ Determines if the "Save child layer edits" button should be shown
    Use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead.
 %End
 
- bool showSaveChildEditsButton() const /Deprecated/;
+ bool showSaveChildEditsButton() const /Deprecated="Since 3.16. Use visibleButtons() instead."/;
 %Docstring
 Determines if the "Save child layer edits" button should be shown
 
@@ -118,7 +117,7 @@ Determines if the "Save child layer edits" button should be shown
    Use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead.
 %End
 
- void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) /Deprecated/;
+ void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) /Deprecated="Since 3.18. Use setWidgetConfig() instead."/;
 %Docstring
 Defines the buttons which are shown
 
@@ -129,7 +128,7 @@ Defines the buttons which are shown
    Use :py:func:`~QgsRelationWidgetWrapper.setWidgetConfig` instead.
 %End
 
- QgsAttributeEditorRelation::Buttons visibleButtons() const /Deprecated/;
+ QgsAttributeEditorRelation::Buttons visibleButtons() const /Deprecated="Since 3.18. Use widgetConfig() instead."/;
 %Docstring
 Returns the buttons which are shown
 
@@ -189,7 +188,7 @@ If it's empty, then it's considered as a 1:M relationship.
 .. versionadded:: 3.16
 %End
 
- QString label() const /Deprecated/;
+ QString label() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Determines the label of this element
 
@@ -200,7 +199,7 @@ Determines the label of this element
    Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
- void setLabel( const QString &label = QString() ) /Deprecated/;
+ void setLabel( const QString &label = QString() ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Sets ``label`` for this element
 If it's empty it takes the relation id as label

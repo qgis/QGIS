@@ -10,7 +10,7 @@
 
 
 
-class QgsFcgiServerRequest: QgsServerRequest
+class QgsFcgiServerRequest : QgsServerRequest
 {
 %Docstring(signature="appended")
 Class defining fcgi request

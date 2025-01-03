@@ -25,7 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsprojoperation.h"
 
-class TestQgsCoordinateReferenceSystemRegistry: public QObject
+class TestQgsCoordinateReferenceSystemRegistry : public QObject
 {
     Q_OBJECT
   private slots:
@@ -40,9 +40,7 @@ class TestQgsCoordinateReferenceSystemRegistry: public QObject
     void testRecent();
 
   private:
-
     QString mTempFolder;
-
 };
 
 void TestQgsCoordinateReferenceSystemRegistry::initTestCase()
@@ -186,8 +184,7 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   const QString madeUpProjection2 = QStringLiteral( "+proj=aea +lat_1=22.5 +lat_2=-24.5 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
   crs2.createFromProj( madeUpProjection2 );
 
-  const QMetaObject::Connection conn1 =  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [&]
-  {
+  const QMetaObject::Connection conn1 = connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [&] {
     // make sure that caches are invalidated before the signals are emitted, so that slots will
     // get the new definition!
     const QgsCoordinateReferenceSystem crs4( authid );
@@ -273,8 +270,7 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QVERIFY( crs2.isValid() );
 
   // now try removing it
-  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved, this, [&]
-  {
+  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved, this, [&] {
     // make sure that caches are invalidated before the signals are emitted
     const QgsCoordinateReferenceSystem crs4( authid );
     QVERIFY( !crs4.isValid() );
@@ -284,7 +280,7 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QCOMPARE( spyAdded.length(), 1 );
   QCOMPARE( spyChanged.length(), 0 );
   QCOMPARE( spyRemoved.length(), 1 );
-  QCOMPARE( spyRemoved.at( 0 ).at( 0 ).toLongLong(), static_cast< long long >( id ) );
+  QCOMPARE( spyRemoved.at( 0 ).at( 0 ).toLongLong(), static_cast<long long>( id ) );
   QCOMPARE( spyCrsDefsChanged.length(), 2 );
 
   QCOMPARE( registry->userCrsList().count(), 3 );
@@ -310,7 +306,7 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
 
 void TestQgsCoordinateReferenceSystemRegistry::projOperations()
 {
-  const QMap< QString, QgsProjOperation > operations = QgsApplication::coordinateReferenceSystemRegistry()->projOperations();
+  const QMap<QString, QgsProjOperation> operations = QgsApplication::coordinateReferenceSystemRegistry()->projOperations();
 
   QVERIFY( operations.contains( QStringLiteral( "lcc" ) ) );
   QVERIFY( operations.value( QStringLiteral( "lcc" ) ).isValid() );
@@ -321,7 +317,7 @@ void TestQgsCoordinateReferenceSystemRegistry::projOperations()
 
 void TestQgsCoordinateReferenceSystemRegistry::authorities()
 {
-  const QSet< QString > authorities = QgsApplication::coordinateReferenceSystemRegistry()->authorities();
+  const QSet<QString> authorities = QgsApplication::coordinateReferenceSystemRegistry()->authorities();
 
   QVERIFY( authorities.contains( QStringLiteral( "epsg" ) ) );
   QVERIFY( authorities.contains( QStringLiteral( "proj" ) ) );
@@ -330,30 +326,26 @@ void TestQgsCoordinateReferenceSystemRegistry::authorities()
 
 void TestQgsCoordinateReferenceSystemRegistry::crsDbRecords()
 {
-  const QList< QgsCrsDbRecord > records = QgsApplication::coordinateReferenceSystemRegistry()->crsDbRecords();
+  const QList<QgsCrsDbRecord> records = QgsApplication::coordinateReferenceSystemRegistry()->crsDbRecords();
   QVERIFY( !records.isEmpty() );
 
-  auto it = std::find_if( records.begin(), records.end(),
-  []( const QgsCrsDbRecord & record ) { return record.authName == QLatin1String( "EPSG" ) && record.authId == QLatin1String( "3111" );} );
+  auto it = std::find_if( records.begin(), records.end(), []( const QgsCrsDbRecord &record ) { return record.authName == QLatin1String( "EPSG" ) && record.authId == QLatin1String( "3111" ); } );
   QVERIFY( it != records.end() );
   QCOMPARE( it->description, QStringLiteral( "GDA94 / Vicgrid" ) );
   QCOMPARE( it->type, Qgis::CrsType::Projected );
 
   // check that database includes vertical CRS
-  it = std::find_if( records.begin(), records.end(),
-  []( const QgsCrsDbRecord & record ) { return record.type == Qgis::CrsType::Vertical;} );
+  it = std::find_if( records.begin(), records.end(), []( const QgsCrsDbRecord &record ) { return record.type == Qgis::CrsType::Vertical; } );
   QVERIFY( it != records.end() );
 
   // check that database includes compound CRS
-  it = std::find_if( records.begin(), records.end(),
-  []( const QgsCrsDbRecord & record ) { return record.type == Qgis::CrsType::Compound;} );
+  it = std::find_if( records.begin(), records.end(), []( const QgsCrsDbRecord &record ) { return record.type == Qgis::CrsType::Compound; } );
   QVERIFY( it != records.end() );
-
 }
 
 void TestQgsCoordinateReferenceSystemRegistry::testRecent()
 {
-  QList< QgsCoordinateReferenceSystem > recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
+  QList<QgsCoordinateReferenceSystem> recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
   QVERIFY( recent.isEmpty() );
 
   QSignalSpy pushSpy( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::recentCrsPushed );

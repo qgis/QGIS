@@ -120,7 +120,7 @@ The optional ``feedback`` argument can be used to cancel the search early.
 .. versionadded:: 3.22
 %End
 
- Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) /Deprecated/;
+ Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) /Deprecated="Since 3.40. Use applyEditV2() instead."/;
 %Docstring
 Applies an edit ``operation`` to the layer.
 

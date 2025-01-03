@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsexternalresourcewidget.h"
+#include "moc_qgsexternalresourcewidget.cpp"
 #include "qgspixmaplabel.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -187,7 +188,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
       mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( true );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       const QPixmap pm = mPixmapLabel->pixmap() ? *mPixmapLabel->pixmap() : QPixmap();
 #else
       const QPixmap pm = mPixmapLabel->pixmap();
@@ -437,16 +438,14 @@ void QgsExternalResourceWidget::onFetchFinished()
 
     if ( messageBar() )
     {
-      messageBar()->pushWarning( tr( "Fetching External Resource" ),
-                                 tr( "Error while fetching external resource '%1' : %2" ).arg(
-                                   mFileWidget->filePath(), mContent->errorString() ) );
+      messageBar()->pushWarning( tr( "Fetching External Resource" ), tr( "Error while fetching external resource '%1' : %2" ).arg( mFileWidget->filePath(), mContent->errorString() ) );
     }
   }
   else if ( content == mContent && mContent->status() == Qgis::ContentStatus::Finished )
   {
     const QString filePath = mDocumentViewerContent == Web
-                             ? QUrl::fromLocalFile( mContent->filePath() ).toString()
-                             : mContent->filePath();
+                               ? QUrl::fromLocalFile( mContent->filePath() ).toString()
+                               : mContent->filePath();
 
     updateDocumentContent( filePath );
   }

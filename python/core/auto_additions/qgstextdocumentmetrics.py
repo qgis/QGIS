@@ -2,9 +2,9 @@
 try:
     QgsTextDocumentMetrics.calculateMetrics = staticmethod(QgsTextDocumentMetrics.calculateMetrics)
     QgsTextDocumentMetrics.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsTextDocumentRenderContext.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
     pass

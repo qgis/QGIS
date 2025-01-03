@@ -17,6 +17,9 @@
  ***************************************************************************/
 
 
+#ifndef QGSPROJECTPROPERTIES_H
+#define QGSPROJECTPROPERTIES_H
+
 #include "ui_qgsprojectpropertiesbase.h"
 
 #include "qgsoptionsdialogbase.h"
@@ -55,8 +58,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-                          const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
     ~QgsProjectProperties() override;
 
@@ -205,7 +207,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void removeStyleDatabase();
     void newStyleDatabase();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
     /**
      * Called whenever user select the add ICC profile button
@@ -235,7 +237,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 #endif
 
   private:
-
     /**
       * Called when the user sets a CRS for the project.
       */
@@ -262,20 +263,20 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     // List for all ellispods, also None and Custom
     struct EllipsoidDefs
     {
-      QString acronym;
-      QString description;
-      double semiMajor;
-      double semiMinor;
+        QString acronym;
+        QString description;
+        double semiMajor;
+        double semiMinor;
     };
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
     bool mBlockCrsUpdates = false;
     QColorSpace mColorSpace;
 
-    QList< QgsOptionsPageWidget * > mAdditionalProjectPropertiesWidgets;
+    QList<QgsOptionsPageWidget *> mAdditionalProjectPropertiesWidgets;
 
-    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
-    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
+    std::unique_ptr<QgsBearingNumericFormat> mBearingFormat;
+    std::unique_ptr<QgsGeographicCoordinateNumericFormat> mGeographicCoordinateFormat;
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
@@ -305,3 +306,4 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     friend class TestQgsProjectProperties;
 };
+#endif // QGSPROJECTPROPERTIES_H

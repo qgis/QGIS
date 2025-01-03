@@ -21,6 +21,7 @@
 #include <Qt3DRender/QTechnique>
 
 #include "qgsphongtexturedmaterial.h"
+#include "moc_qgsphongtexturedmaterial.cpp"
 
 ///@cond PRIVATE
 QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
@@ -40,18 +41,12 @@ QgsPhongTexturedMaterial::~QgsPhongTexturedMaterial() = default;
 
 void QgsPhongTexturedMaterial::init()
 {
-  connect( mAmbientParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsPhongTexturedMaterial::handleAmbientChanged );
-  connect( mDiffuseTextureParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsPhongTexturedMaterial::handleDiffuseTextureChanged );
-  connect( mDiffuseTextureScaleParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsPhongTexturedMaterial::handleDiffuseTextureScaleChanged );
-  connect( mSpecularParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsPhongTexturedMaterial::handleSpecularChanged );
-  connect( mShininessParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsPhongTexturedMaterial::handleShininessChanged );
-  connect( mOpacityParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsPhongTexturedMaterial::handleOpacityChanged );
+  connect( mAmbientParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleAmbientChanged );
+  connect( mDiffuseTextureParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleDiffuseTextureChanged );
+  connect( mDiffuseTextureScaleParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleDiffuseTextureScaleChanged );
+  connect( mSpecularParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleSpecularChanged );
+  connect( mShininessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleShininessChanged );
+  connect( mOpacityParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsPhongTexturedMaterial::handleOpacityChanged );
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect();
   effect->addParameter( mAmbientParameter );

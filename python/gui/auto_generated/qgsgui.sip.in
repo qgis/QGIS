@@ -22,7 +22,6 @@ related to GUI classes.
 %End
   public:
 
-
     enum ProjectCrsBehavior
     {
       UseCrsOfFirstLayerAdded,
@@ -250,6 +249,13 @@ Returns the screen at the given global ``point`` (pixel).
 %End
 
 
+
+    static bool hasWebEngine();
+%Docstring
+Checks whether QWebEngineView is available to display HTML content.
+
+.. versionadded:: 3.42
+%End
 
 
   signals:

@@ -25,7 +25,6 @@ Manages input control devices.
 #include "qgsinputcontrollermanager.h"
 %End
   public:
-
     QgsInputControllerManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsInputControllerManager, with the specified ``parent`` object.

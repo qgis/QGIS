@@ -262,12 +262,12 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
 }
 
 
-void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
 {
   if ( mSymbol )
   {
     QgsFeature3DHandler *handler = handlers[this];
-    if ( !handler->prepare( context, attributeNames ) )
+    if ( !handler->prepare( context, attributeNames, chunkOrigin ) )
     {
       handlers.remove( this );
       delete handler;
@@ -283,7 +283,7 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   // call recursively
   for ( Rule *rule : std::as_const( mChildren ) )
   {
-    rule->prepare( context, attributeNames, handlers );
+    rule->prepare( context, attributeNames, chunkOrigin, handlers );
   }
 }
 
@@ -338,7 +338,7 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
 
 bool QgsRuleBased3DRenderer::Rule::isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const
 {
-  if ( ! mFilter || mElseRule )
+  if ( !mFilter || mElseRule )
     return true;
 
   context.expressionContext().setFeature( f );

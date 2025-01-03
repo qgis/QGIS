@@ -23,6 +23,7 @@
 #include "qgis.h"
 
 #include <QPicture>
+#include <QPainterPath>
 
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
@@ -159,6 +160,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param context destination render context
      * \param alignment horizontal alignment
      * \param rotation text rotation
+     * \param mode optional layout mode (since QGIS 3.42)
      *
      * \since QGIS 3.40
      */
@@ -168,7 +170,8 @@ class CORE_EXPORT QgsTextRenderer
                               const QgsTextDocumentMetrics &metrics,
                               QgsRenderContext &context,
                               Qgis::TextHorizontalAlignment alignment,
-                              double rotation );
+                              double rotation,
+                              Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point );
 
     /**
      * Draws text along a line using the specified settings.
@@ -396,7 +399,7 @@ class CORE_EXPORT QgsTextRenderer
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point );
 
     /**
-     * Draws a single component of rendered text using the specified settings.
+     * Draws components of rendered text using the specified settings.
      * \param rect destination rectangle for text
      * \param rotation text rotation
      * \param alignment horizontal alignment
@@ -405,19 +408,19 @@ class CORE_EXPORT QgsTextRenderer
      * \param metrics document metrics
      * \param context render context
      * \param format text format
-     * \param part component of text to draw. Note that Shadow parts cannot be drawn
+     * \param parts components of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
      * \param mode layout mode
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          Qgis::TextComponent part, Qgis::TextLayoutMode mode );
+    static void drawParts( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics,
+                           QgsRenderContext &context, const QgsTextFormat &format,
+                           Qgis::TextComponents parts, Qgis::TextLayoutMode mode );
 
     /**
-     * Draws a single component of rendered text using the specified settings.
+     * Draws components of rendered text using the specified settings.
      * \param origin origin for start of text. Y coordinate will be used as baseline.
      * \param rotation text rotation
      * \param alignment horizontal alignment
@@ -425,18 +428,18 @@ class CORE_EXPORT QgsTextRenderer
      * \param metrics precalculated document metrics
      * \param context render context
      * \param format text format
-     * \param part component of text to draw. Note that Shadow parts cannot be drawn
+     * \param parts components of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
      * \param mode layout mode
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document,
-                          const QgsTextDocumentMetrics &metrics,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          Qgis::TextComponent part,
-                          Qgis::TextLayoutMode mode );
+    static void drawParts( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document,
+                           const QgsTextDocumentMetrics &metrics,
+                           QgsRenderContext &context, const QgsTextFormat &format,
+                           Qgis::TextComponents parts,
+                           Qgis::TextLayoutMode mode );
 
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
@@ -445,7 +448,7 @@ class CORE_EXPORT QgsTextRenderer
                               Qgis::TextLayoutMode mode );
 
     static void drawBackground( QgsRenderContext &context,
-                                Component component,
+                                const Component &component,
                                 const QgsTextFormat &format,
                                 const QgsTextDocumentMetrics &metrics,
                                 Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
@@ -464,7 +467,7 @@ class CORE_EXPORT QgsTextRenderer
                           const Component &component,
                           const QgsTextFormat &format );
 
-    static void drawTextInternal( Qgis::TextComponent drawType,
+    static void drawTextInternal( Qgis::TextComponents components,
                                   QgsRenderContext &context,
                                   const QgsTextFormat &format,
                                   const Component &component,
@@ -481,7 +484,7 @@ class CORE_EXPORT QgsTextRenderer
 
     static void drawTextInternalHorizontal( QgsRenderContext &context,
                                             const QgsTextFormat &format,
-                                            Qgis::TextComponent drawType,
+                                            Qgis::TextComponents components,
                                             Qgis::TextLayoutMode mode,
                                             const Component &component,
                                             const QgsTextDocument &document,
@@ -493,7 +496,7 @@ class CORE_EXPORT QgsTextRenderer
 
     static void drawTextInternalVertical( QgsRenderContext &context,
                                           const QgsTextFormat &format,
-                                          Qgis::TextComponent drawType,
+                                          Qgis::TextComponents components,
                                           Qgis::TextLayoutMode mode,
                                           const Component &component,
                                           const QgsTextDocument &document,
@@ -503,12 +506,51 @@ class CORE_EXPORT QgsTextRenderer
                                           Qgis::TextVerticalAlignment vAlignment,
                                           double rotation );
 
+    struct DeferredRenderFragment
+    {
+      // mandatory
+      QColor color;
+      QPointF point;
+      // optional
+      QPainterPath path;
+      // optional
+      QFont font;
+      QString text;
+    };
+
+    struct BlockMetrics
+    {
+      double xOffset = 0;
+      double backgroundXOffset = 0;
+      double width = 0;
+      double backgroundWidth = 0;
+      double extraWordSpace = 0;
+      double extraLetterSpace = 0;
+    };
+
+    static QVector< QgsTextRenderer::BlockMetrics > calculateBlockMetrics( const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode, double targetWidth, const Qgis::TextHorizontalAlignment hAlignment );
+
+    struct DeferredRenderBlock
+    {
+      QPointF origin;
+      Component component;
+      QVector< DeferredRenderFragment > fragments;
+    };
+
+    static QBrush createBrushForPath( QgsRenderContext &context, const QString &path );
+
     static void renderBlockHorizontal( const QgsTextBlock &block, int blockIndex,
                                        const QgsTextDocumentMetrics &metrics, QgsRenderContext &context,
                                        const QgsTextFormat &format,
-                                       QPainter *painter, bool usePaths,
+                                       QPainter *painter, bool forceRenderAsPaths,
                                        double fontScale, double extraWordSpace, double extraLetterSpace,
-                                       Qgis::TextLayoutMode mode );
+                                       Qgis::TextLayoutMode mode,
+                                       DeferredRenderBlock *deferredRenderBlock );
+    static void renderDocumentBackgrounds( QgsRenderContext &context, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, const Component &component, const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics, Qgis::TextLayoutMode mode, double verticalAlignOffset, double rotation );
+    static void renderDeferredBlocks( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotation );
+    static void renderDeferredBuffer( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation );
+    static void renderDeferredShadowForText( QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation );
+    static void renderDeferredText( QgsRenderContext &context, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotation );
 
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;
@@ -519,6 +561,12 @@ class CORE_EXPORT QgsTextRenderer
      * Returns TRUE if paths should be used to render a document
      */
     static bool usePathsToRender( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );
+
+    /**
+     * Returns TRUE if a picture should be used to render a document
+     */
+    static bool usePictureToRender( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );
+
 };
 
 #endif // QGSTEXTRENDERER_H

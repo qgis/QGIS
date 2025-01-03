@@ -66,7 +66,6 @@ implemented as map tools.
       sipType = nullptr;
 %End
   public:
-
     enum Flag
     {
       Transient,
@@ -296,7 +295,6 @@ signal emitted once the map tool is deactivated
 %End
 
   protected:
-
     QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor takes a map canvas as a parameter.
@@ -364,7 +362,6 @@ Sets the tool's ``name``.
 
 .. versionadded:: 3.20
 %End
-
 
 
 

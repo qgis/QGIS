@@ -39,7 +39,7 @@ jobs:
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
-        uses: robinraju/release-downloader@v1.10
+        uses: robinraju/release-downloader@v1.11
         with:
           repository: 'lexxmark/winflexbison'
           fileName: '*.zip'
@@ -52,6 +52,12 @@ jobs:
           max-size: 1G
           key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
           save: ${{ github.event_name == 'push' }}
+
+      - name: 🛍️ Tune ccache configuration
+        shell: bash
+        run: |
+          # To make ccache work properly with precompiled headers
+          ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
       - name: 🌱 Install dependencies and generate project files
         shell: bash
@@ -73,11 +79,10 @@ jobs:
                 -D ENABLE_TESTS=OFF \
                 -D BUILD_WITH_QT6=ON \
                 -D USE_CCACHE=ON \
+                -D ENABLE_UNITY_BUILDS=ON \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
                 -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
-                -D PYUIC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyuic5.bat" \
-                -D PYRCC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyrcc5.bat" \
                 -D CMAKE_C_COMPILER_LAUNCHER=ccache \
                 -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
                 -D WITH_QTWEBKIT=OFF \

@@ -30,7 +30,7 @@ namespace Qt3DInput
   class QMouseEvent;
   class QMouseHandler;
   class QWheelEvent;
-}
+} // namespace Qt3DInput
 
 namespace Qt3DRender
 {
@@ -63,7 +63,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     Q_OBJECT
   public:
-
     //! Constructs the camera controller with optional parent node that will take ownership
     QgsCameraController( Qgs3DMapScene *scene ) SIP_SKIP;
     ~QgsCameraController() override;
@@ -197,6 +196,14 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     bool willHandleKeyEvent( QKeyEvent *event );
 
+    /**
+     * Reacts to the shift of origin of the scene, updating camera pose and
+     * any other member variables so that the origin stays at the same position
+     * relative to other entities.
+     * \since QGIS 3.42
+     */
+    void setOrigin( const QgsVector3D &origin );
+
   public slots:
 
     /**
@@ -236,8 +243,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     // This list gathers all the rotation and translation operations.
     // It is used to update the appropriate parameters when successive
     // translation and rotation happen.
-    const QList<MouseOperation> mTranslateOrRotate =
-    {
+    const QList<MouseOperation> mTranslateOrRotate = {
       MouseOperation::Translation,
       MouseOperation::RotationCamera,
       MouseOperation::RotationCenter
@@ -324,11 +330,11 @@ class _3D_EXPORT QgsCameraController : public QObject
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
 
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBefore;
+    std::unique_ptr<Qt3DRender::QCamera> mCameraBefore;
 
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
-    double mRotationDistanceFromCenter;
+    double mRotationDistanceFromCenter = 0;
     double mRotationPitch = 0;
     double mRotationYaw = 0;
 
@@ -345,7 +351,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
     double mCameraMovementSpeed = 5.0;
 
-    QSet< int > mDepressedKeys;
+    QSet<int> mDepressedKeys;
     bool mCaptureFpsMouseMovements = false;
     bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;
@@ -353,6 +359,9 @@ class _3D_EXPORT QgsCameraController : public QObject
     double mCumulatedWheelY = 0;
 
     MouseOperation mCurrentOperation = MouseOperation::None;
+
+    // 3D world's origin in map coordinates
+    QgsVector3D mOrigin;
 
     // To test the cameracontroller
     friend class TestQgs3DRendering;

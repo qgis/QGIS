@@ -44,6 +44,7 @@ extern "C"
 }
 
 #include "qgsgrassmoduleinput.h"
+#include "moc_qgsgrassmoduleinput.cpp"
 
 /**************************** QgsGrassModuleInputModel ****************************/
 QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
@@ -258,7 +259,6 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
 
 void QgsGrassModuleInputModel::reload()
 {
-
   if ( !mWatcher->files().isEmpty() )
   {
     mWatcher->removePaths( mWatcher->files() );
@@ -319,7 +319,7 @@ QgsGrassModuleInputModel *QgsGrassModuleInputModel::instance()
 QVariant QgsGrassModuleInputModel::data( const QModelIndex &index, int role ) const
 {
   QVariant data = QStandardItemModel::data( index, role );
-  if ( role == Qt::DisplayRole  || role == Qt::EditRole ) // EditRole for combo
+  if ( role == Qt::DisplayRole || role == Qt::EditRole ) // EditRole for combo
   {
     int type = QStandardItemModel::data( index, QgsGrassModuleInputModel::TypeRole ).toInt();
     if ( type == QgsGrassObject::Raster || type == QgsGrassObject::Vector )
@@ -678,8 +678,7 @@ void QgsGrassModuleInputSelectedDelegate::handlePressed( const QModelIndex &inde
   }
 }
 
-void QgsGrassModuleInputSelectedDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
-    const QModelIndex &index ) const
+void QgsGrassModuleInputSelectedDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   if ( option.state & QStyle::State_MouseOver )
   {
@@ -699,10 +698,7 @@ void QgsGrassModuleInputSelectedDelegate::paint( QPainter *painter, const QStyle
     const QIcon icon = ( option.state & QStyle::State_Selected ) ? QgsGrassPlugin::getThemeIcon( "closebutton.png" ) : QgsGrassPlugin::getThemeIcon( "darkclosebutton.png" );
 
 
-    QRect iconRect( option.rect.right() - option.rect.height(),
-                    option.rect.top(),
-                    option.rect.height(),
-                    option.rect.height() );
+    QRect iconRect( option.rect.right() - option.rect.height(), option.rect.top(), option.rect.height(), option.rect.height() );
 
     icon.paint( painter, iconRect, Qt::AlignRight | Qt::AlignVCenter );
   }
@@ -727,8 +723,7 @@ QgsGrassModuleInputSelectedView::QgsGrassModuleInputSelectedView( QWidget *paren
   installEventFilter( this );
   viewport()->installEventFilter( this );
 
-  connect( this, &QAbstractItemView::pressed,
-           mDelegate, &QgsGrassModuleInputSelectedDelegate::handlePressed );
+  connect( this, &QAbstractItemView::pressed, mDelegate, &QgsGrassModuleInputSelectedDelegate::handlePressed );
 }
 
 void QgsGrassModuleInputSelectedView::setModel( QAbstractItemModel *model )
@@ -770,10 +765,7 @@ bool QgsGrassModuleInputSelectedView::eventFilter( QObject *obj, QEvent *event )
 }
 
 /**************************** QgsGrassModuleInput ****************************/
-QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
-    QgsGrassModuleStandardOptions *options, QString key,
-    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    bool direct, QWidget *parent )
+QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module, QgsGrassModuleStandardOptions *options, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mType( QgsGrassObject::Vector )
   , mModuleStandardOptions( options )
@@ -799,7 +791,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
     // Read type mask if "typeoption" is defined
     QString opt = qdesc.attribute( QStringLiteral( "typeoption" ) );
-    if ( ! opt.isNull() )
+    if ( !opt.isNull() )
     {
       typeNode = nodeByKey( gdesc, opt );
 
@@ -844,7 +836,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
     // Read type mask defined in configuration
     opt = qdesc.attribute( QStringLiteral( "typemask" ) );
-    if ( ! opt.isNull() )
+    if ( !opt.isNull() )
     {
       int mask = 0;
 
@@ -859,9 +851,8 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
     // Read "layeroption" if defined
     opt = qdesc.attribute( QStringLiteral( "layeroption" ) );
-    if ( ! opt.isNull() )
+    if ( !opt.isNull() )
     {
-
       QDomNode optNode = nodeByKey( gdesc, opt );
 
       if ( optNode.isNull() )
@@ -914,9 +905,9 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
   // Map input
   mComboBox = new QgsGrassModuleInputComboBox( mType, this );
-  mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
+  mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mComboBox, qOverload< int >( &QComboBox::activated ), this, [ = ]( int index ) { onActivated( mComboBox->itemText( index ) ); } );
+  connect( mComboBox, qOverload<int>( &QComboBox::activated ), this, [=]( int index ) { onActivated( mComboBox->itemText( index ) ); } );
   connect( mComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassModuleInput::onActivated );
   connect( mComboBox, &QComboBox::editTextChanged, this, &QgsGrassModuleInput::onChanged );
   mapLayout->addWidget( mComboBox );
@@ -930,7 +921,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
     mRegionButton->setToolTip( tr( "Use region of this map" ) );
     mRegionButton->setCheckable( true );
-    mRegionButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy:: Preferred );
+    mRegionButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
     mapLayout->addWidget( mRegionButton );
   }
 
@@ -962,7 +953,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     // Vector types
     if ( !typeNode.isNull() )
     {
-
       QList<int> types;
       types << GV_POINT << GV_LINE << GV_BOUNDARY << GV_CENTROID << GV_AREA;
       for ( int type : types )
@@ -1009,7 +999,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
 bool QgsGrassModuleInput::useRegion()
 {
-
   return mUsesRegion && mType == QgsGrassObject::Raster && mRegionButton && mRegionButton->isChecked();
 }
 
@@ -1046,7 +1035,6 @@ QStringList QgsGrassModuleInput::options()
 
     if ( !mGeometryTypeOption.isEmpty() )
     {
-
       list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( QLatin1Char( ',' ) );
     }
   }
@@ -1056,7 +1044,6 @@ QStringList QgsGrassModuleInput::options()
 
 QgsFields QgsGrassModuleInput::currentFields()
 {
-
   QgsGrassVectorLayer *layer = currentLayer();
   if ( !layer )
   {
@@ -1067,7 +1054,6 @@ QgsFields QgsGrassModuleInput::currentFields()
 
 QgsGrassObject QgsGrassModuleInput::currentGrassObject()
 {
-
   QgsGrassObject grassObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), QString(), QString(), mType );
   grassObject.setFullName( mComboBox->currentText() );
   return grassObject;
@@ -1184,7 +1170,6 @@ void QgsGrassModuleInput::onChanged( const QString &text )
 
 void QgsGrassModuleInput::onLayerChanged()
 {
-
   // TODO(?): support vector sublayers/types for multiple input
   if ( multiple() )
   {
@@ -1232,7 +1217,6 @@ void QgsGrassModuleInput::onLayerChanged()
 
 QString QgsGrassModuleInput::ready()
 {
-
   QString error;
 
   QString noInput = tr( "no input" );

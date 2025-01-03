@@ -48,7 +48,6 @@ changed status of the widget will be saved.
 %End
   public:
 
-
     enum class Property /BaseType=IntEnum/
     {
       RootPath,
@@ -178,7 +177,6 @@ Signal when :py:class:`QgsAttributeEditorContext` mContext changed
 %End
 
   protected:
-
     virtual QWidget *createWidget( QWidget *parent ) = 0;
 %Docstring
 This method should create a new widget with the provided parent. This will only be called

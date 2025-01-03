@@ -7,5 +7,5 @@ QgsExtentGroupBox.DrawOnCanvas = QgsExtentGroupBox.ExtentState.DrawOnCanvas
 try:
     QgsExtentGroupBox.__attribute_docs__ = {'extentChanged': "Emitted when the widget's extent is changed.\n"}
     QgsExtentGroupBox.__signal_arguments__ = {'extentChanged': ['r: QgsRectangle']}
-except NameError:
+except (NameError, AttributeError):
     pass

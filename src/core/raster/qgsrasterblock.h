@@ -675,6 +675,68 @@ class CORE_EXPORT QgsRasterBlock
      */
     int height() const SIP_HOLDGIL { return mHeight; }
 
+    /**
+     * Returns the minimum value present in the raster block.
+     *
+     * \note If the minimum value is present multiple times in the raster block then the calculated row and column
+     * will refer to any instance of this minimum.
+     *
+     * \param minimum minimum value present
+     * \param row row containing minimum value pixel
+     * \param column column containing minimum value pixel
+     *
+     * \returns TRUE if a minimum value was found, or FALSE if it could not be found (eg due to non-numeric data types).
+     *
+     * \see maximum()
+     * \see minimumMaximum()
+     *
+     * \since QGIS 3.42
+     */
+    bool minimum( double &minimum SIP_OUT, int &row SIP_OUT, int &column SIP_OUT ) const;
+
+    /**
+     * Returns the maximum value present in the raster block.
+     *
+     * \note If the maximum value is present multiple times in the raster block then the calculated row and column
+     * will refer to any instance only of this maximum.
+     *
+     * \param maximum maximum value present
+     * \param row row containing maximum value pixel
+     * \param column column containing maximum value pixel
+     *
+     * \returns TRUE if a maximum value was found, or FALSE if it could not be found (eg due to non-numeric data types).
+     *
+     * \see minimum()
+     * \see minimumMaximum()
+     *
+     * \since QGIS 3.42
+     */
+    bool maximum( double &maximum SIP_OUT, int &row SIP_OUT, int &column SIP_OUT ) const;
+
+    /**
+     * Returns the minimum and maximum value present in the raster block.
+     *
+     * \note This method is more efficient than calling minimum() and maximum() separately.
+     *
+     * \note If the minimum or maximum value is present multiple times in the raster block then the calculated row and column
+     * will refer to any of instances of these values.
+     *
+     * \param minimum minimum value present
+     * \param minimumRow row containing minimum value pixel
+     * \param minimumColumn column containing minimum value pixel
+     * \param maximum maximum value present
+     * \param maximumRow row containing maximum value pixel
+     * \param maximumColumn column containing maximum value pixel
+     *
+     * \returns TRUE if a minimum and maximum value were found, or FALSE if they could not be found (eg due to non-numeric data types).
+     *
+     * \see minimum()
+     * \see maximum()
+     *
+     * \since QGIS 3.42
+     */
+    bool minimumMaximum( double &minimum SIP_OUT, int &minimumRow SIP_OUT, int &minimumColumn SIP_OUT, double &maximum SIP_OUT, int &maximumRow SIP_OUT, int &maximumColumn SIP_OUT ) const;
+
   private:
     static QImage::Format imageFormat( Qgis::DataType dataType );
     static Qgis::DataType dataType( QImage::Format format );

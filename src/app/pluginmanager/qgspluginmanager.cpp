@@ -45,6 +45,7 @@
 #include "qgspluginsortfilterproxymodel.h"
 #include "qgspythonrunner.h"
 #include "qgspluginmanager.h"
+#include "moc_qgspluginmanager.cpp"
 #include "qgisplugin.h"
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
@@ -61,7 +62,7 @@
 // This doesn't work on windows and causes problems with plugins
 // on OS X (the code doesn't cause a problem but including dlfcn.h
 // renders plugins unloadable)
-#if !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
+#if !defined( Q_OS_WIN ) && !defined( Q_OS_MACOS )
 #include <dlfcn.h>
 #endif
 #endif
@@ -173,7 +174,6 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
 }
 
 
-
 QgsPluginManager::~QgsPluginManager()
 {
   delete mModelProxy;
@@ -183,7 +183,6 @@ QgsPluginManager::~QgsPluginManager()
   settings.setValue( QStringLiteral( "Windows/PluginManager/secondSplitterState" ), mPluginsDetailsSplitter->saveState() );
   settings.setValue( QStringLiteral( "Windows/PluginManager/option" ), mOptionsListWidget->currentRow() );
 }
-
 
 
 void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
@@ -265,7 +264,7 @@ void QgsPluginManager::loadPlugin( const QString &id )
 {
   const QMap<QString, QString> *plugin = pluginMetadata( id );
 
-  if ( ! plugin )
+  if ( !plugin )
   {
     return;
   }
@@ -291,12 +290,11 @@ void QgsPluginManager::loadPlugin( const QString &id )
 }
 
 
-
 void QgsPluginManager::unloadPlugin( const QString &id )
 {
   const QMap<QString, QString> *plugin = pluginMetadata( id );
 
-  if ( ! plugin )
+  if ( !plugin )
   {
     return;
   }
@@ -318,11 +316,10 @@ void QgsPluginManager::unloadPlugin( const QString &id )
 }
 
 
-
 void QgsPluginManager::savePluginState( QString id, bool state )
 {
   const QMap<QString, QString> *plugin = pluginMetadata( id );
-  if ( ! plugin )
+  if ( !plugin )
   {
     return;
   }
@@ -343,11 +340,10 @@ void QgsPluginManager::savePluginState( QString id, bool state )
 }
 
 
-
 void QgsPluginManager::getCppPluginsMetadata()
 {
   QString sharedLibExtension;
-#if defined(Q_OS_WIN) || defined(__CYGWIN__)
+#if defined( Q_OS_WIN ) || defined( __CYGWIN__ )
   sharedLibExtension = "*.dll";
 #else
   sharedLibExtension = QStringLiteral( "*.so*" );
@@ -385,7 +381,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       // This doesn't work on windows and causes problems with plugins
       // on OS X (the code doesn't cause a problem but including dlfcn.h
       // renders plugins unloadable)
-#if !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
+#if !defined( Q_OS_WIN ) && !defined( Q_OS_MACOS )
       // test code to help debug loading problems
       // This doesn't work on windows and causes problems with plugins
       // on OS X (the code doesn't cause a problem but including dlfcn.h
@@ -409,7 +405,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       QgsDebugMsgLevel( "Examining: " + lib, 2 );
       try
       {
-        std::unique_ptr< QLibrary > myLib = std::make_unique< QLibrary >( lib );
+        std::unique_ptr<QLibrary> myLib = std::make_unique<QLibrary>( lib );
         const bool loaded = myLib->load();
         if ( !loaded )
         {
@@ -534,7 +530,6 @@ void QgsPluginManager::getCppPluginsMetadata()
 }
 
 
-
 QStandardItem *QgsPluginManager::createSpacerItem( const QString &text, const QString &value )
 {
   QStandardItem *mySpacerltem = new QStandardItem( text );
@@ -550,7 +545,6 @@ QStandardItem *QgsPluginManager::createSpacerItem( const QString &text, const QS
 }
 
 
-
 void QgsPluginManager::reloadModelData()
 {
   mModelPlugins->clear();
@@ -562,11 +556,11 @@ void QgsPluginManager::reloadModelData()
     buttonUninstall->setEnabled( false );
   }
 
-  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
-    if ( ! it->value( QStringLiteral( "id" ) ).isEmpty() )
+    if ( !it->value( QStringLiteral( "id" ) ).isEmpty() )
     {
       const QString baseName = it->value( QStringLiteral( "id" ) );
       const QString pluginName = it->value( QStringLiteral( "name" ) );
@@ -655,12 +649,11 @@ void QgsPluginManager::reloadModelData()
   buttonUpgradeAll->setEnabled( hasUpgradeablePlugins() );
 
   // Disable tabs that are empty because of no suitable plugins in the model.
-  mOptionsListWidget->item( PLUGMAN_TAB_NOT_INSTALLED )->setHidden( ! hasAvailablePlugins() );
-  mOptionsListWidget->item( PLUGMAN_TAB_UPGRADEABLE )->setHidden( ! hasUpgradeablePlugins() );
-  mOptionsListWidget->item( PLUGMAN_TAB_NEW )->setHidden( ! hasNewPlugins() );
-  mOptionsListWidget->item( PLUGMAN_TAB_INVALID )->setHidden( ! hasInvalidPlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_NOT_INSTALLED )->setHidden( !hasAvailablePlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_UPGRADEABLE )->setHidden( !hasUpgradeablePlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_NEW )->setHidden( !hasNewPlugins() );
+  mOptionsListWidget->item( PLUGMAN_TAB_INVALID )->setHidden( !hasInvalidPlugins() );
 }
-
 
 
 void QgsPluginManager::pluginItemChanged( QStandardItem *item )
@@ -669,7 +662,7 @@ void QgsPluginManager::pluginItemChanged( QStandardItem *item )
 
   if ( item->checkState() )
   {
-    if ( mPluginsAreEnabled && ! isPluginEnabled( id ) )
+    if ( mPluginsAreEnabled && !isPluginEnabled( id ) )
     {
       QgsDebugMsgLevel( " Loading plugin: " + id, 2 );
       loadPlugin( id );
@@ -681,13 +674,12 @@ void QgsPluginManager::pluginItemChanged( QStandardItem *item )
       savePluginState( id, true );
     }
   }
-  else if ( ! item->checkState() )
+  else if ( !item->checkState() )
   {
     QgsDebugMsgLevel( " Unloading plugin: " + id, 2 );
     unloadPlugin( id );
   }
 }
-
 
 
 void QgsPluginManager::showPluginDetails( QStandardItem *item )
@@ -701,41 +693,46 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   QString html = "<style>"
                  "  body {"
-                 "    color:" + palette().color( QPalette::ColorRole::Text ).name() + ";"
-                 "    background-color:" + palette().color( QPalette::ColorRole::Base ).name() + ";"
-                 "  }"
-                 "  body, table {"
-                 "    padding:0px;"
-                 "    margin:0px;"
-                 "    font-family:Verdana, Sans-serif;"
-                 "    font-size:10pt;"
-                 "  }"
-                 "  a {"
-                 "    color: " + palette().color( QPalette::ColorRole::Link ).name() + ";"
-                 "    text-decoration:none;"
-                 "  }"
-                 "  a:hover,a:focus {"
-                 "    color: " + palette().color( QPalette::ColorRole::Link ).name() + ";"
-                 "    text-decoration:underline;"
-                 "  }"
-                 "  a:visited {"
-                 "    color: " + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
-                 "  }"
-                 "  div#votes {"
-                 "    width:360px;"
-                 "    margin-left:98px;"
-                 "    padding-top:3px;"
-                 "  }"
-                 "  td {"
-                 "    vertical-align:top;"
-                 "  }"
-                 "  td.key {"
-                 "    font-weight: bold;"
-                 "    white-space:nowrap;"
-                 "    padding-right:10px;"
-                 "    text-align:right;"
-                 "  }"
-                 "</style>";
+                 "    color:"
+                 + palette().color( QPalette::ColorRole::Text ).name() + ";"
+                                                                         "    background-color:"
+                 + palette().color( QPalette::ColorRole::Base ).name() + ";"
+                                                                         "  }"
+                                                                         "  body, table {"
+                                                                         "    padding:0px;"
+                                                                         "    margin:0px;"
+                                                                         "    font-family:Verdana, Sans-serif;"
+                                                                         "    font-size:10pt;"
+                                                                         "  }"
+                                                                         "  a {"
+                                                                         "    color: "
+                 + palette().color( QPalette::ColorRole::Link ).name() + ";"
+                                                                         "    text-decoration:none;"
+                                                                         "  }"
+                                                                         "  a:hover,a:focus {"
+                                                                         "    color: "
+                 + palette().color( QPalette::ColorRole::Link ).name() + ";"
+                                                                         "    text-decoration:underline;"
+                                                                         "  }"
+                                                                         "  a:visited {"
+                                                                         "    color: "
+                 + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
+                                                                                "  }"
+                                                                                "  div#votes {"
+                                                                                "    width:360px;"
+                                                                                "    margin-left:98px;"
+                                                                                "    padding-top:3px;"
+                                                                                "  }"
+                                                                                "  td {"
+                                                                                "    vertical-align:top;"
+                                                                                "  }"
+                                                                                "  td.key {"
+                                                                                "    font-weight: bold;"
+                                                                                "    white-space:nowrap;"
+                                                                                "    padding-right:10px;"
+                                                                                "    text-align:right;"
+                                                                                "  }"
+                                                                                "</style>";
 
   if ( !metadata->value( QStringLiteral( "plugin_id" ) ).isEmpty() )
   {
@@ -751,11 +748,13 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
               "  }"
               "  div#stars {"
               "    background-image: url('qrc:/images/themes/default/stars_full.svg');"
-              "    background-size: 92px 16px;"  /*scale to the full width*/
+              "    background-size: 92px 16px;" /*scale to the full width*/
               "    width:%1px;"
               "    height:16px;"
               "  }"
-              "</style>" ).arg( metadata->value( QStringLiteral( "average_vote" ) ).toFloat() / 5 * 92 );
+              "</style>"
+    )
+              .arg( metadata->value( QStringLiteral( "average_vote" ) ).toFloat() / 5 * 92 );
     html += QString(
               "<script>"
               "  var plugin_id=%1;"
@@ -796,7 +795,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
               "    ev.initEvent('click', false, true);"
               "    document.getElementById('send_vote_trigger').dispatchEvent(ev);"
               "  }"
-              "</script>" ).arg( metadata->value( QStringLiteral( "plugin_id" ) ) );
+              "</script>"
+    )
+              .arg( metadata->value( QStringLiteral( "plugin_id" ) ) );
 #else
     voteRating->show();
     voteLabel->show();
@@ -824,7 +825,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
 
   // First prepare message box(es)
-  if ( ! metadata->value( QStringLiteral( "error" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "error" ) ).isEmpty() )
   {
     QString errorMsg;
     if ( metadata->value( QStringLiteral( "error" ) ) == QLatin1String( "incompatible" ) )
@@ -841,37 +842,42 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     }
     html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 144, 0, 0.25)\">"
                      "  <tr><td width=\"100%\">%1</td></tr>"
-                     "</table>" ).arg( errorMsg );
+                     "</table>" )
+              .arg( errorMsg );
   }
 
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "upgradeable" ) || metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "upgradeable" ) )
   {
     html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(170, 0, 238, 0.25)\">"
                      "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" ).arg( tr( "There is a new version available" ) );
+                     "</table>" )
+              .arg( tr( "There is a new version available" ) );
   }
 
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "new" ) || metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "new" ) )
   {
     html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(0, 238, 0, 0.25)\">"
                      "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" ).arg( tr( "This is a new plugin" ) );
+                     "</table>" )
+              .arg( tr( "This is a new plugin" ) );
   }
 
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "newer" ) && metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "newer" ) )
   {
     html += QString( "<table cellspacing=\"2\" cellpadding=\"6\" width=\"100%\" style=\"background-color: rgba(238, 133, 0, 0.25)\">"
                      "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
+                     "</table>" )
+              .arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   }
 
-  if ( ! metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
   {
     html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(238, 238, 10, 0.25)\">"
                      "  <tr><td width=\"100%\">"
                      "    <img src=\"qrc:/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
-                     "</table>" ).arg( tr( "This plugin has an experimental version available" ) );
+                     "</table>" )
+              .arg( tr( "This plugin has an experimental version available" ) );
   }
 
   if ( metadata->value( QStringLiteral( "deprecated" ) ) == QLatin1String( "true" ) )
@@ -880,14 +886,16 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                      "  <tr><td width=\"100%\">"
                      "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
-                     "</table>" ).arg( tr( "This plugin is deprecated" ) );
+                     "</table>" )
+              .arg( tr( "This plugin is deprecated" ) );
   }
 
   if ( metadata->value( QStringLiteral( "readonly" ) ) == QLatin1String( "true" ) )
   {
     html += QString( "<table cellspacing=\"2\" cellpadding=\"2\" width=\"100%\" style=\"background-color: rgba(0, 133, 238, 0.25)\">"
                      "  <tr><td width=\"100%\"><b>%1</b></td></tr>"
-                     "</table>" ).arg( tr( "This is a core plugin, so you can't uninstall it" ) );
+                     "</table>" )
+              .arg( tr( "This is a core plugin, so you can't uninstall it" ) );
   }
 
   // Now the metadata
@@ -903,9 +911,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       iconPath = "qrc" + iconPath;
     }
-    else if ( ! iconPath.startsWith( QLatin1String( "http" ) ) )
+    else if ( !iconPath.startsWith( QLatin1String( "http" ) ) )
     {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
       iconPath = "file:///" + iconPath;
 #else
       iconPath = "file://" + iconPath;
@@ -924,7 +932,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   description = description.remove( stripHtml );
   html += QStringLiteral( "<h3>%1</h3>" ).arg( description );
 
-  if ( ! metadata->value( QStringLiteral( "about" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "about" ) ).isEmpty() )
   {
     QString about = metadata->value( QStringLiteral( "about" ) );
     // The regular expression ensures that a new line will be present after the closure of a paragraph tag (i.e. </p>)
@@ -938,13 +946,13 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 #ifndef WITH_QTWEBKIT
   votes += tr( "Average rating %1" ).arg( metadata->value( "average_vote" ).toFloat(), 0, 'f', 1 );
 #endif
-  if ( ! metadata->value( QStringLiteral( "rating_votes" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "rating_votes" ) ).isEmpty() )
   {
     if ( !votes.isEmpty() )
       votes += QLatin1String( ", " );
     votes += tr( "%1 rating vote(s)" ).arg( metadata->value( QStringLiteral( "rating_votes" ) ) );
   }
-  if ( ! metadata->value( QStringLiteral( "downloads" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "downloads" ) ).isEmpty() )
   {
     if ( !votes.isEmpty() )
       votes += QLatin1String( ", " );
@@ -967,11 +975,11 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   html += QLatin1String( "</td></tr>" );
   html += QLatin1String( "<tr><td width='1%'> </td><td width='99%'> </td></tr>" );
 
-  if ( ! metadata->value( QStringLiteral( "category" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "category" ) ).isEmpty() )
   {
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Category" ), metadata->value( QStringLiteral( "category" ) ) );
   }
-  if ( ! metadata->value( QStringLiteral( "tags" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "tags" ) ).isEmpty() )
   {
     QStringList tags = metadata->value( QStringLiteral( "tags" ) ).toLower().split( ',' );
     for ( auto tag = tags.begin(); tag != tags.end(); ++tag )
@@ -981,34 +989,34 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), tags.join( QLatin1String( ", " ) ) );
   }
 
-  if ( ! metadata->value( QStringLiteral( "homepage" ) ).isEmpty() || ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() || ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "homepage" ) ).isEmpty() || !metadata->value( QStringLiteral( "tracker" ) ).isEmpty() || !metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
   {
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>" ).arg( tr( "More info" ) );
-    if ( ! metadata->value( QStringLiteral( "homepage" ) ).isEmpty() )
+    if ( !metadata->value( QStringLiteral( "homepage" ) ).isEmpty() )
     {
       html += QStringLiteral( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( QStringLiteral( "homepage" ) ), tr( "homepage" ) );
     }
-    if ( ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() )
+    if ( !metadata->value( QStringLiteral( "tracker" ) ).isEmpty() )
     {
       html += QStringLiteral( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( QStringLiteral( "tracker" ) ), tr( "bug tracker" ) );
     }
-    if ( ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
+    if ( !metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
     {
       html += QStringLiteral( "<a href='%1'>%2</a>" ).arg( metadata->value( QStringLiteral( "code_repository" ) ), tr( "code repository" ) );
     }
     html += QLatin1String( "</td></tr>" );
   }
 
-  if ( ! metadata->value( QStringLiteral( "author_email" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "author_email" ) ).isEmpty() )
   {
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td><a href='mailto:%2'>%3</a></td></tr>" ).arg( tr( "Author" ), metadata->value( QStringLiteral( "author_email" ) ), metadata->value( QStringLiteral( "author_name" ) ) );
   }
-  else if ( ! metadata->value( QStringLiteral( "author_name" ) ).isEmpty() )
+  else if ( !metadata->value( QStringLiteral( "author_name" ) ).isEmpty() )
   {
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Author" ), metadata->value( QStringLiteral( "author_name" ) ) );
   }
 
-  if ( ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() )
   {
     QString ver = metadata->value( QStringLiteral( "version_installed" ) );
     if ( ver == QLatin1String( "-1" ) )
@@ -1025,10 +1033,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
       localDir = QDir( localDir ).canonicalPath();
     }
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%3'>%4</a></td></tr>"
-                          ).arg( tr( "Installed version" ),
-                                 QDir::toNativeSeparators( localDir ),
-                                 QUrl::fromLocalFile( localDir ).toString(),
-                                 ver );
+    )
+              .arg( tr( "Installed version" ), QDir::toNativeSeparators( localDir ), QUrl::fromLocalFile( localDir ).toString(), ver );
   }
 
   // use a localized date/time short format string
@@ -1039,7 +1045,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     dateTimeFormat.replace( "yy", "yyyy" );
   }
   // if we allow experimental, we show both stable and experimental versions
-  if ( ! metadata->value( QStringLiteral( "version_available_stable" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "version_available_stable" ) ).isEmpty() )
   {
     QString downloadUrl = metadata->value( QStringLiteral( "download_url_stable" ) );
     if ( downloadUrl.contains( QStringLiteral( "plugins.qgis.org" ) ) )
@@ -1049,7 +1055,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     }
 
     QString dateUpdatedStr;
-    if ( ! metadata->value( QStringLiteral( "update_date_stable" ) ).isEmpty() )
+    if ( !metadata->value( QStringLiteral( "update_date_stable" ) ).isEmpty() )
     {
       const QDateTime dateUpdatedUtc = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_stable" ) ).trimmed(), Qt::ISODate );
       if ( dateUpdatedUtc.isValid() )
@@ -1060,13 +1066,11 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
-                          ).arg( tr( "Available version (stable)" ),
-                                 downloadUrl,
-                                 metadata->value( QStringLiteral( "version_available_stable" ) ),
-                                 dateUpdatedStr );
+    )
+              .arg( tr( "Available version (stable)" ), downloadUrl, metadata->value( QStringLiteral( "version_available_stable" ) ), dateUpdatedStr );
   }
 
-  if ( ! metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
   {
     QString downloadUrl = metadata->value( QStringLiteral( "download_url_experimental" ) );
     if ( downloadUrl.contains( QStringLiteral( "plugins.qgis.org" ) ) )
@@ -1084,20 +1088,18 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
-                          ).arg( tr( "Available version (experimental)" ),
-                                 downloadUrl,
-                                 metadata->value( QStringLiteral( "version_available_experimental" ) ),
-                                 dateUpdatedStr );
+    )
+              .arg( tr( "Available version (experimental)" ), downloadUrl, metadata->value( QStringLiteral( "version_available_experimental" ) ), dateUpdatedStr );
   }
 
-  if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
   {
     QString changelog = metadata->value( QStringLiteral( "changelog" ) );
     changelog = changelog.trimmed().replace( '\n', QLatin1String( "<br/>" ) );
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Changelog" ), changelog );
   }
 
-  if ( ! metadata->value( QStringLiteral( "plugin_dependencies" ) ).isEmpty() )
+  if ( !metadata->value( QStringLiteral( "plugin_dependencies" ) ).isEmpty() )
   {
     QString pluginDependencies = metadata->value( QStringLiteral( "plugin_dependencies" ) );
     pluginDependencies = pluginDependencies.trimmed();
@@ -1170,7 +1172,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   buttonInstallExperimental->setEnabled( expAllowed && installExpEnabled );
   buttonInstallExperimental->setVisible( expAllowed && installExpEnabled );
 
-  buttonUninstall->setEnabled( metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "readonly" ) ) != QLatin1String( "true" ) && ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
+  buttonUninstall->setEnabled( metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "readonly" ) ) != QLatin1String( "true" ) && !metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
 
   buttonUninstall->setHidden( metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
 
@@ -1179,19 +1181,16 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 }
 
 
-
 void QgsPluginManager::selectTabItem( int idx )
 {
   mOptionsListWidget->setCurrentRow( idx );
 }
 
 
-
 void QgsPluginManager::clearPythonPluginMetadata()
 {
-  for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
-        it != mPlugins.end();
-      )
+  for ( QMap<QString, QMap<QString, QString>>::iterator it = mPlugins.begin();
+        it != mPlugins.end(); )
   {
     if ( it->value( QStringLiteral( "pythonic" ) ) == QLatin1String( "true" ) )
     {
@@ -1205,17 +1204,15 @@ void QgsPluginManager::clearPythonPluginMetadata()
 }
 
 
-
 void QgsPluginManager::addPluginMetadata( const QString &key, const QMap<QString, QString> &metadata )
 {
   mPlugins.insert( key, metadata );
 }
 
 
-
 const QMap<QString, QString> *QgsPluginManager::pluginMetadata( const QString &key ) const
 {
-  const QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.find( key );
+  const QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
   {
     return &it.value();
@@ -1253,7 +1250,7 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
   }
 
   const QString key = repository.value( QStringLiteral( "name" ) );
-  if ( ! key.isEmpty() )
+  if ( !key.isEmpty() )
   {
     QTreeWidgetItem *a = new QTreeWidgetItem( treeRepositories );
     a->setText( 1, key );
@@ -1300,7 +1297,6 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
 }
 
 
-
 // SLOTS ///////////////////////////////////////////////////////////////////
 
 
@@ -1316,7 +1312,6 @@ void QgsPluginManager::reject()
 #endif
   done( 1 );
 }
-
 
 
 void QgsPluginManager::setCurrentTab( int idx )
@@ -1377,19 +1372,23 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       tabInfoHTML += "<style>"
                      "  body, p {"
-                     "      color: " + palette().color( QPalette::ColorRole::Text ).name() + ";"
-                     "      background-color:" + palette().color( QPalette::ColorRole::Base ).name() + ";"
-                     "      margin: 2px;"
-                     "      font-family: Verdana, Sans-serif;"
-                     "      font-size: 10pt;"
-                     "  }"
-                     "  a, a:hover {"
-                     "      color: " + palette().color( QPalette::ColorRole::Link ).name() + ";"
-                     "  }"
-                     "  a:visited {"
-                     "      color: " + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
-                     "  }"
-                     "</style>";
+                     "      color: "
+                     + palette().color( QPalette::ColorRole::Text ).name() + ";"
+                                                                             "      background-color:"
+                     + palette().color( QPalette::ColorRole::Base ).name() + ";"
+                                                                             "      margin: 2px;"
+                                                                             "      font-family: Verdana, Sans-serif;"
+                                                                             "      font-size: 10pt;"
+                                                                             "  }"
+                                                                             "  a, a:hover {"
+                                                                             "      color: "
+                     + palette().color( QPalette::ColorRole::Link ).name() + ";"
+                                                                             "  }"
+                                                                             "  a:visited {"
+                                                                             "      color: "
+                     + palette().color( QPalette::ColorRole::LinkVisited ).name() + ";"
+                                                                                    "  }"
+                                                                                    "</style>";
       // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
       tabInfoHTML += it.value();
     }
@@ -1404,7 +1403,6 @@ void QgsPluginManager::setCurrentTab( int idx )
 }
 
 
-
 void QgsPluginManager::currentPluginChanged( const QModelIndex &index )
 {
   if ( index.column() == 0 )
@@ -1416,7 +1414,6 @@ void QgsPluginManager::currentPluginChanged( const QModelIndex &index )
     showPluginDetails( mypItem );
   }
 }
-
 
 
 void QgsPluginManager::vwPlugins_doubleClicked( const QModelIndex &index )
@@ -1523,19 +1520,16 @@ void QgsPluginManager::buttonInstallExperimental_clicked()
 }
 
 
-
 void QgsPluginManager::buttonUninstall_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().uninstallPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
 }
 
 
-
 void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
 {
   buttonInstallFromZip->setEnabled( QFileInfo( filePath ).isFile() );
 }
-
 
 
 void QgsPluginManager::buttonInstallFromZip_clicked()
@@ -1565,20 +1559,17 @@ void QgsPluginManager::buttonInstallFromZip_clicked()
 }
 
 
-
 void QgsPluginManager::treeRepositories_itemSelectionChanged()
 {
-  buttonEditRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
-  buttonDeleteRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
+  buttonEditRep->setEnabled( !treeRepositories->selectedItems().isEmpty() );
+  buttonDeleteRep->setEnabled( !treeRepositories->selectedItems().isEmpty() );
 }
-
 
 
 void QgsPluginManager::treeRepositories_doubleClicked( const QModelIndex & )
 {
   buttonEditRep_clicked();
 }
-
 
 
 void QgsPluginManager::setRepositoryFilter()
@@ -1594,13 +1585,11 @@ void QgsPluginManager::setRepositoryFilter()
 }
 
 
-
 void QgsPluginManager::clearRepositoryFilter()
 {
   QgsDebugMsgLevel( QStringLiteral( "Enabling all repositories back" ), 2 );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().setRepositoryInspectionFilter()" ) );
 }
-
 
 
 void QgsPluginManager::buttonRefreshRepos_clicked()
@@ -1610,13 +1599,11 @@ void QgsPluginManager::buttonRefreshRepos_clicked()
 }
 
 
-
 void QgsPluginManager::buttonAddRep_clicked()
 {
   QgsDebugMsgLevel( QStringLiteral( "Adding repository connection..." ), 2 );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().addRepository()" ) );
 }
-
 
 
 void QgsPluginManager::buttonEditRep_clicked()
@@ -1632,7 +1619,6 @@ void QgsPluginManager::buttonEditRep_clicked()
 }
 
 
-
 void QgsPluginManager::buttonDeleteRep_clicked()
 {
   QTreeWidgetItem *current = treeRepositories->currentItem();
@@ -1644,7 +1630,6 @@ void QgsPluginManager::buttonDeleteRep_clicked()
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().deleteRepository('%1')" ).arg( key ) );
   }
 }
-
 
 
 void QgsPluginManager::ckbExperimental_toggled( bool state )
@@ -1665,10 +1650,10 @@ void QgsPluginManager::ckbDeprecated_toggled( bool state )
 // PRIVATE METHODS ///////////////////////////////////////////////////////////////////
 
 
-bool QgsPluginManager::isPluginEnabled( QString key )
+bool QgsPluginManager::isPluginEnabled( const QString &key )
 {
   const QMap<QString, QString> *plugin = pluginMetadata( key );
-  if ( plugin->isEmpty() )
+  if ( !plugin || plugin->isEmpty() )
   {
     // No such plugin in the metadata registry
     return false;
@@ -1678,8 +1663,8 @@ bool QgsPluginManager::isPluginEnabled( QString key )
   if ( plugin->value( QStringLiteral( "pythonic" ) ) != QLatin1String( "true" ) )
   {
     // Trim "cpp:" prefix from cpp plugin id
-    key = key.mid( 4 );
-    return ( mySettings.value( "/Plugins/" + key, QVariant( false ) ).toBool() );
+    const QString trimmedKey = key.mid( 4 );
+    return ( mySettings.value( "/Plugins/" + trimmedKey, QVariant( false ) ).toBool() );
   }
   else
   {
@@ -1688,10 +1673,9 @@ bool QgsPluginManager::isPluginEnabled( QString key )
 }
 
 
-
 bool QgsPluginManager::hasAvailablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
@@ -1705,10 +1689,9 @@ bool QgsPluginManager::hasAvailablePlugins()
 }
 
 
-
 bool QgsPluginManager::hasReinstallablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
@@ -1723,10 +1706,9 @@ bool QgsPluginManager::hasReinstallablePlugins()
 }
 
 
-
 bool QgsPluginManager::hasUpgradeablePlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
@@ -1740,10 +1722,9 @@ bool QgsPluginManager::hasUpgradeablePlugins()
 }
 
 
-
 bool QgsPluginManager::hasNewPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
@@ -1757,10 +1738,9 @@ bool QgsPluginManager::hasNewPlugins()
 }
 
 
-
 bool QgsPluginManager::hasNewerPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
@@ -1774,14 +1754,13 @@ bool QgsPluginManager::hasNewerPlugins()
 }
 
 
-
 bool QgsPluginManager::hasInvalidPlugins()
 {
-  for ( QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.constBegin();
+  for ( QMap<QString, QMap<QString, QString>>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
-    if ( ! it->value( QStringLiteral( "error" ) ).isEmpty() )
+    if ( !it->value( QStringLiteral( "error" ) ).isEmpty() )
     {
       return true;
     }
@@ -1789,7 +1768,6 @@ bool QgsPluginManager::hasInvalidPlugins()
 
   return false;
 }
-
 
 
 void QgsPluginManager::updateWindowTitle()
@@ -1812,7 +1790,6 @@ void QgsPluginManager::updateWindowTitle()
 }
 
 
-
 void QgsPluginManager::showEvent( QShowEvent *e )
 {
   if ( mInit )
@@ -1826,7 +1803,6 @@ void QgsPluginManager::showEvent( QShowEvent *e )
 
   QgsOptionsDialogBase::showEvent( e );
 }
-
 
 
 void QgsPluginManager::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )

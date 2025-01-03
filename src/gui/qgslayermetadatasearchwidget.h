@@ -37,7 +37,6 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsLayerMetadataSearchWidget.
      */
@@ -58,11 +57,9 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
     void showHelp();
 
   private:
-
     QgsLayerMetadataResultsProxyModel *mProxyModel = nullptr;
     bool mIsLoading = false;
     QgsLayerMetadataResultsModel *mSourceModel = nullptr;
-    unsigned long int mRowCount = 0;
 
     // QWidget interface
   protected:

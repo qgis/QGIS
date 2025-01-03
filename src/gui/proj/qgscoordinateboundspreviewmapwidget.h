@@ -30,7 +30,6 @@ class GUI_EXPORT QgsCoordinateBoundsPreviewMapWidget : public QgsMapCanvas
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCoordinateBoundsPreviewMapWidget.
      */
@@ -59,7 +58,6 @@ class GUI_EXPORT QgsCoordinateBoundsPreviewMapWidget : public QgsMapCanvas
     void setPreviewRect( const QgsRectangle &rect );
 
   private:
-
     QgsRubberBand *mPreviewBand = nullptr;
     QgsRubberBand *mCanvasPreviewBand = nullptr;
     QgsVertexMarker *mCanvasCenterMarker = nullptr;
@@ -68,7 +66,6 @@ class GUI_EXPORT QgsCoordinateBoundsPreviewMapWidget : public QgsMapCanvas
     QList<QgsMapLayer *> mLayers;
 
     QgsRectangle mCanvasRect;
-
 };
 
 #endif // QGSCOORDINATEBOUNDSPREVIEWWIDGET_H

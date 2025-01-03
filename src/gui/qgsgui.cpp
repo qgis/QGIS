@@ -20,6 +20,7 @@
 #include <QMessageBox>
 
 #include "qgsgui.h"
+#include "moc_qgsgui.cpp"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
@@ -31,13 +32,13 @@
 #include "callouts/qgscalloutwidget.h"
 #ifdef Q_OS_MACOS
 #include "qgsmacnative.h"
-#elif defined (Q_OS_WIN)
+#elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
 #include "qgswinnative.h"
 #else
 #include "qgsnative.h"
 #endif
-#elif defined (Q_OS_LINUX)
+#elif defined( Q_OS_LINUX )
 #include "qgslinuxnative.h"
 #else
 #include "qgsnative.h"
@@ -67,6 +68,7 @@
 #include "qgsinputcontrollermanager.h"
 #include "qgssensorguiregistry.h"
 #include "qgshistoryentry.h"
+#include "qgsstacsourceselectprovider.h"
 
 #include "qgssettingseditorwidgetregistry.h"
 
@@ -275,7 +277,7 @@ QgsGui::~QgsGui()
 QColor QgsGui::sampleColor( QPoint point )
 {
   QScreen *screen = findScreenAt( point );
-  if ( ! screen )
+  if ( !screen )
   {
     return QColor();
   }
@@ -289,7 +291,7 @@ QColor QgsGui::sampleColor( QPoint point )
 
 QScreen *QgsGui::findScreenAt( QPoint point )
 {
-  const QList< QScreen * > screens = QGuiApplication::screens();
+  const QList<QScreen *> screens = QGuiApplication::screens();
   for ( QScreen *screen : screens )
   {
     if ( screen->geometry().contains( point ) )
@@ -306,13 +308,13 @@ QgsGui::QgsGui()
   QgsMacNative *macNative = new QgsMacNative();
   macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
   mNative = macNative;
-#elif defined (Q_OS_WIN)
+#elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
   mNative = new QgsWinNative();
 #else
   mNative = new QgsNative();
 #endif
-#elif defined(Q_OS_LINUX)
+#elif defined( Q_OS_LINUX )
   mNative = new QgsLinuxNative();
 #else
   mNative = new QgsNative();
@@ -345,6 +347,7 @@ QgsGui::QgsGui()
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->addProvider( new QgsLayerMetadataSourceSelectProvider() );
+  mSourceSelectProviderRegistry->addProvider( new QgsStacSourceSelectProvider() );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
@@ -367,7 +370,7 @@ QgsGui::QgsGui()
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
 
-  qRegisterMetaType< QgsHistoryEntry >( "QgsHistoryEntry" );
+  qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
 bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *messageBar, Qgis::PythonEmbeddedType embeddedType )
@@ -393,14 +396,10 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
         switch ( embeddedType )
         {
           case Qgis::PythonEmbeddedType::Macro:
-            messageBar->pushMessage( tr( "Python Macros" ),
-                                     tr( "Python macros are currently disabled and will not be run" ),
-                                     Qgis::MessageLevel::Warning );
+            messageBar->pushMessage( tr( "Python Macros" ), tr( "Python macros are currently disabled and will not be run" ), Qgis::MessageLevel::Warning );
             break;
           case Qgis::PythonEmbeddedType::ExpressionFunction:
-            messageBar->pushMessage( tr( "Python Expressions" ),
-                                     tr( "Python expressions from project are currently disabled and will not be loaded" ),
-                                     Qgis::MessageLevel::Warning );
+            messageBar->pushMessage( tr( "Python Expressions" ), tr( "Python expressions from project are currently disabled and will not be loaded" ), Qgis::MessageLevel::Warning );
             break;
         }
       }
@@ -410,8 +409,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
       {
         if ( !lambda )
         {
-          QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ),
-                              tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
+          QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ), tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
           QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Disable for this Session" ), QMessageBox::DestructiveRole );
           msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
           QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
@@ -442,10 +440,10 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
               btnEnableMacros,
               Qgis::MessageLevel::Warning,
               0,
-              messageBar );
+              messageBar
+            );
 
-            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [ = ]()
-            {
+            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [=]() {
               lambda();
               messageBar->popWidget( macroMsg );
             } );
@@ -475,10 +473,10 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
             btnEnableExpressionsFromProject,
             Qgis::MessageLevel::Warning,
             0,
-            messageBar );
+            messageBar
+          );
 
-          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [ = ]()
-          {
+          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [=]() {
             QgsProject::instance()->loadFunctionsFromProject( true );
             messageBar->popWidget( expressionFromProjectMsg );
           } );
@@ -496,11 +494,8 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
 void QgsGui::initCalloutWidgets()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-
-    auto _initCalloutWidgetFunction = []( const QString & name, QgsCalloutWidgetFunc f )
-    {
+  std::call_once( initialized, [=]() {
+    auto _initCalloutWidgetFunction = []( const QString &name, QgsCalloutWidgetFunc f ) {
       QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
 
       QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
@@ -511,7 +506,7 @@ void QgsGui::initCalloutWidgets()
       QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
       if ( !metadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ) .arg( name ) );
+        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ).arg( name ) );
       }
       else
       {
@@ -524,6 +519,15 @@ void QgsGui::initCalloutWidgets()
     _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
     _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
   } );
+}
+
+bool QgsGui::hasWebEngine()
+{
+#ifdef HAVE_WEBENGINE
+  return true;
+#else
+  return false;
+#endif
 }
 
 ///@cond PRIVATE

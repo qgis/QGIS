@@ -1138,7 +1138,7 @@ If the height is 0 then the height will be calculated automatically based on the
 .. versionadded:: 3.36
 %End
 
- void setWidthUnit( Qgis::RenderUnit unit ) /Deprecated/;
+ void setWidthUnit( Qgis::RenderUnit unit ) /Deprecated="Since 3.40. Use setSizeUnit() instead."/;
 %Docstring
 Sets the ``unit`` for the image's width.
 
@@ -1166,7 +1166,7 @@ Sets the ``unit`` for the image's width and height.
 .. versionadded:: 3.36
 %End
 
- Qgis::RenderUnit widthUnit() const /Deprecated/;
+ Qgis::RenderUnit widthUnit() const /Deprecated="Since 3.40. Use sizeUnit() instead."/;
 %Docstring
 Returns the units for the image's width.
 
@@ -1196,7 +1196,7 @@ Returns the units for the image's width and height.
 .. versionadded:: 3.36
 %End
 
- void setWidthMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
+ void setWidthMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated="Since 3.40. Use setSizeMapUnitScale() instead."/;
 %Docstring
 Sets the map unit ``scale`` for the image's width.
 
@@ -1226,7 +1226,7 @@ Sets the map unit ``scale`` for the image's width and height.
 .. versionadded:: 3.36
 %End
 
- const QgsMapUnitScale &widthMapUnitScale() const /Deprecated/;
+ const QgsMapUnitScale &widthMapUnitScale() const /Deprecated="Since 3.40. Use sizeMapUnitScale() instead."/;
 %Docstring
 Returns the map unit scale for the image's width.
 

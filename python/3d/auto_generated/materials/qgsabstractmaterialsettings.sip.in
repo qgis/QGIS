@@ -12,7 +12,7 @@
 
 
 enum class QgsMaterialSettingsRenderingTechnique
-  {
+{
   Triangles,
   Lines,
   InstancedPoints,
@@ -40,7 +40,6 @@ Context settings for a material.
 #include "qgsabstractmaterialsettings.h"
 %End
   public:
-
     bool isSelected() const;
 %Docstring
 Returns ``True`` if the material should represent a selected state.
@@ -113,7 +112,6 @@ Abstract base class for material settings.
     }
 %End
   public:
-
     virtual ~QgsAbstractMaterialSettings();
 
     virtual QString type() const = 0;
@@ -136,6 +134,13 @@ Reads settings from a DOM ``element``
     virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
 %Docstring
 Writes settings to a DOM ``element``
+%End
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
+%Docstring
+Returns ``True`` if this settings exactly matches an ``other`` settings.
+
+.. versionadded:: 3.42
 %End
 
 

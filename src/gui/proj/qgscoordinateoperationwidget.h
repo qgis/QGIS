@@ -34,24 +34,23 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
 {
     Q_OBJECT
   public:
-
     //! Coordinate operation details
     struct OperationDetails
     {
-      //! Source transform ID
-      int sourceTransformId = -1;
+        //! Source transform ID
+        int sourceTransformId = -1;
 
-      //! Destination transform ID
-      int destinationTransformId = -1;
+        //! Destination transform ID
+        int destinationTransformId = -1;
 
-      //! Proj coordinate operation description, for Proj >= 6.0 builds only
-      QString proj;
+        //! Proj coordinate operation description, for Proj >= 6.0 builds only
+        QString proj;
 
-      //! TRUE if operation is available
-      bool isAvailable = true;
+        //! TRUE if operation is available
+        bool isAvailable = true;
 
-      //! TRUE if fallback transforms can be used
-      bool allowFallback = true;
+        //! TRUE if fallback transforms can be used
+        bool allowFallback = true;
     };
 
     /**
@@ -117,7 +116,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
     /**
      * Returns a list of the available operations shown in the widget.
      */
-    QList< QgsCoordinateOperationWidget::OperationDetails > availableOperations() const;
+    QList<QgsCoordinateOperationWidget::OperationDetails> availableOperations() const;
 
     /**
      * Returns the details of the default operation suggested by the widget.
@@ -172,7 +171,6 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
     void installGrid();
 
   private:
-
     enum Roles
     {
       TransformIdRole = Qt::UserRole + 1,
@@ -194,7 +192,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      */
     QString formatScope( const QString &scope );
 
-    QList< QgsDatumTransform::TransformDetails > mDatumTransforms;
+    QList<QgsDatumTransform::TransformDetails> mDatumTransforms;
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;

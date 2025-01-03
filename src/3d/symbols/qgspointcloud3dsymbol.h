@@ -38,7 +38,6 @@
 class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 {
   public:
-
     /**
      * How to render the point cloud
      */
@@ -443,7 +442,6 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
 
   private:
-
 #ifdef SIP_RUN
     QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
 #endif
@@ -452,10 +450,9 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QString mGreenAttribute = QStringLiteral( "Green" );
     QString mBlueAttribute = QStringLiteral( "Blue" );
 
-    std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
-    std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
-    std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
-
+    std::unique_ptr<QgsContrastEnhancement> mRedContrastEnhancement;
+    std::unique_ptr<QgsContrastEnhancement> mGreenContrastEnhancement;
+    std::unique_ptr<QgsContrastEnhancement> mBlueContrastEnhancement;
 };
 
 /**

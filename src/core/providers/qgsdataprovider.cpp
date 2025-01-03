@@ -15,6 +15,7 @@
 
 #include <QMutexLocker>
 #include "qgsdataprovider.h"
+#include "moc_qgsdataprovider.cpp"
 #include "qgsdataprovidertemporalcapabilities.h"
 #include "qgsthreadingutils.h"
 

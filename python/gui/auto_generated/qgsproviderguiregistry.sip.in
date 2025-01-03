@@ -30,7 +30,6 @@ loaded in constructor.
 #include "qgsproviderguiregistry.h"
 %End
   public:
-
     QgsProviderGuiRegistry( const QString &pluginPath );
 %Docstring
 Creates registry and loads static provider plugins

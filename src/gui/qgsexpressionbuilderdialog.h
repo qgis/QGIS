@@ -33,11 +33,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer *layer,
-                                const QString &startText = QString(),
-                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                const QString &key = "generic",
-                                const QgsExpressionContext &context = QgsExpressionContext() );
+    QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &key = "generic", const QgsExpressionContext &context = QgsExpressionContext() );
 
     //! The builder widget that is used by the dialog
     QgsExpressionBuilderWidget *expressionBuilder();
@@ -103,7 +99,6 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     void allowEvalErrorsChanged();
 
   protected:
-
     /**
      * Is called when the dialog get accepted or rejected
      * Used to save geometry
@@ -123,7 +118,6 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
   private slots:
     void showHelp();
     void syncOkButtonEnabledState();
-
 };
 
 // clazy:excludeall=qstring-allocations

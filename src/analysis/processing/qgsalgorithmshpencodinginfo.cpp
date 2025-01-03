@@ -64,8 +64,7 @@ QgsShapefileEncodingInfoAlgorithm *QgsShapefileEncodingInfoAlgorithm::createInst
 
 void QgsShapefileEncodingInfoAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), Qgis::ProcessingFileParameterBehavior::File,
-                QString(), QVariant(), false, QObject::tr( "Shapefiles (%1)" ).arg( QLatin1String( "*.shp *.SHP" ) ) ) );
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "Shapefiles (%1)" ).arg( QLatin1String( "*.shp *.SHP" ) ) ) );
 
   addOutput( new QgsProcessingOutputString( QStringLiteral( "ENCODING" ), QObject::tr( "Shapefile Encoding" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CPG_ENCODING" ), QObject::tr( "CPG Encoding" ) ) );

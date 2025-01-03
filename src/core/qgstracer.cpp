@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstracer.h"
+#include "moc_qgstracer.cpp"
 
 
 #include "qgsfeatureiterator.h"

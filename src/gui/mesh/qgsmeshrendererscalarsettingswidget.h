@@ -40,7 +40,6 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     Q_OBJECT
 
   public:
-
     /**
      * A widget to hold the renderer scalar settings for a mesh layer.
      * \param parent Parent object
@@ -59,6 +58,9 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
+    //! Associates map canvas with the widget
+    void setCanvas( QgsMapCanvas *canvas );
+
   signals:
     //! Mesh rendering settings changed
     void widgetChanged();
@@ -71,12 +73,17 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
   private:
     double spinBoxValue( const QgsDoubleSpinBox *spinBox ) const;
     QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
+    void mUserDefinedRadioButton_toggled( bool toggled );
+    void mMinMaxRadioButton_toggled( bool toggled );
+
+    void recalculateMinMax();
 
     bool dataIsDefinedOnFaces() const;
     bool dataIsDefinedOnEdges() const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveDatasetGroup = -1;
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

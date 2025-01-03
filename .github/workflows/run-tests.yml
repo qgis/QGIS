@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '22.04'
+          - distro-version: '24.04'
             qt-version: 5
             run-tests: true
             with-qt6: OFF
@@ -57,6 +57,7 @@ jobs:
             with-compile-commands: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
+            unity-builds: ON
 
           - distro-version: '39'
             qt-version: 6
@@ -73,6 +74,7 @@ jobs:
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
+            unity-builds: ON
 
 
       fail-fast: false
@@ -165,6 +167,7 @@ jobs:
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
+                     --env ENABLE_UNITY_BUILDS=${{ matrix.unity-builds }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
@@ -244,7 +247,7 @@ jobs:
 
         include:
           - qt-version: 5
-            distro-version: 22.04
+            distro-version: 24.04
             docker-target: binary-only
 
           - qt-version: 6
@@ -252,7 +255,7 @@ jobs:
             docker-target: binary-only
 
           - qt-version: 5
-            distro-version: 22.04
+            distro-version: 24.04
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
@@ -387,7 +390,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '22.04'
+          - distro-version: '24.04'
             qt-version: 5
 
     steps:

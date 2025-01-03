@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingfavoritealgorithmmanager.h"
+#include "moc_qgsprocessingfavoritealgorithmmanager.cpp"
 #include "qgssettingstree.h"
 #include "qgssettingsentryimpl.h"
 

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooldigitizefeature.h"
+#include "moc_qgsmaptooldigitizefeature.cpp"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -219,4 +220,3 @@ void QgsMapToolDigitizeFeature::setLayer( QgsMapLayer *vl )
 {
   mLayer = vl;
 }
-

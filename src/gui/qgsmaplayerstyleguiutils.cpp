@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstyleguiutils.h"
+#include "moc_qgsmaplayerstyleguiutils.cpp"
 
 #include <QAction>
 #include <QInputDialog>
@@ -82,7 +83,7 @@ QList<QAction *> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer *layer, 
 
 void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *layer )
 {
-  if ( ! layer )
+  if ( !layer )
     return;
 
   m->addAction( actionAddStyle( layer, m ) );
@@ -90,7 +91,7 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *la
     m->addAction( actionRemoveStyle( layer, m ) );
   m->addAction( actionRenameStyle( layer, m ) );
   m->addSeparator();
-  const auto actions {actionsUseStyle( layer, m )};
+  const auto actions { actionsUseStyle( layer, m ) };
   for ( QAction *a : actions )
     m->addAction( a );
 }
@@ -118,7 +119,6 @@ void QgsMapLayerStyleGuiUtils::removesExtraMenuSeparators( QMenu *m )
         gotFirstSeparator = true;
     }
   }
-
 }
 
 void QgsMapLayerStyleGuiUtils::addStyle()
@@ -131,9 +131,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
     return;
 
   bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
-                       tr( "Style name:" ), QLineEdit::Normal,
-                       QStringLiteral( "new style" ), &ok );
+  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
     return;
 
@@ -196,9 +194,7 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
   const QString name = layer->styleManager()->currentStyle();
 
   bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "Rename Style" ),
-                       tr( "Style name:" ), QLineEdit::Normal,
-                       name, &ok );
+  const QString text = QInputDialog::getText( nullptr, tr( "Rename Style" ), tr( "Style name:" ), QLineEdit::Normal, name, &ok );
   if ( !ok )
     return;
 

@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsexpressioncontext.h"
+#include "qgsabstractterrainsettings.h"
 
 #include <QColor>
 
@@ -45,10 +46,11 @@ class Qgs3DMapSettings;
  */
 class _3D_EXPORT Qgs3DRenderContext
 {
-
   public:
-
     Qgs3DRenderContext() = default;
+    ~Qgs3DRenderContext();
+    Qgs3DRenderContext( const Qgs3DRenderContext &other );
+    Qgs3DRenderContext &operator=( const Qgs3DRenderContext &other );
 
     /**
      * Creates an initialized Qgs3DRenderContext instance from given Qgs3DMapSettings.
@@ -120,9 +122,9 @@ class _3D_EXPORT Qgs3DRenderContext
     bool terrainRenderingEnabled() const { return mTerrainRenderingEnabled; }
 
     /**
-     * Returns vertical scale (exaggeration) of terrain
+     * Returns the terrain settings.
      */
-    double terrainVerticalScale() const { return mTerrainVerticalScale; }
+    const QgsAbstractTerrainSettings *terrainSettings() const;
 
     /**
      * Returns the terrain generator.
@@ -149,28 +151,27 @@ class _3D_EXPORT Qgs3DRenderContext
      * \see setExpressionContext()
      * \note not available in Python bindings
      */
-    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
+    const QgsExpressionContext &expressionContext() const SIP_SKIP { return mExpressionContext; }
 
   private:
-    QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
+    QgsCoordinateReferenceSystem mCrs; //!< Destination coordinate system of the world
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
     QgsDateTimeRange mTemporalRange;
-    QColor mSelectionColor; //!< Color to be used for selected map features
-    double mDpi = 96;  //!< Dot per inch value for the screen / painter
+    QColor mSelectionColor;     //!< Color to be used for selected map features
+    double mDpi = 96;           //!< Dot per inch value for the screen / painter
     float mFieldOfView = 45.0f; //!< Camera lens field of view value
     bool mTerrainRenderingEnabled = true;
-    double mTerrainVerticalScale = 1;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
-
+    std::unique_ptr<QgsAbstractTerrainSettings> mTerrainSettings;
     //! Expression context
     QgsExpressionContext mExpressionContext;
 
     // not owned, currently a pointer to the Qgs3DMapSettings terrain generator.
     // TODO -- fix during implementation of https://github.com/qgis/QGIS-Enhancement-Proposals/issues/301
-    QgsTerrainGenerator *mTerrainGenerator = nullptr;  //!< Implementation of the terrain generation
+    QgsTerrainGenerator *mTerrainGenerator = nullptr; //!< Implementation of the terrain generation
 };
 
 

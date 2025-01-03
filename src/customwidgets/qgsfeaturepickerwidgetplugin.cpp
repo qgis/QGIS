@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfeaturepickerwidgetplugin.h"
+#include "moc_qgsfeaturepickerwidgetplugin.cpp"
 #include "qgsfeaturepickerwidget.h"
 
 
@@ -92,5 +93,5 @@ QString QgsFeaturePickerWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

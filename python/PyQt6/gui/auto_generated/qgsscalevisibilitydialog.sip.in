@@ -19,7 +19,6 @@ A dialog allowing users to enter a scale visibility range.
 #include "qgsscalevisibilitydialog.h"
 %End
   public:
-
     explicit QgsScaleVisibilityDialog( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), QgsMapCanvas *mapCanvas = 0 );
 %Docstring
 Constructor for QgsScaleVisibilityDialog, with specified dialog ``title``. The ``mapCanvas`` argument
@@ -54,7 +53,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
   public slots:
 
- void setScaleVisiblity( bool hasScaleVisibility ) /Deprecated/;
+ void setScaleVisiblity( bool hasScaleVisibility ) /Deprecated="Since 3.40. Use setScaleVisibility()."/;
 %Docstring
 Set whether scale based visibility is enabled.
 

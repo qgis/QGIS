@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsfilterlineedit.h"
+#include "moc_qgsfilterlineedit.cpp"
 #include "qgsapplication.h"
 #include "qgsanimatedicon.h"
 #include "qgis.h"
@@ -36,8 +37,7 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
   mClearIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconClearText.svg" ).pixmap( QSize( iconSize, iconSize ) ), QIcon::Normal, QIcon::On );
   mClearIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" ).pixmap( QSize( iconSize, iconSize ) ), QIcon::Selected, QIcon::On );
 
-  connect( this, &QLineEdit::textChanged, this,
-           &QgsFilterLineEdit::onTextChanged );
+  connect( this, &QLineEdit::textChanged, this, &QgsFilterLineEdit::onTextChanged );
 }
 
 void QgsFilterLineEdit::setShowClearButton( bool visible )
@@ -177,7 +177,6 @@ bool QgsFilterLineEdit::showSpinner() const
 
 void QgsFilterLineEdit::setShowSpinner( bool showSpinner )
 {
-
   if ( showSpinner == mShowSpinner )
     return;
 

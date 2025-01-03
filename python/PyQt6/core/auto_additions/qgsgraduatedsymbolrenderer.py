@@ -12,5 +12,5 @@ try:
     QgsGraduatedSymbolRenderer.create = staticmethod(QgsGraduatedSymbolRenderer.create)
     QgsGraduatedSymbolRenderer.convertFromRenderer = staticmethod(QgsGraduatedSymbolRenderer.convertFromRenderer)
     QgsGraduatedSymbolRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -1,0 +1,4 @@
+0f032e5f2d78d0d0ba2edb4a20c4853e77ec0fc4 # python formatting after pre-commit introduction
+33ea41a100e8eea891c1d9d95fe34e346c3e71d1 # clang-format on non sipified files
+00fecc29bbe2e295d75c2dad4b9090f7afba739a # clang-format src/analysis
+3a4f8bcdad4f843d7217116ac1cb94b6b6c3fb8b # clang-format src/3d + server

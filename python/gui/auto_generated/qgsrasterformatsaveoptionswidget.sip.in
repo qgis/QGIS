@@ -10,7 +10,7 @@
 
 
 
-class QgsRasterFormatSaveOptionsWidget: QWidget
+class QgsRasterFormatSaveOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget to select format-specific raster saving options
@@ -20,7 +20,6 @@ A widget to select format-specific raster saving options
 #include "qgsrasterformatsaveoptionswidget.h"
 %End
   public:
-
     enum Type
     {
       Default,
@@ -30,10 +29,7 @@ A widget to select format-specific raster saving options
       ProfileLineEdit
     };
 
-    QgsRasterFormatSaveOptionsWidget( QWidget *parent /TransferThis/ = 0,
-                                      const QString &format = "GTiff",
-                                      QgsRasterFormatSaveOptionsWidget::Type type = Default,
-                                      const QString &provider = "gdal" );
+    QgsRasterFormatSaveOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &format = "GTiff", QgsRasterFormatSaveOptionsWidget::Type type = Default, const QString &provider = "gdal" );
 
     void setFormat( const QString &format );
 %Docstring

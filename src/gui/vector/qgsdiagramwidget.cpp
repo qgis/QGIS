@@ -22,6 +22,7 @@
 #include "diagram/qgsstackeddiagram.h"
 
 #include "qgsdiagramwidget.h"
+#include "moc_qgsdiagramwidget.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
@@ -60,7 +61,7 @@ QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas,
 
 void QgsDiagramWidget::apply()
 {
-  const Mode mode = static_cast< Mode >( mDiagramTypeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mDiagramTypeComboBox->currentData().toInt() );
 
   switch ( mode )
   {
@@ -116,15 +117,15 @@ void QgsDiagramWidget::syncToOwnLayer()
       const QString diagramName = dr->diagram()->diagramName();
       if ( diagramName == QgsPieDiagram::DIAGRAM_NAME_PIE )
       {
-        mDiagramTypeComboBox->setCurrentIndex( ModePie ) ;
+        mDiagramTypeComboBox->setCurrentIndex( ModePie );
       }
       else if ( diagramName == QgsTextDiagram::DIAGRAM_NAME_TEXT )
       {
-        mDiagramTypeComboBox->setCurrentIndex( ModeText ) ;
+        mDiagramTypeComboBox->setCurrentIndex( ModeText );
       }
       else if ( diagramName == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
       {
-        mDiagramTypeComboBox->setCurrentIndex( ModeStackedBar ) ;
+        mDiagramTypeComboBox->setCurrentIndex( ModeStackedBar );
       }
       else // diagramName == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM
       {
@@ -153,7 +154,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
   if ( index < 0 )
     return;
 
-  const Mode mode = static_cast< Mode >( mDiagramTypeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mDiagramTypeComboBox->currentData().toInt() );
 
   switch ( mode )
   {

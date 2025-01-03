@@ -59,7 +59,6 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
 {
     Q_OBJECT
   public:
-
     /**
      * Widget modes.
      *
@@ -67,9 +66,9 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     */
     enum class Mode
     {
-      QTextDocument, //!< Default mode, exposes the Qt supported HTML/CSS subset
+      QTextDocument,   //!< Default mode, exposes the Qt supported HTML/CSS subset
       QgsTextRenderer, //!< QGIS text renderer mode, exposes the HTML/CSS subset supported by the QgsTextRenderer class
-      PlainText, //!< Plain text mode
+      PlainText,       //!< Plain text mode
     };
     Q_ENUM( Mode )
 
@@ -221,7 +220,6 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     QPointer<QTextList> mLastBlockList;
     QString mMonospaceFontFamily;
 };
-
 
 
 #endif // QGSRICHTEXTEDITOR_H

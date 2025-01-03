@@ -50,6 +50,11 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
   }
 }
 
+int QgsPointCloudAttributeStatistics::singleClassCount( int cls ) const
+{
+  return classCount.value( cls, -1 );
+}
+
 // QgsPointCloudStatistics
 
 QgsPointCloudStatistics::QgsPointCloudStatistics()
@@ -160,7 +165,7 @@ QByteArray QgsPointCloudStatistics::toStatisticsJson() const
   return statsDoc.toJson( QJsonDocument::Compact );
 }
 
-QgsPointCloudStatistics QgsPointCloudStatistics::fromStatisticsJson( QByteArray statsByteArray )
+QgsPointCloudStatistics QgsPointCloudStatistics::fromStatisticsJson( const QByteArray &statsByteArray )
 {
   QJsonParseError error;
   QJsonDocument document = QJsonDocument::fromJson( statsByteArray, &error );

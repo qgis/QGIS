@@ -81,10 +81,9 @@ is aware of the available geometry checks.
     static const QMetaObject staticMetaObject;
 
   public:
-
     struct LayerFeatureIds
     {
-      LayerFeatureIds();
+        LayerFeatureIds();
 
 
     };
@@ -120,25 +119,25 @@ is aware of the available geometry checks.
 
     struct Change
     {
-      Change();
+        Change();
 
-      Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
+        Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
 %Docstring
 Create a new Change
 %End
 
-      QgsGeometryCheck::ChangeWhat what;
+        QgsGeometryCheck::ChangeWhat what;
 
-      QgsGeometryCheck::ChangeType type;
+        QgsGeometryCheck::ChangeType type;
 
-      QgsVertexId vidx;
+        QgsVertexId vidx;
 
-      bool operator==( const QgsGeometryCheck::Change &other ) const;
+        bool operator==( const QgsGeometryCheck::Change &other ) const;
 
-      bool operator!=( const QgsGeometryCheck::Change &other ) const;
+        bool operator!=( const QgsGeometryCheck::Change &other ) const;
     };
 
-    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
+    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>>> Changes;
 
     QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
@@ -192,7 +191,7 @@ Returns a list of available resolution methods.
 .. versionadded:: 3.12
 %End
 
- virtual QStringList resolutionMethods() const /Deprecated/;
+ virtual QStringList resolutionMethods() const /Deprecated="Since 3.12. Use availableResolutionMethods() instead."/;
 %Docstring
 Returns a list of descriptions for available resolutions for errors.
 The index will be passed as ``method`` to :py:func:`fixError`.
@@ -232,7 +231,6 @@ Returns the context
 %End
 
   protected:
-
 
 
 

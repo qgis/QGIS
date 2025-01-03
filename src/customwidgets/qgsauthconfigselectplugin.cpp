@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsauthconfigselect.h"
 #include "qgsauthconfigselectplugin.h"
+#include "moc_qgsauthconfigselectplugin.cpp"
 
 
 QgsAuthConfigSelectPlugin::QgsAuthConfigSelectPlugin( QObject *parent )
@@ -93,5 +94,5 @@ QString QgsAuthConfigSelectPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

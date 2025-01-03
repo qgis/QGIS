@@ -56,15 +56,15 @@ class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicat
 
     struct Error
     {
-      Error( const QString &error, QgsMapLayer *layer = nullptr )
-        : error( error )
-        , layer( layer )
-      {}
-      QString error;
-      QPointer< QgsMapLayer >  layer;
+        Error( const QString &error, QgsMapLayer *layer = nullptr )
+          : error( error )
+          , layer( layer )
+        {}
+        QString error;
+        QPointer<QgsMapLayer> layer;
     };
 
-    QList< Error > mErrors;
+    QList<Error> mErrors;
 };
 
 #endif // QGSLAYERTREEVIEWBADLAYERINDICATORPROVIDER_H

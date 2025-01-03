@@ -31,11 +31,10 @@ class Qgs3DViewsManagerDialog;
 class QgsAppWindowManager : public QgsWindowManagerInterface
 {
   public:
-
     //! Application-only QGIS dialogs
     enum ApplicationDialog
     {
-      DialogLayoutManager = 0, //!< Layout manager dialog
+      DialogLayoutManager = 0,     //!< Layout manager dialog
       Dialog3DMapViewsManager = 1, //!< 3D map views manager dialog
     };
 
@@ -55,10 +54,9 @@ class QgsAppWindowManager : public QgsWindowManagerInterface
     QWidget *openApplicationDialog( ApplicationDialog dialog );
 
   private:
-    QPointer< QgsStyleManagerDialog > mStyleManagerDialog;
-    QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
-    QPointer< Qgs3DViewsManagerDialog > m3DMapViewsManagerDialog;
-
+    QPointer<QgsStyleManagerDialog> mStyleManagerDialog;
+    QPointer<QgsLayoutManagerDialog> mLayoutManagerDialog;
+    QPointer<Qgs3DViewsManagerDialog> m3DMapViewsManagerDialog;
 };
 
 

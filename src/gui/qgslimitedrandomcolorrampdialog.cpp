@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslimitedrandomcolorrampdialog.h"
+#include "moc_qgslimitedrandomcolorrampdialog.cpp"
 
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -38,13 +39,13 @@ QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimit
 
   updateUi();
 
-  connect( spinCount, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setCount );
-  connect( spinHue1, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setHue1 );
-  connect( spinHue2, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setHue2 );
-  connect( spinSat1, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setSat1 );
-  connect( spinSat2, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setSat2 );
-  connect( spinVal1, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setVal1 );
-  connect( spinVal2, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setVal2 );
+  connect( spinCount, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setCount );
+  connect( spinHue1, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setHue1 );
+  connect( spinHue2, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setHue2 );
+  connect( spinSat1, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setSat1 );
+  connect( spinSat2, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setSat2 );
+  connect( spinVal1, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setVal1 );
+  connect( spinVal2, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLimitedRandomColorRampWidget::setVal2 );
 }
 
 void QgsLimitedRandomColorRampWidget::setRamp( const QgsLimitedRandomColorRamp &ramp )

@@ -1,4 +1,1 @@
-
-O2 Library from https://github.com/pipacs/o2/archive/31ceafb3f0c3b605110ddd20aeebd3288504ee1f.tar.gz
-
-Note: current master build of O2 is broken if built with keychain support
+Embedded copy of the O2 Library from the QGIS fork at https://github.com/qgis/o2/commit/4aae6439ec2fc5f6445e69f208b7710521b09ccc

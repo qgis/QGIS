@@ -19,6 +19,7 @@
  */
 
 #include "qgsmapboxglstyleconverter.h"
+#include "moc_qgsmapboxglstyleconverter.cpp"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgssymbollayer.h"
@@ -148,7 +149,18 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     if ( maxZoom != -1 )
       maxZoom--;
 
-    const bool enabled = jsonLayer.value( QStringLiteral( "visibility" ) ).toString() != QLatin1String( "none" );
+    QString visibilyStr;
+    if ( jsonLayer.contains( QStringLiteral( "visibility" ) ) )
+    {
+      visibilyStr = jsonLayer.value( QStringLiteral( "visibility" ) ).toString();
+    }
+    else if ( jsonLayer.contains( QStringLiteral( "layout" ) ) && jsonLayer.value( QStringLiteral( "layout" ) ).userType() == QMetaType::Type::QVariantMap )
+    {
+      const QVariantMap jsonLayout = jsonLayer.value( QStringLiteral( "layout" ) ).toMap();
+      visibilyStr = jsonLayout.value( QStringLiteral( "visibility" ) ).toString();
+    }
+
+    const bool enabled = visibilyStr != QLatin1String( "none" );
 
     QString filterExpression;
     if ( jsonLayer.contains( QStringLiteral( "filter" ) ) )
@@ -1698,6 +1710,19 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       {
         const QgsProperty property = parseValueList( jsonTextRotate.toList(), PropertyType::Numeric, context );
         ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, property );
+        break;
+      }
+
+      case QMetaType::Type::QVariantMap:
+      {
+        QVariantMap rotateMap = jsonTextRotate.toMap();
+        if ( rotateMap.contains( QStringLiteral( "property" ) ) && rotateMap[QStringLiteral( "type" )].toString() == QStringLiteral( "identity" ) )
+        {
+          const QgsProperty property = QgsProperty::fromExpression( rotateMap[QStringLiteral( "property" )].toString() );
+          ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, property );
+        }
+        else
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported text-rotate map content (%2)" ).arg( context.layerId(), QString( QJsonDocument::fromVariant( rotateMap ).toJson() ) ) );
         break;
       }
 
@@ -3336,7 +3361,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QVariantList values = expression.mid( 2 );
     if ( expression.size() == 3
          && expression.at( 2 ).userType() == QMetaType::Type::QVariantList && expression.at( 2 ).toList().count() > 1
-         && expression.at( 2 ).toList().at( 0 ).toString() == QStringLiteral( "literal" ) )
+         && expression.at( 2 ).toList().at( 0 ).toString() == QLatin1String( "literal" ) )
     {
       values = expression.at( 2 ).toList().at( 1 ).toList();
     }
@@ -3426,6 +3451,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   else if ( op == QLatin1String( "to-string" ) )
   {
     return QStringLiteral( "to_string(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
+  }
+  else if ( op == QLatin1String( "to-boolean" ) )
+  {
+    return QStringLiteral( "to_bool(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
   }
   else if ( op == QLatin1String( "case" ) )
   {

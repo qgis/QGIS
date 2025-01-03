@@ -7,9 +7,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '2018-02-16'
-__copyright__ = 'Copyright 2018, Nyall Dawson'
+
+__author__ = "Nyall Dawson"
+__date__ = "2018-02-16"
+__copyright__ = "Copyright 2018, Nyall Dawson"
 
 import hashlib
 import os
@@ -24,18 +25,22 @@ from qgis.testing import start_app, QgisTestCase
 def sanitize(endpoint, x):
     if not os.path.exists(endpoint):
         os.makedirs(endpoint)
-    if x.startswith('/query'):
-        x = x[len('/query'):]
-        endpoint = endpoint + '_query'
+    if x.startswith("/query"):
+        x = x[len("/query") :]
+        endpoint = endpoint + "_query"
 
     if len(endpoint + x) > 150:
         ret = endpoint + hashlib.md5(x.encode()).hexdigest()
         # print('Before: ' + endpoint + x)
         # print('After:  ' + ret)
         return ret
-    return endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"',
-                                                                                                        '_').replace(
-        "'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
+    return endpoint + x.replace("?", "_").replace("&", "_").replace("<", "_").replace(
+        ">", "_"
+    ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
+        "/", "_"
+    ).replace(
+        "\n", "_"
+    )
 
 
 class MessageLogger(QObject):
@@ -54,7 +59,7 @@ class MessageLogger(QObject):
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:
-            self.log.append(msg.encode('UTF-8'))
+            self.log.append(msg.encode("UTF-8"))
 
     def messages(self):
         return self.log
@@ -75,7 +80,7 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
 
         # On Windows we must make sure that any backslash in the path is
         # replaced by a forward slash so that QUrl can process it
-        cls.basetestpath = tempfile.mkdtemp().replace('\\', '/')
+        cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")
 
     @classmethod
     def tearDownClass(cls):
@@ -89,9 +94,10 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
         Test retrieving logged on user info
         """
         print(self.basetestpath)
-        endpoint = self.basetestpath + '/user_fake_qgis_http_endpoint'
-        with open(sanitize(endpoint, '/self?f=json'), 'wb') as f:
-            f.write(b"""{
+        endpoint = self.basetestpath + "/user_fake_qgis_http_endpoint"
+        with open(sanitize(endpoint, "/self?f=json"), "wb") as f:
+            f.write(
+                b"""{
   "username": "me",
   "id": "2a",
   "groups": [
@@ -104,24 +110,35 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
       "title": "Another Group"
     }
   ]
-}""")
+}"""
+            )
 
-        res = QgsArcGisPortalUtils.retrieveUserInfo('http://' + endpoint, '', '')
+        res = QgsArcGisPortalUtils.retrieveUserInfo("http://" + endpoint, "", "")
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], {'groups': [{'id': 'c4', 'title': 'A Group'}, {'id': 'd4', 'title': 'Another Group'}],
-                                  'id': '2a', 'username': 'me'})
+        self.assertEqual(
+            res[0],
+            {
+                "groups": [
+                    {"id": "c4", "title": "A Group"},
+                    {"id": "d4", "title": "Another Group"},
+                ],
+                "id": "2a",
+                "username": "me",
+            },
+        )
 
     def testUserInfoExplicit(self):
         """
         Test retrieving explicitly specified user info
         """
         print(self.basetestpath)
-        endpoint = self.basetestpath + '/user_fake_qgis_http_endpoint'
+        endpoint = self.basetestpath + "/user_fake_qgis_http_endpoint"
 
-        with open(sanitize(endpoint + '_users/', 'some_user?f=json'), 'wb') as f:
-            f.write(b"""{
+        with open(sanitize(endpoint + "_users/", "some_user?f=json"), "wb") as f:
+            f.write(
+                b"""{
   "username": "some_user",
   "id": "2b",
   "groups": [
@@ -134,25 +151,38 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
       "title": "Another Group"
     }
   ]
-}""")
+}"""
+            )
 
-        headers = {'referer': 'http://google.com'}
-        res = QgsArcGisPortalUtils.retrieveUserInfo('http://' + endpoint, 'some_user', '', headers)
+        headers = {"referer": "http://google.com"}
+        res = QgsArcGisPortalUtils.retrieveUserInfo(
+            "http://" + endpoint, "some_user", "", headers
+        )
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], {'groups': [{'id': 'c4', 'title': 'A Group'}, {'id': 'd4', 'title': 'Another Group'}],
-                                  'id': '2b', 'username': 'some_user'})
+        self.assertEqual(
+            res[0],
+            {
+                "groups": [
+                    {"id": "c4", "title": "A Group"},
+                    {"id": "d4", "title": "Another Group"},
+                ],
+                "id": "2b",
+                "username": "some_user",
+            },
+        )
 
     def test_retrieve_groups(self):
         """
         Test retrieving user groups
         """
         print(self.basetestpath)
-        endpoint = self.basetestpath + '/group_fake_qgis_http_endpoint'
+        endpoint = self.basetestpath + "/group_fake_qgis_http_endpoint"
 
-        with open(sanitize(endpoint + '_users/', 'some_user?f=json'), 'wb') as f:
-            f.write(b"""{
+        with open(sanitize(endpoint + "_users/", "some_user?f=json"), "wb") as f:
+            f.write(
+                b"""{
           "username": "some_user",
           "id": "2b",
           "groups": [
@@ -165,23 +195,32 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
               "title": "Another Group"
             }
           ]
-        }""")
+        }"""
+            )
 
-        res = QgsArcGisPortalUtils.retrieveUserGroups('http://' + endpoint, 'some_user', '')
+        res = QgsArcGisPortalUtils.retrieveUserGroups(
+            "http://" + endpoint, "some_user", ""
+        )
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], [{'id': 'c4', 'title': 'A Group'}, {'id': 'd4', 'title': 'Another Group'}])
+        self.assertEqual(
+            res[0],
+            [{"id": "c4", "title": "A Group"}, {"id": "d4", "title": "Another Group"}],
+        )
 
     def test_retrieve_group_items(self):
         """
         Test retrieving group content
         """
         print(self.basetestpath)
-        endpoint = self.basetestpath + '/group_items_fake_qgis_http_endpoint'
+        endpoint = self.basetestpath + "/group_items_fake_qgis_http_endpoint"
 
-        with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=1&num=2'), 'wb') as f:
-            f.write(b"""{
+        with open(
+            sanitize(endpoint + "_groups/", "ab1?f=json&start=1&num=2"), "wb"
+        ) as f:
+            f.write(
+                b"""{
   "total": 3,
   "start": 1,
   "num": 2,
@@ -196,10 +235,14 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
       "title": "Item 2"
     }
   ]
-}""")
+}"""
+            )
 
-            with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=3&num=2'), 'wb') as f:
-                f.write(b"""{
+            with open(
+                sanitize(endpoint + "_groups/", "ab1?f=json&start=3&num=2"), "wb"
+            ) as f:
+                f.write(
+                    b"""{
           "total": 3,
           "start": 3,
           "num": 1,
@@ -210,23 +253,35 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
               "title": "Item 3"
             }
           ]
-        }""")
-        res = QgsArcGisPortalUtils.retrieveGroupContent('http://' + endpoint, 'ab1', '', pageSize=2)
+        }"""
+                )
+        res = QgsArcGisPortalUtils.retrieveGroupContent(
+            "http://" + endpoint, "ab1", "", pageSize=2
+        )
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], [{'id': '74', 'title': 'Item 1'}, {'id': '20', 'title': 'Item 2'},
-                                  {'id': '75', 'title': 'Item 3'}])
+        self.assertEqual(
+            res[0],
+            [
+                {"id": "74", "title": "Item 1"},
+                {"id": "20", "title": "Item 2"},
+                {"id": "75", "title": "Item 3"},
+            ],
+        )
 
     def test_retrieve_group_items_filtered(self):
         """
         Test retrieving group content
         """
         print(self.basetestpath)
-        endpoint = self.basetestpath + '/groupf_items_fake_qgis_http_endpoint'
+        endpoint = self.basetestpath + "/groupf_items_fake_qgis_http_endpoint"
 
-        with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=1&num=2'), 'wb') as f:
-            f.write(b"""{
+        with open(
+            sanitize(endpoint + "_groups/", "ab1?f=json&start=1&num=2"), "wb"
+        ) as f:
+            f.write(
+                b"""{
   "total": 3,
   "start": 1,
   "num": 2,
@@ -243,10 +298,14 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
       "type":"Map Service"
     }
   ]
-}""")
+}"""
+            )
 
-            with open(sanitize(endpoint + '_groups/', 'ab1?f=json&start=3&num=2'), 'wb') as f:
-                f.write(b"""{
+            with open(
+                sanitize(endpoint + "_groups/", "ab1?f=json&start=3&num=2"), "wb"
+            ) as f:
+                f.write(
+                    b"""{
           "total": 3,
           "start": 3,
           "num": 1,
@@ -258,34 +317,68 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
               "type":"Image Service"
             }
           ]
-        }""")
-        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
-                                                            [QgsArcGisPortalUtils.ItemType.FeatureService], pageSize=2)
+        }"""
+                )
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType(
+            "http://" + endpoint,
+            "ab1",
+            "",
+            [QgsArcGisPortalUtils.ItemType.FeatureService],
+            pageSize=2,
+        )
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], [{'id': '74', 'title': 'Item 1', 'type': 'Feature Service'}])
-        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
-                                                            [QgsArcGisPortalUtils.ItemType.MapService], pageSize=2)
+        self.assertEqual(
+            res[0], [{"id": "74", "title": "Item 1", "type": "Feature Service"}]
+        )
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType(
+            "http://" + endpoint,
+            "ab1",
+            "",
+            [QgsArcGisPortalUtils.ItemType.MapService],
+            pageSize=2,
+        )
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], [{'id': '20', 'title': 'Item 2', 'type': 'Map Service'}])
-        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
-                                                            [QgsArcGisPortalUtils.ItemType.ImageService], pageSize=2)
+        self.assertEqual(
+            res[0], [{"id": "20", "title": "Item 2", "type": "Map Service"}]
+        )
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType(
+            "http://" + endpoint,
+            "ab1",
+            "",
+            [QgsArcGisPortalUtils.ItemType.ImageService],
+            pageSize=2,
+        )
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], [{'id': '75', 'title': 'Item 3', 'type': 'Image Service'}])
-        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType('http://' + endpoint, 'ab1', '',
-                                                            [QgsArcGisPortalUtils.ItemType.FeatureService,
-                                                             QgsArcGisPortalUtils.ItemType.MapService], pageSize=2)
+        self.assertEqual(
+            res[0], [{"id": "75", "title": "Item 3", "type": "Image Service"}]
+        )
+        res = QgsArcGisPortalUtils.retrieveGroupItemsOfType(
+            "http://" + endpoint,
+            "ab1",
+            "",
+            [
+                QgsArcGisPortalUtils.ItemType.FeatureService,
+                QgsArcGisPortalUtils.ItemType.MapService,
+            ],
+            pageSize=2,
+        )
         # no errors
         self.assertFalse(res[1])
         self.assertFalse(res[2])
-        self.assertEqual(res[0], [{'id': '74', 'title': 'Item 1', 'type': 'Feature Service'},
-                                  {'id': '20', 'title': 'Item 2', 'type': 'Map Service'}])
+        self.assertEqual(
+            res[0],
+            [
+                {"id": "74", "title": "Item 1", "type": "Feature Service"},
+                {"id": "20", "title": "Item 2", "type": "Map Service"},
+            ],
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

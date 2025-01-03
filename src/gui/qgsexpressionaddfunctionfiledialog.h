@@ -30,7 +30,6 @@ class GUI_EXPORT QgsExpressionAddFunctionFileDialog : public QDialog, private Ui
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a QgsExpressionAddFunctionFileDialog to create function files or to set the current
      * project as a function container.

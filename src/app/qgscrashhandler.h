@@ -30,9 +30,7 @@
  */
 class APP_EXPORT QgsCrashHandler
 {
-
   public:
-
     /**
      * This class doesn't need to be created by anyone as is only used to handle
      * crashes in the application.
@@ -48,12 +46,7 @@ class APP_EXPORT QgsCrashHandler
     static QString sPythonCrashLogFile;
 
   private:
-
-    static void handleCrash( int processId,
-                             int threadId,
-                             const QString &symbolPath,
-                             const QString &ptrStr
-                           );
+    static void handleCrash( int processId, int threadId, const QString &symbolPath, const QString &ptrStr );
 };
 
 

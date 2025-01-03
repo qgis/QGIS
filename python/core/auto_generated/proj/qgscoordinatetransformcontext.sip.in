@@ -49,13 +49,14 @@ Constructor for QgsCoordinateTransformContext.
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
 
     bool operator==( const QgsCoordinateTransformContext &rhs ) const;
+    bool operator!=( const QgsCoordinateTransformContext &rhs ) const;
 
     void clear();
 %Docstring
 Clears all stored transform information from the context.
 %End
 
- QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const /Deprecated/;
+ QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead."/;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
 The map keys will be :py:class:`QgsCoordinateReferenceSystems`.authid()s.
@@ -97,7 +98,7 @@ Returns the stored mapping for source to destination CRS pairs to associated coo
 .. versionadded:: 3.8
 %End
 
- bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) /Deprecated/;
+ bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead."/;
 %Docstring
 Adds a new ``sourceTransform`` and ``destinationTransform`` to use when projecting coordinates
 from the specified ``sourceCrs`` to the specified ``destinationCrs``.
@@ -154,7 +155,7 @@ Returns ``True`` if the new coordinate operation was added successfully.
 .. versionadded:: 3.8
 %End
 
- void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) /Deprecated/;
+ void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) /Deprecated="Since 3.40. Use removeCoordinateOperation() instead."/;
 %Docstring
 Removes the source to destination datum transform pair for the specified ``sourceCrs`` and
 ``destinationCrs``.
@@ -184,7 +185,7 @@ when transforming from the specified ``source`` CRS to ``destination`` CRS.
    source and destination are reversible.
 %End
 
- QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const /Deprecated/;
+ QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later. Use calculateCoordinateOperation() instead."/;
 %Docstring
 Returns the pair of source and destination datum transforms to use
 for a transform from the specified ``source`` CRS to ``destination`` CRS.

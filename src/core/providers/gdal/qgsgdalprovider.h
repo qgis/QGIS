@@ -216,8 +216,8 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QgsPoint transformCoordinates( const QgsPoint &point, TransformType type ) override;
 
     bool enableProviderResampling( bool enable ) override { mProviderResamplingEnabled = enable; return true; }
-    bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
-    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
+    bool setZoomedInResamplingMethod( Qgis::RasterResamplingMethod  method ) override { mZoomedInResamplingMethod = method; return true; }
+    bool setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod  method ) override { mZoomedOutResamplingMethod = method; return true; }
     bool setMaxOversampling( double factor ) override { mMaxOversampling = factor; return true; }
 
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;

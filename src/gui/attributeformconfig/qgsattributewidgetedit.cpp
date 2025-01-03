@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributewidgetedit.h"
+#include "moc_qgsattributewidgetedit.cpp"
 #include "qgsattributesformproperties.h"
 #include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"
@@ -47,7 +48,6 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
       layout->addWidget( mSpecificEditWidget );
       mWidgetSpecificConfigGroupBox->setLayout( layout );
       mWidgetSpecificConfigGroupBox->setTitle( QgsAttributeWidgetRelationEditWidget::title() );
-
     }
     break;
 
@@ -62,7 +62,6 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
       mWidgetSpecificConfigGroupBox->hide();
       break;
   }
-
 }
 
 void QgsAttributeWidgetEdit::updateItemData()
@@ -133,8 +132,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
     const QgsRelation::FieldPair relationFirstFieldPair = relation.fieldPairs().at( 0 );
     for ( const QgsRelation &nmrel : relations )
     {
-      if ( !nmrel.fieldPairs().isEmpty() &&
-           nmrel.fieldPairs().at( 0 ).referencingField() != relationFirstFieldPair.referencingField() )
+      if ( !nmrel.fieldPairs().isEmpty() && nmrel.fieldPairs().at( 0 ).referencingField() != relationFirstFieldPair.referencingField() )
       {
         setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
       }
@@ -142,9 +140,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   }
 
   const int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );
-  mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0
-                                        ? widgetTypeIdx
-                                        : mWidgetTypeComboBox->findData( QgsGui::relationWidgetRegistry()->defaultWidgetType() ) );
+  mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0 ? widgetTypeIdx : mWidgetTypeComboBox->findData( QgsGui::relationWidgetRegistry()->defaultWidgetType() ) );
 
   const QString widgetType = mWidgetTypeComboBox->currentData().toString();
   mConfigWidget = QgsGui::relationWidgetRegistry()->createConfigWidget( widgetType, relation, this );
@@ -153,8 +149,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
 
   disconnect( mWidgetTypeComboBoxConnection );
 
-  mWidgetTypeComboBoxConnection = connect( mWidgetTypeComboBox, &QComboBox::currentTextChanged, this, [ = ]()
-  {
+  mWidgetTypeComboBoxConnection = connect( mWidgetTypeComboBox, &QComboBox::currentTextChanged, this, [=]() {
     const QString widgetId = mWidgetTypeComboBox->currentData().toString();
 
     mWidgetTypePlaceholderLayout->removeWidget( mConfigWidget );

@@ -18,13 +18,7 @@
 #include "qgsgeometrycheckerror.h"
 #include "qgsapplication.h"
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
-    const QString &layerId,
-    QgsFeatureId featureId,
-    const QgsGeometry &geometry,
-    const QgsPointXY &errorLocation,
-    QgsVertexId vidx,
-    const QVariant &value, ValueType valueType )
+QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType )
   : mCheck( check )
   , mLayerId( layerId )
   , mFeatureId( featureId )
@@ -37,12 +31,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
 }
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
-    const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-    const QgsPointXY &errorLocation,
-    QgsVertexId vidx,
-    const QVariant &value,
-    ValueType valueType )
+QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType )
   : mCheck( check )
   , mLayerId( layerFeature.layerId() )
   , mFeatureId( layerFeature.feature().id() )
@@ -110,10 +99,7 @@ void QgsGeometryCheckError::setFixFailed( const QString &reason )
 
 bool QgsGeometryCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
-  return other->check() == check() &&
-         other->layerId() == layerId() &&
-         other->featureId() == featureId() &&
-         other->vidx() == vidx();
+  return other->check() == check() && other->layerId() == layerId() && other->featureId() == featureId() && other->vidx() == vidx();
 }
 
 bool QgsGeometryCheckError::closeMatch( QgsGeometryCheckError * ) const
@@ -189,7 +175,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
 
 QMap<QString, QgsFeatureIds> QgsGeometryCheckError::involvedFeatures() const
 {
-  return QMap<QString, QSet<QgsFeatureId> >();
+  return QMap<QString, QSet<QgsFeatureId>>();
 }
 
 QIcon QgsGeometryCheckError::icon() const

@@ -26,11 +26,11 @@
 // this is needed for the "convert to subclass" code below to compile
 % ModuleHeaderCode
 #include "qgslayoutitem3dmap.h"
-% End
+  % End
 #endif
 
 
-class Qgs3DMapScene;
+  class Qgs3DMapScene;
 class Qgs3DMapSettings;
 class QgsOffscreen3DEngine;
 
@@ -63,7 +63,6 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
 #endif
 
   public:
-
     /**
      * Constructor for QgsLayoutItem3DMap, with the specified parent \a layout.
      *
@@ -127,7 +126,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
   private:
     std::unique_ptr<Qgs3DMapSettings> mSettings;
     std::unique_ptr<QgsOffscreen3DEngine> mEngine;
-    Qgs3DMapScene *mScene = nullptr;  //!< 3D scene (owned by the 3D engine)
+    Qgs3DMapScene *mScene = nullptr; //!< 3D scene (owned by the 3D engine)
     QImage mCapturedImage;
     QgsCameraPose mCameraPose;
     bool mDrawing = false;

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsjsoneditwidget.h"
+#include "moc_qgsjsoneditwidget.cpp"
 
 #include <QAction>
 #include <QClipboard>
@@ -201,9 +202,7 @@ void QgsJsonEditWidget::codeEditorJsonIndicatorClicked( int line, int index, Qt:
     return;
 
   const int position = mCodeEditorJson->positionFromLineIndex( line, index );
-  const int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
-                                     SCINTILLA_UNDERLINE_INDICATOR_INDEX,
-                                     position );
+  const int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT, SCINTILLA_UNDERLINE_INDICATOR_INDEX, position );
   if ( clickableLinkListIndex <= 0 )
     return;
 
@@ -215,14 +214,11 @@ void QgsJsonEditWidget::codeEditorJsonDwellStart( int position, int x, int y )
   Q_UNUSED( x )
   Q_UNUSED( y )
 
-  const int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
-                                     SCINTILLA_UNDERLINE_INDICATOR_INDEX,
-                                     position );
+  const int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT, SCINTILLA_UNDERLINE_INDICATOR_INDEX, position );
   if ( clickableLinkListIndex <= 0 )
     return;
 
-  QToolTip::showText( QCursor::pos(),
-                      tr( "%1\nCTRL + click to follow link" ).arg( mClickableLinkList.at( clickableLinkListIndex - 1 ) ) );
+  QToolTip::showText( QCursor::pos(), tr( "%1\nCTRL + click to follow link" ).arg( mClickableLinkList.at( clickableLinkListIndex - 1 ) ) );
 }
 
 void QgsJsonEditWidget::codeEditorJsonDwellEnd( int position, int x, int y )
@@ -277,7 +273,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
     // performs very poorly.
     if ( arraySize > MAX_ELTS )
       mEnableUrlHighlighting = false;
-    for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
+    for ( auto index = decltype( arraySize ) { 0 }; index < arraySize; index++ )
     {
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << QString::number( index ) );
       treeWidgetItem->setFont( 0, monospaceFont() );
@@ -307,28 +303,20 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
   switch ( jsonValue.type() )
   {
     case QJsonValue::Null:
-      refreshTreeViewItemValue( treeWidgetItem,
-                                QStringLiteral( "null" ),
-                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
+      refreshTreeViewItemValue( treeWidgetItem, QStringLiteral( "null" ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
       break;
     case QJsonValue::Bool:
-      refreshTreeViewItemValue( treeWidgetItem,
-                                jsonValue.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ),
-                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
+      refreshTreeViewItemValue( treeWidgetItem, jsonValue.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
       break;
     case QJsonValue::Double:
-      refreshTreeViewItemValue( treeWidgetItem,
-                                QString::number( jsonValue.toDouble() ),
-                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Number ) );
+      refreshTreeViewItemValue( treeWidgetItem, QString::number( jsonValue.toDouble() ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Number ) );
       break;
     case QJsonValue::String:
     {
       const QString jsonValueString = jsonValue.toString();
       if ( !mEnableUrlHighlighting || QUrl( jsonValueString ).scheme().isEmpty() )
       {
-        refreshTreeViewItemValue( treeWidgetItem,
-                                  jsonValueString,
-                                  QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
+        refreshTreeViewItemValue( treeWidgetItem, jsonValueString, QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
       }
       else
       {
@@ -338,10 +326,8 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
         mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
 
         mClickableLinkList.append( jsonValueString );
-        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, static_cast< int >( mClickableLinkList.size() ) );
-        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORFILLRANGE,
-                                        mCodeEditorJson->text().indexOf( jsonValueString ),
-                                        jsonValueString.size() );
+        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, static_cast<int>( mClickableLinkList.size() ) );
+        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORFILLRANGE, mCodeEditorJson->text().indexOf( jsonValueString ), jsonValueString.size() );
       }
     }
     break;
@@ -357,7 +343,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
       // performs very poorly.
       if ( arraySize > MAX_ELTS )
         mEnableUrlHighlighting = false;
-      for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
+      for ( auto index = decltype( arraySize ) { 0 }; index < arraySize; index++ )
       {
         QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem, QStringList() << QString::number( index ) );
         treeWidgetItemChild->setFont( 0, monospaceFont() );
@@ -392,9 +378,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
     }
     break;
     case QJsonValue::Undefined:
-      refreshTreeViewItemValue( treeWidgetItem,
-                                QStringLiteral( "Undefined value" ),
-                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
+      refreshTreeViewItemValue( treeWidgetItem, QStringLiteral( "Undefined value" ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
       break;
   }
 }

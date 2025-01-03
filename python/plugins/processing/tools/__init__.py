@@ -15,6 +15,6 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'February 2013'
-__copyright__ = '(C) 2013, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "February 2013"
+__copyright__ = "(C) 2013, Victor Olaya"

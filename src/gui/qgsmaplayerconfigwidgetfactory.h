@@ -33,7 +33,6 @@ class QgsLayerTreeGroup;
 class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
-
     /**
      * Available parent pages, for factories which create a widget which is a sub-component
      * of a standard page.

@@ -5,5 +5,5 @@ try:
     QgsCoordinateReferenceSystemUtils.crsTypeToString = staticmethod(QgsCoordinateReferenceSystemUtils.crsTypeToString)
     QgsCoordinateReferenceSystemUtils.translateProjection = staticmethod(QgsCoordinateReferenceSystemUtils.translateProjection)
     QgsCoordinateReferenceSystemUtils.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass

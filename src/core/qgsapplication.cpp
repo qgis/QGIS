@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "moc_qgsapplication.cpp"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
 #include "qgslocalizeddatapathregistry.h"
@@ -1688,7 +1689,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  width: 100%;"
                             "}"
                             "h1{  background-color: #F6F6F6;"
-                            "  color: #589632; " // from http://qgis.org/en/site/getinvolved/styleguide.html
+                            "  color: #589632; " // from https://qgis.org/styleguide/
                             "  font-size: x-large;  "
                             "  font-weight: normal;"
                             "  background: none;"
@@ -1697,7 +1698,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  line-height: 3em;"
                             "}"
                             "h2{  background-color: #F6F6F6;"
-                            "  color: #589632; "  // from http://qgis.org/en/site/getinvolved/styleguide.html
+                            "  color: #589632; "  // from https://qgis.org/styleguide/
                             "  font-size: medium;  "
                             "  font-weight: normal;"
                             "  background: none;"
@@ -1706,20 +1707,20 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  line-height: 1.1em;"
                             "}"
                             "h3{  background-color: #F6F6F6;"
-                            "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
+                            "  color: #93b023;"  // from https://qgis.org/styleguide/
                             "  font-weight: bold;"
                             "  font-size: large;"
                             "  text-align: left;"
                             "  border-bottom: 5px solid #DCEB5C;"
                             "}"
                             "h4{  background-color: #F6F6F6;"
-                            "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
+                            "  color: #93b023;"  // from https://qgis.org/styleguide/
                             "  font-weight: bold;"
                             "  font-size: medium;"
                             "  text-align: left;"
                             "}"
                             "h5{    background-color: #F6F6F6;"
-                            "   color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
+                            "   color: #93b023;"  // from https://qgis.org/styleguide/
                             "   font-weight: bold;"
                             "   font-size: small;"
                             "   text-align: left;"

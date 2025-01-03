@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsauthawss3method.h"
+#include "moc_qgsauthawss3method.cpp"
 
 #include <QUrlQuery>
 #include <QDateTime>
@@ -58,8 +59,7 @@ QString QgsAuthAwsS3Method::displayDescription() const
   return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
-bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
@@ -79,7 +79,7 @@ bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const Q
   const QByteArray date = currentDateTime.toString( "yyyyMMdd" ).toUtf8();
   const QByteArray dateTime = currentDateTime.toString( "yyyyMMddThhmmssZ" ).toUtf8();
 
-  QByteArray canonicalPath = QUrl::toPercentEncoding( request.url().path(), "/" );  // Don't encode slash
+  QByteArray canonicalPath = QUrl::toPercentEncoding( request.url().path(), "/" ); // Don't encode slash
   if ( canonicalPath.isEmpty() )
   {
     canonicalPath = "/";
@@ -95,39 +95,21 @@ bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const Q
   else
   {
     method = "GET";
-    payloadHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";  // Sha256 of empty payload
+    payloadHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"; // Sha256 of empty payload
     request.setRawHeader( QByteArray( "X-Amz-Content-SHA256" ), payloadHash );
   }
 
-  const QByteArray canonicalRequest = method + '\n' +
-                                      canonicalPath + '\n' +
-                                      '\n' +
-                                      "host:" + request.url().host().toUtf8() + '\n' +
-                                      "x-amz-content-sha256:" + payloadHash + '\n' +
-                                      "x-amz-date:" + dateTime + '\n' +
-                                      '\n' +
-                                      headerList + '\n' +
-                                      payloadHash;
+  const QByteArray canonicalRequest = method + '\n' + canonicalPath + '\n' + '\n' + "host:" + request.url().host().toUtf8() + '\n' + "x-amz-content-sha256:" + payloadHash + '\n' + "x-amz-date:" + dateTime + '\n' + '\n' + headerList + '\n' + payloadHash;
 
   const QByteArray canonicalRequestHash = QCryptographicHash::hash( canonicalRequest, QCryptographicHash::Sha256 ).toHex();
-  const QByteArray stringToSign = encryptionMethod + '\n' +
-                                  dateTime + '\n' +
-                                  date + "/" + region + "/s3/aws4_request" + '\n' +
-                                  canonicalRequestHash;
+  const QByteArray stringToSign = encryptionMethod + '\n' + dateTime + '\n' + date + "/" + region + "/s3/aws4_request" + '\n' + canonicalRequestHash;
 
-  const QByteArray signingKey = QMessageAuthenticationCode::hash( "aws4_request",
-                                QMessageAuthenticationCode::hash( "s3",
-                                    QMessageAuthenticationCode::hash( region,
-                                        QMessageAuthenticationCode::hash( date, QByteArray( "AWS4" + password ),
-                                            QCryptographicHash::Sha256 ),
-                                        QCryptographicHash::Sha256 ),
-                                    QCryptographicHash::Sha256 ),
-                                QCryptographicHash::Sha256 );
+  const QByteArray signingKey = QMessageAuthenticationCode::hash( "aws4_request", QMessageAuthenticationCode::hash( "s3", QMessageAuthenticationCode::hash( region, QMessageAuthenticationCode::hash( date, QByteArray( "AWS4" + password ), QCryptographicHash::Sha256 ), QCryptographicHash::Sha256 ), QCryptographicHash::Sha256 ), QCryptographicHash::Sha256 );
 
   const QByteArray signature = QMessageAuthenticationCode::hash( stringToSign, signingKey, QCryptographicHash::Sha256 ).toHex();
   const QByteArray authorizationHeader = QString( "%1 Credential=%2/%3/%4/s3/aws4_request, SignedHeaders=%5, Signature=%6" )
-                                         .arg( encryptionMethod, username, date, region, headerList, signature )
-                                         .toUtf8();
+                                           .arg( encryptionMethod, username, date, region, headerList, signature )
+                                           .toUtf8();
 
   request.setRawHeader( QByteArray( "Host" ), request.url().host().toUtf8() );
   request.setRawHeader( QByteArray( "X-Amz-Date" ), dateTime );
