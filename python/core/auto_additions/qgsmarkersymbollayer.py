@@ -1,4 +1,14 @@
 # The following has been generated automatically from src/core/symbology/qgsmarkersymbollayer.h
+# monkey patching scoped based enum
+QgsFontMarkerSymbolLayer.VerticalAnchorMode.Legacy.__doc__ = "Calculate anchor points with different offsets"
+QgsFontMarkerSymbolLayer.VerticalAnchorMode.Baseline.__doc__ = "Calculate anchor points with fix baseline"
+QgsFontMarkerSymbolLayer.VerticalAnchorMode.__doc__ = """Vertical anchor modes
+
+* ``Legacy``: Calculate anchor points with different offsets
+* ``Baseline``: Calculate anchor points with fix baseline
+
+"""
+# --
 try:
     QgsSimpleMarkerSymbolLayerBase.availableShapes = staticmethod(QgsSimpleMarkerSymbolLayerBase.availableShapes)
     QgsSimpleMarkerSymbolLayerBase.shapeIsFilled = staticmethod(QgsSimpleMarkerSymbolLayerBase.shapeIsFilled)
