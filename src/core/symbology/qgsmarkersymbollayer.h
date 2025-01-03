@@ -856,6 +856,13 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
 
+    //! Vertical anchor modes
+    enum class VerticalAnchorMode : int
+    {
+      Legacy = 0, //!< Calculate anchor points with different offsets
+      Baseline = 1, //!< Calculate anchor points with fix baseline
+    };
+
     //! Constructs a font marker symbol layer.
     QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
                               QString chr = DEFAULT_FONTMARKER_CHR,
@@ -1029,19 +1036,19 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     /**
-     * Set fixVerticalAnchor that means it considers the baseline position for all the characters
-     * \param fixVerticalAnchor the bool
-     * \see fixVerticalAnchor()
+     * Sets the vertical anchor mode whether it should considers the baseline as fix point
+     * \param verticalAnchorMode the mode how to handle the anchor point
+     * \see verticalAnchorMode()
      * \since QGIS 3.42
      */
-    void setFixVerticalAnchor( const bool fixVerticalAnchor ) { mFixVerticalAnchor = fixVerticalAnchor;}
+    void setVerticalAnchorMode( VerticalAnchorMode verticalAnchorMode ) { mVerticalAnchorMode = verticalAnchorMode;}
 
     /**
-     * Returns wheter it considers teh baseline position for all the characters
-     * \see setFixVerticalAnchor()
+     * Returns whether it should considers the baseline as fix point
+     * \see setVerticalAnchorMode()
      * \since QGIS 3.42
      */
-    bool fixVerticalAnchor() const { return mFixVerticalAnchor; }
+    VerticalAnchorMode verticalAnchorMode() const { return mVerticalAnchorMode; }
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
@@ -1056,7 +1063,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     double mChrWidth = 0;
     QPointF mChrOffset;
-    bool mFixVerticalAnchor = false;
+    VerticalAnchorMode mVerticalAnchorMode = VerticalAnchorMode::Legacy;
 
     //! Scaling for font sizes, used if font size grows too large
     double mFontSizeScale = 1.0;
