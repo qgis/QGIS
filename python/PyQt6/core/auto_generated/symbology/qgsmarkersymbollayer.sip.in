@@ -929,8 +929,9 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 
     enum class VerticalAnchorMode /BaseType=IntEnum/
     {
-      Legacy,
+      Bounds,
       Baseline,
+      Legacy,
     };
 
     QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,

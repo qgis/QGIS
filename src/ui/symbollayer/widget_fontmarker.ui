@@ -312,6 +312,21 @@
        <string>Bottom on Baseline</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Legacy Top</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Legacy VCenter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Legacy Bottom</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="3" column="4">

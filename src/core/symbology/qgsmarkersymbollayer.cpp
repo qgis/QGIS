@@ -3577,14 +3577,19 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
   mFontMetrics.reset( new QFontMetrics( mFont ) );
   mChrWidth = mFontMetrics->horizontalAdvance( mString );
-  if ( mVerticalAnchorMode == VerticalAnchorMode::Baseline )
+
+  switch ( mVerticalAnchorMode )
   {
-    mChrOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
+    case VerticalAnchorMode::Bounds:
+      mChrOffset = QPointF( mChrWidth / 2.0, ( mFontMetrics->boundingRect( mString.at( 0 ) ).bottom() - mFontMetrics->boundingRect( mString.at( 0 ) ).height() / 2.0 ) );
+      break;
+    case VerticalAnchorMode::Baseline:
+      mChrOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
+      break;
+    case VerticalAnchorMode::Legacy:
+      mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
   }
-  else
-  {
-    mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
-  }
+
   mOrigSize = mSize; // save in case the size would be data defined
 
   // use caching only when not using a data defined character
@@ -3617,14 +3622,17 @@ QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &con
     if ( stringToRender != mString )
     {
       charWidth = mFontMetrics->horizontalAdvance( stringToRender );
-      if ( mVerticalAnchorMode == VerticalAnchorMode::Baseline )
+      const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+      switch ( mVerticalAnchorMode )
       {
-        const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-        charOffset = QPointF( charWidth / 2.0, -sizePixels / 2.0 );
-      }
-      else
-      {
-        charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+        case VerticalAnchorMode::Bounds:
+          charOffset = QPointF( charWidth / 2.0, ( mFontMetrics->boundingRect( mString.at( 0 ) ).bottom() - mFontMetrics->boundingRect( mString.at( 0 ) ).height() / 2 ) );
+          break;
+        case VerticalAnchorMode::Baseline:
+          charOffset = QPointF( charWidth / 2.0, -sizePixels / 2.0 );
+          break;
+        case VerticalAnchorMode::Legacy:
+          charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
       }
     }
   }
@@ -3793,11 +3801,16 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   const QString charToRender = characterToRender( context, chrOffset, chrWidth );
 
   const double sizeToRender = calculateSize( context );
+  double sizeToCalculateOffsets = sizeToRender;
+
+  //if we use the bounds, the font metric boundings are used
+  if ( mVerticalAnchorMode == VerticalAnchorMode::Bounds )
+    sizeToCalculateOffsets =  mFontMetrics->boundingRect( mString.at( 0 ) ).height();
 
   bool hasDataDefinedRotation = false;
   QPointF offset;
   double angle = 0;
-  calculateOffsetAndRotation( context, sizeToRender, hasDataDefinedRotation, offset, angle );
+  calculateOffsetAndRotation( context, sizeToCalculateOffsets, hasDataDefinedRotation, offset, angle );
 
   p->translate( point.x() + offset.x(), point.y() + offset.y() );
 

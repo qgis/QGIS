@@ -857,8 +857,9 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     //! Vertical anchor modes
     enum class VerticalAnchorMode : int
     {
-      Legacy = 0, //!< Calculate anchor points with different offsets
+      Bounds = 0, //!< Calculate anchor points according to character bounds
       Baseline = 1, //!< Calculate anchor points with fix baseline
+      Legacy = 2, //!< Calculate anchor points with different offsets
     };
 
     //! Constructs a font marker symbol layer.
@@ -1061,7 +1062,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     double mChrWidth = 0;
     QPointF mChrOffset;
-    VerticalAnchorMode mVerticalAnchorMode = VerticalAnchorMode::Legacy;
+    VerticalAnchorMode mVerticalAnchorMode = VerticalAnchorMode::Bounds;
 
     //! Scaling for font sizes, used if font size grows too large
     double mFontSizeScale = 1.0;
