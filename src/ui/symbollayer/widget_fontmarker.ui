@@ -309,17 +309,7 @@
      </item>
      <item>
       <property name="text">
-       <string>Top considering Baseline</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>VCenter considering Baseline</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Bottom considering Baseline</string>
+       <string>Bottom on Baseline</string>
       </property>
      </item>
     </widget>
