@@ -219,6 +219,12 @@ class QgsRange
 
 };
 
+// These typedefs are in place to work around a SIP bug:
+// https://github.com/Python-SIP/sip/issues/66
+#ifndef SIP_RUN
+typedef QgsRange<double> QgsRangedoubleBase;
+typedef QgsRange<int> QgsRangeintBase;
+#endif
 
 /**
  * \brief QgsRange which stores a range of double values.
