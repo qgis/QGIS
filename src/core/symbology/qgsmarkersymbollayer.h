@@ -1061,7 +1061,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     double mChrWidth = 0;
     QPointF mChrOffset;
-    VerticalAnchorMode mVerticalAnchorMode = VerticalAnchorMode::Baseline;
+    VerticalAnchorMode mVerticalAnchorMode = VerticalAnchorMode::Legacy;
 
     //! Scaling for font sizes, used if font size grows too large
     double mFontSizeScale = 1.0;
