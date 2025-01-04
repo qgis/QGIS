@@ -64,7 +64,7 @@ set(RELEASE_NAME "Master")
 project(qgis VERSION ${COMPLETE_VERSION})
 
 if (APPLE)
-  set(QGIS_APP_NAME "QGIS")
+  set(QGIS_APP_NAME "QGIS" CACHE STRING "The main app name and bundle name")
 else()
   set(QGIS_APP_NAME "qgis")
 endif()
