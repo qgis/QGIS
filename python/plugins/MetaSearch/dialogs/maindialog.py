@@ -119,6 +119,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.disable_ssl_verification = self.settings.value(
             "/MetaSearch/disableSSL", False, bool
         )
+        self.log_debugging_messages = self.settings.value(
+            "/MetaSearch/logDebugging", False, bool
+        )
 
         # Services tab
         self.cmbConnectionsServices.activated.connect(self.save_connection)
@@ -181,6 +184,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.settings.setValue("/MetaSearch/disableSSL", bool(state))
             self.disable_ssl_verification = bool(state)
 
+        def _on_debugging_state_change(state):
+            self.settings.setValue("/MetaSearch/logDebugging", bool(state))
+            self.log_debugging_messages = bool(state)
+
         self.tabWidget.setCurrentIndex(0)
         self.populate_connection_list()
         self.btnRawAPIResponse.setEnabled(False)
@@ -192,6 +199,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.spnTimeout.valueChanged.connect(_on_timeout_change)
         self.disableSSLVerification.setChecked(self.disable_ssl_verification)
         self.disableSSLVerification.stateChanged.connect(_on_ssl_state_change)
+        self.logDebuggingMessages.setChecked(self.log_debugging_messages)
+        self.logDebuggingMessages.stateChanged.connect(_on_debugging_state_change)
 
         key = "/MetaSearch/%s" % self.cmbConnectionsSearch.currentText()
         self.catalog_url = self.settings.value("%s/url" % key)
