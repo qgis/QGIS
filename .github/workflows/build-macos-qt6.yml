@@ -137,11 +137,6 @@ jobs:
           path: |
             build/_CPack_Packages/Darwin/External/*/*.app
 
-      - name: Export artifact url
-        id: artifact-url
-        run: |
-          echo "${{ matrix.triplet }}=${{ steps.artifact-dmg-upload.outputs.artifact-url }}" >> $GITHUB_OUTPUT
-
   schedule_download_comment:
     name: Create dmg
     runs-on: macos-latest
@@ -193,6 +188,14 @@ jobs:
             ${QGIS_APP_NAME}-Installer.dmg \
             universal/*/*.app
 
+      - name: 📤 Upload app
+        uses: actions/upload-artifact@v4
+        id: artifact-mac-qt6
+        with:
+          name: qgis-${{steps.workflow-artifact-ids.outputs.display-name}}-dmg
+          path: |
+            *.dmg
+
       - name: Upload release assets
         uses: AButler/upload-release-assets@v3.0
         if: ${{ github.event_name == 'release' }}
@@ -207,8 +210,7 @@ jobs:
           marker: macos-qt6
           body: |
             ### 🍎 MacOS Qt6 builds
-            Download testable builds for this pull request
-            - Download [MacOS Qt6 arm64 (M series)](${{ needs.build.outputs.artifact-arm64-url }})
-            - Download [MacOS Qt6 x64 (Intel)](${{ needs.build.outputs.artifact-x64-url }})
+            Download [MacOS Qt6 builds of this PR for testing](${{ steps.artifact-mac-qt6.outputs.artifact-url }}).
+            _This installer is not signed, `control`+click > `open` the app to avoid the warning_
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}
