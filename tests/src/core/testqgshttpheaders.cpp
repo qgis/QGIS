@@ -145,13 +145,9 @@ void TestQgsHttpheaders::createQgsOwsConnection()
   QgsHttpHeaders h( QVariantMap( { { QgsHttpHeaders::KEY_REFERER, "http://test.com" }, { "other_http_header", "value" } } ) );
   QgsOwsConnection::settingsHeaders->setValue( h.headers(), { "service", "name" } );
 
-  // for different Versions of QT (5, 6) QUrlQuery produces either "url" or "url="
-  QUrlQuery testUrlParam;
-  testUrlParam.addQueryItem( QStringLiteral( "url" ), "" );
-
   QgsOwsConnection ows( "service", "name" );
   QCOMPARE( ows.connectionInfo(), ",authcfg=,referer=http://test.com" );
-  QCOMPARE( ows.uri().encodedUri(), testUrlParam.toString() + "&http-header:other_http_header=value&http-header:referer=http://test.com" );
+  QCOMPARE( ows.uri().encodedUri(), "url&http-header:other_http_header=value&http-header:referer=http://test.com" );
 
   QgsDataSourceUri uri( QString( "https://www.ogc.org/?p1=v1" ) );
   QgsDataSourceUri uri2 = ows.addWmsWcsConnectionSettings( uri, "service", "name" );
