@@ -1,17 +1,12 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.23.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-cmake_policy(SET CMP0048 NEW)
-cmake_policy(SET CMP0053 NEW)
-cmake_policy(SET CMP0071 NEW)
-cmake_policy(SET CMP0094 NEW)
 if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.27")
-  cmake_policy(SET CMP0144 NEW)
   # include(Dart) still used, as is the "Experimental" target
   cmake_policy(SET CMP0145 OLD)
 endif()
@@ -1025,20 +1020,6 @@ if (WITH_CORE)
   if (ANDROID)
     set (DEFAULT_PLUGIN_SUBDIR  lib)
     string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
-  endif()
-
-  #assume we have escaped compiler directives
-  #eventually we want to change this to new
-  #since we don't need to jump through so many
-  #hoops to escape compiler directives then
-  if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-    if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
-      cmake_policy(SET CMP0063 NEW)
-    endif()
-    if(MSVC)
-      cmake_policy(SET CMP0020 NEW)
-    endif()
   endif()
 
   if("${CMAKE_SYSTEM_NAME}"  MATCHES "Linux")
