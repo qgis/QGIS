@@ -174,4 +174,8 @@ def clean_ows_url(url):
 def log_message(message, level=Qgis.MessageLevel.Info):
     """helper function to emit logging messages"""
 
-    LOGGER.logMessage(message, "MetaSearch", level)
+    logging = QgsSettings().value(
+        "/MetaSearch/logDebugging", False, bool
+    )
+    if logging:
+        LOGGER.logMessage(message, "MetaSearch", level)
