@@ -131,8 +131,12 @@ jobs:
           cmake --build build --target bundle
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v4
+        # Switch back to actions/upload when https://github.com/actions/upload-artifact/issues/93 is fixed
+        uses: eXhumer/upload-artifact@0b7d5f5684d3f642f978d2faad9ade64f5b4dd57
         with:
+          follow-symlinks: false
+          if-no-files-found: error
+          compression-level: 9
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}
           path: |
             build/_CPack_Packages/Darwin/External/*/*.app
@@ -170,7 +174,7 @@ jobs:
 
       - name: Create universal app
         run: |
-          wget https://raw.githubusercontent.com/faaxm/lipo-dir-merge/refs/heads/main/lipo-dir-merge.py
+          wget https://raw.githubusercontent.com/m-kuhn/lipo-dir-merge/refs/heads/main/lipo-dir-merge.py
           python lipo-dir-merge.py x64 arm64 universal
 
       - name: Create dmg
