@@ -29,7 +29,7 @@ install(DIRECTORY "${VCPKG_BASE_DIR}/bin/Qca/" DESTINATION "${QGIS_LIB_SUBDIR}/Q
 if(MSVC)
   install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/" DESTINATION "${QGIS_LIB_SUBDIR}/Qt6") # qt plugins (qml and others)
 else()
-  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/" DESTINATION "${APP_PLUGINS_DIR}/") # qt plugins (qml and others)
+  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/plugins/" DESTINATION "${APP_PLUGINS_DIR}/") # qt plugins (qml and others)
 endif()
 
 if(WITH_BINDINGS)
