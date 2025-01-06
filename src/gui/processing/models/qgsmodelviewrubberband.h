@@ -27,6 +27,7 @@
 class QgsModelGraphicsView;
 class QGraphicsRectItem;
 class QGraphicsEllipseItem;
+class QGraphicsPathItem;
 class QGraphicsPolygonItem;
 
 /**
@@ -160,5 +161,36 @@ class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBa
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 };
+
+/**
+ * \ingroup gui
+ * \brief QgsModelViewBezierRubberBand is a bezier curve rubber band for use within QgsModelGraphicsView widgets.
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsModelViewBezierRubberBand : public QgsModelViewRubberBand
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsModelViewRectangularRubberBand.
+     */
+    QgsModelViewBezierRubberBand( QgsModelGraphicsView *view = nullptr );
+    QgsModelViewBezierRubberBand *create( QgsModelGraphicsView *view ) const override SIP_FACTORY;
+
+    ~QgsModelViewBezierRubberBand() override;
+
+    void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() ) override;
+
+  private:
+    //! Rubber band item
+    QGraphicsPathItem *mRubberBandItem = nullptr;
+
+    //! Start of rubber band creation
+    QPointF mRubberBandStartPos;
+};
+
 
 #endif // QGSMODELVIEWRUBBERBAND_H
