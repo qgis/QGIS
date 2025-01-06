@@ -1,11 +1,6 @@
-execute_process(COMMAND install_name_tool -add_rpath @loader_path/../Frameworks ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app/Contents/MacOS/@QGIS_APP_NAME@
-                  WORKING_DIRECTORY @CMAKE_BINARY_DIR@
-                  COMMAND_ERROR_IS_FATAL ANY
-                  )
-
 if(NOT "$ENV{MACOS_CODE_SIGN_IDENTITY}" STREQUAL "")
   # -appstore-compliant will strip away odbc, psql and webengine plugins
-  execute_process(COMMAND "@MACDEPLOYQT_EXECUTABLE@" @QGIS_APP_NAME@.app -codesign=${MACOS_CODE_SIGN_IDENTITY} -sign-for-notarization=${MACOS_CODE_SIGN_IDENTITY}
+  execute_process(COMMAND "@PYMACDEPLOYQT_EXECUTABLE@" @QGIS_APP_NAME@.app -codesign=${MACOS_CODE_SIGN_IDENTITY} -sign-for-notarization=${MACOS_CODE_SIGN_IDENTITY}
                   WORKING_DIRECTORY ${CPACK_TEMPORARY_DIRECTORY}
                   COMMAND_ERROR_IS_FATAL ANY
                   )
@@ -20,7 +15,7 @@ if(NOT "$ENV{MACOS_CODE_SIGN_IDENTITY}" STREQUAL "")
   endif()
 else()
   # -appstore-compliant will strip away odbc, psql and webengine plugins
-  execute_process(COMMAND "@MACDEPLOYQT_EXECUTABLE@" "@QGIS_APP_NAME@.app"
+  execute_process(COMMAND "@PYMACDEPLOYQT_EXECUTABLE@" "@QGIS_APP_NAME@.app"
                   WORKING_DIRECTORY ${CPACK_TEMPORARY_DIRECTORY}
                   COMMAND_ERROR_IS_FATAL ANY
                   )
