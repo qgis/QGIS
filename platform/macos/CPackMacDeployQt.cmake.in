@@ -6,7 +6,7 @@ if(NOT "$ENV{MACOS_CODE_SIGN_IDENTITY}" STREQUAL "")
                   )
 
   if (@CREATE_DMG@)
-    execute_process(COMMAND create-dmg --volname "@QGIS_APP_NAME@ Installer" --hide-extension @QGIS_APP_NAME@.app --volicon "@CMAKE_SOURCE_DIR@/images/icons/mac/qgis.icns" --background "@CMAKE_SOURCE_DIR@/platform/macos/installer_background.png" --window-pos 200 120 --window-size 512 320 --icon-size 100 --icon "@QGIS_APP_NAME@.app" 130 160 --app-drop-link 400 155 --codesign "${MACOS_CODE_SIGN_IDENTITY}" @CMAKE_BINARY_DIR@/@QGIS_APP_NAME@-Installer.dmg  ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app
+    execute_process(COMMAND create-dmg --volname "@QGIS_APP_NAME@ Installer" --hide-extension @QGIS_APP_NAME@.app --volicon "@CMAKE_SOURCE_DIR@/images/icons/mac/qgis.icns" --background "@CMAKE_SOURCE_DIR@/platform/macos/installer_background.png" --window-pos 200 120 --window-size 512 384 --icon-size 100 --icon "@QGIS_APP_NAME@.app" 130 160 --app-drop-link 400 155 --codesign "${MACOS_CODE_SIGN_IDENTITY}" @CMAKE_BINARY_DIR@/@QGIS_APP_NAME@-Installer.dmg  ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app
                     RESULT_VARIABLE CREATE_DMG_FAILURE)
 
     if(CREATE_DMG_FAILURE)
@@ -21,7 +21,7 @@ else()
                   )
 
   if (@CREATE_DMG@)
-    execute_process(COMMAND create-dmg --volname "@QGIS_APP_NAME@ Installer" --hide-extension @QGIS_APP_NAME@.app --volicon "@CMAKE_SOURCE_DIR@/images/icons/mac/qgis.icns" --background "@CMAKE_SOURCE_DIR@/platform/macos/installer_background.png" --window-pos 200 120 --window-size 512 320 --icon-size 100 --icon "@QGIS_APP_NAME@.app" 130 160 --app-drop-link 400 155 @CMAKE_BINARY_DIR@/@QGIS_APP_NAME@-Installer.dmg ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app
+    execute_process(COMMAND create-dmg --volname "@QGIS_APP_NAME@ Installer" --hide-extension @QGIS_APP_NAME@.app --volicon "@CMAKE_SOURCE_DIR@/images/icons/mac/qgis.icns" --background "@CMAKE_SOURCE_DIR@/platform/macos/installer_background.png" --window-pos 200 120 --window-size 512 384 --icon-size 100 --icon "@QGIS_APP_NAME@.app" 130 160 --app-drop-link 400 155 @CMAKE_BINARY_DIR@/@QGIS_APP_NAME@-Installer.dmg ${CPACK_TEMPORARY_DIRECTORY}/@QGIS_APP_NAME@.app
                     RESULT_VARIABLE CREATE_DMG_FAILURE)
 
     if(CREATE_DMG_FAILURE)
