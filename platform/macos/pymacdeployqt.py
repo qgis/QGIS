@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-import os
-import subprocess
-import shutil
-from typing import Set, List, Dict, Tuple
-from dataclasses import dataclass
-from pathlib import Path
 import argparse
-from functools import lru_cache
+import os
+import shutil
+import subprocess
 
+from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
+from typing import Dict, List, Set, Tuple
 
 # System paths that should be excluded from copying
 SYSTEM_PATHS = [
@@ -22,8 +22,8 @@ SYSTEM_PATHS = [
 class Library:
     path: str
     install_name: str
-    dependencies: List[str]
-    rpaths: List[str]
+    dependencies: list[str]
+    rpaths: list[str]
 
 
 @lru_cache(maxsize=None)
@@ -85,7 +85,7 @@ def is_system_path(path: str) -> bool:
     return any(path.startswith(sys_path) for sys_path in SYSTEM_PATHS)
 
 
-def find_library(lib_name: str, search_paths: List[str]) -> str:
+def find_library(lib_name: str, search_paths: list[str]) -> str:
     """Find library in search paths."""
     for path in search_paths:
         full_path = os.path.join(path, lib_name)
@@ -94,7 +94,7 @@ def find_library(lib_name: str, search_paths: List[str]) -> str:
     return ""
 
 
-def resolve_at_path(dep_path: str, binary_path: str, rpaths: List[str]) -> str:
+def resolve_at_path(dep_path: str, binary_path: str, rpaths: list[str]) -> str:
     """
     Resolve a path that starts with @rpath, @executable_path, or @loader_path
     Returns resolved absolute path or empty string if not found
@@ -127,8 +127,8 @@ def resolve_at_path(dep_path: str, binary_path: str, rpaths: List[str]) -> str:
 
 
 def collect_dependencies(
-    binary_path: str, lib_dirs: List[str], processed: Set[str]
-) -> Dict[str, Library]:
+    binary_path: str, lib_dirs: list[str], processed: set[str]
+) -> dict[str, Library]:
     """Recursively collect all dependencies for a binary."""
     result = {}
     search_paths = lib_dirs.copy()
@@ -165,7 +165,7 @@ def collect_dependencies(
     return result
 
 
-def resolve_symlink(path: str) -> Tuple[str, List[str]]:
+def resolve_symlink(path: str) -> tuple[str, list[str]]:
     """
     Resolve a symlink chain to its final destination and return the real file path
     along with the chain of symlinks that led to it.
@@ -204,7 +204,7 @@ def is_macho(filepath: str) -> bool:
         else:
             return False
 
-    except (IOError, OSError):
+    except OSError:
         return False
 
 
@@ -242,7 +242,7 @@ def handle_resources_binaries(app_bundle: str) -> None:
                 continue
 
 
-def deploy_libraries(app_bundle: str, lib_dirs: List[str]) -> None:
+def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
     """Deploy all libraries to the app bundle."""
     frameworks_dir = os.path.join(app_bundle, "Contents", "Frameworks")
     os.makedirs(frameworks_dir, exist_ok=True)
