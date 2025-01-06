@@ -104,6 +104,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
 
     void populateHierarchy( const char *hierarchyPageData, uint64_t byteSize ) const;
 
+    //! Utility function for reading sub-range of mUri
+    QByteArray readRange( uint64_t offset, uint64_t length ) const;
+
     QByteArray fetchCopcStatisticsEvlrData() const;
 
     bool mIsValid = false;
