@@ -1,0 +1,148 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<?xml version="1.0" encoding="utf-8"?>
+<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qgs="http://www.qgis.org/wms" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms https://www.qgis.org/?*****" version="1.3.0" xmlns:sld="http://www.opengis.net/sld">
+ <Service>
+  <Name>WMS</Name>
+  <Title>QGIS TestProject</Title>
+  <KeywordList>
+   <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+  </KeywordList>
+  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  <ContactInformation>
+   <ContactPersonPrimary>
+    <ContactPerson>Alessandro Pasotti</ContactPerson>
+    <ContactOrganization>QGIS dev team</ContactOrganization>
+   </ContactPersonPrimary>
+   <ContactElectronicMailAddress>elpaso@itopen.it</ContactElectronicMailAddress>
+  </ContactInformation>
+  <Fees>conditions unknown</Fees>
+  <AccessConstraints>None</AccessConstraints>
+ </Service>
+ <Capability>
+  <Request>
+   <GetCapabilities>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetCapabilities>
+   <GetMap>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <Format>image/png; mode=16bit</Format>
+    <Format>image/png; mode=8bit</Format>
+    <Format>image/png; mode=1bit</Format>
+    <Format>application/dxf</Format>
+    <Format>application/pdf</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetMap>
+   <GetFeatureInfo>
+    <Format>text/plain</Format>
+    <Format>text/html</Format>
+    <Format>text/xml</Format>
+    <Format>application/vnd.ogc.gml</Format>
+    <Format>application/vnd.ogc.gml/3.1.1</Format>
+    <Format>application/json</Format>
+    <Format>application/geo+json</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetFeatureInfo>
+   <sld:GetLegendGraphic>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <Format>application/json</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </sld:GetLegendGraphic>
+   <sld:DescribeLayer>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </sld:DescribeLayer>
+   <qgs:GetStyles>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </qgs:GetStyles>
+  </Request>
+  <Exception>
+   <Format>XML</Format>
+  </Exception>
+  <sld:UserDefinedSymbolization SupportSLD="1" RemoteWCS="0" UserLayer="0" InlineFeature="0" RemoteWFS="0" UserStyle="1"/>
+  <Layer queryable="1">
+   <Name>QGIS Test Project</Name>
+   <Title>QGIS TestProject</Title>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
+   <CRS>CRS:84</CRS>
+   <CRS>EPSG:4326</CRS>
+   <CRS>EPSG:3857</CRS>
+   <EX_GeographicBoundingBox>
+    <westBoundLongitude>8.203154</westBoundLongitude>
+    <eastBoundLongitude>8.204165</eastBoundLongitude>
+    <southBoundLatitude>44.901236</southBoundLatitude>
+    <northBoundLatitude>44.901599</northBoundLatitude>
+   </EX_GeographicBoundingBox>
+   <BoundingBox maxy="5606043.446" maxx="913283.462" miny="5605986.581" CRS="EPSG:3857" minx="913170.942"/>
+   <BoundingBox maxy="8.204165" maxx="44.901599" miny="8.203154" CRS="EPSG:4326" minx="44.901236"/>
+   <Layer queryable="1">
+    <Name>landsat</Name>
+    <Title>landsat</Title>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>17.924273</westBoundLongitude>
+     <eastBoundLongitude>18.045658</eastBoundLongitude>
+     <southBoundLatitude>30.151856</southBoundLatitude>
+     <northBoundLatitude>30.257289</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox maxy="3536664.948" maxx="2008833.414" miny="3523084.517" CRS="EPSG:3857" minx="1995320.991"/>
+    <BoundingBox maxy="18.045658" maxx="30.257289" miny="17.924273" CRS="EPSG:4326" minx="30.151856"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+    <MinScaleDenominator>500.42</MinScaleDenominator>
+    <MaxScaleDenominator>1000000</MaxScaleDenominator>
+   </Layer>
+  </Layer>
+ </Capability>
+</WMS_Capabilities>
