@@ -152,7 +152,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
 
   mLastEditTimer = new QTimer( this );
   mLastEditTimer->setSingleShot( true );
-  mLastEditTimer->setInterval( 500 );
+  mLastEditTimer->setInterval( 1000 );
   connect( mLastEditTimer, &QTimer::timeout, this, &QgsCodeEditor::onLastEditTimeout );
   connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
 }
@@ -850,7 +850,7 @@ void QgsCodeEditor::adjustScrollWidth()
   }
 
   // Use the longest line width as the new scroll width
-  setScrollWidth( maxWidth );
+  setScrollWidth( static_cast<int>( maxWidth ) );
 }
 
 void QgsCodeEditor::setText( const QString &text )

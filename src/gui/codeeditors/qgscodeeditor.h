@@ -592,7 +592,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     /**
      * Emitted when either:
      *
-     * 1. 500ms have elapsed since the last text change in the widget
+     * 1. 1 second has elapsed since the last text change in the widget
      * 2. or, immediately after the widget has lost focus after its text was changed.
      *
      *
