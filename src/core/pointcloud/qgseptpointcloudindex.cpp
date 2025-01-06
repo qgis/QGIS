@@ -657,6 +657,7 @@ void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destina
 
   // QgsEptPointCloudIndex specific fields
   destination->mIsValid = mIsValid;
+  destination->mAccessType = mAccessType;
   destination->mDataType = mDataType;
   destination->mUrlDirectoryPart = mUrlDirectoryPart;
   destination->mWkt = mWkt;
