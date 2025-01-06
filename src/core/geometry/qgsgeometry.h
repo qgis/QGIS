@@ -199,7 +199,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
      *
-     * This is much faster then calling the non-const get() method.
+     * This is much faster than calling the non-const get() method.
      *
      * \note In QGIS 2.x this method was named geometry().
      *
