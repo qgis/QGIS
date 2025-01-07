@@ -979,11 +979,11 @@ bool QgsPointCloudLayer::startEditing()
   if ( mEditIndex )
     return false;
 
-  mEditIndex = std::make_unique<QgsPointCloudEditingIndex>( this );
+  mEditIndex = QgsPointCloudIndex( new QgsPointCloudEditingIndex( this ) );
 
-  if ( !mEditIndex->isValid() )
+  if ( !mEditIndex.isValid() )
   {
-    mEditIndex.reset();
+    mEditIndex = QgsPointCloudIndex();
     return false;
   }
 
@@ -995,12 +995,12 @@ bool QgsPointCloudLayer::commitChanges( bool stopEditing )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
   if ( !mEditIndex ||
-       !mEditIndex->commitChanges() )
+       !mEditIndex.commitChanges() )
     return false;
 
   if ( stopEditing )
   {
-    mEditIndex.reset();
+    mEditIndex = QgsPointCloudIndex();
     emit editingStopped();
   }
 
@@ -1025,7 +1025,7 @@ bool QgsPointCloudLayer::rollBack()
     triggerRepaint();
   }
 
-  mEditIndex.reset();
+  mEditIndex = QgsPointCloudIndex();
   emit editingStopped();
 
   return true;
@@ -1052,7 +1052,7 @@ bool QgsPointCloudLayer::isModified() const
   if ( !mEditIndex )
     return false;
 
-  return mEditIndex->isModified();
+  return mEditIndex.isModified();
 }
 
 bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &pts, const QgsPointCloudAttribute &attribute, double value )
@@ -1072,14 +1072,14 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
   return success;
 }
 
-QgsPointCloudIndex *QgsPointCloudLayer::index() const
+QgsPointCloudIndex QgsPointCloudLayer::index() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
   if ( mEditIndex )
-    return mEditIndex.get();
+    return mEditIndex;
 
   if ( mDataProvider )
     return mDataProvider->index();
 
-  return nullptr;
+  return QgsPointCloudIndex();
 }

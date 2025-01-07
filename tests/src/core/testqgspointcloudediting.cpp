@@ -72,25 +72,24 @@ void TestQgsPointCloudEditing::testQgsPointCloudEditingIndex()
   std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
-  QgsCopcPointCloudIndex *i = dynamic_cast<QgsCopcPointCloudIndex *>( layer->index() );
-  QVERIFY( i );
-  std::unique_ptr<QgsPointCloudEditingIndex> e = std::make_unique<QgsPointCloudEditingIndex>( layer.get() );
-  QVERIFY( e );
-  QVERIFY( e->isValid() );
-  QCOMPARE( i->accessType(), e->accessType() );
-  QCOMPARE( i->crs(), e->crs() );
-  QCOMPARE( i->pointCount(), e->pointCount() );
-  QCOMPARE( i->originalMetadata(), e->originalMetadata() );
-  QCOMPARE( i->attributes().count(), e->attributes().count() );
-  QCOMPARE( i->attributes().pointRecordSize(), e->attributes().pointRecordSize() );
-  QCOMPARE( i->extent(), e->extent() );
-  QCOMPARE( i->offset(), e->offset() );
-  QCOMPARE( i->scale(), e->scale() );
-  QCOMPARE( i->span(), e->span() );
-  QCOMPARE( i->zMax(), e->zMax() );
-  QCOMPARE( i->zMin(), e->zMin() );
-  QCOMPARE( i->root(), e->root() );
-  QCOMPARE( i->rootNodeBounds(), e->rootNodeBounds() );
+  auto i = layer->index();
+  QVERIFY( i.isValid() );
+  QgsPointCloudEditingIndex e = QgsPointCloudEditingIndex( layer.get() );
+  QVERIFY( e.isValid() );
+  QCOMPARE( i.accessType(), e.accessType() );
+  QCOMPARE( i.crs(), e.crs() );
+  QCOMPARE( i.pointCount(), e.pointCount() );
+  QCOMPARE( i.originalMetadata(), e.originalMetadata() );
+  QCOMPARE( i.attributes().count(), e.attributes().count() );
+  QCOMPARE( i.attributes().pointRecordSize(), e.attributes().pointRecordSize() );
+  QCOMPARE( i.extent(), e.extent() );
+  QCOMPARE( i.offset(), e.offset() );
+  QCOMPARE( i.scale(), e.scale() );
+  QCOMPARE( i.span(), e.span() );
+  QCOMPARE( i.zMax(), e.zMax() );
+  QCOMPARE( i.zMin(), e.zMin() );
+  QCOMPARE( i.root(), e.root() );
+  QCOMPARE( i.rootNodeBounds(), e.rootNodeBounds() );
 }
 
 void TestQgsPointCloudEditing::testStartStopEditing()
@@ -102,7 +101,7 @@ void TestQgsPointCloudEditing::testStartStopEditing()
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
 
-  QVERIFY( dynamic_cast<QgsCopcPointCloudIndex *>( layer->index() ) );
+  QVERIFY( layer->index() );
   QSignalSpy spyStart( layer.get(), &QgsMapLayer::editingStarted );
   QSignalSpy spyStop( layer.get(), &QgsMapLayer::editingStopped );
   QSignalSpy spyModify( layer.get(), &QgsMapLayer::layerModified );
@@ -112,7 +111,7 @@ void TestQgsPointCloudEditing::testStartStopEditing()
   QCOMPARE( spyStart.size(), 1 );
   QCOMPARE( spyStop.size(), 0 );
   QCOMPARE( spyModify.size(), 0 );
-  QVERIFY( dynamic_cast<QgsPointCloudEditingIndex *>( layer->index() ) );
+  QVERIFY( dynamic_cast<QgsPointCloudEditingIndex *>( layer->index().mIndex.get() ) );
 
   // false if already editing
   QVERIFY( !layer->startEditing() );
@@ -129,7 +128,7 @@ void TestQgsPointCloudEditing::testStartStopEditing()
   QCOMPARE( spyStart.size(), 1 );
   QCOMPARE( spyStop.size(), 1 );
   QCOMPARE( spyModify.size(), 0 );
-  QVERIFY( dynamic_cast<QgsCopcPointCloudIndex *>( layer->index() ) );
+  QVERIFY( dynamic_cast<QgsCopcPointCloudIndex *>( layer->index().mIndex.get() ) );
 
   // false if already stopped
   QVERIFY( !layer->rollBack() );
@@ -146,7 +145,7 @@ void TestQgsPointCloudEditing::testStartStopEditing()
   QCOMPARE( spyStart.size(), 2 );
   QCOMPARE( spyStop.size(), 1 );
   QCOMPARE( spyModify.size(), 0 );
-  QVERIFY( dynamic_cast<QgsPointCloudEditingIndex *>( layer->index() ) );
+  QVERIFY( dynamic_cast<QgsPointCloudEditingIndex *>( layer->index().mIndex.get() ) );
 
   // commit and stop editing
   QVERIFY( layer->commitChanges() );
@@ -155,7 +154,7 @@ void TestQgsPointCloudEditing::testStartStopEditing()
   QCOMPARE( spyStart.size(), 2 );
   QCOMPARE( spyStop.size(), 2 );
   QCOMPARE( spyModify.size(), 0 );
-  QVERIFY( dynamic_cast<QgsCopcPointCloudIndex *>( layer->index() ) );
+  QVERIFY( dynamic_cast<QgsCopcPointCloudIndex *>( layer->index().mIndex.get() ) );
 }
 
 void TestQgsPointCloudEditing::testModifyAttributeValue()

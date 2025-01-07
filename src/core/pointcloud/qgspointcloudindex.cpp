@@ -32,6 +32,7 @@
 #include "qgstiledownloadmanager.h"
 #include "qgspointcloudstatistics.h"
 #include "qgslogger.h"
+#include "qgspointcloudeditingindex.h"
 
 QgsPointCloudNodeId::QgsPointCloudNodeId():
   mD( -1 ),
@@ -425,6 +426,12 @@ QgsPointCloudBlockRequest *QgsPointCloudIndex::asyncNodeData( const QgsPointClou
   return mIndex->asyncNodeData( n, request );
 }
 
+bool QgsPointCloudIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data )
+{
+  Q_ASSERT( mIndex );
+  return mIndex->updateNodeData( data );
+}
+
 QgsRectangle QgsPointCloudIndex::extent() const
 {
   Q_ASSERT( mIndex );
@@ -495,5 +502,22 @@ QVariantMap QgsPointCloudIndex::extraMetadata() const
 {
   Q_ASSERT( mIndex );
   return mIndex->extraMetadata();
+}
+
+bool QgsPointCloudIndex::commitChanges()
+{
+  Q_ASSERT( mIndex );
+  if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
+    return index->commitChanges();
+
+  return false;
+}
+
+bool QgsPointCloudIndex::isModified() const
+{
+  if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
+    return index->isModified();
+
+  return false;
 }
 
