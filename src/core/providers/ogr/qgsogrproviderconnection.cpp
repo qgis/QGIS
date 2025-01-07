@@ -107,12 +107,6 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
         }
       }
     }
-    else
-    {
-      // Release the resources
-      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
-      mHDS.release();
-    }
   }
   return row;
 }
