@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
      * Returns pointer to the overview index. May be NULLPTR if it doesn't exist.
      * \since QGIS 3.42
      */
-    QgsPointCloudIndex *overview() const { return mOverview.get(); }
+    QgsPointCloudIndex overview() const { return mOverview; }
 
     /**
      * Returns the calculated average width of point clouds.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
     QgsPointCloudAttributeCollection mAttributes;
-    std::unique_ptr<QgsPointCloudIndex> mOverview;
+    QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
 
     QStringList mUriList;
     QgsRectangle mExtent;

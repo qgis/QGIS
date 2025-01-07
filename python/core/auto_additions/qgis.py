@@ -11026,21 +11026,6 @@ Qgis.MeshRangeExtent.__doc__ = """Describes the extent used to compute mesh rang
 # --
 Qgis.MeshRangeExtent.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = "Render only point cloud extents when zoomed out"
-Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = "Render overview point cloud when zoomed out"
-Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = "Render point cloud extents over overview point cloud"
-Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
-
-.. versionadded:: 3.42
-
-* ``RenderExtents``: Render only point cloud extents when zoomed out
-* ``RenderOverview``: Render overview point cloud when zoomed out
-* ``RenderOverviewAndExtents``: Render point cloud extents over overview point cloud
-
-"""
-# --
-Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
-# monkey patching scoped based enum
 Qgis.PointCloudAccessType.Local.__doc__ = "Local means the source is a local file on the machine"
 Qgis.PointCloudAccessType.Remote.__doc__ = "Remote means it's loaded through a protocol like HTTP"
 Qgis.PointCloudAccessType.__doc__ = """The access type of the data, local is for local files and remote for remote files (over HTTP).
@@ -11055,6 +11040,21 @@ Qgis.PointCloudAccessType.__doc__ = """The access type of the data, local is for
 """
 # --
 Qgis.PointCloudAccessType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = "Render only point cloud extents when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = "Render overview point cloud when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = "Render point cloud extents over overview point cloud"
+Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
+
+.. versionadded:: 3.42
+
+* ``RenderExtents``: Render only point cloud extents when zoomed out
+* ``RenderOverview``: Render overview point cloud when zoomed out
+* ``RenderOverviewAndExtents``: Render point cloud extents over overview point cloud
+
+"""
+# --
+Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
 from enum import Enum
 
 

@@ -213,8 +213,8 @@ void QgsVirtualPointCloudProvider::parseFile()
     // look for vpc overview reference
     if ( !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
     {
-      mOverview = std::make_unique<QgsCopcPointCloudIndex>();
-      mOverview->load( fInfo.absoluteDir().absoluteFilePath( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
+      mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
+      mOverview.load( fInfo.absoluteDir().absoluteFilePath( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
     }
     // if it doesn't exist look for overview file in the directory
     else if ( !mOverview )
@@ -225,8 +225,8 @@ void QgsVirtualPointCloudProvider::parseFile()
       vpcDir.setFilter( QDir::Files );
       if ( !vpcDir.entryList().empty() )
       {
-        mOverview = std::make_unique<QgsCopcPointCloudIndex>();
-        mOverview->load( vpcDir.absoluteFilePath( vpcDir.entryList().first() ) );
+        mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );;
+        mOverview.load( vpcDir.absoluteFilePath( vpcDir.entryList().first() ) );
       }
     }
 

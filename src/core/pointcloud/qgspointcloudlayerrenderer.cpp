@@ -209,11 +209,12 @@ bool QgsPointCloudLayerRenderer::render()
     }
     const bool zoomedOut = renderExtent.width() > vpcProvider->averageSubIndexWidth() ||
                            renderExtent.height() > vpcProvider->averageSubIndexHeight();
+    QgsPointCloudIndex overviewIndex = vpcProvider->overview();
     // if the overview of virtual point cloud exists, and we are zoomed out, we render just overview
     if ( vpcProvider->overview() && zoomedOut &&
          mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )
     {
-      renderIndex( vpcProvider->overview() );
+      renderIndex( overviewIndex );
     }
     else
     {
@@ -222,7 +223,7 @@ bool QgsPointCloudLayerRenderer::render()
       if ( vpcProvider->overview() && zoomedOut &&
            mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents )
       {
-        renderIndex( vpcProvider->overview() );
+        renderIndex( overviewIndex );
       }
       mSubIndexExtentRenderer->startRender( context );
       for ( const QgsPointCloudSubIndex &si : visibleIndexes )
@@ -233,7 +234,7 @@ bool QgsPointCloudLayerRenderer::render()
         QgsPointCloudIndex pc = si.index();
         // if the index of point cloud is invalid, or we are zoomed out and want extents, we render the point cloud extent
         if ( !pc || !pc.isValid() || ( ( mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderExtents || mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) &&
-                                        zoomedOut ) )
+                                       zoomedOut ) )
         {
           mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
           if ( mSubIndexExtentRenderer->showLabels() )
