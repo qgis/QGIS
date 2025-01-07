@@ -3249,17 +3249,17 @@ The development version
       UpdatedCanvas,
     };
 
+    enum class PointCloudAccessType /BaseType=IntEnum/
+    {
+      Local,
+      Remote
+    };
+
     enum class PointCloudZoomOutRenderBehavior /BaseType=IntEnum/
     {
       RenderExtents,
       RenderOverview,
       RenderOverviewAndExtents
-    };
-
-    enum class PointCloudAccessType /BaseType=IntEnum/
-    {
-      Local,
-      Remote
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
