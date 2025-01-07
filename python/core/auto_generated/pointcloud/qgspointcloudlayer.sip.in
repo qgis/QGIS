@@ -274,6 +274,14 @@ Stops a current editing operation and discards any uncommitted edits.
 %End
 
 
+    QgsPointCloudIndex index() const;
+%Docstring
+Returns the point cloud index associated with the layer.
+If the layer is editable, its :py:class:`QgsPointCloudEditingIndex` is returned,
+otherwise the index is fetched from the data provider.
+
+.. versionadded:: 3.42
+%End
 
 
   signals:

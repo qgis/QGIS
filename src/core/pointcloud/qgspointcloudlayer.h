@@ -32,7 +32,6 @@ class QgsPointCloudLayerRenderer;
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;
 class QgsAbstractPointCloud3DRenderer;
-class QgsPointCloudEditingIndex;
 
 /**
  * \ingroup core
@@ -324,12 +323,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * If the layer is editable, its QgsPointCloudEditingIndex is returned,
      * otherwise the index is fetched from the data provider.
      *
-     * Can be nullptr (e.g. the index is being created)
-     *
-     * \note Not available in Python bindings
      * \since QGIS 3.42
      */
-    QgsPointCloudIndex *index() const SIP_SKIP;
+    QgsPointCloudIndex index() const;
 
 
   signals:
@@ -375,8 +371,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
 
-    std::unique_ptr<QgsPointCloudEditingIndex> mEditIndex;
-
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
@@ -387,6 +381,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsPointCloudStatistics mStatistics;
     PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
     long mStatsCalculationTask = 0;
+
+    QgsPointCloudIndex mEditIndex;
     QString mCommitError;
 
     friend class TestQgsVirtualPointCloudProvider;

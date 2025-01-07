@@ -17,6 +17,7 @@
 #define QGSPOINTCLOUDLAYEREDITUTILS_H
 
 #include "qgis_core.h"
+#include "qgspointcloudindex.h"
 
 #include <QVector>
 #include <QByteArray>
@@ -24,7 +25,6 @@
 #define SIP_NO_FILE
 
 class QgsPointCloudLayer;
-class QgsPointCloudEditingIndex;
 class QgsPointCloudNodeId;
 class QgsPointCloudAttribute;
 class QgsPointCloudAttributeCollection;
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsPointCloudLayerEditUtils
     static bool isAttributeValueValid( const QgsPointCloudAttribute &attribute, double value );
 
   private:
-    QgsPointCloudEditingIndex *mIndex = nullptr;
+    QgsPointCloudIndex mIndex;
 };
 
 #endif // QGSPOINTCLOUDLAYEREDITUTILS_H

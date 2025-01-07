@@ -20,7 +20,7 @@
 
 
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
-  : mIndex( layer ? layer->index() : nullptr )
+  : mIndex( layer ? layer->index() : QgsPointCloudIndex() )
 {
   if ( !layer ||
        !layer->dataProvider() ||
@@ -28,18 +28,18 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
        !( layer->dataProvider()->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues ) )
     return;
 
-  mAttributes = mIndex->attributes();
-  mScale = mIndex->scale();
-  mOffset = mIndex->offset();
-  mExtent = mIndex->extent();
-  mZMin = mIndex->zMin();
-  mZMax = mIndex->zMax();
-  mRootBounds = mIndex->rootNodeBounds();
-  mSpan = mIndex->span();
+  mAttributes = mIndex.attributes();
+  mScale = mIndex.scale();
+  mOffset = mIndex.offset();
+  mExtent = mIndex.extent();
+  mZMin = mIndex.zMin();
+  mZMax = mIndex.zMax();
+  mRootBounds = mIndex.rootNodeBounds();
+  mSpan = mIndex.span();
   mIsValid = true;
 }
 
-std::unique_ptr<QgsPointCloudIndex> QgsPointCloudEditingIndex::clone() const
+std::unique_ptr<QgsAbstractPointCloudIndex> QgsPointCloudEditingIndex::clone() const
 {
   return nullptr;
 }
@@ -51,37 +51,37 @@ void QgsPointCloudEditingIndex::load( const QString & )
 
 bool QgsPointCloudEditingIndex::isValid() const
 {
-  return mIsValid && mIndex->isValid();
+  return mIsValid && mIndex.isValid();
 }
 
-QgsPointCloudIndex::AccessType QgsPointCloudEditingIndex::accessType() const
+Qgis::PointCloudAccessType QgsPointCloudEditingIndex::accessType() const
 {
-  return mIndex->accessType();
+  return mIndex.accessType();
 }
 
 QgsCoordinateReferenceSystem QgsPointCloudEditingIndex::crs() const
 {
-  return mIndex->crs();
+  return mIndex.crs();
 }
 
 qint64 QgsPointCloudEditingIndex::pointCount() const
 {
-  return mIndex->pointCount();
+  return mIndex.pointCount();
 }
 
 QVariantMap QgsPointCloudEditingIndex::originalMetadata() const
 {
-  return mIndex->originalMetadata();
+  return mIndex.originalMetadata();
 }
 
 bool QgsPointCloudEditingIndex::hasNode( const QgsPointCloudNodeId &n ) const
 {
-  return mIndex->hasNode( n );
+  return mIndex.hasNode( n );
 }
 
 QgsPointCloudNode QgsPointCloudEditingIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
-  return mIndex->getNode( id );
+  return mIndex.getNode( id );
 }
 
 std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
@@ -89,21 +89,21 @@ std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const
   if ( mEditedNodeData.contains( n ) )
   {
     const QByteArray data = mEditedNodeData.value( n );
-    int nPoints = data.size() / mIndex->attributes().pointRecordSize();
+    int nPoints = data.size() / mIndex.attributes().pointRecordSize();
 
-    const QByteArray requestedData = QgsPointCloudLayerEditUtils::dataForAttributes( mIndex->attributes(), data, request );
+    const QByteArray requestedData = QgsPointCloudLayerEditUtils::dataForAttributes( mIndex.attributes(), data, request );
 
     std::unique_ptr<QgsPointCloudBlock> block = std::make_unique< QgsPointCloudBlock >(
           nPoints,
           request.attributes(),
           requestedData,
-          mIndex->scale(),
-          mIndex->offset() );
+          mIndex.scale(),
+          mIndex.offset() );
     return block;
   }
   else
   {
-    return mIndex->nodeData( n, request );
+    return mIndex.nodeData( n, request );
   }
 }
 
@@ -118,7 +118,7 @@ bool QgsPointCloudEditingIndex::commitChanges()
   if ( !isModified() )
     return true;
 
-  if ( !mIndex->updateNodeData( mEditedNodeData ) )
+  if ( !mIndex.updateNodeData( mEditedNodeData ) )
     return false;
 
   mEditedNodeData.clear();

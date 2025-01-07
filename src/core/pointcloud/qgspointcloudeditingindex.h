@@ -33,16 +33,16 @@ class QgsPointCloudLayer;
  *
  * \since QGIS 3.42
  */
-class CORE_EXPORT QgsPointCloudEditingIndex : public QgsPointCloudIndex
+class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
 {
   public:
     //! Ctor
     explicit QgsPointCloudEditingIndex( QgsPointCloudLayer *layer );
 
-    std::unique_ptr<QgsPointCloudIndex> clone() const override;
+    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
     void load( const QString &fileName ) override;
     bool isValid() const override;
-    AccessType accessType() const override;
+    Qgis::PointCloudAccessType accessType() const override;
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsPointCloudIndex
     bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data ) override;
 
     /**
-     * Try to store pending changes to the data provider.
+     * Tries to store pending changes to the data provider.
      * \return TRUE on success, otherwise FALSE
      */
     bool commitChanges();
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsPointCloudIndex
 
 
   private:
-    QgsPointCloudIndex *mIndex = nullptr;
+    QgsPointCloudIndex mIndex;
     bool mIsValid = false;
     QHash<QgsPointCloudNodeId, QByteArray> mEditedNodeData;
 };

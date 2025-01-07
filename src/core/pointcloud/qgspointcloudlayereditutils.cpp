@@ -14,13 +14,12 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayereditutils.h"
-#include "qgspointcloudeditingindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgslazdecoder.h"
 
 
 QgsPointCloudLayerEditUtils::QgsPointCloudLayerEditUtils( QgsPointCloudLayer *layer )
-  : mIndex( dynamic_cast<QgsPointCloudEditingIndex *>( layer->index() ) )
+  : mIndex( layer->index() )
 {
 }
 
@@ -32,10 +31,10 @@ bool QgsPointCloudLayerEditUtils::changeAttributeValue( const QgsPointCloudNodeI
        attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
     return false;
 
-  if ( !n.isValid() || !mIndex->hasNode( n ) ) // todo: should not have to check if n.isValid
+  if ( !n.isValid() || !mIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
     return false;
 
-  const QgsPointCloudAttributeCollection attributeCollection = mIndex->attributes();
+  const QgsPointCloudAttributeCollection attributeCollection = mIndex.attributes();
 
   int attributeOffset;
   const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
@@ -57,13 +56,13 @@ bool QgsPointCloudLayerEditUtils::changeAttributeValue( const QgsPointCloudNodeI
   std::sort( sortedPoints.begin(), sortedPoints.end() );
 
   if ( sortedPoints.constFirst() < 0 ||
-       sortedPoints.constLast() > mIndex->getNode( n ).pointCount() )
+       sortedPoints.constLast() > mIndex.getNode( n ).pointCount() )
     return false;
 
   QgsPointCloudRequest req;
   req.setAttributes( attributeCollection );
 
-  std::unique_ptr<QgsPointCloudBlock> block = mIndex->nodeData( n, req );
+  std::unique_ptr<QgsPointCloudBlock> block = mIndex.nodeData( n, req );
   const int count = block->pointCount();
   const int recordSize = attributeCollection.pointRecordSize();
 
@@ -78,7 +77,7 @@ bool QgsPointCloudLayerEditUtils::changeAttributeValue( const QgsPointCloudNodeI
     lazStoreToStream_( ptr, i * recordSize + attributeOffset, attribute.type(), value );
   }
 
-  return mIndex->updateNodeData( {{n, data}} );;
+  return mIndex.updateNodeData( {{n, data}} );;
 }
 
 QByteArray QgsPointCloudLayerEditUtils::dataForAttributes( const QgsPointCloudAttributeCollection &allAttributes, const QByteArray &data, const QgsPointCloudRequest &request )
