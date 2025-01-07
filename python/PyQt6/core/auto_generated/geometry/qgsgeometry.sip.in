@@ -126,7 +126,7 @@ geom is transferred.
 %Docstring
 Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
 
-This is much faster then calling the non-const :py:func:`~QgsGeometry.get` method.
+This is much faster than calling the non-const :py:func:`~QgsGeometry.get` method.
 
 .. note::
 
