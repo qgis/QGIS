@@ -6417,28 +6417,26 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(other_feat["name"], "Xxx")
 
         qgis_feat = next(
-            vl.getFeatures(QgsFeatureRequest(QgsExpression("\"verified\" is true")))
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" is true')))
         )
         other_feat = next(
-            vl.getFeatures(QgsFeatureRequest(QgsExpression("\"verified\" is false")))
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" is false')))
+        )
+        self.assertEqual(qgis_feat["name"], "Xxx")
+        self.assertEqual(other_feat["name"], "qgis")
+
+        qgis_feat = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified"'))))
+        other_feat = next(
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('not "verified"')))
         )
         self.assertEqual(qgis_feat["name"], "Xxx")
         self.assertEqual(other_feat["name"], "qgis")
 
         qgis_feat = next(
-            vl.getFeatures(QgsFeatureRequest(QgsExpression("\"verified\"")))
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" = true')))
         )
         other_feat = next(
-            vl.getFeatures(QgsFeatureRequest(QgsExpression("not \"verified\"")))
-        )
-        self.assertEqual(qgis_feat["name"], "Xxx")
-        self.assertEqual(other_feat["name"], "qgis")
-
-        qgis_feat = next(
-            vl.getFeatures(QgsFeatureRequest(QgsExpression("\"verified\" = true")))
-        )
-        other_feat = next(
-            vl.getFeatures(QgsFeatureRequest(QgsExpression("\"verified\" = false")))
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" = false')))
         )
         self.assertEqual(qgis_feat["name"], "Xxx")
         self.assertEqual(other_feat["name"], "qgis")
