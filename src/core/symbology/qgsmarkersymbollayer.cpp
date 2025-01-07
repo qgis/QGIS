@@ -3579,10 +3579,11 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mChrWidth = mFontMetrics->horizontalAdvance( mString );
 
   double centerOfCharBound = mFontMetrics->boundingRect( mString.at( 0 ) ).bottom() - mFontMetrics->boundingRect( mString.at( 0 ) ).height() / 2.0;
+
   switch ( mVerticalAnchorMode )
   {
     case VerticalAnchorMode::Bounds:
-      mChrOffset = QPointF( mChrWidth / 2.0, centerOfCharBound / static_cast<double>( mFontMetrics->ascent() ) * sizePixels );
+      mChrOffset = QPointF( mChrWidth / 2.0, centerOfCharBound );
       break;
     case VerticalAnchorMode::Baseline:
       mChrOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
@@ -3628,7 +3629,7 @@ QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &con
       switch ( mVerticalAnchorMode )
       {
         case VerticalAnchorMode::Bounds:
-          charOffset = QPointF( charWidth / 2.0, centerOfCharBound / static_cast<double>( mFontMetrics->ascent() ) * sizePixels );
+          charOffset = QPointF( charWidth / 2.0, centerOfCharBound );
           break;
         case VerticalAnchorMode::Baseline:
           charOffset = QPointF( charWidth / 2.0, -sizePixels / 2.0 );
@@ -3807,10 +3808,8 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
 
   //if we use the bounds, the font metric boundings are used
   if ( mVerticalAnchorMode == VerticalAnchorMode::Bounds )
-  {
     sizeToCalculateOffsets = mFontMetrics->boundingRect( mString.at( 0 ) ).height() / static_cast<double>( mFontMetrics->ascent() ) * sizeToRender;
 
-  }
   bool hasDataDefinedRotation = false;
   QPointF offset;
   double angle = 0;
