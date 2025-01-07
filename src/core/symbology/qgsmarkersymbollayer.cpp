@@ -3806,9 +3806,11 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   const double sizeToRender = calculateSize( context );
   double sizeToCalculateOffsets = sizeToRender;
 
-  //if we use the bounds, the font metric boundings are used
   if ( mVerticalAnchorMode == VerticalAnchorMode::Bounds )
-    sizeToCalculateOffsets = mFontMetrics->boundingRect( mString.at( 0 ) ).height() / static_cast<double>( mFontMetrics->ascent() ) * sizeToRender;
+  {
+    // when we use the bounds, the font metrics used are already scaled. To be able to deal with this, they should not be scaled, so we scale them back beforehand.
+    sizeToCalculateOffsets = context.renderContext().convertFromPainterUnits( mFontMetrics->boundingRect( mString.at( 0 ) ).height(), mSizeUnit );
+  }
 
   bool hasDataDefinedRotation = false;
   QPointF offset;
