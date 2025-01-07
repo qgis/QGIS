@@ -11191,7 +11191,7 @@ void QgisApp::updateLayerModifiedActions()
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
         if ( QgsVectorDataProvider *dprovider = vlayer->dataProvider() )
         {
-          enableSaveLayerEdits = ( dprovider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues && vlayer->isEditable() && vlayer->isModified() );
+          enableSaveLayerEdits = ( dprovider && dprovider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues && vlayer->isEditable() && vlayer->isModified() );
         }
       }
       break;
