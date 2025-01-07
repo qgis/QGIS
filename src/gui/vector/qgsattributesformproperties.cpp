@@ -2040,8 +2040,6 @@ void QgsAttributesFormProperties::onContextMenuRequested( QPoint point )
 
 void QgsAttributesFormProperties::copyWidgetConfiguration()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
   if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
     return;
 
@@ -2139,8 +2137,6 @@ void QgsAttributesFormProperties::copyWidgetConfiguration()
 
 void QgsAttributesFormProperties::pasteWidgetConfiguration()
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
   if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
     return;
 
