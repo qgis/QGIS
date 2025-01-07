@@ -58,6 +58,7 @@ resources/cpt-city-qgis-min/selections/reds.xml
 resources/cpt-city-qgis-min/wkp/schwarzwald/COPYING.xml
 resources/data/world_map_generalize.model3
 scripts/spell_check/spelling.dat
+platform/macos/pymacdeployqt.py
 scripts/spell_check/test.sh
 src/server/qgis_wms.xmi
 src/plugins/grass/modules/v.generalize.qgm
