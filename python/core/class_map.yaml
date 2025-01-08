@@ -9922,6 +9922,7 @@ QgsMeshEditRefineFaces: src/core/mesh/qgsmeshadvancedediting.h#L97
 QgsMeshEditingError: src/core/mesh/qgsmesheditor.h#L42
 QgsMeshEditor.addFace: src/core/mesh/qgsmesheditor.h#L133
 QgsMeshEditor.addPointsAsVertices: src/core/mesh/qgsmesheditor.h#L191
+QgsMeshEditor.addVertexWithDelaunayRefinement: src/core/mesh/qgsmesheditor.h#L314
 QgsMeshEditor.advancedEdit: src/core/mesh/qgsmesheditor.h#L244
 QgsMeshEditor.canBeMerged: src/core/mesh/qgsmesheditor.h#L157
 QgsMeshEditor.changeCoordinates: src/core/mesh/qgsmesheditor.h#L239
@@ -9944,7 +9945,7 @@ QgsMeshEditor.isVertexFree: src/core/mesh/qgsmesheditor.h#L273
 QgsMeshEditor.isVertexOnBoundary: src/core/mesh/qgsmesheditor.h#L270
 QgsMeshEditor.maximumVerticesPerFace: src/core/mesh/qgsmesheditor.h#L306
 QgsMeshEditor.merge: src/core/mesh/qgsmesheditor.h#L160
-QgsMeshEditor.meshEdited: src/core/mesh/qgsmesheditor.h#L310
+QgsMeshEditor.meshEdited: src/core/mesh/qgsmesheditor.h#L318
 QgsMeshEditor.reindex: src/core/mesh/qgsmesheditor.h#L262
 QgsMeshEditor.removeFaces: src/core/mesh/qgsmesheditor.h#L146
 QgsMeshEditor.removeVerticesWithoutFillHoles: src/core/mesh/qgsmesheditor.h#L198
