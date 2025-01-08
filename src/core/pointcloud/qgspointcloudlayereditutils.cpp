@@ -74,7 +74,7 @@ bool QgsPointCloudLayerEditUtils::changeAttributeValue( const QgsPointCloudNodeI
   for ( int i : sortedPoints )
   {
     // replace attribute for selected point
-    lazStoreToStream_<double>( ptr, i * recordSize + attributeOffset, attribute.type(), value );
+    lazStoreDoubleToStream( ptr, i * recordSize + attributeOffset, attribute.type(), value );
   }
 
   return mIndex.updateNodeData( {{n, data}} );;
