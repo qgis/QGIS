@@ -37,6 +37,7 @@
 #include <QString>
 #include <QPainter>
 #include <QElapsedTimer>
+#include <optional>
 
 class QgsRenderContext;
 class QgsPointCloudLayer;
@@ -79,7 +80,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     void renderTriangulatedSurface( QgsPointCloudRenderContext &context );
     bool renderIndex( QgsPointCloudIndex &pc );
 
-    QgsPointCloudLayer *mLayer = nullptr;
+    QgsPointCloudIndex mIndex;
     QString mLayerName;
 
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
@@ -94,7 +95,11 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
     QList< QgsMapClippingRegion > mClippingRegions;
+
     const QVector< QgsPointCloudSubIndex > mSubIndexes;
+    std::optional<QgsPointCloudIndex> mOverviewIndex;
+    double mAverageSubIndexWidth;
+    double mAverageSubIndexHeight;
 
     int mRenderTimeHint = 0;
     bool mBlockRenderUpdates = false;
