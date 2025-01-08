@@ -46,6 +46,7 @@
         "freexl",
         "kea",
         "poppler"
+        "tools"
       ]
     },
     "geos",

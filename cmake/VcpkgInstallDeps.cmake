@@ -49,3 +49,40 @@ if(WITH_BINDINGS)
     DESTINATION "${_TARGET_PYTHON_DIR}"
     PATTERN "*.sip" EXCLUDE)
 endif()
+
+set(BUNDLED_EXECUTABLES
+  "tools/gdal/gdal_contour"
+  "tools/gdal/gdal_create"
+  "tools/gdal/gdal_footprint"
+  "tools/gdal/gdal_grid"
+  "tools/gdal/gdal_rasterize"
+  "tools/gdal/gdal_translate"
+  "tools/gdal/gdal_viewshed"
+  "tools/gdal/gdaladdo"
+  "tools/gdal/gdalbuildvrt"
+  "tools/gdal/gdaldem"
+  "tools/gdal/gdalenhance"
+  "tools/gdal/gdalinfo"
+  "tools/gdal/gdallocationinfo"
+  "tools/gdal/gdalmanage"
+  "tools/gdal/gdalmdiminfo"
+  "tools/gdal/gdalmdimtranslate"
+  "tools/gdal/gdalsrsinfo"
+  "tools/gdal/gdaltindex"
+  "tools/gdal/gdaltransform"
+  "tools/gdal/gdalwarp"
+  "tools/gdal/gnmanalyse"
+  "tools/gdal/gnmmanage"
+  "tools/gdal/nearblack"
+  "tools/gdal/ogr2ogr"
+  "tools/gdal/ogrinfo"
+  "tools/gdal/ogrlineref"
+  "tools/gdal/ogrtindex"
+  "tools/gdal/sozip"
+)
+if(NOT MSVC)
+  list(TRANSFORM BUNDLED_EXECUTABLES PREPEND "${VCPKG_BASE_DIR}/")
+  install(PROGRAMS ${BUNDLED_EXECUTABLES}
+    DESTINATION "${QGIS_BIN_SUBDIR}")
+endif()
+
