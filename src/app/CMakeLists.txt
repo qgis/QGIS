@@ -534,7 +534,7 @@ target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 if (POSTGRES_FOUND)
-  target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=${PostgreSQL_VERSION_STRING})
+  target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
 endif()
 
 target_include_directories(qgis_app PUBLIC
