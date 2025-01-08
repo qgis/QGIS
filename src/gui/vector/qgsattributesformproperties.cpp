@@ -2163,11 +2163,6 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
     if ( docElem.tagName() != QLatin1String( "FormWidgetClipboard" ) )
       return;
 
-    // We avoid pasting if origin and target fields are the same
-    const QString sourceFieldName = docElem.attribute( QStringLiteral( "name" ) );
-    if ( sourceFieldName == fieldName )
-      return;
-
     // When pasting, the target item has already been selected and
     // has triggered attribute type dialog loading. Therefore, we'll
     // only overwrite GUI settings instead of destroying and recreating
