@@ -20,13 +20,14 @@
 
 
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
-  : mIndex( layer ? layer->index() : QgsPointCloudIndex() )
 {
   if ( !layer ||
        !layer->dataProvider() ||
        !layer->dataProvider()->hasValidIndex() ||
        !( layer->dataProvider()->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues ) )
     return;
+
+  mIndex = layer->dataProvider()->index();
 
   mAttributes = mIndex.attributes();
   mScale = mIndex.scale();
