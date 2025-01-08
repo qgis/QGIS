@@ -218,7 +218,7 @@ Works only if layer was already rendered (triangular mesh is created)
 Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
 %End
 
- void setCanvasPropertiesOverrides( double searchRadiusMapUnits ) /Deprecated/;
+ void setCanvasPropertiesOverrides( double searchRadiusMapUnits ) /Deprecated="Since 3.42. Use setPropertiesOverrides() instead."/;
 %Docstring
 Overrides some map canvas properties inside the map tool for the upcoming identify requests.
 
@@ -239,7 +239,7 @@ be called to erase any overrides.
    Use :py:func:`~QgsMapToolIdentify.setPropertiesOverrides` instead.
 %End
 
- void restoreCanvasPropertiesOverrides() /Deprecated/;
+ void restoreCanvasPropertiesOverrides() /Deprecated="Since 3.42. Use restorePropertiesOverrides() instead."/;
 %Docstring
 Clears canvas properties overrides previously set with :py:func:`~QgsMapToolIdentify.setCanvasPropertiesOverrides`
 
