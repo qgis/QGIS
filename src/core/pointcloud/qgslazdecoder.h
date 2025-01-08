@@ -37,6 +37,7 @@ template <typename T>
 bool lazStoreToStream_( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value );
 bool lazSerialize_( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
                     const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition );
+bool lazStoreDoubleToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, double value );
 
 class QgsLazDecoder
 {
