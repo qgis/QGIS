@@ -117,7 +117,9 @@ class GdalUtils:
         ):
             # Looks like there's a bundled gdal. Let's use it.
             os.environ["PATH"] = "{}{}{}".format(
-                os.path.join(QgsApplication.prefixPath(), "Contents", "MacOS"), os.pathsep, envval
+                os.path.join(QgsApplication.prefixPath(), "Contents", "MacOS"),
+                os.pathsep,
+                envval,
             )
         else:
             # Other platforms should use default gdal finder codepath
