@@ -43,6 +43,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsattributeeditorelement.h"
 #include "qgspropertycollection.h"
+#include "qgsmessagebar.h"
 
 class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
@@ -459,6 +460,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void pasteWidgetConfiguration();
 
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
+
+    QgsMessageBar *mMessageBar = nullptr;
 
     Qgis::AttributeFormPythonInitCodeSource mInitCodeSource = Qgis::AttributeFormPythonInitCodeSource::NoSource;
     QString mInitFunction;

@@ -104,6 +104,10 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
 
   mAvailableWidgetsTreeContextMenu->addAction( mActionCopyWidgetConfiguration );
   mAvailableWidgetsTreeContextMenu->addAction( mActionPasteWidgetConfiguration );
+
+  mMessageBar = new QgsMessageBar();
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  gridLayout->addWidget( mMessageBar, 0, 0 );
 }
 
 void QgsAttributesFormProperties::init()
@@ -2193,6 +2197,10 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
           config.mEditorWidgetType = widgetType;
           config.mEditorWidgetConfig = optionsMap;
         }
+      }
+      else
+      {
+        mMessageBar->pushMessage( QString(), tr( "Unable to paste widget configuration. The target field (%1) does not support the %2 widget type." ).arg( fieldName, widgetType ), Qgis::MessageLevel::Warning );
       }
     }
 
