@@ -262,6 +262,14 @@ Returns the count of valid vertices, that is non void vertices in the mesh
 Returns the maximum count of vertices per face that the mesh can support
 %End
 
+    void addVertexWithDelaunayRefinement( const QgsMeshVertex &vertex, const double tolerance );
+%Docstring
+Add a vertex in a face with Delaunay refinement of neighboring faces
+All neighboring faces sharing a vertex will be refined to satisfy the Delaunay condition
+
+.. versionadded:: 3.42
+%End
+
   signals:
     void meshEdited();
 %Docstring

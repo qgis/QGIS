@@ -19,6 +19,7 @@
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
+#include "qgscircle.h"
 
 #include <poly2tri.h>
 #include <QSet>
@@ -2583,4 +2584,42 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::changeXYValue( const QList<int> 
   applyChanges( changes );
 
   return changes;
+}
+
+bool QgsTopologicalMesh::delaunayConditionForEdge( int vertexIndex1, int vertexIndex2 )
+{
+  int faceIndex1;
+  int faceIndex2;
+  int oppositeVertexFace1;
+  int oppositeVertexFace2;
+  int supposedOppositeVertexFace1;
+  int supposedoppositeVertexFace2;
+
+  bool result =  eitherSideFacesAndVertices(
+                   vertexIndex1,
+                   vertexIndex2,
+                   faceIndex1,
+                   faceIndex2,
+                   oppositeVertexFace1,
+                   supposedoppositeVertexFace2,
+                   supposedOppositeVertexFace1,
+                   oppositeVertexFace2 );
+
+  if ( ! result )
+    return false;
+
+  const QgsMeshFace face1 = mMesh->face( faceIndex1 );
+  const QgsMeshFace face2 = mMesh->face( faceIndex2 );
+
+  QgsCircle circle = QgsCircle::from3Points( mMesh->vertex( face1.at( 0 ) ),
+                     mMesh->vertex( face1.at( 1 ) ),
+                     mMesh->vertex( face1.at( 2 ) ) );
+  bool circle1ContainsPoint = circle.contains( mMesh->vertex( supposedoppositeVertexFace2 ) );
+
+  circle = QgsCircle::from3Points( mMesh->vertex( face2.at( 0 ) ),
+                                   mMesh->vertex( face2.at( 1 ) ),
+                                   mMesh->vertex( face2.at( 2 ) ) );
+  bool circle2ContainsPoint = circle.contains( mMesh->vertex( supposedOppositeVertexFace1 ) );
+
+  return !( circle1ContainsPoint || circle2ContainsPoint );
 }

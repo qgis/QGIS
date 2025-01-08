@@ -305,6 +305,14 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Returns the maximum count of vertices per face that the mesh can support
     int maximumVerticesPerFace() const;
 
+    /**
+     * Add a vertex in a face with Delaunay refinement of neighboring faces
+     * All neighboring faces sharing a vertex will be refined to satisfy the Delaunay condition
+     *
+     * \since QGIS 3.42
+     */
+    void addVertexWithDelaunayRefinement( const QgsMeshVertex &vertex, const double tolerance );
+
   signals:
     //! Emitted when the mesh is edited
     void meshEdited();
@@ -363,6 +371,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandFlipEdge;
     friend class QgsMeshLayerUndoCommandMerge;
     friend class QgsMeshLayerUndoCommandSplitFaces;
+    friend class QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement;
 
     friend class QgsMeshLayerUndoCommandAdvancedEditing;
 };
@@ -652,7 +661,28 @@ class QgsMeshLayerUndoCommandAdvancedEditing : public QgsMeshLayerUndoCommandMes
 };
 
 
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for adding vertex to face with Delaunay Refiment of faces surrounding
+ *
+ * \since QGIS 3.42
+ */
+class QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement: public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
 
+    //! Constructor with the associated \a meshEditor and indexes \a vertex and \a tolerance
+    QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement( QgsMeshEditor *meshEditor, const QgsMeshVertex &vertex, double tolerance );
+
+    void redo() override;
+  private:
+    QList<std::pair<int, int>> innerEdges( const QSet<int> &faces );
+    QSet<int> secondNeighboringTriangularFaces();
+
+    QgsMeshVertex mVertex;
+    double mTolerance;
+};
 
 #endif //SIP_RUN
 
