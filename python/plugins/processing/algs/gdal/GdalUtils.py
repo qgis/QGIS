@@ -113,14 +113,11 @@ class GdalUtils:
         except OSError:  # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
             pass
         if isDarwin and os.path.isfile(
-            os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")
+            os.path.join(QgsApplication.prefixPath(), "Contents", "MacOS", "gdalinfo")
         ):
             # Looks like there's a bundled gdal. Let's use it.
             os.environ["PATH"] = "{}{}{}".format(
-                os.path.join(QgsApplication.prefixPath(), "bin"), os.pathsep, envval
-            )
-            os.environ["DYLD_LIBRARY_PATH"] = os.path.join(
-                QgsApplication.prefixPath(), "lib"
+                os.path.join(QgsApplication.prefixPath(), "Contents", "MacOS"), os.pathsep, envval
             )
         else:
             # Other platforms should use default gdal finder codepath

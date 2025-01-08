@@ -44,7 +44,8 @@
       "name": "gdal",
       "default-features": false,
       "features": [
-        "poppler"
+        "poppler",
+        "tools"
       ]
     },
     "geos",
