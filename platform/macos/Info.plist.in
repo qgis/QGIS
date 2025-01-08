@@ -22,6 +22,26 @@
 	<string>@COMPLETE_VERSION@ (@SHA@)</string>
 	<key>CFBundleIconFile</key>
 	<string>qgis.icns</string>
+        <key>CFBundleIcons</key>
+        <dict>
+            <key>CFBundlePrimaryIcon</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>qgis.icns</string>
+                </array>
+            </dict>
+            <key>CFBundleAlternateIcons</key>
+            <dict>
+                <key>DarkModeIcon</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>qgis-dark.icns</string>
+                    </array>
+                </dict>
+            </dict>
+        </dict>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CSResourcesFileMapped</key>
@@ -34,7 +54,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
-			<string>qgs.icns</string>
+			<string>qgis.icns</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>qgs</string>
