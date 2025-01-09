@@ -122,7 +122,6 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
   , mFormulaString( other.mFormulaString )
   , mLastError( other.mLastError )
   , mRasterLayers {} // see note in other constructor above
-
 {
   for ( const auto &it : other.mRasterLayers )
   {
@@ -149,6 +148,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 {
   Q_UNUSED( bandNo );
   std::unique_ptr<QgsRasterBlock> tblock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float64, width, height );
+
   double *outputData = ( double * ) ( tblock->bits() );
 
   QMap<QString, QgsRasterBlock *> inputBlocks;
@@ -182,7 +182,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     inputBlocks.insert( it->ref, block.release() );
   }
 
-  QgsRasterMatrix resultMatrix( width, 1, nullptr, -FLT_MAX );
+  QgsRasterMatrix resultMatrix( width, 1, nullptr, std::numeric_limits<double>::quiet_NaN() );
 
   for ( int i = 0; i < height; ++i )
   {
