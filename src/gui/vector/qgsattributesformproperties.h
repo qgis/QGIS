@@ -473,7 +473,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QMenu *mAvailableWidgetsTreeContextMenu = nullptr;
     QAction *mActionCopyWidgetConfiguration = nullptr;
     QAction *mActionPasteWidgetConfiguration = nullptr;
-
 };
 
 
