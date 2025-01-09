@@ -82,8 +82,8 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   const QgsPointCloudSubIndex &si = subIndexes.at( i );
 
-  // Skip if Index is not yet loaded or is outside the map extents
-  if ( !si.index() || mBboxes.at( i ).isEmpty() )
+  // Skip if Index is not yet loaded or is outside the map extents or it's not valid (e.g. file is missing)
+  if ( !si.index() || mBboxes.at( i ).isEmpty() || !si.index()->isValid() )
     return;
 
   QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity(
