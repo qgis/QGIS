@@ -43,7 +43,6 @@
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mIndex( layer->dataProvider()->index() )
   , mLayerName( layer->name() )
   , mLayerAttributes( layer->attributes() )
   , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
@@ -52,6 +51,8 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 {
   if ( !layer->dataProvider() || !layer->renderer() )
     return;
+
+  mIndex = layer->dataProvider()->index();
 
   QElapsedTimer timer;
   timer.start();
