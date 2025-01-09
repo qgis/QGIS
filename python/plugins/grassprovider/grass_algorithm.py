@@ -923,9 +923,35 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         if not destName:
             destName = f"rast_{os.path.basename(getTempFilename(context=context))}"
         self.exportedLayers[name] = destName
+
+        if layer.providerType() == "postgresraster":
+            source = ""
+            uri = layer.dataProvider().uri()
+            source = f"PG: {uri.connectionInfo()}"
+            schema = uri.schema()
+            if schema:
+                source += f" schema='{schema}'"
+            table = uri.table()
+            source += f" table='{table}'"
+            column = uri.param("column") or uri.geometryColumn()
+            if column:
+                source += f" column='{column}'"
+            is_tiled = any(
+                [
+                    layer.dataProvider().xSize() != layer.dataProvider().xBlockSize(),
+                    layer.dataProvider().ySize() != layer.dataProvider().yBlockSize(),
+                ]
+            )
+            source += f" mode={2 if is_tiled else 1}"
+            where = layer.dataProvider().subsetString()
+            if where:
+                source += f" where='{where}'"
+        else:
+            source = os.path.normpath(layer.source())
+
         command = '{} input="{}" {}output="{}" --overwrite -o'.format(
             "r.external" if external else "r.in.gdal",
-            os.path.normpath(layer.source()),
+            source,
             f"band={band} " if band else "",
             destName,
         )
