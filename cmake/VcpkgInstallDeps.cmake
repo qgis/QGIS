@@ -25,7 +25,7 @@ endif()
 install(DIRECTORY "${PROJ_DATA_PATH}/" DESTINATION "${QGIS_DATA_SUBDIR}/proj")
 install(DIRECTORY "${VCPKG_BASE_DIR}/share/gdal/" DESTINATION "${QGIS_DATA_SUBDIR}/gdal")
 if(MSVC)
-  install(DIRECTORY "${VCPKG_BASE_DIR}/bin/Qca/" DESTINATION "${QGIS_LIB_SUBDIR}/Qca") # QCA plugins
+  install(DIRECTORY "${VCPKG_BASE_DIR}/bin/Qca/crypto/" DESTINATION "${QGIS_LIB_SUBDIR}/Qt6/plugins/crypto") # QCA plugins
 else()
   install(DIRECTORY "${VCPKG_BASE_DIR}/bin/Qca/crypto/" DESTINATION "${APP_PLUGINS_DIR}/crypto") # QCA plugins
 endif()
