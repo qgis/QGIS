@@ -303,12 +303,25 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
 
     bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) override;
 
+    /**
+      * Sets the renderer behavior when zoomed out
+      * \since QGIS 3.42
+      */
+    void setZoomOutBehavior( const Qgis::PointCloudZoomOutRenderBehavior behavior ) { mZoomOutBehavior = behavior; }
+
+    /**
+      * Returns the renderer behavior when zoomed out
+      * \since QGIS 3.42
+      */
+    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     double mMaximumScreenError = 3.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 5000000;
+    Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
 
   private:
 #ifdef SIP_RUN

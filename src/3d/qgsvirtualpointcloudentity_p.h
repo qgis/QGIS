@@ -32,6 +32,7 @@
 #include "qgschunkedentity.h"
 #include "qgs3dmapsceneentity.h"
 #include "qgs3drendercontext.h"
+#include "qgspointcloudlayerchunkloader_p.h"
 
 class QgsAABB;
 class QgsChunkBoundsEntity;
@@ -93,6 +94,7 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     QgsPointCloudLayer *mLayer = nullptr;
     QMap<int, QgsChunkedEntity *> mChunkedEntitiesMap;
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
+    QgsPointCloudLayerChunkedEntity *mOverviewEntity = nullptr;
     QList<QgsAABB> mBboxes;
     QgsCoordinateTransform mCoordinateTransform;
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
