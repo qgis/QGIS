@@ -82,7 +82,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
     cb_dontResolveType->setChecked( settings.value( key + "/dontResolveType", false ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
-    cb_dontShowRasterOverviews->setChecked( settings.value( key + "/dontShowRasterOverviews", false ).toBool() );
+    cb_showRasterOverviews->setChecked( settings.value( key + "/showRasterOverviews", true ).toBool() );
     // Ensure that cb_publicSchemaOnly is set correctly
     cb_geometryColumnsOnly_clicked();
 
@@ -178,7 +178,7 @@ void QgsPgNewConnection::accept()
   configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
   configuration.insert( "metadataInDatabase", cb_metadataInDatabase->isChecked() );
   configuration.insert( "session_role", txtSessionRole->text() );
-  configuration.insert( "dontShowRasterOverviews", cb_dontShowRasterOverviews->isChecked() );
+  configuration.insert( "showRasterOverviews", cb_showRasterOverviews->isChecked() );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
   std::unique_ptr<QgsPostgresProviderConnection> providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );

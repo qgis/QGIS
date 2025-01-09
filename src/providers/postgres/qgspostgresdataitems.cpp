@@ -413,7 +413,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   QVector<QgsPostgresLayerProperty> layerProperties;
-  const bool ok = conn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mConnectionName ), QgsPostgresConn::publicSchemaOnly( mConnectionName ), QgsPostgresConn::allowGeometrylessTables( mConnectionName ), QgsPostgresConn::removeRasterOverviewTables( mConnectionName ), mName );
+  const bool ok = conn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mConnectionName ), QgsPostgresConn::publicSchemaOnly( mConnectionName ), QgsPostgresConn::allowGeometrylessTables( mConnectionName ), QgsPostgresConn::showRasterOverviewTables( mConnectionName ), mName );
 
   if ( !ok )
   {

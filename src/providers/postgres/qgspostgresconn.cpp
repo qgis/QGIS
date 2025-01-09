@@ -594,7 +594,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, co
   }
 }
 
-bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool removeRasterOverviews, const QString &schema, const QString &name )
+bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool showRasterOverviews, const QString &schema, const QString &name )
 {
   QMutexLocker locker( &mLock );
   int nColumns = 0;
@@ -1054,7 +1054,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     }
   }
 
-  if ( removeRasterOverviews )
+  // remove raster overivews if showRasterOverviews is FALSE
+  if ( !showRasterOverviews )
   {
     QString sqlRasterOverviews = QString( "SELECT o_table_schema, o_table_name FROM public.raster_overviews" );
 
@@ -1108,14 +1109,14 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   return true;
 }
 
-bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool removeRasterOverviews, const QString &schema, const QString &table )
+bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool showRasterOverviews, const QString &schema, const QString &table )
 {
   QMutexLocker locker( &mLock );
 
   mLayersSupported.clear();
 
   // Get the list of supported tables
-  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, removeRasterOverviews, schema, table ) )
+  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, showRasterOverviews, schema, table ) )
   {
     QgsMessageLog::logMessage( tr( "Unable to get list of spatially enabled tables from the database" ), tr( "PostGIS" ) );
     return false;
@@ -1504,9 +1505,9 @@ Qgis::PostgresRelKind QgsPostgresConn::relKindFromValue( const QString &value )
   return Qgis::PostgresRelKind::Unknown;
 }
 
-bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool removeRasterOverviews, const QString &schema )
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool showRasterOverviews, const QString &schema )
 {
-  return supportedLayersPrivate( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, removeRasterOverviews, schema );
+  return supportedLayersPrivate( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, showRasterOverviews, schema );
 }
 
 bool QgsPostgresConn::supportedLayer( QgsPostgresLayerProperty &layerProperty, const QString &schema, const QString &table )
@@ -2777,10 +2778,10 @@ bool QgsPostgresConn::allowProjectsInDatabase( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/projectsInDatabase", false ).toBool();
 }
 
-bool QgsPostgresConn::removeRasterOverviewTables( const QString &connName )
+bool QgsPostgresConn::showRasterOverviewTables( const QString &connName )
 {
   QgsSettings settings;
-  return settings.value( "/PostgreSQL/connections/" + connName + "/dontShowRasterOverviews", false ).toBool();
+  return settings.value( "/PostgreSQL/connections/" + connName + "/showRasterOverviews", true ).toBool();
 }
 
 void QgsPostgresConn::deleteConnection( const QString &connName )
@@ -2807,7 +2808,7 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/metadataInDatabase" );
   settings.remove( key + "/dontResolveType" );
   settings.remove( key + "/session_role" );
-  settings.remove( key + "/dontShowRasterOverviews" );
+  settings.remove( key + "/showRasterOverviews" );
   settings.remove( key );
 }
 
@@ -2835,7 +2836,7 @@ void QgsPostgresConn::duplicateConnection( const QString &src, const QString &ds
   settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + QStringLiteral( "/authcfg" ) ).toString() );
-  settings.setValue( newKey + QStringLiteral( "/dontShowRasterOverviews" ), settings.value( key + QStringLiteral( "/dontShowRasterOverviews" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/showRasterOverviews" ), settings.value( key + QStringLiteral( "/showRasterOverviews" ) ).toString() );
 
   settings.sync();
 }

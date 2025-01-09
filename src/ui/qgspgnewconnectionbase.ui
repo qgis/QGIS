@@ -237,9 +237,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="cb_dontShowRasterOverviews">
+       <widget class="QCheckBox" name="cb_showRasterOverviews">
         <property name="text">
-         <string>Don't list raster overview tables</string>
+         <string>List raster overview tables</string>
         </property>
        </widget>
       </item>
