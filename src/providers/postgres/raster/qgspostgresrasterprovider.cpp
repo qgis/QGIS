@@ -2473,15 +2473,7 @@ bool QgsPostgresRasterProviderMetadata::styleExists( const QString &uri, const Q
     return false;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
-  {
-    return false;
-  }
-  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
-  {
-    return false;
-  }
-  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
   {
     return false;
   }
