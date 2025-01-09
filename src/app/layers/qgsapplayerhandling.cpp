@@ -64,6 +64,7 @@
 #include "qgsgdalutils.h"
 #include "qgstiledscenelayer.h"
 #include "qgsogrproviderutils.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -196,6 +197,11 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
         {
           std::unique_ptr<QgsPointCloudLayer3DRenderer> renderer3D = std::make_unique<QgsPointCloudLayer3DRenderer>();
           renderer3D->convertFrom2DRenderer( pcLayer->renderer() );
+          // if overview of the virtual point cloud exists set the zoom out behavior to show it
+          if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( pcLayer->dataProvider() ) )
+          {
+            vpcProvider->overview() ? renderer3D->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) : renderer3D->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
+          }
           layer->setRenderer3D( renderer3D.release() );
         }
       }

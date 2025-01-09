@@ -51,6 +51,7 @@ void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3D
     mWidgetPointCloudSymbol->setPointBudget( renderer->pointRenderingBudget() );
     mWidgetPointCloudSymbol->setMaximumScreenError( renderer->maximumScreenError() );
     mWidgetPointCloudSymbol->setShowBoundingBoxes( renderer->showBoundingBoxes() );
+    mWidgetPointCloudSymbol->setZoomOutBehavior( renderer->zoomOutBehavior() );
   }
 }
 
@@ -63,6 +64,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
   renderer->setPointRenderingBudget( mWidgetPointCloudSymbol->pointBudget() );
   renderer->setMaximumScreenError( mWidgetPointCloudSymbol->maximumScreenError() );
   renderer->setShowBoundingBoxes( mWidgetPointCloudSymbol->showBoundingBoxes() );
+  renderer->setZoomOutBehavior( mWidgetPointCloudSymbol->zoomOutBehavior() );
   return renderer;
 }
 
