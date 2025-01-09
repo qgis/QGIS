@@ -2483,8 +2483,6 @@ bool QgsPostgresRasterProviderMetadata::styleExists( const QString &uri, const Q
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  QString rasterColumn = conn->rasterColumnName( dsUri.schema(), dsUri.table() );
-
   const QString checkQuery = QString( "SELECT styleName"
                                       " FROM layer_styles"
                                       " WHERE f_table_catalog=%1"
@@ -2499,7 +2497,7 @@ bool QgsPostgresRasterProviderMetadata::styleExists( const QString &uri, const Q
                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                                .arg( QgsPostgresConn::quotedValue( mType ) )
                                .arg( QgsPostgresConn::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) )
-                               .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
   QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), checkQuery ) );
   if ( res.PQresultStatus() == PGRES_TUPLES_OK )
@@ -2529,8 +2527,6 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
     errCause = QObject::tr( "Connection to database failed" );
     return false;
   }
-
-  QString rasterColumn = conn->rasterColumnName( dsUri.schema(), dsUri.table() );
 
   if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
@@ -2600,7 +2596,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                   .arg( uiFileColumn )
                   .arg( uiFileValue )
                   .arg( QgsPostgresConn::quotedValue( mType ) )
-                  .arg( QgsPostgresConn::quotedValue( rasterColumn ) )
+                  .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
                   // Must be the final .arg replacement - see above
                   .arg( QgsPostgresConn::quotedValue( qmlStyle ), QgsPostgresConn::quotedValue( sldStyle ) );
 
@@ -2619,7 +2615,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                          .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                          .arg( QgsPostgresConn::quotedValue( mType ) )
                          .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
-                         .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+                         .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
   QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresRasterProviderMetadata", checkQuery ) );
   if ( res.PQntuples() > 0 )
@@ -2648,7 +2644,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
             .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
             // Must be the final .arg replacement - see above
             .arg( QgsPostgresConn::quotedValue( qmlStyle ), QgsPostgresConn::quotedValue( sldStyle ) )
-            .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+            .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
   }
 
   if ( useAsDefault )
@@ -2665,7 +2661,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                                  .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                                  .arg( QgsPostgresConn::quotedValue( mType ) )
-                                 .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
     sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
@@ -2715,8 +2711,6 @@ QString QgsPostgresRasterProviderMetadata::loadStoredStyle( const QString &uri, 
     return QString();
   }
 
-  QString rasterColumn = conn->rasterColumnName( dsUri.schema(), dsUri.table() );
-
   // support layer_styles without type column < 3.14
   if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
@@ -2732,7 +2726,7 @@ QString QgsPostgresRasterProviderMetadata::loadStoredStyle( const QString &uri, 
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                       .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
   }
   else
   {
@@ -2750,7 +2744,7 @@ QString QgsPostgresRasterProviderMetadata::loadStoredStyle( const QString &uri, 
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                        .arg( QgsPostgresConn::quotedValue( mType ) )
-                       .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
   }
 
   QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectQmlQuery ) );
@@ -2791,8 +2785,6 @@ int QgsPostgresRasterProviderMetadata::listStyles( const QString &uri, QStringLi
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  QString rasterColumn = conn->rasterColumnName( dsUri.schema(), dsUri.table() );
-
   QString selectRelatedQuery = QString( "SELECT id,styleName,description"
                                         " FROM layer_styles"
                                         " WHERE f_table_catalog=%1"
@@ -2806,7 +2798,7 @@ int QgsPostgresRasterProviderMetadata::listStyles( const QString &uri, QStringLi
                                  .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                                  .arg( QgsPostgresConn::quotedValue( mType ) )
-                                 .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
   QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectRelatedQuery ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -2833,7 +2825,7 @@ int QgsPostgresRasterProviderMetadata::listStyles( const QString &uri, QStringLi
                                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                 .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                                 .arg( QgsPostgresConn::quotedValue( mType ) )
-                                .arg( QgsPostgresConn::quotedValue( rasterColumn ) );
+                                .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
   result = conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectOthersQuery );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
