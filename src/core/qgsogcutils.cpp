@@ -2318,7 +2318,7 @@ static bool isGeometryColumn( const QgsExpressionNode *node )
 
   const QgsExpressionNodeFunction *fn = static_cast<const QgsExpressionNodeFunction *>( node );
   QgsExpressionFunction *fd = QgsExpression::Functions()[fn->fnIndex()];
-  return fd->name() == QLatin1String( "$geometry" );
+  return fd->name() == QLatin1String( "$geometry" ) || fn->referencedVariables().contains( QLatin1String( "geometry" ) );
 }
 
 static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
@@ -2382,7 +2382,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     }
     else
     {
-      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('…'))" );
+      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox(@geometry, geomFromWKT('…'))" );
       return QDomElement();
     }
   }
