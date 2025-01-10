@@ -120,6 +120,8 @@ class _3D_EXPORT QgsRubberBand3D
 
     void addPoint( const QgsPoint &pt );
 
+    void setPoints( const QgsLineString &points );
+
     void removeLastPoint();
 
     void moveLastPoint( const QgsPoint &pt );

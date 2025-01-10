@@ -117,7 +117,7 @@ Qt3DQGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *parent )
   return geom;
 }
 
-void QgsLineVertexData::addLineString( const QgsLineString &lineString, float extraHeightOffset )
+void QgsLineVertexData::addLineString( const QgsLineString &lineString, float extraHeightOffset, bool closePolygon )
 {
   if ( withAdjacency )
     indexes << vertices.count(); // add the following vertex (for adjacency)
@@ -132,6 +132,8 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
       break;
   }
 
+  const int firstIndex = vertices.count();
+
   for ( int i = 0; i < lineString.vertexCount(); ++i )
   {
     QgsPoint p = lineString.pointN( i );
@@ -140,6 +142,9 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), z );
     indexes << vertices.count() - 1;
   }
+
+  if ( closePolygon )
+    indexes << firstIndex; // repeat the first vertex
 
   if ( withAdjacency )
     indexes << vertices.count() - 1; // add the last vertex (for adjacency)
