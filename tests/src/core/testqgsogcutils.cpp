@@ -734,47 +734,46 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
                                                                              "</ogc:Filter>" );
 
   QTest::newRow( "intersects_bbox $geometry" ) << QStringLiteral( "intersects_bbox($geometry, geomFromWKT('POINT (5 6)'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
-                                                                                                                               "<ogc:BBOX>"
-                                                                                                                               "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                               "<gml:Box><gml:coordinates ts=\" \" cs=\",\">5,6 5,6</gml:coordinates></gml:Box>"
-                                                                                                                               "</ogc:BBOX>"
-                                                                                                                               "</ogc:Filter>" );
+                                                                                                                                         "<ogc:BBOX>"
+                                                                                                                                         "<ogc:PropertyName>geometry</ogc:PropertyName>"
+                                                                                                                                         "<gml:Box><gml:coordinates ts=\" \" cs=\",\">5,6 5,6</gml:coordinates></gml:Box>"
+                                                                                                                                         "</ogc:BBOX>"
+                                                                                                                                         "</ogc:Filter>" );
 
   QTest::newRow( "intersects + wkt $geometry" ) << QStringLiteral( "intersects($geometry, geomFromWKT('POINT (5 6)'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
-                                                                                                                           "<ogc:Intersects>"
-                                                                                                                           "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                           "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
-                                                                                                                           "</ogc:Intersects>"
-                                                                                                                           "</ogc:Filter>" );
+                                                                                                                                     "<ogc:Intersects>"
+                                                                                                                                     "<ogc:PropertyName>geometry</ogc:PropertyName>"
+                                                                                                                                     "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
+                                                                                                                                     "</ogc:Intersects>"
+                                                                                                                                     "</ogc:Filter>" );
 
   QTest::newRow( "contains + gml $geometry" ) << QStringLiteral( "contains($geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
-                                                                                                                                                                           "<ogc:Contains>"
-                                                                                                                                                                           "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                                                                           "<Point><coordinates ts=\" \" cs=\",\">5,6</coordinates></Point>"
-                                                                                                                                                                           "</ogc:Contains>"
-                                                                                                                                                                           "</ogc:Filter>" );
+                                                                                                                                                                                     "<ogc:Contains>"
+                                                                                                                                                                                     "<ogc:PropertyName>geometry</ogc:PropertyName>"
+                                                                                                                                                                                     "<Point><coordinates ts=\" \" cs=\",\">5,6</coordinates></Point>"
+                                                                                                                                                                                     "</ogc:Contains>"
+                                                                                                                                                                                     "</ogc:Filter>" );
 
   QTest::newRow( "intersects_bbox @geometry" ) << QStringLiteral( "intersects_bbox(@geometry, geomFromWKT('POINT (5 6)'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
-                                                                                                                               "<ogc:BBOX>"
-                                                                                                                               "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                               "<gml:Box><gml:coordinates ts=\" \" cs=\",\">5,6 5,6</gml:coordinates></gml:Box>"
-                                                                                                                               "</ogc:BBOX>"
-                                                                                                                               "</ogc:Filter>" );
+                                                                                                                                         "<ogc:BBOX>"
+                                                                                                                                         "<ogc:PropertyName>geometry</ogc:PropertyName>"
+                                                                                                                                         "<gml:Box><gml:coordinates ts=\" \" cs=\",\">5,6 5,6</gml:coordinates></gml:Box>"
+                                                                                                                                         "</ogc:BBOX>"
+                                                                                                                                         "</ogc:Filter>" );
 
   QTest::newRow( "intersects + wkt @geometry" ) << QStringLiteral( "intersects(@geometry, geomFromWKT('POINT (5 6)'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
-                                                                                                                           "<ogc:Intersects>"
-                                                                                                                           "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                           "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
-                                                                                                                           "</ogc:Intersects>"
-                                                                                                                           "</ogc:Filter>" );
+                                                                                                                                     "<ogc:Intersects>"
+                                                                                                                                     "<ogc:PropertyName>geometry</ogc:PropertyName>"
+                                                                                                                                     "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
+                                                                                                                                     "</ogc:Intersects>"
+                                                                                                                                     "</ogc:Filter>" );
 
   QTest::newRow( "contains + gml @geometry" ) << QStringLiteral( "contains(@geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
-                                                                                                                                                                           "<ogc:Contains>"
-                                                                                                                                                                           "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                                                                           "<Point><coordinates ts=\" \" cs=\",\">5,6</coordinates></Point>"
-                                                                                                                                                                           "</ogc:Contains>"
-                                                                                                                                                                           "</ogc:Filter>" );
-
+                                                                                                                                                                                     "<ogc:Contains>"
+                                                                                                                                                                                     "<ogc:PropertyName>geometry</ogc:PropertyName>"
+                                                                                                                                                                                     "<Point><coordinates ts=\" \" cs=\",\">5,6</coordinates></Point>"
+                                                                                                                                                                                     "</ogc:Contains>"
+                                                                                                                                                                                     "</ogc:Filter>" );
 }
 
 void TestQgsOgcUtils::testExpressionToOgcFilterWFS11()
