@@ -1537,7 +1537,7 @@ void TestQgsProject::testSymlinks6ProjectFolder()
 
 void TestQgsProject::regression60100()
 {
-/*
+  /*
  * Regression test for QGIS issue #60100 (https://github.com/qgis/QGIS/issues/60100)
  * This test ensures that when saving a QGIS project with relative paths,
  * the correct layer datasource is preserved, even when the current working
@@ -1584,7 +1584,7 @@ void TestQgsProject::regression60100()
     projDirPath + QStringLiteral( "/points.geojson" ),
     QStringLiteral( "Test Points" ),
     QStringLiteral( "ogr" )
-    );
+  );
   project->addMapLayer( layer.release() );
 
   // Write (save) the project to disk. This used to pick up the WRONG file and save it to the proj.
