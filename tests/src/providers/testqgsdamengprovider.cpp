@@ -27,7 +27,7 @@
 class QgsTestDamengExpressionCompiler : public QgsDamengExpressionCompiler
 {
 public:
-  QgsTestDamengExpressionCompiler(QgsDamengFeatureSource* source, const QString& srid, const QString& geometryColumn) : QgsDamengExpressionCompiler(source)
+  QgsTestDamengExpressionCompiler( QgsDamengFeatureSource* source, const QString& srid, const QString& geometryColumn ) : QgsDamengExpressionCompiler( source )
   {
     mDetectedSrid = srid;
     mGeometryColumn = geometryColumn;
@@ -42,12 +42,12 @@ private:
 
   QgsDamengConn* getConnection()
   {
-    if (!_connection)
+    if ( !_connection )
     {
-      const char* connstring = getenv("QGIS_DMTEST_DB");
-      if (NULL == connstring) connstring = "host=192.168.100.173 port=5236 user='SYSDBA' password='SYSDBA'";
-      _connection = QgsDamengConn::connectDb(connstring, true);
-      assert(_connection);
+      const char* connstring = getenv( "QGIS_DMTEST_DB" );
+      if ( NULL == connstring ) connstring = "host=192.168.100.173 port=5236 user='SYSDBA' password='SYSDBA'";
+      _connection = QgsDamengConn::connectDb( connstring, true );
+      assert( _connection );
     }
     return _connection;
   }
@@ -59,43 +59,43 @@ private:
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
     {
-      if (this->_connection) this->_connection->unref();
+      if ( this->_connection ) this->_connection->unref();
     }
 
     void quotedValueString()
     {
-      QCOMPARE(QgsDamengConn::quotedValue("b"), QString("'b'"));
-      QCOMPARE(QgsDamengConn::quotedValue("b's"), QString("'b''s'"));
-      QCOMPARE(QgsDamengConn::quotedValue("b \"c' \\x"), QString("E'b \"c'' \\\\x'"));
+      QCOMPARE( QgsDamengConn::quotedValue( "b" ), QString( "'b'" ) );
+      QCOMPARE( QgsDamengConn::quotedValue( "b's" ), QString( "'b''s'" ) );
+      QCOMPARE( QgsDamengConn::quotedValue( "b \"c' \\x" ), QString( "E'b \"c'' \\\\x'" ) );
     }
 
     void quotedValueDatetime()
     {
-      QCOMPARE(QgsDamengConn::quotedValue(QDateTime::fromString("2020-05-07 17:56:00", "yyyy-MM-dd HH:mm:ss")), QString("'2020-05-07T17:56:00.000'"));
+      QCOMPARE( QgsDamengConn::quotedValue( QDateTime::fromString( "2020-05-07 17:56:00", "yyyy-MM-dd HH:mm:ss" ) ), QString( "'2020-05-07T17:56:00.000'" ) );
 
       QgsFields fields;
       QgsField f;
-      f.setName("ts");
-      f.setType(QVariant::DateTime);
-      f.setTypeName("timestamp");
-      fields.append(f);
+      f.setName( "ts" );
+      f.setType( QVariant::DateTime );
+      f.setTypeName( "timestamp" );
+      fields.append( f );
       QgsField f2;
-      f2.setName("pk");
-      f2.setType(QVariant::LongLong);
-      f2.setTypeName("bigint");
-      fields.append(f2);
+      f2.setName( "pk" );
+      f2.setType( QVariant::LongLong );
+      f2.setTypeName( "bigint" );
+      fields.append( f2 );
 
       QList<int> pkAttrs;
-      pkAttrs.append(0);
-      pkAttrs.append(1);
+      pkAttrs.append( 0 );
+      pkAttrs.append( 1 );
 
       QgsDamengSharedData* shared = new QgsDamengSharedData;
       QVariantList qvlist;
-      qvlist.append(QDateTime::fromString("2020-05-07 17:56:00", "yyyy-MM-dd HH:mm:ss"));
-      qvlist.append(123LL);
-      shared->insertFid(1LL, qvlist);
+      qvlist.append( QDateTime::fromString( "2020-05-07 17:56:00", "yyyy-MM-dd HH:mm:ss" ) );
+      qvlist.append( 123LL );
+      shared->insertFid( 1LL, qvlist );
 
-      QCOMPARE(QgsDamengUtils::whereClause(1LL, fields, NULL, QgsDamengPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsDamengSharedData>(shared)), QString("\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123"));
+      QCOMPARE( QgsDamengUtils::whereClause( 1LL, fields, NULL, QgsDamengPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsDamengSharedData>( shared ) ), QString( "\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123" ) );
     }
 
     void supportedLayers()

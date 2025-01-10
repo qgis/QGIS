@@ -217,6 +217,13 @@ typedef QSet<int> QgsAttributeIds;
  * attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
  * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
  * geometry constructor functions.
+
+ * Also note:
+ *
+ * - You can use various functions available in the QGIS Expression list,
+ *   however the function must exist server side and have the same name and arguments to work.
+ * - Use the special $geometry parameter to provide the layer geometry column as input
+ *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
  *
  * \subsection oapif OGC API Features data provider (oapif)
  *

@@ -43,7 +43,6 @@
 #include "qgsnullmaterialsettings.h"
 
 #include "qgs3dterrainregistry.h"
-#include "qgsabstractterrainsettings.h"
 
 #include "qgsstyle.h"
 

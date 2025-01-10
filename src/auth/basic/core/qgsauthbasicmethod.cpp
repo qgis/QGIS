@@ -209,7 +209,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
           uri = uri.replace( QLatin1String( ";trusted_connection=yes" ), QString() );
           uri += QStringLiteral( ";pwd=%1" ).arg( password );
         }
-		else if ( uri.startsWith( QLatin1String( "Dameng:" ) ) )
+        else if ( uri.startsWith( QLatin1String( "Dameng:" ) ) )
         {
           uri += QStringLiteral( ",user=%1" ).arg( username );
           uri += QStringLiteral( ",password=%1" ).arg( password );

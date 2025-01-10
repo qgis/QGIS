@@ -1,0 +1,7 @@
+E:/Desktop/QGIS/QGIS_proj/QGIS-master-pull/QGIS/external/odbccpp/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+E:/Desktop/QGIS/QGIS_proj/QGIS-master-pull/QGIS/external/odbccpp/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+E:/Desktop/QGIS/QGIS_proj/QGIS-master-pull/QGIS/external/odbccpp/out/build/x64-Debug/src/CMakeFiles/edit_cache.dir
+E:/Desktop/QGIS/QGIS_proj/QGIS-master-pull/QGIS/external/odbccpp/out/build/x64-Debug/src/CMakeFiles/rebuild_cache.dir
+E:/Desktop/QGIS/QGIS_proj/QGIS-master-pull/QGIS/external/odbccpp/out/build/x64-Debug/src/odbc/CMakeFiles/rebuild_cache.dir
+E:/Desktop/QGIS/QGIS_proj/QGIS-master-pull/QGIS/external/odbccpp/out/build/x64-Debug/src/odbc/CMakeFiles/odbccpp_static.dir
+E:/Desktop/QGIS/QGIS_proj/QGIS-master-pull/QGIS/external/odbccpp/out/build/x64-Debug/src/odbc/CMakeFiles/edit_cache.dir

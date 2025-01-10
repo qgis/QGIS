@@ -288,7 +288,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case Dameng:
         settings.beginGroup( QStringLiteral( "/Dameng/connections" ) );
-		connections = settings.childGroups();
+        connections = settings.childGroups();
         break;
       case HANA:
         settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
