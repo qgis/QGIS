@@ -72,6 +72,7 @@ class TestQgsProject : public QObject
     void testSymlinks4LayerShapefileBroken();
     void testSymlinks5ProjectFile();
     void testSymlinks6ProjectFolder();
+    void regression60100();
 };
 
 void TestQgsProject::init()
@@ -1532,6 +1533,85 @@ void TestQgsProject::testSymlinks6ProjectFolder()
   project->read( symlinkprojPath );
   QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
   QCOMPARE( loadedLayer->source(), symlinkprojDir + "/points.shp" );
+}
+
+void TestQgsProject::regression60100()
+{
+/*
+ * Regression test for QGIS issue #60100 (https://github.com/qgis/QGIS/issues/60100)
+ * This test ensures that when saving a QGIS project with relative paths,
+ * the correct layer datasource is preserved, even when the current working
+ * directory (CWD) contains a file with the same name as the layer datasource.
+ *
+ * Previous behavior:
+ * - If a file with the same name as a layer datasource existed in the CWD,
+ *   the layer path in the saved project would point to the file in the CWD,
+ *   rather than the intended file in the project directory (PROJDIR).
+ *
+ * Test steps:
+ * 1. Create a temporary directory structure with two subfolders: WORKDIR and PROJDIR.
+ * 2. Copy a `points.geojson` file to both WORKDIR and PROJDIR.
+ * 3. Create a new QGIS project in PROJDIR and add the `points.geojson` file from PROJDIR as a layer.
+ * 4. Change the working directory to WORKDIR and save the project.
+ * 5. Verify that the saved project references the correct datasource (`./points.geojson` in PROJDIR)
+ *    and does not erroneously reference the file in WORKDIR.
+ */
+
+  // Create directory structure with 2 subfolders
+  const QTemporaryDir baseDir;
+  const QDir base( baseDir.path() );
+  base.mkdir( QStringLiteral( "WORKDIR" ) );
+  base.mkdir( QStringLiteral( "PROJDIR" ) );
+  const QString workDirPath = baseDir.path() + QStringLiteral( "/WORKDIR" );
+  const QString projDirPath = baseDir.path() + QStringLiteral( "/PROJDIR" );
+
+  // Save our old CWD and switch to the new WORKDIR
+  const QString oldCWD = QDir::currentPath();
+  QVERIFY( QDir::setCurrent( workDirPath ) );
+
+  // Copy points.geojson to both subfolders
+  const QString testDataDir( TEST_DATA_DIR );
+  const QString pointsPath = testDataDir + QStringLiteral( "/points.geojson" );
+  QFile::copy( pointsPath, workDirPath + QStringLiteral( "/points.geojson" ) );
+  QFile::copy( pointsPath, projDirPath + QStringLiteral( "/points.geojson" ) );
+
+  // Create a new/empty project in PROJDIR
+  const QString projectPath = projDirPath + QStringLiteral( "/project.qgs" );
+  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
+
+  // Add the local points.geojson (in PROJDIR) as a layer
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>(
+    projDirPath + QStringLiteral( "/points.geojson" ),
+    QStringLiteral( "Test Points" ),
+    QStringLiteral( "ogr" )
+    );
+  project->addMapLayer( layer.release() );
+
+  // Write (save) the project to disk. This used to pick up the WRONG file and save it to the proj.
+  project->write( projectPath );
+
+  // Restore old working directory
+  QVERIFY( QDir::setCurrent( oldCWD ) );
+
+  // Verify the layer path in the project file
+  QDomDocument doc;
+  QFile projectFile( projectPath );
+  bool res = projectFile.open( QIODevice::ReadOnly );
+  Q_ASSERT( res );
+  res = static_cast<bool>( doc.setContent( &projectFile ) );
+  Q_ASSERT( res );
+  projectFile.close();
+
+  const QDomElement docElem = doc.documentElement();
+  const QDomElement layersElem = docElem.firstChildElement( QStringLiteral( "projectlayers" ) );
+  QDomElement layerElem = layersElem.firstChildElement();
+  while ( !layerElem.isNull() )
+  {
+    const QString layerSource = layerElem.firstChildElement( QStringLiteral( "datasource" ) ).text();
+    // Should NOT be "../WORKDIR/points.geojson"
+    QCOMPARE( layerSource, QStringLiteral( "./points.geojson" ) );
+    layerElem = layerElem.nextSiblingElement();
+  }
 }
 
 QGSTEST_MAIN( TestQgsProject )

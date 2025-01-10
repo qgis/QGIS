@@ -779,8 +779,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
   const QgsDataProvider *provider = dataProvider();
   const QString providerKey = provider ? provider->name() : QString();
-  const QString srcRaw = encodedSource( source(), context );
-  const QString src = providerKey.isEmpty() ? srcRaw : QgsProviderRegistry::instance()->absoluteToRelativeUri( providerKey, srcRaw, context );
+  const QString src = encodedSource( source(), context );
   const QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
   layerElement.appendChild( dataSource );
