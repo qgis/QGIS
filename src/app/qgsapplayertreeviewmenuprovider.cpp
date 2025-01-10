@@ -377,7 +377,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      if ( vlayer || meshLayer )
+      if ( vlayer || meshLayer || pcLayer )
       {
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
         QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
@@ -410,17 +410,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
-
-        if ( vlayer && vlayer->dataProvider() && vlayer->dataProvider()->supportsSubsetString() )
-        {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
-          action->setEnabled( !vlayer->isEditable() );
-        }
       }
 
-      if ( ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() ) || ( pcLayer && pcLayer->dataProvider() && pcLayer->dataProvider()->supportsSubsetString() ) )
+      if ( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() )
       {
-        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
+        QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
+        action->setEnabled( !layer->isEditable() );
       }
 
       // change data source is only supported for vectors, rasters, point clouds, mesh, some vector tile layers
