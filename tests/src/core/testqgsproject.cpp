@@ -1538,25 +1538,24 @@ void TestQgsProject::testSymlinks6ProjectFolder()
 void TestQgsProject::regression60100()
 {
   /*
- * Regression test for QGIS issue #60100 (https://github.com/qgis/QGIS/issues/60100)
- * This test ensures that when saving a QGIS project with relative paths,
- * the correct layer datasource is preserved, even when the current working
- * directory (CWD) contains a file with the same name as the layer datasource.
- *
- * Previous behavior:
- * - If a file with the same name as a layer datasource existed in the CWD,
- *   the layer path in the saved project would point to the file in the CWD,
- *   rather than the intended file in the project directory (PROJDIR).
- *
- * Test steps:
- * 1. Create a temporary directory structure with two subfolders: WORKDIR and PROJDIR.
- * 2. Copy a `points.geojson` file to both WORKDIR and PROJDIR.
- * 3. Create a new QGIS project in PROJDIR and add the `points.geojson` file from PROJDIR as a layer.
- * 4. Change the working directory to WORKDIR and save the project.
- * 5. Verify that the saved project references the correct datasource (`./points.geojson` in PROJDIR)
- *    and does not erroneously reference the file in WORKDIR.
- */
-
+  * Regression test for QGIS issue #60100 (https://github.com/qgis/QGIS/issues/60100)
+  * This test ensures that when saving a QGIS project with relative paths,
+  * the correct layer datasource is preserved, even when the current working
+  * directory (CWD) contains a file with the same name as the layer datasource.
+  *
+  * Previous behavior:
+  * - If a file with the same name as a layer datasource existed in the CWD,
+  *   the layer path in the saved project would point to the file in the CWD,
+  *   rather than the intended file in the project directory (PROJDIR).
+  *
+  * Test steps:
+  * 1. Create a temporary directory structure with two subfolders: WORKDIR and PROJDIR.
+  * 2. Copy a `points.geojson` file to both WORKDIR and PROJDIR.
+  * 3. Create a new QGIS project in PROJDIR and add the `points.geojson` file from PROJDIR as a layer.
+  * 4. Change the working directory to WORKDIR and save the project.
+  * 5. Verify that the saved project references the correct datasource (`./points.geojson` in PROJDIR)
+  *    and does not erroneously reference the file in WORKDIR.
+  */
   // Create directory structure with 2 subfolders
   const QTemporaryDir baseDir;
   const QDir base( baseDir.path() );
