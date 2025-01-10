@@ -95,7 +95,7 @@ struct QgsLineVertexData
     Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
 #endif
 
-    void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
+    void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0, bool closePolygon = false );
     void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );
 };
 
