@@ -17,6 +17,7 @@ endif()
 find_package(HDF5)
 find_package(NetCDF)
 find_package(LibXml2)
+find_package(Threads)
 
 ########################################################
 # Compile internal MDAL

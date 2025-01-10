@@ -237,6 +237,7 @@
         <file>themes/default/mActionAddOgrLayer.svg</file>
         <file>themes/default/mActionAddOracleLayer.svg</file>
         <file>themes/default/mActionAddPostgisLayer.svg</file>
+		<file>themes/default/mActionAddDamengLayer.svg</file>
         <file>themes/default/mActionAddHanaLayer.svg</file>
         <file>themes/default/mActionAddPart.svg</file>
         <file>themes/default/mActionAddRasterLayer.svg</file>
@@ -486,6 +487,7 @@
         <file>themes/default/mIconCloseTab.svg</file>
         <file>themes/default/mIconCloseTabHover.svg</file>
         <file>themes/default/mIconCritical.svg</file>
+		<file>themes/default/mIconDameng.svg</file>
         <file>themes/default/mIconDataDefine.svg</file>
         <file>themes/default/mIconDataDefineError.svg</file>
         <file>themes/default/mIconDataDefineOn.svg</file>

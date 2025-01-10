@@ -483,7 +483,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << QStringLiteral( "postgres" ) << QStringLiteral( "mssql" ) << QStringLiteral( "ogr" ) << QStringLiteral( "hana" ) << QStringLiteral( "spatialite" ) << QStringLiteral( "oracle" ), this );
+    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << QStringLiteral( "postgres" ) << QStringLiteral( "mssql" ) << QStringLiteral( "dameng" ) << QStringLiteral( "ogr" ) << QStringLiteral( "hana" ) << QStringLiteral( "spatialite" ) << QStringLiteral( "oracle" ), this );
     widget->setPanelTitle( tr( "Save “%1” to Database Table" ).arg( mParameter->description() ) );
     widget->setAcceptButtonVisible( true );
 

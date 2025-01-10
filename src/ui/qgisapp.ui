@@ -217,6 +217,7 @@
      <addaction name="mActionAddSpatiaLiteLayer"/>
      <addaction name="mActionAddMssqlLayer"/>
      <addaction name="mActionAddOracleLayer"/>
+	 <addaction name="mActionAddDamengLayer"/>
      <addaction name="mActionAddHanaLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
@@ -1181,7 +1182,7 @@ Shift+O to turn segments into straight or curve lines.</string>
    <property name="toolTip">
     <string>Trim/Extend Feature
 - Click to set the reference segment
-- Click on another segment to trim it or extend it to the reference segment (Use Shift to keep the reference segment active)
+- Click on another segment to trim it or extend it to the reference segment (Use Shift or Ctrl to keep the reference segment active)
 Note : Segment snapping must be enabled in the snapping Toolbar</string>
    </property>
   </action>
@@ -1641,6 +1642,15 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
+  <action name="mActionAddDamengLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddDamengLayer.svg</normaloff>:/images/themes/default/mActionAddDamengLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Dameng Spatial Layer…</string>
    </property>
   </action>
   <action name="mActionAddHanaLayer">

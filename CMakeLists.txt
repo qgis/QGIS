@@ -1,12 +1,17 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.23.0)
+cmake_minimum_required(VERSION 3.12.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
+cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0053 NEW)
+cmake_policy(SET CMP0071 NEW)
+cmake_policy(SET CMP0094 NEW)
 if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.27")
+  cmake_policy(SET CMP0144 NEW)
   # include(Dart) still used, as is the "Experimental" target
   cmake_policy(SET CMP0145 OLD)
 endif()
@@ -67,6 +72,9 @@ if (APPLE)
 else()
   set(QGIS_APP_NAME "qgis")
 endif()
+
+set(FLEX_EXECUTABLE "E:/QGIS_proj/qgis/msys64_2/usr/bin/flex.exe")
+set(BISON_EXECUTABLE "E:/QGIS_proj/qgis/msys64_2/usr/bin/bison.exe")
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
@@ -348,6 +356,13 @@ if(WITH_CORE)
     set(HAVE_ORACLE TRUE)
     set(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
     set(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
+  endif()
+  
+  set (WITH_DAMENG FALSE CACHE BOOL "Determines whether Dameng support should be built")
+  if(WITH_DAMENG)
+    set(HAVE_DAMENG TRUE)
+    set(DAMENG_INCLUDE_DIR "" CACHE PATH "Path to DPI headers")
+    set(DAMENG_LIBRARY "" CACHE PATH "Path to DPI libraries")
   endif()
 
   set (WITH_HANA FALSE CACHE BOOL "Determines whether SAP HANA Spatial support should be built")
@@ -670,6 +685,13 @@ if(WITH_CORE)
     find_package(Libtasn1 REQUIRED)
   endif()
 
+  if (SUPPRESS_QT_WARNINGS)
+    # Newer versions of UseQt4.cmake include Qt with -isystem automatically
+    # This can be used to force this behavior on older systems
+    # Can be removed as soon as Travis-CI updates from precise
+    include_directories(SYSTEM ${QT_INCLUDE_DIR})
+  endif()
+
   # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
   # (Keeps code compatible with Qt/Mac/64bit)
   add_definitions(-DQT_NO_CAST_TO_ASCII)
@@ -783,7 +805,7 @@ if (PEDANTIC)
     set(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
     set(_warnings "${_warnings} /wd4996 ")  # '...': was declared deprecated (unfortunately triggered when implementing deprecated interfaces even when it is deprecated too)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /utf-8 ${_warnings}")
   else()
     # add warnings via flags (not as definitions as on Mac -Wall can not be overridden per language )
     set(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
@@ -809,14 +831,14 @@ if (PEDANTIC)
       set(_warnings "${_warnings} -Wno-deprecated-copy")
     endif()
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /utf-8 ${_warnings}")
 
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # There are redundant declarations in Qt and GDAL
     # add_definitions( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /utf-8 -Wreturn-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
     endif()
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
@@ -828,7 +850,7 @@ if (PEDANTIC)
     endif()
     if (NOT "${CXX_EXTRA_FLAGS}" STREQUAL "")
       message (STATUS "Appending CXX_EXTRA_FLAGS")
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_EXTRA_FLAGS}")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /utf-8 ${CXX_EXTRA_FLAGS}")
     endif()
   endif()
 
@@ -836,7 +858,7 @@ endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /utf-8 -Qunused-arguments")
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
@@ -857,7 +879,7 @@ endif()
 set (AGGRESSIVE_SAFE_MODE FALSE CACHE BOOL "Forces a aggressive safe mode where issues like unsafe thread access will resort in fatal exceptions")
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /std:c++17 /permissive-")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /utf-8 /utf-8 /std:c++17 /permissive-")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /std:c++17 /permissive-")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -887,7 +909,7 @@ endif()
 
 if(ENABLE_COVERAGE)
   include("cmake/modules/coverage/CodeCoverage.cmake")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /utf-8 -g -O0 -fprofile-arcs -ftest-coverage --coverage")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
@@ -1020,6 +1042,20 @@ if (WITH_CORE)
   if (ANDROID)
     set (DEFAULT_PLUGIN_SUBDIR  lib)
     string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
+  endif()
+
+  #assume we have escaped compiler directives
+  #eventually we want to change this to new
+  #since we don't need to jump through so many
+  #hoops to escape compiler directives then
+  if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+    if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
+      cmake_policy(SET CMP0063 NEW)
+    endif()
+    if(MSVC)
+      cmake_policy(SET CMP0020 NEW)
+    endif()
   endif()
 
   if("${CMAKE_SYSTEM_NAME}"  MATCHES "Linux")

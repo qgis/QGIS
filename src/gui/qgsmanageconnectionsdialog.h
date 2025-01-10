@@ -47,6 +47,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       MSSQL,
       WCS,
       Oracle,
+	  Dameng,
       HANA,
       XyzTiles,
       ArcgisMapServer, // TODO QGIS 4: remove
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument savePgConnections( const QStringList &connections );
     QDomDocument saveMssqlConnections( const QStringList &connections );
     QDomDocument saveOracleConnections( const QStringList &connections );
+	QDomDocument saveDamengConnections( const QStringList &connections );
     QDomDocument saveHanaConnections( const QStringList &connections );
     QDomDocument saveXyzTilesConnections( const QStringList &connections );
     QDomDocument saveArcgisConnections( const QStringList &connections );
@@ -91,6 +93,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     void loadPgConnections( const QDomDocument &doc, const QStringList &items );
     void loadMssqlConnections( const QDomDocument &doc, const QStringList &items );
     void loadOracleConnections( const QDomDocument &doc, const QStringList &items );
+	void loadDamengConnections( const QDomDocument &doc, const QStringList &items );
     void loadHanaConnections( const QDomDocument &doc, const QStringList &items );
     void loadXyzTilesConnections( const QDomDocument &doc, const QStringList &items );
     void loadArcgisConnections( const QDomDocument &doc, const QStringList &items, const QString &service );

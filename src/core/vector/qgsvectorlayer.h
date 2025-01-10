@@ -181,6 +181,12 @@ typedef QSet<int> QgsAttributeIds;
  * geometry column, and other attributes. The url can be constructed using the
  * QgsDataSourceUri class.
  *
+ * \subsection dameng Dameng data provider (dameng)
+ *
+ * Connects to a Dameng database. The url defines the connection parameters, table,
+ * geometry column, and other attributes. The url can be constructed using the
+ * QgsDataSourceUri class.
+ *
  * \subsection wfs WFS (web feature service) data provider (wfs)
  *
  * Used to access data provided by a web feature service.
@@ -211,13 +217,6 @@ typedef QSet<int> QgsAttributeIds;
  * attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
  * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
  * geometry constructor functions.
-
- * Also note:
- *
- * - You can use various functions available in the QGIS Expression list,
- *   however the function must exist server side and have the same name and arguments to work.
- * - Use the special $geometry parameter to provide the layer geometry column as input
- *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
  *
  * \subsection oapif OGC API Features data provider (oapif)
  *
@@ -236,6 +235,13 @@ typedef QSet<int> QgsAttributeIds;
  * - pageSize=number: number of features to retrieve in a single request
  * - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
  * - hideDownloadProgressDialog=1: to hide the download progress dialog.
+ *
+ * Also note:
+ *
+ * - You can use various functions available in the QGIS Expression list,
+ *   however the function must exist server side and have the same name and arguments to work.
+ * - Use the special $geometry parameter to provide the layer geometry column as input
+ *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
  *
  * \subsection delimitedtext Delimited text file data provider (delimitedtext)
  *

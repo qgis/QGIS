@@ -131,6 +131,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case MSSQL:
         doc = saveMssqlConnections( items );
         break;
+      case Dameng:
+        doc = saveDamengConnections( items );
+        break;
       case WCS:
         doc = saveOWSConnections( items, QStringLiteral( "WCS" ) );
         break;
@@ -208,6 +211,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case MSSQL:
         loadMssqlConnections( doc, items );
         break;
+      case Dameng:
+        loadDamengConnections( doc, items );
+        break;
       case WCS:
         loadOWSConnections( doc, items, QStringLiteral( "WCS" ) );
         break;
@@ -279,6 +285,10 @@ bool QgsManageConnectionsDialog::populateConnections()
       case Oracle:
         settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
         connections = settings.childGroups();
+        break;
+      case Dameng:
+        settings.beginGroup( QStringLiteral( "/Dameng/connections" ) );
+		connections = settings.childGroups();
         break;
       case HANA:
         settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
@@ -381,6 +391,13 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsOracleConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not an Oracle connections exchange file." ) );
+          return false;
+        }
+        break;
+      case Dameng:
+        if (root.tagName() != QLatin1String( "qgsDamengConnections" ) )
+        {
+          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a Dameng connections exchange file." ) );
           return false;
         }
         break;
@@ -633,6 +650,46 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
     el.setAttribute( QStringLiteral( "userTablesOnly" ), settings.value( path + "/userTablesOnly", "0" ).toString() );
     el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
     el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
+
+    el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
+
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
+    {
+      el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
+    }
+
+    el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
+
+    if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
+    {
+      el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
+    }
+
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveDamengConnections( const QStringList &connections )
+{
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsDamengConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
+
+  const QgsSettings settings;
+  QString path;
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    path = "/Dameng/connections/" + connections[ i ];
+    QDomElement el = doc.createElement( QStringLiteral( "dameng" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host" ).toString() );
+    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port" ).toString() );
+    el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database" ).toString() );
+    el.setAttribute( QStringLiteral( "estimatedMetadata" ), settings.value( path + "/estimatedMetadata", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "projectsInDatabase" ), settings.value( path + "/projectsInDatabase", "0" ).toString() );
 
     el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
@@ -1326,6 +1383,95 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     settings.setValue( QStringLiteral( "/userTablesOnly" ), child.attribute( QStringLiteral( "userTablesOnly" ) ) );
     settings.setValue( QStringLiteral( "/geometryColumnsOnly" ), child.attribute( QStringLiteral( "geometryColumnsOnly" ) ) );
     settings.setValue( QStringLiteral( "/allowGeometrylessTables" ), child.attribute( QStringLiteral( "allowGeometrylessTables" ) ) );
+    settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
+    settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+    settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
+    settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
+    settings.endGroup();
+
+    child = child.nextSiblingElement();
+  }
+}
+
+void QgsManageConnectionsDialog::loadDamengConnections(const QDomDocument& doc, const QStringList& items)
+{
+  const QDomElement root = doc.documentElement();
+  if ( root.tagName() != QLatin1String( "qgsDamengConnections" ) )
+  {
+    QMessageBox::information( this,
+                              tr( "Loading Connections" ),
+                              tr( "The file is not a Dameng connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/Dameng/connections" ) );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) )
+    {
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
+    }
+
+    //no dups detected or overwrite is allowed
+    settings.beginGroup( "/Dameng/connections/" + connectionName );
+
+    settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
+    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
+    settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    settings.setValue( QStringLiteral( "/estimatedMetadata" ), child.attribute( QStringLiteral( "estimatedMetadata" ) ) );
+    settings.setValue( QStringLiteral( "/projectsInDatabase" ), child.attribute( QStringLiteral( "projectsInDatabase" ), 0 ) );
     settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
     settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );

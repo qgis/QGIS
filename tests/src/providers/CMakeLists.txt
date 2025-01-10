@@ -10,6 +10,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
   ${CMAKE_SOURCE_DIR}/src/providers/mssql
+  ${CMAKE_SOURCE_DIR}/src/providers/dameng
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/providers/virtualraster
   ${CMAKE_SOURCE_DIR}/src/providers/virtual

@@ -24,6 +24,7 @@
 #include "qgs3drendercontext.h"
 #include "qgsmesh3dmaterial_p.h"
 #include "qgsgeotransform.h"
+#include "qgsabstractterrainsettings.h"
 
 
 QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DRenderContext &context, const QgsTriangularMesh &triangularMesh, const QgsMesh3DSymbol *symbol )

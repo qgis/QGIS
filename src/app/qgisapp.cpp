@@ -3022,6 +3022,7 @@ void QgisApp::createActions()
 #endif
   connect( mActionAddMssqlLayer, &QAction::triggered, this, [=] { dataSourceManager( QStringLiteral( "mssql" ) ); } );
   connect( mActionAddOracleLayer, &QAction::triggered, this, [=] { dataSourceManager( QStringLiteral( "oracle" ) ); } );
+  connect( mActionAddDamengLayer, &QAction::triggered, this, [=] { dataSourceManager( QStringLiteral( "dameng" ) ); } );
   connect( mActionAddHanaLayer, &QAction::triggered, this, [=] { dataSourceManager( QStringLiteral( "hana" ) ); } );
   connect( mActionAddWmsLayer, &QAction::triggered, this, [=] { dataSourceManager( QStringLiteral( "wms" ) ); } );
   connect( mActionAddXyzLayer, &QAction::triggered, this, [=] { dataSourceManager( QStringLiteral( "xyz" ) ); } );
@@ -3767,6 +3768,8 @@ void QgisApp::createToolBars()
     bt->addAction( mActionAddMssqlLayer );
   if ( mActionAddOracleLayer )
     bt->addAction( mActionAddOracleLayer );
+  if ( mActionAddDamengLayer )
+    bt->addAction(mActionAddDamengLayer);
   if ( mActionAddHanaLayer )
     bt->addAction( mActionAddHanaLayer );
   QAction *defAddDbLayerAction = mActionAddPgLayer;
@@ -4190,6 +4193,7 @@ void QgisApp::setTheme( const QString &themeName )
 #ifdef HAVE_ORACLE
   mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ) );
 #endif
+  mActionAddDamengLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDamengLayer.svg" ) ) );
 #ifdef HAVE_HANA
   mActionAddHanaLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHanaLayer.svg" ) ) );
 #endif
@@ -17179,20 +17183,6 @@ void QgisApp::handleRenderedLayerStatistics() const
         rasterLayer->renderer()->refresh( layerStatistics->boundingBox(), layerStatistics->minimum(), layerStatistics->maximum() );
         rasterLayer->emitStyleChanged();
         emit rasterLayer->rendererChanged();
-      }
-
-      QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( QgsProject::instance()->mapLayer( layerStatistics->layerId() ) );
-      if ( meshLayer )
-      {
-        QgsMeshRendererSettings rendererSettings = meshLayer->rendererSettings();
-        QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( rendererSettings.activeScalarDatasetGroup() );
-        scalarRendererSettings.setClassificationMinimumMaximum( layerStatistics->minimum( 0 ), layerStatistics->maximum( 0 ) );
-        rendererSettings.setScalarSettings( rendererSettings.activeScalarDatasetGroup(), scalarRendererSettings );
-        meshLayer->setRendererSettings( rendererSettings );
-
-        meshLayer->emitStyleChanged();
-        emit meshLayer->rendererChanged();
-        emit meshLayer->legendChanged();
       }
     }
   }

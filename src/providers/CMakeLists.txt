@@ -29,7 +29,11 @@ if (NOT FORCE_STATIC_LIBS)
   if (WITH_ORACLE)
     add_subdirectory(oracle)
   endif()
-
+  
+  if (WITH_DAMENG)
+	add_subdirectory(dameng)
+  endif()
+	
   if (WITH_HANA)
     add_subdirectory(hana)
   endif()

@@ -41,7 +41,7 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( QStringList() << QStringLiteral( "postgres" ) << QStringLiteral( "oracle" ) << QStringLiteral( "ows" ) << QStringLiteral( "wfs" ) // convert to lowercase
+  setDataProviders( QStringList() << QStringLiteral( "postgres" ) << QStringLiteral( "oracle" ) << QStringLiteral( "dameng" ) << QStringLiteral( "ows" ) << QStringLiteral( "wfs" ) // convert to lowercase
                                   << QStringLiteral( "wcs" ) << QStringLiteral( "wms" ) << QStringLiteral( "ogr" ) << QStringLiteral( "gdal" ) << QStringLiteral( "proxy" ) );
 }
 
@@ -208,6 +208,11 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
           uri += QStringLiteral( ";uid=%1" ).arg( username );
           uri = uri.replace( QLatin1String( ";trusted_connection=yes" ), QString() );
           uri += QStringLiteral( ";pwd=%1" ).arg( password );
+        }
+		else if ( uri.startsWith( QLatin1String( "Dameng:" ) ) )
+        {
+          uri += QStringLiteral( ",user=%1" ).arg( username );
+          uri += QStringLiteral( ",password=%1" ).arg( password );
         }
         else if ( uri.startsWith( QLatin1String( "OCI:" ) ) )
         {
