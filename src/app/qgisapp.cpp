@@ -10609,11 +10609,12 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       return toggleEditingVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), allowCancel );
     case Qgis::LayerType::Mesh:
       return toggleEditingMeshLayer( qobject_cast<QgsMeshLayer *>( layer ), allowCancel );
+    case Qgis::LayerType::PointCloud:
+      return toggleEditingPointCloudLayer( qobject_cast<QgsPointCloudLayer *>( layer ), allowCancel );
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
     case Qgis::LayerType::TiledScene:
       break;
@@ -10912,6 +10913,89 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   return res;
 }
 
+bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool allowCancel )
+{
+  if ( !pclayer )
+    return false;
+
+  if ( !pclayer->supportsEditing() )
+    return false;
+
+  bool res = false;
+
+  if ( !pclayer->isEditable() )
+  {
+    res = pclayer->startEditing();
+
+    if ( !res )
+    {
+      visibleMessageBar()->pushWarning(
+        tr( "Start editing failed" ),
+        tr( "Provider cannot be opened for editing" )
+      );
+    }
+
+    mActionToggleEditing->setChecked( res );
+  }
+  else if ( pclayer->isModified() )
+  {
+    QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
+    if ( allowCancel )
+      buttons = buttons | QMessageBox::Cancel;
+    switch ( QMessageBox::question( nullptr, tr( "Stop Editing" ), tr( "Do you want to save the changes to layer %1?" ).arg( pclayer->name() ), buttons ) )
+    {
+      case QMessageBox::Cancel:
+        res = false;
+        break;
+
+      case QMessageBox::Save:
+      {
+        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+        QgsCanvasRefreshBlocker refreshBlocker;
+        if ( !pclayer->commitChanges( true ) )
+        {
+          visibleMessageBar()->pushWarning(
+            tr( "Stop editing" ),
+            tr( "Unable to save editing for layer \"%1\"" ).arg( pclayer->name() )
+          );
+          res = false;
+        }
+      }
+      break;
+      case QMessageBox::Discard:
+      {
+        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+        QgsCanvasRefreshBlocker refreshBlocker;
+        if ( !pclayer->rollBack() )
+        {
+          visibleMessageBar()->pushMessage( tr( "Error" ), tr( "Problems during roll back" ), Qgis::MessageLevel::Critical );
+          res = false;
+        }
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+  else //layer not modified
+  {
+    QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+    QgsCanvasRefreshBlocker refreshBlocker;
+    pclayer->rollBack();
+  }
+
+  if ( !res && pclayer == activeLayer() )
+  {
+    // while also called when layer sends editingStarted/editingStopped signals,
+    // this ensures correct restoring of gui state if toggling was canceled
+    // or layer commit/rollback functions failed
+    activateDeactivateLayerRelatedActions( pclayer );
+  }
+
+  return res;
+}
+
 void QgisApp::saveActiveLayerEdits()
 {
   saveEdits( activeLayer(), true, true );
@@ -10928,11 +11012,12 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
       return saveVectorLayerEdits( layer, leaveEditable, triggerRepaint );
     case Qgis::LayerType::Mesh:
       return saveMeshLayerEdits( layer, leaveEditable, triggerRepaint );
+    case Qgis::LayerType::PointCloud:
+      return savePointCloudLayerEdits( layer, leaveEditable, triggerRepaint );
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
     case Qgis::LayerType::TiledScene:
       break;
@@ -10986,6 +11071,29 @@ void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool t
   }
 }
 
+void QgisApp::savePointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
+{
+  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( !pclayer || !pclayer->isEditable() || !pclayer->isModified() )
+    return;
+
+  if ( pclayer == activeLayer() )
+    mSaveRollbackInProgress = true;
+
+  QgsCanvasRefreshBlocker refreshBlocker;
+
+  if ( !pclayer->commitChanges( !leaveEditable ) )
+    visibleMessageBar()->pushWarning(
+      tr( "Save edits" ),
+      tr( "Unable to save editing for layer \"%1\"" ).arg( pclayer->name() )
+    );
+
+  if ( triggerRepaint )
+  {
+    pclayer->triggerRepaint();
+  }
+}
+
 void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   if ( !layer )
@@ -10997,11 +11105,12 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
       return cancelVectorLayerEdits( layer, leaveEditable, triggerRepaint );
     case Qgis::LayerType::Mesh:
       return cancelMeshLayerEdits( layer, leaveEditable, triggerRepaint );
+    case Qgis::LayerType::PointCloud:
+      return cancelPointCloudLayerEdits( layer, leaveEditable, triggerRepaint );
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
     case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
     case Qgis::LayerType::TiledScene:
       break;
@@ -11058,6 +11167,32 @@ void QgisApp::cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
   }
 }
 
+void QgisApp::cancelPointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
+{
+  QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( !pclayer || !pclayer->isEditable() )
+    return;
+
+  if ( pclayer == activeLayer() && leaveEditable )
+    mSaveRollbackInProgress = true;
+
+  QgsCanvasRefreshBlocker refreshBlocker;
+
+  if ( !pclayer->rollBack() )
+  {
+    mSaveRollbackInProgress = false;
+    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Could not %1 changes to layer %2" ).arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ), pclayer->name() ) );
+  }
+
+  if ( leaveEditable )
+  {
+    pclayer->startEditing();
+  }
+  if ( triggerRepaint )
+  {
+    pclayer->triggerRepaint();
+  }
+}
 void QgisApp::enableMeshEditingTools( bool enable )
 {
   if ( !mMapTools )
@@ -11196,16 +11331,15 @@ void QgisApp::updateLayerModifiedActions()
       }
       break;
       case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::PointCloud:
       {
-        QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( currentLayer );
-        enableSaveLayerEdits = ( mlayer->isEditable() && mlayer->isModified() );
+        enableSaveLayerEdits = currentLayer->isEditable() && currentLayer->isModified();
       }
       break;
       case Qgis::LayerType::Raster:
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::Annotation:
-      case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
       case Qgis::LayerType::TiledScene:
         break;
@@ -15371,7 +15505,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     case Qgis::LayerType::PointCloud:
     {
+      QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
       const QgsDataProvider *dprovider = layer->dataProvider();
+
+      const bool isEditable = pcLayer->isEditable();
+      const bool canSupportEditing = pcLayer->supportsEditing();
+
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
       mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -15382,7 +15521,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseContrast->setEnabled( false );
       mActionIncreaseGamma->setEnabled( false );
       mActionDecreaseGamma->setEnabled( false );
-      mActionLayerSubsetString->setEnabled( dprovider && dprovider->supportsSubsetString() );
+      mActionLayerSubsetString->setEnabled( !isEditable && dprovider && dprovider->supportsSubsetString() );
       mActionFeatureAction->setEnabled( false );
       mActionSelectFeatures->setEnabled( false );
       mActionSelectPolygon->setEnabled( false );
@@ -15401,12 +15540,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectByExpression->setEnabled( false );
       mActionSelectByForm->setEnabled( false );
       mActionOpenFieldCalc->setEnabled( false );
-      mActionToggleEditing->setEnabled( false );
-      mActionToggleEditing->setChecked( false );
-      mActionSaveLayerEdits->setEnabled( false );
-      mUndoDock->widget()->setEnabled( false );
-      mActionUndo->setEnabled( false );
-      mActionRedo->setEnabled( false );
+      mActionToggleEditing->setEnabled( canSupportEditing );
+      mActionToggleEditing->setChecked( canSupportEditing && isEditable );
+      mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && pcLayer->isModified() );
+      mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );
+      mActionUndo->setEnabled( canSupportEditing && isEditable );
+      mActionRedo->setEnabled( canSupportEditing && isEditable );
       mActionSaveLayerDefinition->setEnabled( true );
       mActionLayerSaveAs->setEnabled( false );
       mActionAddFeature->setEnabled( false );
@@ -15437,6 +15576,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionIdentify->setEnabled( true );
       mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
       enableMeshEditingTools( false );
+      updateUndoActions();
       break;
     }
     case Qgis::LayerType::Plugin:
