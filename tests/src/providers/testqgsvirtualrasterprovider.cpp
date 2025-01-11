@@ -70,11 +70,13 @@ class TestQgsVirtualRasterProvider : public QgsTest
     void testConstructor();
     void testNewCalcNodeMethods();
     void testSecondGenerationVirtualRaster();
+    void testNoData();
 
   private:
     QString mTestDataDir;
     QgsRasterLayer *mDemRasterLayer = nullptr;
     QgsRasterLayer *mLandsatRasterLayer = nullptr;
+    QgsRasterLayer *mNoDataRasterLayer = nullptr;
 };
 
 //runs before all tests
@@ -93,6 +95,10 @@ void TestQgsVirtualRasterProvider::initTestCase()
   QString landsatFileName = mTestDataDir + "landsat.tif";
   QFileInfo landsatRasterFileInfo( landsatFileName );
   mLandsatRasterLayer = new QgsRasterLayer( landsatRasterFileInfo.filePath(), landsatRasterFileInfo.completeBaseName() );
+
+  QString nodataFileName = mTestDataDir + "raster/no_data.tif";
+  QFileInfo nodataRasterFileInfo( nodataFileName );
+  mNoDataRasterLayer = new QgsRasterLayer( nodataRasterFileInfo.filePath(), nodataRasterFileInfo.completeBaseName() );
 }
 
 void TestQgsVirtualRasterProvider::validLayer()
@@ -291,5 +297,34 @@ void TestQgsVirtualRasterProvider::testSecondGenerationVirtualRaster()
   QCOMPARE( sampledValueCalc_1, sampledValue + 200. );
   QCOMPARE( layerSecond->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 }
+
+void TestQgsVirtualRasterProvider::testNoData()
+{
+  double tlx = 415780.969;
+  double tly = 759360.133;
+  double cellSize = 0.1;
+
+  // nodata
+  //  0  NaN
+  // NaN  1
+  //  2  NaN
+  QString str = QStringLiteral( "?crs=EPSG:2105&extent=415780.96899999998277053,759359.8330999999307096,415781.16899999999441206,759360.13309999997727573&width=2&height=3&formula=\"nodata@1\" ^2 / \"nodata@1\"&nodata:provider=gdal" );
+
+  QString uri = QString( "%1&%2" ).arg( str, QStringLiteral( "nodata:uri=" ) % mTestDataDir % QStringLiteral( "raster/no_data.tif" ) );
+
+  std::unique_ptr<QgsRasterLayer> layerNoData = std::make_unique<QgsRasterLayer>( uri, QStringLiteral( "no-data" ), QStringLiteral( "virtualraster" ) );
+  QVERIFY( layerNoData->dataProvider()->isValid() );
+  QVERIFY( layerNoData->isValid() );
+
+  QgsPointXY p11( tlx + .5 * cellSize, tly - .5 * cellSize );
+  QgsPointXY p12( tlx + 1.5 * cellSize, tly - .5 * cellSize );
+  QgsPointXY p31( tlx + .5 * cellSize, tly - 2.5 * cellSize );
+
+  Q_ASSERT( std::isnan( layerNoData->dataProvider()->sample( p11, 1 ) ) ); // 0^2/0
+  Q_ASSERT( std::isnan( layerNoData->dataProvider()->sample( p12, 1 ) ) ); // NaN^2/NaN
+  QCOMPARE( layerNoData->dataProvider()->sample( p31, 1 ), 2 );            // 2^2/2
+}
+
+
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
 #include "testqgsvirtualrasterprovider.moc"
