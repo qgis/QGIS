@@ -136,8 +136,7 @@ QgsAbstractProfileGenerator *QgsPointCloudLayer::createProfileGenerator( const Q
 
 QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider()
 {
-  // BAD! 2D rendering of point clouds is NOT thread safe
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mDataProvider.get();
 }
