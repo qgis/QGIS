@@ -35,10 +35,14 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         props.setMode(
             QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField
         )
+        props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)
         props.setFixedTemporalRange(
             QgsDateTimeRange(
                 QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)),
                 QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)),
+                includeBeginning=True,
+                includeEnd=props.limitMode()
+                == Qgis.VectorTemporalLimitMode.IncludeBeginIncludeEnd,
             )
         )
         props.setStartField("start")
@@ -69,6 +73,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         self.assertEqual(props2.accumulateFeatures(), props.accumulateFeatures())
         self.assertEqual(props2.startExpression(), props.startExpression())
         self.assertEqual(props2.endExpression(), props.endExpression())
+        self.assertEqual(props2.limitMode(), props.limitMode())
 
     def testModeFromProvider(self):
         caps = QgsVectorDataProviderTemporalCapabilities()
