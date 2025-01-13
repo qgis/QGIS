@@ -44,9 +44,15 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool isEnabled() final;
     bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) final;
     QString runStringUnsafe( const QString &command, bool single = true ) final; // returns error traceback on failure, empty QString on success
+    bool runFile( const QString &filename, const QString &messageOnError = QString() ) final;
     bool evalString( const QString &command, QString &result ) final;
+    bool setArgv( const QStringList &arguments, const QString &messageOnError = QString() ) final;
     bool getError( QString &errorClassName, QString &errorText ) final;
 
+  private:
+    QString runFileUnsafe( const QString &filename );      // returns error traceback on failure, empty QString on success
+    QString setArgvUnsafe( const QStringList &arguments ); // returns error traceback on failure, empty QString on success
+  public:
     /**
      * Returns the path where QGIS Python related files are located.
      */
