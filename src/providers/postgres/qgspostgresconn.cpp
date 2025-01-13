@@ -1062,7 +1062,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     QgsPostgresResult resultRasterOverviews;
     resultRasterOverviews = LoggedPQexec( "QgsPostgresConn", sqlRasterOverviews );
 
-    if ( resultRasterOverviews.result() )
+    if ( resultRasterOverviews.result() && resultRasterOverviews.PQntuples() > 0 )
     {
       QVector<QgsPostgresRasterOverviewLayerProperty> overviews;
       for ( int idx = 0; idx < resultRasterOverviews.PQntuples(); idx++ )
