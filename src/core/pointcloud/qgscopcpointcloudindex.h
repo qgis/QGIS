@@ -109,6 +109,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
 
     QByteArray fetchCopcStatisticsEvlrData() const;
 
+    void reset();
+
     bool mIsValid = false;
     Qgis::PointCloudAccessType mAccessType = Qgis::PointCloudAccessType::Local;
     mutable std::ifstream mCopcFile;
@@ -119,6 +121,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     mutable std::optional<QgsPointCloudStatistics> mStatistics;
 
     std::unique_ptr<QgsLazInfo> mLazInfo = nullptr;
+
+    friend class QgsPointCloudLayerEditUtils;
+    friend class QgsPointCloudEditingIndex;
 };
 
 ///@endcond

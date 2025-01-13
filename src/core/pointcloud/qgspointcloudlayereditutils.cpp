@@ -17,6 +17,11 @@
 #include "qgspointcloudlayer.h"
 #include "qgslazdecoder.h"
 
+#include "qgscopcpointcloudindex.h"
+#include <lazperf/readers.hpp>
+#include <lazperf/writers.hpp>
+#include "qgspointcloudeditingindex.h"
+
 
 QgsPointCloudLayerEditUtils::QgsPointCloudLayerEditUtils( QgsPointCloudLayer *layer )
   : mIndex( layer->index() )
@@ -59,26 +64,170 @@ bool QgsPointCloudLayerEditUtils::changeAttributeValue( const QgsPointCloudNodeI
        sortedPoints.constLast() > mIndex.getNode( n ).pointCount() )
     return false;
 
-  QgsPointCloudRequest req;
-  req.setAttributes( attributeCollection );
+  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( mIndex.get() );
+  QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( editIndex->mIndex.get() );
 
-  std::unique_ptr<QgsPointCloudBlock> block = mIndex.nodeData( n, req );
-  const int count = block->pointCount();
-  const int recordSize = attributeCollection.pointRecordSize();
-
-  // copy data
-  QByteArray data( block->data(), count * recordSize );
-
-  char *ptr = data.data();
-
-  for ( int i : sortedPoints )
+  QByteArray chunkData;
+  if ( editIndex->mEditedNodeData.contains( n ) )
   {
-    // replace attribute for selected point
-    lazStoreDoubleToStream( ptr, i * recordSize + attributeOffset, attribute.type(), value );
+    chunkData = editIndex->mEditedNodeData[n];
+  }
+  else
+  {
+    QPair<uint64_t, int32_t> offsetSizePair = copcIndex->mHierarchyNodePos[n];
+    chunkData = copcIndex->readRange( offsetSizePair.first, offsetSizePair.second );
   }
 
-  return mIndex.updateNodeData( {{n, data}} );;
+  QByteArray data = updateChunkValues( copcIndex, chunkData, *at, value, n, pts );
+
+  return mIndex.updateNodeData( {{n, data}} );
 }
+
+
+static void updatePoint( char *pointBuffer, int pointFormat, const QString &attributeName, double newValue )
+{
+  if ( attributeName == QLatin1String( "Intensity" ) )  // unsigned short
+  {
+    quint16 newValueShort = ( quint16 ) newValue;
+    memcpy( pointBuffer + 12, &newValueShort, sizeof( qint16 ) );
+  }
+  else if ( attributeName == QLatin1String( "ReturnNumber" ) )  // bits 0-3
+  {
+    uchar newByteValue = ( ( uchar )newValue ) & 0xf;
+    pointBuffer[14] = ( char )( ( pointBuffer[14] & 0xf0 ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "NumberOfReturns" ) )  // bits 4-7
+  {
+    uchar newByteValue = ( ( ( uchar )newValue ) & 0xf ) << 4;
+    pointBuffer[14] = ( char )( ( pointBuffer[14] & 0xf ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "Synthetic" ) )  // bit 0
+  {
+    uchar newByteValue = ( ( uchar )newValue & 0x1 );
+    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xfe ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "KeyPoint" ) )  // bit 1
+  {
+    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 1;
+    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xfd ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "Withheld" ) )  // bit 2
+  {
+    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 2;
+    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xfb ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "Overlap" ) )  // bit 3
+  {
+    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 3;
+    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xf7 ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "ScannerChannel" ) )  // bits 4-5
+  {
+    uchar newByteValue = ( ( uchar )newValue & 0x3 ) << 4;
+    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xcf ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "ScanDirectionFlag" ) )  // bit 6
+  {
+    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 6;
+    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xbf ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "EdgeOfFlightLine" ) )  // bit 7
+  {
+    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 7;
+    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0x7f ) | newByteValue );
+  }
+  else if ( attributeName == QLatin1String( "Classification" ) )  // unsigned char
+  {
+    pointBuffer[16] = ( char )( uchar )newValue;
+  }
+  else if ( attributeName == QLatin1String( "UserData" ) )  // unsigned char
+  {
+    pointBuffer[17] = ( char )( uchar )newValue;
+  }
+  else if ( attributeName == QLatin1String( "ScanAngleRank" ) )  // short
+  {
+    qint16 newValueShort = ( qint16 ) newValue;
+    memcpy( pointBuffer + 18, &newValueShort, sizeof( qint16 ) );
+  }
+  else if ( attributeName == QLatin1String( "PointSourceId" ) )  // unsigned short
+  {
+    quint16 newValueShort = ( quint16 ) newValue;
+    memcpy( pointBuffer + 20, &newValueShort, sizeof( quint16 ) );
+  }
+  else if ( attributeName == QLatin1String( "GpsTime" ) )  // double
+  {
+    memcpy( pointBuffer + 22, &newValue, sizeof( double ) );
+  }
+  else if ( pointFormat == 7 || pointFormat == 8 )
+  {
+    if ( attributeName == QLatin1String( "Red" ) )  // unsigned short
+    {
+      quint16 newValueShort = ( quint16 ) newValue;
+      memcpy( pointBuffer + 30, &newValueShort, sizeof( quint16 ) );
+    }
+    else if ( attributeName == QLatin1String( "Green" ) )  // unsigned short
+    {
+      quint16 newValueShort = ( quint16 ) newValue;
+      memcpy( pointBuffer + 32, &newValueShort, sizeof( quint16 ) );
+    }
+    else if ( attributeName == QLatin1String( "Blue" ) )  // unsigned short
+    {
+      quint16 newValueShort = ( quint16 ) newValue;
+      memcpy( pointBuffer + 34, &newValueShort, sizeof( quint16 ) );
+    }
+    else if ( pointFormat == 8 )
+    {
+      if ( attributeName == QLatin1String( "Infrared" ) )  // unsigned short
+      {
+        quint16 newValueShort = ( quint16 ) newValue;
+        memcpy( pointBuffer + 36, &newValueShort, sizeof( quint16 ) );
+      }
+    }
+  }
+}
+
+
+QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newValue, QgsPointCloudNodeId k, QVector<int> pointIndices )
+{
+  // set new classification value for the given points in voxel and return updated chunk data
+
+  Q_ASSERT( copcIndex->mHierarchy.contains( k ) );
+  Q_ASSERT( copcIndex->mHierarchyNodePos.contains( k ) );
+
+  int pointCount = copcIndex->mHierarchy[k];
+
+  lazperf::header14 header = copcIndex->mLazInfo->header();
+
+  lazperf::reader::chunk_decompressor decompressor( header.pointFormat(), header.ebCount(), chunkData.constData() );
+  lazperf::writer::chunk_compressor compressor( header.pointFormat(), header.ebCount() );
+
+  std::unique_ptr<char []> decodedData( new char[ header.point_record_length ] );
+
+  // only PDRF 6/7/8 is allowed by COPC
+  Q_ASSERT( header.pointFormat() == 6 || header.pointFormat() == 7 || header.pointFormat() == 8 );
+
+  QSet<int> pointIndicesSet( pointIndices.constBegin(), pointIndices.constEnd() );
+
+  QString attributeName = attribute.name();
+
+  for ( int i = 0 ; i < pointCount; ++i )
+  {
+    decompressor.decompress( decodedData.get() );
+    char *buf = decodedData.get();
+
+    if ( pointIndicesSet.contains( i ) )
+    {
+      // TODO: support for extrabytes attributes
+      updatePoint( buf, header.point_format_id, attributeName, newValue );
+    }
+
+    compressor.compress( decodedData.get() );
+  }
+
+  std::vector<unsigned char> data = compressor.done();
+  return QByteArray( ( const char * ) data.data(), ( int ) data.size() ); // QByteArray makes a deep copy
+}
+
 
 QByteArray QgsPointCloudLayerEditUtils::dataForAttributes( const QgsPointCloudAttributeCollection &allAttributes, const QByteArray &data, const QgsPointCloudRequest &request )
 {

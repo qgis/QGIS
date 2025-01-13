@@ -48,6 +48,7 @@ class TestQgsPointCloudEditing : public QgsTest
     void testStartStopEditing();
     void testModifyAttributeValue();
     void testModifyAttributeValueInvalid();
+    void testCommitChanges();
 };
 
 //runs before all tests
@@ -407,6 +408,64 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 65536 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
+}
+
+void TestQgsPointCloudEditing::testCommitChanges()
+{
+  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  QVERIFY( layer->isValid() );
+  QVERIFY( layer->startEditing() );
+  QVERIFY( layer->isEditable() );
+
+  QgsPointCloudNodeId n( 0, 0, 0, 0 );
+  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+
+  QgsPointCloudRequest request;
+  request.setAttributes( QgsPointCloudAttributeCollection( QVector<QgsPointCloudAttribute>() << at ) );
+
+  // check values before any changes
+  std::unique_ptr<QgsPointCloudBlock> block0 = layer->index().nodeData( n, request );
+  const char *block0Data =  block0->data();
+  QCOMPARE( block0Data[0], 2 );
+  QCOMPARE( block0Data[6], 2 );
+  QCOMPARE( block0Data[11], 3 );
+  QCOMPARE( block0Data[14], 3 );
+
+  // Change some points, point order should not matter
+  QVERIFY( layer->changeAttributeValue( n, { 4, 2, 0, 1, 3, 16, 5, 13, 15, 14 }, at, 1 ) );
+  QVERIFY( layer->isModified() );
+
+  // check values after change, before committing
+  std::unique_ptr<QgsPointCloudBlock> block1 = layer->index().nodeData( n, request );
+  const char *block1Data =  block1->data();
+  QCOMPARE( block1Data[0], 1 );
+  QCOMPARE( block1Data[6], 2 );  // unchanged
+  QCOMPARE( block1Data[11], 3 );  // unchanged
+  QCOMPARE( block1Data[14], 1 );
+
+  QVERIFY( layer->commitChanges() );
+  QVERIFY( !layer->isModified() );
+
+  // check values after committing changes
+  std::unique_ptr<QgsPointCloudBlock> block2 = layer->index().nodeData( n, request );
+  const char *block2Data =  block2->data();
+  QCOMPARE( block2Data[0], 1 );
+  QCOMPARE( block2Data[6], 2 );  // unchanged
+  QCOMPARE( block2Data[11], 3 );  // unchanged
+  QCOMPARE( block2Data[14], 1 );
+
+  // try to open the file as a new layer and check saved values
+  std::unique_ptr<QgsPointCloudLayer> layerNew = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+
+  // check values in the new layer
+  std::unique_ptr<QgsPointCloudBlock> block3 = layerNew->index().nodeData( n, request );
+  const char *block3Data =  block3->data();
+  QCOMPARE( block3Data[0], 1 );
+  QCOMPARE( block3Data[6], 2 );  // unchanged
+  QCOMPARE( block3Data[11], 3 );  // unchanged
+  QCOMPARE( block3Data[14], 1 );
 }
 
 QGSTEST_MAIN( TestQgsPointCloudEditing )

@@ -512,6 +512,32 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData() const
   return statisticsEvlrData;
 }
 
+void QgsCopcPointCloudIndex::reset()
+{
+  // QgsAbstractPointCloudIndex
+  mExtent = QgsRectangle();
+  mZMin = 0;
+  mZMax = 0;
+  mHierarchy.clear();
+  mScale = QgsVector3D();
+  mOffset = QgsVector3D();
+  mRootBounds = QgsBox3D();
+  mAttributes = QgsPointCloudAttributeCollection();
+  mSpan = 0;
+  //mFilterExpression
+  mError.clear();
+  //mUri
+
+  // QgsCopcPointCloudIndex
+  mIsValid = false;
+  mAccessType = Qgis::PointCloudAccessType::Local;
+  mCopcFile.close();
+  mOriginalMetadata.clear();
+  mStatistics.reset();
+  mLazInfo.reset();
+  mHierarchyNodePos.clear();
+}
+
 QVariantMap QgsCopcPointCloudIndex::extraMetadata() const
 {
   return

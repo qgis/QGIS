@@ -422,6 +422,9 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     //! Checks if index is non-null
     operator bool() const;
 
+    //! Returns pointer to the implementation class
+    QgsAbstractPointCloudIndex *get() SIP_SKIP { return mIndex.get(); }
+
     /**
     * Loads the index from the file
     *
@@ -643,9 +646,11 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     /**
      * Tries to store pending changes to the data provider.
+     * If errorMessage is not a null pointer, it will receive
+     * an error message in case the call failed.
      * \return TRUE on success, otherwise FALSE
      */
-    bool commitChanges();
+    bool commitChanges( QString *errorMessage SIP_OUT = nullptr );
 
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
     bool isModified() const;
@@ -654,6 +659,8 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
 
     friend class TestQgsPointCloudEditing;
+    friend class QgsPointCloudLayerEditUtils;
+    friend class QgsPointCloudEditingIndex;
 };
 
 
