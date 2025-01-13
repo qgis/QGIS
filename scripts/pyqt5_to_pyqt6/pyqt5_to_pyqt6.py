@@ -70,6 +70,7 @@ from PyQt6.QtPrintSupport import *  # noqa: F403
 from PyQt6.QtSql import *  # noqa: F403
 from PyQt6.QtTest import *  # noqa: F403
 from PyQt6.QtWidgets import *  # noqa: F403
+from PyQt6.QtQuickWidgets import * # noqa: F403
 from PyQt6.QtXml import *  # noqa: F403
 from tokenize_rt import Offset, Token, reversed_enumerate, src_to_tokens, tokens_to_src
 
@@ -102,6 +103,7 @@ target_modules = [
     QtXml,
     QtNetwork,
     QtPrintSupport,
+    QtQuickWidgets,
     Qsci,
 ]
 if qgis_core is not None:
