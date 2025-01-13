@@ -270,7 +270,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
       const QgsEditorWidgetSetup setup = mFields.at( idx ).editorWidgetSetup();
 
-      if ( !setup.type().isEmpty() && !setup.isNull() )
+      if ( !setup.isNull() && !setup.type().isEmpty() )
         updateManualWidget( j, true );
     }
   }
