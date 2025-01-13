@@ -1057,47 +1057,57 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   // remove raster overivews if showRasterOverviews is FALSE
   if ( !showRasterOverviews )
   {
-    QString sqlRasterOverviews = QString( "SELECT o_table_schema, o_table_name FROM public.raster_overviews" );
+    QString sqlRasterOverviewExist = QStringLiteral( "SELECT table_schema, table_name"
+                                                     " FROM information_schema.views"
+                                                     " WHERE table_schema = 'public' AND table_name = 'raster_overviews'" );
 
-    QgsPostgresResult resultRasterOverviews;
-    resultRasterOverviews = LoggedPQexec( "QgsPostgresConn", sqlRasterOverviews );
+    QgsPostgresResult resultRasterOverviewsExist;
+    resultRasterOverviewsExist = LoggedPQexec( "QgsPostgresConn", sqlRasterOverviewExist );
 
-    if ( resultRasterOverviews.result() && resultRasterOverviews.PQntuples() > 0 )
+    if ( resultRasterOverviewsExist.result() && resultRasterOverviewsExist.PQntuples() > 0 )
     {
-      QVector<QgsPostgresRasterOverviewLayerProperty> overviews;
-      for ( int idx = 0; idx < resultRasterOverviews.PQntuples(); idx++ )
-      {
-        QgsPostgresRasterOverviewLayerProperty rasterOverviewProperty;
-        rasterOverviewProperty.schemaName = resultRasterOverviews.PQgetvalue( idx, 0 );
-        rasterOverviewProperty.tableName = resultRasterOverviews.PQgetvalue( idx, 1 );
-        overviews.append( rasterOverviewProperty );
-      }
+      QString sqlRasterOverviews = QString( "SELECT o_table_schema, o_table_name FROM public.raster_overviews" );
 
-      QVector<QgsPostgresLayerProperty> layersToKeep;
-      for ( int i = 0; i < mLayersSupported.count(); i++ )
-      {
-        QgsPostgresLayerProperty property = mLayersSupported.at( i );
+      QgsPostgresResult resultRasterOverviews;
+      resultRasterOverviews = LoggedPQexec( "QgsPostgresConn", sqlRasterOverviews );
 
-        if ( !property.isRaster )
+      if ( resultRasterOverviews.result() && resultRasterOverviews.PQntuples() > 0 )
+      {
+        QVector<QgsPostgresRasterOverviewLayerProperty> overviews;
+        for ( int idx = 0; idx < resultRasterOverviews.PQntuples(); idx++ )
         {
-          layersToKeep.append( property );
+          QgsPostgresRasterOverviewLayerProperty rasterOverviewProperty;
+          rasterOverviewProperty.schemaName = resultRasterOverviews.PQgetvalue( idx, 0 );
+          rasterOverviewProperty.tableName = resultRasterOverviews.PQgetvalue( idx, 1 );
+          overviews.append( rasterOverviewProperty );
         }
-        else
+
+        QVector<QgsPostgresLayerProperty> layersToKeep;
+        for ( int i = 0; i < mLayersSupported.count(); i++ )
         {
-          bool keepRasterTable = true;
-          for ( QgsPostgresRasterOverviewLayerProperty overview : overviews )
+          QgsPostgresLayerProperty property = mLayersSupported.at( i );
+
+          if ( !property.isRaster )
           {
-            if ( property.schemaName == overview.schemaName && property.tableName == overview.tableName )
-            {
-              keepRasterTable = false;
-            }
-          }
-
-          if ( keepRasterTable )
             layersToKeep.append( property );
+          }
+          else
+          {
+            bool keepRasterTable = true;
+            for ( QgsPostgresRasterOverviewLayerProperty overview : overviews )
+            {
+              if ( property.schemaName == overview.schemaName && property.tableName == overview.tableName )
+              {
+                keepRasterTable = false;
+              }
+            }
+
+            if ( keepRasterTable )
+              layersToKeep.append( property );
+          }
         }
+        mLayersSupported = layersToKeep;
       }
-      mLayersSupported = layersToKeep;
     }
   }
 
