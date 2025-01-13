@@ -93,6 +93,7 @@ jobs:
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
+                -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
                 -D ENABLE_UNITY_BUILDS=ON \
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
