@@ -1001,9 +1001,17 @@ bool QgsPointCloudLayer::startEditing()
 bool QgsPointCloudLayer::commitChanges( bool stopEditing )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( !mEditIndex ||
-       !mEditIndex.commitChanges() )
+  if ( !mEditIndex )
     return false;
+
+  if ( mEditIndex.isModified() )
+  {
+    if ( !mEditIndex.commitChanges( &mCommitError ) )
+      return false;
+
+    emit layerModified();
+    triggerRepaint();
+  }
 
   if ( stopEditing )
   {

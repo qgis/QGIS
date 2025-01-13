@@ -57,9 +57,11 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
 
     /**
      * Tries to store pending changes to the data provider.
+     * If errorMessage is not a null pointer, it will receive
+     * an error message in case the call failed.
      * \return TRUE on success, otherwise FALSE
      */
-    bool commitChanges();
+    bool commitChanges( QString *errorMessage = nullptr );
 
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
     bool isModified() const;
@@ -69,6 +71,8 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     QgsPointCloudIndex mIndex;
     bool mIsValid = false;
     QHash<QgsPointCloudNodeId, QByteArray> mEditedNodeData;
+
+    friend class QgsPointCloudLayerEditUtils;
 };
 
 #endif // QGSPOINTCLOUDEDITINGINDEX_H

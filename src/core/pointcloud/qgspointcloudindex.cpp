@@ -504,11 +504,11 @@ QVariantMap QgsPointCloudIndex::extraMetadata() const
   return mIndex->extraMetadata();
 }
 
-bool QgsPointCloudIndex::commitChanges()
+bool QgsPointCloudIndex::commitChanges( QString *errorMessage )
 {
   Q_ASSERT( mIndex );
   if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
-    return index->commitChanges();
+    return index->commitChanges( errorMessage );
 
   return false;
 }

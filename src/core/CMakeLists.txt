@@ -2280,6 +2280,7 @@ if (WITH_EPT OR WITH_COPC)
     ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
@@ -2296,11 +2297,13 @@ if (WITH_EPT OR WITH_COPC)
       pointcloud/qgseptdecoder.cpp
       pointcloud/qgslazdecoder.cpp
       pointcloud/qgslazinfo.cpp
+      pointcloud/qgscopcupdate.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       pointcloud/qgseptdecoder.h
       pointcloud/qgslazdecoder.h
       pointcloud/qgslazinfo.h
+      pointcloud/qgscopcupdate.h
   )
 endif()
 

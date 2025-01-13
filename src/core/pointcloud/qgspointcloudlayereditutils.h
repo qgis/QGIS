@@ -30,6 +30,8 @@ class QgsPointCloudAttribute;
 class QgsPointCloudAttributeCollection;
 class QgsPointCloudRequest;
 
+class QgsCopcPointCloudIndex;
+
 /**
  * \ingroup core
  *
@@ -63,6 +65,9 @@ class CORE_EXPORT QgsPointCloudLayerEditUtils
     static bool isAttributeValueValid( const QgsPointCloudAttribute &attribute, double value );
 
   private:
+
+    QByteArray updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newClassValue, QgsPointCloudNodeId k, QVector<int> pointIndices );
+
     QgsPointCloudIndex mIndex;
 };
 
