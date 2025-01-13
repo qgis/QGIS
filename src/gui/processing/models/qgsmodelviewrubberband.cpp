@@ -222,8 +222,12 @@ void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifie
   QList<QPointF> controlPoints;
 
   controlPoints.append(mRubberBandStartPos);
-  controlPoints.append(mRubberBandStartPos + QPointF(50, 0));
-  controlPoints.append(position - QPointF(50, 0));
+
+  // Change the offset 
+  int offsetX = (position.x() - mRubberBandStartPos.x() > 0) ? 50 : -50;
+
+  controlPoints.append(mRubberBandStartPos + QPointF(offsetX, 0));
+  controlPoints.append(position - QPointF(offsetX, 0));
   
 
 

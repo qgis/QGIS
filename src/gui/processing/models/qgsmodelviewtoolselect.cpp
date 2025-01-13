@@ -31,6 +31,8 @@ QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
   mRubberBand.reset( new QgsModelViewRectangularRubberBand( view ) );
   mRubberBand->setBrush( QBrush( QColor( 224, 178, 76, 63 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
+
+  mLinkTool.reset( new QgsModelViewToolLink( view )) ;
 }
 
 QgsModelViewToolSelect::~QgsModelViewToolSelect()
@@ -125,7 +127,13 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
       QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
       for ( QGraphicsItem *item : items )
       {
-        if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
+        if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) ){
+          // Start link tool"
+          qDebug() << "Start link tool";
+          mLinkTool->setFromSocket(socket);
+          view()->setTool( mLinkTool.get() );
+        }
+        else if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
         {
           // arghhh - if the event happens outside the mouse handles bounding rect, then it's ALREADY passed on!
           if ( mMouseHandles->sceneBoundingRect().contains( event->modelPoint() ) )
