@@ -269,11 +269,21 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
         {
           mExpandTopButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::TopEdge ), QPointF( 0, 0 ) );
           connect( mExpandTopButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [=]( bool folded ) { fold( Qt::TopEdge, folded ); } );
+
+          for ( int idx = 0; idx < linkPointCount( Qt::TopEdge ); ++idx )
+          {
+            mInSockets.append( new QgsModelDesignerSocketGraphicItem(this, idx, QPointF( 0, 0 )) );
+          }
         }
         if ( linkPointCount( Qt::BottomEdge ) )
         {
           mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), QPointF( 0, 0 ) );
           connect( mExpandBottomButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [=]( bool folded ) { fold( Qt::BottomEdge, folded ); } );
+
+          for ( int idx = 0; idx < linkPointCount( Qt::BottomEdge ); ++idx )
+          {
+            mOutSockets.append( new QgsModelDesignerSocketGraphicItem(this, idx, QPointF( 0, 0 )) );
+          }
         }
         mInitialized = true;
         updateButtonPositions();
@@ -496,7 +506,24 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
     const QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
     mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
   }
-}
+
+  for ( QgsModelDesignerSocketGraphicItem *socket : mInSockets )
+  {
+    const QPointF pt = linkPoint(Qt::TopEdge, socket->index(), true);
+    socket->setPosition( pt ) ;
+  }
+
+  for ( QgsModelDesignerSocketGraphicItem *socket : mOutSockets )
+  {
+    const QPointF pt = linkPoint(Qt::BottomEdge, socket->index(), false);
+    socket->setPosition( pt ) ;
+  }
+  }
+
+// Add a specific function ?
+// void QgsModelComponentGraphicItem::updateSocketsPositions()
+// {
+// }
 
 QSizeF QgsModelComponentGraphicItem::itemSize() const
 {
@@ -536,6 +563,30 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
     mModel->parameterComponent( param->parameterName() ).setLinksCollapsed( edge, folded );
   else if ( QgsProcessingModelOutput *output = dynamic_cast<QgsProcessingModelOutput *>( mComponent.get() ) )
     mModel->childAlgorithm( output->childId() ).modelOutput( output->name() ).setLinksCollapsed( edge, folded );
+
+  switch ( edge )
+  {
+    case Qt::TopEdge:
+      for ( QgsModelDesignerSocketGraphicItem *socket : mInSockets )
+      {
+        socket->setVisible(!folded);
+      }
+      break;
+
+    case Qt::BottomEdge:
+      for ( QgsModelDesignerSocketGraphicItem *socket : mOutSockets )
+      {
+        socket->setVisible(!folded);
+      }
+      break;
+
+    case Qt::LeftEdge:
+    case Qt::RightEdge:
+      break;
+  }
+  
+
+  updateButtonPositions();
 
   prepareGeometryChange();
   emit updateArrowPaths();

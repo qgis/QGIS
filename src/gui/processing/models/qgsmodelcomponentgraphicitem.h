@@ -32,6 +32,7 @@ class QgsProcessingModelComment;
 class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
+class QgsModelDesignerSocketGraphicItem;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
 class QgsProcessingModelGroupBox;
@@ -366,6 +367,10 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     QgsModelDesignerFlatButtonGraphicItem *mEditButton = nullptr;
     QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
+
+    QList< QgsModelDesignerSocketGraphicItem* > mInSockets;
+    QList< QgsModelDesignerSocketGraphicItem* > mOutSockets;
+
 
     static constexpr double MIN_COMPONENT_WIDTH = 70;
     static constexpr double MIN_COMPONENT_HEIGHT = 30;

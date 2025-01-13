@@ -20,6 +20,7 @@
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
 #include "qgsmodelviewmouseevent.h"
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -163,6 +164,52 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
   mFolded = !mFolded;
   setPicture( mFolded ? mPlusPicture : mMinusPicture );
   emit folded( mFolded );
+  QgsModelDesignerFlatButtonGraphicItem::modelPressEvent( event );
+}
+
+
+QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent, int index, const QPointF &position, const QSizeF &size )
+  : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
+  , mIndex( index )
+{
+
+}
+
+void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * ) {
+
+
+  if ( mHoverState )
+  {
+    painter->setPen( QPen( ) );
+    painter->setBrush( QBrush( QColor( 0, 0, 0, 200 ), Qt::SolidPattern ) );
+  }
+  else
+  {
+    painter->setPen( QPen( ) );
+    painter->setBrush( QBrush( QColor( 0, 0, 0, 33 ), Qt::SolidPattern ) );
+  }
+
+  qDebug() << "mHoverState:" << mHoverState;
+
+  painter->drawEllipse(getPosition(), 3.0, 3.0);
+
+  painter->save();
+  painter->setPen( QPen());
+  painter->setBrush( QBrush());
+  painter->drawRect(boundingRect());
+  painter->restore();
+
+  // QgsModelDesignerFlatButtonGraphicItem::paint( painter, nullptr, nullptr );
+
+}
+
+void QgsModelDesignerSocketGraphicItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+  QgsModelDesignerFlatButtonGraphicItem::mousePressEvent( event );
+}
+
+void QgsModelDesignerSocketGraphicItem::modelPressEvent( QgsModelViewMouseEvent *event )
+{
   QgsModelDesignerFlatButtonGraphicItem::modelPressEvent( event );
 }
 

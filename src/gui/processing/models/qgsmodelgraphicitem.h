@@ -70,6 +70,12 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 #endif
 
     /**
+     * Gets the button's position.
+     */
+    const QPointF getPosition() { return mPosition; };
+
+
+    /**
      * Sets the button's \a position.
      */
     void setPosition( const QPointF &position );
@@ -91,12 +97,12 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
      * Sets the \a picture to render for the button graphics.
      */
     void setPicture( const QPicture &picture );
+    bool mHoverState = false;
 
   private:
     QPicture mPicture;
     QPointF mPosition;
     QSizeF mSize;
-    bool mHoverState = false;
 };
 
 
@@ -138,6 +144,48 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
     QPicture mPlusPicture;
     QPicture mMinusPicture;
     bool mFolded = false;
+};
+
+
+/**
+ * \ingroup gui
+ * \brief A socket allowing linking component together
+ * \warning Not stable API
+ * \since QGIS 3.42
+ */
+class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlatButtonGraphicItem
+{
+
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
+     *
+     * The \a index argument specifies whether the index of link point 
+     *
+     * The sockets will be rendered at the specified \a position
+     */
+    QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, int index, const QPointF &position,
+                                           const QSizeF &size = QSizeF( 11, 11 ) );
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+#ifndef SIP_RUN
+    void modelPressEvent( QgsModelViewMouseEvent *event ) override;
+#endif
+
+    int index( ) {return mIndex; };
+
+  signals:
+
+    
+
+  private:
+
+    // QgsModelComponentGraphicItem *component = nullptr;
+    int mIndex;
+
 };
 
 ///@endcond
