@@ -1,12 +1,10 @@
 /***************************************************************************
-  qgsdamengprovider.cpp  -  QGIS data provider for Dameng/Dameng layers
+    qgsdamengprovider.cpp  -  QGIS data provider for Dameng/Dameng layers
                              -------------------
-    begin                : 2004/01/07
-    copyright            : ( C ) 2004 by Gary E.Sherman
-    email                : sherman at mrcc.com
- ***************************************************************************/
-
-/***************************************************************************
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -2256,9 +2254,9 @@ bool QgsDamengProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             v = QStringLiteral( "{\"" ) + value.toStringList().join( QLatin1String( "\",\"" ) ) + QStringLiteral( "\"}" );
           }
           else if ( value.type() == QVariant::List )
-          {
             v = "{" + value.toStringList().join( "," ) + "}";
-          }
+          else if ( value.type() == QVariant::Map )
+            v = QgsDamengConn::quotedValue( value ).remove( QRegularExpression( "^'|'$" ) );
           else
           {
             v = paramValue( value.toString(), defaultValues[ i ] );
@@ -3365,51 +3363,14 @@ bool QgsDamengProvider::estimateExtent() const
 {
   QString sql;
   QgsDMResult *result;
-  QString ext;
 
-  // get the extents
-  if ( !mIsQuery && mUseEstimatedMetadata )
-  {
-    // do colu exists?
-    sql = QStringLiteral( "SELECT count(*) FROM ALL_TAB_COLUMNS WHERE OWNER=%1 AND TABLE_NAME=%2 AND COLUMN_NAME=%3" )
-          .arg( quotedValue( mSchemaName ),
-                quotedValue( mTableName ),
-                quotedValue( mGeometryColumn ) );
-    result = connectionRO()->DMexec( sql );
-    if ( result && result->execstatus() && result->fetchNext() && result->value( 0 ).toInt() > 0 )
-    {
-      sql = QStringLiteral( "SELECT %1(%2,%3,%4).st_astext()" )
-            .arg( "DMGEO2.st_estimatedextent",
-                  quotedValue( mSchemaName ),
-                  quotedValue( mTableName ),
-                  quotedValue( mGeometryColumn ) );
-      result = mConnectionRO->DMexec( sql );
-
-      if ( result && result->execstatus() && result->fetchNext()  && !result->value( 0 ).isNull() )
-      {
-        ext = result->value( 0 ).toString();
-        if ( !ext.startsWith( QLatin1String( "-180 " ) ) && ext.contains( QLatin1String( ",180 " ) ) )
-        {
-          ext.clear();
-        }
-      }
-    }
-    else
-    {
-      // no features => ignore estimated extent
-      ext.clear();
-      return false;
-    }
-  }
-
-  sql = QStringLiteral( "select %1(%2).ST_AsText() "
-                        " FROM %3%4;" )
-        .arg( "st_estimatedextent",
-              mSpatialColType == SctTopoGeometry
-                ? QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" ).arg( quotedIdentifier( mBoundingBoxColumn ) )
-                : quotedIdentifier( mBoundingBoxColumn ),
-              mQuery,
-              filterWhereClause() );
+  sql = QStringLiteral( "select %1(%2,%3,%4).ST_AsText() " )
+        .arg(
+              "DMGEO2.st_estimatedextent",
+              quotedValue( mSchemaName ),
+              quotedValue( mTableName ),
+              quotedValue( mGeometryColumn )
+        );
 
   result = connectionRO()->DMexec( sql );
 
@@ -3435,10 +3396,10 @@ bool QgsDamengProvider::estimateExtent() const
   QgsDebugMsgLevel( QStringLiteral( "Got extents extent (%1) using: %2" ).arg( box2dString ).arg( sql ), 2 );
 
   const QRegularExpression rx2d( "\\((.+) (.+),(.+) (.+)\\)" );
-  const QRegularExpressionMatch match = rx2d.match( ext );
+  const QRegularExpressionMatch match = rx2d.match( box2dString );
   if ( !match.hasMatch() )
   {
-    QgsMessageLog::logMessage( tr( "result of extents query invalid: %1" ).arg( ext ), tr( "Dameng" ) );
+    QgsMessageLog::logMessage( tr( "result of extents query invalid: %1" ).arg( box2dString ), tr( "Dameng" ) );
   }
   mLayerExtent.emplace(
     match.captured( 1 ).toDouble(),             // xmin
@@ -3455,7 +3416,7 @@ bool QgsDamengProvider::estimateExtent() const
 
 bool QgsDamengProvider::computeExtent3D() const
 {
-  QString sql = QStringLiteral( "SELECT DMGEO2.ST_AsText(DMGEO2.box3d(DMGEO2.ST_GeomFromGserialized(%1(%2%3)))) FROM %4%5" )
+  QString sql = QStringLiteral( "SELECT box.st_astext() from( SELECT DMGEO2.box3d(DMGEO2.ST_GeomFromGserialized(%1(%2%3))) as box FROM %4%5);" )
                   .arg( "ST_3DExtent", quotedIdentifier( mBoundingBoxColumn ),
                     mSpatialColType == SctTopoGeometry
                     ? QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" ).arg( quotedIdentifier( mBoundingBoxColumn ) )

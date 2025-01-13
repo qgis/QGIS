@@ -1,12 +1,10 @@
 /***************************************************************************
-                         qgsdamengtablemodel.cpp  -  description
-                         -------------------
-    begin                : Dec 2007
-    copyright            : ( C ) 2007 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************/
-
-/***************************************************************************
+    qgsdamengtablemodel.cpp  -  description
+    -------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

@@ -1,9 +1,9 @@
 /***************************************************************************
     qgsdamengdataitems.h
     ---------------------
-    begin                : October 2011
-    copyright            : ( C ) 2011 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

@@ -1,9 +1,9 @@
 /***************************************************************************
     qgsdamengdataitems.cpp
     ---------------------
-    begin                : October 2011
-    copyright            : ( C ) 2011 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,8 +12,8 @@
  *   ( at your option ) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdamengdataitems.h"
 
+#include "qgsdamengdataitems.h"
 #include "qgsdamengconn.h"
 #include "qgsdamengconnpool.h"
 #include "qgsdamengprojectstorage.h"

@@ -1,13 +1,11 @@
 /***************************************************************************
-                             qgsdamengsourceselect.cpp
-       Dialog to select Dameng layer( s ) and add it to the map canvas
-                              -------------------
-begin                : Sat Jun 22 2002
-copyright            : ( C ) 2002 by Gary E.Sherman
-email                : sherman at mrcc.com
- ***************************************************************************/
-
-/***************************************************************************
+                          qgsdamengsourceselect.cpp
+    Dialog to select Dameng layer( s ) and add it to the map canvas
+                             -------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,7 +15,6 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsdamengsourceselect.h"
-
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsdamengprovider.h"

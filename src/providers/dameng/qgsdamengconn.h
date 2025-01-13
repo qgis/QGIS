@@ -1,20 +1,17 @@
 /***************************************************************************
-  qgsdamengconn.h  -  connection class to Dameng/DAMENG
+    qgsdamengconn.h  -  connection class to Dameng/DAMENG
                              -------------------
-    begin                : 2011/01/28
-    copyright            : ( C ) 2011 by Juergen E. Fischer
-    email                : jef at norbit dot de
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   ( at your option ) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
-
- /***************************************************************************
-  *                                                                         *
-  *   This program is free software; you can redistribute it and/or modify  *
-  *   it under the terms of the GNU General Public License as published by  *
-  *   the Free Software Foundation; either version 2 of the License, or     *
-  *   ( at your option ) any later version.                                   *
-  *                                                                         *
-  ***************************************************************************/
-
 #ifndef QGSDAMENGCONN_H
 #define QGSDAMENGCONN_H
 

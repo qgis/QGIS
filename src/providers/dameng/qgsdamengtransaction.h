@@ -1,12 +1,10 @@
 /***************************************************************************
     qgsdamengtransaction.h  -  Transaction support for DamengSQL/DAMENG layers
                              -------------------
-    begin                : Jan 8, 2015
-    copyright            : ( C ) 2015 by Sandro Mani
-    email                : manisandro at gmail dot com
- ***************************************************************************/
-
-/***************************************************************************
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,7 +12,6 @@
  *   ( at your option ) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef QGSDAMENGTRANSACTION_H
 #define QGSDAMENGTRANSACTION_H
 

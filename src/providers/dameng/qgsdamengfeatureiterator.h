@@ -1,9 +1,9 @@
 /***************************************************************************
     qgsdamengfeatureiterator.h
     ---------------------
-    begin                : Juli 2012
-    copyright            : ( C ) 2012 by Martin Dobias
-    email                : wonder dot sk at gmail dot com
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

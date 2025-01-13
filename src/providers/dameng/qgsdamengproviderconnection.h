@@ -1,10 +1,9 @@
 /***************************************************************************
-  qgsdamengproviderconnection.h - QgsDamengProviderConnection
-
- ---------------------
- begin                : 2.8.2019
- copyright            : ( C ) 2019 by Alessandro Pasotti
- email                : elpaso at itopen dot it
+    qgsdamengproviderconnection.h - QgsDamengProviderConnection
+    ---------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,6 +14,7 @@
  ***************************************************************************/
 #ifndef QGSDAMENGPROVIDERCONNECTION_H
 #define QGSDAMENGPROVIDERCONNECTION_H
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdamengconnpool.h"
 

@@ -1,12 +1,10 @@
 /***************************************************************************
                           qgsdamengnewconnection.h  -  description
                              -------------------
-    begin                : Sat Jun 22 2002
-    copyright            : ( C ) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
- ***************************************************************************/
-
-/***************************************************************************
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,6 +14,7 @@
  ***************************************************************************/
 #ifndef QGSDAMENGNEWCONNECTION_H
 #define QGSDAMENGNEWCONNECTION_H
+
 #include "./ui_include/ui_qgsdamengnewconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"

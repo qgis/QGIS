@@ -1,9 +1,9 @@
 /***************************************************************************
-              qgsdamengexpressioncompiler.cpp
-              ----------------------------------------------------
-              date                 : 22.4.2015
-              copyright            : ( C ) 2015 by Matthias Kuhn
-              email                : matthias ( at ) opengis.ch
+    qgsdamengexpressioncompiler.cpp
+    -------------------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

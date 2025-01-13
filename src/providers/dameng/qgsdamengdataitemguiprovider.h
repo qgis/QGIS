@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsdamengdataitemguiprovider.h
-  --------------------------------------
-  Date                 : June 2019
-  Copyright            : ( C ) 2019 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
+    qgsdamengdataitemguiprovider.h
+    --------------------------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,7 +12,6 @@
  *   ( at your option ) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef QGSDAMENGDATAITEMGUIPROVIDER_H
 #define QGSDAMENGDATAITEMGUIPROVIDER_H
 

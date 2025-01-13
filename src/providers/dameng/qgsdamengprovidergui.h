@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsdamengprovidergui.h
-  ------------------------
-  Date                 : October 2019
-  Copyright            : ( C ) 2019 by Peter Petrik
-  Email                : zilolv at gmail dot com
+    qgsdamengprovidergui.h
+    ------------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,7 +12,6 @@
  *   ( at your option ) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef QGSDAMENGPROVIDERGUI_H
 #define QGSDAMENGPROVIDERGUI_H
 

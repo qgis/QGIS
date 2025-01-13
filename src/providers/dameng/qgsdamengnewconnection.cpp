@@ -1,12 +1,10 @@
 /***************************************************************************
-                    qgsdamengnewconnection.cpp  -  description
-                             -------------------
-    begin                : Sat Jun 22 2002
-    copyright            : ( C ) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
- ***************************************************************************/
-
-/***************************************************************************
+    qgsdamengnewconnection.cpp  -  description
+             -------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *

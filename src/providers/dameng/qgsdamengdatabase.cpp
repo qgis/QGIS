@@ -1,41 +1,17 @@
-/****************************************************************************
-**
-** Copyright ( C ) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtSql module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 3 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL3 included in the
-** packaging of this file. Please review the following information to
-** ensure the GNU Lesser General Public License version 3 requirements
-** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 2.0 or ( at your option ) the GNU General
-** Public license version 3 or any later version approved by the KDE Free
-** Qt Foundation. The licenses are as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-2.0.html and
-** https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+/***************************************************************************
+    qgsdamengdatabase.cpp
+    ---------------------
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   ( at your option ) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgsdamengdatabase.h"
 
@@ -78,7 +54,7 @@ static QString qWarnDMHandle( int handleType, dhandle handle, int *nativeCode = 
       if ( nativeCode )
         *nativeCode = nativeCode_;
 
-      QString tmpstore = QString::fromUtf8( reinterpret_cast<const char *>( description_.constData() ), msgLen );
+      QString tmpstore = QString::fromUtf8( ( const char* )description_.constData(), msgLen );
 
       if ( result != tmpstore )
       {
@@ -364,7 +340,7 @@ static QString qGetStringData( dhstmt hStmt, int column, int colSize )
 
   while ( true )
   {
-    r = dpi_get_data( hStmt, column + 1, DSQL_C_NCHAR, reinterpret_cast<dpointer>( buf.data() ), colSize, &lengthIndicator );
+    r = dpi_get_data( hStmt, column + 1, DSQL_C_NCHAR, ( dpointer )buf.data(), colSize, &lengthIndicator );
 
     if ( r == DSQL_SUCCESS || r == DSQL_SUCCESS_WITH_INFO )
     {
@@ -384,7 +360,7 @@ static QString qGetStringData( dhstmt hStmt, int column, int colSize )
       int realsize = qMin( rSize, buf.size() );
       if ( realsize > 0 && buf[realsize - 1] == 0 )
         realsize--;
-      fieldVal += QString::fromUtf8( reinterpret_cast< const char*>( buf.constData() ), realsize );
+      fieldVal += QString::fromUtf8( ( const char* )( buf.constData() ), realsize );
 
       if ( lengthIndicator < static_cast<slength>( colSize ) )
       {
@@ -486,7 +462,7 @@ static QVariant qGetIntData( dhstmt hStmt, int column, bool isSigned = true )
   slength         lengthIndicator = 0;
   DPIRETURN       r;
 
-  r = dpi_get_data( hStmt, column + 1, isSigned ? DSQL_C_SLONG : DSQL_C_ULONG, reinterpret_cast<dpointer>( &intBuf ), sizeof( intBuf ), &lengthIndicator );
+  r = dpi_get_data( hStmt, column + 1, isSigned ? DSQL_C_SLONG : DSQL_C_ULONG, ( dpointer )&intBuf, sizeof( intBuf ), &lengthIndicator );
 
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO )
     return QVariant( QVariant::Invalid );
@@ -506,7 +482,7 @@ static QVariant qGetBigIntData( dhstmt hStmt, int column, bool isSigned = true )
   slength             lengthIndicator = 0;
   DPIRETURN           r;
 
-  r = dpi_get_data( hStmt, column + 1, isSigned ? DSQL_C_SBIGINT : DSQL_C_UBIGINT, reinterpret_cast<dpointer>( &lngbuf ), sizeof( lngbuf ), &lengthIndicator );
+  r = dpi_get_data( hStmt, column + 1, isSigned ? DSQL_C_SBIGINT : DSQL_C_UBIGINT, ( dpointer )&lngbuf, sizeof( lngbuf ), &lengthIndicator );
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO )
     return QVariant( QVariant::Invalid );
 
@@ -525,7 +501,7 @@ static QVariant qGetDoubleData( dhstmt hStmt, int column )
   slength         lengthIndicator = 0;
   DPIRETURN       r;
 
-  r = dpi_get_data( hStmt, column + 1, DSQL_C_DOUBLE, reinterpret_cast<dpointer>( &dblbuf ), 0, &lengthIndicator );
+  r = dpi_get_data( hStmt, column + 1, DSQL_C_DOUBLE, ( dpointer )&dblbuf, 0, &lengthIndicator );
 
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO )
   {
@@ -743,11 +719,11 @@ bool QgsDMResult::reset( const QString &query )
 
   if ( isForwardOnly() )
   {
-    r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, reinterpret_cast<dpointer>( DSQL_CURSOR_FORWARD_ONLY ), 0 );
+    r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, ( dpointer )DSQL_CURSOR_FORWARD_ONLY, 0 );
   }
   else
   {
-    r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, reinterpret_cast<dpointer>( DSQL_CURSOR_STATIC ), 0 );
+    r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, ( dpointer )DSQL_CURSOR_STATIC, 0 );
   }
 
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO )
@@ -756,7 +732,7 @@ bool QgsDMResult::reset( const QString &query )
     return false;
   }
 
-  r = dpi_exec_direct( d->hStmt, reinterpret_cast<sdbyte *>( query.toUtf8().data() ) );
+  r = dpi_exec_direct( d->hStmt, ( sdbyte* )query.toUtf8().data() );
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO && r != DSQL_NO_DATA )
   {
     setLastError( qMakeError( QSqlError::StatementError, d ) );
@@ -883,9 +859,9 @@ bool QgsDMResult::fetchNext()
     if ( ftype( i ) == DSQL_CLASS || ftype( i ) == DSQL_ARRAY )
     {
       DmObj *obj = new DmObj();
-      d->r = dpi_get_stmt_attr( d->hStmt, DSQL_ATTR_IMP_ROW_DESC, reinterpret_cast<dpointer>( &obj->hdescCol ), 0, 0 );
+      d->r = dpi_get_stmt_attr( d->hStmt, DSQL_ATTR_IMP_ROW_DESC, ( dpointer )&obj->hdescCol, 0, 0 );
       d->r = dpi_get_desc_field( obj->hdescCol, static_cast<sdint2>( i + 1 ), DSQL_DESC_OBJ_DESCRIPTOR,
-                                    reinterpret_cast<dpointer>( &obj->objDesc ), sizeof( dhobjdesc ), NULL );
+                                    ( dpointer )&obj->objDesc, sizeof( dhobjdesc ), NULL );
 
       d->r = dpi_alloc_obj( d->dpDbc(), &obj->obj );
       if ( ftype( i ) == DSQL_CLASS )
@@ -1210,7 +1186,7 @@ QSqlField QgsDMResult::qMakeFieldInfo( const dhstmt hStmt, int i, QString *error
             ).arg( QString::number( i ) ), hStmt );
   }
 
-  QString qColName = QString::fromUtf8( reinterpret_cast<const char*>( colName.constData() ) );
+  QString qColName = QString::fromUtf8( ( const char* )colName.constData() );
 
   mSqlType.append( colType );
   QVariant::Type type = qDecodeDMType( colType, unsignedFlag == DSQL_FALSE );
@@ -1250,7 +1226,7 @@ void QgsDMResult::getBinarydata( int field, byte* &data, slength &size )
   Q_D( QgsDMResult );
   slength         lengthIndicator;
 
-  dpi_get_data( d->hStmt, field + 1, DSQL_C_BINARY, reinterpret_cast<dpointer>( data ), size + 1, &lengthIndicator );
+  dpi_get_data( d->hStmt, field + 1, DSQL_C_BINARY, ( dpointer )data, size + 1, &lengthIndicator );
 }
 
 QVariant QgsDMResult::data( int field )
@@ -1292,7 +1268,7 @@ QVariant QgsDMResult::data( int field )
   {
     dpi_date_t      dbuf;
 
-    r = dpi_get_data( d->hStmt, field + 1, DSQL_C_DATE, reinterpret_cast<dpointer>( &dbuf ), sizeof( dbuf ), &lengthIndicator );
+    r = dpi_get_data( d->hStmt, field + 1, DSQL_C_DATE, ( dpointer )&dbuf, sizeof( dbuf ), &lengthIndicator );
 
     if ( ( r == DSQL_SUCCESS || r == DSQL_SUCCESS_WITH_INFO ) && ( lengthIndicator != DSQL_NULL_DATA ) )
       d->fieldCache[field] = QVariant( QDate( dbuf.year, dbuf.month, dbuf.day ) );
@@ -1304,7 +1280,7 @@ QVariant QgsDMResult::data( int field )
   {
     dpi_timestamp_t  tbuf;
 
-    r = dpi_get_data( d->hStmt, field + 1, DSQL_C_TIMESTAMP, reinterpret_cast<dpointer>( &tbuf ), sizeof( tbuf ), &lengthIndicator );
+    r = dpi_get_data( d->hStmt, field + 1, DSQL_C_TIMESTAMP, ( dpointer )&tbuf, sizeof( tbuf ), &lengthIndicator );
     if ( ( r == DSQL_SUCCESS || r == DSQL_SUCCESS_WITH_INFO ) && ( lengthIndicator != DSQL_NULL_DATA ) )
       d->fieldCache[field] = QVariant( QTime( tbuf.hour, tbuf.minute, tbuf.second, tbuf.fraction / 1000000 ) );
     else
@@ -1315,7 +1291,7 @@ QVariant QgsDMResult::data( int field )
   {
     dpi_timestamp_t dtbuf;
 
-    r = dpi_get_data( d->hStmt, field + 1, DSQL_C_TIMESTAMP, reinterpret_cast<dpointer>( &dtbuf ), sizeof( dtbuf ), &lengthIndicator );
+    r = dpi_get_data( d->hStmt, field + 1, DSQL_C_TIMESTAMP, ( dpointer )&dtbuf, sizeof( dtbuf ), &lengthIndicator );
     if ( ( r == DSQL_SUCCESS || r == DSQL_SUCCESS_WITH_INFO ) && ( lengthIndicator != DSQL_NULL_DATA ) )
       d->fieldCache[field] = QVariant( QDateTime( QDate( dtbuf.year, dtbuf.month, dtbuf.day ), QTime( dtbuf.hour, dtbuf.minute, dtbuf.second, dtbuf.fraction / 1000000 ) ) );
     else
@@ -1445,11 +1421,11 @@ bool QgsDMResult::prepare( const QString &query )
 
   if ( isForwardOnly() )
   {
-    d->r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, reinterpret_cast<dpointer>( DSQL_CURSOR_FORWARD_ONLY ), 0 );
+    d->r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, ( dpointer )DSQL_CURSOR_FORWARD_ONLY, 0 );
   }
   else
   {
-    d->r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, reinterpret_cast<dpointer>( DSQL_CURSOR_STATIC ), 0 );
+    d->r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_CURSOR_TYPE, ( dpointer )DSQL_CURSOR_STATIC, 0 );
   }
   if ( !execstatus() )
   {
@@ -1458,7 +1434,7 @@ bool QgsDMResult::prepare( const QString &query )
     return false;
   }
 
-  d->r = dpi_prepare( d->hStmt, reinterpret_cast<sdbyte *>( query.toUtf8().data() ) );
+  d->r = dpi_prepare( d->hStmt, ( sdbyte* )( query.toUtf8().data() ) );
 
   if ( !execstatus() )
   {
@@ -1604,7 +1580,7 @@ bool QgsDMResult::execBatch( bool arraybind )
   if ( values.count() != 0 )
     recordCount = values.at( 0 ).toList().count();
 
-  r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_PARAMSET_SIZE, reinterpret_cast<dpointer>( recordCount ), 0 );
+  r = dpi_set_stmt_attr( d->hStmt, DSQL_ATTR_PARAMSET_SIZE, ( dpointer )recordCount, 0 );
 
   for ( i = 0; i < values.count(); ++i )
   {
@@ -1642,7 +1618,7 @@ bool QgsDMResult::execBatch( bool arraybind )
         {
           col.indicators[row] = 0;
 
-          dpi_date_t *dt = reinterpret_cast<dpi_date_t *>( col.data + ( col.maxLen * row ) );
+          dpi_date_t *dt = ( dpi_date_t* )( col.data + ( col.maxLen * row ) );
           QDate qdt = val.toDate();
 
           dt->year = qdt.year();
@@ -1675,7 +1651,7 @@ bool QgsDMResult::execBatch( bool arraybind )
         {
           col.indicators[row] = 0;
 
-          dpi_timestamp_t *dt = reinterpret_cast<dpi_timestamp_t *>( col.data + ( col.maxLen * row ) );
+          dpi_timestamp_t *dt = ( dpi_timestamp_t* )( col.data + ( col.maxLen * row ) );
           QTime             qdt = val.toTime();
 
           dt->year = 1700;
@@ -1712,7 +1688,7 @@ bool QgsDMResult::execBatch( bool arraybind )
         {
           col.indicators[row] = 0;
 
-          dpi_timestamp_t *dt = reinterpret_cast<dpi_timestamp_t *>( col.data + ( col.maxLen * row ) );
+          dpi_timestamp_t *dt = ( dpi_timestamp_t* )( col.data + ( col.maxLen * row ) );
           QDateTime           qdt = val.toDateTime();
 
           dt->year = qdt.date().year();
@@ -1751,7 +1727,7 @@ bool QgsDMResult::execBatch( bool arraybind )
 
           char *dataPtr = col.data + ( col.maxLen * row );
 
-          *reinterpret_cast<int *>( dataPtr ) = val.toInt();
+          *( int* )( dataPtr ) = val.toInt();
         }
       }
 
@@ -1781,7 +1757,7 @@ bool QgsDMResult::execBatch( bool arraybind )
 
           char *dataPtr = col.data + ( col.maxLen * row );
 
-          *reinterpret_cast<uint *>( dataPtr ) = val.toUInt();
+          *( uint* )( dataPtr ) = val.toUInt();
         }
       }
 
@@ -1811,7 +1787,7 @@ bool QgsDMResult::execBatch( bool arraybind )
 
           char *dataPtr = col.data + ( col.maxLen * row );
 
-          *reinterpret_cast<double *>( dataPtr ) = val.toDouble();
+          *( double* )( dataPtr ) = val.toDouble();
         }
       }
 
@@ -2143,33 +2119,33 @@ bool QgsDMResult::execBatch( bool arraybind )
       {
       case QVariant::Date:
       {
-        dpi_date_t ds = *( (dpi_date_t*)const_cast<char *>( data + r * columns[i].maxLen ) );
-        ( *list )[r] = QVariant( QDate( ds.year, ds.month, ds.day ) );
+        dpi_date_t *ds = ( dpi_date_t* )const_cast<char *>( data + r * columns[i].maxLen );
+        ( *list )[r] = QVariant( QDate( ds->year, ds->month, ds->day ) );
         break;
       }
       case QVariant::Time:
       {
-        dpi_time_t dt = *( (dpi_time_t*)const_cast<char *>( data + r * columns[i].maxLen ) );
-        ( *list )[r] = QVariant( QTime( dt.hour, dt.minute, dt.second ) );
+        dpi_time_t *dt = ( dpi_time_t* )const_cast<char *>( data + r * columns[i].maxLen );
+        ( *list )[r] = QVariant( QTime( dt->hour, dt->minute, dt->second ) );
         break;
       }
       case QVariant::DateTime:
       {
-        dpi_timestamp_t dt = *( (dpi_timestamp_t*)const_cast<char *>( data + r * columns[i].maxLen ) );
-        ( *list )[r] = QVariant( QDateTime( QDate( dt.year, dt.month, dt.day ), QTime( dt.hour, dt.minute, dt.second, dt.fraction / 1000000 ) ) );
+        dpi_timestamp_t *dt = ( dpi_timestamp_t* )const_cast<char *>( data + r * columns[i].maxLen );
+        ( *list )[r] = QVariant( QDateTime( QDate( dt->year, dt->month, dt->day ), QTime( dt->hour, dt->minute, dt->second, dt->fraction / 1000000 ) ) );
         break;
       }
       case QVariant::Bool:
         ( *list )[r] = QByteArray( data + r * columns[i].maxLen, columns[i].maxLen );
         break;
       case QVariant::Int:
-        ( *list )[r] = *reinterpret_cast<int *>( data + r * columns[i].maxLen );
+        ( *list )[r] = *( int* )( data + r * columns[i].maxLen );
         break;
       case QVariant::UInt:
-        ( *list )[r] = *reinterpret_cast<uint *>( data + r * columns[i].maxLen );
+        ( *list )[r] = *( uint* )( data + r * columns[i].maxLen );
         break;
       case QVariant::Double:
-        ( *list )[r] = *reinterpret_cast<double *>( data + r * columns[i].maxLen );
+        ( *list )[r] = *( double* )( data + r * columns[i].maxLen );
         break;
       case QVariant::ByteArray:
         ( *list )[r] = QByteArray( data + r * columns[i].maxLen, columns[i].maxLen );
@@ -2340,19 +2316,19 @@ bool QgsDMDriverPrivate::setConnectionOptions( const QString &connOpts )
         continue;
       }
 
-      r = dpi_set_con_attr( hDbc, DSQL_ATTR_ACCESS_MODE, reinterpret_cast<dpointer>( static_cast<slength>( v ) ), 0 );
+      r = dpi_set_con_attr( hDbc, DSQL_ATTR_ACCESS_MODE, ( dpointer )( slength )v, 0 );
     }
     else if ( opt.toUpper() == QLatin1String( "DSQL_ATTR_CONNECTION_TIMEOUT" ) )
     {
       v = val.toUInt();
 
-      r = dpi_set_con_attr( hDbc, DSQL_ATTR_CONNECTION_TIMEOUT, reinterpret_cast<dpointer>( static_cast<slength>( v ) ), 0 );
+      r = dpi_set_con_attr( hDbc, DSQL_ATTR_CONNECTION_TIMEOUT, ( dpointer )( slength )v, 0 );
     }
     else if ( opt.toUpper() == QLatin1String( "DSQL_ATTR_LOGIN_TIMEOUT" ) )
     {
       v = val.toUInt();
 
-      r = dpi_set_con_attr( hDbc, DSQL_ATTR_LOGIN_TIMEOUT, reinterpret_cast<dpointer>( static_cast<slength>( v ) ), 0 );
+      r = dpi_set_con_attr( hDbc, DSQL_ATTR_LOGIN_TIMEOUT, ( dpointer )( slength )v, 0 );
     }
     else
     {
@@ -2485,16 +2461,16 @@ bool QgsDMDriver::open( const QString &dbTrans, const QString &user, const QStri
 
   sdint4      port_inner = static_cast<sdint4>( port );
 
-  dpi_set_con_attr( d->hDbc, DSQL_ATTR_LOGIN_PORT, reinterpret_cast<dpointer>( static_cast<slength>( port_inner ) ), 0 );
-  dpi_set_con_attr( d->hDbc, DSQL_ATTR_LOCAL_CODE, reinterpret_cast<dpointer>( PG_UTF8 ), 0 );
+  dpi_set_con_attr( d->hDbc, DSQL_ATTR_LOGIN_PORT, ( dpointer )( slength )port_inner, 0 );
+  dpi_set_con_attr( d->hDbc, DSQL_ATTR_LOCAL_CODE, ( dpointer )PG_UTF8, 0 );
   if( dbTrans == QStringLiteral( "zh-Hans" ) )
-    dpi_set_con_attr( d->hDbc, DSQL_ATTR_LANG_ID, reinterpret_cast<dpointer>( LANGUAGE_CN ), 0 );
+    dpi_set_con_attr( d->hDbc, DSQL_ATTR_LANG_ID, ( dpointer )LANGUAGE_CN, 0 );
   else if ( dbTrans == QStringLiteral( "zh-Hant" ) )
-    dpi_set_con_attr( d->hDbc, DSQL_ATTR_LANG_ID, reinterpret_cast<dpointer>( LANGUAGE_CNT_HK ), 0 );
+    dpi_set_con_attr( d->hDbc, DSQL_ATTR_LANG_ID, ( dpointer )LANGUAGE_CNT_HK, 0 );
   else
-    dpi_set_con_attr( d->hDbc, DSQL_ATTR_LANG_ID, reinterpret_cast<dpointer>( LANGUAGE_EN ), 0 );
+    dpi_set_con_attr( d->hDbc, DSQL_ATTR_LANG_ID, ( dpointer )LANGUAGE_EN, 0 );
 
-  r = dpi_login( d->hDbc, reinterpret_cast<sdbyte *>( host.toUtf8().data() ), reinterpret_cast<sdbyte *>(  user.toUtf8().data() ), reinterpret_cast<sdbyte *>(  password.toUtf8().data() ) );
+  r = dpi_login( d->hDbc, ( sdbyte* )( host.toUtf8().constData() ), ( sdbyte* )(  user.toUtf8().constData() ), ( sdbyte* )(  password.toUtf8().constData() ) );
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO )
   {
     setLastError( qMakeError( QSqlError::ConnectionError, d ) );
@@ -2527,7 +2503,7 @@ bool QgsDMDriver::isConnect()
   r = dpi_alloc_stmt( d->hDbc, &stmt );
   if ( r == DSQL_SUCCESS )
   {
-    r = dpi_exec_direct( stmt, reinterpret_cast<sdbyte *>( sql.toUtf8().data() ) );
+    r = dpi_exec_direct( stmt, ( sdbyte* )( sql.toUtf8().data() ) );
     dpi_free_stmt( stmt );
   }
 
@@ -2583,7 +2559,7 @@ bool QgsDMDriver::beginTransaction()
   }
 
   DPIRETURN       r;
-  r = dpi_set_con_attr( d->hDbc, DSQL_ATTR_AUTOCOMMIT, reinterpret_cast<dpointer>( DSQL_AUTOCOMMIT_OFF ), 0 );
+  r = dpi_set_con_attr( d->hDbc, DSQL_ATTR_AUTOCOMMIT, ( dpointer )DSQL_AUTOCOMMIT_OFF, 0 );
   if ( r != DSQL_SUCCESS )
   {
     connMsg = qMakeError( QSqlError::TransactionError, d ).text();
@@ -2646,7 +2622,7 @@ bool QgsDMDriver::endTrans()
 
   DPIRETURN       r;
 
-  r = dpi_set_con_attr( d->hDbc, DSQL_ATTR_AUTOCOMMIT, reinterpret_cast<dpointer>( DSQL_AUTOCOMMIT_ON ), 0 );
+  r = dpi_set_con_attr( d->hDbc, DSQL_ATTR_AUTOCOMMIT, ( dpointer )DSQL_AUTOCOMMIT_ON, 0 );
   if ( r != DSQL_SUCCESS )
   {
     connMsg = qMakeError( QSqlError::TransactionError, d ).text();
@@ -2676,7 +2652,7 @@ QStringList QgsDMDriver::tables( QSql::TableType type ) const
     return tl;
   }
 
-  r = dpi_set_stmt_attr( hStmt, DSQL_ATTR_CURSOR_TYPE, reinterpret_cast<dpointer>( DSQL_CURSOR_FORWARD_ONLY ), 0 );
+  r = dpi_set_stmt_attr( hStmt, DSQL_ATTR_CURSOR_TYPE, ( dpointer )DSQL_CURSOR_FORWARD_ONLY, 0 );
 
   QStringList         tableType;
 
@@ -2692,7 +2668,7 @@ QStringList QgsDMDriver::tables( QSql::TableType type ) const
 
   QString joinedTableTypeString = tableType.join( QLatin1String( "," ) );
 
-  r = dpi_tables( hStmt, NULL, 0, NULL, 0, NULL, 0, reinterpret_cast<udbyte *>( joinedTableTypeString.toUtf8().data() ), DSQL_NTS );
+  r = dpi_tables( hStmt, NULL, 0, NULL, 0, NULL, 0, ( udbyte* )joinedTableTypeString.toUtf8().data(), DSQL_NTS );
 
   if ( r != DSQL_SUCCESS )
     qSqlWarning( tr( "Unable to execute table list" ), d );
@@ -2758,14 +2734,14 @@ QSqlIndex QgsDMDriver::primaryIndex( const QString &tablename ) const
   else
     table = table.toUpper();
 
-  r = dpi_set_stmt_attr( hStmt, DSQL_ATTR_CURSOR_TYPE, reinterpret_cast<dpointer>( DSQL_CURSOR_FORWARD_ONLY ), 0 );
+  r = dpi_set_stmt_attr( hStmt, DSQL_ATTR_CURSOR_TYPE, ( dpointer )DSQL_CURSOR_FORWARD_ONLY, 0 );
 
-  r = dpi_primarykeys( hStmt, NULL, 0, schema.length() == 0 ? NULL : reinterpret_cast<udbyte *>( schema.toUtf8().data() ),
-                DSQL_NTS, reinterpret_cast<udbyte *>( table.toUtf8().data() ), DSQL_NTS );
+  r = dpi_primarykeys( hStmt, NULL, 0, schema.length() == 0 ? NULL : ( udbyte* )( schema.toUtf8().data() ),
+                DSQL_NTS, ( udbyte* )( table.toUtf8().data() ), DSQL_NTS );
   if ( r != DSQL_SUCCESS )
   {
-    r = dpi_specialcolumns( hStmt, DSQL_BEST_ROWID, NULL, 0, schema.length() == 0 ? NULL : reinterpret_cast<udbyte *>( schema.toUtf8().data() ),
-                DSQL_NTS, reinterpret_cast<udbyte *>( table.toUtf8().data() ), DSQL_NTS, DSQL_SCOPE_CURROW, DSQL_NULLABLE );
+    r = dpi_specialcolumns( hStmt, DSQL_BEST_ROWID, NULL, 0, schema.length() == 0 ? NULL : ( udbyte* )schema.toUtf8().data(),
+                DSQL_NTS, ( udbyte* )table.toUtf8().data(), DSQL_NTS, DSQL_SCOPE_CURROW, DSQL_NULLABLE );
 
     if ( r != DSQL_SUCCESS )
     {
@@ -2841,10 +2817,10 @@ QSqlRecord QgsDMDriver::record( const QString &tablename ) const
     return fil;
   }
 
-  r = dpi_set_stmt_attr( hStmt, DSQL_ATTR_CURSOR_TYPE, reinterpret_cast<dpointer>( DSQL_CURSOR_FORWARD_ONLY ), 0 );
+  r = dpi_set_stmt_attr( hStmt, DSQL_ATTR_CURSOR_TYPE, ( dpointer )DSQL_CURSOR_FORWARD_ONLY, 0 );
 
-  r = dpi_columns( hStmt, NULL, 0, schema.length() == 0 ? NULL : reinterpret_cast<udbyte *>( schema.toUtf8().data() ),
-              DSQL_NTS, reinterpret_cast<udbyte *>( table.toUtf8().data() ), DSQL_NTS, NULL, 0 );
+  r = dpi_columns( hStmt, NULL, 0, schema.length() == 0 ? NULL : ( udbyte* )( schema.toUtf8().data() ),
+              DSQL_NTS, ( udbyte* )( table.toUtf8().data() ), DSQL_NTS, NULL, 0 );
   if ( r != DSQL_SUCCESS )
     qSqlWarning( tr( "Unable to execute column list" ), d );
 
@@ -2993,7 +2969,7 @@ QString QgsDMResult::ftableName( int col )
   if ( r != DSQL_SUCCESS )
     return QString();
 
-  return QStringLiteral( "%1.%2" ).arg( reinterpret_cast<char *>( schemaName.data() ) ).arg( reinterpret_cast<char *>( tableName.data() ) );
+  return QStringLiteral( "%1.%2" ).arg( ( char* )schemaName.data() ).arg( ( char* )tableName.data() );
 }
 
 sdint4 QgsDMResult::ftable( QString schemaName, QString tableName )
@@ -3008,7 +2984,7 @@ sdint4 QgsDMResult::ftable( QString schemaName, QString tableName )
   ).arg( tableName ).arg( schemaName );
 
   d->r = dpi_alloc_stmt( d->dpDbc(), &hstmt );
-  d->r = dpi_exec_direct( hstmt, reinterpret_cast<sdbyte *>( sql.toUtf8().data() ) );
+  d->r = dpi_exec_direct( hstmt, ( sdbyte* )sql.toUtf8().constData() );
   d->r = dpi_fetch( hstmt, NULL );
   //retcode = dpi_number_columns( hstmt, &ret_num );
   d->r = dpi_get_data( hstmt, 1, DSQL_C_ULONG, &( tableId ), 0, 0 );
@@ -3029,8 +3005,8 @@ sdint4 QgsDMResult::ftable( int col )
   d->r = dpi_col_attr( d->hStmt, col + 1, DSQL_DESC_SCHEMA_NAME, schName.data(), TABLENAME_SIZE, &schemaNameLen, 0 );
   d->r = dpi_col_attr( d->hStmt, col + 1, DSQL_DESC_BASE_TABLE_NAME, tabName.data(), TABLENAME_SIZE, &tableNameLen, 0 );
 
-  QString schemaName = QString::fromUtf8( reinterpret_cast<const char *>( schName.constData() ), schName.size() );
-  QString tableName = QString::fromUtf8( reinterpret_cast<const char *>( tabName.constData() ), schName.size() );
+  QString schemaName = QString::fromUtf8( ( const char* )schName.constData() );
+  QString tableName = QString::fromUtf8( ( const char* )tabName.constData() );
 
   return ftable( schemaName, tableName );
 }
@@ -3213,7 +3189,7 @@ QString QgsDMResult::getGeoSubTypeName( int field )
   dhdesc     hdescCol;
   udint4		objClassId = 0;
 
-  dpi_get_stmt_attr( d->hStmt, DSQL_ATTR_IMP_ROW_DESC, reinterpret_cast<dpointer>( &hdescCol ), 0, 0 );
+  dpi_get_stmt_attr( d->hStmt, DSQL_ATTR_IMP_ROW_DESC, ( dpointer )&hdescCol, 0, 0 );
 
   dpi_get_desc_field( hdescCol, static_cast<sdint2>( field + 1 ), DSQL_DESC_OBJ_CLASSID, &objClassId, sizeof( udint4 ), NULL );
 
@@ -3242,7 +3218,7 @@ QgsDamengGeometryColumnType QgsDMResult::getGeoType( int field )
   dhdesc     hdescCol;
   udint4		objClassId = 0;
 
-  dpi_get_stmt_attr( d->hStmt, DSQL_ATTR_IMP_ROW_DESC, reinterpret_cast<dpointer>( &hdescCol ), 0, 0 );
+  dpi_get_stmt_attr( d->hStmt, DSQL_ATTR_IMP_ROW_DESC, ( dpointer )&hdescCol, 0, 0 );
 
   dpi_get_desc_field( hdescCol, static_cast<sdint2>( field + 1 ), DSQL_DESC_OBJ_CLASSID, &objClassId, sizeof( udint4 ), NULL);
 

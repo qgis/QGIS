@@ -1,9 +1,9 @@
 /***************************************************************************
-      qgsdamengprovider.h  -  Data provider for Dameng/DAMENG layers
+    qgsdamengprovider.h  -  Data provider for Dameng/DAMENG layers
                              -------------------
-    begin                : Jan 2, 2004
-    copyright            : ( C ) 2003 by Gary E.Sherman
-    email                : sherman at mrcc.com
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,7 +14,6 @@
  *   ( at your option ) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef QGSDAMENGPROVIDER_H
 #define QGSDAMENGPROVIDER_H
 

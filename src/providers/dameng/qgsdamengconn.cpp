@@ -1,19 +1,17 @@
 /***************************************************************************
   qgsdamengconn.cpp  -  connection class to Dameng/Dameng
                              -------------------
-    begin                : 2025/01/28
-    copyright            : ( C ) 2011 by Juergen E. Fischer
-    email                : jef at norbit dot de
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   ( at your option ) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
-
- /***************************************************************************
-  *                                                                         *
-  *   This program is free software; you can redistribute it and/or modify  *
-  *   it under the terms of the GNU General Public License as published by  *
-  *   the Free Software Foundation; either version 2 of the License, or     *
-  *   ( at your option ) any later version.                                   *
-  *                                                                         *
-  ***************************************************************************/
 
 #include "qgsdamengconn.h"
 #include "qgsauthmanager.h"
@@ -30,7 +28,6 @@
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgsapplication.h"
-
 #include "qgsdamengtablemodel.h"
 #include "qgsdamengdatabase.h"
 #include "qgsdamengconnpool.h"
@@ -976,6 +973,29 @@ static QString quotedMap( const QVariantMap &map )
   return "'{" + ret + "}'";
 }
 
+static QString quotedList( const QVariantList &list )
+{
+  QString ret;
+  for ( QVariantList::const_iterator i = list.constBegin(); i != list.constEnd(); ++i )
+  {
+    if ( !ret.isEmpty() )
+    {
+      ret += QLatin1Char( ',' );
+    }
+
+    QString inner = i->toString();
+    if ( inner.startsWith( '{' ) || i->userType() == QMetaType::Type::Int || i->userType() == QMetaType::Type::LongLong )
+    {
+      ret.append( inner );
+    }
+    else
+    {
+      ret.append( doubleQuotedMapValue( i->toString() ) );
+    }
+  }
+  return "'{" + ret + "}'";
+}
+
 QString QgsDamengConn::quotedValue( const QVariant &value )
 {
   if ( value.isNull() )
@@ -995,6 +1015,10 @@ QString QgsDamengConn::quotedValue( const QVariant &value )
 
   case QMetaType::Type::QVariantMap:
     return quotedMap( value.toMap() );
+    
+  case QMetaType::Type::QStringList:
+  case QMetaType::Type::QVariantList:
+    return quotedList( value.toList() );
 
   case QMetaType::Type::Double:
   case QMetaType::Type::QString:
