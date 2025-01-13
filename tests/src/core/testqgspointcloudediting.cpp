@@ -427,7 +427,7 @@ void TestQgsPointCloudEditing::testCommitChanges()
 
   // check values before any changes
   std::unique_ptr<QgsPointCloudBlock> block0 = layer->index().nodeData( n, request );
-  const char *block0Data =  block0->data();
+  const char *block0Data = block0->data();
   QCOMPARE( block0Data[0], 2 );
   QCOMPARE( block0Data[6], 2 );
   QCOMPARE( block0Data[11], 3 );
@@ -439,10 +439,10 @@ void TestQgsPointCloudEditing::testCommitChanges()
 
   // check values after change, before committing
   std::unique_ptr<QgsPointCloudBlock> block1 = layer->index().nodeData( n, request );
-  const char *block1Data =  block1->data();
+  const char *block1Data = block1->data();
   QCOMPARE( block1Data[0], 1 );
   QCOMPARE( block1Data[6], 2 );  // unchanged
-  QCOMPARE( block1Data[11], 3 );  // unchanged
+  QCOMPARE( block1Data[11], 3 ); // unchanged
   QCOMPARE( block1Data[14], 1 );
 
   QVERIFY( layer->commitChanges() );
@@ -450,10 +450,10 @@ void TestQgsPointCloudEditing::testCommitChanges()
 
   // check values after committing changes
   std::unique_ptr<QgsPointCloudBlock> block2 = layer->index().nodeData( n, request );
-  const char *block2Data =  block2->data();
+  const char *block2Data = block2->data();
   QCOMPARE( block2Data[0], 1 );
   QCOMPARE( block2Data[6], 2 );  // unchanged
-  QCOMPARE( block2Data[11], 3 );  // unchanged
+  QCOMPARE( block2Data[11], 3 ); // unchanged
   QCOMPARE( block2Data[14], 1 );
 
   // try to open the file as a new layer and check saved values
@@ -461,10 +461,10 @@ void TestQgsPointCloudEditing::testCommitChanges()
 
   // check values in the new layer
   std::unique_ptr<QgsPointCloudBlock> block3 = layerNew->index().nodeData( n, request );
-  const char *block3Data =  block3->data();
+  const char *block3Data = block3->data();
   QCOMPARE( block3Data[0], 1 );
   QCOMPARE( block3Data[6], 2 );  // unchanged
-  QCOMPARE( block3Data[11], 3 );  // unchanged
+  QCOMPARE( block3Data[11], 3 ); // unchanged
   QCOMPARE( block3Data[14], 1 );
 }
 
