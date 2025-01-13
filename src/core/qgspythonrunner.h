@@ -42,8 +42,17 @@ class CORE_EXPORT QgsPythonRunner
     //! Execute a Python statement
     static bool run( const QString &command, const QString &messageOnError = QString() );
 
+    /**
+     * Execute a Python \a filename, showing an error message if one occurred.
+     * \returns true if no error occurred
+     */
+    static bool runFile( const QString &filename, const QString &messageOnError = QString() );
+
     //! Eval a Python statement
     static bool eval( const QString &command, QString &result SIP_OUT );
+
+    //! Set sys.argv
+    static bool setArgv( const QStringList &arguments, const QString &messageOnError = QString() );
 
     /**
      * Assign an instance of Python runner so that run() can be used.
@@ -59,7 +68,11 @@ class CORE_EXPORT QgsPythonRunner
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
 
+    virtual bool runFileCommand( const QString &filename, const QString &messageOnError = QString() ) = 0;
+
     virtual bool evalCommand( QString command, QString &result ) = 0;
+
+    virtual bool setArgvCommand( const QStringList &arguments, const QString &messageOnError = QString() ) = 0;
 
     static QgsPythonRunner *sInstance;
 };
