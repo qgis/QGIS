@@ -1,8 +1,8 @@
 /***************************************************************************
     qgsdamengconnpool.cpp
     ---------------------
-    begin                : January 2014
-    copyright            : ( C ) 2014 by Martin Dobias
+    begin                : January 2025
+    copyright            : ( C ) 2025 by Martin Dobias
     email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *

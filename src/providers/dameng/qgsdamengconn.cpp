@@ -1,7 +1,7 @@
 /***************************************************************************
   qgsdamengconn.cpp  -  connection class to Dameng/Dameng
                              -------------------
-    begin                : 2011/01/28
+    begin                : 2025/01/28
     copyright            : ( C ) 2011 by Juergen E. Fischer
     email                : jef at norbit dot de
  ***************************************************************************/
