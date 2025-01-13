@@ -149,6 +149,12 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
 #if QSCINTILLA_VERSION < 0x020d03
   installEventFilter( this );
 #endif
+
+  mLastEditTimer = new QTimer( this );
+  mLastEditTimer->setSingleShot( true );
+  mLastEditTimer->setInterval( 1000 );
+  connect( mLastEditTimer, &QTimer::timeout, this, &QgsCodeEditor::onLastEditTimeout );
+  connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -177,6 +183,7 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
   {
     QsciScintilla::focusOutEvent( event );
   }
+  onLastEditTimeout();
 }
 
 // This workaround a likely bug in QScintilla. The ESC key should not be consumned
@@ -352,6 +359,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
   }
 }
 
+
 bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 {
 #if QSCINTILLA_VERSION < 0x020d03
@@ -451,6 +459,12 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
     setMarginsBackgroundColor( color( QgsCodeEditorColorScheme::ColorRole::Background ) );
     setEdgeMode( QsciScintilla::EdgeNone );
   }
+}
+
+void QgsCodeEditor::onLastEditTimeout()
+{
+  mLastEditTimer->stop();
+  emit editingTimeout();
 }
 
 void QgsCodeEditor::setSciWidget()
@@ -816,6 +830,48 @@ bool QgsCodeEditor::checkSyntax()
 void QgsCodeEditor::toggleComment()
 {
 }
+
+void QgsCodeEditor::adjustScrollWidth()
+{
+  // A zero width would make setScrollWidth crash
+  long maxWidth = 10;
+
+  // Get the number of lines
+  int lineCount = lines();
+
+  // Loop through all the lines to get the longest one
+  for ( int line = 0; line < lineCount; line++ )
+  {
+    // Get the linear position at the end of the current line
+    const long endLine = SendScintilla( SCI_GETLINEENDPOSITION, line );
+    // Get the x coordinates of the end of the line
+    const long x = SendScintilla( SCI_POINTXFROMPOSITION, 0, endLine );
+    maxWidth = std::max( maxWidth, x );
+  }
+
+  // Use the longest line width as the new scroll width
+  setScrollWidth( static_cast<int>( maxWidth ) );
+}
+
+void QgsCodeEditor::setText( const QString &text )
+{
+  disconnect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
+  QsciScintilla::setText( text );
+  connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
+  onLastEditTimeout();
+  adjustScrollWidth();
+}
+
+int QgsCodeEditor::editingTimeoutInterval() const
+{
+  return mLastEditTimer->interval();
+}
+
+void QgsCodeEditor::setEditingTimeoutInterval( int timeout )
+{
+  mLastEditTimer->setInterval( timeout );
+}
+
 
 QStringList QgsCodeEditor::history() const
 {

@@ -6,6 +6,7 @@ on:
       - 🪟 MingW64 Windows 64bit Build
       - 🪟 Windows Qt6
       - 🧮 Vcpkg report
+      - 🍎 Build - MacOS Qt6
     types:
       - completed
 

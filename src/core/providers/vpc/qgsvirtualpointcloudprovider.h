@@ -48,7 +48,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
-    QgsPointCloudIndex *index() const override;
+    QgsPointCloudIndex index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
     void loadIndex( ) override;
@@ -61,6 +61,26 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override SIP_FACTORY;
     bool renderInPreview( const QgsDataProvider::PreviewContext & ) override { return false; }
 
+    /**
+     * Returns pointer to the overview index. May be NULLPTR if it doesn't exist.
+     * \since QGIS 3.42
+     */
+    QgsPointCloudIndex overview() const { return mOverview; }
+
+    /**
+     * Returns the calculated average width of point clouds.
+     * \note We use this value to calculate when to switch between overview and point clouds
+     * \since QGIS 3.42
+     */
+    double averageSubIndexWidth() const { return mAverageSubIndexWidth; }
+
+    /**
+     * Returns the calculated average height of point clouds.
+     * \note We use this value to calculate when to switch between overview and point clouds
+     * \since QGIS 3.42
+     */
+    double averageSubIndexHeight() const { return mAverageSubIndexHeight; }
+
   signals:
     void subIndexLoaded( int i );
 
@@ -69,13 +89,15 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     void populateAttributeCollection( QSet<QString> names );
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
     QgsPointCloudAttributeCollection mAttributes;
+    QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
 
     QStringList mUriList;
     QgsRectangle mExtent;
     qint64 mPointCount = 0;
     QgsCoordinateReferenceSystem mCrs;
+    double mAverageSubIndexWidth = 0;
+    double mAverageSubIndexHeight = 0;
 };
 
 class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata

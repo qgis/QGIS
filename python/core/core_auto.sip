@@ -381,6 +381,8 @@
 %Include auto_generated/gps/qgsgpsinformation.sip
 %Include auto_generated/gps/qgsgpslogger.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
+%Include auto_generated/gps/qgsqtlocationconnection.sip
+%Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/gps/qgssatelliteinformation.sip
 %Include auto_generated/gps/qgsvectorlayergpslogger.sip
 %Include auto_generated/labeling/qgscalloutposition.sip
@@ -515,6 +517,7 @@
 %Include auto_generated/pointcloud/qgspointcloudblock.sip
 %Include auto_generated/pointcloud/qgspointcloudlayer.sip
 %Include auto_generated/pointcloud/qgspointcloudlayerelevationproperties.sip
+%Include auto_generated/pointcloud/qgspointcloudindex.sip
 %Include auto_generated/pointcloud/qgspointclouddataprovider.sip
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererregistry.sip
@@ -805,8 +808,6 @@
 %Include auto_generated/vectortile/qgsvectortileutils.sip
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/vectortile/qgsvtpktiles.sip
-%Include auto_generated/gps/qgsqtlocationconnection.sip
 %If ( HAVE_WEBENGINE_SIP )
 %Include auto_generated/web/qgswebenginepage.sip
 %End
-%Include auto_generated/gps/qgsgpsconnectionregistry.sip

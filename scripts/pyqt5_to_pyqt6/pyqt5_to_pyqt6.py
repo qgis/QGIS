@@ -50,6 +50,13 @@ from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
 
+try:
+    import PyQt5
+
+    print("WARNING: PyQt5 has been found. It may result in wrong behavior.\n")
+except ImportError:
+    pass
+
 from PyQt6 import (
     Qsci,
     QtCore,

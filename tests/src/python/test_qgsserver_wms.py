@@ -183,6 +183,14 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
             b"\n".join(headers) + b"\n\n" + bytes(response.body()), expected
         )
 
+    def test_getcapabilities_scale_denominator(self):
+        self.wms_request_compare(
+            "GetCapabilities",
+            None,
+            "wms_getcapabilities_scale_denominator",
+            "test_project_scale_denominator.qgs",
+        )
+
     def test_getprojectsettings(self):
         self.wms_request_compare("GetProjectSettings")
 

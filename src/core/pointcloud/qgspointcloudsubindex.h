@@ -49,11 +49,11 @@ class QgsPointCloudSubIndex
     {
     }
 
-    //! Returns a pointer to the point cloud index. May be NULLPTR if not loaded.
-    QgsPointCloudIndex *index() const { return mIndex.get(); }
+    //! Returns the point cloud index. May be NULLPTR if not loaded.
+    QgsPointCloudIndex index() const { return mIndex; }
 
     //! Sets the point cloud index to \a index.
-    void setIndex( QgsPointCloudIndex *index ) { mIndex.reset( index ); }
+    void setIndex( QgsPointCloudIndex index ) { mIndex = index; }
 
     //! Returns the uri for this sub index
     QString uri() const { return mUri; }
@@ -74,7 +74,7 @@ class QgsPointCloudSubIndex
     qint64 pointCount() const { return mPointCount; }
 
   private:
-    std::shared_ptr<QgsPointCloudIndex> mIndex;
+    QgsPointCloudIndex mIndex = QgsPointCloudIndex( nullptr );
     QString mUri;
     QgsRectangle mExtent;
     QgsGeometry mGeometry;

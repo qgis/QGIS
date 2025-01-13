@@ -72,12 +72,12 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsFeedback *feedback() const override { return mFeedback.get(); }
 
   private:
-    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels );
-    int renderNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
-    int renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
-    int renderNodesSorted( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order );
+    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, const QgsRenderContext &context, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels );
+    int renderNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
+    int renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
+    int renderNodesSorted( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order );
     void renderTriangulatedSurface( QgsPointCloudRenderContext &context );
-    bool renderIndex( QgsPointCloudIndex *pc );
+    bool renderIndex( QgsPointCloudIndex &pc );
 
     QgsPointCloudLayer *mLayer = nullptr;
     QString mLayerName;

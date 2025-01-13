@@ -11115,6 +11115,36 @@ Qgis.MeshRangeExtent.__doc__ = """Describes the extent used to compute mesh rang
 """
 # --
 Qgis.MeshRangeExtent.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudAccessType.Local.__doc__ = "Local means the source is a local file on the machine"
+Qgis.PointCloudAccessType.Remote.__doc__ = "Remote means it's loaded through a protocol like HTTP"
+Qgis.PointCloudAccessType.__doc__ = """The access type of the data, local is for local files and remote for remote files (over HTTP).
+
+.. seealso:: :py:class:`QgsPointCloudIndex`
+
+.. versionadded:: 3.42
+
+* ``Local``: Local means the source is a local file on the machine
+* ``Remote``: Remote means it's loaded through a protocol like HTTP
+
+"""
+# --
+Qgis.PointCloudAccessType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = "Render only point cloud extents when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = "Render overview point cloud when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = "Render point cloud extents over overview point cloud"
+Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
+
+.. versionadded:: 3.42
+
+* ``RenderExtents``: Render only point cloud extents when zoomed out
+* ``RenderOverview``: Render overview point cloud when zoomed out
+* ``RenderOverviewAndExtents``: Render point cloud extents over overview point cloud
+
+"""
+# --
+Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.'}
     Qgis.version = staticmethod(Qgis.version)

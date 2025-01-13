@@ -327,6 +327,7 @@
 %Include auto_generated/editorwidgets/qgsjsoneditwidget.sip
 %End
 %Include auto_generated/editorwidgets/qgsmultiedittoolbutton.sip
+%Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsrelationaggregatesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencesearchwidgetwrapper.sip
 %Include auto_generated/editorwidgets/qgsrelationreferencewidget.sip
@@ -534,4 +535,3 @@
 %Include auto_generated/tiledscene/qgstiledscenerendererpropertieswidget.sip
 %Include auto_generated/tiledscene/qgstiledscenerendererwidget.sip
 %Include auto_generated/vectortile/qgsvectortilelayerproperties.sip
-%Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip

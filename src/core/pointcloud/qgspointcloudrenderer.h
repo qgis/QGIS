@@ -701,6 +701,18 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     QgsTextFormat labelTextFormat() const { return mLabelTextFormat; }
 
+    /**
+     * Sets the renderer behavior when zoomed out
+     * \since QGIS 3.42
+     */
+    void setZoomOutBehavior( const Qgis::PointCloudZoomOutRenderBehavior behavior ) { mZoomOutBehavior = behavior; }
+
+    /**
+     * Returns the renderer behavior when zoomed out
+     * \since QGIS 3.42
+     */
+    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
+
   protected:
 
     /**
@@ -842,6 +854,8 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     bool mShowLabels = false;
     QgsTextFormat mLabelTextFormat;
+
+    Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

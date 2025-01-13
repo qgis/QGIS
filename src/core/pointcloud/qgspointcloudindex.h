@@ -25,6 +25,7 @@
 #include <QList>
 #include <QMutex>
 #include <QCache>
+#include <QByteArray>
 
 #include "qgis_core.h"
 #include "qgspointcloudstatistics.h"
@@ -37,14 +38,11 @@
 #include "qgspointcloudrequest.h"
 
 
-#define SIP_NO_FILE
-
-class QgsPointCloudRequest;
 class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;
 class QgsPointCloudBlockRequest;
 class QgsPointCloudStatistics;
-class QgsPointCloudIndex;
+class QgsAbstractPointCloudIndex;
 
 /**
  * \ingroup core
@@ -106,6 +104,8 @@ Q_DECLARE_TYPEINFO( QgsPointCloudNodeId, Q_PRIMITIVE_TYPE );
 //! Hash function for indexed nodes
 CORE_EXPORT uint qHash( QgsPointCloudNodeId id );
 
+#ifndef SIP_RUN
+
 /**
  * \ingroup core
  *
@@ -145,6 +145,8 @@ class CORE_EXPORT QgsPointCloudCacheKey
 //! Hash function for QgsPointCloudCacheKey
 uint qHash( const QgsPointCloudCacheKey &key );
 
+#endif // !SIP_RUN
+
 /**
  * \ingroup core
  *
@@ -159,7 +161,7 @@ class CORE_EXPORT QgsPointCloudNode
   public:
 
     /**
-     * Constructs new node object. Should only be called by QgsPointCloudIndex::getNode().
+     * Constructs new node object. Should only be called by QgsAbstractPointCloudIndex::getNode().
      * Bounds should always be computed by QgsPointCloudNode::bounds().
      */
     QgsPointCloudNode( const QgsPointCloudNodeId &id,
@@ -197,6 +199,9 @@ class CORE_EXPORT QgsPointCloudNode
     QgsBox3D mBounds;
 };
 
+
+#ifndef SIP_RUN
+
 /**
  * \ingroup core
  *
@@ -204,28 +209,21 @@ class CORE_EXPORT QgsPointCloudNode
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
- * \since QGIS 3.18
+ * \since QGIS 3.42
  */
-class CORE_EXPORT QgsPointCloudIndex
+class CORE_EXPORT QgsAbstractPointCloudIndex
 {
   public:
-    //! The access type of the data, local is for local files and remote for remote files (over HTTP)
-    enum AccessType
-    {
-      Local, //!< Local means the source is a local file on the machine
-      Remote //!< Remote means it's loaded through a protocol like HTTP
-    };
-
     //! Constructs index
-    explicit QgsPointCloudIndex();
-    virtual ~QgsPointCloudIndex();
+    explicit QgsAbstractPointCloudIndex();
+    virtual ~QgsAbstractPointCloudIndex();
 
     /**
      * Returns a clone of the current point cloud index object
      * \note It is the responsibility of the caller to handle the ownership and delete the object.
      * \since QGIS 3.26
      */
-    virtual std::unique_ptr<QgsPointCloudIndex> clone() const = 0;
+    virtual std::unique_ptr<QgsAbstractPointCloudIndex> clone() const = 0;
 
     //! Loads the index from the file
     virtual void load( const QString &fileName ) = 0;
@@ -245,7 +243,7 @@ class CORE_EXPORT QgsPointCloudIndex
      * If the access type is local, the data is stored locally as a file and will only be fetch synchronously ( blocking request with nodeData only )
      * \note Always make sure to check before trying to use asyncNodeData since it is not supported in the case of local access type
      */
-    virtual AccessType accessType() const = 0;
+    virtual Qgis::PointCloudAccessType accessType() const = 0;
 
     //! Returns the coordinate reference system of the point cloud index
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -256,12 +254,19 @@ class CORE_EXPORT QgsPointCloudIndex
 
     /**
      * Returns the object containing the statistics metadata extracted from the dataset
-     * \since QGIS 3.26
+     * \since QGIS 3.42
      */
     virtual QgsPointCloudStatistics metadataStatistics() const;
 
+    /**
+     * Writes the statistics object \a stats into the backing file, if possible.
+     * Returns true if the data was written successfully.
+     * \since QGIS 3.26
+     */
+    virtual bool writeStatistics( QgsPointCloudStatistics &stats );
+
     //! Returns root node of the index
-    QgsPointCloudNodeId root() { return QgsPointCloudNodeId( 0, 0, 0, 0 ); }
+    QgsPointCloudNodeId root() const { return QgsPointCloudNodeId( 0, 0, 0, 0 ); }
 
     //! Returns whether the octree contain given node
     virtual bool hasNode( const QgsPointCloudNodeId &n ) const;
@@ -293,6 +298,15 @@ class CORE_EXPORT QgsPointCloudIndex
      * May return nullptr in case the node is not present or any other problem with loading
      */
     virtual QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) = 0;
+
+    /**
+     * Tries to update the data for the specified nodes.
+     * Subclasses that support editing should override this to handle storing the data.
+     * Default implementation does nothing, returns false.
+     * \returns TRUE on success, otherwise FALSE
+     * \since QGIS 3.42
+     */
+    virtual bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data );
 
     //! Returns extent of the data
     QgsRectangle extent() const { return mExtent; }
@@ -336,7 +350,7 @@ class CORE_EXPORT QgsPointCloudIndex
      * Copies common properties to the \a destination index
      * \since QGIS 3.26
      */
-    void copyCommonProperties( QgsPointCloudIndex *destination ) const;
+    void copyCommonProperties( QgsAbstractPointCloudIndex *destination ) const;
 
     /**
      * Fetches the requested node data from the cache for the specified \a node and \a request.
@@ -355,6 +369,14 @@ class CORE_EXPORT QgsPointCloudIndex
      */
     static void storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request,
                                             const QgsPointCloudExpression &expression, const QString &uri );
+
+    /**
+     * Returns extra metadata that's not accessible through the other methods
+     * in an implementation-specific dynamic structure.
+     *
+     * \since QGIS 3.42
+     */
+    virtual QVariantMap extraMetadata() const;
 
   protected: //TODO private
     //! Sets native attributes of the data
@@ -377,5 +399,262 @@ class CORE_EXPORT QgsPointCloudIndex
     static QMutex sBlockCacheMutex;
     static QCache<QgsPointCloudCacheKey, QgsPointCloudBlock> sBlockCache;
 };
+
+#endif // !SIP_RUN
+
+
+/**
+ * \ingroup core
+ * \brief Smart pointer for QgsAbstractPointCloudIndex
+ *
+ * This is a wrapper for QgsAbstractPointCloudIndex, an index for point cloud
+ * layers. It contains a shared_pointer, ensuring that concurrent access to the
+ * index is memory safe.
+ *
+ * \since QGIS 3.42
+ */
+class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
+{
+  public:
+    //! Construct wrapper, takes ownership of index
+    explicit QgsPointCloudIndex( QgsAbstractPointCloudIndex *index = nullptr ) SIP_SKIP;
+
+    //! Checks if index is non-null
+    operator bool() const;
+
+    /**
+    * Loads the index from the file
+    *
+    * \see QgsAbstractPointCloudIndex::load
+    */
+    void load( const QString &fileName );
+
+    /**
+    * Returns whether index is loaded and valid
+    *
+    * \see QgsAbstractPointCloudIndex::isValid
+    */
+    bool isValid() const;
+
+    /**
+    * Returns the error that occurred during the loading of the index.
+    *
+    * \see QgsAbstractPointCloudIndex::error
+    */
+    QString error() const;
+
+    /**
+     * Returns the access type of the data
+     * If the access type is Remote, data will be fetched from an HTTP server either synchronously or asynchronously
+     * If the access type is local, the data is stored locally as a file and will only be fetch synchronously ( blocking request with nodeData only )
+     * \note Always make sure to check before trying to use asyncNodeData since it is not supported in the case of local access type
+    *
+    * \see QgsAbstractPointCloudIndex::accessType
+     */
+    Qgis::PointCloudAccessType accessType() const;
+
+    /**
+    * Returns the coordinate reference system of the point cloud index
+    *
+    * \see QgsAbstractPointCloudIndex::crs
+    */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+    * Returns the number of points in the point cloud
+    *
+    * \see QgsAbstractPointCloudIndex::pointCount
+    */
+    qint64 pointCount() const;
+
+    /**
+    * Returns the original metadata map
+    *
+    * \see QgsAbstractPointCloudIndex::originalMetadata
+    */
+    QVariantMap originalMetadata() const;
+
+    /**
+     * Returns the object containing the statistics metadata extracted from the dataset
+    *
+    * \see QgsAbstractPointCloudIndex::metadataStatistics
+     */
+    QgsPointCloudStatistics metadataStatistics() const;
+
+    /**
+     * Writes the statistics object \a stats into the backing file, if possible.
+     * Returns true if the data was written successfully.
+    *
+    * \see QgsAbstractPointCloudIndex::writeStatistics
+     */
+    bool writeStatistics( QgsPointCloudStatistics &stats );
+
+    /**
+    * Returns root node of the index
+    *
+    * \see QgsAbstractPointCloudIndex::root
+    */
+    QgsPointCloudNodeId root() const;
+
+    /**
+    * Returns whether the octree contain given node
+    *
+    * \see QgsAbstractPointCloudIndex::hasNode
+    */
+    bool hasNode( const QgsPointCloudNodeId &id ) const;
+
+    /**
+    * Returns object for a given node
+    *
+    * \see QgsAbstractPointCloudIndex::getNode
+    */
+    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
+
+    /**
+    * Returns all attributes that are stored in the file
+    *
+    * \see QgsAbstractPointCloudIndex::attributes
+    */
+    QgsPointCloudAttributeCollection attributes() const;
+
+    /**
+     * Returns node data block.
+     *
+     * e.g. positions (needs to be scaled and offset applied to get coordinates) or
+     * classification, intensity or custom attributes.
+     *
+     * May return nullptr in case the node is not present or any other problem with loading
+    *
+    * \see QgsAbstractPointCloudIndex::nodeData
+     */
+    std::unique_ptr< QgsPointCloudBlock > nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) SIP_SKIP;
+
+    /**
+     * Returns a handle responsible for loading a node data block
+     *
+     * e.g. positions (needs to be scaled and offset applied to get coordinates) or
+     * classification, intensity or custom attributes
+     *
+     * It is caller responsibility to free the handle and the block issued by the handle if the loading succeeds.
+     *
+     * May return nullptr in case the node is not present or any other problem with loading
+    *
+    * \see QgsAbstractPointCloudIndex::asyncNodeData
+     */
+    QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) SIP_SKIP;
+
+    /**
+     * Tries to update the data for the specified nodes.
+     *
+     * \returns TRUE on success, otherwise FALSE
+     */
+    bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data );
+
+    /**
+    * Returns extent of the data
+    *
+    * \see QgsAbstractPointCloudIndex::extent
+    */
+    QgsRectangle extent() const;
+
+    /**
+    * Returns z min
+    *
+    * \see QgsAbstractPointCloudIndex::zMin
+    */
+    double zMin() const;
+
+    /**
+    * Returns z max
+    *
+    * \see QgsAbstractPointCloudIndex::zMax
+    */
+    double zMax() const;
+
+    /**
+    * Returns bounding box of root node in CRS coords
+    *
+    * \see QgsAbstractPointCloudIndex::rootNodeBounds
+    */
+    QgsBox3D rootNodeBounds() const;
+
+    /**
+    * Returns scale of data relative to CRS
+    *
+    * \see QgsAbstractPointCloudIndex::scale
+    */
+    QgsVector3D scale() const;
+
+    /**
+    * Returns offset of data from CRS
+    *
+    * \see QgsAbstractPointCloudIndex::offset
+    */
+    QgsVector3D offset() const;
+
+    /**
+     * Returns the number of points in one direction in a single node.
+    *
+    * \see QgsAbstractPointCloudIndex::span
+     */
+    int span() const;
+
+    /**
+     * Sets the string used to define a subset of the point cloud.
+     * \param subset The subset string to be used in a \a QgsPointCloudExpression
+     * \returns true if the expression is parsed with no errors, false otherwise
+    *
+    * \see QgsAbstractPointCloudIndex::setSubsetString
+     */
+    bool setSubsetString( const QString &subset );
+
+    /**
+     * Returns the string used to define a subset of the point cloud.
+     * \returns The subset string or null QString if not implemented by the provider
+     *
+    *
+    * \see QgsAbstractPointCloudIndex::subsetString
+     */
+    QString subsetString() const;
+
+    /**
+     * Fetches the requested node data from the cache for the specified \a node and \a request.
+     * If not found in the cache, nullptr is returned.
+     * Caller takes ownership of the returned object.
+    *
+    * \see QgsAbstractPointCloudIndex::getNodeDataFromCache
+     */
+    QgsPointCloudBlock *getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) SIP_SKIP;
+
+    /**
+     * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.
+    *
+    * \see QgsAbstractPointCloudIndex::storeNodeDataToCache
+     */
+    void storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) SIP_SKIP;
+
+    /**
+     * Returns extra metadata that's not accessible through the other methods
+     * in an implementation-specific dynamic structure.
+     *
+     * \see QgsAbstractPointCloudIndex::extraMetadata
+     */
+    QVariantMap extraMetadata() const;
+
+    /**
+     * Tries to store pending changes to the data provider.
+     * \return TRUE on success, otherwise FALSE
+     */
+    bool commitChanges();
+
+    //! Returns TRUE if there are uncommitted changes, FALSE otherwise
+    bool isModified() const;
+
+  private:
+    std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
+
+    friend class TestQgsPointCloudEditing;
+};
+
 
 #endif // QGSPOINTCLOUDINDEX_H

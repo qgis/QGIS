@@ -186,6 +186,11 @@ bool lazSerialize_( char *data, size_t outputPosition, QgsPointCloudAttribute::D
   return true;
 }
 
+bool lazStoreDoubleToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, double value )
+{
+  return lazStoreToStream_<double>( s, position, type, value );
+}
+
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::vector< QgsLazDecoder::RequestedAttributeDetails > prepareRequestedAttributeDetails_( const QgsPointCloudAttributeCollection &requestedAttributes, QVector<QgsLazInfo::ExtraBytesAttributeDetails> &extrabytesAttr )

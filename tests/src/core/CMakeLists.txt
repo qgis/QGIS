@@ -142,6 +142,7 @@ set(TESTS
  testqgspainteffectregistry.cpp
  testqgspallabeling.cpp
  testqgspointcloudattribute.cpp
+ testqgspointcloudediting.cpp
  testqgspointcloudexpression.cpp
  testqgspointcloudlayerexporter.cpp
  testqgspointcloudrendererregistry.cpp

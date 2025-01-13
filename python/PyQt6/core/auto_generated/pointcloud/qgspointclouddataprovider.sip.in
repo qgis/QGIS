@@ -36,6 +36,7 @@ Responsible for reading native point cloud data and returning the indexed data.
       WriteLayerMetadata,
       CreateRenderer,
       ContainSubIndexes,
+      ChangeAttributeValues,
     };
 
     typedef QFlags<QgsPointCloudDataProvider::Capability> Capabilities;
@@ -121,6 +122,12 @@ emits :py:func:`~QgsPointCloudDataProvider.indexGenerationStateChanged`
 Gets the current index generation state
 %End
 
+    virtual QgsPointCloudIndex index() const;
+%Docstring
+Returns the point cloud index associated with the provider.
+
+Can be None (e.g. the index is being created)
+%End
 
 
 

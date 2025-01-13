@@ -179,7 +179,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     /**
      * Emitted when either:
      *
-     * 1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
+     * 1. 1 second has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
      * 2. or, immediately after the widget has lost focus after its value was changed.
      *
      * This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly

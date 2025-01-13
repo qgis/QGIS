@@ -5722,6 +5722,31 @@ class CORE_EXPORT Qgis
     Q_ENUM( MeshRangeExtent )
 
     /**
+     * The access type of the data, local is for local files and remote for remote files (over HTTP).
+     * \see QgsPointCloudIndex
+     *
+     * \since QGIS 3.42
+     */
+    enum class PointCloudAccessType : int
+    {
+      Local, //!< Local means the source is a local file on the machine
+      Remote //!< Remote means it's loaded through a protocol like HTTP
+    };
+    Q_ENUM( PointCloudAccessType )
+
+    /**
+     * Point cloud zoom out options
+     * \since QGIS 3.42
+     */
+    enum class PointCloudZoomOutRenderBehavior : int
+    {
+      RenderExtents, //!< Render only point cloud extents when zoomed out
+      RenderOverview, //!< Render overview point cloud when zoomed out
+      RenderOverviewAndExtents //!< Render point cloud extents over overview point cloud
+    };
+    Q_ENUM( PointCloudZoomOutRenderBehavior )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;

@@ -55,7 +55,7 @@ QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
 
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
-  , mIndex( layer->dataProvider()->index()->clone() )
+  , mIndex( layer->index() )
   , mSourceCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
   , mTargetCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {
@@ -337,10 +337,10 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   QVector<QgsPointCloudNodeId> nodes;
   qint64 pointCount = 0;
   QQueue<QgsPointCloudNodeId> queue;
-  queue.push_back( mParent->mIndex->root() );
+  queue.push_back( mParent->mIndex.root() );
   while ( !queue.empty() )
   {
-    QgsPointCloudNode node = mParent->mIndex->getNode( queue.front() );
+    QgsPointCloudNode node = mParent->mIndex.getNode( queue.front() );
     queue.pop_front();
     const QgsBox3D nodeBounds = node.bounds();
     if ( mParent->mExtent.intersects( nodeBounds.toRectangle() ) &&
@@ -363,7 +363,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   qint64 pointsExported = 0;
   for ( const QgsPointCloudNodeId &node : nodes )
   {
-    block = mParent->mIndex->nodeData( node, request );
+    block = mParent->mIndex.nodeData( node, request );
     const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
     const char *ptr = block->data();
     int count = block->pointCount();
@@ -532,12 +532,12 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
   mOptions.add( "format", QString::number( mPointFormat ).toStdString() );
   if ( mParent->mTransform->isShortCircuited() )
   {
-    mOptions.add( "offset_x", QString::number( mParent->mIndex->offset().x() ).toStdString() );
-    mOptions.add( "offset_y", QString::number( mParent->mIndex->offset().y() ).toStdString() );
-    mOptions.add( "offset_z", QString::number( mParent->mIndex->offset().z() ).toStdString() );
-    mOptions.add( "scale_x", QString::number( mParent->mIndex->scale().x() ).toStdString() );
-    mOptions.add( "scale_y", QString::number( mParent->mIndex->scale().y() ).toStdString() );
-    mOptions.add( "scale_z", QString::number( mParent->mIndex->scale().z() ).toStdString() );
+    mOptions.add( "offset_x", QString::number( mParent->mIndex.offset().x() ).toStdString() );
+    mOptions.add( "offset_y", QString::number( mParent->mIndex.offset().y() ).toStdString() );
+    mOptions.add( "offset_z", QString::number( mParent->mIndex.offset().z() ).toStdString() );
+    mOptions.add( "scale_x", QString::number( mParent->mIndex.scale().x() ).toStdString() );
+    mOptions.add( "scale_y", QString::number( mParent->mIndex.scale().y() ).toStdString() );
+    mOptions.add( "scale_z", QString::number( mParent->mIndex.scale().z() ).toStdString() );
   }
 
   mTable.layout()->registerDim( pdal::Dimension::Id::X );

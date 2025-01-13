@@ -139,10 +139,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     }
   }
 
-  // We only handle terrain results if there were no vector layer results because:
-  // a. terrain results will overwrite other existing results.
-  // b. terrain results use 2d identify logic and may contain results from vector layers that
-  // are not actually rendered on the terrain as they have a 3d renderer set.
+  // We only handle terrain results if there were no vector layer results so they don't get overwritten
   if ( showTerrainResults && allHits.contains( nullptr ) )
   {
     const QgsRayCastingUtils::RayHit hit = allHits.value( nullptr ).first();
@@ -172,7 +169,10 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
     }
 
-    identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
+    QgsMapToolIdentify::IdentifyProperties props;
+    props.searchRadiusMapUnits = searchRadiusCanvas2D;
+    props.skip3DLayers = true;
+    identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), props );
   }
 
   // We need to show other layer type results AFTER terrain results so they don't get overwritten

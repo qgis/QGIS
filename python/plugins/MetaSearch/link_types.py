@@ -31,6 +31,8 @@ WMSWMST_LINK_TYPES = [
     "OGC:WMS-1.3.0-http-get-capabilities",
     "urn:x-esri:specification:ServiceType:wms:url",
     "urn:x-esri:specification:ServiceType:Gmd:URL.wms",
+    "OGC Web Map Service",
+    "OGC Web Map Tile Service",
 ]
 
 WFS_LINK_TYPES = [
@@ -40,6 +42,7 @@ WFS_LINK_TYPES = [
     "OGC:WFS-1.1.0-http-get-capabilities",
     "urn:x-esri:specification:ServiceType:wfs:url",
     "urn:x-esri:specification:ServiceType:Gmd:URL.wfs",
+    "OGC Web Feature Service",
 ]
 
 WCS_LINK_TYPES = [
@@ -48,6 +51,7 @@ WCS_LINK_TYPES = [
     "OGC:WCS-1.1.0-http-get-capabilities",
     "urn:x-esri:specification:ServiceType:wcs:url",
     "urn:x-esri:specification:ServiceType:Gmd:URL.wcs",
+    "OGC Web Coverage Service",
 ]
 
 AMS_LINK_TYPES = ["ESRI:ArcGIS:MapServer", "Esri REST: Map Service", "ESRI REST"]

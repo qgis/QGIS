@@ -45,6 +45,12 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
 
     void updateItemData();
 
+    // Methods to update widget status
+    void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
+    void setShowLabel( bool showLabel );
+    void setHorizontalStretch( const int horizontalStretch );
+    void setVerticalStretch( const int verticalStretch );
+
   private:
     void showRelationButtons( bool show );
 

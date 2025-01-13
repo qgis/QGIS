@@ -53,6 +53,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
       CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
       ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example \since QGIS 3.32
+      ChangeAttributeValues = 1 << 4, //!< Provider can modify the values of point attributes. \since QGIS 3.42
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -154,10 +155,8 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * Returns the point cloud index associated with the provider.
      *
      * Can be nullptr (e.g. the index is being created)
-     *
-     * \note Not available in Python bindings
      */
-    virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
+    virtual QgsPointCloudIndex index() const { return QgsPointCloudIndex( nullptr ); }
 
     /**
      * Returns a list of sub indexes available if the provider supports multiple indexes, empty list otherwise.
@@ -279,10 +278,10 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     QString mSubsetString;
 
     //! Identify in a specific index (used for sub-indexes)
-    QVector<QVariantMap> identify( QgsPointCloudIndex *index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
+    QVector<QVariantMap> identify( QgsPointCloudIndex &index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
 
   private:
-    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex *pc, QgsPointCloudNode node, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNode node, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
 };
 

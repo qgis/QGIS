@@ -1,0 +1,379 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudindex.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsPointCloudNodeId
+{
+%Docstring(signature="appended")
+
+Represents a indexed point cloud node's position in octree
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudindex.h"
+%End
+  public:
+    QgsPointCloudNodeId();
+%Docstring
+Constructs invalid node
+%End
+    QgsPointCloudNodeId( int _d, int _x, int _y, int _z );
+%Docstring
+Constructs valid node
+%End
+
+    bool isValid() const;
+%Docstring
+Returns whether node is valid
+%End
+
+
+    bool operator==( QgsPointCloudNodeId other ) const;
+
+    QgsPointCloudNodeId parentNode() const;
+%Docstring
+Returns the parent of the node
+
+.. versionadded:: 3.20
+%End
+
+    static QgsPointCloudNodeId fromString( const QString &str );
+%Docstring
+Creates node from string
+%End
+
+    QString toString() const;
+%Docstring
+Encode node to string
+%End
+
+    int d() const;
+%Docstring
+Returns d
+%End
+
+    int x() const;
+%Docstring
+Returns x
+%End
+
+    int y() const;
+%Docstring
+Returns y
+%End
+
+    int z() const;
+%Docstring
+Returns z
+%End
+
+};
+
+
+uint qHash( QgsPointCloudNodeId id );
+%Docstring
+Hash function for indexed nodes
+%End
+
+
+class QgsPointCloudNode
+{
+%Docstring(signature="appended")
+
+Keeps metadata for indexed point cloud node
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudindex.h"
+%End
+  public:
+
+    QgsPointCloudNode( const QgsPointCloudNodeId &id,
+                       qint64 pointCount,
+                       const QList<QgsPointCloudNodeId> &childIds,
+                       float error,
+                       const QgsBox3D &bounds );
+%Docstring
+Constructs new node object. Should only be called by :py:func:`QgsAbstractPointCloudIndex.getNode()`.
+Bounds should always be computed by :py:func:`QgsPointCloudNode.bounds()`.
+%End
+    QgsPointCloudNodeId id() const;
+%Docstring
+Returns node's ID (unique in index)
+%End
+    qint64 pointCount() const;
+%Docstring
+Returns number of points contained in node data
+%End
+    QList<QgsPointCloudNodeId> children() const;
+%Docstring
+Returns IDs of child nodes
+%End
+    float error() const;
+%Docstring
+Returns node's error in map units (used to determine in whether the node has enough detail for the current view)
+%End
+    QgsBox3D bounds() const;
+%Docstring
+Returns node's bounding cube in CRS coords
+%End
+
+    static QgsBox3D bounds( QgsBox3D rootBounds, QgsPointCloudNodeId id );
+%Docstring
+Returns bounding box of specific node
+%End
+
+};
+
+
+
+
+class QgsPointCloudIndex /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+Smart pointer for :py:class:`QgsAbstractPointCloudIndex`
+
+This is a wrapper for :py:class:`QgsAbstractPointCloudIndex`, an index for point cloud
+layers. It contains a shared_pointer, ensuring that concurrent access to the
+index is memory safe.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudindex.h"
+%End
+  public:
+
+    operator bool() const;
+
+    void load( const QString &fileName );
+%Docstring
+Loads the index from the file
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.load`
+%End
+
+    bool isValid() const;
+%Docstring
+Returns whether index is loaded and valid
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.isValid`
+%End
+
+    QString error() const;
+%Docstring
+Returns the error that occurred during the loading of the index.
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.error`
+%End
+
+    Qgis::PointCloudAccessType accessType() const;
+%Docstring
+Returns the access type of the data
+If the access type is Remote, data will be fetched from an HTTP server either synchronously or asynchronously
+If the access type is local, the data is stored locally as a file and will only be fetch synchronously ( blocking request with nodeData only )
+
+.. note::
+
+   Always make sure to check before trying to use asyncNodeData since it is not supported in the case of local access type
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.accessType`
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the coordinate reference system of the point cloud index
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.crs`
+%End
+
+    qint64 pointCount() const;
+%Docstring
+Returns the number of points in the point cloud
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.pointCount`
+%End
+
+    QVariantMap originalMetadata() const;
+%Docstring
+Returns the original metadata map
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.originalMetadata`
+%End
+
+    QgsPointCloudStatistics metadataStatistics() const;
+%Docstring
+Returns the object containing the statistics metadata extracted from the dataset
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.metadataStatistics`
+%End
+
+    bool writeStatistics( QgsPointCloudStatistics &stats );
+%Docstring
+Writes the statistics object ``stats`` into the backing file, if possible.
+Returns true if the data was written successfully.
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.writeStatistics`
+%End
+
+    QgsPointCloudNodeId root() const;
+%Docstring
+Returns root node of the index
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.root`
+%End
+
+    bool hasNode( const QgsPointCloudNodeId &id ) const;
+%Docstring
+Returns whether the octree contain given node
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.hasNode`
+%End
+
+    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
+%Docstring
+Returns object for a given node
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.getNode`
+%End
+
+    QgsPointCloudAttributeCollection attributes() const;
+%Docstring
+Returns all attributes that are stored in the file
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.attributes`
+%End
+
+
+
+    bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data );
+%Docstring
+Tries to update the data for the specified nodes.
+
+:return: ``True`` on success, otherwise ``False``
+%End
+
+    QgsRectangle extent() const;
+%Docstring
+Returns extent of the data
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.extent`
+%End
+
+    double zMin() const;
+%Docstring
+Returns z min
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.zMin`
+%End
+
+    double zMax() const;
+%Docstring
+Returns z max
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.zMax`
+%End
+
+    QgsBox3D rootNodeBounds() const;
+%Docstring
+Returns bounding box of root node in CRS coords
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.rootNodeBounds`
+%End
+
+    QgsVector3D scale() const;
+%Docstring
+Returns scale of data relative to CRS
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.scale`
+%End
+
+    QgsVector3D offset() const;
+%Docstring
+Returns offset of data from CRS
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.offset`
+%End
+
+    int span() const;
+%Docstring
+Returns the number of points in one direction in a single node.
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.span`
+%End
+
+    bool setSubsetString( const QString &subset );
+%Docstring
+Sets the string used to define a subset of the point cloud.
+
+:param subset: The subset string to be used in a ``:py:class:`QgsPointCloudExpression```
+
+:return: true if the expression is parsed with no errors, false otherwise
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.setSubsetString`
+%End
+
+    QString subsetString() const;
+%Docstring
+Returns the string used to define a subset of the point cloud.
+
+:return: The subset string or null QString if not implemented by the provider
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.subsetString`
+%End
+
+
+
+    QVariantMap extraMetadata() const;
+%Docstring
+Returns extra metadata that's not accessible through the other methods
+in an implementation-specific dynamic structure.
+
+.. seealso:: :py:func:`QgsAbstractPointCloudIndex.extraMetadata`
+%End
+
+    bool commitChanges();
+%Docstring
+Tries to store pending changes to the data provider.
+
+:return: ``True`` on success, otherwise ``False``
+%End
+
+    bool isModified() const;
+%Docstring
+Returns ``True`` if there are uncommitted changes, ``False`` otherwise
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudindex.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

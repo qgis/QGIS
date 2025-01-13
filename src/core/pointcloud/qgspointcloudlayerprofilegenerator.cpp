@@ -361,10 +361,10 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mZScale( layer->elevationProperties()->zScale() )
   , mStepDistance( request.stepDistance() )
 {
-  if ( mLayer->dataProvider()->index() )
+  if ( mLayer->index() )
   {
-    mScale = mLayer->dataProvider()->index()->scale();
-    mOffset = mLayer->dataProvider()->index()->offset();
+    mScale = mLayer->index().scale();
+    mOffset = mLayer->index().offset();
   }
 }
 
@@ -389,17 +389,17 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   // this is not AT ALL thread safe, but it's what QgsPointCloudLayerRenderer does !
   // TODO: fix when QgsPointCloudLayerRenderer is made thread safe to use same approach
 
-  QVector<QgsPointCloudIndex *> indexes;
-  QgsPointCloudIndex *mainIndex = mLayer->dataProvider()->index();
-  if ( mainIndex && mainIndex->isValid() )
+  QVector<QgsPointCloudIndex> indexes;
+  QgsPointCloudIndex mainIndex = mLayer->index();
+  if ( mainIndex && mainIndex.isValid() )
     indexes.append( mainIndex );
 
   // Gather all relevant sub-indexes
   const QgsRectangle profileCurveBbox = mProfileCurve->boundingBox();
   for ( const QgsPointCloudSubIndex &subidx : mLayer->dataProvider()->subIndexes() )
   {
-    QgsPointCloudIndex *index = subidx.index();
-    if ( index && index->isValid() && subidx.polygonBounds().intersects( profileCurveBbox ) )
+    QgsPointCloudIndex index = subidx.index();
+    if ( index && index.isValid() && subidx.polygonBounds().intersects( profileCurveBbox ) )
       indexes.append( subidx.index() );
   }
 
@@ -508,9 +508,9 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     return false;
   }
 
-  for ( QgsPointCloudIndex *pc : std::as_const( indexes ) )
+  for ( QgsPointCloudIndex pc : std::as_const( indexes ) )
   {
-    const QgsPointCloudNode root = pc->getNode( pc->root() );
+    const QgsPointCloudNode root = pc.getNode( pc.root() );
     const QgsRectangle rootNodeExtentLayerCoords = root.bounds().toRectangle();
     QgsRectangle rootNodeExtentInCurveCrs;
     try
@@ -523,7 +523,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
       rootNodeExtentInCurveCrs = rootNodeExtentLayerCoords;
     }
 
-    const double rootErrorInMapCoordinates = rootNodeExtentInCurveCrs.width() / pc->span(); // in curve coords
+    const double rootErrorInMapCoordinates = rootNodeExtentInCurveCrs.width() / pc.span(); // in curve coords
     if ( rootErrorInMapCoordinates < 0.0 )
     {
       QgsDebugError( QStringLiteral( "Invalid root node error" ) );
@@ -531,23 +531,23 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     }
 
     double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
-    const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, pc->root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
+    const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, pc.root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
 
-    const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / pc->span();
+    const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / pc.span();
     const double maxErrorInMapCoordinates = maximumErrorPixels * mapUnitsPerPixel;
 
     mResults->mMaxErrorInLayerCoordinates = std::max(
         mResults->mMaxErrorInLayerCoordinates,
         maxErrorInMapCoordinates * rootErrorInLayerCoordinates / rootErrorInMapCoordinates );
 
-    switch ( pc->accessType() )
+    switch ( pc.accessType() )
     {
-      case QgsPointCloudIndex::AccessType::Local:
+      case Qgis::PointCloudAccessType::Local:
       {
         visitNodesSync( nodes, pc, request, context.elevationRange() );
         break;
       }
-      case QgsPointCloudIndex::AccessType::Remote:
+      case Qgis::PointCloudAccessType::Remote:
       {
         visitNodesAsync( nodes, pc, request, context.elevationRange() );
         break;
@@ -599,7 +599,7 @@ QgsFeedback *QgsPointCloudLayerProfileGenerator::feedback() const
   return mFeedback.get();
 }
 
-QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( const QgsPointCloudIndex *pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange )
+QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange )
 {
   QVector<QgsPointCloudNodeId> nodes;
 
@@ -608,7 +608,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( c
     return nodes;
   }
 
-  QgsPointCloudNode node = pc->getNode( n );
+  QgsPointCloudNode node = pc.getNode( n );
   QgsBox3D nodeBounds = node.bounds();
   const QgsDoubleRange nodeZRange( nodeBounds.zMinimum(), nodeBounds.zMaximum() );
   if ( !zRange.isInfinite() && !zRange.overlaps( nodeZRange ) )
@@ -636,7 +636,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( c
   return nodes;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
   for ( const QgsPointCloudNodeId &n : nodes )
@@ -644,7 +644,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCl
     if ( mFeedback->isCanceled() )
       break;
 
-    std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+    std::unique_ptr<QgsPointCloudBlock> block( pc.nodeData( n, request ) );
 
     if ( !block )
       continue;
@@ -656,7 +656,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCl
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
 
@@ -671,7 +671,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointC
   {
     const QgsPointCloudNodeId &n = nodes[i];
     const QString nStr = n.toString();
-    QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
+    QgsPointCloudBlockRequest *blockRequest = pc.asyncNodeData( n, request );
     blockRequests.append( blockRequest );
     QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop,
                       [ this, &nodesDrawn, &loop, &blockRequests, &zRange, nStr, blockRequest ]()

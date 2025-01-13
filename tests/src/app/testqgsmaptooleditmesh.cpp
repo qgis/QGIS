@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDir>
+
 #include "qgstest.h"
 #include "qgisapp.h"
 #include "testqgsmaptoolutils.h"
@@ -25,11 +27,13 @@
 #include "qgsterrainprovider.h"
 #include "qgsmeshtransformcoordinatesdockwidget.h"
 
-class TestQgsMapToolEditMesh : public QObject
+class TestQgsMapToolEditMesh : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsMapToolEditMesh() = default;
+    TestQgsMapToolEditMesh()
+      : QgsTest( QStringLiteral( "Map Tool Edit Mesh Tests" ), QStringLiteral( "app" ) )
+    {}
 
   private slots:
     void initTestCase();       // will be called before the first testfunction is executed.
@@ -44,8 +48,11 @@ class TestQgsMapToolEditMesh : public QObject
     void selectElements();
     void testAssignVertexZValueFromTerrainOnCreation();
     void testAssignVertexZValueFromTerrainOnButtonClick();
+    void testDelaunayRefinement();
 
   private:
+    static QString read2DMFileContent( const QString &filePath );
+
     QgisApp *mQgisApp = nullptr;
     std::unique_ptr<QgsMeshLayer> meshLayerQuadFlower;
     QString mDataDir;
@@ -728,6 +735,98 @@ void TestQgsMapToolEditMesh::selectElements()
   tool.mouseClick( 2500, 3000, Qt::RightButton );
 
   QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 3 );
+}
+
+void TestQgsMapToolEditMesh::testDelaunayRefinement()
+{
+  QgsCoordinateReferenceSystem crs3857;
+  crs3857.createFromString( "EPSG:3857" );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  QgsPointXY point;
+
+  QString originalDataPath = QString( "/mesh/not_delaunay.2dm" );
+
+  // editing with normal setting - without delaunay refinement
+  mEditMeshMapTool->mWidgetActionDigitizing->mCheckBoxRefineNeighboringFaces->setChecked( false );
+
+  const QString copyDataPath1 = copyTestData( originalDataPath ); // copy of data to be edited
+
+  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( copyDataPath1, "not delaunay", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
+  mCanvas->setDestinationCrs( crs3857 );
+  mCanvas->setExtent( layer->extent() );
+
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  point = QgsPointXY( 4.5, 3.5 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 8 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 10 );
+  QCOMPARE( layer->undoStack()->command( 0 )->text(), "Add 1 vertices" );
+
+  QVERIFY( layer->commitFrameEditing( transform, false ) );
+
+  QGSCOMPARELONGSTR( "edit_no_delaunay_refinement", "not_delaunay.2dm", TestQgsMapToolEditMesh::read2DMFileContent( copyDataPath1 ).toUtf8() );
+
+  // editing with delaunay refinement
+  mEditMeshMapTool->mWidgetActionDigitizing->mCheckBoxRefineNeighboringFaces->setChecked( true );
+
+  const QString copyDataPath2 = copyTestData( originalDataPath ); // copy of data to be edited
+
+  layer = std::make_unique<QgsMeshLayer>( copyDataPath2, "not delaunay", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
+  mCanvas->setDestinationCrs( crs3857 );
+  mCanvas->setExtent( layer->extent() );
+
+  QVERIFY( layer->meshEditor() );
+
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  point = QgsPointXY( 4.5, 3.5 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 8 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 10 );
+  QCOMPARE( layer->undoStack()->command( 0 )->text(), "Add vertex inside face with Delaunay refinement" );
+
+  QVERIFY( layer->commitFrameEditing( transform, false ) );
+
+  QGSCOMPARELONGSTR( "edit_delaunay_refinement", "delaunay.2dm", TestQgsMapToolEditMesh::read2DMFileContent( copyDataPath2 ).toUtf8() );
+}
+
+QString TestQgsMapToolEditMesh::read2DMFileContent( const QString &filePath )
+{
+  QFile file( filePath );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    return QString(); // Return empty string if file can't be opened
+  }
+
+  QTextStream in( &file );
+
+  QString content = in.readAll();
+  file.close();
+  return content;
 }
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )

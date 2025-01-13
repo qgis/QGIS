@@ -43,6 +43,13 @@
 #include "qgsalgorithmcategorizeusingstyle.h"
 #include "qgsalgorithmcellstatistics.h"
 #include "qgsalgorithmcentroid.h"
+#include "qgsalgorithmcheckgeometryangle.h"
+#include "qgsalgorithmcheckgeometryarea.h"
+#include "qgsalgorithmfixgeometryarea.h"
+#include "qgsalgorithmfixgeometryhole.h"
+#include "qgsalgorithmfixgeometrymissingvertex.h"
+#include "qgsalgorithmcheckgeometryhole.h"
+#include "qgsalgorithmcheckgeometrymissingvertex.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconcavehull.h"
 #include "qgsalgorithmconditionalbranch.h"
@@ -243,6 +250,7 @@
 #include "qgsalgorithmzonalstatistics.h"
 #include "qgsalgorithmzonalstatisticsfeaturebased.h"
 #include "qgsalgorithmpolygonstolines.h"
+#include "qgsalgorithmfixgeometryangle.h"
 #include "qgsbookmarkalgorithms.h"
 #include "qgsmetadataalgorithms.h"
 #include "qgsprojectstylealgorithms.h"
@@ -323,6 +331,10 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCellStatisticsPercentRankFromRasterAlgorithm() );
   addAlgorithm( new QgsCellStatisticsPercentRankFromValueAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckAngleAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckAreaAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckHoleAlgorithm() );
+  addAlgorithm( new QgsGeometryCheckMissingVertexAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );
@@ -575,6 +587,10 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
+  addAlgorithm( new QgsFixGeometryAngleAlgorithm() );
+  addAlgorithm( new QgsFixGeometryAreaAlgorithm() );
+  addAlgorithm( new QgsFixGeometryHoleAlgorithm() );
+  addAlgorithm( new QgsFixGeometryMissingVertexAlgorithm() );
 }
 
 ///@endcond

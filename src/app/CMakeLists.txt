@@ -435,12 +435,6 @@ else()
   set(QWTPOLAR_INCLUDE_DIR "")
 endif()
 
-if (POSTGRES_FOUND)
-  if(HAVE_PGCONFIG)
-    add_definitions(-DHAVE_PGCONFIG=1)
-  endif()
-endif()
-
 # Test data dir for QgsAppScreenShots
 add_definitions(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
@@ -513,10 +507,6 @@ if (APPLE)
   include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
 endif()
 
-if (POSTGRES_FOUND)
-  include_directories(SYSTEM ${POSTGRES_INCLUDE_DIR})
-endif()
-
 #############
 if (ANDROID)
   add_library(${QGIS_APP_NAME} ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
@@ -549,6 +539,9 @@ add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
 target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+if (POSTGRES_FOUND)
+  target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=${PostgreSQL_VERSION_STRING})
+endif()
 
 target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
@@ -586,7 +579,6 @@ if (WITH_3D)
 endif()
 
 target_include_directories(qgis_app SYSTEM PUBLIC
-  ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
@@ -691,10 +683,6 @@ endif()
 if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   find_library(EXECINFO_LIBRARY NAMES execinfo)
   target_link_libraries(${QGIS_APP_NAME} ${EXECINFO_LIBRARY})
-endif()
-
-if (POSTGRES_FOUND)
-  target_link_libraries (qgis_app ${POSTGRES_LIBRARY})
 endif()
 
 if (WITH_PDAL)

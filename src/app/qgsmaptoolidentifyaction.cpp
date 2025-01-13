@@ -207,11 +207,11 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapToolIdentify::deactivate();
 }
 
-void QgsMapToolIdentifyAction::identifyAndShowResults( const QgsGeometry &geom, double searchRadiusMapUnits )
+void QgsMapToolIdentifyAction::identifyAndShowResults( const QgsGeometry &geom, IdentifyProperties properties )
 {
-  setCanvasPropertiesOverrides( searchRadiusMapUnits );
+  setPropertiesOverrides( properties );
   mSelectionHandler->setSelectedGeometry( geom );
-  restoreCanvasPropertiesOverrides();
+  restorePropertiesOverrides();
 }
 
 void QgsMapToolIdentifyAction::clearResults()

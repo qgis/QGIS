@@ -238,13 +238,21 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), PreferMeshThenZWidget );
   mComboZValueType->setCurrentIndex( interpolateFromValue );
 
-  gLayout->addWidget( labelZValueType, 2, 0, 1, 3 );
-  gLayout->addWidget( mComboZValueType, 2, 3, 1, 1 );
+  mCheckBoxRefineNeighboringFaces = new QCheckBox( tr( "Refine neighboring faces when adding vertices" ) );
+  mCheckBoxRefineNeighboringFaces->setToolTip( "Flip edges that do not fulfil delaunay rule on triangular faces that share at least one vertex with the face that new vertex was added to." );
 
+  bool refineNeighboringFaces = settings.value( QStringLiteral( "UI/Mesh/refineNeighboringFaces" ) ).toBool();
+  mCheckBoxRefineNeighboringFaces->setChecked( refineNeighboringFaces );
+
+  gLayout->addWidget( labelZValueType, 1, 0, 1, 1 );
+  gLayout->addWidget( mComboZValueType, 1, 1, 1, 1 );
+  gLayout->addWidget( mCheckBoxRefineNeighboringFaces, 2, 0, 1, 2 );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
+
+  connect( mCheckBoxRefineNeighboringFaces, &QCheckBox::toggled, this, &QgsMeshEditDigitizingAction::updateSettings );
 }
 
 void QgsMeshEditDigitizingAction::updateSettings()
@@ -252,6 +260,7 @@ void QgsMeshEditDigitizingAction::updateSettings()
   QgsSettings settings;
 
   settings.setEnumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
+  settings.setValue( QStringLiteral( "UI/Mesh/refineNeighboringFaces" ), mCheckBoxRefineNeighboringFaces->isChecked() );
 }
 
 QgsMeshEditDigitizingAction::ZValueSource QgsMeshEditDigitizingAction::zValueSourceType() const
@@ -262,6 +271,11 @@ QgsMeshEditDigitizingAction::ZValueSource QgsMeshEditDigitizingAction::zValueSou
 void QgsMeshEditDigitizingAction::setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource )
 {
   mComboZValueType->setCurrentIndex( mComboZValueType->findData( zValueSource ) );
+}
+
+bool QgsMeshEditDigitizingAction::refineNeighboringFaces() const
+{
+  return mCheckBoxRefineNeighboringFaces->isChecked();
 }
 
 //
@@ -2798,10 +2812,18 @@ void QgsMapToolEditMeshFrame::addVertex(
   }
 
   const QVector<QgsMeshVertex> points( 1, QgsMeshVertex( effectivePoint.x(), effectivePoint.y(), zValue ) );
+
   if ( mCurrentEditor )
   {
     double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
-    mCurrentEditor->addVertices( points, tolerance );
+    if ( mWidgetActionDigitizing->refineNeighboringFaces() && mCurrentFaceIndex != -1 )
+    {
+      mCurrentEditor->addVertexWithDelaunayRefinement( points.first(), tolerance );
+    }
+    else
+    {
+      mCurrentEditor->addVertices( points, tolerance );
+    }
   }
 }
 

@@ -43,6 +43,8 @@
 #include "qgsfieldcombobox.h"
 #include "qgsexpressionfinder.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgshelp.h"
+#include "qgsxmlutils.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -66,6 +68,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAvailableWidgetsTree->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mAvailableWidgetsTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
   mAvailableWidgetsTree->setType( QgsAttributesDnDTree::Type::Drag );
+  mAvailableWidgetsTree->setContextMenuPolicy( Qt::CustomContextMenu );
 
   // form layout tree
   QGridLayout *formLayoutWidgetLayout = new QGridLayout;
@@ -77,6 +80,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutTree->setType( QgsAttributesDnDTree::Type::Drop );
 
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
+  connect( mAvailableWidgetsTree, &QWidget::customContextMenuRequested, this, &QgsAttributesFormProperties::onContextMenuRequested );
   connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addContainer );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
@@ -89,6 +93,21 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
     if ( !mBlockUpdates )
       updatedFields();
   } );
+
+  // Context menu and children actions
+  mAvailableWidgetsTreeContextMenu = new QMenu( this );
+  mActionCopyWidgetConfiguration = new QAction( tr( "Copy widget configuration" ), this );
+  mActionPasteWidgetConfiguration = new QAction( tr( "Paste widget configuration" ), this );
+
+  connect( mActionCopyWidgetConfiguration, &QAction::triggered, this, &QgsAttributesFormProperties::copyWidgetConfiguration );
+  connect( mActionPasteWidgetConfiguration, &QAction::triggered, this, &QgsAttributesFormProperties::pasteWidgetConfiguration );
+
+  mAvailableWidgetsTreeContextMenu->addAction( mActionCopyWidgetConfiguration );
+  mAvailableWidgetsTreeContextMenu->addAction( mActionPasteWidgetConfiguration );
+
+  mMessageBar = new QgsMessageBar();
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  gridLayout->addWidget( mMessageBar, 0, 0 );
 }
 
 void QgsAttributesFormProperties::init()
@@ -297,20 +316,33 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
   mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, index, mAttributeTypeFrame );
 
-  const QgsFieldConstraints constraints = cfg.mFieldConstraints;
+  loadAttributeTypeDialogFromConfiguration( cfg );
 
-  mAttributeTypeDialog->setAlias( cfg.mAlias );
-  mAttributeTypeDialog->setDataDefinedProperties( cfg.mDataDefinedProperties );
-  mAttributeTypeDialog->setComment( cfg.mComment );
-  mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
-  mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
-  mAttributeTypeDialog->setReuseLastValues( cfg.mReuseLastValues );
+  mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
+  mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( index ).applyOnUpdate() );
+
+  mAttributeTypeDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
+}
+
+void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( const FieldConfig config )
+{
+  const QgsFieldConstraints constraints = config.mFieldConstraints;
+
+  mAttributeTypeDialog->setAlias( config.mAlias );
+  mAttributeTypeDialog->setDataDefinedProperties( config.mDataDefinedProperties );
+  mAttributeTypeDialog->setComment( config.mComment );
+  mAttributeTypeDialog->setFieldEditable( config.mEditable );
+  mAttributeTypeDialog->setLabelOnTop( config.mLabelOnTop );
+  mAttributeTypeDialog->setReuseLastValues( config.mReuseLastValues );
   mAttributeTypeDialog->setNotNull( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull );
   mAttributeTypeDialog->setNotNullEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrengthHard );
   mAttributeTypeDialog->setUnique( constraints.constraints() & QgsFieldConstraints::ConstraintUnique );
   mAttributeTypeDialog->setUniqueEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrengthHard );
-  mAttributeTypeDialog->setSplitPolicy( cfg.mSplitPolicy );
-  mAttributeTypeDialog->setDuplicatePolicy( cfg.mDuplicatePolicy );
+  mAttributeTypeDialog->setSplitPolicy( config.mSplitPolicy );
+  mAttributeTypeDialog->setDuplicatePolicy( config.mDuplicatePolicy );
 
   QgsFieldConstraints::Constraints providerConstraints = QgsFieldConstraints::Constraints();
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
@@ -324,18 +356,12 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   mAttributeTypeDialog->setConstraintExpression( constraints.constraintExpression() );
   mAttributeTypeDialog->setConstraintExpressionDescription( constraints.constraintDescription() );
   mAttributeTypeDialog->setConstraintExpressionEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrengthHard );
-  mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
-  mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( index ).applyOnUpdate() );
 
-  mAttributeTypeDialog->setEditorWidgetConfig( cfg.mEditorWidgetConfig );
-  mAttributeTypeDialog->setEditorWidgetType( cfg.mEditorWidgetType );
-
-  mAttributeTypeDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
-
-  mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
+  // Make sure the widget is refreshed, even if
+  // the new widget type matches the current one
+  mAttributeTypeDialog->setEditorWidgetConfig( config.mEditorWidgetConfig );
+  mAttributeTypeDialog->setEditorWidgetType( config.mEditorWidgetType, true );
 }
-
 
 void QgsAttributesFormProperties::storeAttributeTypeDialog()
 {
@@ -1347,20 +1373,24 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
         return;
 
       QDialog dlg;
+      dlg.setObjectName( "QML Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
 
-      QVBoxLayout *mainLayout = new QVBoxLayout();
-      QHBoxLayout *qmlLayout = new QHBoxLayout();
-      QVBoxLayout *layout = new QVBoxLayout();
-      mainLayout->addLayout( qmlLayout );
-      qmlLayout->addLayout( layout );
-      dlg.setLayout( mainLayout );
+      QVBoxLayout *mainLayout = new QVBoxLayout( &dlg );
+      QSplitter *qmlSplitter = new QSplitter();
+      QWidget *qmlConfigWiget = new QWidget();
+      QVBoxLayout *layout = new QVBoxLayout( qmlConfigWiget );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      mainLayout->addWidget( qmlSplitter );
+      qmlSplitter->addWidget( qmlConfigWiget );
       layout->addWidget( baseWidget );
 
       QLineEdit *title = new QLineEdit( itemData.name() );
 
       //qmlCode
       QgsCodeEditor *qmlCode = new QgsCodeEditor( this );
+      qmlCode->setEditingTimeoutInterval( 250 );
       qmlCode->setText( itemData.qmlElementEditorConfiguration().qmlCode );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
@@ -1368,7 +1398,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( qmlCode, &QsciScintilla::textChanged, this, [=] {
+      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [=] {
         qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
@@ -1500,17 +1530,22 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( qmlCodeBox );
       layout->addWidget( qmlCode );
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
-      qmlPreviewBox->setLayout( new QGridLayout );
-      qmlPreviewBox->setMinimumWidth( 400 );
-      qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
+      qmlPreviewBox->setMinimumWidth( 200 );
+      qmlPreviewBox->setWidget( qmlWrapper->widget() );
       //emit to load preview for the first time
-      emit qmlCode->textChanged();
-      qmlLayout->addWidget( qmlPreviewBox );
+      emit qmlCode->editingTimeout();
+      qmlSplitter->addWidget( qmlPreviewBox );
+      qmlSplitter->setChildrenCollapsible( false );
+      qmlSplitter->setHandleWidth( 6 );
+      qmlSplitter->setSizes( QList<int>() << 1 << 1 );
 
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -1533,14 +1568,20 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       if ( mType == QgsAttributesDnDTree::Type::Drag )
         return;
       QDialog dlg;
+      dlg.setObjectName( "HTML Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure HTML Widget" ) );
 
-      QVBoxLayout *mainLayout = new QVBoxLayout();
-      QHBoxLayout *htmlLayout = new QHBoxLayout();
-      QVBoxLayout *layout = new QVBoxLayout();
-      mainLayout->addLayout( htmlLayout );
-      htmlLayout->addLayout( layout );
-      dlg.setLayout( mainLayout );
+      QVBoxLayout *mainLayout = new QVBoxLayout( &dlg );
+      QSplitter *htmlSplitter = new QSplitter();
+      QWidget *htmlConfigWiget = new QWidget();
+      QVBoxLayout *layout = new QVBoxLayout( htmlConfigWiget );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      mainLayout->addWidget( htmlSplitter );
+      htmlSplitter->addWidget( htmlConfigWiget );
+      htmlSplitter->setChildrenCollapsible( false );
+      htmlSplitter->setHandleWidth( 6 );
+      htmlSplitter->setSizes( QList<int>() << 1 << 1 );
       layout->addWidget( baseWidget );
 
       QLineEdit *title = new QLineEdit( itemData.name() );
@@ -1604,16 +1645,22 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( htmlCode );
       QScrollArea *htmlPreviewBox = new QgsScrollArea();
       htmlPreviewBox->setLayout( new QGridLayout );
-      htmlPreviewBox->setMinimumWidth( 400 );
+      htmlPreviewBox->setMinimumWidth( 200 );
       htmlPreviewBox->layout()->addWidget( htmlWrapper->widget() );
       //emit to load preview for the first time
       emit htmlCode->textChanged();
-      htmlLayout->addWidget( htmlPreviewBox );
+      htmlSplitter->addWidget( htmlPreviewBox );
+      htmlSplitter->setChildrenCollapsible( false );
+      htmlSplitter->setHandleWidth( 6 );
+      htmlSplitter->setSizes( QList<int>() << 1 << 1 );
 
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -1636,14 +1683,17 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       if ( mType == QgsAttributesDnDTree::Type::Drag )
         return;
       QDialog dlg;
+      dlg.setObjectName( "Text Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure Text Widget" ) );
 
-      QVBoxLayout *mainLayout = new QVBoxLayout();
-      QHBoxLayout *textLayout = new QHBoxLayout();
-      QVBoxLayout *layout = new QVBoxLayout();
-      mainLayout->addLayout( textLayout );
-      textLayout->addLayout( layout );
-      dlg.setLayout( mainLayout );
+      QVBoxLayout *mainLayout = new QVBoxLayout( &dlg );
+      QSplitter *textSplitter = new QSplitter();
+      QWidget *textConfigWiget = new QWidget();
+      QVBoxLayout *layout = new QVBoxLayout( textConfigWiget );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      mainLayout->addWidget( textSplitter );
+      textSplitter->addWidget( textConfigWiget );
       layout->addWidget( baseWidget );
 
       QLineEdit *title = new QLineEdit( itemData.name() );
@@ -1705,16 +1755,22 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( text );
       QScrollArea *textPreviewBox = new QgsScrollArea();
       textPreviewBox->setLayout( new QGridLayout );
-      textPreviewBox->setMinimumWidth( 400 );
+      textPreviewBox->setMinimumWidth( 200 );
       textPreviewBox->layout()->addWidget( textWrapper->widget() );
       //emit to load preview for the first time
       emit text->textChanged();
-      textLayout->addWidget( textPreviewBox );
+      textSplitter->addWidget( textPreviewBox );
+      textSplitter->setChildrenCollapsible( false );
+      textSplitter->setHandleWidth( 6 );
+      textSplitter->setSizes( QList<int>() << 1 << 1 );
 
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -1737,6 +1793,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       if ( mType == QgsAttributesDnDTree::Type::Drag )
         return;
       QDialog dlg;
+      dlg.setObjectName( "Spacer Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure Spacer Widget" ) );
 
       QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -1752,11 +1810,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       cbLayout->addWidget( new QLabel( tr( "Draw horizontal line" ), &dlg ) );
       cbLayout->addWidget( cb );
 
-
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -1983,6 +2043,296 @@ void QgsAttributesFormProperties::updatedFields()
     if ( fieldConfigs.contains( fieldName ) )
     {
       fieldItem->setData( 0, FieldConfigRole, fieldConfigs[fieldName] );
+    }
+  }
+}
+
+void QgsAttributesFormProperties::onContextMenuRequested( QPoint point )
+{
+  if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
+    return;
+
+  QPoint globalPos = mAvailableWidgetsTree->viewport()->mapToGlobal( point );
+
+  QTreeWidgetItem *item = mAvailableWidgetsTree->itemAt( point );
+  const DnDTreeItemData itemData = item->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+  if ( itemData.type() == DnDTreeItemData::Field )
+  {
+    const QClipboard *clipboard = QApplication::clipboard();
+    const bool pasteEnabled = clipboard->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) );
+    mActionPasteWidgetConfiguration->setEnabled( pasteEnabled );
+    mAvailableWidgetsTreeContextMenu->popup( globalPos );
+  }
+}
+
+void QgsAttributesFormProperties::copyWidgetConfiguration()
+{
+  if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
+    return;
+
+  const QTreeWidgetItem *item = mAvailableWidgetsTree->selectedItems().at( 0 );
+  const DnDTreeItemData itemData = item->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+  if ( itemData.type() != DnDTreeItemData::Field )
+    return;
+
+  const QString fieldName = item->data( 0, FieldNameRole ).toString();
+  const int index = mLayer->fields().indexOf( fieldName );
+
+  if ( index < 0 )
+    return;
+
+  const QgsField field = mLayer->fields().field( index );
+
+  // We won't copy field aliases nor comments
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( QStringLiteral( "FormWidgetClipboard" ) );
+  documentElement.setAttribute( QStringLiteral( "name" ), field.name() );
+
+  // Editor widget setup
+  QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
+
+  QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
+  documentElement.appendChild( editWidgetElement );
+  editWidgetElement.setAttribute( QStringLiteral( "type" ), widgetSetup.type() );
+  QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
+
+  editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
+  editWidgetElement.appendChild( editWidgetConfigElement );
+
+  // Split policy
+  QDomElement splitPolicyElement = doc.createElement( QStringLiteral( "splitPolicy" ) );
+  splitPolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
+  documentElement.appendChild( splitPolicyElement );
+
+  // Duplicate policy
+  QDomElement duplicatePolicyElement = doc.createElement( QStringLiteral( "duplicatePolicy" ) );
+  duplicatePolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
+  documentElement.appendChild( duplicatePolicyElement );
+
+  // Default expressions
+  QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
+  defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
+  defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValueDefinition().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  documentElement.appendChild( defaultElem );
+
+  // Constraints
+  QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
+  constraintElem.setAttribute( QStringLiteral( "constraints" ), field.constraints().constraints() );
+  constraintElem.setAttribute( QStringLiteral( "unique_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+  constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+  constraintElem.setAttribute( QStringLiteral( "exp_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+  documentElement.appendChild( constraintElem );
+
+  // Constraint expressions
+  QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraintExpression" ) );
+  constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), field.constraints().constraintExpression() );
+  constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), field.constraints().constraintDescription() );
+  documentElement.appendChild( constraintExpressionElem );
+
+  // Widget general settings
+  QDomElement widgetGeneralSettingsElem = doc.createElement( QStringLiteral( "widgetGeneralSettings" ) );
+  widgetGeneralSettingsElem.setAttribute( QStringLiteral( "editable" ), !mLayer->editFormConfig().readOnly( index ) );
+  widgetGeneralSettingsElem.setAttribute( QStringLiteral( "reuse_last_values" ), mLayer->editFormConfig().labelOnTop( index ) );
+  widgetGeneralSettingsElem.setAttribute( QStringLiteral( "label_on_top" ), mLayer->editFormConfig().reuseLastValue( index ) );
+  documentElement.appendChild( widgetGeneralSettingsElem );
+
+  // Widget display section
+  if ( mAttributeWidgetEdit )
+  {
+    // Go for the corresponding form layout item and extract its display settings
+    if ( mFormLayoutTree->selectedItems().count() != 1 )
+      return;
+
+    const QTreeWidgetItem *itemLayout = mFormLayoutTree->selectedItems().at( 0 );
+    const DnDTreeItemData itemDataLayout = itemLayout->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+
+    QDomElement displayElement = doc.createElement( QStringLiteral( "widgetDisplay" ) );
+    displayElement.setAttribute( QStringLiteral( "showLabel" ), itemDataLayout.showLabel() );
+    displayElement.setAttribute( QStringLiteral( "horizontalStretch" ), itemDataLayout.horizontalStretch() );
+    displayElement.setAttribute( QStringLiteral( "verticalStretch" ), itemDataLayout.verticalStretch() );
+    displayElement.appendChild( itemDataLayout.labelStyle().writeXml( doc ) );
+    documentElement.appendChild( displayElement );
+  }
+
+  doc.appendChild( documentElement );
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ), doc.toByteArray() );
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setMimeData( mimeData );
+}
+
+void QgsAttributesFormProperties::pasteWidgetConfiguration()
+{
+  if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
+    return;
+
+  QTreeWidgetItem *item = mAvailableWidgetsTree->selectedItems().at( 0 );
+
+  const QString fieldName = item->data( 0, FieldNameRole ).toString();
+  const int fieldIndex = mLayer->fields().indexOf( fieldName );
+
+  if ( fieldIndex < 0 )
+    return;
+
+  // Get base config from target item and ovewrite settings when possible
+  FieldConfig config = item->data( 0, FieldConfigRole ).value<FieldConfig>();
+
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() != QLatin1String( "FormWidgetClipboard" ) )
+      return;
+
+    // When pasting, the target item has already been selected and
+    // has triggered attribute type dialog loading. Therefore, we'll
+    // only overwrite GUI settings instead of destroying and recreating
+    // the whole dialog.
+
+    // Editor widget configuration
+    const QDomElement fieldWidgetElement = docElem.firstChildElement( QStringLiteral( "editWidget" ) );
+    if ( !fieldWidgetElement.isNull() )
+    {
+      const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
+
+      // Only paste if source editor widget type is supported by target field
+      const QgsEditorWidgetFactory *factory = QgsGui::editorWidgetRegistry()->factory( widgetType );
+      if ( factory->supportsField( mLayer, fieldIndex ) )
+      {
+        const QDomElement configElement = fieldWidgetElement.firstChildElement( QStringLiteral( "config" ) );
+        if ( !configElement.isNull() )
+        {
+          const QDomElement optionsElem = configElement.childNodes().at( 0 ).toElement();
+          QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
+          QgsReadWriteContext context;
+          if ( widgetType == QLatin1String( "ValueRelation" ) )
+          {
+            optionsMap[QStringLiteral( "Value" )] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( mLayer->id(), fieldName ), optionsMap[QStringLiteral( "Value" )].toString() );
+          }
+
+          config.mEditorWidgetType = widgetType;
+          config.mEditorWidgetConfig = optionsMap;
+        }
+      }
+      else
+      {
+        mMessageBar->pushMessage( QString(), tr( "Unable to paste widget configuration. The target field (%1) does not support the %2 widget type." ).arg( fieldName, widgetType ), Qgis::MessageLevel::Warning );
+      }
+    }
+
+    // Split policy
+    const QDomElement splitPolicyElement = docElem.firstChildElement( QStringLiteral( "splitPolicy" ) );
+    if ( !splitPolicyElement.isNull() )
+    {
+      const Qgis::FieldDomainSplitPolicy policy = qgsEnumKeyToValue( splitPolicyElement.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainSplitPolicy::Duplicate );
+      config.mSplitPolicy = policy;
+    }
+
+    // Duplicate policy
+    const QDomElement duplicatePolicyElement = docElem.firstChildElement( QStringLiteral( "duplicatePolicy" ) );
+    if ( !duplicatePolicyElement.isNull() )
+    {
+      const Qgis::FieldDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElement.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDuplicatePolicy::Duplicate );
+      config.mDuplicatePolicy = policy;
+    }
+
+    // Default expressions
+    const QDomElement defaultElement = docElem.firstChildElement( QStringLiteral( "default" ) );
+    if ( !defaultElement.isNull() )
+    {
+      mAttributeTypeDialog->setDefaultValueExpression( defaultElement.attribute( QStringLiteral( "expression" ) ) );
+      mAttributeTypeDialog->setApplyDefaultValueOnUpdate( defaultElement.attribute( QStringLiteral( "applyOnUpdate" ) ).toInt() );
+    }
+
+    // Constraints
+    // take target field constraints as a basis
+    QgsFieldConstraints fieldConstraints = config.mFieldConstraints;
+    const QDomElement constraintElement = docElem.firstChildElement( QStringLiteral( "constraint" ) );
+    if ( !constraintElement.isNull() )
+    {
+      const int intConstraints = constraintElement.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
+      QgsFieldConstraints::Constraints constraints = static_cast< QgsFieldConstraints::Constraints >( intConstraints );
+
+      // always keep provider constraints intact
+      if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) != QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        if ( constraints & QgsFieldConstraints::ConstraintNotNull )
+          fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginLayer );
+        else
+          fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintNotNull );
+      }
+      if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) != QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        if ( constraints & QgsFieldConstraints::ConstraintUnique )
+          fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
+        else
+          fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintUnique );
+      }
+      if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) != QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        if ( constraints & QgsFieldConstraints::ConstraintExpression )
+          fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintOriginLayer );
+        else
+          fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintExpression );
+      }
+
+      const int uniqueStrength = constraintElement.attribute( QStringLiteral( "unique_strength" ), QStringLiteral( "1" ) ).toInt();
+      const int notNullStrength = constraintElement.attribute( QStringLiteral( "notnull_strength" ), QStringLiteral( "1" ) ).toInt();
+      const int expStrength = constraintElement.attribute( QStringLiteral( "exp_strength" ), QStringLiteral( "1" ) ).toInt();
+
+      fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, static_cast< QgsFieldConstraints::ConstraintStrength >( uniqueStrength ) );
+      fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, static_cast< QgsFieldConstraints::ConstraintStrength >( notNullStrength ) );
+      fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, static_cast< QgsFieldConstraints::ConstraintStrength >( expStrength ) );
+    }
+
+    // Constraint expressions
+    // always keep provider constraints intact
+    if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) != QgsFieldConstraints::ConstraintOriginProvider )
+    {
+      const QDomElement constraintExpressionElement = docElem.firstChildElement( QStringLiteral( "constraintExpression" ) );
+      if ( !constraintExpressionElement.isNull() )
+      {
+        QString expression = constraintExpressionElement.attribute( QStringLiteral( "exp" ), QString() );
+        QString description = constraintExpressionElement.attribute( QStringLiteral( "desc" ), QString() );
+        fieldConstraints.setConstraintExpression( expression, description );
+      }
+    }
+    config.mFieldConstraints = fieldConstraints;
+
+    const QDomElement widgetGeneralSettingsElement = docElem.firstChildElement( QStringLiteral( "widgetGeneralSettings" ) );
+    if ( !widgetGeneralSettingsElement.isNull() )
+    {
+      const int editable = widgetGeneralSettingsElement.attribute( QStringLiteral( "editable" ), QStringLiteral( "0" ) ).toInt();
+      const int reuse = widgetGeneralSettingsElement.attribute( QStringLiteral( "reuse_last_values" ), QStringLiteral( "0" ) ).toInt();
+      const int labelOnTop = widgetGeneralSettingsElement.attribute( QStringLiteral( "label_on_top" ), QStringLiteral( "0" ) ).toInt();
+
+      config.mEditable = editable;
+      config.mReuseLastValues = reuse;
+      config.mLabelOnTop = labelOnTop;
+    }
+
+    loadAttributeTypeDialogFromConfiguration( config );
+
+    // Widget display section
+    if ( mAttributeWidgetEdit )
+    {
+      const QDomElement displayElement = docElem.firstChildElement( QStringLiteral( "widgetDisplay" ) );
+      if ( !displayElement.isNull() )
+      {
+        const int showLabel = displayElement.attribute( QStringLiteral( "showLabel" ), QStringLiteral( "0" ) ).toInt();
+        const int horizontalStretch = displayElement.attribute( QStringLiteral( "horizontalStretch" ), QStringLiteral( "0" ) ).toInt();
+        const int verticalStretch = displayElement.attribute( QStringLiteral( "verticalStretch" ), QStringLiteral( "0" ) ).toInt();
+        QgsAttributeEditorElement::LabelStyle style;
+        style.readXml( displayElement );
+
+        // Update current GUI controls
+        mAttributeWidgetEdit->setShowLabel( showLabel );
+        mAttributeWidgetEdit->setHorizontalStretch( horizontalStretch );
+        mAttributeWidgetEdit->setVerticalStretch( verticalStretch );
+        mAttributeWidgetEdit->setLabelStyle( style );
+      }
     }
   }
 }

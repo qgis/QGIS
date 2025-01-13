@@ -288,11 +288,13 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
-if (BUILD_WITH_QT6)
-  target_link_libraries(qgis_3d Qt6::3DCore Qt6::3DRender Qt6::3DInput Qt6::3DLogic Qt6::3DExtras)
-else()
-  target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
-endif()
+target_link_libraries(qgis_3d
+  ${QT_VERSION_BASE}::3DCore
+  ${QT_VERSION_BASE}::3DRender
+  ${QT_VERSION_BASE}::3DInput
+  ${QT_VERSION_BASE}::3DLogic
+  ${QT_VERSION_BASE}::3DExtras
+)
 
 GENERATE_EXPORT_HEADER(
    qgis_3d

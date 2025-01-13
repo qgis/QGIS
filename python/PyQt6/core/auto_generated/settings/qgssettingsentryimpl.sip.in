@@ -9,7 +9,7 @@
 
 
 
-typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase;
+typedef QgsSettingsEntryBaseTemplate<QVariant> QgsSettingsEntryBaseTemplateQVariantBase /NoTypeName/;
 
 class QgsSettingsEntryVariant : QgsSettingsEntryBaseTemplateQVariantBase
 {
@@ -110,7 +110,7 @@ Returns settings value.
 };
 
 
-typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase;
+typedef QgsSettingsEntryBaseTemplate<QString> QgsSettingsEntryBaseTemplateQStringBase /NoTypeName/;
 
 class QgsSettingsEntryString : QgsSettingsEntryBaseTemplateQStringBase
 {
@@ -211,7 +211,7 @@ Returns the string maximum length. By -1 there is no limitation.
 
 
 
-typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase;
+typedef QgsSettingsEntryBaseTemplate<QStringList> QgsSettingsEntryBaseTemplateQStringListBase /NoTypeName/;
 
 class QgsSettingsEntryStringList : QgsSettingsEntryBaseTemplateQStringListBase
 {
@@ -289,7 +289,7 @@ This constructor is intended to be used from plugins.
 
 
 
-typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase;
+typedef QgsSettingsEntryBaseTemplate<bool> QgsSettingsEntryBaseTemplateboolBase /NoTypeName/;
 
 class QgsSettingsEntryBool : QgsSettingsEntryBaseTemplateboolBase
 {
@@ -367,7 +367,7 @@ This constructor is intended to be used from plugins.
 
 
 
-typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase;
+typedef QgsSettingsEntryBaseTemplate<int> QgsSettingsEntryBaseTemplateintBase /NoTypeName/;
 
 class QgsSettingsEntryInteger : QgsSettingsEntryBaseTemplateintBase
 {
@@ -470,7 +470,7 @@ Returns the maximum value.
 
 
 
-typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase;
+typedef QgsSettingsEntryBaseTemplate<double> QgsSettingsEntryBaseTemplatedoubleBase /NoTypeName/;
 
 class QgsSettingsEntryDouble : QgsSettingsEntryBaseTemplatedoubleBase
 {
@@ -595,7 +595,7 @@ Returns how much decimals should be shown in the Gui.
 
 
 
-typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase;
+typedef QgsSettingsEntryBaseTemplate<QColor> QgsSettingsEntryBaseTemplateQColorBase /NoTypeName/;
 
 class QgsSettingsEntryColor : QgsSettingsEntryBaseTemplateQColorBase
 {
@@ -689,7 +689,7 @@ Returns ``True`` if transparency is allowed for the color
 };
 
 
-typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase;
+typedef QgsSettingsEntryBaseTemplate<QVariantMap> QgsSettingsEntryBaseTemplateQVariantMapBase /NoTypeName/;
 
 class QgsSettingsEntryVariantMap : QgsSettingsEntryBaseTemplateQVariantMapBase
 {

@@ -34,14 +34,14 @@
 
 class QgsCoordinateReferenceSystem;
 
-class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
 {
   public:
 
     explicit QgsEptPointCloudIndex();
     ~QgsEptPointCloudIndex();
 
-    std::unique_ptr<QgsPointCloudIndex> clone() const override;
+    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
 
     void load( const QString &fileName ) override;
 
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudStatistics metadataStatistics() const override;
 
     bool isValid() const override;
-    QgsPointCloudIndex::AccessType accessType() const override;
+    Qgis::PointCloudAccessType accessType() const override;
 
     /**
      * Copies common properties to the \a destination index
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     bool loadNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const;
 
     bool mIsValid = false;
-    QgsPointCloudIndex::AccessType mAccessType = Local;
+    Qgis::PointCloudAccessType mAccessType = Qgis::PointCloudAccessType::Local;
     QString mDataType;
     QString mWkt;
 

@@ -87,6 +87,8 @@ const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolde
 
 const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
 
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used georeferencer target CRS" ) );
+
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
 {
@@ -108,9 +110,6 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   mCentralLayout->setContentsMargins( 0, 0, 0, 0 );
 
   QgsSettings settings;
-  // default to last used target CRS
-  QString targetCRSString = settings.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString();
-  mTargetCrs = QgsCoordinateReferenceSystem( targetCRSString );
 
   createActions();
   createActionGroups();
@@ -1376,6 +1375,7 @@ void QgsGeoreferencerMainWindow::readSettings()
   mTransformMethod = settingTransformMethod->value();
   mSaveGcp = settingSaveGcps->value();
   mLoadInQgis = settingLoadInProject->value();
+  mTargetCrs = QgsCoordinateReferenceSystem( settingLastTargetCrs->value() );
 }
 
 void QgsGeoreferencerMainWindow::writeSettings()
@@ -1389,6 +1389,7 @@ void QgsGeoreferencerMainWindow::writeSettings()
   settingUseZeroForTransparent->setValue( mUseZeroForTrans );
   settingSaveGcps->setValue( mSaveGcp );
   settingLoadInProject->setValue( mLoadInQgis );
+  settingLastTargetCrs->setValue( mTargetCrs.authid() );
 }
 
 bool QgsGeoreferencerMainWindow::loadGCPs( QString &error )

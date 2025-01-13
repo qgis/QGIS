@@ -6277,6 +6277,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
      <element type="gml:MultiPointPropertyType" name="geometry" minOccurs="0" maxOccurs="1"/>
      <element type="int" name="id"/>
      <element type="string" name="name"/>
+     <element type="boolean" name="verified"/>
      <element type="int" name="type" nillable="true"/>
      <element type="decimal" name="elevation" nillable="true"/>
     </sequence>
@@ -6313,6 +6314,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   </qgs:geometry>
   <qgs:id>177</qgs:id>
   <qgs:name>Xxx</qgs:name>
+  <qgs:verified>true</qgs:verified>
   <qgs:elevation_source></qgs:elevation_source>
  </qgs:points>
 </gml:featureMember>
@@ -6344,6 +6346,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   </qgs:geometry>
   <qgs:id>177</qgs:id>
   <qgs:name>Xxx</qgs:name>
+  <qgs:verified>true</qgs:verified>
   <qgs:type xsi:nil="true"></qgs:type>
   <qgs:elevation xsi:nil="true"></qgs:elevation>
  </qgs:points>
@@ -6367,6 +6370,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   </qgs:geometry>
   <qgs:id>5</qgs:id>
   <qgs:name>qgis</qgs:name>
+  <qgs:verified>false</qgs:verified>
   <qgs:type>0</qgs:type>
   <qgs:elevation xsi:nil="true"></qgs:elevation>
  </qgs:points>
@@ -6411,6 +6415,31 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertEqual(qgis_feat["name"], "qgis")
         self.assertEqual(other_feat["name"], "Xxx")
+
+        qgis_feat = next(
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" is true')))
+        )
+        other_feat = next(
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" is false')))
+        )
+        self.assertEqual(qgis_feat["name"], "Xxx")
+        self.assertEqual(other_feat["name"], "qgis")
+
+        qgis_feat = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified"'))))
+        other_feat = next(
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('not "verified"')))
+        )
+        self.assertEqual(qgis_feat["name"], "Xxx")
+        self.assertEqual(other_feat["name"], "qgis")
+
+        qgis_feat = next(
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" = true')))
+        )
+        other_feat = next(
+            vl.getFeatures(QgsFeatureRequest(QgsExpression('"verified" = false')))
+        )
+        self.assertEqual(qgis_feat["name"], "Xxx")
+        self.assertEqual(other_feat["name"], "qgis")
 
         form_scope = QgsExpressionContextUtils.formScope(qgis_feat)
         form_exp = QgsExpression("current_value('name') = \"name\"")

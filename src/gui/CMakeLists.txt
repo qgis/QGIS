@@ -210,6 +210,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgslistconfigdlg.cpp
   editorwidgets/qgsmultiedittoolbutton.cpp
+  editorwidgets/qgsqmlwidgetwrapper.cpp
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
   editorwidgets/qgsrangewidgetfactory.cpp
@@ -1189,6 +1190,7 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgslistwidgetfactory.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
+  editorwidgets/qgsqmlwidgetwrapper.h
   editorwidgets/qgsrangeconfigdlg.h
   editorwidgets/qgsrangewidgetfactory.h
   editorwidgets/qgsrangewidgetwrapper.h
@@ -1621,22 +1623,7 @@ set(QGIS_GUI_PRIVATE_HDRS
 
 find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml QuickWidgets UiTools REQUIRED)
 
-if(${QT_VERSION_BASE}Qml_FOUND)
-  add_definitions(-DWITH_QML)
-  set(QGIS_GUI_HDRS
-    ${QGIS_GUI_HDRS}
-    editorwidgets/qgsqmlwidgetwrapper.h
-  )
-endif()
-
 # for installing headers
-
-if(${QT_VERSION_BASE}Qml_FOUND)
-  set(QGIS_GUI_SRCS
-    ${QGIS_GUI_SRCS}
-    editorwidgets/qgsqmlwidgetwrapper.cpp
-  )
-endif()
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
 
@@ -1704,16 +1691,6 @@ target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
 )
-
-target_include_directories(qgis_gui SYSTEM PRIVATE
-  ${QT_QTUITOOLS_INCLUDE_DIR}
-)
-
-if (BUILD_WITH_QT6)
-  target_include_directories(qgis_gui SYSTEM PRIVATE
-    ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  )
-endif()
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
@@ -1831,13 +1808,13 @@ add_dependencies(qgis_gui ui)
 target_link_libraries(qgis_gui
   qgis_core
   qgis_native
-  ${QT_VERSION_BASE}::UiTools
+  Qt::UiTools
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
-  ${QT_VERSION_BASE}::Qml
-  ${QT_VERSION_BASE}::QuickWidgets
-  ${QT_VERSION_BASE}::Multimedia
-  ${QT_VERSION_BASE}::MultimediaWidgets
+  Qt::Qml
+  Qt::QuickWidgets
+  Qt::Multimedia
+  Qt::MultimediaWidgets
 )
 
 if (BUILD_WITH_QT6)
@@ -1850,13 +1827,13 @@ endif()
 if (WITH_QTWEBENGINE)
   find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)
   target_link_libraries(qgis_gui
-    ${QT_VERSION_BASE}::WebEngineWidgets
+    Qt::WebEngineWidgets
   )
 endif()
 
 if (WITH_QTGAMEPAD)
     target_link_libraries(qgis_gui
-      ${QT_VERSION_BASE}::Gamepad
+      Qt::Gamepad
     )
 endif()
 
@@ -1882,7 +1859,7 @@ if (FORCE_STATIC_LIBS)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_gui ${QT_VERSION_BASE}::Test)
+  target_link_libraries(qgis_gui Qt::Test)
 endif()
 
 # We use private headers from core that need this

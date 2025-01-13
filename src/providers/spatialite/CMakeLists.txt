@@ -50,11 +50,7 @@ target_compile_definitions(provider_spatialite_a PRIVATE "CMAKE_SOURCE_DIR=\"${C
 target_compile_definitions(provider_spatialite_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})
-  else()
-    QT5_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})
-  endif()
+  qt_wrap_ui(SPATIALITE_UIS_H ${SPATIALITE_UIS})
 
   add_library(provider_spatialite_gui_a STATIC ${SPATIALITE_GUI_SRCS} ${SPATIALITE_UIS_H})
 
