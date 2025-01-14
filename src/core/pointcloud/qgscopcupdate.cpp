@@ -124,7 +124,7 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
       const UpdatedChunk &updatedChunk = updatedChunks[k];
 
       // use updated one and skip in the original file
-      mFile.seekg( mFile.tellg() + static_cast<long>( ch.offset ) );
+      mFile.seekg( static_cast<long>( mFile.tellg() ) + static_cast<long>( ch.offset ) );
 
       m_f.write( updatedChunk.chunkData.constData(), updatedChunk.chunkData.size() );
 
