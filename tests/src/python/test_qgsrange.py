@@ -165,69 +165,114 @@ class TestQgsIntRange(unittest.TestCase):
         self.assertFalse(range.contains(11))
 
     def testOverlaps(self):
-        # includes both ends
-        range = QgsIntRange(0, 10)
-        self.assertTrue(range.overlaps(QgsIntRange(1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(10, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 0)))
-        self.assertFalse(range.overlaps(QgsIntRange(-10, -1)))
-        self.assertFalse(range.overlaps(QgsIntRange(11, 12)))
+        """
+        Test overlaps with every combination of include/exclude bounds
+        """
 
-        # includes left end
-        range = QgsIntRange(0, 10, True, False)
-        self.assertTrue(range.overlaps(QgsIntRange(1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 11)))
-        self.assertFalse(range.overlaps(QgsIntRange(10, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 0)))
-        self.assertFalse(range.overlaps(QgsIntRange(-10, -1)))
-        self.assertFalse(range.overlaps(QgsIntRange(11, 12)))
+        # reference range
+        refLower, refUpper = 0, 10
 
-        # includes right end
-        range = QgsIntRange(0, 10, False, True)
-        self.assertTrue(range.overlaps(QgsIntRange(1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(10, 11)))
-        self.assertFalse(range.overlaps(QgsIntRange(-1, 0)))
-        self.assertFalse(range.overlaps(QgsIntRange(-10, -1)))
-        self.assertFalse(range.overlaps(QgsIntRange(11, 12)))
+        # other range is completely before or after reference range
+        for otherLower, otherUpper in [[-16, -2], [12, 32]]:
+            for refIncLower in [True, False]:
+                for refIncUpper in [True, False]:
+                    for otherIncLower in [True, False]:
+                        for otherIncUpper in [True, False]:
+                            refRange = QgsIntRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsIntRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
+                            self.assertFalse(
+                                refRange.overlaps(otherRange),
+                                f"{refRange=} {otherRange=}",
+                            )
 
-        # includes neither end
-        range = QgsIntRange(0, 10, False, False)
-        self.assertTrue(range.overlaps(QgsIntRange(1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(0, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 10)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 9)))
-        self.assertTrue(range.overlaps(QgsIntRange(1, 11)))
-        self.assertTrue(range.overlaps(QgsIntRange(-1, 11)))
-        self.assertFalse(range.overlaps(QgsIntRange(10, 11)))
-        self.assertFalse(range.overlaps(QgsIntRange(-1, 0)))
-        self.assertFalse(range.overlaps(QgsIntRange(-10, -1)))
-        self.assertFalse(range.overlaps(QgsIntRange(11, 12)))
+        # other range overlaps reference range
+        for otherLower, otherUpper in [
+            # parts of the ranges overlaps
+            [-2, 3],
+            [3, 14],
+            # full overlap and a bound in common
+            [-2, 10],
+            [0, 14],
+            # partial overlap and a bound in common
+            [0, 3],
+            [3, 10],
+            # same bounds
+            [0, 10],
+            # reference range is completely inside other range
+            [-2, 14],
+            # other range is completely inside reference range
+            [3, 8],
+        ]:
+            for refIncLower in [True, False]:
+                for refIncUpper in [True, False]:
+                    for otherIncLower in [True, False]:
+                        for otherIncUpper in [True, False]:
+                            refRange = QgsIntRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsIntRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
+                            self.assertTrue(
+                                refRange.overlaps(otherRange),
+                                f"{refRange=} {otherRange=}",
+                            )
+
+        for (
+            otherLower,
+            otherUpper,
+            otherIncLower,
+            otherIncUpper,
+            refIncLower,
+            refIncUpper,
+            expected,
+        ) in [
+            # reference range and other range are contiguous
+            [-3, 0, True, True, True, True, True],
+            [-3, 0, True, True, True, False, True],
+            [-3, 0, True, True, False, True, False],
+            [-3, 0, True, True, False, False, False],
+            [-3, 0, True, False, True, True, False],
+            [-3, 0, True, False, True, False, False],
+            [-3, 0, True, False, False, True, False],
+            [-3, 0, True, False, False, False, False],
+            [-3, 0, False, True, True, True, True],
+            [-3, 0, False, True, True, False, True],
+            [-3, 0, False, True, False, True, False],
+            [-3, 0, False, True, False, False, False],
+            [-3, 0, False, False, True, True, False],
+            [-3, 0, False, False, True, False, False],
+            [-3, 0, False, False, False, True, False],
+            [-3, 0, False, False, False, False, False],
+            # other range and reference range are contiguous
+            [10, 14, True, True, True, True, True],
+            [10, 14, True, True, True, False, False],
+            [10, 14, True, True, False, True, True],
+            [10, 14, True, True, False, False, False],
+            [10, 14, True, False, True, True, True],
+            [10, 14, True, False, True, False, False],
+            [10, 14, True, False, False, True, True],
+            [10, 14, True, False, False, False, False],
+            [10, 14, False, True, True, True, False],
+            [10, 14, False, True, True, False, False],
+            [10, 14, False, True, False, True, False],
+            [10, 14, False, True, False, False, False],
+            [10, 14, False, False, True, True, False],
+            [10, 14, False, False, True, False, False],
+            [10, 14, False, False, False, True, False],
+            [10, 14, False, False, False, False, False],
+        ]:
+            refRange = QgsIntRange(refLower, refUpper, refIncLower, refIncUpper)
+            otherRange = QgsIntRange(
+                otherLower, otherUpper, otherIncLower, otherIncUpper
+            )
+            self.assertEqual(
+                refRange.overlaps(otherRange), expected, f"{refRange=} {otherRange=}"
+            )
 
 
 class TestQgsDoubleRange(unittest.TestCase):
