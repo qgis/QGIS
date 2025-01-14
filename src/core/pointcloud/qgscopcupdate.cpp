@@ -63,11 +63,11 @@ HierarchyEntries getHierarchyPage( std::ifstream &file, uint64_t offset, uint64_
 {
   HierarchyEntries page;
   std::vector<char> buf( 32 );
-  int numEntries = size / 32;
-  file.seekg( offset );
+  int numEntries = static_cast<int>( size / 32 );
+  file.seekg( static_cast<int64_t>( offset ) );
   while ( numEntries-- )
   {
-    file.read( buf.data(), buf.size() );
+    file.read( buf.data(), static_cast<long>( buf.size() ) );
     lazperf::LeExtractor s( buf.data(), buf.size() );
 
     HierarchyEntry e;
@@ -93,13 +93,13 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
   mFile.seekg( 0 );
   std::vector<char> allHeaderData;
   allHeaderData.resize( mHeader.point_offset );
-  mFile.read( allHeaderData.data(), allHeaderData.size() );
-  m_f.write( allHeaderData.data(), allHeaderData.size() );
+  mFile.read( allHeaderData.data(), static_cast<long>( allHeaderData.size() ) );
+  m_f.write( allHeaderData.data(), static_cast<long>( allHeaderData.size() ) );
 
   m_f.write( "XXXXXXXX", 8 ); // placeholder for chunk table offset
 
   uint64_t currentChunkOffset = mHeader.point_offset + 8;
-  mFile.seekg( currentChunkOffset ); // this is where first chunk starts
+  mFile.seekg( static_cast<long>( currentChunkOffset ) ); // this is where first chunk starts
 
   // now, let's write chunks:
   // - iterate through original chunk table, write out chunks
@@ -124,7 +124,7 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
       const UpdatedChunk &updatedChunk = updatedChunks[k];
 
       // use updated one and skip in the original file
-      mFile.seekg( ( uint64_t )mFile.tellg() + ch.offset );
+      mFile.seekg( mFile.tellg() + static_cast<long>( ch.offset ) );
 
       m_f.write( updatedChunk.chunkData.constData(), updatedChunk.chunkData.size() );
 
@@ -134,10 +134,10 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
     else
     {
       // use as is
-      std::vector<char> chunkDataX;
-      chunkDataX.resize( ch.offset );
-      mFile.read( chunkDataX.data(), chunkDataX.size() );
-      m_f.write( chunkDataX.data(), chunkDataX.size() );
+      std::vector<char> originalChunkData;
+      originalChunkData.resize( ch.offset );
+      mFile.read( originalChunkData.data(), static_cast<long>( originalChunkData.size() ) );
+      m_f.write( originalChunkData.data(), static_cast<long>( originalChunkData.size() ) );
     }
 
     currentChunkOffset += ch.offset;
@@ -160,10 +160,10 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
   // are packed one after another, with no gaps. if that's not the case, things
   // will break apart
 
-  int hierPositionShift = ( uint64_t )m_f.tellp() + 60 - mHierarchyOffset;
+  long hierPositionShift = static_cast<long>( m_f.tellp() ) + 60 - static_cast<long>( mHierarchyOffset );
 
   HierarchyEntry *oldCopcHierarchyBlobEntries = ( HierarchyEntry * ) mHierarchyBlob.data();
-  int nEntries = mHierarchyBlob.size() / 32;
+  int nEntries = static_cast<int>( mHierarchyBlob.size() / 32 );
   for ( int i = 0; i < nEntries; ++i )
   {
     HierarchyEntry &e = oldCopcHierarchyBlobEntries[i];
@@ -176,7 +176,7 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
       if ( updatedChunks.contains( e.key ) )
       {
         uint64_t newByteSize = updatedChunks[e.key].chunkData.size();
-        e.byteSize = newByteSize;
+        e.byteSize = static_cast<int>( newByteSize );
       }
     }
     else if ( e.pointCount < 0 )
@@ -203,7 +203,7 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
   outCopcHierEvlr.description = "EPT Hierarchy";
 
   outCopcHierEvlr.write( m_f );
-  m_f.write( mHierarchyBlob.data(), mHierarchyBlob.size() );
+  m_f.write( mHierarchyBlob.data(), static_cast<long>( mHierarchyBlob.size() ) );
 
   // write other eVLRs
 
@@ -213,7 +213,7 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
     std::vector<char> evlrBody = mEvlrData[i];
 
     evlrHeader.write( m_f );
-    m_f.write( evlrBody.data(), evlrBody.size() );
+    m_f.write( evlrBody.data(), static_cast<long>( evlrBody.size() ) );
   }
 
   // patch header
@@ -284,7 +284,7 @@ void QgsCopcUpdate::readChunkTable()
 
   mFile.seekg( mHeader.point_offset );
   mFile.read( ( char * )&chunkTableOffset, sizeof( chunkTableOffset ) );
-  mFile.seekg( chunkTableOffset + 4 ); // The first 4 bytes are the version, then the chunk count.
+  mFile.seekg( static_cast<long>( chunkTableOffset ) + 4 ); // The first 4 bytes are the version, then the chunk count.
   mFile.read( ( char * )&mChunkCount, sizeof( mChunkCount ) );
 
   //
@@ -340,7 +340,7 @@ void QgsCopcUpdate::readHierarchy()
   }
 
   lazperf::evlr_header evlr1;
-  mFile.seekg( mHeader.evlr_offset );
+  mFile.seekg( static_cast<long>( mHeader.evlr_offset ) );
 
   mHierarchyOffset = 0;  // where the hierarchy eVLR payload starts
 
@@ -351,7 +351,7 @@ void QgsCopcUpdate::readHierarchy()
     {
       mHierarchyBlob.resize( evlr1.data_length );
       mHierarchyOffset = mFile.tellg();
-      mFile.read( mHierarchyBlob.data(), evlr1.data_length );
+      mFile.read( mHierarchyBlob.data(), static_cast<long>( evlr1.data_length ) );
     }
     else
     {
@@ -359,7 +359,7 @@ void QgsCopcUpdate::readHierarchy()
       mEvlrHeaders.push_back( evlr1 );
       std::vector<char> evlrBlob;
       evlrBlob.resize( evlr1.data_length );
-      mFile.read( evlrBlob.data(), evlrBlob.size() );
+      mFile.read( evlrBlob.data(), static_cast<long>( evlrBlob.size() ) );
       mEvlrData.push_back( evlrBlob );
     }
   }

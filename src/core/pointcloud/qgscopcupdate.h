@@ -23,10 +23,16 @@
 
 #include "qgspointcloudindex.h"
 
+#define SIP_NO_FILE
+
 
 /**
+ * \ingroup core
+ *
  * This class takes an existing COPC file and a list of chunks that should be modified,
  * and outputs an updated COPC file where the modified chunks replace the original chunks.
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
  * \since QGIS 3.42
  */
