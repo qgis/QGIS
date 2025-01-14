@@ -5841,7 +5841,10 @@ QString QgsVectorLayer::htmlMetadata() const
     }
 
     // Extent
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+    // Try to display extent 3D by default. If empty (probably because the data is 2D), fallback to the 2D version
+    const QgsBox3D extentBox3D = extent3D();
+    const QString extentAsStr = !extentBox3D.isEmpty() ? extentBox3D.toString() : extent().toString();
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extentAsStr + QStringLiteral( "</td></tr>\n" );
   }
 
   // feature count
