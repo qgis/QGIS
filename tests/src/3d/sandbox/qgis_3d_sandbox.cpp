@@ -31,15 +31,11 @@
 #include "qgslayertree.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsterrainprovider.h"
-#include "qgstiledscenelayer.h"
-#include "qgstiledscenelayer3drenderer.h"
 
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
@@ -190,26 +186,6 @@ int main( int argc, char *argv[] )
   {
     qDebug() << "can't open project file" << projectFile;
     return 1;
-  }
-
-  // a hack to assign 3D renderer
-  for ( QgsMapLayer *layer : QgsProject::instance()->layerTreeRoot()->checkedLayers() )
-  {
-    if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
-    {
-      QgsPointCloudLayer3DRenderer *r = new QgsPointCloudLayer3DRenderer();
-      r->setLayer( pcLayer );
-      r->resolveReferences( *QgsProject::instance() );
-      pcLayer->setRenderer3D( r );
-    }
-
-    if ( QgsTiledSceneLayer *tsLayer = qobject_cast<QgsTiledSceneLayer *>( layer ) )
-    {
-      QgsTiledSceneLayer3DRenderer *r = new QgsTiledSceneLayer3DRenderer();
-      r->setLayer( tsLayer );
-      r->resolveReferences( *QgsProject::instance() );
-      tsLayer->setRenderer3D( r );
-    }
   }
 
   Qgs3DMapCanvas *canvas = new Qgs3DMapCanvas;
