@@ -115,7 +115,7 @@ bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttr
     return value >= 0 && value <= 15;
   if ( name == QLatin1String( "NUMBEROFRETURNS" ) )
     return value >= 0 && value <= 15;
-  if ( name == QLatin1String( "SCANCHANNEL" ) )
+  if ( name == QLatin1String( "SCANNERCHANNEL" ) )
     return value >= 0 && value <= 3;
   if ( name == QLatin1String( "SCANDIRECTIONFLAG" ) )
     return value >= 0 && value <= 1;
@@ -125,7 +125,7 @@ bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttr
     return value >= 0 && value <= 255;
   if ( name == QLatin1String( "USERDATA" ) )
     return value >= 0 && value <= 255;
-  if ( name == QLatin1String( "SCANANGLE" ) )
+  if ( name == QLatin1String( "SCANANGLERANK" ) )
     return value >= -30'000 && value <= 30'000;
   if ( name == QLatin1String( "POINTSOURCEID" ) )
     return value >= 0 && value <= 65535;
@@ -144,6 +144,8 @@ bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttr
   if ( name == QLatin1String( "GREEN" ) )
     return value >= 0 && value <= 65535;
   if ( name == QLatin1String( "BLUE" ) )
+    return value >= 0 && value <= 65535;
+  if ( name == QLatin1String( "INFRARED" ) )
     return value >= 0 && value <= 65535;
 
   return true;

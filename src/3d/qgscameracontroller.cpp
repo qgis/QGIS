@@ -262,6 +262,9 @@ void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
+  if ( !mInputHandlersEnabled )
+    return;
+
   switch ( mCameraNavigationMode )
   {
     case Qgis::NavigationMode::TerrainBased:
@@ -573,6 +576,9 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
+  if ( !mInputHandlersEnabled )
+    return;
+
   switch ( mCameraNavigationMode )
   {
     case Qgis::NavigationMode::Walk:
@@ -605,6 +611,9 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 
 void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 {
+  if ( !mInputHandlersEnabled )
+    return;
+
   mKeyboardHandler->setFocus( true );
 
   if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton || ( ( mouse->modifiers() & Qt::ShiftModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) || ( ( mouse->modifiers() & Qt::ControlModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) )
@@ -635,12 +644,18 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
 {
   Q_UNUSED( mouse )
+  if ( !mInputHandlersEnabled )
+    return;
+
 
   setMouseParameters( MouseOperation::None );
 }
 
 void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
 {
+  if ( !mInputHandlersEnabled )
+    return;
+
   if ( event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_QuoteLeft )
   {
     // switch navigation mode
@@ -933,6 +948,9 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
 
 void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
 {
+  if ( !mInputHandlersEnabled )
+    return;
+
   if ( event->isAutoRepeat() )
     return;
 

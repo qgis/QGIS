@@ -47,6 +47,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
 #include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dmaptoolpointcloudchangeattribute.h"
 #include "qgs3dnavigationwidget.h"
 #include "qgs3ddebugwidget.h"
 #include "qgs3dutils.h"
@@ -57,6 +58,7 @@
 
 #include "qgsdockablewidgethelper.h"
 #include "qgsrubberband.h"
+#include "qgspointcloudlayer.h"
 
 #include <QWidget>
 #include <QActionGroup>
@@ -74,6 +76,24 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionCameraControl->setCheckable( true );
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ), tr( "Zoom Full" ), this, &Qgs3DMapCanvasWidget::resetView );
+
+  // Editing toolbar
+  mEditingToolBar = new QToolBar( this );
+  mEditingToolBar->setVisible( false );
+
+  QAction *actionPointCloudChangeAttributeTool = mEditingToolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
+  actionPointCloudChangeAttributeTool->setCheckable( true );
+
+  mEditingToolBar->addWidget( new QLabel( tr( "Attribute:" ) ) );
+  mCboChangeAttribute = new QComboBox();
+  mEditingToolBar->addWidget( mCboChangeAttribute );
+  mSpinChangeAttributeValue = new QgsDoubleSpinBox();
+  mEditingToolBar->addWidget( new QLabel( tr( "Value:" ) ) );
+  mEditingToolBar->addWidget( mSpinChangeAttributeValue );
+  QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
+  actionEditingToolbar->setCheckable( true );
+  connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
+  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { onPointCloudChangeAttributeSettingsChanged(); } );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction(
     QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
@@ -99,8 +119,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionGroup->addAction( actionCameraControl );
   actionGroup->addAction( actionIdentify );
   actionGroup->addAction( actionMeasurementTool );
+  actionGroup->addAction( actionPointCloudChangeAttributeTool );
   actionGroup->setExclusive( true );
-  actionCameraControl->setChecked( true );
 
   mActionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ), tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
   mActionAnim->setCheckable( true );
@@ -237,6 +257,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
+  mMapToolPointCloudChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
+  onPointCloudChangeAttributeSettingsChanged();
+
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
@@ -271,6 +294,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   layout->addLayout( topLayout );
+  layout->addWidget( mEditingToolBar );
   layout->addWidget( mMessageBar );
 
   // mContainer takes ownership of Qgs3DMapCanvas
@@ -317,6 +341,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( dockAction, &QAction::toggled, this, [=]( const bool isSmallSize ) {
     toolBar->setIconSize( QgisApp::instance()->iconSize( isSmallSize ) );
   } );
+
+  updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
 }
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
@@ -377,10 +403,53 @@ void Qgs3DMapCanvasWidget::measureLine()
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
 }
 
+void Qgs3DMapCanvasWidget::changePointCloudAttribute()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolPointCloudChangeAttribute : nullptr );
+}
+
 void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
 {
   mCanvasName = name;
   mDockableWidgetHelper->setWindowTitle( name );
+}
+
+void Qgs3DMapCanvasWidget::enableEditingTools( bool enable )
+{
+  mEditingToolBar->setEnabled( enable );
+}
+
+void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
+{
+  if ( !layer || layer->type() != Qgis::LayerType::PointCloud )
+  {
+    enableEditingTools( false );
+
+    if ( mCanvas->mapTool() == mMapToolPointCloudChangeAttribute )
+      mCanvas->setMapTool( nullptr );
+
+    return;
+  }
+
+  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  const QVector<QgsPointCloudAttribute> attributes = pcLayer->attributes().attributes();
+  const QString previousAttribute = mCboChangeAttribute->currentText();
+  whileBlocking( mCboChangeAttribute )->clear();
+  for ( const QgsPointCloudAttribute &attribute : attributes )
+  {
+    if ( attribute.name() == QLatin1String( "X" ) || attribute.name() == QLatin1String( "Y" ) || attribute.name() == QLatin1String( "Z" ) )
+      continue;
+
+    whileBlocking( mCboChangeAttribute )->addItem( attribute.name() );
+  }
+  if ( mCboChangeAttribute->findText( previousAttribute ) != -1 )
+    mCboChangeAttribute->setCurrentText( previousAttribute );
+
+  enableEditingTools( pcLayer->isEditable() );
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )
@@ -732,6 +801,130 @@ void Qgs3DMapCanvasWidget::onGpuMemoryLimitReached()
                               .arg( memLimit ),
                             Qgis::MessageLevel::Warning );
   mGpuMemoryLimitReachedReported = true;
+}
+
+void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
+{
+  const QString attributeName = mCboChangeAttribute->currentText();
+
+  if ( attributeName == QLatin1String( "Intensity" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 65535 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "ReturnNumber" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 15 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "NumberOfReturns" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 15 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "Synthetic" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 1 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "KeyPoint" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 1 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "Withheld" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 1 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "Overlap" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 1 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "ScannerChannel" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 3 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "ScanDirectionFlag" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 1 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "EdgeOfFlightLine" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 1 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "Classification" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 255 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "UserData" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 255 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "ScanAngleRank" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( -30'000 );
+    mSpinChangeAttributeValue->setMaximum( 30'000 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "PointSourceId" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 65535 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "GpsTime" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( std::numeric_limits<double>::max() );
+    mSpinChangeAttributeValue->setDecimals( 42 );
+  }
+  else if ( attributeName == QLatin1String( "Red" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 65535 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "Green" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 65535 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "Blue" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 65535 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+  else if ( attributeName == QLatin1String( "Infrared" ) )
+  {
+    mSpinChangeAttributeValue->setMinimum( 0 );
+    mSpinChangeAttributeValue->setMaximum( 65535 );
+    mSpinChangeAttributeValue->setDecimals( 0 );
+  }
+
+  mMapToolPointCloudChangeAttribute->setAttribute( attributeName );
+  // TODO: validate values for attribute
+  mMapToolPointCloudChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() );
 }
 
 void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()

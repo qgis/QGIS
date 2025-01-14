@@ -16,14 +16,16 @@
 #ifndef QGS3DMAPCANVASWIDGET_H
 #define QGS3DMAPCANVASWIDGET_H
 
-#include "qmenu.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 #include "qobjectuniqueptr.h"
-#include "qtoolbutton.h"
 #include "qgsrectangle.h"
 
+#include <QComboBox>
+#include <QMenu>
 #include <QPointer>
+#include <QToolButton>
+#include <QToolBar>
 
 #define SIP_NO_FILE
 
@@ -35,14 +37,17 @@ class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
+class Qgs3DMapToolPointCloudChangeAttribute;
 class Qgs3DNavigationWidget;
 class Qgs3DDebugWidget;
+class QgsMapLayer;
 class QgsMapTool;
 class QgsMapToolExtent;
 class QgsMapCanvas;
 class QgsDockableWidgetHelper;
 class QgsMessageBar;
 class QgsRubberBand;
+class QgsDoubleSpinBox;
 
 class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 {
@@ -69,6 +74,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void showAnimationWidget() { mActionAnim->trigger(); }
 
+    void enableEditingTools( bool enable );
+
+    void updateLayerRelatedActions( QgsMapLayer *layer );
+
   private slots:
     void resetView();
     void configure();
@@ -77,6 +86,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void cameraControl();
     void identify();
     void measureLine();
+    void changePointCloudAttribute();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
@@ -100,6 +110,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void onExtentChanged();
     void onGpuMemoryLimitReached();
 
+    void onPointCloudChangeAttributeSettingsChanged();
+
   private:
     QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
@@ -112,12 +124,14 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
+    Qgs3DMapToolPointCloudChangeAttribute *mMapToolPointCloudChangeAttribute = nullptr;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     QgsMapTool *mMapToolPrevious = nullptr;
     QMenu *mExportMenu = nullptr;
     QMenu *mMapThemeMenu = nullptr;
     QMenu *mCameraMenu = nullptr;
     QMenu *mEffectsMenu = nullptr;
+    QMenu *mEditingMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
@@ -144,6 +158,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
     //! On-screen Debug widget
     Qgs3DDebugWidget *mDebugWidget = nullptr;
+
+    QToolBar *mEditingToolBar = nullptr;
+    QComboBox *mCboChangeAttribute = nullptr;
+    QgsDoubleSpinBox *mSpinChangeAttributeValue = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

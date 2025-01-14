@@ -2298,6 +2298,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Closes any existing 3D map docks
     void closeAdditional3DMapCanvases();
 
+    //! Updates current layer related actions on all open 3d views
+    void update3DMapViewsLayerRelatedActions();
+
     QgsElevationProfileWidget *createNewElevationProfile();
 
     /**

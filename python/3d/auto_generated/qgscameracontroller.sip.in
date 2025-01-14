@@ -191,6 +191,13 @@ relative to other entities.
 .. versionadded:: 3.42
 %End
 
+    void setInputHandlersEnabled( bool enable );
+%Docstring
+Sets whether the camera controller responds to mouse and keyboard events
+
+.. versionadded:: 3.42
+%End
+
   public slots:
 
     void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
