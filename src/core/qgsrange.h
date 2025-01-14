@@ -175,26 +175,21 @@ class QgsRange
      */
     bool overlaps( const QgsRange<T> &other ) const
     {
-      if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
+      // other range is completely before or completely after self range
+      if ( other.mUpper < mLower || other.mLower > mUpper )
+        return false;
+
+      // other overlaps self for sure
+      if ( other.mUpper > mLower && other.mLower < mUpper )
         return true;
 
-      if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
-        return true;
+      if ( other.mUpper == mLower )
+        return other.mIncludeUpper && mIncludeLower;
 
-      if ( ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) )
-           && ( ( mIncludeUpper && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
-        return true;
+      if ( other.mLower == mUpper )
+        return other.mIncludeLower && mIncludeUpper;
 
-      if ( ( ( mIncludeLower && mLower >= other.mLower ) || ( !mIncludeLower && mLower > other.mLower ) )
-           && ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) ) )
-        return true;
-
-      if ( mLower == other.mLower && mUpper == other.mUpper )
-        return true;
-
-      return false;
+      BUILTIN_UNREACHABLE
     }
 
     bool operator==( const QgsRange<T> &other ) const
@@ -574,26 +569,26 @@ class QgsTemporalRange
      */
     bool overlaps( const QgsTemporalRange<T> &other ) const
     {
-      if ( !mUpper.isValid() && ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) ) )
+      if ( !mUpper.isValid() && ( ( mIncludeLower && other.mIncludeUpper && mLower <= other.mUpper ) || ( ( !mIncludeLower || !other.mIncludeUpper ) && mLower < other.mUpper ) ) )
         return true;
 
-      if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
+      if ( ( ( mIncludeLower && other.mIncludeLower && mLower <= other.mLower ) || ( ( !mIncludeLower || !other.mIncludeLower ) && mLower < other.mLower ) )
+           && ( ( mIncludeUpper  && other.mIncludeUpper && mUpper >= other.mUpper ) || ( ( !mIncludeUpper || !other.mIncludeUpper ) && mUpper > other.mUpper ) ) )
         return true;
 
-      if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
+      if ( ( ( mIncludeLower && other.mIncludeLower && mLower <= other.mLower ) || ( ( !mIncludeLower || other.mIncludeLower ) && mLower < other.mLower ) )
+           && ( ( mIncludeUpper && other.mIncludeLower && mUpper >= other.mLower ) || ( ( !mIncludeUpper || !other.mIncludeLower ) && mUpper > other.mLower ) ) )
         return true;
 
-      if ( ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) )
-           && ( ( mIncludeUpper && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
+      if ( ( ( mIncludeLower && other.mIncludeUpper && mLower <= other.mUpper ) || ( ( !mIncludeLower || other.mIncludeUpper ) && mLower < other.mUpper ) )
+           && ( ( mIncludeUpper && other.mIncludeUpper && mUpper >= other.mUpper ) || ( ( !mIncludeUpper || !other.mIncludeUpper ) && mUpper > other.mUpper ) ) )
         return true;
 
-      if ( ( ( mIncludeLower && mLower >= other.mLower ) || ( !mIncludeLower && mLower > other.mLower ) )
-           && ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) ) )
+      if ( ( ( mIncludeLower && other.mIncludeLower && mLower >= other.mLower ) || ( ( !mIncludeLower || !other.mIncludeLower ) && mLower > other.mLower ) )
+           && ( ( mIncludeLower && other.mIncludeUpper && mLower <= other.mUpper ) || ( ( !mIncludeLower || !other.mIncludeUpper ) && mLower < other.mUpper ) ) )
         return true;
 
-      if ( mLower == other.mLower && mUpper == other.mUpper )
+      if ( mIncludeLower && other.mIncludeLower && mIncludeUpper && other.mIncludeUpper && mLower == other.mLower && mUpper == other.mUpper )
         return true;
 
       return false;
