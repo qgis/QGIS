@@ -126,9 +126,9 @@ def compareElements(s1, s2):
             return 2
     # if the strings aren't numeric or start from 0, compare them as a strings:
     # but first, set ALPHA < BETA < PREVIEW < RC < TRUNK < [NOTHING] < [ANYTHING_ELSE]
-    if s1 not in ["ALPHA", "BETA", "PREVIEW", "RC", "TRUNK"]:
+    if s1 not in ["A", "ALPHA", "B", "BETA", "PREVIEW", "RC", "TRUNK"]:
         s1 = "Z" + s1
-    if s2 not in ["ALPHA", "BETA", "PREVIEW", "RC", "TRUNK"]:
+    if s2 not in ["A", "ALPHA", "B", "BETA", "PREVIEW", "RC", "TRUNK"]:
         s2 = "Z" + s2
     # the final test:
     if s1 > s2:
