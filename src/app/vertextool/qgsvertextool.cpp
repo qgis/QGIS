@@ -2204,6 +2204,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
 
+    QgsFeatureRequest request = QgsFeatureRequest().setFilterRect( layerPoint.boundingBox() ).setDestinationCrs( dragLayer->crs(), mCanvas->mapSettings().transformContext() ).setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
+    QgsFeature f;
+
     const QList<QgsMapLayer *> targetLayers = canvas()->layers( true );
 
     for ( auto itLayerEdits = edits.begin(); itLayerEdits != edits.end(); ++itLayerEdits )
@@ -2216,6 +2219,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
           continue;
 
         if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
+          continue;
+
+        if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
           continue;
 
         // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)

@@ -143,6 +143,10 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
     }
     if ( topologicalEditing )
     {
+      QgsFeatureRequest request = QgsFeatureRequest().setFilterRect( feature.geometry().boundingBox() ).setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
+      request.setDestinationCrs( vlayer->crs(), vlayer->transformContext() );
+      QgsFeature f;
+
       const QList<QgsMapLayer *> layers = canvas()->layers( true );
 
       for ( QgsMapLayer *layer : layers )
@@ -153,6 +157,9 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
           continue;
 
         if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
+          continue;
+
+        if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
           continue;
 
         vectorLayer->beginEditCommand( tr( "Topological points added by 'Add Feature'" ) );
