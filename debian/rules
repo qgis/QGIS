@@ -58,7 +58,7 @@ GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 GRASSABI=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2,3|sed -e 's/RC/-/'))
 
 # Include percentage of started edges
-export NINJA_STATUS=[%f/%t %p]
+export NINJA_STATUS=[%f/%t %p] 
 
 ifeq (,$(filter terse,$(DEB_BUILD_OPTIONS)))
 	NINJA_OPTS += -v
@@ -123,7 +123,7 @@ $(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasver
 ifneq (0,$(.SHELLSTATUS))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
-	        -DQt53DExtras_DIR=$(realpath external/qt3dextra-headers/cmake/Qt53DExtras) \
+		-DQt53DExtras_DIR=$(realpath external/qt3dextra-headers/cmake/Qt53DExtras) \
 		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
 		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
 endif
@@ -315,8 +315,8 @@ endif
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
-	$(RM) $(CURDIR)/debian/tmp/usr/bin/test_provider_wcs
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_bench
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/test_provider_wcs
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/wcs-servers.json
 
 	# remove documentation outside usr/share/doc
@@ -333,13 +333,13 @@ endif
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
 
 	# Mime info
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
+	install -d $(CURDIR)/debian/tmp/usr/share/mime/packages
+	install -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
 
 	# qgis binaries
-	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
-	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
-	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process $(CURDIR)/debian/qgis/usr/bin/qgis_process.bin
+	install -m 755 -d $(CURDIR)/debian/qgis/usr/bin
+	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
+	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process $(CURDIR)/debian/qgis/usr/bin/qgis_process.bin
 
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/tmp/usr/bin/qgis_process
 
@@ -349,8 +349,8 @@ endif
 		-e "s#\{ORACLE_LIBDIR\}#$(ORACLE_LIBDIR)#g" \
 		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
+	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
+	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
 	mkdir -p $(CURDIR)/debian/libqgis-dev
 	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
