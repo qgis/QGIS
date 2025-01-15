@@ -18,16 +18,18 @@
 #ifndef QGSRECTANGLE_H
 #define QGSRECTANGLE_H
 
-#include "qgis_core.h"
-#include "qgis.h"
 #include <iosfwd>
 #include <QDomDocument>
 #include <QRectF>
 
+#include "qgis_core.h"
+#include "qgis.h"
+#include "qgspointxy.h"
+
+
 class QString;
 class QRectF;
 class QgsBox3D;
-#include "qgspointxy.h"
 
 
 /**

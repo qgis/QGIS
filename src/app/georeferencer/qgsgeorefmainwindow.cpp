@@ -30,6 +30,9 @@
 #include <QUrl>
 #include <QActionGroup>
 
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
@@ -1098,6 +1101,23 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mCentralLayout->addWidget( mCanvas, 0, 0, 2, 1 );
 
+  // snapping + cad
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
+  addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
+  mAdvancedDigitizingDockWidget->hide();
+  connect( mActionAdvancedDigitizingDock, &QAction::triggered, mAdvancedDigitizingDockWidget, [=]( bool checked ) { mAdvancedDigitizingDockWidget->setVisible( checked ); } );
+
+  QgsSnappingConfig snappingConfig;
+  snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snappingConfig.setTypeFlag( Qgis::SnappingType::Vertex );
+  snappingConfig.setTolerance( 10 );
+  snappingConfig.setUnits( Qgis::MapToolUnit::Pixels );
+  snappingConfig.setEnabled( true );
+
+  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
+  snappingUtils->setConfig( snappingConfig );
+  mCanvas->setSnappingUtils( snappingUtils );
+
   // set up map tools
   mToolZoomIn = new QgsMapToolZoom( mCanvas, false /* zoomOut */ );
   mToolZoomIn->setAction( mActionZoomIn );
@@ -1108,7 +1128,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   mToolPan = new QgsMapToolPan( mCanvas );
   mToolPan->setAction( mActionPan );
 
-  mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas );
+  mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas, mAdvancedDigitizingDockWidget );
   mToolAddPoint->setAction( mActionAddPoint );
   connect( mToolAddPoint, &QgsGeorefToolAddPoint::showCoordDialog, this, &QgsGeoreferencerMainWindow::showCoordDialog );
 
