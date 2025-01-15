@@ -1471,6 +1471,7 @@ namespace QgsWms
       /**
        * Returns true if OGC best practice georeferencing shall be used
        * \since QGIS 3.32
+       * \deprecated QGIS 3.42. Will always return false starting with 3.42. Only ISO 32000 georeferencing is handled.
        */
       bool pdfUseOgcBestPracticeFormatGeoreferencing() const;
 

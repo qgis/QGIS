@@ -710,7 +710,6 @@ namespace QgsWms
       exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
       exportSettings.simplifyGeometries = mWmsParameters.pdfSimplifyGeometries();
       exportSettings.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
-      exportSettings.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
       if ( mWmsParameters.pdfLosslessImageCompression() )
       {
         exportSettings.flags |= QgsLayoutRenderContext::FlagLosslessImageRendering;
@@ -1218,7 +1217,6 @@ namespace QgsWms
       pdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
     }
     pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
-    pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
     const bool geospatialPdf = mWmsParameters.pdfAppendGeoreference();
     std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geospatialPdf, pdfExportDetails );
     if ( mWmsParameters.pdfAppendGeoreference() )

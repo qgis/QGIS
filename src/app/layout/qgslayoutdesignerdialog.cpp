@@ -4423,7 +4423,6 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast<int>( textRenderFormat ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfSimplify" ), simplify ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfCreateGeoPdf" ), geospatialPdf ? 1 : 0 );
-    mLayout->setCustomProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), 0 ); // deprecated
     mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QLatin1String( "~~~" ) ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geospatialPdfLayerOrder.join( QLatin1String( "~~~" ) ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfGroupOrder" ), dialog.geospatialPdfGroupOrder() );
@@ -4436,7 +4435,6 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
   settings.writeGeoPdf = geospatialPdf;
-  settings.useOgcBestPracticeFormatGeoreferencing = false;
   settings.useIso32000ExtensionFormatGeoreferencing = true;
   settings.exportThemes = exportThemes;
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );

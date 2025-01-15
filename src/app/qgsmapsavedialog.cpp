@@ -543,7 +543,6 @@ void QgsMapSaveDialog::onAccepted()
         if ( mGeospatialPDFGroupBox->isChecked() )
         {
           geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
-          geospatialPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = false;
 
           geospatialPdfExportDetails.includeFeatures = mExportGeospatialPdfFeaturesCheckBox->isChecked();
         }

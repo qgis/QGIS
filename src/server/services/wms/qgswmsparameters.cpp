@@ -2280,13 +2280,7 @@ namespace QgsWms
 
   bool QgsWmsParameters::pdfUseOgcBestPracticeFormatGeoreferencing() const
   {
-    bool useOgcGeoreferencing = false;
-    const QMap<QgsWmsParameters::PdfFormatOption, QString> options = formatOptions<QgsWmsParameters::PdfFormatOption>();
-    if ( options.contains( PdfFormatOption::USE_OGC_BEST_PRACTICE_FORMAT_GEOREFERENCING ) )
-    {
-      useOgcGeoreferencing = QVariant( options[PdfFormatOption::USE_OGC_BEST_PRACTICE_FORMAT_GEOREFERENCING] ).toBool();
-    }
-    return useOgcGeoreferencing;
+    return false;
   }
 
   QStringList QgsWmsParameters::pdfExportMapThemes() const
