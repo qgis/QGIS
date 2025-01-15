@@ -388,14 +388,11 @@ void QgsVectorLayerCache::layerDeleted()
 
 void QgsVectorLayerCache::invalidate()
 {
-  if ( ! mCache.isEmpty() )
-  {
-    mCache.clear();
-    mCacheOrderedKeys.clear();
-    mCacheUnorderedKeys.clear();
-    mFullCache = false;
-    emit invalidated();
-  }
+  mCache.clear();
+  mCacheOrderedKeys.clear();
+  mCacheUnorderedKeys.clear();
+  mFullCache = false;
+  emit invalidated();
 }
 
 bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featureRequest, QgsFeatureIterator &it )
