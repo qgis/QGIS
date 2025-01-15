@@ -418,7 +418,7 @@ QgsMeshRendererSettings QgsMeshLayer::rendererSettings() const
   return mRendererSettings;
 }
 
-void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings )
+void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -432,8 +432,11 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
   if ( oldActiveVector != mRendererSettings.activeVectorDatasetGroup() )
     emit activeVectorDatasetGroupChanged( mRendererSettings.activeVectorDatasetGroup() );
 
-  emit rendererChanged();
-  triggerRepaint();
+  if ( repaint )
+  {
+    emit rendererChanged();
+    triggerRepaint();
+  }
 }
 
 QgsMeshTimeSettings QgsMeshLayer::timeSettings() const

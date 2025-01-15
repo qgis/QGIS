@@ -17189,8 +17189,9 @@ void QgisApp::handleRenderedLayerStatistics() const
 
         scalarRendererSettings.setClassificationMinimumMaximum( layerStatistics->minimum( 0 ), layerStatistics->maximum( 0 ) );
         rendererSettings.setScalarSettings( rendererSettings.activeScalarDatasetGroup(), scalarRendererSettings );
-        meshLayer->setRendererSettings( rendererSettings );
+        meshLayer->setRendererSettings( rendererSettings, false );
 
+        meshLayer->emitStyleChanged();
         emit meshLayer->legendChanged();
       }
     }

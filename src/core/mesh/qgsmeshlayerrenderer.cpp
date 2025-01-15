@@ -168,7 +168,7 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
 
     if ( activeDatasetIndex.isValid() )
     {
-      const QgsMeshRendererScalarSettings scalarRendererSettings = mRendererSettings.scalarSettings( activeDatasetIndex.group() );
+      QgsMeshRendererScalarSettings scalarRendererSettings = mRendererSettings.scalarSettings( activeDatasetIndex.group() );
       const double previousMin = scalarRendererSettings.classificationMinimum();
       const double previousMax = scalarRendererSettings.classificationMaximum();
 
@@ -183,6 +183,10 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
         {
           if ( previousMin != min || previousMax != max )
           {
+
+            scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+            mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
+
             QgsRenderedLayerStatistics *layerStatistics = new QgsRenderedLayerStatistics( layer->id(), previousMin, previousMax );
 
             layerStatistics->setBoundingBox( context.extent() );

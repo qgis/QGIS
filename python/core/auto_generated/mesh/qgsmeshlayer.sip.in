@@ -234,9 +234,13 @@ Gets native mesh and updates (creates if it doesn't exist) the base triangular m
 %Docstring
 Returns renderer settings
 %End
-    void setRendererSettings( const QgsMeshRendererSettings &settings );
+
+    void setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint = true );
 %Docstring
 Sets new renderer settings
+
+:param settings:
+:param repaint: should the update of renderer settings trigger repaint and emit rendererChanged signal
 %End
 
     QgsMeshTimeSettings timeSettings() const;
