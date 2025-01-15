@@ -43,6 +43,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagebar.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsvectorlayereditutils.h"
 
 
 #include <QMenu>
@@ -2204,8 +2205,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
 
-    QgsFeatureRequest request = QgsFeatureRequest().setFilterRect( layerPoint.boundingBox() ).setDestinationCrs( dragLayer->crs(), mCanvas->mapSettings().transformContext() ).setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
-    QgsFeature f;
+    QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
+    const QgsRectangle bbox = layerPoint.boundingBox();
+
 
     const QList<QgsMapLayer *> targetLayers = canvas()->layers( true );
 
@@ -2214,6 +2216,8 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
       for ( QgsMapLayer *targetLayer : targetLayers )
       {
         QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( targetLayer );
+        QgsRectangle searchRect;
+        QgsFeature f;
 
         if ( !vectorLayer || !vectorLayer->isEditable() )
           continue;
@@ -2225,6 +2229,11 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         if ( vectorLayer->crs() != itLayerEdits.key()->crs() )
           continue;
 
+        searchRect = QgsRectangle( bbox );
+        searchRect.grow( QgsVectorLayerEditUtils::getTopologicalSearchRadius( vectorLayer ) );
+        request.setFilterRect( searchRect );
+
+        // We check that there is actually at least one feature intersecting our geometry in the layer to avoid creating an empty edit command and calling costly addTopologicalPoint
         if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
           continue;
 
