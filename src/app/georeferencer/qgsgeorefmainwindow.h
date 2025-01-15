@@ -31,6 +31,7 @@ class QPlainTextEdit;
 class QLabel;
 
 class QgisInterface;
+class QgsAdvancedDigitizingDockWidget;
 class QgsDoubleSpinBox;
 class QgsGeorefDataPoint;
 class QgsGCPListWidget;
@@ -271,6 +272,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QList<QgsGcpPoint> mSavedPoints;
 
     QgsMapCanvas *mCanvas = nullptr;
+    QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     std::unique_ptr<QgsMapLayer> mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
