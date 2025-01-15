@@ -2221,11 +2221,11 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
           continue;
 
-        if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
-          continue;
-
         // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)
         if ( vectorLayer->crs() != itLayerEdits.key()->crs() )
+          continue;
+
+        if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
           continue;
 
         vectorLayer->beginEditCommand( tr( "Topological points added by 'Vertex Tool'" ) );
