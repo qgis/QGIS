@@ -42,7 +42,7 @@ Build-Depends:
  opencl-headers,
 #oracle# oracle-instantclient-basiclite,
 #oracle# oracle-instantclient-devel,
- pkg-config,
+ pkgconf,
  pyqt5-dev-tools,
  pyqt5-dev,
  pyqt5.qsci-dev,
@@ -99,6 +99,7 @@ Standards-Version: 3.9.7
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: https://qgis.org/
+Rules-Requires-Root: no
 
 Package: qgis
 Architecture: any
@@ -502,7 +503,7 @@ Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wms service.
+ This package contains the WMS service.
 
 Package: qgis-server-wmts
 Architecture: any
@@ -514,7 +515,7 @@ Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wmts service.
+ This package contains the WMTS service.
 
 Package: qgis-server-wfs
 Architecture: any
@@ -526,7 +527,7 @@ Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wfs service.
+ This package contains the WFS service.
 
 Package: qgis-server-wfs3
 Architecture: any
@@ -538,7 +539,7 @@ Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wfs 3 service.
+ This package contains the WFS 3 service.
 
 Package: qgis-server-wcs
 Architecture: any
@@ -550,7 +551,7 @@ Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wcs service.
+ This package contains the WCS service.
 
 Package: qgis-server-dummy
 Architecture: any

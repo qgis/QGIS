@@ -86,6 +86,7 @@ Standards-Version: 3.9.7
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: https://qgis.org/
+Rules-Requires-Root: no
 
 Package: qgis
 Architecture: any
