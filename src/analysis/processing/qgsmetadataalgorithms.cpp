@@ -440,7 +440,7 @@ void QgsSetMetadataFieldsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "LANGUAGE" ), QObject::tr( "Language" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "ABSTRACT" ), QObject::tr( "Abstract" ), QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Coordinatem reference system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Coordinate reference system" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FEES" ), QObject::tr( "Fees" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_EMPTY" ), QObject::tr( "Ignore empty fields" ), false ) );
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
