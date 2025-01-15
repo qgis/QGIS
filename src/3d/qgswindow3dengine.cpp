@@ -25,6 +25,7 @@
 
 #include "qgsframegraph.h"
 #include "qgsshadowrenderview.h"
+#include "qgsforwardrenderview.h"
 
 QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   : QgsAbstract3DEngine( parent )
@@ -66,7 +67,11 @@ void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 {
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
-  mSceneRoot->addComponent( mFrameGraph->forwardRenderLayer() );
+  if ( mFrameGraph->renderView( QgsFrameGraph::FORWARD_RENDERVIEW ) )
+  {
+    QgsForwardRenderView *rv = mFrameGraph->forwardRenderView();
+    mSceneRoot->addComponent( rv->opaqueObjectLayer() );
+  }
   if ( mFrameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) )
   {
     QgsShadowRenderView *rv = dynamic_cast<QgsShadowRenderView *>( mFrameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) );

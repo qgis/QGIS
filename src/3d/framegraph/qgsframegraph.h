@@ -46,6 +46,7 @@ class QgsAmbientOcclusionRenderEntity;
 class QgsPreviewQuad;
 class QgsAmbientOcclusionBlurEntity;
 class QgsAbstractRenderView;
+class QgsForwardRenderView;
 
 #define SIP_NO_FILE
 
@@ -70,11 +71,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns the root of the frame graph object
     Qt3DRender::QFrameGraphNode *frameGraphRoot() { return mRenderSurfaceSelector; }
 
-    //! Returns the color texture of the forward rendering pass
-    Qt3DRender::QTexture2D *forwardRenderColorTexture() { return mForwardColorTexture; }
-    //! Returns the depth texture of the forward rendering pass
-    Qt3DRender::QTexture2D *forwardRenderDepthTexture() { return mForwardDepthTexture; }
-
     /**
      * Returns blurred ambient occlusion factor values texture
      * \since QGIS 3.28
@@ -83,21 +79,17 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     //! Returns a layer object used to indicate that an entity is to be rendered during the preview textures rendering pass
     Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
-    //! Returns a layer object used to indicate that an entity will be rendered during the forward rendering pass
-    Qt3DRender::QLayer *forwardRenderLayer() { return mForwardRenderLayer; }
 
     /**
      * Returns a layer object used to indicate that the object is transparent
      * \since QGIS 3.26
      */
-    Qt3DRender::QLayer *transparentObjectLayer() { return mTransparentObjectsPassLayer; }
+    Qt3DRender::QLayer *transparentObjectLayer();
 
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
     //! Returns the postprocessing entity
     QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
-    //! Returns the root entity of the entities related to the frame graph (like the post processing entity and preview entity)
-    Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
 
     //! Returns entity for all rubber bands (to show them always on top)
     Qt3DCore::QEntity *rubberBandsRootEntity() { return mRubberBandsRootEntity; }
@@ -108,12 +100,8 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns the render capture object used to take an image of the depth buffer of the scene
     Qt3DRender::QRenderCapture *depthRenderCapture() { return mDepthRenderCapture; }
 
-
-    //! Returns whether frustum culling is enabled
-    bool frustumCullingEnabled() const { return mFrustumCullingEnabled; }
     //! Sets whether frustum culling is enabled
     void setFrustumCullingEnabled( bool enabled );
-
 
     /**
      * Sets whether Screen Space Ambient Occlusion will be enabled
@@ -201,23 +189,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Dumps scene graph as string
     QString dumpSceneGraph() const;
 
-    /**
-     * Setups \a nrClipPlanes clip planes in the forward pass to enable OpenGL clipping.
-     * If \a nrClipPlanes is equal to 0, the clipping is disabled.
-     *
-     * \see removeClipPlanes()
-     * \since QGIS 3.40
-    */
-    void addClipPlanes( int nrClipPlanes );
-
-    /**
-     * Disables OpenGL clipping
-     *
-     * \see addClipPlanes()
-     * \since QGIS 3.40
-    */
-    void removeClipPlanes();
-
     //! Registers a new the render view \a renderView with name \a name
     bool registerRenderView( QgsAbstractRenderView *renderView, const QString &name );
 
@@ -230,33 +201,21 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns true if the render view named \a name is found and enabled
     bool isRenderViewEnabled( const QString &name );
 
+    //! Returns forward renderview or nullptr if not defined
+    QgsForwardRenderView *forwardRenderView() const;
+
     //! Returns the render view named \a name, if any
     QgsAbstractRenderView *renderView( const QString &name );
 
-    //! Returns the layer used to assign entities to the render view named \a name, if any
-    Qt3DRender::QLayer *filterLayer( const QString &name );
-
+    static const QString FORWARD_RENDERVIEW;
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
-    bool mFrustumCullingEnabled = true;
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
-
-    // Forward rendering pass branch nodes:
-    Qt3DRender::QCameraSelector *mMainCameraSelector = nullptr;
-    Qt3DRender::QLayerFilter *mForwardRenderLayerFilter = nullptr;
-    Qt3DRender::QRenderTargetSelector *mForwardRenderTargetSelector = nullptr;
-    Qt3DRender::QClearBuffers *mForwardClearBuffers = nullptr;
-    Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;
-    // Forward rendering pass texture related objects:
-    Qt3DRender::QTexture2D *mForwardColorTexture = nullptr;
-    Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
-    // QDebugOverlay added in the forward pass
-    Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
 
     // - The depth buffer render pass is made to copy the depth buffer into
     //    an RGB texture that can be captured into a QImage and sent to the CPU for
@@ -319,13 +278,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
-    // clip planes render state
-    Qt3DRender::QRenderStateSet *mClipRenderStateSet = nullptr;
-
     Qt3DCore::QEntity *mRootEntity = nullptr;
 
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
-    Qt3DRender::QLayer *mForwardRenderLayer = nullptr;
     Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
     Qt3DRender::QLayer *mTransparentObjectsPassLayer = nullptr;
     Qt3DRender::QLayer *mRubberBandsLayer = nullptr;
@@ -339,7 +294,8 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QVector<QgsPreviewQuad *> mPreviewQuads;
 
     void constructShadowRenderPass();
-    Qt3DRender::QFrameGraphNode *constructForwardRenderPass();
+    void constructForwardRenderPass();
+    Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     Qt3DRender::QFrameGraphNode *constructDepthRenderPass();
     Qt3DRender::QFrameGraphNode *constructAmbientOcclusionRenderPass();
