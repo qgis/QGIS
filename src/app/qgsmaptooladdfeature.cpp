@@ -26,6 +26,7 @@
 #include "qgisapp.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrubberband.h"
+#include "qgsvectorlayereditutils.h"
 
 #include <QSettings>
 
@@ -119,15 +120,16 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
     }
     if ( topologicalEditing )
     {
-      QgsFeatureRequest request = QgsFeatureRequest().setFilterRect( feature.geometry().boundingBox() ).setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
-      request.setDestinationCrs( vlayer->crs(), vlayer->transformContext() );
-      QgsFeature f;
-
+      QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
+      const QgsRectangle bbox = feature.geometry().boundingBox();
       const QList<QgsMapLayer *> layers = canvas()->layers( true );
 
       for ( QgsMapLayer *layer : layers )
       {
         QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+        QgsRectangle searchRect;
+        QgsFeature f;
+        QgsCoordinateTransform transform;
 
         if ( !vectorLayer || !vectorLayer->isEditable() )
           continue;
@@ -135,6 +137,20 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
         if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
           continue;
 
+        if ( vectorLayer->crs() == vlayer->crs() )
+        {
+          searchRect = QgsRectangle( bbox );
+        }
+        else
+        {
+          transform = QgsCoordinateTransform( vlayer->crs(), vectorLayer->crs(), vectorLayer->transformContext() );
+          searchRect = transform.transformBoundingBox( bbox );
+        }
+
+        searchRect.grow( QgsVectorLayerEditUtils::getTopologicalSearchRadius( vectorLayer ) );
+        request.setFilterRect( searchRect );
+
+        // We check that there is actually at least one feature intersecting our geometry in the layer to avoid creating an empty edit command and calling costly addTopologicalPoint
         if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
           continue;
 
@@ -147,7 +163,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
           try
           {
             // transform digitized geometry from vlayer crs to vectorLayer crs and add topological points
-            transformedGeom.transform( QgsCoordinateTransform( vlayer->crs(), vectorLayer->crs(), vectorLayer->transformContext() ) );
+            transformedGeom.transform( transform );
             res = vectorLayer->addTopologicalPoints( transformedGeom );
           }
           catch ( QgsCsException &cse )
