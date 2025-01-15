@@ -66,7 +66,7 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
   // Inputs
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
   );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
   );
 
   // Specific inputs for this check
@@ -79,7 +79,7 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
   }
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), methods ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "MERGE_ATTRIBUTE" ), QObject::tr( "Field to consider when merging polygons with the identical attribue method" ),
+    QStringLiteral( "MERGE_ATTRIBUTE" ), QObject::tr( "Field to consider when merging polygons with the identical attribute method" ),
     QString(), QStringLiteral( "INPUT" ),
     Qgis::ProcessingFieldParameterDataType::Any, false, true
   )
@@ -141,20 +141,20 @@ auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   // Verify that input fields exists
   if ( errors->fields().indexFromName( featIdFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( featIdFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( featIdFieldName ) );
   if ( errors->fields().indexFromName( partIdxFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( partIdxFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( partIdxFieldName ) );
   if ( errors->fields().indexFromName( ringIdxFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( ringIdxFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( ringIdxFieldName ) );
   if ( errors->fields().indexFromName( vertexIdxFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( vertexIdxFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( vertexIdxFieldName ) );
   int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field %1 does not exist in input layer." ).arg( featIdFieldName ) );
 
   QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
   if ( inputFeatIdField.type() != errors->fields().at( errors->fields().indexFromName( featIdFieldName ) ).type() )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type than in errors layer." ).arg( featIdFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
