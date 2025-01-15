@@ -267,6 +267,11 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
         currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "manual" ) ) );
         currentComboBox->blockSignals( false );
       }
+
+      const QgsEditorWidgetSetup setup = mFields.at( idx ).editorWidgetSetup();
+
+      if ( !setup.isNull() && !setup.type().isEmpty() )
+        updateManualWidget( j, true );
     }
   }
 
