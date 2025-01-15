@@ -89,11 +89,6 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
     //! Returns whether Geospatial PDF export is enabled
     bool exportGeospatialPdf() const;
 
-    //! Sets whether to use OGC best-practice format
-    void setUseOgcBestPracticeFormat( bool enabled );
-    //! Returns whether use of OGC best-practice format is enabled
-    bool useOgcBestPracticeFormat() const;
-
     //! Sets the list of export themes
     void setExportThemes( const QStringList &themes );
     //! Returns the list of export themes
