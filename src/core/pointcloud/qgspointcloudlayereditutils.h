@@ -19,6 +19,8 @@
 #include "qgis_core.h"
 #include "qgspointcloudindex.h"
 
+#include "optional"
+
 #include <QVector>
 #include <QByteArray>
 
@@ -45,18 +47,7 @@ class CORE_EXPORT QgsPointCloudLayerEditUtils
 {
   public:
     //! Ctor
-    QgsPointCloudLayerEditUtils( QgsPointCloudLayer *layer );
-
-    /**
-     * Attempts to modify attribute values for specific points in the editing buffer.
-     *
-     * \param n The point cloud node containing the points
-     * \param points The point ids of the points to be modified
-     * \param attribute The attribute whose value will be updated
-     * \param value The new value to set to the attribute
-     * \return TRUE if the editing buffer was updated successfully, FALSE otherwise
-     */
-    bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value );
+    QgsPointCloudLayerEditUtils() = delete;
 
     //! Takes \a data comprising of \a allAttributes and returns a QByteArray with data only for the attributes included in the \a request
     static QByteArray dataForAttributes( const QgsPointCloudAttributeCollection &allAttributes, const QByteArray &data, const QgsPointCloudRequest &request );
@@ -64,12 +55,9 @@ class CORE_EXPORT QgsPointCloudLayerEditUtils
     //! Check if \a value is within proper range for the \a attribute
     static bool isAttributeValueValid( const QgsPointCloudAttribute &attribute, double value );
 
-  private:
-
     //! Sets new classification value for the given points in voxel and return updated chunk data
-    QByteArray updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newClassValue, const QgsPointCloudNodeId &n, const QVector<int> &pointIndices );
+    static QByteArray updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, const QgsPointCloudNodeId &n, const QHash<int, double> &pointValues, std::optional<double> newValue = std::nullopt );
 
-    QgsPointCloudIndex mIndex;
 };
 
 #endif // QGSPOINTCLOUDLAYEREDITUTILS_H

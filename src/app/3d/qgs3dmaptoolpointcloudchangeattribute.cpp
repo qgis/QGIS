@@ -140,10 +140,12 @@ void Qgs3DMapToolPointCloudChangeAttribute::run()
   int offset;
   const QgsPointCloudAttribute *attribute = pcLayer->attributes().find( mAttributeName, offset );
 
+  pcLayer->undoStack()->beginMacro( tr( "Change attribute values" ) );
   for ( auto it = sel.begin(); it != sel.end(); ++it )
   {
     pcLayer->changeAttributeValue( it.key(), it.value(), *attribute, mNewValue );
   }
+  pcLayer->undoStack()->endMacro();
 }
 
 void Qgs3DMapToolPointCloudChangeAttribute::restart()
