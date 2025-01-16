@@ -82,7 +82,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
     cb_dontResolveType->setChecked( settings.value( key + "/dontResolveType", false ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
-    cb_showRasterOverviews->setChecked( settings.value( key + "/showRasterOverviews", true ).toBool() );
+    cb_showRasterOverviews->setChecked( settings.value( key + "/showRasterOverviews", false ).toBool() );
     // Ensure that cb_publicSchemaOnly is set correctly
     cb_geometryColumnsOnly_clicked();
 
