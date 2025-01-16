@@ -82,9 +82,8 @@ HierarchyEntries getHierarchyPage( std::ifstream &file, uint64_t offset, uint64_
 }
 
 
-bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks )
+bool QgsCopcUpdate::write( const QString &outputFilename, const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks )
 {
-
   std::ofstream m_f;
   m_f.open( QgsLazDecoder::toNativePath( outputFilename ), std::ios::out | std::ios::binary );
 
@@ -113,15 +112,15 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
   for ( lazperf::chunk ch : mChunks )
   {
     Q_ASSERT( mOffsetToVoxel.contains( currentChunkOffset ) );
-    QgsPointCloudNodeId k = mOffsetToVoxel[currentChunkOffset];
+    QgsPointCloudNodeId n = mOffsetToVoxel[currentChunkOffset];
 
     uint64_t newOffset = m_f.tellp();
-    voxelToNewOffset[k] = newOffset;
+    voxelToNewOffset[n] = newOffset;
 
     // check whether the chunk is modified
-    if ( updatedChunks.contains( k ) )
+    if ( updatedChunks.contains( n ) )
     {
-      const UpdatedChunk &updatedChunk = updatedChunks[k];
+      const UpdatedChunk &updatedChunk = updatedChunks[n];
 
       // use updated one and skip in the original file
       mFile.seekg( static_cast<long>( mFile.tellg() ) + static_cast<long>( ch.offset ) );
@@ -146,10 +145,10 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
 
   // write chunk table: size in bytes + point count of each chunk
 
-  uint64_t newChunkTableOffset = m_f.tellp();
+  const uint64_t newChunkTableOffset = m_f.tellp();
 
   m_f.write( "\0\0\0\0", 4 ); // chunk table version
-  m_f.write( ( char * )&mChunkCount, sizeof( mChunkCount ) );
+  m_f.write( reinterpret_cast<const char *>( &mChunkCount ), sizeof( mChunkCount ) );
 
   lazperf::OutFileStream outStream( m_f );
   lazperf::compress_chunk_table( outStream.cb(), mChunks, true );
@@ -160,10 +159,10 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
   // are packed one after another, with no gaps. if that's not the case, things
   // will break apart
 
-  long hierPositionShift = static_cast<long>( m_f.tellp() ) + 60 - static_cast<long>( mHierarchyOffset );
+  const long hierPositionShift = static_cast<long>( m_f.tellp() ) + 60 - static_cast<long>( mHierarchyOffset );
 
-  HierarchyEntry *oldCopcHierarchyBlobEntries = ( HierarchyEntry * ) mHierarchyBlob.data();
-  int nEntries = static_cast<int>( mHierarchyBlob.size() / 32 );
+  HierarchyEntry *oldCopcHierarchyBlobEntries = reinterpret_cast<HierarchyEntry *>( mHierarchyBlob.data() );
+  const int nEntries = static_cast<int>( mHierarchyBlob.size() / 32 );
   for ( int i = 0; i < nEntries; ++i )
   {
     HierarchyEntry &e = oldCopcHierarchyBlobEntries[i];
@@ -193,7 +192,7 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
 
   // write hierarchy eVLR
 
-  uint64_t newEvlrOffset = m_f.tellp();
+  const uint64_t newEvlrOffset = m_f.tellp();
 
   lazperf::evlr_header outCopcHierEvlr;
   outCopcHierEvlr.reserved = 0;
@@ -219,28 +218,28 @@ bool QgsCopcUpdate::write( QString outputFilename, const QHash<QgsPointCloudNode
   // patch header
 
   m_f.seekp( 235 );
-  m_f.write( ( const char * )&newEvlrOffset, 8 );
+  m_f.write( reinterpret_cast<const char *>( &newEvlrOffset ), 8 );
 
-  uint64_t newRootHierOffset = mCopcVlr.root_hier_offset + hierPositionShift;
+  const uint64_t newRootHierOffset = mCopcVlr.root_hier_offset + hierPositionShift;
   m_f.seekp( 469 );
-  m_f.write( ( const char * )&newRootHierOffset, 8 );
+  m_f.write( reinterpret_cast<const char *>( &newRootHierOffset ), 8 );
 
   m_f.seekp( mHeader.point_offset );
-  m_f.write( ( const char * )&newChunkTableOffset, 8 );
+  m_f.write( reinterpret_cast<const char *>( &newChunkTableOffset ), 8 );
 
   return true;
 }
 
 
 
-bool QgsCopcUpdate::read( QString inputFilename )
+bool QgsCopcUpdate::read( const QString &inputFilename )
 {
   mInputFilename = inputFilename;
 
   mFile.open( QgsLazDecoder::toNativePath( inputFilename ), std::ios::binary | std::ios::in );
   if ( mFile.fail() )
   {
-    mErrorMessage = "Could not open file for reading: " + inputFilename;
+    mErrorMessage = QStringLiteral( "Could not open file for reading: %1" ).arg( inputFilename );
     return false;
   }
 
@@ -260,7 +259,7 @@ bool QgsCopcUpdate::readHeader()
   mHeader = lazperf::header14::create( mFile );
   if ( !mFile )
   {
-    mErrorMessage = "Error reading COPC header";
+    mErrorMessage = QStringLiteral( "Error reading COPC header" );
     return false;
   }
 
@@ -270,7 +269,7 @@ bool QgsCopcUpdate::readHeader()
   int baseCount = lazperf::baseCount( mHeader.point_format_id );
   if ( baseCount == 0 )
   {
-    mErrorMessage = QString( "Bad point record format: %1" ).arg( mHeader.point_format_id );
+    mErrorMessage = QStringLiteral( "Bad point record format: %1" ).arg( mHeader.point_format_id );
     return false;
   }
 
@@ -283,9 +282,9 @@ void QgsCopcUpdate::readChunkTable()
   uint64_t chunkTableOffset;
 
   mFile.seekg( mHeader.point_offset );
-  mFile.read( ( char * )&chunkTableOffset, sizeof( chunkTableOffset ) );
+  mFile.read( reinterpret_cast<char *>( &chunkTableOffset ), sizeof( chunkTableOffset ) );
   mFile.seekg( static_cast<long>( chunkTableOffset ) + 4 ); // The first 4 bytes are the version, then the chunk count.
-  mFile.read( ( char * )&mChunkCount, sizeof( mChunkCount ) );
+  mFile.read( reinterpret_cast<char *>( &mChunkCount ), sizeof( mChunkCount ) );
 
   //
   // read chunk table
@@ -312,11 +311,15 @@ void QgsCopcUpdate::readChunkTable()
 
 void QgsCopcUpdate::readHierarchy()
 {
-
   // get all hierarchy pages
 
   HierarchyEntries childEntriesToProcess;
-  childEntriesToProcess.push_back( HierarchyEntry{ QgsPointCloudNodeId( 0, 0, 0, 0 ), mCopcVlr.root_hier_offset, ( int32_t )mCopcVlr.root_hier_size, -1 } );
+  childEntriesToProcess.push_back( HierarchyEntry
+  {
+    QgsPointCloudNodeId( 0, 0, 0, 0 ),
+    mCopcVlr.root_hier_offset,
+    static_cast<int32_t>( mCopcVlr.root_hier_size ),
+    -1 } );
 
   while ( !childEntriesToProcess.empty() )
   {

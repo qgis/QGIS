@@ -66,7 +66,8 @@ class CORE_EXPORT QgsPointCloudLayerEditUtils
 
   private:
 
-    QByteArray updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newClassValue, QgsPointCloudNodeId k, QVector<int> pointIndices );
+    //! Sets new classification value for the given points in voxel and return updated chunk data
+    QByteArray updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newClassValue, const QgsPointCloudNodeId &n, const QVector<int> &pointIndices );
 
     QgsPointCloudIndex mIndex;
 };

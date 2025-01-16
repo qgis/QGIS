@@ -659,8 +659,6 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
 
     friend class TestQgsPointCloudEditing;
-    friend class QgsPointCloudLayerEditUtils;
-    friend class QgsPointCloudEditingIndex;
 };
 
 
