@@ -17192,7 +17192,6 @@ void QgisApp::handleRenderedLayerStatistics() const
         meshLayer->setRendererSettings( rendererSettings, false );
 
         meshLayer->emitStyleChanged();
-        emit meshLayer->legendChanged();
       }
     }
   }

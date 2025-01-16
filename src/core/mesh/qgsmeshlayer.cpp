@@ -432,9 +432,10 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings,
   if ( oldActiveVector != mRendererSettings.activeVectorDatasetGroup() )
     emit activeVectorDatasetGroupChanged( mRendererSettings.activeVectorDatasetGroup() );
 
+  emit rendererChanged();
+
   if ( repaint )
   {
-    emit rendererChanged();
     triggerRepaint();
   }
 }
