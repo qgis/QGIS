@@ -343,6 +343,33 @@ void TestQgsPdalProvider::testTextReaderWithOptions()
 
   QCOMPARE( layerSemiColon->dataProvider()->pointCount(), 320 );
   QCOMPARE( layerSemiColon->pointCount(), 320 );
+
+  // override crs
+  QVariantMap uriPartsOverrideCrs;
+  const QStringList openOptionsOverrideCrs = { "override_srs=EPSG:2154" };
+  const QString pathOverrideCrs = mTestDataDir + QStringLiteral( "point_clouds/text/cloud.txt" );
+  const QString pathOverrideCrsTmp = mTempDir + "cloud.txt";
+  QVERIFY( QFile::copy( pathOverrideCrs, pathOverrideCrsTmp ) );
+  uriPartsOverrideCrs.insert( QStringLiteral( "path" ), pathOverrideCrsTmp );
+  uriPartsOverrideCrs.insert( QStringLiteral( "openOptions" ), openOptionsOverrideCrs );
+  const QString uriOverrideCrs = metadata->encodeUri( uriPartsOverrideCrs );
+  auto layerOverrideCrs = std::make_unique<QgsPointCloudLayer>(
+    uriOverrideCrs,
+    QStringLiteral( "layer" ),
+    QStringLiteral( "pdal" ),
+    layerOptions
+  );
+  QVERIFY( layerOverrideCrs->isValid() );
+
+  QCOMPARE( layerOverrideCrs->crs().authid(), "EPSG:2154" );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().xMinimum(), 473850.0, 0.1 );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().yMinimum(), 6374925.0, 0.1 );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().xMaximum(), 488625.0, 0.1 );
+  QGSCOMPARENEAR( layerOverrideCrs->extent().yMaximum(), 6375000.0, 0.1 );
+  QCOMPARE( layerOverrideCrs->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((473850 6374925, 488625 6374925, 488625 6375000, 473850 6375000, 473850 6374925))" ) );
+
+  QCOMPARE( layerOverrideCrs->dataProvider()->pointCount(), 320 );
+  QCOMPARE( layerOverrideCrs->pointCount(), 320 );
 }
 
 void TestQgsPdalProvider::testCopcGenerationLasFile()

@@ -29,6 +29,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgshelp.h"
 #include "qgsspinbox.h"
+#include "qgsprojectionselectionwidget.h"
 
 ///@cond PRIVATE
 
@@ -117,6 +118,10 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       {
         value = QString::number( intSpin->value() );
       }
+    }
+    else if ( QgsProjectionSelectionWidget *projectionWidget = qobject_cast<QgsProjectionSelectionWidget *>( control ) )
+    {
+      value = projectionWidget->crs().authid();
     }
 
     if ( !value.isEmpty() )
@@ -317,7 +322,6 @@ void QgsPointCloudSourceSelect::fillOpenOptions()
     QStringLiteral( "filename" ),
     QStringLiteral( "log" ),
     QStringLiteral( "option_file" ),
-    QStringLiteral( "override_srs" ),
     QStringLiteral( "user_data" ),
   };
 
@@ -358,6 +362,10 @@ void QgsPointCloudSourceSelect::fillOpenOptions()
         }
       }
       optionControl = separatorContainer;
+    }
+    else if ( argName == std::string( "override_srs" ) )
+    {
+      optionControl = new QgsProjectionSelectionWidget();
     }
     else if ( parsedInt )
     {

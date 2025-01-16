@@ -304,6 +304,7 @@ bool QgsPdalProvider::load( const QString &uri )
 
     if ( pdal::Reader *reader = dynamic_cast<pdal::Reader *>( stageFactory.createStage( driver ) ) )
     {
+      QString crsWkt;
       {
         pdal::Options options;
         options.add( pdal::Option( "filename", inputPath.toStdString() ) );
@@ -317,6 +318,10 @@ bool QgsPdalProvider::load( const QString &uri )
             // The separator is stored as an integer.
             // Convert it to its ascii representation.
             optionValue = static_cast<char>( optionValue.toInt() );
+          }
+          else if ( optionName == "override_srs" )
+          {
+            crsWkt = optionValue;
           }
           options.add( pdal::Option( optionName.toStdString(), optionValue.toStdString() ) );
         }
@@ -384,8 +389,13 @@ bool QgsPdalProvider::load( const QString &uri )
       mPointCount = quickInfo.m_pointCount;
 
       // projection
-      const QString wkt = QString::fromStdString( quickInfo.m_srs.getWKT() );
-      mCrs = QgsCoordinateReferenceSystem::fromWkt( wkt );
+      // if the crs was not overriden via options
+      // load if from the metadata instead.
+      if ( crsWkt.isEmpty() )
+      {
+        crsWkt = QString::fromStdString( quickInfo.m_srs.getWKT() );
+      }
+      mCrs.createFromUserInput( crsWkt );
 
       // attribute names
       for ( auto &dim : quickInfo.m_dimNames )
