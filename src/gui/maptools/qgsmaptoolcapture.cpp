@@ -492,11 +492,15 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  // If we are adding a record to a non-spatial layer, just return
+  if ( mCaptureModeFromLayer && !canvas()->currentLayer()->isSpatial() )
+    return;
+
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
 
   const QgsPointXY point = e->mapPoint();
-  if ( canvas()->currentLayer() && canvas()->currentLayer()->isSpatial() )
-    mSnapIndicator->setMatch( e->mapPointMatch() );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
   {
