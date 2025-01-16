@@ -524,9 +524,7 @@ void QgsCopcPointCloudIndex::reset()
   mRootBounds = QgsBox3D();
   mAttributes = QgsPointCloudAttributeCollection();
   mSpan = 0;
-  //mFilterExpression
   mError.clear();
-  //mUri
 
   // QgsCopcPointCloudIndex
   mIsValid = false;

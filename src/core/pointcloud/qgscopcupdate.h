@@ -17,11 +17,10 @@
 #define QGSCOPCUPDATE_H
 
 #include "qgis_core.h"
+#include "qgspointcloudindex.h"
 
 #include <lazperf/header.hpp>
 #include <lazperf/vlr.hpp>
-
-#include "qgspointcloudindex.h"
 
 #define SIP_NO_FILE
 
@@ -50,10 +49,10 @@ class CORE_EXPORT QgsCopcUpdate
     };
 
     //! Reads input COPC file and initializes all the members
-    bool read( QString inputFilename );
+    bool read( const QString &inputFilename );
 
     //! Writes a COPC file with updated chunks
-    bool write( QString outputFilename, const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks );
+    bool write( const QString &outputFilename, const QHash<QgsPointCloudNodeId, UpdatedChunk> &updatedChunks );
 
     //! Returns error message
     QString errorMessage() const { return mErrorMessage; }
@@ -81,7 +80,7 @@ class CORE_EXPORT QgsCopcUpdate
     lazperf::header14 mHeader;
     lazperf::copc_info_vlr mCopcVlr;
     std::vector<lazperf::chunk> mChunks;
-    uint32_t mChunkCount;
+    uint32_t mChunkCount = 0;
     uint64_t mHierarchyOffset = 0;
     std::vector<char> mHierarchyBlob;
     std::vector<lazperf::evlr_header> mEvlrHeaders;

@@ -16,11 +16,11 @@
 #include "qgspointcloudlayereditutils.h"
 #include "qgspointcloudlayer.h"
 #include "qgslazdecoder.h"
-
 #include "qgscopcpointcloudindex.h"
+#include "qgspointcloudeditingindex.h"
+
 #include <lazperf/readers.hpp>
 #include <lazperf/writers.hpp>
-#include "qgspointcloudeditingindex.h"
 
 
 QgsPointCloudLayerEditUtils::QgsPointCloudLayerEditUtils( QgsPointCloudLayer *layer )
@@ -88,70 +88,70 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
 {
   if ( attributeName == QLatin1String( "Intensity" ) )  // unsigned short
   {
-    quint16 newValueShort = ( quint16 ) newValue;
+    quint16 newValueShort = static_cast<quint16>( newValue );
     memcpy( pointBuffer + 12, &newValueShort, sizeof( qint16 ) );
   }
   else if ( attributeName == QLatin1String( "ReturnNumber" ) )  // bits 0-3
   {
-    uchar newByteValue = ( ( uchar )newValue ) & 0xf;
-    pointBuffer[14] = ( char )( ( pointBuffer[14] & 0xf0 ) | newByteValue );
+    uchar newByteValue = static_cast<uchar>( newValue ) & 0xf;
+    pointBuffer[14] = static_cast<char>( ( pointBuffer[14] & 0xf0 ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "NumberOfReturns" ) )  // bits 4-7
   {
-    uchar newByteValue = ( ( ( uchar )newValue ) & 0xf ) << 4;
-    pointBuffer[14] = ( char )( ( pointBuffer[14] & 0xf ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0xf ) << 4;
+    pointBuffer[14] = static_cast<char>( ( pointBuffer[14] & 0xf ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "Synthetic" ) )  // bit 0
   {
-    uchar newByteValue = ( ( uchar )newValue & 0x1 );
-    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xfe ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0x1 );
+    pointBuffer[15] = static_cast<char>( ( pointBuffer[15] & 0xfe ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "KeyPoint" ) )  // bit 1
   {
-    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 1;
-    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xfd ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0x1 ) << 1;
+    pointBuffer[15] = static_cast<char>( ( pointBuffer[15] & 0xfd ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "Withheld" ) )  // bit 2
   {
-    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 2;
-    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xfb ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0x1 ) << 2;
+    pointBuffer[15] = static_cast<char>( ( pointBuffer[15] & 0xfb ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "Overlap" ) )  // bit 3
   {
-    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 3;
-    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xf7 ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0x1 ) << 3;
+    pointBuffer[15] = static_cast<char>( ( pointBuffer[15] & 0xf7 ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "ScannerChannel" ) )  // bits 4-5
   {
-    uchar newByteValue = ( ( uchar )newValue & 0x3 ) << 4;
-    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xcf ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0x3 ) << 4;
+    pointBuffer[15] = static_cast<char>( ( pointBuffer[15] & 0xcf ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "ScanDirectionFlag" ) )  // bit 6
   {
-    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 6;
-    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0xbf ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0x1 ) << 6;
+    pointBuffer[15] = static_cast<char>( ( pointBuffer[15] & 0xbf ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "EdgeOfFlightLine" ) )  // bit 7
   {
-    uchar newByteValue = ( ( uchar )newValue & 0x1 ) << 7;
-    pointBuffer[15] = ( char )( ( pointBuffer[15] & 0x7f ) | newByteValue );
+    uchar newByteValue = ( static_cast<uchar>( newValue ) & 0x1 ) << 7;
+    pointBuffer[15] = static_cast<char>( ( pointBuffer[15] & 0x7f ) | newByteValue );
   }
   else if ( attributeName == QLatin1String( "Classification" ) )  // unsigned char
   {
-    pointBuffer[16] = ( char )( uchar )newValue;
+    pointBuffer[16] = static_cast<char>( static_cast<uchar>( newValue ) );
   }
   else if ( attributeName == QLatin1String( "UserData" ) )  // unsigned char
   {
-    pointBuffer[17] = ( char )( uchar )newValue;
+    pointBuffer[17] = static_cast<char>( static_cast<uchar>( newValue ) );
   }
   else if ( attributeName == QLatin1String( "ScanAngleRank" ) )  // short
   {
-    qint16 newValueShort = ( qint16 ) newValue;
+    qint16 newValueShort = static_cast<qint16>( newValue );
     memcpy( pointBuffer + 18, &newValueShort, sizeof( qint16 ) );
   }
   else if ( attributeName == QLatin1String( "PointSourceId" ) )  // unsigned short
   {
-    quint16 newValueShort = ( quint16 ) newValue;
+    quint16 newValueShort = static_cast<quint16>( newValue );
     memcpy( pointBuffer + 20, &newValueShort, sizeof( quint16 ) );
   }
   else if ( attributeName == QLatin1String( "GpsTime" ) )  // double
@@ -162,24 +162,24 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
   {
     if ( attributeName == QLatin1String( "Red" ) )  // unsigned short
     {
-      quint16 newValueShort = ( quint16 ) newValue;
+      quint16 newValueShort = static_cast<quint16>( newValue );
       memcpy( pointBuffer + 30, &newValueShort, sizeof( quint16 ) );
     }
     else if ( attributeName == QLatin1String( "Green" ) )  // unsigned short
     {
-      quint16 newValueShort = ( quint16 ) newValue;
+      quint16 newValueShort = static_cast<quint16>( newValue );
       memcpy( pointBuffer + 32, &newValueShort, sizeof( quint16 ) );
     }
     else if ( attributeName == QLatin1String( "Blue" ) )  // unsigned short
     {
-      quint16 newValueShort = ( quint16 ) newValue;
+      quint16 newValueShort = static_cast<quint16>( newValue );
       memcpy( pointBuffer + 34, &newValueShort, sizeof( quint16 ) );
     }
     else if ( pointFormat == 8 )
     {
       if ( attributeName == QLatin1String( "Infrared" ) )  // unsigned short
       {
-        quint16 newValueShort = ( quint16 ) newValue;
+        quint16 newValueShort = static_cast<quint16>( newValue );
         memcpy( pointBuffer + 36, &newValueShort, sizeof( quint16 ) );
       }
     }
@@ -187,14 +187,12 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
 }
 
 
-QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newValue, QgsPointCloudNodeId k, QVector<int> pointIndices )
+QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newValue, const QgsPointCloudNodeId &n, const QVector<int> &pointIndices )
 {
-  // set new classification value for the given points in voxel and return updated chunk data
+  Q_ASSERT( copcIndex->mHierarchy.contains( n ) );
+  Q_ASSERT( copcIndex->mHierarchyNodePos.contains( n ) );
 
-  Q_ASSERT( copcIndex->mHierarchy.contains( k ) );
-  Q_ASSERT( copcIndex->mHierarchyNodePos.contains( k ) );
-
-  int pointCount = copcIndex->mHierarchy[k];
+  int pointCount = copcIndex->mHierarchy[n];
 
   lazperf::header14 header = copcIndex->mLazInfo->header();
 

@@ -21,7 +21,8 @@
 #include "qgscopcupdate.h"
 #include "qgslazdecoder.h"
 
-#include <QTemporaryDir>
+#include <QDir>
+#include <QFileInfo>
 
 
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
@@ -139,7 +140,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   }
 
   QFileInfo fileInfo( mUri );
-  QString outputFilename = fileInfo.dir().filePath( fileInfo.baseName() + "-update.copc.laz" );
+  const QString outputFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-update.copc.laz" ) );
 
   if ( !QgsCopcUpdate::writeUpdatedFile( mUri, outputFilename, updatedChunks, errorMessage ) )
   {
@@ -150,11 +151,11 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
   copcIndex->reset();
 
-  QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + "-original.copc.laz" );
+  const QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-original.copc.laz" ) );
   if ( !QFile::rename( mUri, originalFilename ) )
   {
     if ( errorMessage )
-      *errorMessage = "Rename of the old COPC failed!";
+      *errorMessage = QStringLiteral( "Rename of the old COPC failed!" );
     QFile::remove( outputFilename );
     return false;
   }
@@ -162,7 +163,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   if ( !QFile::rename( outputFilename, mUri ) )
   {
     if ( errorMessage )
-      *errorMessage = "Rename of the new COPC failed!";
+      *errorMessage = QStringLiteral( "Rename of the new COPC failed!" );
     QFile::rename( originalFilename, mUri );
     QFile::remove( outputFilename );
     return false;
@@ -171,7 +172,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   if ( !QFile::remove( originalFilename ) )
   {
     if ( errorMessage )
-      *errorMessage = "Removal of the old COPC failed!";
+      *errorMessage = QStringLiteral( "Removal of the old COPC failed!" );
     // TODO: cleanup here as well?
     return false;
   }
@@ -196,16 +197,13 @@ bool QgsPointCloudEditingIndex::updateNodeData( const QHash<QgsPointCloudNodeId,
     mEditedNodeData[it.key()] = it.value();
   }
 
-  const QList<QgsPointCloudNodeId> modifiedNodesIds = data.keys();
-  QSet<QgsPointCloudNodeId> modifiedNodesSet( modifiedNodesIds.constBegin(), modifiedNodesIds.constEnd() );
-
   // get rid of cached keys that got modified
   {
     QMutexLocker locker( &sBlockCacheMutex );
     const QList<QgsPointCloudCacheKey> cacheKeys = sBlockCache.keys();
-    for ( QgsPointCloudCacheKey cacheKey : cacheKeys )
+    for ( const QgsPointCloudCacheKey &cacheKey : cacheKeys )
     {
-      if ( cacheKey.uri() == mUri && modifiedNodesSet.contains( cacheKey.node() ) )
+      if ( cacheKey.uri() == mUri && data.contains( cacheKey.node() ) )
         sBlockCache.remove( cacheKey );
     }
   }
