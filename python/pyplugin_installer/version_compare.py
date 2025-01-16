@@ -56,6 +56,7 @@ import re
 
 def normalizeVersion(s):
     """remove possible prefix from given string and convert to uppercase"""
+
     prefixes = [
         "VERSION",
         "VER.",
@@ -124,17 +125,29 @@ def compareElements(s1, s2):
             return 1
         else:
             return 2
+
     # if the strings aren't numeric or start from 0, compare them as a strings:
-    # but first, set ALPHA < BETA < PREVIEW < RC < TRUNK < [NOTHING] < [ANYTHING_ELSE]
-    if s1 not in ["A", "ALPHA", "B", "BETA", "PREVIEW", "RC", "TRUNK"]:
-        s1 = "Z" + s1
-    if s2 not in ["A", "ALPHA", "B", "BETA", "PREVIEW", "RC", "TRUNK"]:
-        s2 = "Z" + s2
+    # but first, set ALPHA < BETA < PREVIEW < RC < TRUNK < [NOTHING] < [ANYTHING_ELSE] < POST < DEV
+    pre = ["A", "ALPHA", "B", "BETA", "PREV", "PREVIEW", "RC", "TRUNK"]
+    post = ["POST", "DEV"]
+
+    if s1 in pre:  # make it inferior to anything
+        s1 = chr(0) + str(pre.index(s1.replace("ALPHA", "A").replace("BETA", "B")))
+    elif s1 in post:  # make it posterior to anything
+        s1 = chr(0x10FFFF) + str(post.index(s1))
+
+    if s2 in pre:  # make it inferior to anything
+        s2 = chr(0) + str(pre.index(s2.replace("ALPHA", "A").replace("BETA", "B")))
+    elif s2 in post:  # make it posterior to anything
+        s2 = chr(0x10FFFF) + str(post.index(s2))
+
     # the final test:
     if s1 > s2:
         return 1
-    else:
+    elif s1 < s2:
         return 2
+    else:
+        return 0
 
 
 # ------------------------------------------------------------------------ #
@@ -150,24 +163,23 @@ def compareVersions(a, b):
     v1 = chopString(a)
     v2 = chopString(b)
     # set the shorter string as a base
-    l = len(v1)
-    if l > len(v2):
-        l = len(v2)
+    l1, l2 = len(v1), len(v2)
+    l = min(l1,l2)
     # try to determine within the common length
     for i in range(l):
-        if compareElements(v1[i], v2[i]):
-            return compareElements(v1[i], v2[i])
+        if return_code := compareElements(v1[i], v2[i]):
+            return return_code
     # if the lists are identical till the end of the shorter string, try to compare the odd tail
-    # with the simple space (because the 'alpha', 'beta', 'preview' and 'rc' are LESS then nothing)
-    if len(v1) > l:
-        return compareElements(v1[l], " ")
-    if len(v2) > l:
-        return compareElements(" ", v2[l])
-    # if everything else fails...
-    if a > b:
-        return 1
-    else:
-        return 2
+    # element-wise padding with "0"
+    if l1 > l:
+        for i in range(l, l1):
+            if return_code := compareElements(v1[i], "0"):
+                return return_code
+    elif l2 > l:
+        for i in range(l, l2):
+            if return_code := compareElements("0", v2[i]):
+                return return_code
+    return 0
 
 
 """
