@@ -37,6 +37,7 @@ class QgsGeorefDataPoint;
 class QgsGCPListWidget;
 class QgsMapTool;
 class QgsMapCanvas;
+class QgsMapCanvasSnappingUtils;
 class QgsMapCoordsDialog;
 class QgsPointXY;
 class QgsRasterLayer;
@@ -77,6 +78,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     static const QgsSettingsEntryString *settingLastSourceFolder;
     static const QgsSettingsEntryString *settingLastRasterFileFilter;
     static const QgsSettingsEntryString *settingLastTargetCrs;
+    static const QgsSettingsEntryBool *settingSnappingEnabled;
+    static const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *settingSnappingTypes;
 
     QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
@@ -272,7 +275,10 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QList<QgsGcpPoint> mSavedPoints;
 
     QgsMapCanvas *mCanvas = nullptr;
+    QgsMapCanvasSnappingUtils *mSnappingUtils = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
+    QToolButton *mSnappingTypeButton = nullptr;
+    QList<QAction *> mSnappingTypeActions;
     std::unique_ptr<QgsMapLayer> mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
