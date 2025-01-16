@@ -759,8 +759,9 @@ void QgsFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Corner corner, dou
 void QgsFrameGraph::setSize( QSize s )
 {
   mSize = s;
-  for ( QgsAbstractRenderView *rv : qAsConst( mRenderViewMap.values() ) )
+  for ( QMap<QString, QgsAbstractRenderView *>::iterator it = mRenderViewMap.begin(); it != mRenderViewMap.end(); ++it )
   {
+    QgsAbstractRenderView *rv = it.value();
     rv->updateWindowResize( mSize.width(), mSize.height() );
   }
 
