@@ -282,6 +282,10 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     bool mergeFeatures( const QgsFeatureId &targetFeatureId, const QgsFeatureIds &mergeFeatureIds, const QgsAttributes &mergeAttributes, const QgsGeometry &unionGeometry, QString &errorMessage SIP_OUT );
 
+    ///@cond PRIVATE
+    static double getTopologicalSearchRadius( const QgsVectorLayer *layer ) SIP_SKIP;
+    ///@endcond
+
   private:
 
     /**
