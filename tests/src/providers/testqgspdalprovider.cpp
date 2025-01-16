@@ -62,11 +62,13 @@ class TestQgsPdalProvider : public QgsTest
     void brokenPath();
     void validLayer();
     void testTextReader();
+    void testTextReaderWithOptions();
     void testCopcGenerationLasFile();
     void testCopcGenerationTextFile();
 
   private:
     QString mTestDataDir;
+    QString mTempDir;
 };
 
 //runs before all tests
@@ -77,11 +79,16 @@ void TestQgsPdalProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+
+  mTempDir = QDir::tempPath() + QDir::separator() + "pdal" + QDir::separator();
+  QVERIFY( QDir().mkdir( mTempDir ) );
 }
 
 //runs after all tests
 void TestQgsPdalProvider::cleanupTestCase()
 {
+  QDir( mTempDir ).removeRecursively();
+
   QgsApplication::exitQgis();
 }
 
@@ -272,6 +279,42 @@ void TestQgsPdalProvider::testTextReader()
 
   QCOMPARE( layer->dataProvider()->pointCount(), 320 );
   QCOMPARE( layer->pointCount(), 320 );
+}
+
+void TestQgsPdalProvider::testTextReaderWithOptions()
+{
+  QgsPointCloudLayer::LayerOptions layerOptions;
+  layerOptions.skipIndexGeneration = true;
+
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
+  QVERIFY( metadata );
+
+  // Test option skip
+  QVariantMap uriPartsSkip;
+  const QStringList openOptionsSkip = { "skip=2" };
+  const QString pathSkip = mTestDataDir + QStringLiteral( "point_clouds/text/cloud_skip.txt" );
+  const QString pathSkipCopy = mTempDir + "cloud_skip.txt";
+  QVERIFY( QFile::copy( pathSkip, pathSkipCopy ) );
+  uriPartsSkip.insert( QStringLiteral( "path" ), pathSkipCopy );
+  uriPartsSkip.insert( QStringLiteral( "openOptions" ), openOptionsSkip );
+  const QString uriSkip = metadata->encodeUri( uriPartsSkip );
+
+  auto layerSkip = std::make_unique<QgsPointCloudLayer>(
+    uriSkip,
+    QStringLiteral( "layer" ),
+    QStringLiteral( "pdal" ),
+    layerOptions
+  );
+  QVERIFY( layerSkip->isValid() );
+  QCOMPARE( layerSkip->crs().authid(), "" );
+  QGSCOMPARENEAR( layerSkip->extent().xMinimum(), 473850.0, 0.1 );
+  QGSCOMPARENEAR( layerSkip->extent().yMinimum(), 6375000.0, 0.1 );
+  QGSCOMPARENEAR( layerSkip->extent().xMaximum(), 476550.0, 0.1 );
+  QGSCOMPARENEAR( layerSkip->extent().yMaximum(), 6375000.0, 0.1 );
+  QCOMPARE( layerSkip->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((473850 6375000, 476550 6375000, 476550 6375000, 473850 6375000, 473850 6375000))" ) );
+
+  QCOMPARE( layerSkip->dataProvider()->pointCount(), 37 );
+  QCOMPARE( layerSkip->pointCount(), 37 );
 }
 
 void TestQgsPdalProvider::testCopcGenerationLasFile()

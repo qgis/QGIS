@@ -35,6 +35,7 @@
 #include <pdal/Options.hpp>
 #include <pdal/StageFactory.hpp>
 #include <pdal/Reader.hpp>
+#include <pdal/Writer.hpp>
 
 #include <QQueue>
 #include <QFileInfo>
@@ -295,20 +296,69 @@ bool QgsPdalProvider::load( const QString &uri )
   {
     QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( "pdal", uri );
     const QString inputPath = parts.value( QStringLiteral( "path" ) ).toString();
+    const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
     pdal::StageFactory stageFactory;
     const std::string driver( stageFactory.inferReaderDriver( inputPath.toStdString() ) );
     if ( driver.empty() )
-      throw pdal::pdal_error( "No driver for " + inputPath.toStdString() );
+      throw pdal::pdal_error( "No read driver for " + inputPath.toStdString() );
 
     if ( pdal::Reader *reader = dynamic_cast<pdal::Reader *>( stageFactory.createStage( driver ) ) )
     {
       {
         pdal::Options options;
         options.add( pdal::Option( "filename", inputPath.toStdString() ) );
+        for ( const QString &option : openOptions )
+        {
+          QStringList optionParsed = option.split( "=" );
+          options.add( pdal::Option( optionParsed[0].toStdString(), optionParsed[1].toStdString() ) );
+        }
         reader->setOptions( std::move( options ) );
       }
       pdal::PointTable table;
-      reader->prepare( table );
+      if ( openOptions.isEmpty() )
+      {
+        // no options, the reader can directly be used
+        reader->prepare( table );
+      }
+      else
+      {
+        try
+        {
+          // the options cannot be used by Untwine to create a COPC file.
+          // In that case, based on the options, create a new file which can be used by Untwine.
+          const QFileInfo inputPathInfo( inputPath );
+          const QString convertedFileName = QStringLiteral( "%1_converted.%2" ).arg( inputPathInfo.baseName(), inputPathInfo.completeSuffix() );
+          const QString convertedPath = inputPathInfo.absolutePath() + QDir::separator() + convertedFileName;
+          pdal::StageFactory writeStageFactory;
+          const std::string writeDriver( stageFactory.inferWriterDriver( convertedPath.toStdString() ) );
+          if ( writeDriver.empty() )
+          {
+            throw pdal::pdal_error( "No write driver for " + convertedPath.toStdString() );
+          }
+
+          if ( pdal::Writer *writer = dynamic_cast<pdal::Writer *>( writeStageFactory.createStage( writeDriver ) ) )
+          {
+            // Save to a new file
+            pdal::Options writeOptions;
+            writeOptions.add( pdal::Option( "filename", convertedPath.toStdString() ) );
+            writer->setOptions( std::move( writeOptions ) );
+            writer->setInput( *reader );
+            writer->prepare( table );
+            writer->execute( table );
+
+            // Update the uri to use the new generated file
+            QVariantMap newUriParts = QgsProviderRegistry::instance()->decodeUri( "pdal", dataSourceUri() );
+            newUriParts["path"] = convertedPath;
+            const QString updatedUri = QgsProviderRegistry::instance()->encodeUri( "pdal", newUriParts );
+            setDataSourceUri( updatedUri );
+          }
+        }
+        catch ( const pdal::pdal_error &error )
+        {
+          const QString errorString = QStringLiteral( "Unable to convert '%1'. Reason: %2" ).arg( inputPath, error.what() );
+          QgsDebugError( errorString );
+        }
+      }
 
       const std::string tableMetadata = pdal::Utils::toJSON( table.metadata() );
       const QVariantMap readerMetadata = QgsJsonUtils::parseJson( tableMetadata ).toMap().value( QStringLiteral( "root" ) ).toMap();
