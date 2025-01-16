@@ -131,7 +131,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QMenu *mMapThemeMenu = nullptr;
     QMenu *mCameraMenu = nullptr;
     QMenu *mEffectsMenu = nullptr;
-    QMenu *mEditingMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
