@@ -1066,7 +1066,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
     if ( resultRasterOverviewsExist.result() && resultRasterOverviewsExist.PQntuples() > 0 )
     {
-      QString sqlRasterOverviews = QString( "SELECT o_table_schema, o_table_name FROM public.raster_overviews" );
+      const QString sqlRasterOverviews = QStringLiteral( "SELECT o_table_schema, o_table_name FROM public.raster_overviews" );
 
       QgsPostgresResult resultRasterOverviews;
       resultRasterOverviews = LoggedPQexec( "QgsPostgresConn", sqlRasterOverviews );
