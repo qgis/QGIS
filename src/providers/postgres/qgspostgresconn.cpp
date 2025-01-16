@@ -1094,7 +1094,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
           else
           {
             bool keepRasterTable = true;
-            for ( QgsPostgresRasterOverviewLayerProperty overview : overviews )
+            for ( const QgsPostgresRasterOverviewLayerProperty &overview : std::as_const( overviews ) )
             {
               if ( property.schemaName == overview.schemaName && property.tableName == overview.tableName )
               {
