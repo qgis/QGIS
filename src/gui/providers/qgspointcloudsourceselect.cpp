@@ -17,11 +17,18 @@
 
 #include <QMessageBox>
 
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <pdal/StageFactory.hpp>
+#include <nlohmann/json.hpp>
+
 #include "qgspointcloudsourceselect.h"
 #include "moc_qgspointcloudsourceselect.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgshelp.h"
+#include "qgsspinbox.h"
 
 ///@cond PRIVATE
 
@@ -30,6 +37,8 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
 {
   setupUi( this );
   setupButtons( buttonBox );
+
+  mOpenOptionsGroupBox->setCollapsed( false );
 
   connect( mRadioSrcFile, &QRadioButton::toggled, this, &QgsPointCloudSourceSelect::radioSrcFile_toggled );
   connect( mRadioSrcProtocol, &QRadioButton::toggled, this, &QgsPointCloudSourceSelect::radioSrcProtocol_toggled );
@@ -45,11 +54,13 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
     mPath = path;
     emit enableButtons( !mPath.isEmpty() );
+    fillOpenOptions();
   } );
 
   connect( protocolURI, &QLineEdit::textChanged, this, [=]( const QString &path ) {
     mPath = path;
     emit enableButtons( !mPath.isEmpty() );
+    fillOpenOptions();
   } );
 
 
@@ -64,6 +75,28 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
 
 void QgsPointCloudSourceSelect::addButtonClicked()
 {
+  QStringList openOptions;
+  for ( QWidget *control : mOpenOptionsWidgets )
+  {
+    QString value;
+    if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( control ) )
+    {
+      value = lineEdit->text();
+    }
+    else if ( QgsSpinBox *intSpin = qobject_cast<QgsSpinBox *>( control ) )
+    {
+      if ( intSpin->value() != intSpin->clearValue() )
+      {
+        value = QString::number( intSpin->value() );
+      }
+    }
+
+    if ( !value.isEmpty() )
+    {
+      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName() ).arg( value );
+    }
+  }
+
   if ( mDataSourceType == QLatin1String( "file" ) )
   {
     if ( mPath.isEmpty() )
@@ -75,6 +108,10 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
     {
       QVariantMap parts;
+      if ( !openOptions.isEmpty() )
+      {
+        parts.insert( QStringLiteral( "openOptions" ), openOptions );
+      }
       parts.insert( QStringLiteral( "path" ), path );
 
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
@@ -111,6 +148,10 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     if ( !preferredProviders.empty() )
     {
       QVariantMap parts;
+      if ( !openOptions.isEmpty() )
+      {
+        parts.insert( QStringLiteral( "openOptions" ), openOptions );
+      }
       parts.insert( QStringLiteral( "path" ), mPath );
 
       QString baseName = QStringLiteral( "remote ept layer" );
@@ -142,6 +183,7 @@ void QgsPointCloudSourceSelect::radioSrcFile_toggled( bool checked )
   {
     fileGroupBox->show();
     protocolGroupBox->hide();
+    clearOpenOptions();
 
     mFileWidget->setDialogTitle( tr( "Open Point Cloud Dataset" ) );
     mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
@@ -150,6 +192,7 @@ void QgsPointCloudSourceSelect::radioSrcFile_toggled( bool checked )
     mDataSourceType = QStringLiteral( "file" );
 
     emit enableButtons( !mFileWidget->filePath().isEmpty() );
+    fillOpenOptions();
   }
 }
 
@@ -159,12 +202,14 @@ void QgsPointCloudSourceSelect::radioSrcProtocol_toggled( bool checked )
   {
     fileGroupBox->hide();
     protocolGroupBox->show();
+    clearOpenOptions();
 
     mDataSourceType = QStringLiteral( "remote" );
 
     setProtocolWidgetsVisibility();
 
     emit enableButtons( !protocolURI->text().isEmpty() );
+    fillOpenOptions();
   }
 }
 
@@ -172,6 +217,7 @@ void QgsPointCloudSourceSelect::cmbProtocolTypes_currentIndexChanged( const QStr
 {
   Q_UNUSED( text )
   setProtocolWidgetsVisibility();
+  clearOpenOptions();
 }
 
 void QgsPointCloudSourceSelect::setProtocolWidgetsVisibility()
@@ -189,6 +235,133 @@ void QgsPointCloudSourceSelect::setProtocolWidgetsVisibility()
 void QgsPointCloudSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
+}
+
+void QgsPointCloudSourceSelect::clearOpenOptions()
+{
+  mOpenOptionsWidgets.clear();
+  mOpenOptionsGroupBox->setVisible( false );
+  mOpenOptionsLabel->clear();
+  while ( mOpenOptionsLayout->count() )
+  {
+    QLayoutItem *item = mOpenOptionsLayout->takeAt( 0 );
+    delete item->widget();
+    delete item;
+  }
+}
+
+void QgsPointCloudSourceSelect::fillOpenOptions()
+{
+  clearOpenOptions();
+  if ( mDataSourceType.isEmpty() )
+  {
+    return;
+  }
+
+  const QUrl url = QUrl::fromUserInput( mPath );
+  const std::string driverName = pdal::StageFactory::inferReaderDriver( url.fileName().toStdString() );
+  // Only handle the readers.text at the moment.
+  // This could be expanded for other drivers.
+  if ( driverName != std::string( "readers.text" ) )
+  {
+    return;
+  }
+
+  pdal::StageFactory stageFactory( false );
+  pdal::Stage *stage = stageFactory.createStage( driverName );
+  if ( !stage )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Unable to create stage for driver %1" ).arg( QString::fromStdString( driverName ) ), 2 );
+    return;
+  }
+
+  pdal::ProgramArgs args;
+  stage->addAllArgs( args );
+  std::stringstream args_json_stream;
+  args.dump3( args_json_stream );
+
+  json args_json;
+  args_json_stream >> args_json;
+
+  const QList<QString> ignoredArgs = {
+    QStringLiteral( "count" ),
+    QStringLiteral( "default_srs" ),
+    QStringLiteral( "filename" ),
+    QStringLiteral( "log" ),
+    QStringLiteral( "option_file" ),
+    QStringLiteral( "override_srs" ),
+    QStringLiteral( "separator" ),
+    QStringLiteral( "user_data" ),
+  };
+
+  for ( auto &elem : args_json.items() )
+  {
+    auto arg = elem.value();
+    const std::string argName = arg["name"];
+    if ( std::find( ignoredArgs.begin(), ignoredArgs.end(), QString::fromStdString( argName ) ) != ignoredArgs.end() )
+    {
+      continue;
+    }
+
+    QLabel *optionLabel = new QLabel( argName.c_str() );
+    QWidget *optionControl;
+
+    std::string argDefault = arg.value( "default", "" );
+    // skip default value may be empty. Use "0" instead to create a spinbox widget
+    if ( argDefault.empty() && argName == std::string( "skip" ) )
+    {
+      argDefault = "0";
+    }
+    bool parsedInt;
+    const int defaultIntValue = QString::fromStdString( argDefault ).toInt( &parsedInt );
+
+    if ( parsedInt )
+    {
+      QgsSpinBox *spinBox = new QgsSpinBox();
+      spinBox->setMaximum( std::numeric_limits< int>::max() - 1 );
+      spinBox->setMinimum( 0 );
+      spinBox->setClearValue( defaultIntValue );
+      spinBox->clear();
+      optionControl = spinBox;
+    }
+    else
+    {
+      QLineEdit *lineEdit = new QLineEdit();
+      if ( !argDefault.empty() )
+      {
+        lineEdit->setText( QString::fromStdString( argDefault ) );
+      }
+      optionControl = lineEdit;
+    }
+
+    optionControl->setObjectName( argName.c_str() );
+    mOpenOptionsWidgets.push_back( optionControl );
+
+    const std::string argDescription = arg["description"];
+    if ( !argDescription.empty() )
+    {
+      optionLabel->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( argDescription.c_str() ) );
+      optionControl->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( argDescription.c_str() ) );
+    }
+
+    mOpenOptionsLayout->addRow( optionLabel, optionControl );
+  }
+
+  // Set label to point to driver help page
+  const std::string docLink = pdal::PluginManager<pdal::Stage>::link( driverName );
+  if ( !docLink.empty() )
+  {
+    mOpenOptionsLabel->setText( tr( "Consult <a href=\"%1\">%2 driver help page</a> for detailed explanations on options" ).arg( QString::fromStdString( docLink ) ).arg( QString::fromStdString( driverName ) ) );
+    mOpenOptionsLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    mOpenOptionsLabel->setOpenExternalLinks( true );
+    mOpenOptionsLabel->setVisible( true );
+  }
+  else
+  {
+    mOpenOptionsLabel->setVisible( false );
+  }
+
+  mOpenOptionsGroupBox->setVisible( !mOpenOptionsWidgets.empty() );
 }
 
 ///@endcond

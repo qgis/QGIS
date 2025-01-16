@@ -53,6 +53,10 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     void showHelp();
 
   private:
+    void clearOpenOptions();
+    void fillOpenOptions();
+    std::vector<QWidget *> mOpenOptionsWidgets;
+
     QString mPath;
     QString mDataSourceType;
 };
