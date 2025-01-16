@@ -74,14 +74,18 @@ void QgsPointCloudSourceSelect::addButtonClicked()
 
     for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
     {
+      QVariantMap parts;
+      parts.insert( QStringLiteral( "path" ), path );
+
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
       const QList<QgsProviderRegistry::ProviderCandidateDetails> preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( path );
       // if no preferred providers we can still give pdal a try
       const QString providerKey = preferredProviders.empty() ? QStringLiteral( "pdal" ) : preferredProviders.first().metadata()->key();
+      const QString uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
       Q_NOWARN_DEPRECATED_PUSH
-      emit addPointCloudLayer( path, QFileInfo( path ).baseName(), providerKey );
+      emit addPointCloudLayer( uri, QFileInfo( path ).baseName(), providerKey );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::PointCloud, path, QFileInfo( path ).baseName(), providerKey );
+      emit addLayer( Qgis::LayerType::PointCloud, uri, QFileInfo( path ).baseName(), providerKey );
     }
   }
   else if ( mDataSourceType == QLatin1String( "remote" ) )
@@ -106,6 +110,9 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( !preferredProviders.empty() )
     {
+      QVariantMap parts;
+      parts.insert( QStringLiteral( "path" ), mPath );
+
       QString baseName = QStringLiteral( "remote ept layer" );
       if ( mPath.endsWith( QLatin1String( "/ept.json" ), Qt::CaseInsensitive ) )
       {
@@ -117,10 +124,14 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       {
         baseName = QFileInfo( mPath ).baseName();
       }
+
+      const QString providerKey = preferredProviders.at( 0 ).metadata()->key();
+      const QString uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
+
       Q_NOWARN_DEPRECATED_PUSH
-      emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
+      emit addPointCloudLayer( uri, baseName, providerKey );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::PointCloud, mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
+      emit addLayer( Qgis::LayerType::PointCloud, uri, baseName, providerKey );
     }
   }
 }

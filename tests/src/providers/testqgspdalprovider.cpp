@@ -114,9 +114,23 @@ void TestQgsPdalProvider::encodeUri()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
   QVERIFY( metadata );
 
+  // only path
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/cloud.las" ) );
   QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/cloud.las" ) );
+
+  // uri with empty options
+  QVariantMap partsWithEmptyOptions;
+  partsWithEmptyOptions.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+  partsWithEmptyOptions.insert( QStringLiteral( "openOptions" ), QStringList() );
+  QCOMPARE( metadata->encodeUri( partsWithEmptyOptions ), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+
+  // uri with options
+  QVariantMap partsWithOptions;
+  const QStringList options = { "separator=59", "skip=2" };
+  partsWithOptions.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+  partsWithOptions.insert( QStringLiteral( "openOptions" ), options );
+  QCOMPARE( metadata->encodeUri( partsWithOptions ), QStringLiteral( "/home/point_clouds/cloud.txt|option:separator=59|option:skip=2" ) );
 }
 
 void TestQgsPdalProvider::decodeUri()
@@ -126,6 +140,13 @@ void TestQgsPdalProvider::decodeUri()
 
   const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/cloud.las" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/cloud.las" ) );
+  QCOMPARE( parts.value( QStringLiteral( "openOptions" ) ).toStringList(), QStringList() );
+
+  // uri with options
+  const QVariantMap partsWithOptions = metadata->decodeUri( QStringLiteral( "/home/point_clouds/cloud.txt|option:separator=59|option:skip=2" ) );
+  QCOMPARE( partsWithOptions.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/cloud.txt" ) );
+  const QStringList expectedOptions = { "separator=59", "skip=2" };
+  QCOMPARE( partsWithOptions.value( QStringLiteral( "openOptions" ) ).toStringList(), expectedOptions );
 }
 
 void TestQgsPdalProvider::layerTypesForUri()
