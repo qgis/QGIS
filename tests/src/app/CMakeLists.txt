@@ -3,6 +3,7 @@
 # the UI file won't be wrapped!
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_SOURCE_DIR}/tests/src/gui
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 

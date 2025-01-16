@@ -13,15 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssnappingutils.h"
 #include "qgstest.h"
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptoolsplitfeatures.h"
-#include "qgsgeometryutils.h"
 
 #include "testqgsmaptoolutils.h"
 
