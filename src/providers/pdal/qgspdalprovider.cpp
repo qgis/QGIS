@@ -310,7 +310,15 @@ bool QgsPdalProvider::load( const QString &uri )
         for ( const QString &option : openOptions )
         {
           QStringList optionParsed = option.split( "=" );
-          options.add( pdal::Option( optionParsed[0].toStdString(), optionParsed[1].toStdString() ) );
+          const QString optionName = optionParsed[0];
+          QString optionValue = optionParsed[1];
+          if ( optionName == "separator" )
+          {
+            // The separator is stored as an integer.
+            // Convert it to its ascii representation.
+            optionValue = static_cast<char>( optionValue.toInt() );
+          }
+          options.add( pdal::Option( optionName.toStdString(), optionValue.toStdString() ) );
         }
         reader->setOptions( std::move( options ) );
       }

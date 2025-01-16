@@ -315,6 +315,34 @@ void TestQgsPdalProvider::testTextReaderWithOptions()
 
   QCOMPARE( layerSkip->dataProvider()->pointCount(), 37 );
   QCOMPARE( layerSkip->pointCount(), 37 );
+
+  // text file with semicolon as separator
+  QVariantMap uriPartsSemiColon;
+  const QStringList openOptionsSemiColon = { "separator=59" };
+  const QString pathSemiColon = mTestDataDir + QStringLiteral( "point_clouds/text/cloud_semicolon.txt" );
+  const QString pathSemiColonTmp = mTempDir + "cloud_semicolon.txt";
+  QVERIFY( QFile::copy( pathSemiColon, pathSemiColonTmp ) );
+  uriPartsSemiColon.insert( QStringLiteral( "path" ), pathSemiColonTmp );
+  uriPartsSemiColon.insert( QStringLiteral( "openOptions" ), openOptionsSemiColon );
+  const QString uriSemiColon = metadata->encodeUri( uriPartsSemiColon );
+
+  auto layerSemiColon = std::make_unique<QgsPointCloudLayer>(
+    uriSemiColon,
+    QStringLiteral( "layer" ),
+    QStringLiteral( "pdal" ),
+    layerOptions
+  );
+  QVERIFY( layerSemiColon->isValid() );
+
+  QCOMPARE( layerSemiColon->crs().authid(), "" );
+  QGSCOMPARENEAR( layerSemiColon->extent().xMinimum(), 473850.0, 0.1 );
+  QGSCOMPARENEAR( layerSemiColon->extent().yMinimum(), 6374925.0, 0.1 );
+  QGSCOMPARENEAR( layerSemiColon->extent().xMaximum(), 488625.0, 0.1 );
+  QGSCOMPARENEAR( layerSemiColon->extent().yMaximum(), 6375000.0, 0.1 );
+  QCOMPARE( layerSemiColon->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((473850 6374925, 488625 6374925, 488625 6375000, 473850 6375000, 473850 6374925))" ) );
+
+  QCOMPARE( layerSemiColon->dataProvider()->pointCount(), 320 );
+  QCOMPARE( layerSemiColon->pointCount(), 320 );
 }
 
 void TestQgsPdalProvider::testCopcGenerationLasFile()

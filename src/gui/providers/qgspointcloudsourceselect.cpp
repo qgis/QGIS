@@ -32,6 +32,8 @@
 
 ///@cond PRIVATE
 
+const int QgsPointCloudSourceSelect::SEPARATOR_OTHER = -2;
+
 QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
@@ -79,7 +81,33 @@ void QgsPointCloudSourceSelect::addButtonClicked()
   for ( QWidget *control : mOpenOptionsWidgets )
   {
     QString value;
-    if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( control ) )
+    if ( control->objectName() == QStringLiteral( "separator" ) )
+    {
+      const QComboBox *comboBox = control->findChild<QComboBox *>();
+      if ( comboBox )
+      {
+        const int currentData = comboBox->itemData( comboBox->currentIndex() ).toInt();
+        int valueAsChar = 32; // space is the default separator
+        if ( currentData == QgsPointCloudSourceSelect::SEPARATOR_OTHER )
+        {
+          const QLineEdit *otherWidget = control->findChild<QLineEdit *>();
+          if ( otherWidget )
+          {
+            valueAsChar = otherWidget->text().at( 0 ).unicode();
+          }
+        }
+        else
+        {
+          valueAsChar = currentData;
+        }
+
+        if ( valueAsChar != 32 )
+        {
+          value = QString::number( valueAsChar );
+        }
+      }
+    }
+    else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( control ) )
     {
       value = lineEdit->text();
     }
@@ -290,7 +318,6 @@ void QgsPointCloudSourceSelect::fillOpenOptions()
     QStringLiteral( "log" ),
     QStringLiteral( "option_file" ),
     QStringLiteral( "override_srs" ),
-    QStringLiteral( "separator" ),
     QStringLiteral( "user_data" ),
   };
 
@@ -315,7 +342,24 @@ void QgsPointCloudSourceSelect::fillOpenOptions()
     bool parsedInt;
     const int defaultIntValue = QString::fromStdString( argDefault ).toInt( &parsedInt );
 
-    if ( parsedInt )
+    if ( argName == "separator" )
+    {
+      QWidget *separatorContainer = createSeparatorOptionWidget();
+      if ( parsedInt )
+      {
+        QComboBox *comboBox = separatorContainer->findChild<QComboBox *>();
+        if ( comboBox )
+        {
+          const int index = comboBox->findData( QVariant( defaultIntValue ) );
+          if ( index != -1 )
+          {
+            comboBox->setCurrentIndex( index );
+          }
+        }
+      }
+      optionControl = separatorContainer;
+    }
+    else if ( parsedInt )
     {
       QgsSpinBox *spinBox = new QgsSpinBox();
       spinBox->setMaximum( std::numeric_limits< int>::max() - 1 );
@@ -362,6 +406,50 @@ void QgsPointCloudSourceSelect::fillOpenOptions()
   }
 
   mOpenOptionsGroupBox->setVisible( !mOpenOptionsWidgets.empty() );
+}
+
+QWidget *QgsPointCloudSourceSelect::createSeparatorOptionWidget() const
+{
+  // separator and associated ASCII code
+  QComboBox *separatorComboBox = new QComboBox();
+  const QList<std::pair<QString, int>> items = {
+    std::pair<QString, int>( tr( "Colon" ), 58 ),
+    std::pair<QString, int>( tr( "Comma" ), 44 ),
+    std::pair<QString, int>( tr( "Semicolon" ), 59 ),
+    std::pair<QString, int>( tr( "Space" ), 32 ),
+    std::pair<QString, int>( tr( "Tab" ), 9 ),
+    std::pair<QString, int>( tr( "Other" ), QgsPointCloudSourceSelect::SEPARATOR_OTHER ),
+  };
+
+  for ( const std::pair<QString, int> &item : items )
+  {
+    separatorComboBox->addItem( item.first, QVariant( item.second ) );
+  }
+
+  QLineEdit *otherWidget = new QLineEdit();
+  otherWidget->setVisible( false );
+
+  QHBoxLayout *horizontalLayout = new QHBoxLayout();
+  horizontalLayout->addWidget( separatorComboBox );
+  horizontalLayout->addWidget( otherWidget );
+
+  QWidget *container = new QWidget();
+  container->setLayout( horizontalLayout );
+
+  connect( separatorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudSourceSelect::onSeparatorSelectionChanged );
+
+  return container;
+}
+
+void QgsPointCloudSourceSelect::onSeparatorSelectionChanged()
+{
+  const QComboBox *comboBox = qobject_cast<QComboBox *>( QObject::sender() );
+  QLineEdit *otherWidget = comboBox->parentWidget()->findChild<QLineEdit *>();
+  if ( otherWidget )
+  {
+    const QVariant currentData = comboBox->itemData( comboBox->currentIndex() );
+    otherWidget->setVisible( currentData.toInt() == QgsPointCloudSourceSelect::SEPARATOR_OTHER );
+  }
 }
 
 ///@endcond

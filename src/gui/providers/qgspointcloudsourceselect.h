@@ -52,13 +52,18 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
     void showHelp();
 
+    void onSeparatorSelectionChanged();
+
   private:
+    QWidget *createSeparatorOptionWidget() const;
     void clearOpenOptions();
     void fillOpenOptions();
     std::vector<QWidget *> mOpenOptionsWidgets;
 
     QString mPath;
     QString mDataSourceType;
+
+    static const int SEPARATOR_OTHER;
 };
 
 ///@endcond
