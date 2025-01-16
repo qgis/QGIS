@@ -164,7 +164,7 @@ def compareVersions(a, b):
     v2 = chopString(b)
     # set the shorter string as a base
     l1, l2 = len(v1), len(v2)
-    l = min(l1,l2)
+    l = min(l1, l2)
     # try to determine within the common length
     for i in range(l):
         if return_code := compareElements(v1[i], v2[i]):
