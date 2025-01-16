@@ -56,6 +56,7 @@ from PyQt6 import (
     QtGui,
     QtNetwork,
     QtPrintSupport,
+    QtQuickWidgets,
     QtSql,
     QtSvg,
     QtTest,
