@@ -104,7 +104,7 @@ class TestVersionCompare(QgisTestCase):
         self.assertEqual(compareVersions(a, b), 0)
         b = "1.0.0post1"
         self.assertEqual(compareVersions(a, b), 2)
-        
+
         # FIXME: these one will fail ...
         #   should we use packaging.version.parse ?
         # a = "1.0a1"
