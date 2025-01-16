@@ -84,11 +84,11 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   QAction *actionPointCloudChangeAttributeTool = mEditingToolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
   actionPointCloudChangeAttributeTool->setCheckable( true );
 
-  mEditingToolBar->addWidget( new QLabel( tr( "Attribute:" ) ) );
+  mEditingToolBar->addWidget( new QLabel( tr( "Attribute" ) ) );
   mCboChangeAttribute = new QComboBox();
   mEditingToolBar->addWidget( mCboChangeAttribute );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
-  mEditingToolBar->addWidget( new QLabel( tr( "Value:" ) ) );
+  mEditingToolBar->addWidget( new QLabel( tr( "Value" ) ) );
   mEditingToolBar->addWidget( mSpinChangeAttributeValue );
   QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
   actionEditingToolbar->setCheckable( true );

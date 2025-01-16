@@ -79,7 +79,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::mouseReleaseEvent( QMouseEvent *even
   if ( ( event->pos() - mClickPoint ).manhattanLength() > QApplication::startDragDistance() )
     return;
 
-  QgsPoint newPoint = screenPointToMap( event->pos() );
+  const QgsPoint newPoint = screenPointToMap( event->pos() );
 
   if ( event->button() == Qt::LeftButton )
   {
@@ -89,7 +89,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::mouseReleaseEvent( QMouseEvent *even
       mCanvas->cameraController()->setInputHandlersEnabled( false );
     }
     mPolygonRubberBand->addPoint( newPoint );
-    mScreenPoints.append( QgsPoint( event->x(), event->y() ) );
+    mScreenPoints.append( QgsPointXY( event->x(), event->y() ) );
   }
   else if ( event->button() == Qt::RightButton )
   {
@@ -160,11 +160,11 @@ QgsPoint Qgs3DMapToolPointCloudChangeAttribute::screenPointToMap( const QPoint &
 
   // pick an arbitrary point mid-way between near and far plane
   const float pointDistance = ( mCanvas->cameraController()->camera()->farPlane() + mCanvas->cameraController()->camera()->nearPlane() ) / 2;
-  const QVector3D aa = ray.origin() + pointDistance * ray.direction().normalized();
+  const QVector3D pointWorld = ray.origin() + pointDistance * ray.direction().normalized();
 
   const QgsVector3D origin = mCanvas->mapSettings()->origin();
-  const QgsPoint newPoint( aa.x() + origin.x(), aa.y() + origin.y(), aa.z() + origin.z() );
-  return newPoint;
+  const QgsPoint pointMap( pointWorld.x() + origin.x(), pointWorld.y() + origin.y(), pointWorld.z() + origin.z() );
+  return pointMap;
 }
 
 QgsGeometry Qgs3DMapToolPointCloudChangeAttribute::box3DToPolygonInScreenSpace( QgsBox3D box, const MapToPixel3D &mapToPixel3D )
