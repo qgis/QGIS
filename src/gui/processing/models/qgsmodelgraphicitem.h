@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include <QGraphicsObject>
 #include <QPicture>
 
@@ -166,8 +167,8 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      *
      * The sockets will be rendered at the specified \a position
      */
-    QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, int index, const QPointF &position,
-                                           const QSizeF &size = QSizeF( 11, 11 ) );
+    QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge,
+                                           const QSizeF &size = QSizeF( 11, 11 ));
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
@@ -176,6 +177,10 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 #endif
 
     int index( ) {return mIndex; };
+    Qt::Edge edge( ) {return mEdge; };
+
+    /** Return the component associated to the socket */ 
+    QgsProcessingModelComponent* component() {return mComponent;};
 
   signals:
 
@@ -185,6 +190,8 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
     // QgsModelComponentGraphicItem *component = nullptr;
     int mIndex;
+    QgsProcessingModelComponent* mComponent;
+    Qt::Edge mEdge;
 
 };
 

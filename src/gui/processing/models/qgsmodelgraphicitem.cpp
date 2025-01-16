@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicitem.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include "moc_qgsmodelgraphicitem.cpp"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
@@ -168,9 +169,9 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
 }
 
 
-QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent, int index, const QPointF &position, const QSizeF &size )
+QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
   : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
-  , mIndex( index )
+  , mComponent(component), mIndex( index ), mEdge ( edge )
 {
 
 }

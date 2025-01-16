@@ -272,7 +272,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 
           for ( int idx = 0; idx < linkPointCount( Qt::TopEdge ); ++idx )
           {
-            mInSockets.append( new QgsModelDesignerSocketGraphicItem(this, idx, QPointF( 0, 0 )) );
+            mInSockets.append( new QgsModelDesignerSocketGraphicItem(this, mComponent.get(),  idx, QPointF( 0, 0 ), Qt::TopEdge) );
           }
         }
         if ( linkPointCount( Qt::BottomEdge ) )
@@ -282,7 +282,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 
           for ( int idx = 0; idx < linkPointCount( Qt::BottomEdge ); ++idx )
           {
-            mOutSockets.append( new QgsModelDesignerSocketGraphicItem(this, idx, QPointF( 0, 0 )) );
+            mOutSockets.append( new QgsModelDesignerSocketGraphicItem(this, mComponent.get(), idx, QPointF( 0, 0 ), Qt::BottomEdge) );
           }
         }
         mInitialized = true;
