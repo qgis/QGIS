@@ -33,9 +33,6 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
 
-#include <QFileInfo>
-#include <QDir>
-
 class TestQgsPointCloud3DRendering : public QgsTest
 {
     Q_OBJECT
@@ -58,10 +55,14 @@ class TestQgsPointCloud3DRendering : public QgsTest
     void testPointCloudFilteredClassification();
     void testPointCloudFilteredSceneExtent();
 
+    void testPointCloud3DExtents();
+    void testPointCloud3DOverview();
+
 
   private:
     std::unique_ptr<QgsProject> mProject;
     QgsPointCloudLayer *mLayer;
+    QgsPointCloudLayer *mVpcLayer;
 };
 
 //runs before all tests
@@ -79,6 +80,9 @@ void TestQgsPointCloud3DRendering::initTestCase()
   mLayer = new QgsPointCloudLayer( dataDir + "/point_clouds/ept/sunshine-coast-laz/ept.json", "test", "ept" );
   QVERIFY( mLayer->isValid() );
   mProject->addMapLayer( mLayer );
+  mVpcLayer = new QgsPointCloudLayer( dataDir + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc", "test", "vpc" );
+  QVERIFY( mVpcLayer->isValid() );
+  mProject->addMapLayer( mVpcLayer );
   mProject->setCrs( mLayer->crs() );
 
   // set a default 3D renderer
@@ -520,6 +524,83 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_scene_extent", "pointcloud_3d_filtered_scene_extent", img, QString(), 80, QSize( 0, 0 ), 15 );
+}
+
+void TestQgsPointCloud3DRendering::testPointCloud3DExtents()
+{
+  mProject->setCrs( mVpcLayer->crs() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( mVpcLayer->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << mVpcLayer );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
+  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setCategoriesList( QgsPointCloudClassifiedRenderer::defaultCategories() );
+  symbol->setPointSize( 10 );
+
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+  renderer->setSymbol( symbol );
+  mVpcLayer->setRenderer3D( renderer );
+
+  scene->cameraController()->resetView( 90 );
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "virtual_pointcloud_3d_extents", "virtual_pointcloud_3d_extents", img, QString(), 40, QSize( 0, 0 ), 55 );
+}
+
+void TestQgsPointCloud3DRendering::testPointCloud3DOverview()
+{
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( mVpcLayer->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << mVpcLayer );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  //Classification symbol
+  QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
+  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setCategoriesList( QgsPointCloudClassifiedRenderer::defaultCategories() );
+  symbol->setPointSize( 3 );
+
+  mVpcLayer->setRenderer3D( nullptr );
+  QgsPointCloudLayer3DRenderer *renderer = new QgsPointCloudLayer3DRenderer();
+  renderer->setSymbol( symbol );
+  renderer->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview );
+  mVpcLayer->setRenderer3D( renderer );
+
+  scene->cameraController()->resetView( 120 );
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // There is a bug in overview rendering, which doesn't render overview right away, it needs to get out of camera view
+  // and back in. Then it renders correctly
+  scene->cameraController()->moveView( mVpcLayer->extent().width(), mVpcLayer->extent().height() );
+  scene->cameraController()->resetView( 120 );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "virtual_pointcloud_3d_overview", "virtual_pointcloud_3d_overview", img, QString(), 20, QSize( 0, 0 ), 15 );
 }
 
 QGSTEST_MAIN( TestQgsPointCloud3DRendering )
