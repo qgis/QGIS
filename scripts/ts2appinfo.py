@@ -32,8 +32,12 @@ r = d.getroot()
 for elem in ['name', 'summary', 'description']:
     for c in r.iter(elem):
         if not c.attrib:
-            l = list(c)
-            t = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
+            if elem == 'description':
+                p = c.find('p')
+                t = p.text
+            else:
+                l = list(c)
+                t = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
             strings[t] = {}
         else:
             r.remove(c)
@@ -73,14 +77,27 @@ for elem in ['name', 'summary', 'description']:
         if c.attrib:
             continue
 
-        l = list(c)
-        s = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
+        if elem == 'description':
+            p = c.find('p')
+            s = p.text
 
-        for lang in strings[s]:
-            e = et.Element(elem, attrib={"xml:lang": lang})
-            e.text = strings[s][lang]
-            e.tail = c.tail
-            r.append(e)
+            for lang in strings[s]:
+                e = et.Element('p', attrib={"xml:lang": lang})
+                e.text = strings[s][lang]
+                e.tail = p.tail
+                c.append(e)
+
+            if sys.version_info[:2] >= (3, 9):
+                et.indent(c, level=1)
+        else:
+            l = list(c)
+            s = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
+
+            for lang in strings[s]:
+                e = et.Element(elem, attrib={"xml:lang": lang})
+                e.text = strings[s][lang]
+                e.tail = c.tail
+                r.append(e)
 
 d.write(sys.argv[1] + "/org.qgis.qgis.appdata.xml", encoding="UTF-8", xml_declaration=True)
 
