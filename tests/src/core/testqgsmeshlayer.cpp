@@ -2423,9 +2423,16 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
     QStringLiteral( "mdal" )
   );
   QVERIFY( layer.isValid() );
-  layer.updateTriangularMesh();
 
   datasetIndex = QgsMeshDatasetIndex( 0, 0 );
+
+  // if triangular mesh does not exist cannot extract values
+  extent = layer.extent();
+  found = layer.minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QCOMPARE( found, false );
+
+  // crete triangular mesh for layer
+  layer.updateTriangularMesh();
 
   // tests for basic dataset
   extent = layer.extent();

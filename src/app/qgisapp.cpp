@@ -17326,13 +17326,12 @@ void QgisApp::handleRenderedLayerStatistics() const
       {
         QgsMeshRendererSettings rendererSettings = meshLayer->rendererSettings();
         QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( rendererSettings.activeScalarDatasetGroup() );
+
         scalarRendererSettings.setClassificationMinimumMaximum( layerStatistics->minimum( 0 ), layerStatistics->maximum( 0 ) );
         rendererSettings.setScalarSettings( rendererSettings.activeScalarDatasetGroup(), scalarRendererSettings );
-        meshLayer->setRendererSettings( rendererSettings );
+        meshLayer->setRendererSettings( rendererSettings, false );
 
         meshLayer->emitStyleChanged();
-        emit meshLayer->rendererChanged();
-        emit meshLayer->legendChanged();
       }
     }
   }
