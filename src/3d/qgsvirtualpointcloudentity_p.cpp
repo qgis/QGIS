@@ -151,17 +151,20 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   }
   updateBboxEntity();
 
-  // reuse the same logic for showing bounding boxes as above
-  const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( mMapSettings->extent(), mMapSettings->crs(), mLayer->crs(), mMapSettings->transformContext() );
-  const QgsAABB overviewBBox = Qgs3DUtils::mapToWorldExtent( provider()->overview().extent().intersect( mapExtent ), provider()->overview().zMin(), provider()->overview().zMax(), mMapSettings->origin() );
-  const float epsilon = std::min( overviewBBox.xExtent(), overviewBBox.yExtent() ) / 256;
-  const float distance = overviewBBox.distanceFromPoint( sceneContext.cameraPos );
-  const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
-  const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < .2;
-  const auto rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() )->zoomOutBehavior();
-  if ( !displayAsBbox && ( rendererBehavior == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
+  if ( provider()->overview() )
   {
-    mOverviewEntity->handleSceneUpdate( sceneContext );
+    // reuse the same logic for showing bounding boxes as above
+    const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( mMapSettings->extent(), mMapSettings->crs(), mLayer->crs(), mMapSettings->transformContext() );
+    const QgsAABB overviewBBox = Qgs3DUtils::mapToWorldExtent( provider()->overview().extent().intersect( mapExtent ), provider()->overview().zMin(), provider()->overview().zMax(), mMapSettings->origin() );
+    const float epsilon = std::min( overviewBBox.xExtent(), overviewBBox.yExtent() ) / 256;
+    const float distance = overviewBBox.distanceFromPoint( sceneContext.cameraPos );
+    const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
+    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < .2;
+    const auto rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() )->zoomOutBehavior();
+    if ( !displayAsBbox && ( rendererBehavior == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
+    {
+      mOverviewEntity->handleSceneUpdate( sceneContext );
+    }
   }
 }
 
