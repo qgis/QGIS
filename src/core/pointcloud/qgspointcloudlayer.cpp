@@ -1082,6 +1082,8 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
   if ( success )
   {
     emit layerModified();
+    emit triggerRepaint();
+    emit trigger3DUpdate();
   }
 
   return success;

@@ -4792,6 +4792,17 @@ void QgisApp::closeAdditional3DMapCanvases()
 #endif
 }
 
+void QgisApp::update3DMapViewsLayerRelatedActions()
+{
+#ifdef HAVE_3D
+  QgsMapLayer *currentLayer = activeLayer();
+  for ( Qgs3DMapCanvasWidget *w : mOpen3DMapViews )
+  {
+    w->updateLayerRelatedActions( currentLayer );
+  }
+#endif
+}
+
 void QgisApp::freezeCanvases( bool frozen )
 {
   const auto canvases = mapCanvases();
@@ -14874,6 +14885,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->isEmpty() );
 
   updateLayerModifiedActions();
+  update3DMapViewsLayerRelatedActions();
 
   QgsAbstractMapToolHandler::Context context;
   for ( QgsAbstractMapToolHandler *handler : std::as_const( mMapToolHandlers ) )

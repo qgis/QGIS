@@ -219,6 +219,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void setOrigin( const QgsVector3D &origin );
 
+    /**
+     * Sets whether the camera controller responds to mouse and keyboard events
+     * \since QGIS 3.42
+     */
+    void setInputHandlersEnabled( bool enable ) { mInputHandlersEnabled = enable; }
+
   public slots:
 
     /**
@@ -362,6 +368,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
+    bool mInputHandlersEnabled = true;
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
     double mCameraMovementSpeed = 5.0;
