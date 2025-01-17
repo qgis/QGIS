@@ -37,6 +37,7 @@
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgisapp.h"
+#include "qgssettingsregistrycore.h"
 
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
