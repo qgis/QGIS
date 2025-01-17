@@ -184,6 +184,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
 
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
 
   // Change some points, point order should not matter
   QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
@@ -191,19 +192,35 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QVERIFY( layer->changeAttributeValue( n, { 4, 2, 0, 1, 3, 16, 5, 13, 15, 14 }, at, 1 ) );
   QVERIFY( layer->isModified() );
   QCOMPARE( spy.size(), 1 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
 
   // Change some more
   QVERIFY( layer->changeAttributeValue( n, { 42, 82, 62, 52, 72 }, at, 6 ) );
   QVERIFY( layer->isModified() );
   QCOMPARE( spy.size(), 2 );
+  QCOMPARE( layer->undoStack()->index(), 2 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_2", "classified_render_edit_2", mapSettings );
+
+  // Undo one edit
+  layer->undoStack()->undo();
+  QCOMPARE( spy.size(), 3 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
+
+  // Redo edit
+  layer->undoStack()->redo();
+  QCOMPARE( spy.size(), 4 );
+  QCOMPARE( layer->undoStack()->index(), 2 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_2", "classified_render_edit_2", mapSettings );
 
   // Abort editing, original points should be rendered
   QVERIFY( layer->rollBack() );
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
-  QCOMPARE( spy.size(), 3 );
+  QCOMPARE( spy.size(), 5 );
+  QCOMPARE( layer->undoStack()->index(), 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
 }
 
@@ -215,6 +232,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( layer->isValid() );
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
 
@@ -408,6 +426,8 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 65536 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
+
+  QCOMPARE( layer->undoStack()->index(), 0 );
 }
 
 void TestQgsPointCloudEditing::testCommitChanges()

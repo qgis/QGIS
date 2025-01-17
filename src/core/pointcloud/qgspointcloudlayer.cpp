@@ -43,6 +43,7 @@
 #include "qgstaskmanager.h"
 #include "qgsthreadingutils.h"
 #include "qgspointcloudlayerprofilegenerator.h"
+#include "qgspointcloudlayerundocommand.h"
 #ifdef HAVE_COPC
 #include "qgscopcpointcloudindex.h"
 #endif
@@ -73,6 +74,8 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
 
   setLegend( QgsMapLayerLegend::defaultPointCloudLegend( this ) );
   connect( this, &QgsPointCloudLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
+  connect( undoStack(), &QUndoStack::indexChanged, this, &QgsMapLayer::layerModified );
+  connect( this, &QgsMapLayer::layerModified, this, [this] { triggerRepaint(); } );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer()
@@ -1034,11 +1037,7 @@ bool QgsPointCloudLayer::rollBack()
   if ( !mEditIndex )
     return false;
 
-  if ( isModified() )
-  {
-    emit layerModified();
-    triggerRepaint();
-  }
+  undoStack()->clear();
 
   mEditIndex = QgsPointCloudIndex();
   emit editingStopped();
@@ -1070,23 +1069,52 @@ bool QgsPointCloudLayer::isModified() const
   return mEditIndex.isModified();
 }
 
-bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &pts, const QgsPointCloudAttribute &attribute, double value )
+bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
   if ( !mEditIndex )
     return false;
 
-  QgsPointCloudLayerEditUtils utils( this );
+  // Cannot allow x,y,z editing as points may get moved outside the node extents
+  if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 ||
+       attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 ||
+       attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
+    return false;
 
-  const bool success = utils.changeAttributeValue( n, pts, attribute, value );
-  if ( success )
+  if ( !n.isValid() || !mEditIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
+    return false;
+
+  if ( points.isEmpty() )
+    return false;
+
+  const QgsPointCloudAttributeCollection attributeCollection = mEditIndex.attributes();
+
+  int attributeOffset;
+  const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
+
+  if ( !at ||
+       at->size() != attribute.size() ||
+       at->type() != attribute.type() )
   {
-    emit layerModified();
-    emit triggerRepaint();
-    emit trigger3DUpdate();
+    return false;
   }
 
-  return success;
+  if ( !QgsPointCloudLayerEditUtils::isAttributeValueValid( attribute, value ) )
+  {
+    return false;
+  }
+
+  QVector<int> sortedPoints( points.constBegin(), points.constEnd() );
+  std::sort( sortedPoints.begin(), sortedPoints.end() );
+  sortedPoints.erase( std::unique( sortedPoints.begin(), sortedPoints.end() ), sortedPoints.end() );
+
+  if ( sortedPoints.constFirst() < 0 ||
+       sortedPoints.constLast() >= mEditIndex.getNode( n ).pointCount() )
+    return false;
+
+  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( mEditIndex, n, sortedPoints, attribute, value ) );
+
+  return true;
 }
 
 QgsPointCloudIndex QgsPointCloudLayer::index() const

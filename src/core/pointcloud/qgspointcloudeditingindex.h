@@ -73,6 +73,7 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     QHash<QgsPointCloudNodeId, QByteArray> mEditedNodeData;
 
     friend class QgsPointCloudLayerEditUtils;
+    friend class QgsPointCloudLayerUndoCommandChangeAttribute;
 };
 
 #endif // QGSPOINTCLOUDEDITINGINDEX_H

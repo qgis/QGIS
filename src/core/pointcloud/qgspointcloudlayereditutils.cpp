@@ -14,74 +14,11 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayereditutils.h"
-#include "qgspointcloudlayer.h"
 #include "qgslazdecoder.h"
 #include "qgscopcpointcloudindex.h"
-#include "qgspointcloudeditingindex.h"
 
 #include <lazperf/readers.hpp>
 #include <lazperf/writers.hpp>
-
-
-QgsPointCloudLayerEditUtils::QgsPointCloudLayerEditUtils( QgsPointCloudLayer *layer )
-  : mIndex( layer->index() )
-{
-}
-
-bool QgsPointCloudLayerEditUtils::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &pts, const QgsPointCloudAttribute &attribute, double value )
-{
-  // Cannot allow x,y,z editing as points may get moved outside the node extents
-  if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 ||
-       attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 ||
-       attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
-    return false;
-
-  if ( !n.isValid() || !mIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
-    return false;
-
-  const QgsPointCloudAttributeCollection attributeCollection = mIndex.attributes();
-
-  int attributeOffset;
-  const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
-
-  if ( !at ||
-       at->size() != attribute.size() ||
-       at->type() != attribute.type() )
-  {
-    return false;
-  }
-
-  if ( !isAttributeValueValid( attribute, value ) )
-  {
-    return false;
-  }
-
-  const QSet<int> uniquePoints( pts.constBegin(), pts.constEnd() );
-  QVector<int> sortedPoints( uniquePoints.constBegin(), uniquePoints.constEnd() );
-  std::sort( sortedPoints.begin(), sortedPoints.end() );
-
-  if ( sortedPoints.constFirst() < 0 ||
-       sortedPoints.constLast() > mIndex.getNode( n ).pointCount() )
-    return false;
-
-  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( mIndex.get() );
-  QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( editIndex->mIndex.get() );
-
-  QByteArray chunkData;
-  if ( editIndex->mEditedNodeData.contains( n ) )
-  {
-    chunkData = editIndex->mEditedNodeData[n];
-  }
-  else
-  {
-    QPair<uint64_t, int32_t> offsetSizePair = copcIndex->mHierarchyNodePos[n];
-    chunkData = copcIndex->readRange( offsetSizePair.first, offsetSizePair.second );
-  }
-
-  QByteArray data = updateChunkValues( copcIndex, chunkData, *at, value, n, pts );
-
-  return mIndex.updateNodeData( {{n, data}} );
-}
 
 
 static void updatePoint( char *pointBuffer, int pointFormat, const QString &attributeName, double newValue )
@@ -187,7 +124,7 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
 }
 
 
-QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, double newValue, const QgsPointCloudNodeId &n, const QVector<int> &pointIndices )
+QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, const QgsPointCloudNodeId &n, const QHash<int, double> &pointValues, std::optional<double> newValue )
 {
   Q_ASSERT( copcIndex->mHierarchy.contains( n ) );
   Q_ASSERT( copcIndex->mHierarchyNodePos.contains( n ) );
@@ -204,8 +141,6 @@ QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudInde
   // only PDRF 6/7/8 is allowed by COPC
   Q_ASSERT( header.pointFormat() == 6 || header.pointFormat() == 7 || header.pointFormat() == 8 );
 
-  QSet<int> pointIndicesSet( pointIndices.constBegin(), pointIndices.constEnd() );
-
   QString attributeName = attribute.name();
 
   for ( int i = 0 ; i < pointCount; ++i )
@@ -213,10 +148,10 @@ QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudInde
     decompressor.decompress( decodedData.get() );
     char *buf = decodedData.get();
 
-    if ( pointIndicesSet.contains( i ) )
+    if ( pointValues.contains( i ) )
     {
       // TODO: support for extrabytes attributes
-      updatePoint( buf, header.point_format_id, attributeName, newValue );
+      updatePoint( buf, header.point_format_id, attributeName, newValue ? *newValue : pointValues[i] );
     }
 
     compressor.compress( decodedData.get() );
