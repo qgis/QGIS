@@ -200,7 +200,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
           // if overview of the virtual point cloud exists set the zoom out behavior to show it
           if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( pcLayer->dataProvider() ) )
           {
-            vpcProvider->overview() ? renderer3D->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) : renderer3D->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
+            renderer3D->setZoomOutBehavior( vpcProvider->overview() ? Qgis::PointCloudZoomOutRenderBehavior::RenderOverview : Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
           }
           layer->setRenderer3D( renderer3D.release() );
         }
