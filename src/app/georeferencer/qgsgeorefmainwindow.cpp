@@ -1116,8 +1116,8 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   QgsSnappingConfig snappingConfig;
   snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
   snappingConfig.setTypeFlag( settingSnappingTypes->value() );
-  snappingConfig.setTolerance( 10 );
-  snappingConfig.setUnits( Qgis::MapToolUnit::Pixels );
+  snappingConfig.setTolerance( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->value() );
+  snappingConfig.setUnits( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value() );
   snappingConfig.setEnabled( settingSnappingEnabled->value() );
 
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
