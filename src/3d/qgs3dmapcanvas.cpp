@@ -307,6 +307,9 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
     case QEvent::KeyPress:
       mMapTool->keyPressEvent( static_cast<QKeyEvent *>( event ) );
       break;
+    case QEvent::Wheel:
+      mMapTool->mouseWheelEvent( static_cast<QWheelEvent *>( event ) );
+      break;
     default:
       break;
   }
