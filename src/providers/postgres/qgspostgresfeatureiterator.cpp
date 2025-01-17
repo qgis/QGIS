@@ -24,6 +24,7 @@
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
 #include "qgsgeometryengine.h"
+#include "qgspostgresutils.h"
 
 #include <QElapsedTimer>
 #include <QObject>

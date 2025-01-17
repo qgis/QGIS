@@ -25,6 +25,7 @@
 #include "qgsdataitemguiproviderutils.h"
 #include "qgssettings.h"
 #include "qgspostgresconn.h"
+#include "qgspostgresutils.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
