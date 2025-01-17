@@ -23,6 +23,7 @@
 class Qgs3DMapCanvas;
 class QMouseEvent;
 class QKeyEvent;
+class QWheelEvent;
 
 #define SIP_NO_FILE
 
@@ -49,6 +50,8 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     virtual void mouseMoveEvent( QMouseEvent *event );
     //! Reimplement to handle key press \a event forwarded by the parent Qgs3DMapCanvas
     virtual void keyPressEvent( QKeyEvent *event );
+    //! Reimplement to handle mouse wheel \a event forwarded by the parent Qgs3DMapCanvas
+    virtual void mouseWheelEvent( QWheelEvent *event );
 
     //! Called when set as currently active map tool
     virtual void activate();

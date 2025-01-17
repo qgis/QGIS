@@ -55,6 +55,7 @@
 
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
+#include "qgs3dmaptoolpaintbrush.h"
 
 #include "qgsdockablewidgethelper.h"
 #include "qgsrubberband.h"
@@ -156,11 +157,15 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ), tr( "Measurement Line" ), this, &Qgs3DMapCanvasWidget::measureLine );
   actionMeasurementTool->setCheckable( true );
 
+  QAction *actionPaintBrush = toolBar->addAction( QIcon( QgsApplication::iconPath( "propertyicons/rendering.svg" ) ), tr( "Paint Brush Selector" ), this, &Qgs3DMapCanvasWidget::paintBrush );
+  actionPaintBrush->setCheckable( true );
+
   // Create action group to make the action exclusive
   QActionGroup *actionGroup = new QActionGroup( this );
   actionGroup->addAction( actionCameraControl );
   actionGroup->addAction( actionIdentify );
   actionGroup->addAction( actionMeasurementTool );
+  actionGroup->addAction( actionPaintBrush );
   actionGroup->addAction( actionPointCloudChangeAttributeTool );
   actionGroup->setExclusive( true );
 
@@ -298,6 +303,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
+
+  mMapToolPaintBrush = new Qgs3DMapToolPaintBrush( mCanvas );
 
   mMapToolPointCloudChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
 
@@ -461,6 +468,15 @@ void Qgs3DMapCanvasWidget::measureLine()
     return;
 
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
+}
+
+void Qgs3DMapCanvasWidget::paintBrush()
+{
+  const QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolPaintBrush : nullptr );
 }
 
 void Qgs3DMapCanvasWidget::changePointCloudAttribute()
