@@ -151,20 +151,10 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   }
   updateBboxEntity();
 
-  if ( provider()->overview() )
+  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+  if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
-    // reuse the same logic for showing bounding boxes as above
-    const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( mMapSettings->extent(), mMapSettings->crs(), mLayer->crs(), mMapSettings->transformContext() );
-    const QgsAABB overviewBBox = Qgs3DUtils::mapToWorldExtent( provider()->overview().extent().intersect( mapExtent ), provider()->overview().zMin(), provider()->overview().zMax(), mMapSettings->origin() );
-    const float epsilon = std::min( overviewBBox.xExtent(), overviewBBox.yExtent() ) / 256;
-    const float distance = overviewBBox.distanceFromPoint( sceneContext.cameraPos );
-    const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
-    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < .2;
-    const auto rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() )->zoomOutBehavior();
-    if ( !displayAsBbox && ( rendererBehavior == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
-    {
-      mOverviewEntity->handleSceneUpdate( sceneContext );
-    }
+    mOverviewEntity->handleSceneUpdate( sceneContext );
   }
 }
 
@@ -224,7 +214,8 @@ void QgsVirtualPointCloudEntity::updateBboxEntity()
 {
   QList<QgsAABB> bboxes;
   // we want to render bounding boxes only when zoomOutBehavior is RenderExtents or RenderOverviewAndExtents
-  if ( dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() )->zoomOutBehavior() != Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )
+  const QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+  if ( renderer && renderer->zoomOutBehavior() != Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )
   {
     const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
     for ( int i = 0; i < subIndexes.size(); ++i )
