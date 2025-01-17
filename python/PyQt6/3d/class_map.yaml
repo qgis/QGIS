@@ -622,10 +622,12 @@ QgsPointCloudLayer3DRenderer.setMaximumScreenError: src/3d/qgspointcloudlayer3dr
 QgsPointCloudLayer3DRenderer.setPointRenderingBudget: src/3d/qgspointcloudlayer3drenderer.h#L302
 QgsPointCloudLayer3DRenderer.setShowBoundingBoxes: src/3d/qgspointcloudlayer3drenderer.h#L292
 QgsPointCloudLayer3DRenderer.setSymbol: src/3d/qgspointcloudlayer3drenderer.h#L254
+QgsPointCloudLayer3DRenderer.setZoomOutBehavior: src/3d/qgspointcloudlayer3drenderer.h#L310
 QgsPointCloudLayer3DRenderer.showBoundingBoxes: src/3d/qgspointcloudlayer3drenderer.h#L285
 QgsPointCloudLayer3DRenderer.symbol: src/3d/qgspointcloudlayer3drenderer.h#L256
 QgsPointCloudLayer3DRenderer.type: src/3d/qgspointcloudlayer3drenderer.h#L245
 QgsPointCloudLayer3DRenderer.writeXml: src/3d/qgspointcloudlayer3drenderer.h#L258
+QgsPointCloudLayer3DRenderer.zoomOutBehavior: src/3d/qgspointcloudlayer3drenderer.h#L316
 QgsPointCloudLayer3DRenderer: src/3d/qgspointcloudlayer3drenderer.h#L234
 QgsPointLightSettings.clone: src/3d/lights/qgspointlightsettings.h#L46
 QgsPointLightSettings.color: src/3d/lights/qgspointlightsettings.h#L57
