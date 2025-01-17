@@ -80,5 +80,5 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
     data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, mAttribute, mNode, mPointValues, mNewValue );
   }
 
-  mIndex.updateNodeData( {{mNode, data}} );;
+  mIndex.updateNodeData( {{mNode, data}} );
 }

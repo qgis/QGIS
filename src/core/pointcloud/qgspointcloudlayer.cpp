@@ -1109,7 +1109,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
   sortedPoints.erase( std::unique( sortedPoints.begin(), sortedPoints.end() ), sortedPoints.end() );
 
   if ( sortedPoints.constFirst() < 0 ||
-       sortedPoints.constLast() > mEditIndex.getNode( n ).pointCount() )
+       sortedPoints.constLast() >= mEditIndex.getNode( n ).pointCount() )
     return false;
 
   undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( mEditIndex, n, sortedPoints, attribute, value ) );

@@ -19,7 +19,7 @@
 #include "qgis_core.h"
 #include "qgspointcloudindex.h"
 
-#include "optional"
+#include <optional>
 
 #include <QVector>
 #include <QByteArray>
