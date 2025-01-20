@@ -297,11 +297,11 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         const QString &function = filterNames[i];
         if ( function == QLatin1String( "IsNull" ) )
         {
-          filter = QgsWFSProvider::buildIsNullGeometryFilter( caps, provider.geometryAttribute() );
+          filter = QgsWFSProvider::buildIsNullGeometryFilter( caps, provider.geometryColumnName() );
         }
         else if ( !function.isEmpty() )
         {
-          filter = QgsWFSProvider::buildFilterByGeometryType( caps, provider.geometryAttribute(), function );
+          filter = QgsWFSProvider::buildFilterByGeometryType( caps, provider.geometryColumnName(), function );
         }
 
         if ( !provider.sharedData()->WFSFilter().isEmpty() )
