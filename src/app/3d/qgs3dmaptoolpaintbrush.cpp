@@ -35,6 +35,7 @@ Qgs3DMapToolPaintBrush::~Qgs3DMapToolPaintBrush() = default;
 
 void Qgs3DMapToolPaintBrush::activate()
 {
+  mCanvas->cameraController()->setInputHandlersEnabled( false );
   mRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point ) );
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QCursor::pos(), mCanvas->size(), mCanvas->cameraController()->camera() );
   const float dist = ray.direction().y() == 0 ? 0 : ( mCanvas->cameraController()->camera()->farPlane() + mCanvas->cameraController()->camera()->nearPlane() ) / 2;
@@ -42,6 +43,8 @@ void Qgs3DMapToolPaintBrush::activate()
   const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hoverPoint, mCanvas->mapSettings()->origin() );
   mRubberBand->addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() / canvas()->mapSettings()->terrainSettings()->verticalScale() ) );
   mRubberBand->setWidth( 32 );
+  mRubberBand->setOutlineColor( mRubberBand->color() );
+  mRubberBand->setColor( QColorConstants::Transparent );
   mIsActive = true;
 }
 
@@ -49,15 +52,12 @@ void Qgs3DMapToolPaintBrush::deactivate()
 {
   mRubberBand.reset();
   mIsActive = false;
+  mCanvas->cameraController()->setInputHandlersEnabled( true );
 }
 
 QCursor Qgs3DMapToolPaintBrush::cursor() const
 {
   return Qt::CrossCursor;
-}
-
-void Qgs3DMapToolPaintBrush::handleClick( const QPoint &screenPos )
-{
 }
 
 void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
@@ -71,12 +71,12 @@ void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
   if ( event->button() == Qt::LeftButton && !mMouseHasMoved )
   {
     //TODO: add logic for selecting points inside the rubberband
-    handleClick( event->pos() );
+    // handleClick( event->pos() );
   }
   else if ( event->button() == Qt::RightButton && !mMouseHasMoved )
   {
     //TODO: add logic for deselecting points inside the rubberband
-    handleClick( event->pos() );
+    // handleClick( event->pos() );
   }
 }
 
@@ -112,7 +112,6 @@ void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
   const bool shrink = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
   double zoomFactor = shrink ? 0.75 : 1.5;
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  qDebug() << event->angleDelta().y();
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
   mRubberBand->setWidth( mRubberBand->width() * zoomFactor );
 }
