@@ -2003,6 +2003,15 @@ void TestQgs3DRendering::testAmbientOcclusion()
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
 
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  symbol3d->setAltitudeClamping( Qgis::AltitudeClamping::Relative );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
   // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
 

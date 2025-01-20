@@ -77,7 +77,7 @@ struct QgsLineVertexData
     bool withAdjacency = false; //!< Whether line strip with adjacency primitive will be used
 
     // extra info to calculate elevation
-    Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
+    Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Absolute;
     Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
     float baseHeight = 0;
     Qgs3DRenderContext renderContext; // used for altitude clamping
