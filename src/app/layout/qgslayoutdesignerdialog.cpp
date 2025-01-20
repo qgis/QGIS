@@ -108,6 +108,8 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
+#include <gdal.h>
+
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
@@ -4373,12 +4375,15 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
       break;
     }
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION( 3, 11, 0 )
+    // GDAL 3.11.0 has removed that limitation that wasn't necessary
     if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::MapRotation ) )
     {
       allowGeospatialPdfExport = false;
       dialogGeospatialPdfReason = tr( "One or more map items are rotated. This is not supported for geospatial PDF export." );
       break;
     }
+#endif
   }
 
   QgsLayoutPdfExportOptionsDialog dialog( this, allowGeospatialPdfExport, dialogGeospatialPdfReason, geospatialPdfLayerOrder );
