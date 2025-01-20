@@ -29,12 +29,10 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
     explicit Qgs3DMapToolPaintBrush( Qgs3DMapCanvas *canvas );
     ~Qgs3DMapToolPaintBrush() override;
 
-    // Add all the points intersecting the selection rubberband
+    //! Add all the points intersecting the selection rubberband
     void addSelection();
-    // Remove all the points intersecting the selection rubberband
+    //! Remove all the points intersecting the selection rubberband
     void removeSelection();
-    // Resize the selection rubberband
-    void resizeSelector();
 
     void activate() override;
 
@@ -42,11 +40,9 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
 
     QCursor cursor() const override;
 
-    //TODO: looks like this is useless, as camera still responds to input
     bool allowsCameraControls() const override { return false; }
 
   private slots:
-    void handleClick( const QPoint &screenPos );
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;

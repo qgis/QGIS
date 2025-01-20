@@ -62,6 +62,7 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     //! Mouse cursor to be used when the tool is active
     virtual QCursor cursor() const;
 
+    // TODO: needs fix, currently doesn't block camera movement, see setInputHandlersEnabled() in Camera Controller
     /**
      * Whether the default mouse controls to zoom/pan/rotate camera can stay enabled
      * while the tool is active. This may be useful for some basic tools using just
