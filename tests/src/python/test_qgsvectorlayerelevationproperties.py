@@ -188,12 +188,12 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
             vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Terrain
         )
 
-        # a layer WITH z values present should default to relative mode
+        # a layer WITH z values present should default to absolute mode
         vl = QgsVectorLayer(unitTestDataPath() + "/3d/points_with_z.shp")
         self.assertTrue(vl.isValid())
 
         self.assertEqual(
-            vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Relative
+            vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Absolute
         )
 
     def test_show_by_default(self):
