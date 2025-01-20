@@ -2251,6 +2251,7 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,11,0)
       // ESRI FileGDB (using ESRI FileGDB API SDK)
       datasetOptions.clear();
       layerOptions.clear();
@@ -2282,6 +2283,7 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "UTF-8" )
                              )
                            );
+#endif
 
       // XLSX
       datasetOptions.clear();
