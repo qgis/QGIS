@@ -373,7 +373,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         break;
 
       if ( executed.contains( childId ) )
+      {
         continue;
+      }
 
       bool canExecute = true;
       const QSet< QString > dependencies = dependsOnChildAlgorithms( childId );
@@ -387,7 +389,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
 
       if ( !canExecute )
+      {
         continue;
+      }
 
       executedAlg = true;
 
