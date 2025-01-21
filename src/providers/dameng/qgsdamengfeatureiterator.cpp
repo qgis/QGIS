@@ -678,7 +678,7 @@ bool QgsDamengFeatureIterator::openQuery( const QString &whereClause, long limit
   if ( !orderBy.isEmpty() )
     query += QStringLiteral( " ORDER BY %1 " ).arg( orderBy );
 
-  if ( !mConn->DMexecNR( query ) )
+  if ( !mConn->LoggedDMexecNR( "QgsDamengFeatureIterator", query ) )
   {
     // reloading the fields might help next time around
     // TODO how to cleanly force reload of fields?  P->loadFields();

@@ -160,7 +160,8 @@ class QgsDamengProvider final: public QgsVectorDataProvider
     QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
                                        QgsFeedback *feedback = nullptr ) const override;
-    bool isValid() const override { return mValid; }
+    bool isValid() const override;
+    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
     QgsAttributeList attributeIndexes() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QString defaultValueClause( int fieldId ) const override;
@@ -251,11 +252,6 @@ class QgsDamengProvider final: public QgsVectorDataProvider
 
     QgsField field( int index ) const;
     bool loadFields();  /** Load the field list */
-
-    /**
-     * Set the default widget type for the fields
-     */
-    void setEditorWidgets();
 
     //! Convert a QgsField to work with DM
     static bool convertField( QgsField &field, const QMap<QString, QVariant> *coordinateTransformContext = nullptr );

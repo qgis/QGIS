@@ -254,7 +254,7 @@ void QgsDamengDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataItemG
   //create the schema
   const QString sql = QStringLiteral( "CREATE SCHEMA %1" ).arg( QgsDamengConn::quotedIdentifier( schemaName ) );
 
-  QgsDamengResult result( conn->DMexec( sql ) );
+  QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
     notify( tr( "New Schema" ), tr( "Unable to create schema '%1'\n%2" ).arg( schemaName,
@@ -333,7 +333,7 @@ void QgsDamengDataItemGuiProvider::renameLayer( QgsDamengLayerItem *layerItem, Q
   //rename the layer
   QString sql = QStringLiteral( "ALTER TABLE %1 RENAME TO %2" ).arg( oldName, newName );
 
-  QgsDamengResult result( conn->DMexec( sql ) );
+  QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
     notify( tr( "Rename Table" ), tr( "Unable to rename 'table' %1\n%2" ).arg( layerItem->name(),
@@ -378,7 +378,7 @@ void QgsDamengDataItemGuiProvider::truncateTable( QgsDamengLayerItem *layerItem,
 
   const QString sql = QStringLiteral( "TRUNCATE TABLE %1" ).arg( tableRef );
 
-  QgsDamengResult result( conn->DMexec( sql ) );
+  QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
     notify( tr( "Truncate Table" ), tr( "Unable to truncate '%1'\n%2" ).arg( tableName,
@@ -418,7 +418,7 @@ void QgsDamengDataItemGuiProvider::refreshMaterializedView( QgsDamengLayerItem *
 
   const QString sql = QStringLiteral( "REFRESH MATERIALIZED VIEW %1" ).arg( tableRef );
 
-  QgsDamengResult result( conn->DMexec( sql ) );
+  QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
     notify( tr( "Refresh View" ), tr( "Unable to refresh the view '%1'\n%2" ).arg( tableRef,

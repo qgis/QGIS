@@ -169,6 +169,13 @@ class QgsPoolDamengConn
     class QgsDamengConn *get() const { return mDmConn; }
 };
 
+#include "qgsconfig.h"
+constexpr int sDamengConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+#define QGS_QUERY_LOG_ORIGIN_DM_CON QString( QString( __FILE__ ).mid( sDamengConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" )
+#define LoggedDMexecNR( _class, query ) DMexecNR( query, _class, QGS_QUERY_LOG_ORIGIN_DM_CON )
+#define LoggedDMexec( _class, query ) DMexec( query, true, true, _class, QGS_QUERY_LOG_ORIGIN_DM_CON )
+#define LoggedDMexecNoLogError( _class, query ) DMexec( query, false, true, _class, QGS_QUERY_LOG_ORIGIN_DM_CON )
+
 class QgsDamengConn : public QObject
 {
     Q_OBJECT

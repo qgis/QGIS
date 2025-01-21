@@ -55,23 +55,23 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
     return false;
   }
 
-  QgsDMResult *resViewCheck( conn->DMexec( QStringLiteral( "select ID from SYS.SYSOBJECTS where name = \'%1\' and TYPE$ = \'SCH\';" ).arg( schemaName ) ) );
+  QgsDMResult *resViewCheck( conn->LoggedDMexec( "QgsDamengUtils", QStringLiteral("select ID from SYS.VSYSOBJECTS where name = %1 and TYPE$ = \'SCH\';").arg(QgsDamengConn::quotedValue(schemaName))));
   resViewCheck->fetchNext();
   QString schemaId = resViewCheck->value( 0 ).toString();
 
   // handle deletion of views
-  QString sqlViewCheck = QStringLiteral( "select INFO5 from SYSOBJECTS "
+  QString sqlViewCheck = QStringLiteral( "select INFO5 from SYS.VSYSOBJECTS "
                                          " where SUBTYPE$ = \'VIEW\' and "
                                          " NAME = %1 and %2 in SCHID; " )
                          .arg( QgsDamengConn::quotedValue( tableName ) ).arg( schemaId );
-  resViewCheck = conn->DMexec( sqlViewCheck );
+  resViewCheck = conn->LoggedDMexec( "QgsDamengUtils", sqlViewCheck );
   if ( resViewCheck->fetchNext() )
   {
     QString sql = resViewCheck->value( 0 ).toString() == "0x"
                   ? QStringLiteral( "DROP VIEW %2" ).arg( schemaTableName )
                   : QStringLiteral( "DROP MATERIALIZED VIEW %2" ).arg( schemaTableName );
 
-    QgsDamengResult result( conn->DMexec( sql ) );
+    QgsDamengResult result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
     if ( result.DMresultStatus() != DmResCommandOk )
     {
       errCause = QObject::tr( "Unable to delete view %1: \n%2" )
@@ -92,7 +92,7 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
                         .arg( QgsDamengConn::quotedIdentifier( schemaName ) )
                         .arg( QgsDamengConn::quotedIdentifier( tableName ) );
 
-    QgsDamengResult result( conn->DMexec( sql ) );
+    QgsDamengResult result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
     if ( result.DMresultStatus() != DmResCommandOk )
     {
       errCause = QObject::tr( "Unable to delete table %1: \n%2" )
@@ -110,7 +110,7 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
                          " where F_TABLE_SCHEMA = %1 and F_TABLE_NAME = %2;" )
                 .arg( QgsDamengConn::quotedValue( schemaName ),
                       QgsDamengConn::quotedValue( tableName ) );
-  QgsDMResult *result( conn->DMexec( sql ) );
+  QgsDMResult *result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
   if ( !result || !result->execstatus() )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
@@ -138,7 +138,7 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
                 QgsDamengConn::quotedIdentifier( tableName ) );
   }
 
-  result = conn->DMexec( sql );
+  result = conn->LoggedDMexec( "QgsDamengUtils", sql );
   if ( !result || !result->execstatus() )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
@@ -171,7 +171,7 @@ bool QgsDamengUtils::deleteSchema( const QString &schema, const QgsDataSourceUri
   QString sql = QStringLiteral( "DROP SCHEMA %1 %2" )
                 .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
 
-  QgsDamengResult result( conn->DMexec( sql ) );
+  QgsDamengResult result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
     errCause = QObject::tr( "Unable to delete schema %1: \n%2" )

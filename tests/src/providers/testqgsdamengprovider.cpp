@@ -1,9 +1,9 @@
 /***************************************************************************
     testqgsdamengprovider.cpp
     ---------------------
-    begin                : August 2016
-    copyright            : (C) 2016 by Patrick Valsecchi
-    email                : patrick dot valsecchi at camptocamp dot com
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -45,7 +45,7 @@ private:
     if ( !_connection )
     {
       const char* connstring = getenv( "QGIS_DMTEST_DB" );
-      if ( NULL == connstring ) connstring = "host=192.168.100.173 port=5236 user='SYSDBA' password='SYSDBA'";
+      if ( NULL == connstring ) connstring = "host=127.0.0.1 port=5236 user='SYSDBA' password='Test1234'";
       _connection = QgsDamengConn::connectDb( connstring, true );
       assert( _connection );
     }

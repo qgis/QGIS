@@ -30,6 +30,16 @@
 
 QT_BEGIN_NAMESPACE
 
+static QString quotedString( const QString &v )
+{
+  QString result = v;
+  result.replace( '\'', QLatin1String( "''" ) );
+  if ( result.contains( '\\' ) )
+    return result.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "E'" ).append( '\'' );
+  else
+    return result.prepend( '\'' ).append( '\'' );
+}
+
 static QString qWarnDMHandle( int handleType, dhandle handle, int *nativeCode = 0 )
 {
   sdint4          nativeCode_ = 0;
@@ -151,6 +161,7 @@ static QSqlError qMakeError( QSqlError::ErrorType type, const QgsDMDriverPrivate
   return QSqlError( "", message, type, QString::number( nativeCode ) );
 }
 
+/* Functions for DSQL Type to QVariant Type */
 static QVariant::Type qDecodeDMType( sdint2 dtype, bool isSigned = true )
 {
   QVariant::Type type = QVariant::Invalid;
@@ -230,6 +241,7 @@ static QVariant::Type qDecodeDMType( sdint2 dtype, bool isSigned = true )
   return type;
 }
 
+/* Functions for DSQL Type to C Type */
 static sdint4 qCTypefromSql( sdint4 sqlType )
 {
   sdint4 cType;
@@ -311,6 +323,7 @@ static sdint4 qCTypefromSql( sdint4 sqlType )
   return cType;
 }
 
+/* Functions for Get String Data from Dameng */
 static QString qGetStringData( dhstmt hStmt, int column, int colSize )
 {
   QString         fieldVal;
@@ -540,6 +553,7 @@ void QgsDMResultPrivate::updateStmtHandleState()
   disconnectCount = drv_d_func()->disconnectCount;
 }
 
+/* Functions for Get Type of CLASS, ARRAY and RECORD. */
 void QgsDMResult::qGetClassData( dhobj &obj, dhobjdesc &objDesc, QString &res, bool &isNull )
 {
   sdint2      cnt;
@@ -629,7 +643,7 @@ QString QgsDMResult::qGetClassData( QQueue<DmObj *> &objData, int &field, int &s
   DmObj*    data = objData.dequeue();
   dhobj     obj = data->obj;
   dhobjdesc objDesc = data->objDesc;
-  QString   fieldVal { "" };
+  QString   fieldVal;
 
   if ( sql_type == DSQL_ARRAY || sql_type == DSQL_CLASS )
   {
@@ -639,7 +653,7 @@ QString QgsDMResult::qGetClassData( QQueue<DmObj *> &objData, int &field, int &s
     dpi_get_obj_desc_attr( objDesc, 0, DSQL_ATTR_OBJ_NAME, objTypeName, sizeof( objTypeName ), NULL );
     dpi_get_obj_desc_attr( objDesc, 0, DSQL_ATTR_OBJ_SCHAME, objSchema, sizeof( objSchema ), NULL );
 
-    fieldVal += QStringLiteral( "%1.%2(" ).arg( ( char* )objSchema ).arg( ( char* )objTypeName );
+    fieldVal = QStringLiteral( "%1.%2(" ).arg( ( char* )objSchema ).arg( ( char* )objTypeName );
     bool isNull = true;
     qGetClassData( obj, objDesc, fieldVal, isNull );
     if( isNull )
@@ -666,8 +680,7 @@ QgsDMResult::~QgsDMResult()
     DPIRETURN r = dpi_free_stmt( d->hStmt );
     d->hStmt = NULL;
     if ( r != DSQL_SUCCESS )
-      qSqlWarning( QCoreApplication::translate( "QgsDMResult", "Unable to free statement handle %1"
-            ).arg( QString::number( r ) ), d );
+      qSqlWarning( QCoreApplication::translate( "QgsDMResult", "Unable to free statement handle" ), d );
   }
 
   if(!mTypeName.isEmpty() )
@@ -777,6 +790,7 @@ void QgsDMResult::setForwardOnly( bool forward )
   d->forwardOnly = forward;
 }
 
+/* Functions for Get data after exec SQL. */
 bool QgsDMResult::fetch( int i )
 {
   Q_D( QgsDMResult );
@@ -1229,6 +1243,7 @@ void QgsDMResult::getBinarydata( int field, byte* &data, slength &size )
   dpi_get_data( d->hStmt, field + 1, DSQL_C_BINARY, ( dpointer )data, size + 1, &lengthIndicator );
 }
 
+/* Functions for Get available data after fetch. */
 QVariant QgsDMResult::data( int field )
 {
   Q_D( QgsDMResult );
@@ -1404,7 +1419,7 @@ bool QgsDMResult::prepare( const QString &query )
 
     if ( d->r != DSQL_SUCCESS && d->r != DSQL_INVALID_HANDLE )
     {
-      qSqlWarning( QCoreApplication::translate( "QgsDMResult", "Unable to close statement" ), d );
+      qSqlWarning( QCoreApplication::translate( "QgsDMResult", "Unable to free statement handle" ), d );
       return false;
     }
   }
@@ -2436,7 +2451,7 @@ bool QgsDMDriver::open( const QString &dbTrans, const QString &user, const QStri
   r = dpi_alloc_env( &d->hEnv );
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO )
   {
-    connMsg = tr( "Unable to allocate environment" );
+    connMsg = tr( "Unable to allocate environment handle" );
     qSqlWarning( connMsg, d );
     setOpenError( true );
 
@@ -2446,7 +2461,7 @@ bool QgsDMDriver::open( const QString &dbTrans, const QString &user, const QStri
   r = dpi_alloc_con( d->hEnv, &d->hDbc );
   if ( r != DSQL_SUCCESS && r != DSQL_SUCCESS_WITH_INFO )
   {
-    connMsg = tr( "Unable to allocate connection" );
+    connMsg = tr( "Unable to allocate connection handle" );
     qSqlWarning( connMsg, d );
     setOpenError( true );
     cleanup();
@@ -2647,7 +2662,7 @@ QStringList QgsDMDriver::tables( QSql::TableType type ) const
   r = dpi_alloc_stmt( d->hDbc, &hStmt );
   if ( r != DSQL_SUCCESS )
   {
-    qSqlWarning( tr( "Unable to allocate handle" ), d );
+    qSqlWarning( tr( "Unable to allocate statement handle" ), d );
 
     return tl;
   }
@@ -2671,7 +2686,7 @@ QStringList QgsDMDriver::tables( QSql::TableType type ) const
   r = dpi_tables( hStmt, NULL, 0, NULL, 0, NULL, 0, ( udbyte* )joinedTableTypeString.toUtf8().data(), DSQL_NTS );
 
   if ( r != DSQL_SUCCESS )
-    qSqlWarning( tr( "Unable to execute table list" ), d );
+    qSqlWarning( tr( "Unable to acquire table list" ), d );
 
   r = dpi_fetch( hStmt, NULL );
 
@@ -2694,7 +2709,7 @@ QStringList QgsDMDriver::tables( QSql::TableType type ) const
   r = dpi_free_stmt( hStmt );
   hStmt = NULL;
   if ( r != DSQL_SUCCESS )
-    qSqlWarning( tr( "Unable to free statement handle" ).arg( QString::number( r ) ), d );
+    qSqlWarning( tr( "Unable to free statement handle" ), d );
 
   return tl;
 }
@@ -2715,14 +2730,13 @@ QSqlIndex QgsDMDriver::primaryIndex( const QString &tablename ) const
   r = dpi_alloc_stmt( d->hDbc, &hStmt );
   if ( r != DSQL_SUCCESS )
   {
-    qSqlWarning( tr( "Unable to list primary key" ), d );
+    qSqlWarning( tr( "Unable to allocate statement handle" ), d );
 
     return index;
   }
 
   QString         schema, table;
   const_cast<QgsDMDriverPrivate *>( d )->splitTableQualifier( tablename, schema, table );
-
 
   if ( isIdentifierEscaped( schema, QSqlDriver::TableName ) )
     schema = stripDelimiters( schema, QSqlDriver::TableName );
@@ -2745,7 +2759,7 @@ QSqlIndex QgsDMDriver::primaryIndex( const QString &tablename ) const
 
     if ( r != DSQL_SUCCESS )
     {
-      qSqlWarning( tr( "Unable to execute primary key list" ), d );
+      qSqlWarning( tr( "Unable to acquire primary key list" ), d );
     }
     else
     {
@@ -2781,7 +2795,7 @@ QSqlIndex QgsDMDriver::primaryIndex( const QString &tablename ) const
   r = dpi_free_stmt( hStmt );
   hStmt = NULL;
   if ( r != DSQL_SUCCESS )
-    qSqlWarning( tr( "Unable to free statement handle" ).arg( QString::number( r ) ), d);
+    qSqlWarning( tr( "Unable to free statement handle" ), d);
 
   return index;
 }
@@ -2813,7 +2827,7 @@ QSqlRecord QgsDMDriver::record( const QString &tablename ) const
   r = dpi_alloc_stmt( d->hDbc, &hStmt );
   if ( r != DSQL_SUCCESS )
   {
-    qSqlWarning( tr( "Unable to allocate handle" ), d );
+    qSqlWarning( tr( "Unable to allocate statement handle" ), d );
     return fil;
   }
 
@@ -2836,7 +2850,7 @@ QSqlRecord QgsDMDriver::record( const QString &tablename ) const
   r = dpi_free_stmt( hStmt );
   hStmt = NULL;
   if ( r != DSQL_SUCCESS )
-    qSqlWarning( tr( "Unable to free statement handle " ).arg( QString::number( r ) ), d );
+    qSqlWarning( tr( "Unable to free statement handle" ), d );
 
   return fil;
 }
@@ -2979,14 +2993,14 @@ sdint4 QgsDMResult::ftable( QString schemaName, QString tableName )
   dhstmt hstmt;
   int tableId = -1;
 
-  QString sql = QStringLiteral( "select ID from SYSOBJECTS where NAME = \'%1\' and SCHID IN "
-    "( select ID from SYSOBJECTS where name = \'%2\' and TYPE$ = 'SCH');"
-  ).arg( tableName ).arg( schemaName );
+  QString sql = QStringLiteral( "select ID from SYS.VSYSOBJECTS where NAME = %1 and SCHID IN "
+    "( select ID from SYS.VSYSOBJECTS where name = %2 and TYPE$ = 'SCH');"
+  ).arg( quotedString( tableName ) ).arg( quotedString( schemaName ) );
 
   d->r = dpi_alloc_stmt( d->dpDbc(), &hstmt );
   d->r = dpi_exec_direct( hstmt, ( sdbyte* )sql.toUtf8().constData() );
   d->r = dpi_fetch( hstmt, NULL );
-  //retcode = dpi_number_columns( hstmt, &ret_num );
+
   d->r = dpi_get_data( hstmt, 1, DSQL_C_ULONG, &( tableId ), 0, 0 );
 
   dpi_free_stmt( hstmt );
@@ -3010,7 +3024,6 @@ sdint4 QgsDMResult::ftable( int col )
 
   return ftable( schemaName, tableName );
 }
-
 
 sdint4 QgsDMResult::ftype( int col )
 {

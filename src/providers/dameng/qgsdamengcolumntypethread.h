@@ -1,9 +1,9 @@
 /***************************************************************************
  qgsdamengcolumntypethread.cpp - lookup dameng geometry type and srid in a thread
                              -------------------
-    begin                : 3.1.2012
-    copyright            : ( C ) 2012 by Juergen E. Fischer
-    email                : jef at norbit dot de
+    begin                : 2025/01/14
+    copyright            : ( C ) 2025 by Haiyang Zhao
+    email                : zhaohaiyang@dameng.com
  ***************************************************************************/
 
 /***************************************************************************

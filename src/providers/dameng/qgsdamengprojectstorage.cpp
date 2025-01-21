@@ -114,9 +114,8 @@ bool QgsDamengProjectStorage::readProject( const QString &uri, QIODevice *device
   QString sql( QStringLiteral( "SELECT content FROM %1.QGIS_PROJECTS WHERE name = %2" ).arg( QgsDamengConn::quotedIdentifier( projectUri.schemaName ), QgsDamengConn::quotedValue( projectUri.projectName ) ) );
   QgsDMResult *res = conn->DMexec( sql );
 
-  if ( res->ntuples() > 0 )
+  if ( res->fetchNext() )
   {
-    res->fetchNext();
     QString hexEncodedContent( res->value( 0 ).toString() );
     hexEncodedContent[0] = '\\';
     QByteArray binaryContent( QByteArray::fromHex( hexEncodedContent.toUtf8() ) );

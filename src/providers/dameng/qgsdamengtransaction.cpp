@@ -124,7 +124,7 @@ bool QgsDamengTransaction::executeSql( const QString &sql, QString &errorMsg, bo
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Transaction sql: %1" ).arg( sql ), 2 );
-  QgsDamengResult r( mConn->DMexec( sql, true ) );
+  QgsDamengResult r( mConn->LoggedDMexec( "QgsDamengTransaction", sql ) );
   if ( r.DMresultStatus() == DmResFatalError )
   {
     errorMsg = QStringLiteral( "Status %1 (%2)" ).arg( r.DMresultStatus() ).arg( r.DMresultErrorMessage() );

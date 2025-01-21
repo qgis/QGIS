@@ -193,14 +193,14 @@ DmConn *QgsDamengConn::DMconnect( const QString &ipaddr, const QString &port, co
   if ( port.size() > 5 || ( !port.isEmpty() && port.toInt() == 0 ) )
   {
     conn->connStatus = false;
-    conn->dmDriver->setConnMsg( tr( "invaild port %1 of int value for dameng" ).arg( port ) );
+    conn->dmDriver->setConnMsg( tr( "invaild port %1 of int value" ).arg( port ) );
     return conn;
   }
 
   if ( ipaddr.contains( ":" ) )
   {
     conn->connStatus = false;
-    conn->dmDriver->setConnMsg( tr( "invaild host %1 for dameng" ).arg( ipaddr ) );
+    conn->dmDriver->setConnMsg( tr( "invaild host %1" ).arg( ipaddr ) );
     return conn;
   }
 
@@ -415,7 +415,7 @@ QgsDamengConn::QgsDamengConn( const QString &conninfo, bool readOnly, bool share
 
     if ( !hasGEOS() )
     {
-      QgsMessageLog::logMessage( tr( "Your Dameng installation has no GEOS support. Feature selection and identification will not work properly. Please exec sql ( select SF_CHECK_RASTER_SYS ) to check it" ), tr( "Dameng" ) );
+      QgsMessageLog::logMessage( tr( "Your Dameng installation has no GEOS support. Feature selection and identification will not work properly. Please exec sql ( select spatial_full_version() ) to check it" ), tr( "Dameng" ) );
     }
     else
     {
@@ -442,7 +442,7 @@ int QgsDamengConn::DMserverVersion() const
 
   QString version = "select substr( substr( SVR_VERSION,instr( SVR_VERSION,'V' ) ) || "
     " substr( id_code,15,8 ),2 ) from v$instance";
-  QgsDMResult *res = DMexec( version );
+  QgsDMResult *res = LoggedDMexec( "QgsDamengConn", version );
   if ( res && res->execstatus() && res->fetchNext() )
     return res->value( 0 ).toString().remove( '\n' ).toInt();
 
@@ -561,9 +561,9 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
     sql = QString( "SELECT distinct(%1),%2,%3,%4,%5,%6,c.SUBTYPE$,c.INFO5,"
-                    "( select COMMENT$ from SYS.SYSTABLECOMMENTS where SCHNAME = c.SCH_NAME and "
-                    "   TVNAME = ( select NAME from SYS.SYSOBJECTS where ID = c.ID ) ), "
-                    "( select JSONB_AGG( NAME ) from SYS.SYSCOLUMNS where ID = c.ID ), "
+                    "( select COMMENT$ from SYS.VSYSTABLECOMMENTS where SCHNAME = c.SCH_NAME and "
+                    "   TVNAME = ( select NAME from SYS.VSYSOBJECTS where ID = c.ID ) ), "
+                    "( select JSONB_AGG( NAME ) from SYS.VSYSCOLUMNS where ID = c.ID ), "
                     "G.SPCOLS, "
                     "%8 "
                     " FROM ( select * from %7 G join "
@@ -572,7 +572,7 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
                     "       on %1 = GD.TABLE_2 ) G "
                     " left outer join"
                     "   ( select n.name SCH_NAME, c1.name TAB_NAME, c1.ID, c1.SUBTYPE$, c1.INFO5 "
-                    "     from SYS.SYSOBJECTS c1, SYS.SYSOBJECTS n "
+                    "     from SYS.VSYSOBJECTS c1, SYS.VSYSOBJECTS n "
                     "     where n.ID = c1.schid	) c"
                     " on c.TAB_NAME = %1 and c.SCH_NAME = %2"
                     " WHERE %2 in ( select unique(OWNER) from SYS.ALL_TABLES ) "
@@ -600,7 +600,7 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
 
 
   QgsDebugMsgLevel( "getting table info from layer registries: " + query, 2 );
-  QgsDMResult *res = DMexec( query );
+  QgsDMResult *res = LoggedDMexec( "QgsDamengConn", query );
 
   if( !res || !res->execstatus() )
   {
@@ -697,19 +697,19 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
   if ( allowGeometrylessTables )
   {
     QString sql = QStringLiteral( "SELECT distinct( c.NAME ) ,n.NAME ,c.SUBTYPE$"
-      ",( select COMMENT$ from SYS.SYSTABLECOMMENTS where "
-      "     SCHNAME = n.name AND TVNAME = ( select NAME from SYSOBJECTS where ID = c.ID ) )"
+      ",( select COMMENT$ from SYS.VSYSTABLECOMMENTS where "
+      "     SCHNAME = n.name AND TVNAME = ( select NAME from SYS.VSYSOBJECTS where ID = c.ID ) )"
       ",%1,c.INFO5"
-      " FROM ( select NAME,SCHID,ID,SUBTYPE$,INFO5 from SYSOBJECTS where SUBTYPE$ IN (\'VIEW\', \'UTAB\') ) c,"
-      " ( select ID,NAME,TYPE$ from SYSOBJECTS ) n,"
-      " ( select ID,NAME from SYSCOLUMNS where COLID >= 0 ) a"
+      " FROM ( select NAME,SCHID,ID,SUBTYPE$,INFO5 from SYS.VSYSOBJECTS where SUBTYPE$ IN (\'VIEW\', \'UTAB\') ) c,"
+      " ( select ID,NAME,TYPE$ from SYS.VSYSOBJECTS ) n,"
+      " ( select ID,NAME from SYS.VSYSCOLUMNS where COLID >= 0 ) a"
       " WHERE n.ID = c.SCHID"
       " AND c.ID = a.ID" )
-      .arg( "( select JSONB_AGG( a.NAME ) from SYS.SYSCOLUMNS a where a.ID = c.ID )" );
+      .arg( "( select JSONB_AGG( a.NAME ) from SYS.VSYSCOLUMNS a where a.ID = c.ID )" );
 
     sql += searchSysdbaOnly ? QStringLiteral( " AND n.NAME = \'SYSDBA\' AND n.TYPE$ = \'SCH\'" )
-                            : QStringLiteral( " AND n.NAME = \'%1\' AND n.TYPE$ = \'SCH\'" )
-                                .arg( schema.isEmpty() ? QStringLiteral( "SYSDBA" ) :schema );
+                            : QStringLiteral( " AND n.NAME = %1 AND n.TYPE$ = \'SCH\'" )
+                                .arg( schema.isEmpty() ? QStringLiteral( "\'SYSDBA\'" ) : quotedString( schema ) );
 
     if ( !name.isEmpty() )
       sql += QStringLiteral( " AND c.name=%1" ).arg( quotedString( name ) );
@@ -720,7 +720,7 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
 
     QgsDebugMsgLevel( "getting non-spatial table info: " + sql, 2 );
 
-    res = DMexec( sql );
+    res = LoggedDMexec( "QgsDamengConn", sql );
     if ( !res || !res->execstatus() )
     {
       QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined.\nThe error message from the database was:\n%1" )
@@ -832,12 +832,12 @@ bool QgsDamengConn::getSchemas( QList<QgsDamengSchemaProperty> &schemas )
   schemas.clear();
 
   QString sql = QStringLiteral( "select SCH_OBJ.NAME sch_name, USER_OBJ.NAME user_name "
-    "from ( select NAME, ID, PID, CRTDATE from SYS.SYSOBJECTS where TYPE$ = \'SCH\') SCH_OBJ, "
-    "( select NAME, ID from SYS.SYSOBJECTS where TYPE$ = \'UR\' and SUBTYPE$ = \'USER\') USER_OBJ "
+    "from ( select NAME, ID, PID, CRTDATE from SYS.VSYSOBJECTS where TYPE$ = \'SCH\') SCH_OBJ, "
+    "( select NAME, ID from SYS.VSYSOBJECTS where TYPE$ = \'UR\' and SUBTYPE$ = \'USER\') USER_OBJ "
     "where SCH_OBJ.PID = USER_OBJ.ID "
     " and USER_OBJ.NAME != \'SYS\' and USER_OBJ.NAME != \'SYSAUDITOR\' and USER_OBJ.NAME != \'SYSSSO\';" );
 
-  QgsDMResult *res = DMexec( sql );
+  QgsDMResult *res = LoggedDMexec( "QgsDamengConn", sql );
   if( !res || !res->execstatus() )
   {
     return false;
@@ -882,7 +882,7 @@ QString QgsDamengConn::dmSpatialVersion() const
 
   mDamengVersion = DMserverVersion();
 
-  QgsDMResult *res = DMexec( QStringLiteral( "select spatial_full_version();" ) );
+  QgsDMResult *res = LoggedDMexec( "QgsDamengConn", QStringLiteral( "select spatial_full_version();" ) );
   if ( !res->fetchNext() )
   {
     QgsMessageLog::logMessage( tr( "No Dameng Spatial support in the database." ), tr( "Dameng" ) );
@@ -896,23 +896,23 @@ QString QgsDamengConn::dmSpatialVersion() const
 
   // checking for geos and proj support
   QString Geos_version;
-  int idx1 = mDmSpatialVersionInfo.indexOf( "GEOS = " );
-  mGeosAvailable = idx1 == -1 ? false : true;
+  int idx1 = mDmSpatialVersionInfo.indexOf( "GEOS = \"unloaded\"" );
+  mGeosAvailable = idx1 > -1 ? false : true;
 
   if ( mGeosAvailable )
   {
-    idx1 += 8;
+    idx1 = mDmSpatialVersionInfo.indexOf( "GEOS = " ) + 8;
     int idx2 = mDmSpatialVersionInfo.indexOf( ',', idx1 );
     Geos_version = mDmSpatialVersionInfo.mid( idx1, idx2 - idx1 - 1 );
   }
 
   QString Proj_version;
-  idx1 = mDmSpatialVersionInfo.indexOf( "PROJ = " );
-  mGeosAvailable = idx1 == -1 ? false : true;
+  idx1 = mDmSpatialVersionInfo.indexOf( "PROJ = \"unloaded\"" );
+  mProjAvailable = idx1 > -1 ? false : true;
 
-  if ( mGeosAvailable )
+  if ( mProjAvailable )
   {
-    idx1 += 8;
+    idx1 = mDmSpatialVersionInfo.indexOf( "PROJ = " ) + 8;
     int idx2 = mDmSpatialVersionInfo.indexOf( ',', idx1 );
     Proj_version = mDmSpatialVersionInfo.mid( idx1, idx2 - idx1 - 1 );
   }
@@ -926,7 +926,7 @@ QString QgsDamengConn::dmSpatialVersion() const
   QString sql = QStringLiteral( "SELECT SF_CHECK_USER_TABLE_PRIV(\'SYSTOPOLOGY\', \'SYSTOPOLOGY\', user, 0 ) "
             " & SF_CHECK_USER_TABLE_PRIV(\'SYSTOPOLOGY\', \'SYSLAYER\', user, 0 );" );
   
-  res = DMexec( sql, false );
+  res = LoggedDMexec( "QgsDamengConn", sql );
   if ( res->fetchNext() && res->value( 0 ).toInt() == 1 )
   {
     mTopologyAvailable = true;
@@ -1246,7 +1246,7 @@ bool QgsDamengConn::begin()
   QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
-    return DMexecNR( QStringLiteral( "SAVEPOINT transaction_savepoint" ) );
+    return LoggedDMexecNR( "QgsDamengConn", QStringLiteral( "SAVEPOINT transaction_savepoint" ) );
   }
   else
   {
@@ -1259,7 +1259,7 @@ bool QgsDamengConn::commit()
   QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
-    return DMexecNR( QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" ) );
+    return LoggedDMexecNR( "QgsDamengConn", QStringLiteral("RELEASE SAVEPOINT transaction_savepoint"));
   }
   else
   {
@@ -1272,8 +1272,8 @@ bool QgsDamengConn::rollback()
   QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
-    return DMexecNR( QStringLiteral( "ROLLBACK TO SAVEPOINT transaction_savepoint" ) )
-           && DMexecNR( QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" ) );
+    return LoggedDMexecNR( "QgsDamengConn", QStringLiteral( "ROLLBACK TO SAVEPOINT transaction_savepoint" ) )
+           && LoggedDMexecNR( "QgsDamengConn", QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" ) );
   }
   else
   {
@@ -1499,7 +1499,7 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
 
   QgsDebugMsgLevel( "Layer types,srids and dims query: " + query, 3 );
 
-  QgsDMResult *res = DMexec( query );
+  QgsDMResult *res = LoggedDMexec( "QgsDamengConn", query );
   if ( !res || !res->execstatus() )
   {
     return;
@@ -1798,10 +1798,6 @@ int QgsDamengConn::dmSpatialWkbTypeDim( Qgis::WkbType wkbType )
 
 Qgis::WkbType QgsDamengConn::wkbTypeFromDmSpatial( const QString &type1 )
 {
-  // Polyhedral surfaces and TIN are stored in Dameng as geometry collections
-  // of Polygons and Triangles.
-  // So, since QGIS does not natively support PS and TIN, but we would like to open them if possible,
-  // we consider them as multipolygons. WKB will be converted by the feature iterator
   QString type = type1.mid( 3, -1 );  // Remove the prefix "ST_" from the Dameng spatial type name
   
   return QgsWkbTypes::parseType( type );
@@ -2019,7 +2015,7 @@ QString QgsDamengConn::currentDatabase() const
   QMutexLocker locker( &mLock );
   QString database;
   QString sql( QStringLiteral( "SELECT instance_name from v$instance;" ) );
-  QgsDMResult *res = DMexec( sql );
+  QgsDMResult *res = LoggedDMexec( "QgsDamengConn", sql );
 
   if ( res->ntuples() )
     database = res->value( 0 ).toString();
@@ -2039,7 +2035,7 @@ QgsCoordinateReferenceSystem QgsDamengConn::sridToCrs( int srid )
     crs = sCrsCache.value( srid );
   else
   {
-    QgsDMResult *result( DMexec( QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM SYSGEO2.spatial_ref_sys WHERE auth_srid=%1" ).arg( srid ) ) );
+    QgsDMResult *result( LoggedDMexec( "QgsDamengConn", QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM SYSGEO2.spatial_ref_sys WHERE auth_srid=%1" ).arg( srid ) ) );
     result->fetchNext();
     if ( result && result->execstatus() )
     {
