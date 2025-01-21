@@ -15,6 +15,7 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
+#include "qgs3dmapcanvas.h"
 
 class QgsLineString;
 class QgsPolygon;
@@ -354,6 +355,13 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.42
      */
     static QQuaternion rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle );
+
+    /**
+     * Transform the given screen point to \a QgsPoint in map coordinates
+     *
+     * \since QGIS 3.44
+     */
+    static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, Qgs3DMapCanvas &canvas );
 };
 
 #endif // QGS3DUTILS_H

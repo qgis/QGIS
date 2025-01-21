@@ -16,6 +16,7 @@
 #ifndef QGS3DMAPTOOLPAINTBRUSH_H
 #define QGS3DMAPTOOLPAINTBRUSH_H
 #include "qgs3dmaptool.h"
+#include "qgspoint.h"
 
 #include <QPoint>
 
@@ -31,8 +32,6 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
 
     //! Add all the points intersecting the selection rubberband
     void addSelection();
-    //! Remove all the points intersecting the selection rubberband
-    void removeSelection();
 
     void activate() override;
 
@@ -42,6 +41,9 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
 
     bool allowsCameraControls() const override { return false; }
 
+    //! Reset all saved position data
+    void reset();
+
   private slots:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
@@ -49,10 +51,10 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
     void mouseWheelEvent( QWheelEvent *event ) override;
 
   private:
-    std::unique_ptr<QgsRubberBand3D> mRubberBand;
-    QPoint mMouseClickPos;
+    std::unique_ptr<QgsRubberBand3D> mSelectionRubberBand;
+    QVector<QgsPoint> mDragPositions = QVector<QgsPoint>();
     //! Check if mouse was moved between mousePress and mouseRelease
-    bool mMouseHasMoved = false;
+    bool mIsClicked = false;
     //! Check if the tool is selected
     bool mIsActive = false;
 };
