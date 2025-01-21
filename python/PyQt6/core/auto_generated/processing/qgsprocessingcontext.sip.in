@@ -662,6 +662,13 @@ Returns the model results, populated when the context is used to run a model alg
 %End
 
 
+    void clearModelResult();
+%Docstring
+Clears model results previously populated when the context was used to run a model algorithm.
+
+.. versionadded:: 3.42
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
