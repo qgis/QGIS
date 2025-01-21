@@ -130,7 +130,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
     }
     else
     {
-      return vsiPrefix + fi.canonicalFilePath();
+      return vsiPrefix + QDir::cleanPath( fi.absoluteFilePath() );
     }
   }
 
@@ -266,7 +266,8 @@ QString QgsPathResolver::writePath( const QString &s ) const
 
   // Get projPath even if project has not been created yet
   const QFileInfo pfi( QFileInfo( mBaseFileName ).path() );
-  QString projPath = pfi.canonicalFilePath();
+  // readPath does not resolve symlink, so writePath should not either
+  QString projPath = pfi.absoluteFilePath();
 
   // If project directory doesn't exit, fallback to absoluteFilePath : symbolic
   // links won't be handled correctly, but that's OK as the path is "virtual".
@@ -291,7 +292,8 @@ QString QgsPathResolver::writePath( const QString &s ) const
 
   const QFileInfo srcFileInfo( srcPath );
   if ( srcFileInfo.exists() )
-    srcPath = srcFileInfo.canonicalFilePath();
+    // Do NOT resolve symlinks, but do remove '..' and '.'
+    srcPath = QDir::cleanPath( srcFileInfo.absoluteFilePath() );
 
   // if this is a VSIFILE, remove the VSI prefix and append to final result
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( src );
