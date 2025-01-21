@@ -852,7 +852,9 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         # THIS FUNCTIONALITY IS BROKEN ON NEWER GDAL VERSIONS, DUE TO INCORRECT
         # assumptions at time of development. See https://github.com/qgis/QGIS/pull/59797#issuecomment-2544133498
         # see also: https://github.com/OSGeo/gdal/pull/11695 for a GDAL 3.11 fix
-        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 5, 0) or int(gdal.VersionInfo("VERSION_NUM")) >= GDAL_COMPUTE_VERSION(3, 11, 0):
+        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 5, 0) or int(
+            gdal.VersionInfo("VERSION_NUM")
+        ) >= GDAL_COMPUTE_VERSION(3, 11, 0):
             _test(Qgis.TransactionMode.AutomaticGroups)
 
         _test(Qgis.TransactionMode.BufferedGroups)
