@@ -297,7 +297,7 @@ jobs:
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
 
       - name: Login to Docker Hub
-        if: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
+        if: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -310,7 +310,7 @@ jobs:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
-          push: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
+          push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
           target: ${{ matrix.docker-target }}
           build-args:
@@ -408,7 +408,7 @@ jobs:
           fetch-depth: 2
 
       - name: Login to Docker Hub
-        if: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
+        if: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -421,7 +421,7 @@ jobs:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
-          push: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
+          push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
           target: ${{ matrix.docker-target }}
           build-args:
