@@ -6698,6 +6698,7 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   mLayerTypeComboBox->addItem( tr( "Vector (Line)" ), static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) );
   mLayerTypeComboBox->addItem( tr( "Vector (Polygon)" ), static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) );
   mLayerTypeComboBox->addItem( tr( "Vector (Any Geometry Type)" ), static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  mLayerTypeComboBox->addItem( tr( "Vector (No Geometry Required)" ), static_cast<int>( Qgis::ProcessingSourceType::Vector ) );
   mLayerTypeComboBox->addItem( tr( "Raster" ), static_cast<int>( Qgis::ProcessingSourceType::Raster ) );
   mLayerTypeComboBox->addItem( tr( "Mesh" ), static_cast<int>( Qgis::ProcessingSourceType::Mesh ) );
   mLayerTypeComboBox->addItem( tr( "Plugin" ), static_cast<int>( Qgis::ProcessingSourceType::Plugin ) );
