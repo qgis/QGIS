@@ -1574,7 +1574,11 @@ class QgsVectorFileWriterMetadataContainer
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "GeoPackage" ),
                                QObject::tr( "GeoPackage" ),
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+                               QStringLiteral( "*.gpkg *.gpkg.zip" ),
+#else
                                QStringLiteral( "*.gpkg" ),
+#endif
                                QStringLiteral( "gpkg" ),
                                datasetOptions,
                                layerOptions,
