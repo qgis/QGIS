@@ -393,7 +393,13 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
   const int attr = mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
   if ( rollBackToSavePoint() )
   {
-    mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
+    // GDAL SQLite-based drivers (since version 3.11) keep the fields in sync with
+    // the backend after a rollback, to stay on the safe side check if the field
+    // isn't already gone
+    if ( mBuffer->L->dataProvider()->fieldNameIndex( mField.name() ) != -1 )
+    {
+      mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
+    }
     mBuffer->mAddedAttributes.removeAll( mField );
     mBuffer->updateLayerFields();
     emit mBuffer->attributeDeleted( attr );
@@ -432,11 +438,26 @@ void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::undo()
   // note that the addAttributes here is only necessary to inform the provider that
   // an attribute is added back after the rollBackToSavePoint
   mBuffer->L->dataProvider()->clearErrors();
-  if ( mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField )  && rollBackToSavePoint() && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( rollBackToSavePoint() )
   {
-    mBuffer->mDeletedAttributeIds.removeOne( mOriginalFieldIndex );
-    mBuffer->updateLayerFields();
-    emit mBuffer->attributeAdded( mOriginalFieldIndex );
+    // GDA SQLite-based drivers (since version 3.11) keep the fields in sync with
+    // the backend after a rollback, to stay on the safe side check if the field
+    // isn't already there
+    bool ok = true;
+    if ( mBuffer->L->dataProvider()->fields().indexFromName( mField.name() ) == -1 )
+    {
+      ok = mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField );
+    }
+    if ( ok && ! mBuffer->L->dataProvider()->hasErrors() )
+    {
+      mBuffer->mDeletedAttributeIds.removeOne( mOriginalFieldIndex );
+      mBuffer->updateLayerFields();
+      emit mBuffer->attributeAdded( mOriginalFieldIndex );
+    }
+    else
+    {
+      setError();
+    }
   }
   else
   {
@@ -474,10 +495,25 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::undo()
   QgsFieldNameMap map;
   map[ mAttr ] = mOldName;
   mBuffer->L->dataProvider()->clearErrors();
-  if ( mBuffer->L->dataProvider()->renameAttributes( map ) && rollBackToSavePoint() && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( rollBackToSavePoint() )
   {
-    mBuffer->updateLayerFields();
-    emit mBuffer->attributeRenamed( mAttr, mOldName );
+    // GDAL SQLite-based drivers (since version 3.11) keep the fields in sync with
+    // the backend after a rollback, to stay on the safe side check if the field
+    // isn't already renamed
+    bool ok = true;
+    if ( mBuffer->L->dataProvider()->fields().indexFromName( mOldName ) == -1 )
+    {
+      ok = mBuffer->L->dataProvider()->renameAttributes( map );
+    }
+    if ( ok && ! mBuffer->L->dataProvider()->hasErrors() )
+    {
+      mBuffer->updateLayerFields();
+      emit mBuffer->attributeRenamed( mAttr, mOldName );
+    }
+    else
+    {
+      setError();
+    }
   }
   else
   {

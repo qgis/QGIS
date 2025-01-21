@@ -271,7 +271,12 @@ bool QgsTransaction::rollbackToSavepoint( const QString &name, QString &error SI
   // the status of the DB has changed between the previous savepoint and the
   // one we are rolling back to.
   mLastSavePointIsDirty = true;
-  return executeSql( QStringLiteral( "ROLLBACK TO SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error );
+  if ( ! executeSql( QStringLiteral( "ROLLBACK TO SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error ) )
+  {
+    return false;
+  }
+  emit afterRollbackToSavepoint( name );
+  return true;
 }
 
 void QgsTransaction::dirtyLastSavePoint()

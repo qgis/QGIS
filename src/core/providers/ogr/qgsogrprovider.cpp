@@ -544,6 +544,14 @@ void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
   QgsDebugMsgLevel( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ), 2 );
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsOgrTransaction *>( transaction );
+  connect( mTransaction, &QgsTransaction::afterRollback, this, [ = ]( )
+  {
+    mFieldsRequireReload = true;
+  } );
+  connect( mTransaction, &QgsTransaction::afterRollbackToSavepoint, this, [ = ]( const QString & )
+  {
+    mFieldsRequireReload = true;
+  } );
 }
 
 QgsAbstractFeatureSource *QgsOgrProvider::featureSource() const
@@ -1073,6 +1081,7 @@ void QgsOgrProvider::loadFields()
     mAttributeFields.append( newField );
     createdFields++;
   }
+  mFieldsRequireReload = false;
 }
 
 void QgsOgrProvider::loadMetadata()
@@ -1604,6 +1613,10 @@ long long QgsOgrProvider::featureCount() const
 
 QgsFields QgsOgrProvider::fields() const
 {
+  if ( mFieldsRequireReload )
+  {
+    const_cast<QgsOgrProvider *>( this )->loadFields();
+  }
   return mAttributeFields;
 }
 

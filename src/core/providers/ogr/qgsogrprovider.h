@@ -221,6 +221,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     mutable std::unique_ptr< OGREnvelope > mExtent2D;
     mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
     bool mForceRecomputeExtent = false;
+    bool mFieldsRequireReload = false;
 
     QList<int> mPrimaryKeyAttrs;
 
