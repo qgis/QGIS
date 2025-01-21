@@ -18,9 +18,17 @@
 #include "qgs3dmaptool.h"
 #include "qgspoint.h"
 
-#include <QPoint>
+#include <QMatrix4x4>
 
+struct MapToPixel3D;
+class QgsPointCloudIndex;
+class QgsChunkNode;
+class QgsGeometry;
+class QgsPointCloudNodeId;
 class QgsRubberBand3D;
+class QgsPointCloudLayer;
+
+typedef QHash<QgsPointCloudNodeId, QVector<int> > SelectedPoints;
 
 class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
 {
@@ -29,9 +37,6 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
   public:
     explicit Qgs3DMapToolPaintBrush( Qgs3DMapCanvas *canvas );
     ~Qgs3DMapToolPaintBrush() override;
-
-    //! Add all the points intersecting the selection rubberband
-    void addSelection();
 
     void activate() override;
 
@@ -44,6 +49,10 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
     //! Reset all saved position data
     void reset();
 
+    void setAttribute( const QString &attribute );
+
+    void setNewValue( double value );
+
   private slots:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
@@ -51,12 +60,21 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
     void mouseWheelEvent( QWheelEvent *event ) override;
 
   private:
+    //! Process the area selected by user
+    void processSelection() const;
+    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const;
+    static QVector<int> selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsChunkNode *ch, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex &pcIndex );
+    static QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
+
     std::unique_ptr<QgsRubberBand3D> mSelectionRubberBand;
-    QVector<QgsPoint> mDragPositions = QVector<QgsPoint>();
+    std::unique_ptr<QgsRubberBand3D> mHighlighterRubberBand;
+    QVector<QgsPointXY> mDragPositions = QVector<QgsPointXY>();
     //! Check if mouse was moved between mousePress and mouseRelease
     bool mIsClicked = false;
     //! Check if the tool is selected
     bool mIsActive = false;
+    QString mAttributeName;
+    double mNewValue = 0;
 };
 
 
