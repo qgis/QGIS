@@ -221,7 +221,9 @@ QgsProcessingMapLayerComboBox::~QgsProcessingMapLayerComboBox() = default;
 void QgsProcessingMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
   if ( layer || mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
+  {
     mCombo->setLayer( layer );
+  }
 }
 
 QgsMapLayer *QgsProcessingMapLayerComboBox::currentLayer()
