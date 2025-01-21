@@ -1036,7 +1036,7 @@ QgsFields QgsWFSProvider::fields() const
   return mShared->mFields;
 }
 
-QString QgsWFSProvider::geometryAttribute() const
+QString QgsWFSProvider::geometryColumnName() const
 {
   return mShared->mGeometryAttribute;
 }
