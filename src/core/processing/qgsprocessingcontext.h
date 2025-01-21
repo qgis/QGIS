@@ -794,6 +794,13 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsProcessingModelResult &modelResult() SIP_SKIP { return mModelResult; }
 
+    /**
+     * Clears model results previously populated when the context was used to run a model algorithm.
+     *
+     * \since QGIS 3.42
+     */
+    void clearModelResult();
+
   private:
 
     QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();

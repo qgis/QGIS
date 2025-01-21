@@ -1412,6 +1412,21 @@ void TestQgsProcessing::context()
   QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD1" ) ).outputs().value( QStringLiteral( "RESULT1" ) ).toInt(), 1 );
   QCOMPARE( context3.modelResult().childResults().value( QStringLiteral( "CHILD2" ) ).outputs().value( QStringLiteral( "RESULT2" ) ).toInt(), 2 );
 
+  QgsProcessingContext context4;
+  context4.takeResultsFrom( context );
+  context4.modelResult().rawChildInputs().insert( QStringLiteral( "test_input" ), 1 );
+  context4.modelResult().rawChildOutputs().insert( QStringLiteral( "test_output" ), 1 );
+  context4.modelResult().executedChildIds() << "alg:test";
+  QCOMPARE( context4.modelResult().childResults().count(), 2 );
+  QCOMPARE( context4.modelResult().rawChildInputs().count(), 1 );
+  QCOMPARE( context4.modelResult().rawChildOutputs().count(), 1 );
+  QCOMPARE( context4.modelResult().executedChildIds().count(), 1 );
+  context4.clearModelResult();
+  QCOMPARE( context4.modelResult().childResults().count(), 0 );
+  QCOMPARE( context4.modelResult().rawChildInputs().count(), 0 );
+  QCOMPARE( context4.modelResult().rawChildOutputs().count(), 0 );
+  QCOMPARE( context4.modelResult().executedChildIds().count(), 0 );
+  
   // make sure postprocessor is correctly deleted
   ppDeleted = false;
   pp = new TestPostProcessor( &ppDeleted );
