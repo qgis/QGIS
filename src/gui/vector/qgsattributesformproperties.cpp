@@ -681,7 +681,7 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
         if ( layout == Qgis::AttributeFormLayout::DragAndDrop )
         {
           loadAttributeWidgetEdit();
-	    }
+        }
         loadAttributeTypeDialog();
         break;
       }
