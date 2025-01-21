@@ -42,6 +42,8 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
 
 void QgsMapLayerModel::setProject( QgsProject *project )
 {
+  if ( mProject == ( project ? project : QgsProject::instance() ) ) // skip-keyword-check
+    return;
 
   // remove layers from previous project
   if ( mProject )
