@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include "qgisapp.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
-#include "qgsgeometryoptions.h"
 #include "qgsgeos.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
@@ -25,8 +25,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
 #include "vertextool/qgsvertextool.h"
-#include "qgslinestring.h"
-#include "qgscircularstring.h"
 #include "qgssnappingconfig.h"
 #include "qgssettingsregistrycore.h"
 #include "testqgsmaptoolutils.h"

@@ -63,6 +63,7 @@ from PyQt6 import (
     QtGui,
     QtNetwork,
     QtPrintSupport,
+    QtQuickWidgets,
     QtSql,
     QtSvg,
     QtTest,
@@ -74,6 +75,7 @@ from PyQt6.QtCore import *  # noqa: F403
 from PyQt6.QtGui import *  # noqa: F403
 from PyQt6.QtNetwork import *  # noqa: F403
 from PyQt6.QtPrintSupport import *  # noqa: F403
+from PyQt6.QtQuickWidgets import *  # noqa: F403
 from PyQt6.QtSql import *  # noqa: F403
 from PyQt6.QtTest import *  # noqa: F403
 from PyQt6.QtWidgets import *  # noqa: F403
@@ -109,6 +111,7 @@ target_modules = [
     QtXml,
     QtNetwork,
     QtPrintSupport,
+    QtQuickWidgets,
     Qsci,
 ]
 if qgis_core is not None:

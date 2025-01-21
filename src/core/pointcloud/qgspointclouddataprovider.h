@@ -53,6 +53,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
       CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
       ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example \since QGIS 3.32
+      ChangeAttributeValues = 1 << 4, //!< Provider can modify the values of point attributes. \since QGIS 3.42
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )

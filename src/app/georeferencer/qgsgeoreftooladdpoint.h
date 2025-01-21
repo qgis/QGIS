@@ -17,20 +17,20 @@
 #define QGSGEOREFTOOLADDPOINT_H
 
 
-#include "qgsmaptoolemitpoint.h"
+#include "qgsmaptoolcapture.h"
 
 class QgsPointXY;
 class QgsMapCanvas;
+class QgsAdvancedDigitizingDockWidget;
 
-class QgsGeorefToolAddPoint : public QgsMapToolEmitPoint
+class QgsGeorefToolAddPoint : public QgsMapToolCapture
 {
     Q_OBJECT
 
   public:
-    explicit QgsGeorefToolAddPoint( QgsMapCanvas *canvas );
+    explicit QgsGeorefToolAddPoint( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *advancedDigitizingDockWidget );
 
-    // Mouse events for overriding
-    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void pointCaptured( const QgsPoint &point );
 
   signals:
     void showCoordDialog( const QgsPointXY &sourceCoordinates );

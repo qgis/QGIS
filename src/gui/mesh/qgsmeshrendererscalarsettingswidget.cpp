@@ -147,7 +147,7 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer()
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
 
-  mMinMaxValueTypeComboBox->setCurrentIndex( mMinMaxValueTypeComboBox->findData( QVariant::fromValue( settings.extent() ) ) );
+  whileBlocking( mMinMaxValueTypeComboBox )->setCurrentIndex( mMinMaxValueTypeComboBox->findData( QVariant::fromValue( settings.extent() ) ) );
 
   if ( settings.limits() == Qgis::MeshRangeLimit::MinimumMaximum )
   {

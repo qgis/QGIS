@@ -185,7 +185,7 @@ void QgsPointCloudLayerProperties::syncToLayer()
   txtSubsetSQL->setReadOnly( true );
   txtSubsetSQL->setCaretWidth( 0 );
   txtSubsetSQL->setCaretLineVisible( false );
-  pbnQueryBuilder->setEnabled( mLayer->dataProvider() && mLayer->dataProvider()->supportsSubsetString() );
+  pbnQueryBuilder->setEnabled( mLayer->dataProvider() && mLayer->dataProvider()->supportsSubsetString() && !mLayer->isEditable() );
 
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->syncToLayer( mLayer );

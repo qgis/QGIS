@@ -359,7 +359,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( uri.startsWith( QLatin1String( "./" ) ) )
     {
       // resolve relative path
-      uri = fInfo.absoluteDir().absoluteFilePath( uri );
+      uri = QDir::cleanPath( fInfo.absoluteDir().absoluteFilePath( uri ) );
     }
 
     if ( f["properties"].contains( "pc:schemas" ) )
@@ -418,7 +418,9 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
     sl.setIndex( QgsPointCloudIndex( new QgsEptPointCloudIndex() ) );
 
-  if ( !sl.index() )
+  // check if the index is created and also check if the file actually exists too
+  const QFile file( sl.uri() );
+  if ( !sl.index() || !file.exists() )
     return;
 
   sl.index().load( sl.uri() );

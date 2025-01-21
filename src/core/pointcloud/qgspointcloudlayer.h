@@ -135,6 +135,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsPointCloudDataProvider *dataProvider() override;
     const QgsPointCloudDataProvider *dataProvider() const override SIP_SKIP;
 
+    bool supportsEditing() const override;
+    bool isEditable() const override;
+    bool isModified() const override;
+
     bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
 
     bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
@@ -242,6 +246,88 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * \since QGIS 3.26
      */
     PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
+
+    /**
+     * Makes the layer editable.
+     *
+     * This starts an edit session on this layer. Changes made in this edit session will not
+     * be made persistent until commitChanges() is called, and can be reverted by calling
+     * rollBack().
+     *
+     * \returns TRUE if the layer was successfully made editable, or FALSE if the operation
+     * failed (e.g. due to an underlying read-only data source, or lack of edit support
+     * by the backend data provider).
+     *
+     * \see commitChanges()
+     * \see rollBack()
+     * \since QGIS 3.42
+     */
+    bool startEditing();
+
+    /**
+     * Attempts to commit to the underlying data provider any buffered changes made since the
+     * last to call to startEditing().
+     *
+     * Returns the result of the attempt. If a commit fails (i.e. FALSE is returned), the
+     * in-memory changes are left untouched and are not discarded. This allows editing to
+     * continue if the commit failed on e.g. a disallowed value for an attribute - the user
+     * can re-edit and try again.
+     *
+     * If the commit failed, an error message may returned by commitError().
+     *
+     * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the commit is successful.
+     *
+     * \see startEditing()
+     * \see commitError()
+     * \see rollBack()
+     * \since QGIS 3.42
+     */
+    bool commitChanges( bool stopEditing = true );
+
+    /**
+     * Returns the last error message generated when attempting
+     * to commit changes to the layer.
+     * \see commitChanges()
+     * \since QGIS 3.42
+     */
+    QString commitError() const;
+
+    /**
+     * Stops a current editing operation and discards any uncommitted edits.
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     * \since QGIS 3.42
+     */
+    bool rollBack();
+
+    /**
+     * Attempts to modify attribute values for specific points in the editing buffer.
+     *
+     * \param n The point cloud node containing the points
+     * \param points The point ids of the points to be modified
+     * \param attribute The attribute whose value will be updated
+     * \param value The new value to set to the attribute
+     * \return TRUE if the editing buffer was updated successfully, FALSE otherwise
+     * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since QGIS 3.42
+     */
+    bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
+
+    /**
+     * Returns the point cloud index associated with the layer.
+     * If the layer is editable, its QgsPointCloudEditingIndex is returned,
+     * otherwise the index is fetched from the data provider.
+     *
+     * \since QGIS 3.42
+     */
+    QgsPointCloudIndex index() const;
+
+
   signals:
 
     /**
@@ -295,6 +381,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsPointCloudStatistics mStatistics;
     PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
     long mStatsCalculationTask = 0;
+
+    QgsPointCloudIndex mEditIndex;
+    QString mCommitError;
 
     friend class TestQgsVirtualPointCloudProvider;
 };

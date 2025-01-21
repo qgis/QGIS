@@ -15,6 +15,8 @@
 
 #include "qgscamerapose.h"
 
+#include "qgs3dutils.h"
+
 #include <Qt3DRender/QCamera>
 
 #include <QDomDocument>
@@ -60,22 +62,13 @@ void QgsCameraPose::setDistanceFromCenterPoint( float distance )
 void QgsCameraPose::setPitchAngle( float pitch )
 {
   // prevent going over the head
-  // prevent bug in QgsCameraPose::updateCamera when updating camera rotation.
-  // With a mPitchAngle < 0.2 or > 179.8, QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 )
-  // will return bad rotation angle in Qt5.
-  // See https://bugreports.qt.io/browse/QTBUG-72103
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  mPitchAngle = std::clamp( pitch, 0.2f, 179.8f );
-#else
   mPitchAngle = std::clamp( pitch, 0.0f, 180.0f );
-#endif
 }
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
   // first rotate by pitch angle around X axis, then by heading angle around Z axis
-  // (we use two separate fromEulerAngles() calls because one would not do rotations in order we need)
-  QQuaternion q = QQuaternion::fromEulerAngles( 0, 0, mHeadingAngle ) * QQuaternion::fromEulerAngles( mPitchAngle, 0, 0 );
+  QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( mPitchAngle, mHeadingAngle );
   QVector3D cameraToCenter = q * QVector3D( 0, 0, -mDistanceFromCenterPoint );
   camera->setUpVector( q * QVector3D( 0, 1, 0 ) );
   camera->setPosition( mCenterPoint.toVector3D() - cameraToCenter );

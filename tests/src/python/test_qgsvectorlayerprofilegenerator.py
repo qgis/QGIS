@@ -691,7 +691,9 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
 
         # very small tolerance
-        req.setTolerance(0.1)
+        tolerance = 0.1
+        vl.elevationProperties().setCustomTolerance(tolerance)
+        req.setTolerance(tolerance)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
@@ -739,7 +741,9 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             self.assertAlmostEqual(results.zRange().upper(), 62.7499, 2)
 
         # 1 meter tolerance
-        req.setTolerance(1)
+        tolerance = 1
+        vl.elevationProperties().setCustomTolerance(tolerance)
+        req.setTolerance(tolerance)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
@@ -787,7 +791,9 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             self.assertAlmostEqual(results.zRange().upper(), 62.7499, 2)
 
         # 15 meters tolerance
-        req.setTolerance(15)
+        tolerance = 15
+        vl.elevationProperties().setCustomTolerance(tolerance)
+        req.setTolerance(tolerance)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
         results = generator.takeResults()
@@ -1391,11 +1397,14 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             f.setGeometry(QgsGeometry.fromWkt(line))
             self.assertTrue(vl.dataProvider().addFeature(f))
 
+        tolerance = 2.0
+
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Relative)
         vl.elevationProperties().setZScale(2.5)
         vl.elevationProperties().setZOffset(10)
         vl.elevationProperties().setExtrusionEnabled(True)
         vl.elevationProperties().setExtrusionHeight(7)
+        vl.elevationProperties().setCustomTolerance(tolerance)
 
         curve = QgsLineString()
         curve.fromWkt(
@@ -1413,7 +1422,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req.setTerrainProvider(terrain_provider)
 
         req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
-        req.setTolerance(2.0)
+        req.setTolerance(tolerance)
 
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
@@ -2784,6 +2793,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             f.setGeometry(QgsGeometry.fromWkt(line))
             self.assertTrue(vl.dataProvider().addFeature(f))
 
+        tolerance = 20
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
         vl.elevationProperties().setType(Qgis.VectorProfileType.ContinuousSurface)
         vl.elevationProperties().setProfileSymbology(
@@ -2797,6 +2807,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         vl.elevationProperties().setProfileFillSymbol(fill_symbol)
         line_symbol = QgsLineSymbol.createSimple({"color": "#ff00ff", "width": "0.8"})
         vl.elevationProperties().setProfileLineSymbol(line_symbol)
+        vl.elevationProperties().setCustomTolerance(tolerance)
 
         curve = QgsLineString()
         curve.fromWkt(
@@ -2806,7 +2817,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req.setTransformContext(self.create_transform_context())
 
         req.setCrs(QgsCoordinateReferenceSystem())
-        req.setTolerance(20)
+        req.setTolerance(tolerance)
 
         plot_renderer = QgsProfilePlotRenderer([vl], req)
         plot_renderer.startGeneration()
@@ -2881,11 +2892,13 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             f.setGeometry(QgsGeometry.fromWkt(line))
             self.assertTrue(vl.dataProvider().addFeature(f))
 
+        tolerance = 10
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
         vl.elevationProperties().setRespectLayerSymbology(False)
         line_symbol = QgsLineSymbol.createSimple({"color": "#ff00ff", "width": "0.8"})
         line_symbol.setWidthUnit(Qgis.RenderUnit.MapUnits)
         vl.elevationProperties().setProfileLineSymbol(line_symbol)
+        vl.elevationProperties().setCustomTolerance(tolerance)
 
         curve = QgsLineString()
         curve.fromWkt(
@@ -2895,7 +2908,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req.setTransformContext(self.create_transform_context())
 
         req.setCrs(QgsCoordinateReferenceSystem())
-        req.setTolerance(10)
+        req.setTolerance(tolerance)
 
         plot_renderer = QgsProfilePlotRenderer([vl], req)
         plot_renderer.startGeneration()
@@ -2998,6 +3011,8 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         expectedFeatures: list[list[int]],
     ):
         request.setTolerance(tolerance)
+        if tolerance > 0 and layer.geometryType() != Qgis.GeometryType.Point:
+            layer.elevationProperties().setCustomTolerance(tolerance)
 
         profGen = layer.createProfileGenerator(request)
         self.assertIsNotNone(profGen)
@@ -3284,6 +3299,9 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
         vl.elevationProperties().setExtrusionEnabled(False)
 
+        tolerance = 10
+        vl.elevationProperties().setCustomTolerance(tolerance)
+
         wkt_str = "POLYHEDRALSURFACE Z(((321474.91 129812.38 -20.00,322277.09 130348.29 -20.00,322631.00 129738.23 -20.00,321434.46 129266.36 -20.00,321474.91 129812.38 -20.00)),((321474.91 129812.38 30.00,321434.46 129266.36 30.00,322631.00 129738.23 30.00,322277.09 130348.29 30.00,321474.91 129812.38 30.00)),((321474.91 129812.38 -20.00,321474.91 129812.38 30.00,322277.09 130348.29 30.00,322277.09 130348.29 -20.00,321474.91 129812.38 -20.00)),((322277.09 130348.29 -20.00,322277.09 130348.29 30.00,322631.00 129738.23 30.00,322631.00 129738.23 -20.00,322277.09 130348.29 -20.00)),((322631.00 129738.23 -20.00,322631.00 129738.23 30.00,321434.46 129266.36 30.00,321434.46 129266.36 -20.00,322631.00 129738.23 -20.00)),((321434.46 129266.36 -20.00,321434.46 129266.36 30.00,321474.91 129812.38 30.00,321474.91 129812.38 -20.00,321434.46 129266.36 -20.00)))"
         vl_feature = QgsFeature()
         vl_feature.setGeometry(QgsGeometry.fromWkt(wkt_str))
@@ -3297,7 +3315,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req = QgsProfileRequest(curve)
 
         req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
-        req.setTolerance(10)
+        req.setTolerance(tolerance)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
 
@@ -3340,6 +3358,9 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
         vl.elevationProperties().setExtrusionEnabled(False)
 
+        tolerance = 10
+        vl.elevationProperties().setCustomTolerance(tolerance)
+
         vl_feature = QgsFeature()
         vl_feature.setGeometry(
             QgsGeometry.fromWkt(
@@ -3356,7 +3377,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req = QgsProfileRequest(curve)
 
         req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
-        req.setTolerance(10)
+        req.setTolerance(tolerance)
         generator = vl.createProfileGenerator(req)
         self.assertTrue(generator.generateProfile())
 

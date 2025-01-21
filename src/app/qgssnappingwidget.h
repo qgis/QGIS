@@ -37,8 +37,10 @@ class QgsScaleWidget;
 
 #include "qgssnappingconfig.h"
 
+#include <QMenu>
 #include <QWidget>
 #include <QSettings>
+
 #include "qgis_app.h"
 
 /**

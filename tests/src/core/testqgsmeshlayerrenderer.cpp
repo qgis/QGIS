@@ -886,7 +886,11 @@ void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
   layer.temporalProperties()->setIsActive( false );
 
   int groupIndex = 0;
-  layer.setStaticScalarDatasetIndex( QgsMeshDatasetIndex( groupIndex, 0 ) );
+  QgsMeshDatasetIndex meshDatasetIndex = QgsMeshDatasetIndex( groupIndex, 0 );
+  layer.setStaticScalarDatasetIndex( meshDatasetIndex );
+
+  double min, max;
+  bool found;
 
   QgsProject::instance()->addMapLayer( &layer );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << &layer );
@@ -894,31 +898,52 @@ void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
   mMapSettings->setOutputDpi( 96 );
   mMapSettings->setRotation( 0 );
 
+  QgsMeshRendererSettings defaultRendererSettings = layer.rendererSettings();
+
   // min max from current canvas settings for group
   QgsMeshRendererSettings rendererSettings = layer.rendererSettings();
   QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
   scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
   scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::UpdatedCanvas );
-  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
-  layer.setRendererSettings( rendererSettings );
 
   QgsRectangle extent = layer.extent();
   extent.grow( 0.1 );
+
+  found = layer.minimumMaximumActiveScalarDataset( extent, meshDatasetIndex, min, max );
+  QVERIFY( found );
+  scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
   mMapSettings->setExtent( extent );
   QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_1", "scale_interactive_from_canvas_1", *mMapSettings, 0, 5 );
 
   extent = QgsRectangle( 0, 8, 2, 10 );
   extent.grow( 0.1 );
+
+  found = layer.minimumMaximumActiveScalarDataset( extent, meshDatasetIndex, min, max );
+  QVERIFY( found );
+  scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
   mMapSettings->setExtent( extent );
   QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_2", "scale_interactive_from_canvas_2", *mMapSettings, 0, 5 );
 
   extent = QgsRectangle( 8, 8, 10, 10 );
   extent.grow( 0.1 );
+
+  found = layer.minimumMaximumActiveScalarDataset( extent, meshDatasetIndex, min, max );
+  QVERIFY( found );
+  scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
   mMapSettings->setExtent( extent );
   QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_3", "scale_interactive_from_canvas_3", *mMapSettings, 0, 5 );
 
   // min max from whole mesh settings for group
-  rendererSettings = layer.rendererSettings();
+  rendererSettings = defaultRendererSettings;
   scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
   scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
   scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::WholeMesh );

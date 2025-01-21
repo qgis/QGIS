@@ -38,9 +38,9 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
         self.assertEqual(symbol.cullingMode(), Qgs3DTypes.Front)
 
         # Test altitude clamping
-        self.assertEqual(symbol.altitudeClamping(), Qgis.AltitudeClamping.Relative)
-        symbol.setAltitudeClamping(Qgis.AltitudeClamping.Absolute)
         self.assertEqual(symbol.altitudeClamping(), Qgis.AltitudeClamping.Absolute)
+        symbol.setAltitudeClamping(Qgis.AltitudeClamping.Relative)
+        self.assertEqual(symbol.altitudeClamping(), Qgis.AltitudeClamping.Relative)
 
         # Test height
         self.assertEqual(symbol.height(), 0.0)
@@ -152,9 +152,9 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
         self.assertEqual(symbol1, symbol2)
 
         # Test altitude clamping
-        symbol2.setAltitudeClamping(Qgis.AltitudeClamping.Absolute)
-        self.assertNotEqual(symbol1, symbol2)
         symbol2.setAltitudeClamping(Qgis.AltitudeClamping.Relative)
+        self.assertNotEqual(symbol1, symbol2)
+        symbol2.setAltitudeClamping(Qgis.AltitudeClamping.Absolute)
         self.assertEqual(symbol1, symbol2)
 
         # Test height

@@ -14,14 +14,16 @@
  ***************************************************************************/
 #include <QCoreApplication>
 
+#include "qgsmapcanvassnappingutils.h"
 #include "qgstest.h"
-#include "qgsguiutils.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
 #include "qgsannotationlayer.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "testqgsmaptoolutils.h"
+
 
 class TestQgsMapToolCapture : public QObject
 {
@@ -36,6 +38,7 @@ class TestQgsMapToolCapture : public QObject
     void cleanup();         // will be called after every testfunction.
 
     void addVertexNoLayer();
+    void addPointNoLayerSnapping();
     void addVertexNonVectorLayer();
     void addVertexNonVectorLayerTransform();
 };
@@ -86,6 +89,64 @@ void TestQgsMapToolCapture::addVertexNoLayer()
   QCOMPARE( tool.nextPoint( QgsPoint( 5, 6 ), layerPoint ), 0 );
   QCOMPARE( layerPoint.x(), 5.0 );
   QCOMPARE( layerPoint.y(), 6.0 );
+}
+
+void TestQgsMapToolCapture::addPointNoLayerSnapping()
+{
+  // checks that snapping works even if no layer is set as current layer
+
+  QgsPoint p = QgsPoint( 2556607, 1115175 );
+
+  QgsProject::instance()->clear();
+
+  QgsMapCanvas canvas;
+  canvas.resize( 600, 600 );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2056" ) ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.setExtent( QgsRectangle( p.x() - 50, p.y() - 50, p.x() + 50, p.y() + 50 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:2056" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer );
+  QgsFeature f( layer->fields() );
+  f.setGeometry( QgsGeometry( p.clone() ) );
+  QgsFeatureList flist { f };
+  layer->dataProvider()->addFeatures( flist );
+  canvas.setLayers( { layer } );
+
+  QgsMapSettings mapSettings = canvas.mapSettings();
+  QVERIFY( mapSettings.hasValidSettings() );
+
+  QgsSnappingUtils u;
+  u.setMapSettings( mapSettings );
+
+  QgsSnappingConfig snappingConfig = u.config();
+  snappingConfig.setEnabled( true );
+  snappingConfig.setTolerance( 10 );
+  snappingConfig.setUnits( Qgis::MapToolUnit::Pixels );
+  snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snappingConfig.setTypeFlag( Qgis::SnappingType::Vertex );
+  u.setConfig( snappingConfig );
+
+  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( &canvas, this );
+  snappingUtils->setConfig( snappingConfig );
+  snappingUtils->setMapSettings( mapSettings );
+  snappingUtils->locatorForLayer( layer )->init();
+
+  canvas.setSnappingUtils( snappingUtils );
+
+  canvas.setCurrentLayer( nullptr );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CaptureLine );
+  canvas.setMapTool( &tool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  utils.mouseClick( p.x() + .5, p.y() + .5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QgsPoint toolPoint = tool.captureCurve()->vertexAt( QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( toolPoint, p );
 }
 
 void TestQgsMapToolCapture::addVertexNonVectorLayer()

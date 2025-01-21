@@ -25,6 +25,7 @@
 #include <QList>
 #include <QMutex>
 #include <QCache>
+#include <QByteArray>
 
 #include "qgis_core.h"
 #include "qgspointcloudstatistics.h"
@@ -298,6 +299,15 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      */
     virtual QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) = 0;
 
+    /**
+     * Tries to update the data for the specified nodes.
+     * Subclasses that support editing should override this to handle storing the data.
+     * Default implementation does nothing, returns false.
+     * \returns TRUE on success, otherwise FALSE
+     * \since QGIS 3.42
+     */
+    virtual bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data );
+
     //! Returns extent of the data
     QgsRectangle extent() const { return mExtent; }
 
@@ -411,6 +421,9 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     //! Checks if index is non-null
     operator bool() const;
+
+    //! Returns pointer to the implementation class
+    QgsAbstractPointCloudIndex *get() SIP_SKIP { return mIndex.get(); }
 
     /**
     * Loads the index from the file
@@ -534,6 +547,13 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) SIP_SKIP;
 
     /**
+     * Tries to update the data for the specified nodes.
+     *
+     * \returns TRUE on success, otherwise FALSE
+     */
+    bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data );
+
+    /**
     * Returns extent of the data
     *
     * \see QgsAbstractPointCloudIndex::extent
@@ -624,8 +644,21 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
      */
     QVariantMap extraMetadata() const;
 
+    /**
+     * Tries to store pending changes to the data provider.
+     * If errorMessage is not a null pointer, it will receive
+     * an error message in case the call failed.
+     * \return TRUE on success, otherwise FALSE
+     */
+    bool commitChanges( QString *errorMessage SIP_OUT = nullptr );
+
+    //! Returns TRUE if there are uncommitted changes, FALSE otherwise
+    bool isModified() const;
+
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
+
+    friend class TestQgsPointCloudEditing;
 };
 
 

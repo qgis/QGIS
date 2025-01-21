@@ -30,6 +30,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsrendercontext.h"
 #include "qgspointlocatorinittask.h"
+#include "qgsspatialindexutils.h"
 #include <spatialindex/SpatialIndex.h>
 
 #include <QLinkedListIterator>
@@ -43,14 +44,6 @@ static SpatialIndex::Point point2point( const QgsPointXY &point )
 {
   double plow[2] = { point.x(), point.y() };
   return Point( plow, 2 );
-}
-
-
-static SpatialIndex::Region rect2region( const QgsRectangle &rect )
-{
-  double pLow[2] = { rect.xMinimum(), rect.yMinimum() };
-  double pHigh[2] = { rect.xMaximum(), rect.yMaximum() };
-  return SpatialIndex::Region( pLow, pHigh, 2 );
 }
 
 
@@ -1128,7 +1121,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     const QgsRectangle bbox = f.geometry().boundingBox();
     if ( bbox.isFinite() )
     {
-      SpatialIndex::Region r( rect2region( bbox ) );
+      SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bbox ) );
       dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
       auto it = mGeoms.find( f.id() );
@@ -1262,7 +1255,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     const QgsRectangle bbox = f.geometry().boundingBox();
     if ( bbox.isFinite() )
     {
-      const SpatialIndex::Region r( rect2region( bbox ) );
+      const SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bbox ) );
       mRTree->insertData( 0, nullptr, r, f.id() );
 
       auto it = mGeoms.find( f.id() );
@@ -1301,7 +1294,7 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
   auto it = mGeoms.find( fid );
   if ( it != mGeoms.end() )
   {
-    mRTree->deleteData( rect2region( ( *it )->boundingBox() ), fid );
+    mRTree->deleteData( QgsSpatialIndexUtils::rectangleToRegion( ( *it )->boundingBox() ), fid );
     delete *it;
     mGeoms.erase( it );
   }
@@ -1335,7 +1328,7 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
   Match m;
   QgsPointLocator_VisitorNearestVertex visitor( this, m, point, filter );
   const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
@@ -1350,7 +1343,7 @@ QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point
   QgsPointLocator_VisitorNearestCentroid visitor( this, m, point, filter );
 
   const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
@@ -1365,7 +1358,7 @@ QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY
   QgsPointLocator_VisitorNearestMiddleOfSegment visitor( this, m, point, filter );
 
   const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
@@ -1380,7 +1373,7 @@ QgsPointLocator::Match QgsPointLocator::nearestLineEndpoints( const QgsPointXY &
   QgsPointLocator_VisitorNearestLineEndpoint visitor( this, m, point, filter );
 
   const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
@@ -1398,7 +1391,7 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   Match m;
   QgsPointLocator_VisitorNearestEdge visitor( this, m, point, filter );
   const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
   return m;
@@ -1445,7 +1438,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
 
   MatchList lst;
   QgsPointLocator_VisitorEdgesInRect visitor( this, lst, rect, filter );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
 
   return lst;
 }
@@ -1463,7 +1456,7 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &
 
   MatchList lst;
   QgsPointLocator_VisitorVerticesInRect visitor( this, lst, rect, filter );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
 
   return lst;
 }

@@ -66,10 +66,10 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     mSubIndexExtentRenderer->setLabelTextFormat( mRenderer->labelTextFormat() );
   }
 
-  if ( mLayer->dataProvider()->index() )
+  if ( mLayer->index() )
   {
-    mScale = mLayer->dataProvider()->index().scale();
-    mOffset = mLayer->dataProvider()->index().offset();
+    mScale = mLayer->index().scale();
+    mOffset = mLayer->index().offset();
   }
 
   if ( const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() ) )
@@ -130,7 +130,7 @@ bool QgsPointCloudLayerRenderer::render()
   }
 
   // TODO cache!?
-  QgsPointCloudIndex pc = mLayer->dataProvider()->index();
+  QgsPointCloudIndex pc = mLayer->index();
   if ( mSubIndexes.isEmpty() && ( !pc || !pc.isValid() ) )
   {
     mReadyToCompose = true;

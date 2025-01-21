@@ -137,6 +137,13 @@ void QgsCopcProvider::generateIndex()
   //no-op, index is always generated
 }
 
+QgsPointCloudDataProvider::Capabilities QgsCopcProvider::capabilities() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QgsPointCloudDataProvider::Capability::ChangeAttributeValues;
+}
+
 QgsCopcProviderMetadata::QgsCopcProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {

@@ -222,8 +222,8 @@ typedef QSet<int> QgsAttributeIds;
  *
  * - You can use various functions available in the QGIS Expression list,
  *   however the function must exist server side and have the same name and arguments to work.
- * - Use the special $geometry parameter to provide the layer geometry column as input
- *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
+ * - Use the special ``@geometry`` parameter to provide the layer geometry column as input
+ *   into the spatial binary operators e.g ``intersects(@geometry, geomFromWKT('POINT (5 6)'))``
  *
  * \subsection oapif OGC API Features data provider (oapif)
  *

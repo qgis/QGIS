@@ -25,12 +25,12 @@
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
 #include "qgsraster.h"
+#include "qgspostgresutils.h"
 
 #include <QRegularExpression>
 
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = QStringLiteral( "postgresraster" );
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION = QStringLiteral( "Postgres raster provider" );
-
 
 QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsRasterDataProvider( uri, providerOptions, flags )
@@ -2446,4 +2446,474 @@ QgsFields QgsPostgresRasterProvider::fields() const
 QgsLayerMetadata QgsPostgresRasterProvider::layerMetadata() const
 {
   return mLayerMetadata;
+}
+
+Qgis::ProviderStyleStorageCapabilities QgsPostgresRasterProvider::styleStorageCapabilities() const
+{
+  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
+  if ( isValid() )
+  {
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::DeleteFromDatabase;
+  }
+  return storageCapabilities;
+}
+
+
+bool QgsPostgresRasterProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  QgsDataSourceUri dsUri( uri );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
+  if ( !conn )
+  {
+    errorCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  {
+    return false;
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
+  const QString checkQuery = QString( "SELECT styleName"
+                                      " FROM layer_styles"
+                                      " WHERE f_table_catalog=%1"
+                                      " AND f_table_schema=%2"
+                                      " AND f_table_name=%3"
+                                      " AND f_geometry_column IS NULL"
+                                      " AND (type=%4 OR type IS NULL)"
+                                      " AND styleName=%5"
+                                      " AND r_raster_column=%6" )
+                               .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                               .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                               .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                               .arg( QgsPostgresConn::quotedValue( mType ) )
+                               .arg( QgsPostgresConn::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) )
+                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+
+  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), checkQuery ) );
+  if ( res.PQresultStatus() == PGRES_TUPLES_OK )
+  {
+    return res.PQntuples() > 0;
+  }
+  else
+  {
+    errorCause = res.PQresultErrorMessage();
+    return false;
+  }
+}
+
+bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QString &qmlStyleIn, const QString &sldStyleIn, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  // Replace invalid XML characters
+  QString qmlStyle { qmlStyleIn };
+  QgsPostgresUtils::replaceInvalidXmlChars( qmlStyle );
+  QString sldStyle { sldStyleIn };
+  QgsPostgresUtils::replaceInvalidXmlChars( sldStyle );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  {
+    if ( !QgsPostgresUtils::createStylesTable( conn, QStringLiteral( "QgsPostgresRasterProviderMetadata" ) ) )
+    {
+      errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+      conn->unref();
+      return false;
+    }
+  }
+  else
+  {
+    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    {
+      QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
+      if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+      {
+        errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+        conn->unref();
+        return false;
+      }
+    }
+  }
+
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  {
+    QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN r_raster_column varchar NULL" ) );
+    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      errCause = QObject::tr( "Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+      conn->unref();
+      return false;
+    }
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
+  QString uiFileColumn;
+  QString uiFileValue;
+  if ( !uiFileContent.isEmpty() )
+  {
+    uiFileColumn = QStringLiteral( ",ui" );
+    uiFileValue = QStringLiteral( ",XMLPARSE(DOCUMENT %1)" ).arg( QgsPostgresConn::quotedValue( uiFileContent ) );
+  }
+
+  // Note: in the construction of the INSERT and UPDATE strings the qmlStyle and sldStyle values
+  // can contain user entered strings, which may themselves include %## values that would be
+  // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
+  // two values are both replaced in the final .arg call of the string construction.
+
+  QString sql = QString( "INSERT INTO layer_styles("
+                         "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner,type%12,r_raster_column"
+                         ") VALUES ("
+                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %16),XMLPARSE(DOCUMENT %17),%8,%9,%10,%11%13,%14"
+                         ")" )
+                  .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                  .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                  .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                  .arg( QStringLiteral( "NULL" ) )
+                  .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+                  .arg( useAsDefault ? "true" : "false" )
+                  .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+                  .arg( "CURRENT_USER" )
+                  .arg( uiFileColumn )
+                  .arg( uiFileValue )
+                  .arg( QgsPostgresConn::quotedValue( mType ) )
+                  .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                  // Must be the final .arg replacement - see above
+                  .arg( QgsPostgresConn::quotedValue( qmlStyle ), QgsPostgresConn::quotedValue( sldStyle ) );
+
+
+  QString checkQuery = QString( "SELECT styleName"
+                                " FROM layer_styles"
+                                " WHERE f_table_catalog=%1"
+                                " AND f_table_schema=%2"
+                                " AND f_table_name=%3"
+                                " AND f_geometry_column IS NULL"
+                                " AND (type=%4 OR type IS NULL)"
+                                " AND styleName=%5"
+                                " AND r_raster_column=%6" )
+                         .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                         .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                         .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                         .arg( QgsPostgresConn::quotedValue( mType ) )
+                         .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+                         .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+
+  QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresRasterProviderMetadata", checkQuery ) );
+  if ( res.PQntuples() > 0 )
+  {
+    sql = QString( "UPDATE layer_styles"
+                   " SET useAsDefault=%1"
+                   ",styleQML=XMLPARSE(DOCUMENT %12)"
+                   ",styleSLD=XMLPARSE(DOCUMENT %13)"
+                   ",description=%4"
+                   ",owner=%5"
+                   ",type=%2"
+                   " WHERE f_table_catalog=%6"
+                   " AND f_table_schema=%7"
+                   " AND f_table_name=%8"
+                   " AND f_geometry_column IS NULL"
+                   " AND styleName=%9"
+                   " AND (type=%2 OR type IS NULL)"
+                   " AND r_raster_column=%14" )
+            .arg( useAsDefault ? "true" : "false" )
+            .arg( QgsPostgresConn::quotedValue( mType ) )
+            .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+            .arg( "CURRENT_USER" )
+            .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+            .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+            .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+            .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+            // Must be the final .arg replacement - see above
+            .arg( QgsPostgresConn::quotedValue( qmlStyle ), QgsPostgresConn::quotedValue( sldStyle ) )
+            .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+  }
+
+  if ( useAsDefault )
+  {
+    QString removeDefaultSql = QString( "UPDATE layer_styles"
+                                        " SET useAsDefault=false"
+                                        " WHERE f_table_catalog=%1"
+                                        " AND f_table_schema=%2"
+                                        " AND f_table_name=%3"
+                                        " AND f_geometry_column IS NULL"
+                                        " AND (type=%4 OR type IS NULL)"
+                                        " AND r_raster_column=%5" )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                                 .arg( QgsPostgresConn::quotedValue( mType ) )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+
+    sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
+  }
+
+  res = conn->LoggedPQexec( "QgsPostgresRasterProviderMetadata", sql );
+
+  bool saved = res.PQresultStatus() == PGRES_COMMAND_OK;
+  if ( !saved )
+    errCause = QObject::tr( "Unable to save layer style. It's not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator." ).arg( dsUri.username() );
+
+  conn->unref();
+
+  return saved;
+}
+
+
+QString QgsPostgresRasterProviderMetadata::loadStyle( const QString &uri, QString &errCause )
+{
+  QString styleName;
+  return loadStoredStyle( uri, styleName, errCause );
+}
+
+QString QgsPostgresRasterProviderMetadata::loadStoredStyle( const QString &uri, QString &styleName, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+  QString selectQmlQuery;
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return QString();
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  {
+    conn->unref();
+    return QString();
+  }
+  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  {
+    return QString();
+  }
+
+  // support layer_styles without type column < 3.14
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  {
+    selectQmlQuery = QString( "SELECT styleName, styleQML"
+                              " FROM layer_styles"
+                              " WHERE f_table_catalog=%1"
+                              " AND f_table_schema=%2"
+                              " AND f_table_name=%3"
+                              " AND f_geometry_column IS NULL"
+                              " AND r_raster_column=%4"
+                              " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
+                              ",update_time DESC LIMIT 1" )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+  }
+  else
+  {
+    selectQmlQuery = QString( "SELECT styleName, styleQML"
+                              " FROM layer_styles"
+                              " WHERE f_table_catalog=%1"
+                              " AND f_table_schema=%2"
+                              " AND f_table_name=%3"
+                              " AND f_geometry_column IS NULL"
+                              " AND (type=%4 OR type IS NULL)"
+                              " AND r_raster_column=%5"
+                              " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
+                              ",update_time DESC LIMIT 1" )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                       .arg( QgsPostgresConn::quotedValue( mType ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+  }
+
+  QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectQmlQuery ) );
+
+  styleName = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : QString();
+  QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 1 ) : QString();
+  conn->unref();
+
+  QgsPostgresUtils::restoreInvalidXmlChars( style );
+
+  return style;
+}
+
+int QgsPostgresRasterProviderMetadata::listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause )
+{
+  errCause.clear();
+  QgsDataSourceUri dsUri( uri );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+    return -1;
+  }
+
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  {
+    return -1;
+  }
+
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  {
+    return false;
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
+  QString selectRelatedQuery = QString( "SELECT id,styleName,description"
+                                        " FROM layer_styles"
+                                        " WHERE f_table_catalog=%1"
+                                        " AND f_table_schema=%2"
+                                        " AND f_table_name=%3"
+                                        " AND f_geometry_column is NULL"
+                                        " AND (type=%4 OR type IS NULL)"
+                                        " AND r_raster_column=%5"
+                                        " ORDER BY useasdefault DESC, update_time DESC" )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                                 .arg( QgsPostgresConn::quotedValue( mType ) )
+                                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+
+  QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectRelatedQuery ) );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectRelatedQuery ) );
+    errCause = QObject::tr( "Error executing the select query for related styles. The query was logged" );
+    conn->unref();
+    return -1;
+  }
+
+  int numberOfRelatedStyles = result.PQntuples();
+  for ( int i = 0; i < numberOfRelatedStyles; i++ )
+  {
+    ids.append( result.PQgetvalue( i, 0 ) );
+    names.append( result.PQgetvalue( i, 1 ) );
+    descriptions.append( result.PQgetvalue( i, 2 ) );
+  }
+
+  QString selectOthersQuery = QString( "SELECT id,styleName,description"
+                                       " FROM layer_styles"
+                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column IS NULL AND type=%4 AND r_raster_column=%5)"
+                                       " ORDER BY update_time DESC" )
+                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                                .arg( QgsPostgresConn::quotedValue( mType ) )
+                                .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+
+  result = conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectOthersQuery );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectOthersQuery ) );
+    errCause = QObject::tr( "Error executing the select query for unrelated styles. The query was logged" );
+    conn->unref();
+    return -1;
+  }
+
+  for ( int i = 0; i < result.PQntuples(); i++ )
+  {
+    ids.append( result.PQgetvalue( i, 0 ) );
+    names.append( result.PQgetvalue( i, 1 ) );
+    descriptions.append( result.PQgetvalue( i, 2 ) );
+  }
+
+  conn->unref();
+
+  return numberOfRelatedStyles;
+}
+
+bool QgsPostgresRasterProviderMetadata::deleteStyleById( const QString &uri, const QString &styleId, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+  bool deleted;
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+    deleted = false;
+  }
+  else
+  {
+    QString deleteStyleQuery = QStringLiteral( "DELETE FROM layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
+    QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), deleteStyleQuery ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      QgsDebugError(
+        QString( "PQexec of this query returning != PGRES_COMMAND_OK (%1 != expected %2): %3" )
+          .arg( result.PQresultStatus() )
+          .arg( PGRES_COMMAND_OK )
+          .arg( deleteStyleQuery )
+      );
+      QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( deleteStyleQuery ) );
+      errCause = QObject::tr( "Error executing the delete query. The query was logged" );
+      deleted = false;
+    }
+    else
+    {
+      deleted = true;
+    }
+    conn->unref();
+  }
+  return deleted;
+}
+
+QString QgsPostgresRasterProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+    return QString();
+  }
+
+  QString style;
+  QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
+  QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectQmlQuery ) );
+  if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+  {
+    if ( result.PQntuples() == 1 )
+      style = result.PQgetvalue( 0, 0 );
+    else
+      errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( QLatin1String( "layer_styles" ) );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
+    errCause = QObject::tr( "Error executing the select query. The query was logged" );
+  }
+
+  conn->unref();
+
+  QgsPostgresUtils::restoreInvalidXmlChars( style );
+
+  return style;
 }

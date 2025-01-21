@@ -30,10 +30,14 @@
 #include <QUrl>
 #include <QActionGroup>
 
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgisapp.h"
+#include "qgssettingsregistrycore.h"
 
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
@@ -46,6 +50,7 @@
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 #include "qgsdatasourceselectdialog.h"
+#include "qgssnappingwidget.h"
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -88,6 +93,11 @@ const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolde
 const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
 
 const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used georeferencer target CRS" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( QStringLiteral( "snapping-enabled" ), sTreeGeoreferencer, false, QObject::tr( "Snapping enabled." ) );
+
+const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( QStringLiteral( "snapping-types" ), sTreeGeoreferencer, Qgis::SnappingType::Vertex, QObject::tr( "Snapping types." ) );
+
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -1098,6 +1108,66 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mCentralLayout->addWidget( mCanvas, 0, 0, 2, 1 );
 
+  // snapping + cad
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
+  addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
+  mAdvancedDigitizingDockWidget->hide();
+  connect( mActionAdvancedDigitizingDock, &QAction::triggered, mAdvancedDigitizingDockWidget, [=]( bool checked ) { mAdvancedDigitizingDockWidget->setVisible( checked ); } );
+
+  QgsSnappingConfig snappingConfig;
+  snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snappingConfig.setTypeFlag( settingSnappingTypes->value() );
+  snappingConfig.setTolerance( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->value() );
+  snappingConfig.setUnits( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value() );
+  snappingConfig.setEnabled( settingSnappingEnabled->value() );
+
+  mSnappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
+  mSnappingUtils->setConfig( snappingConfig );
+  mCanvas->setSnappingUtils( mSnappingUtils );
+
+  // type button
+  mSnappingTypeButton = new QToolButton( this );
+  mSnappingTypeButton->setCheckable( true );
+  mSnappingTypeButton->setChecked( snappingConfig.enabled() );
+  mSnappingTypeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
+  mSnappingTypeButton->setToolTip( tr( "Snapping Type" ) );
+  mSnappingTypeButton->setPopupMode( QToolButton::MenuButtonPopup );
+  SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
+
+  for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
+  {
+    if ( type == Qgis::SnappingType::NoSnap )
+      continue;
+    QAction *action = new QAction( QgsSnappingConfig::snappingTypeToIcon( type ), QgsSnappingConfig::snappingTypeToString( type ), typeMenu );
+    action->setData( QVariant::fromValue( type ) );
+    action->setCheckable( true );
+    action->setChecked( snappingConfig.typeFlag().testFlag( type ) );
+    typeMenu->addAction( action );
+    mSnappingTypeActions << action;
+  }
+
+  mSnappingTypeButton->setMenu( typeMenu );
+  mSnappingTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
+  connect( mSnappingTypeButton, &QToolButton::triggered, this, [=]( QAction *action ) {
+    QgsSnappingConfig snappingConfig = mSnappingUtils->config();
+    unsigned int type = static_cast<int>( snappingConfig.typeFlag() );
+    const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
+    type ^= actionFlag;
+    snappingConfig.setTypeFlag( static_cast<Qgis::SnappingTypes>( type ) );
+    mSnappingUtils->setConfig( snappingConfig );
+  } );
+
+  connect( mSnappingTypeButton, &QToolButton::clicked, this, [=]( bool checked ) {
+    QgsSnappingConfig snappingConfig = mSnappingUtils->config();
+    snappingConfig.setEnabled( checked );
+    mSnappingUtils->setConfig( snappingConfig );
+    for ( QAction *action : std::as_const( mSnappingTypeActions ) )
+      action->setEnabled( checked );
+  } );
+
+  toolBarEdit->insertWidget( mActionAdvancedDigitizingDock, mSnappingTypeButton );
+
+
   // set up map tools
   mToolZoomIn = new QgsMapToolZoom( mCanvas, false /* zoomOut */ );
   mToolZoomIn->setAction( mActionZoomIn );
@@ -1108,7 +1178,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   mToolPan = new QgsMapToolPan( mCanvas );
   mToolPan->setAction( mActionPan );
 
-  mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas );
+  mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas, mAdvancedDigitizingDockWidget );
   mToolAddPoint->setAction( mActionAddPoint );
   connect( mToolAddPoint, &QgsGeorefToolAddPoint::showCoordDialog, this, &QgsGeoreferencerMainWindow::showCoordDialog );
 
