@@ -86,6 +86,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolBar = new QToolBar( this );
   mEditingToolBar->setWindowTitle( tr( "Editing Toolbar" ) );
   mEditingToolBar->setVisible( false );
+  mEditingToolsMenu = new QMenu( this );
 
   mPointCloudEditingToolbar = new QToolBar( this );
 
@@ -101,8 +102,13 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolBar->addSeparator();
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
 
-  QAction *actionPointCloudChangeAttributeTool = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
-  actionPointCloudChangeAttributeTool->setCheckable( true );
+  mEditingToolsAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSelectPolygon.svg" ) ), tr( "Select Editing Tool" ), this );
+  mEditingToolsAction->setMenu( mEditingToolsMenu );
+  mEditingToolBar->addAction( mEditingToolsAction );
+  QToolButton *editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
+  editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
+  QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Polygon selector" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
+  QAction *actionPaintBrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Paint Brush Selector" ), this, &Qgs3DMapCanvasWidget::paintBrush );
 
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
   mCboChangeAttribute = new QComboBox();
@@ -156,9 +162,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ), tr( "Measurement Line" ), this, &Qgs3DMapCanvasWidget::measureLine );
   actionMeasurementTool->setCheckable( true );
-
-  QAction *actionPaintBrush = toolBar->addAction( QIcon( QgsApplication::iconPath( "propertyicons/rendering.svg" ) ), tr( "Paint Brush Selector" ), this, &Qgs3DMapCanvasWidget::paintBrush );
-  actionPaintBrush->setCheckable( true );
 
   // Create action group to make the action exclusive
   QActionGroup *actionGroup = new QActionGroup( this );
@@ -476,7 +479,8 @@ void Qgs3DMapCanvasWidget::paintBrush()
   if ( !action )
     return;
 
-  mCanvas->setMapTool( action->isChecked() ? mMapToolPaintBrush : nullptr );
+  mCanvas->setMapTool( mMapToolPaintBrush );
+  mEditingToolsAction->setIcon( action->icon() );
 }
 
 void Qgs3DMapCanvasWidget::changePointCloudAttribute()
@@ -485,7 +489,8 @@ void Qgs3DMapCanvasWidget::changePointCloudAttribute()
   if ( !action )
     return;
 
-  mCanvas->setMapTool( action->isChecked() ? mMapToolPointCloudChangeAttribute : nullptr );
+  mCanvas->setMapTool( mMapToolPointCloudChangeAttribute );
+  mEditingToolsAction->setIcon( action->icon() );
 }
 
 void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )

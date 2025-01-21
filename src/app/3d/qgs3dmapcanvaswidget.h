@@ -151,6 +151,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QMenu *mMapThemeMenu = nullptr;
     QMenu *mCameraMenu = nullptr;
     QMenu *mEffectsMenu = nullptr;
+    QMenu *mEditingToolsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
@@ -167,6 +168,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionToggleEditing = nullptr;
     QAction *mActionUndo = nullptr;
     QAction *mActionRedo = nullptr;
+    QAction *mEditingToolsAction = nullptr;
     QToolBar *mPointCloudEditingToolbar = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
