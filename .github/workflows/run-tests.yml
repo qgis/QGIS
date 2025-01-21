@@ -131,7 +131,7 @@ jobs:
           context: .
           file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
-          push: ${{ github.event_name == 'push' && github.actor == 'qgis' }}
+          push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
           build-args:
             DISTRO_VERSION=${{ matrix.distro-version }}
