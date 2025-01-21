@@ -33,24 +33,25 @@ Qgs3DMapToolPaintBrush::Qgs3DMapToolPaintBrush( Qgs3DMapCanvas *canvas )
 
 Qgs3DMapToolPaintBrush::~Qgs3DMapToolPaintBrush() = default;
 
+void Qgs3DMapToolPaintBrush::addSelection()
+{
+}
+
 void Qgs3DMapToolPaintBrush::activate()
 {
   mCanvas->cameraController()->setInputHandlersEnabled( false );
-  mRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point ) );
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( QCursor::pos(), mCanvas->size(), mCanvas->cameraController()->camera() );
-  const float dist = ray.direction().y() == 0 ? 0 : ( mCanvas->cameraController()->camera()->farPlane() + mCanvas->cameraController()->camera()->nearPlane() ) / 2;
-  const QVector3D hoverPoint = ray.origin() + ray.direction() * dist;
-  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hoverPoint, mCanvas->mapSettings()->origin() );
-  mRubberBand->addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() / canvas()->mapSettings()->terrainSettings()->verticalScale() ) );
-  mRubberBand->setWidth( 32 );
-  mRubberBand->setOutlineColor( mRubberBand->color() );
-  mRubberBand->setColor( QColorConstants::Transparent );
+  mSelectionRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point, true ) );
+  mSelectionRubberBand->setWidth( 32 );
+  mSelectionRubberBand->setOutlineColor( mSelectionRubberBand->color() );
+  mSelectionRubberBand->setColor( QColorConstants::Transparent );
+  mSelectionRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( QCursor::pos(), *mCanvas ) );
   mIsActive = true;
 }
 
 void Qgs3DMapToolPaintBrush::deactivate()
 {
-  mRubberBand.reset();
+  reset();
+  mSelectionRubberBand.reset();
   mIsActive = false;
   mCanvas->cameraController()->setInputHandlersEnabled( true );
 }
@@ -60,40 +61,44 @@ QCursor Qgs3DMapToolPaintBrush::cursor() const
   return Qt::CrossCursor;
 }
 
+void Qgs3DMapToolPaintBrush::reset()
+{
+  mDragPositions.clear();
+}
+
 void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
 {
-  mMouseHasMoved = false;
-  mMouseClickPos = event->pos();
+  mIsClicked = true;
+  const QgsPoint newPos = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas );
+  mDragPositions.append( newPos );
+  qDebug() << "New START position -> X: " << newPos.x() << " Y: " << newPos.y() << " Z: " << newPos.z();
 }
 
 void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( event->button() == Qt::LeftButton && !mMouseHasMoved )
+  if ( event->button() == Qt::LeftButton )
   {
+    const QgsPoint newPos = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas );
+    mDragPositions.append( newPos );
+    qDebug() << "New END position -> X: " << newPos.x() << " Y: " << newPos.y() << " Z: " << newPos.z();
     //TODO: add logic for selecting points inside the rubberband
     // handleClick( event->pos() );
   }
-  else if ( event->button() == Qt::RightButton && !mMouseHasMoved )
-  {
-    //TODO: add logic for deselecting points inside the rubberband
-    // handleClick( event->pos() );
-  }
+  mIsClicked = false;
 }
 
 void Qgs3DMapToolPaintBrush::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !mMouseHasMoved && ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
-  {
-    mMouseHasMoved = true;
-  }
-
   if ( mIsActive )
   {
-    const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->size(), mCanvas->cameraController()->camera() );
-    const float dist = ray.direction().y() == 0 ? 0 : ( mCanvas->cameraController()->camera()->farPlane() + mCanvas->cameraController()->camera()->nearPlane() ) / 2;
-    const QVector3D hoverPoint = ray.origin() + ray.direction() * dist;
-    const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hoverPoint, mCanvas->mapSettings()->origin() );
-    mRubberBand->moveLastPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() / canvas()->mapSettings()->terrainSettings()->verticalScale() ) );
+    const QgsPoint newPos = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas );
+    mSelectionRubberBand->moveLastPoint( newPos );
+
+    if ( mIsClicked )
+    {
+      mDragPositions.append( newPos );
+      qDebug() << "New DRAG position -> X: " << newPos.x() << " Y: " << newPos.y() << " Z: " << newPos.z();
+    }
   }
 }
 
@@ -113,5 +118,5 @@ void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
   double zoomFactor = shrink ? 0.75 : 1.5;
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
-  mRubberBand->setWidth( mRubberBand->width() * zoomFactor );
+  mSelectionRubberBand->setWidth( mSelectionRubberBand->width() * zoomFactor );
 }
