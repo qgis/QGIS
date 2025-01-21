@@ -544,11 +544,11 @@ void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
   QgsDebugMsgLevel( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ), 2 );
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsOgrTransaction *>( transaction );
-  connect( mTransaction, &QgsTransaction::afterRollback, this, [ = ]( )
+  connect( mTransaction, &QgsTransaction::afterRollback, this, [ this ]( )
   {
     mFieldsRequireReload = true;
   } );
-  connect( mTransaction, &QgsTransaction::afterRollbackToSavepoint, this, [ = ]( const QString & )
+  connect( mTransaction, &QgsTransaction::afterRollbackToSavepoint, this, [ this ]( const QString & )
   {
     mFieldsRequireReload = true;
   } );
