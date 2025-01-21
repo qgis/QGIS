@@ -1426,7 +1426,7 @@ void TestQgsProcessing::context()
   QCOMPARE( context4.modelResult().rawChildInputs().count(), 0 );
   QCOMPARE( context4.modelResult().rawChildOutputs().count(), 0 );
   QCOMPARE( context4.modelResult().executedChildIds().count(), 0 );
-  
+
   // make sure postprocessor is correctly deleted
   ppDeleted = false;
   pp = new TestPostProcessor( &ppDeleted );
