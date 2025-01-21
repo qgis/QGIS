@@ -15,6 +15,7 @@
 
 #include "qgs3dutils.h"
 
+#include "qgs3dmapcanvas.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsfeaturerequest.h"
@@ -1012,4 +1013,16 @@ int Qgs3DUtils::openGlMaxClipPlanes( QSurface *surface )
 QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle )
 {
   return QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), headingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), pitchAngle );
+}
+
+QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, Qgs3DMapCanvas &canvas )
+{
+  const QgsRay3D ray = rayFromScreenPoint( screenPoint, canvas.size(), canvas.cameraController()->camera() );
+
+  // pick an arbitrary point mid-way between near and far plane
+  const float pointDistance = ( canvas.cameraController()->camera()->farPlane() + canvas.cameraController()->camera()->nearPlane() ) / 2;
+  const QVector3D worldPoint = ray.origin() + pointDistance * ray.direction().normalized();
+  const QgsVector3D mapTransform = worldToMapCoordinates( worldPoint, canvas.mapSettings()->origin() );
+  const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
+  return mapPoint;
 }
