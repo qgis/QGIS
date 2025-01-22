@@ -318,12 +318,12 @@ QString QgsRichTextEditor::toHtml() const
 
 void QgsRichTextEditor::editSource( bool enabled )
 {
-  if ( enabled )
+  if ( enabled && mStackedWidget->currentIndex() == 0 )
   {
     mSourceEdit->setText( mTextEdit->toHtml() );
     mStackedWidget->setCurrentIndex( 1 );
   }
-  else
+  else if ( !enabled && mStackedWidget->currentIndex() == 1 )
   {
     mTextEdit->setHtml( mSourceEdit->text() );
     mStackedWidget->setCurrentIndex( 0 );
