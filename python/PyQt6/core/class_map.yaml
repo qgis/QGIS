@@ -18161,6 +18161,7 @@ QgsTrackedVectorLayerTools.stopEditing: src/core/qgstrackedvectorlayertools.h#L4
 QgsTrackedVectorLayerTools: src/core/qgstrackedvectorlayertools.h#L27
 QgsTransaction.addLayer: src/core/qgstransaction.h#L90
 QgsTransaction.afterRollback: src/core/qgstransaction.h#L174
+QgsTransaction.afterRollbackToSavepoint: src/core/qgstransaction.h#L180
 QgsTransaction.begin: src/core/qgstransaction.h#L102
 QgsTransaction.commit: src/core/qgstransaction.h#L107
 QgsTransaction.connectionString: src/core/qgstransaction.h#L81
@@ -18168,7 +18169,7 @@ QgsTransaction.create: src/core/qgstransaction.h#L66
 QgsTransaction.create: src/core/qgstransaction.h#L73
 QgsTransaction.createSavepoint: src/core/qgstransaction.h#L136
 QgsTransaction.createSavepoint: src/core/qgstransaction.h#L142
-QgsTransaction.dirtied: src/core/qgstransaction.h#L179
+QgsTransaction.dirtied: src/core/qgstransaction.h#L185
 QgsTransaction.dirtyLastSavePoint: src/core/qgstransaction.h#L152
 QgsTransaction.executeSql: src/core/qgstransaction.h#L124
 QgsTransaction.lastSavePointIsDirty: src/core/qgstransaction.h#L162
