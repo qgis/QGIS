@@ -96,7 +96,7 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
       break;
     default:
       feedback->pushWarning( QObject::tr( "The input raster is a floating-point raster. Such rasters are not suitable for use with zonal histogram algorithm.\n"
-      "Please use Round raster or Reclassify by table tools to reduce number of decimal places or define histogram bins." ) );
+                                          "Please use Round raster or Reclassify by table tools to reduce number of decimal places or define histogram bins." ) );
       break;
   }
 
