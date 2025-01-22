@@ -294,7 +294,9 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
   if ( field < 0 || field >= L->fields().count() ||
        L->fields().fieldOrigin( field ) == Qgis::FieldOrigin::Join ||
        L->fields().fieldOrigin( field ) == Qgis::FieldOrigin::Expression )
+  {
     return false;
+  }
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );
   return true;
@@ -919,6 +921,8 @@ bool QgsVectorLayerEditBuffer::commitChangesAddFeatures( bool &featuresAdded, QS
     // not be sent to the data provider. Refs #18784
     for ( int i = 0; i < featuresToAdd.count(); ++i )
     {
+      // Empty the feature's fields so the up-to-date fields from the data provider is used to match attributes
+      featuresToAdd[i].setFields( QgsFields(), false );
       QgsVectorLayerUtils::matchAttributesToFields( featuresToAdd[i], L->dataProvider()->fields() );
     }
 
