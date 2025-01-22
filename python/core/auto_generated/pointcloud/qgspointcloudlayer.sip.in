@@ -307,6 +307,13 @@ Emitted when statistics calculation state has changed
 .. versionadded:: 3.26
 %End
 
+    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n );
+%Docstring
+Emitted when a node gets some attribute values of a node changed
+
+.. versionadded:: 3.42
+%End
+
   private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };
