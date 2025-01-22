@@ -544,6 +544,11 @@ void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
   QgsDebugMsgLevel( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ), 2 );
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsOgrTransaction *>( transaction );
+  if ( transaction )
+  {
+    connect( mTransaction, &QgsTransaction::afterRollback, this, &QgsOgrProvider::afterRollback );
+    connect( mTransaction, &QgsTransaction::afterRollbackToSavepoint, this, &QgsOgrProvider::afterRollbackToSavepoint );
+  }
 }
 
 QgsAbstractFeatureSource *QgsOgrProvider::featureSource() const
@@ -724,6 +729,17 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
   }
 
   return mSubLayerList;
+}
+
+void QgsOgrProvider::afterRollbackToSavepoint( const QString &savepointName )
+{
+  Q_UNUSED( savepointName );
+  mFieldsRequireReload = true;
+}
+
+void QgsOgrProvider::afterRollback()
+{
+  mFieldsRequireReload = true;
 }
 
 void QgsOgrProvider::setEncoding( const QString &e )
@@ -1073,6 +1089,7 @@ void QgsOgrProvider::loadFields()
     mAttributeFields.append( newField );
     createdFields++;
   }
+  mFieldsRequireReload = false;
 }
 
 void QgsOgrProvider::loadMetadata()
@@ -1205,7 +1222,7 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
   QRecursiveMutex *mutex = nullptr;
   OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
-  QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes, mFirstFieldIsFid, QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
+  QgsOgrProviderUtils::setRelevantFields( ogrLayer, fields().count(), fetchGeometry, fetchAttributes, mFirstFieldIsFid, QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
 }
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest &request ) const
@@ -1452,7 +1469,7 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  if ( fieldId < 0 || fieldId >= mAttributeFields.count() )
+  if ( fieldId < 0 || fieldId >= fields().count() )
     return QVariant();
 
   QString defaultVal = mDefaultValues.value( fieldId, QString() );
@@ -1516,7 +1533,7 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
     }
   }
 
-  const bool compatible = mAttributeFields.at( fieldId ).convertCompatible( resultVar );
+  const bool compatible = fields().at( fieldId ).convertCompatible( resultVar );
   return compatible && !QgsVariantUtils::isNull( resultVar ) ? resultVar : QVariant();
 }
 
@@ -1604,6 +1621,10 @@ long long QgsOgrProvider::featureCount() const
 
 QgsFields QgsOgrProvider::fields() const
 {
+  if ( mFieldsRequireReload )
+  {
+    const_cast<QgsOgrProvider *>( this )->loadFields();
+  }
   return mAttributeFields;
 }
 
@@ -1803,6 +1824,8 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     {
       bool errorEmitted = false;
       bool ok = false;
+      // Get an updated copy
+      const QgsFields fieldsCopy { f.fields() };
       switch ( type )
       {
         case OFTInteger:
@@ -1815,7 +1838,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
             if ( !ok )
             {
               pushError( tr( "wrong value for attribute %1 of feature %2: %3" )
-                         .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                         .arg( fieldsCopy.at( qgisAttributeId ).name() )
                          .arg( f.id() )
                          .arg( strVal ) );
               errorEmitted = true;
@@ -2033,9 +2056,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
         if ( !errorEmitted )
         {
           pushError( tr( "wrong data type for attribute %1 of feature %2: Got %3, expected %4" )
-                     .arg( mAttributeFields.at( qgisAttributeId ).name() )
+                     .arg( fieldsCopy.at( qgisAttributeId ).name() )
                      .arg( f.id() )
-                     .arg( attrVal.typeName(), QVariant::typeToName( mAttributeFields.at( qgisAttributeId ).type() ) ) );
+                     .arg( attrVal.typeName(), QVariant::typeToName( fieldsCopy.at( qgisAttributeId ).type() ) ) );
         }
         returnValue = false;
       }
@@ -2304,8 +2327,9 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   }
 
   // Backup existing fields. We need them to 'restore' field type, length, precision
-  QgsFields oldFields = mAttributeFields;
+  QgsFields oldFields = fields();
 
+  // Updates mAttributeFields
   loadFields();
 
   // The check in QgsVectorLayerEditBuffer::commitChanges() is questionable with
@@ -2413,13 +2437,13 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
   for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
   {
     int fieldIndex = renameIt.key();
-    if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    if ( fieldIndex < 0 || fieldIndex >= fields().count() )
     {
       pushError( tr( "Invalid attribute index" ) );
       result = false;
       continue;
     }
-    if ( mAttributeFields.indexFromName( renameIt.value() ) >= 0 )
+    if ( fields().indexFromName( renameIt.value() ) >= 0 )
     {
       //field name already in use
       pushError( tr( "Error renaming field %1: name '%2' already exists" ).arg( fieldIndex ).arg( renameIt.value() ) );
@@ -3360,7 +3384,7 @@ bool QgsOgrProvider::createAttributeIndex( int field )
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  if ( field < 0 || field >= mAttributeFields.count() )
+  if ( field < 0 || field >= fields().count() )
     return false;
 
   if ( !doInitialActionsForEdition() )
@@ -3751,10 +3775,10 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 {
   QSet<QVariant> uniqueValues;
 
-  if ( !mValid || index < 0 || index >= mAttributeFields.count() )
+  if ( !mValid || index < 0 || index >= fields().count() )
     return uniqueValues;
 
-  const QgsField fld = mAttributeFields.at( index );
+  const QgsField fld = fields().at( index );
   if ( fld.name().isNull() )
   {
     return uniqueValues; //not a provider field
@@ -3816,10 +3840,10 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
 {
   QStringList results;
 
-  if ( !mValid || index < 0 || index >= mAttributeFields.count() )
+  if ( !mValid || index < 0 || index >= fields().count() )
     return results;
 
-  QgsField fld = mAttributeFields.at( index );
+  QgsField fld = fields().at( index );
   if ( fld.name().isNull() )
   {
     return results; //not a provider field
@@ -4097,7 +4121,7 @@ QList<QgsRelation> QgsOgrProvider::discoverRelations( const QgsVectorLayer *targ
 
 QVariant QgsOgrProvider::minimumValue( int index ) const
 {
-  if ( !mValid || index < 0 || index >= mAttributeFields.count() )
+  if ( !mValid || index < 0 || index >= fields().count() )
   {
     return QVariant();
   }
@@ -4105,7 +4129,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  const QgsField originalField = mAttributeFields.at( index );
+  const QgsField originalField = fields().at( index );
   QgsField fld = originalField;
 
   // can't use native date/datetime types -- OGR converts these to string in the MAX return value
@@ -4157,7 +4181,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
 
 QVariant QgsOgrProvider::maximumValue( int index ) const
 {
-  if ( !mValid || index < 0 || index >= mAttributeFields.count() )
+  if ( !mValid || index < 0 || index >= fields().count() )
   {
     return QVariant();
   }
@@ -4165,7 +4189,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  const QgsField originalField = mAttributeFields.at( index );
+  const QgsField originalField = fields().at( index );
   QgsField fld = originalField;
 
   // can't use native date/datetime types -- OGR converts these to string in the MAX return value
@@ -4708,7 +4732,10 @@ bool QgsOgrProvider::leaveUpdateMode()
       // Backup fields since if we created new fields, but didn't populate it
       // with any feature yet, it will disappear.
       const QgsFields oldFields = mAttributeFields;
+
+      // This will also update mAttributeFields
       reloadData();
+
       if ( mValid )
       {
         // Make sure that new fields we added, but didn't populate yet, are
