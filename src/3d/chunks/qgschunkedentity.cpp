@@ -659,7 +659,7 @@ void QgsChunkedEntity::onActiveJobFinished()
     // with QgsChunkUpdaterFactory passed to updatedNodes(). The returned
     // updater is actually a chunk loader that will give us a completely
     // new QEntity, so we just delete the old one and use the new one
-    if ( QgsChunkLoader* nodeUpdater = qobject_cast<QgsChunkLoader*>( node->updater() ) )
+    if ( QgsChunkLoader *nodeUpdater = qobject_cast<QgsChunkLoader *>( node->updater() ) )
     {
       Qt3DCore::QEntity *newEntity = nodeUpdater->createEntity( this );
       node->replaceEntity( newEntity );
