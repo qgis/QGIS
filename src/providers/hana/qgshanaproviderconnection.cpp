@@ -496,7 +496,7 @@ QgsVectorLayer *QgsHanaProviderConnection::createSqlVectorLayer( const SqlVector
   if ( !options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( QgsHanaPrimaryKeyUtils::buildUriKey( options.primaryKeyColumns ) );
-    tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( sanitizeSqlForQueryLayer( options.sql ) ) );
   }
   else
   {

@@ -1143,6 +1143,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if the capability is not supported
      */
     void checkCapability( Qgis::DatabaseProviderConnectionCapability2 capability ) const;
+
+    //! Trim and remove any trailing semicolon
+    QString sanitizeSqlForQueryLayer( const QString &sql ) const SIP_SKIP;
+
 ///@endcond
 
     Capabilities mCapabilities = Capabilities() SIP_SKIP;

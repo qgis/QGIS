@@ -291,7 +291,7 @@ QgsVectorLayer *QgsOgrProviderConnection::createSqlVectorLayer( const QgsAbstrac
   QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   Q_ASSERT( providerMetadata );
   QMap<QString, QVariant> decoded = providerMetadata->decodeUri( uri() );
-  decoded[ QStringLiteral( "subset" ) ] = options.sql;
+  decoded[ QStringLiteral( "subset" ) ] = sanitizeSqlForQueryLayer( options.sql ) ;
   return new QgsVectorLayer( providerMetadata->encodeUri( decoded ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 }
 
