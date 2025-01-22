@@ -1012,9 +1012,11 @@ bool QgsPointCloudLayer::commitChanges( bool stopEditing )
     if ( !mEditIndex.commitChanges( &mCommitError ) )
       return false;
 
-    emit layerModified();
-    triggerRepaint();
+    // emitting layerModified() is not required as that's done automatically
+    // when undo stack index changes
   }
+
+  undoStack()->clear();
 
   if ( stopEditing )
   {
@@ -1037,10 +1039,21 @@ bool QgsPointCloudLayer::rollBack()
   if ( !mEditIndex )
     return false;
 
+  const QList<QgsPointCloudNodeId> updatedNodes = mEditIndex.updatedNodes();
+
   undoStack()->clear();
 
   mEditIndex = QgsPointCloudIndex();
   emit editingStopped();
+
+  if ( !updatedNodes.isEmpty() )
+  {
+    for ( const QgsPointCloudNodeId &n : updatedNodes )
+      emit chunkAttributeValuesChanged( n );
+
+    // emitting layerModified() is not required as that's done automatically
+    // when undo stack index changes
+  }
 
   return true;
 }

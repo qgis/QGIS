@@ -166,6 +166,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QVERIFY( layer->isValid() );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
+  QSignalSpy spyChunkChanged( layer.get(), &QgsPointCloudLayer::chunkAttributeValuesChanged );
 
   QgsPointCloudCategoryList categories = QgsPointCloudRendererRegistry::classificationAttributeCategories( layer.get() );
   QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), categories );
@@ -192,6 +193,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QVERIFY( layer->changeAttributeValue( n, { 4, 2, 0, 1, 3, 16, 5, 13, 15, 14 }, at, 1 ) );
   QVERIFY( layer->isModified() );
   QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spyChunkChanged.size(), 1 );
   QCOMPARE( layer->undoStack()->index(), 1 );
 
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
@@ -200,18 +202,21 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QVERIFY( layer->changeAttributeValue( n, { 42, 82, 62, 52, 72 }, at, 6 ) );
   QVERIFY( layer->isModified() );
   QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spyChunkChanged.size(), 2 );
   QCOMPARE( layer->undoStack()->index(), 2 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_2", "classified_render_edit_2", mapSettings );
 
   // Undo one edit
   layer->undoStack()->undo();
   QCOMPARE( spy.size(), 3 );
+  QCOMPARE( spyChunkChanged.size(), 3 );
   QCOMPARE( layer->undoStack()->index(), 1 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
 
   // Redo edit
   layer->undoStack()->redo();
   QCOMPARE( spy.size(), 4 );
+  QCOMPARE( spyChunkChanged.size(), 4 );
   QCOMPARE( layer->undoStack()->index(), 2 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_2", "classified_render_edit_2", mapSettings );
 
@@ -220,6 +225,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 5 );
+  QCOMPARE( spyChunkChanged.size(), 5 );
   QCOMPARE( layer->undoStack()->index(), 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
 }
@@ -439,6 +445,8 @@ void TestQgsPointCloudEditing::testCommitChanges()
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
 
+  QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
+
   QgsPointCloudNodeId n( 0, 0, 0, 0 );
   QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
 
@@ -456,6 +464,9 @@ void TestQgsPointCloudEditing::testCommitChanges()
   // Change some points, point order should not matter
   QVERIFY( layer->changeAttributeValue( n, { 4, 2, 0, 1, 3, 16, 5, 13, 15, 14 }, at, 1 ) );
   QVERIFY( layer->isModified() );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QCOMPARE( layer->undoStack()->count(), 1 );
+  QCOMPARE( spy.size(), 1 );
 
   // check values after change, before committing
   std::unique_ptr<QgsPointCloudBlock> block1 = layer->index().nodeData( n, request );
@@ -467,6 +478,9 @@ void TestQgsPointCloudEditing::testCommitChanges()
 
   QVERIFY( layer->commitChanges() );
   QVERIFY( !layer->isModified() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
+  QCOMPARE( layer->undoStack()->count(), 0 );
+  QCOMPARE( spy.size(), 2 );
 
   // check values after committing changes
   std::unique_ptr<QgsPointCloudBlock> block2 = layer->index().nodeData( n, request );

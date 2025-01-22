@@ -190,6 +190,11 @@ bool QgsPointCloudEditingIndex::isModified() const
   return !mEditedNodeData.isEmpty();
 }
 
+QList<QgsPointCloudNodeId> QgsPointCloudEditingIndex::updatedNodes() const
+{
+  return mEditedNodeData.keys();
+}
+
 bool QgsPointCloudEditingIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data )
 {
   for ( auto it = data.constBegin(); it != data.constEnd(); ++it )
