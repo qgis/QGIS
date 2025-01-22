@@ -727,14 +727,14 @@ void TestQgsRasterCalculator::testOutputCrsFromRasterEntries()
 
   QVector<QgsRasterCalculatorEntry> entries;
   entries << entry1;
-  
+
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
-  
+
   QTemporaryFile tmpFile;
   tmpFile.open(); // fileName is not available until open
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
-  
+
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, 2, 3, entries, QgsProject::instance()->transformContext() );
   QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
   //open output file and check results
