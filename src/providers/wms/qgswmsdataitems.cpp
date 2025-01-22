@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 
 #include "qgsdatasourceuri.h"
+#include "qgssettings.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgsxyzconnection.h"
@@ -428,15 +429,28 @@ QString QgsWMSItemBase::createUri( bool withStyle )
   }
 
   QString format;
-  // get first supported by qt and server
-  QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
-  const auto constFormats = formats;
-  for ( const QgsWmsSupportedFormat &f : constFormats )
+  bool first = true;
+  const QString defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
+  const QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
+  QStringList supportedFormats;
+  supportedFormats.reserve( formats.size() );
+  for ( const QgsWmsSupportedFormat &f : formats )
   {
-    if ( mCapabilitiesProperty.capability.request.getMap.format.indexOf( f.format ) >= 0 )
+    supportedFormats.append( f.format );
+  }
+
+  for ( const QString &f : mCapabilitiesProperty.capability.request.getMap.format )
+  {
+    if ( !supportedFormats.contains( f ) )
     {
-      format = f.format;
-      break;
+      QgsDebugError( QStringLiteral( "encoding %1 not supported." ).arg( f ) );
+      continue;
+    }
+
+    if ( first || f == defaultEncoding )
+    {
+      format = f;
+      first = false;
     }
   }
   mDataSourceUri.setParam( QStringLiteral( "format" ), format );

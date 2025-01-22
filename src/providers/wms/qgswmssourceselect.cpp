@@ -299,9 +299,10 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
   const QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
   mLayerProperties = layers;
 
-  QString defaultEncoding = QgsSettings().value( "qgis/WMSDefaultFormat", "" ).toString();
+  QString defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
 
   bool first = true;
+  bool found = false;
   QSet<QString> alreadyAddedLabels;
   const auto supportedImageEncodings = capabilities.supportedImageEncodings();
   for ( const QString &encoding : supportedImageEncodings )
@@ -323,7 +324,11 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     mImageFormatGroup->button( id )->setVisible( true );
     if ( first || encoding == defaultEncoding )
     {
-      mImageFormatGroup->button( id )->setChecked( true );
+      if ( !found )
+      {
+        mImageFormatGroup->button( id )->setChecked( true );
+        found = true;
+      }
       first = false;
     }
   }
@@ -610,6 +615,8 @@ void QgsWMSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "format" ), format );
   uri.setParam( QStringLiteral( "crs" ), crs );
   QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
+
+  QgsSettings().setValue( QStringLiteral( "/qgis/lastWmsImageEncoding" ), format );
 
   // Remove in case the default value from the connection settings
   // is being overridden here
