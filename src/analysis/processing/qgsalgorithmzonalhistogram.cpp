@@ -84,6 +84,21 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   mCellSizeY = std::abs( layer->rasterUnitsPerPixelX() );
   mNbCellsXProvider = mRasterInterface->xSize();
   mNbCellsYProvider = mRasterInterface->ySize();
+  Qgis::DataType dataType = mRasterInterface->dataType( mRasterBand );
+
+  switch ( dataType )
+  {
+    case Qgis::DataType::Byte:
+    case Qgis::DataType::Int16:
+    case Qgis::DataType::UInt16:
+    case Qgis::DataType::Int32:
+    case Qgis::DataType::UInt32:
+      mIsInteger = true;
+      break;
+    default:
+      mIsInteger = false;
+      break;
+  }
 
   return true;
 }
@@ -93,6 +108,12 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   std::unique_ptr<QgsFeatureSource> zones( parameterAsSource( parameters, QStringLiteral( "INPUT_VECTOR" ), context ) );
   if ( !zones )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_VECTOR" ) ) );
+
+  if ( !mIsInteger )
+  {
+    feedback->pushWarning( QObject::tr( "The input raster is a floating-point raster. Such rasters are not suitable for use with zonal histogram algorithm.\n"
+                                        "Please use Round raster or Reclassify by table tools to reduce number of decimal places or define histogram bins." ) );
+  }
 
   const long count = zones->featureCount();
   const double step = count > 0 ? 100.0 / count : 1;
