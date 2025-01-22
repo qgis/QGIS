@@ -976,10 +976,17 @@ int Qgs3DUtils::openGlMaxClipPlanes( QSurface *surface )
   context.setFormat( QSurfaceFormat::defaultFormat() );
   if ( context.create() )
   {
-    context.makeCurrent( surface );
-    QOpenGLFunctions *funcs = context.functions();
-    funcs->glGetIntegerv( GL_MAX_CLIP_PLANES, &numPlanes );
+    if ( context.makeCurrent( surface ) )
+    {
+      QOpenGLFunctions *funcs = context.functions();
+      funcs->glGetIntegerv( GL_MAX_CLIP_PLANES, &numPlanes );
+    }
   }
 
   return numPlanes;
+}
+
+QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle )
+{
+  return QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), headingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), pitchAngle );
 }

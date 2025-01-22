@@ -52,7 +52,7 @@ auto QgsGeometryCheckAngleAlgorithm::groupId() const -> QString
 
 auto QgsGeometryCheckAngleAlgorithm::shortHelpString() const -> QString
 {
-  return QObject::tr( "This algorithm check the angle of geometry (in line or polygon)." );
+  return QObject::tr( "This algorithm checks the angles of line or polygon geometries." );
 }
 
 auto QgsGeometryCheckAngleAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
@@ -80,7 +80,7 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_ANGLE" ), QObject::tr( "min angle" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0 ) );
 
   // outputs
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );

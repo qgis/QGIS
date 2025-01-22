@@ -28,6 +28,7 @@
 #include "qgspointcloudclassifiedrendererwidget.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsstackedwidget.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -140,6 +141,29 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mPointSizeSpinBox->setToolTip( tr( "The size of each point in pixels" ) );
   mMaxScreenErrorSpinBox->setToolTip( tr( "The distance in pixels between the points of the smallest chunk to be rendered.\nRaising this value will result in a less detailed scene which can improve performance" ) );
   mPointBudgetSpinBox->setToolTip( tr( "The maximum number of points that will be rendered simultaneously.\nRaising this value may allow missing chunks to be rendered while lowering it may improve performance" ) );
+
+  if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
+  {
+    mZoomOutOptions->addItem( tr( "Show Extents Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents ) );
+    if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
+    {
+      if ( vpcProvider->overview() )
+      {
+        mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
+        mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
+      }
+    }
+    else
+    {
+      mZoomOutOptions->setEnabled( false );
+    }
+
+    connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+  }
+  else
+  {
+    mVpcGroupBox->setVisible( false );
+  }
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -663,6 +687,16 @@ double QgsPointCloud3DSymbolWidget::pointBudget() const
 bool QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
 {
   return mShowBoundingBoxesCheckBox->isChecked();
+}
+
+void QgsPointCloud3DSymbolWidget::setZoomOutBehavior( const Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior )
+{
+  whileBlocking( mZoomOutOptions )->setCurrentIndex( mZoomOutOptions->findData( QVariant::fromValue( zoomOutBehavior ) ) );
+}
+
+Qgis::PointCloudZoomOutRenderBehavior QgsPointCloud3DSymbolWidget::zoomOutBehavior() const
+{
+  return mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>();
 }
 
 void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )

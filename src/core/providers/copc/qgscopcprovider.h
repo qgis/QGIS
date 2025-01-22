@@ -52,6 +52,7 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     void loadIndex( ) override;
     void generateIndex( ) override;
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
+    QgsPointCloudDataProvider::Capabilities capabilities() const override;
 
   private:
     QgsPointCloudIndex mIndex;

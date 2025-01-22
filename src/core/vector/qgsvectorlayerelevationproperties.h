@@ -143,6 +143,46 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     void setExtrusionHeight( double height );
 
     /**
+     * Returns TRUE if custom tolerance is enabled.
+     *
+     * \see setCustomToleranceEnabled()
+     * \see customTolerance()
+     */
+    bool customToleranceEnabled() const { return mEnableCustomTolerance; }
+
+    /**
+     * Sets whether custom tolerance is \a enabled.
+     *
+     * \see customToleranceEnabled()
+     * \see setCustomTolerance()
+     */
+    void setCustomToleranceEnabled( bool enabled );
+
+    /**
+     * Returns the feature custom tolerance.
+     *
+     * \warning custom tolerance is only applied if customToleranceEnabled() is TRUE.
+     *
+     * If enabled, the profile generator will use this tolerance instead of the one
+     * defined in the elevation profile widget.
+     *
+     * \see setCustomTolerance()
+     */
+    double customTolerance() const { return mCustomTolerance; }
+
+    /**
+     * Sets the feature custom tolerance.
+     *
+     * \warning custom tolerance is only applied if customToleranceEnabled() is TRUE.
+     *
+     * If enabled, the profile generator will use this tolerance instead of the one
+     * defined in the elevation profile widget.
+     *
+     * \see customTolerance()
+     */
+    void setCustomTolerance( double tolerance );
+
+    /**
      * Returns TRUE if layer symbology should be respected when rendering elevation profile plots.
      *
      * Specifically, this will result in the layer's symbols (or symbol colors) being used to draw features in the
@@ -313,6 +353,8 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
 
     bool mEnableExtrusion = false;
     double mExtrusionHeight = 0;
+    bool mEnableCustomTolerance = false;
+    double mCustomTolerance = 0;
 
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;

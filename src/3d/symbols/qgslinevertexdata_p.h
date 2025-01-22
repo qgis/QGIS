@@ -77,7 +77,7 @@ struct QgsLineVertexData
     bool withAdjacency = false; //!< Whether line strip with adjacency primitive will be used
 
     // extra info to calculate elevation
-    Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Relative;
+    Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Absolute;
     Qgis::AltitudeBinding altBinding = Qgis::AltitudeBinding::Vertex;
     float baseHeight = 0;
     Qgs3DRenderContext renderContext; // used for altitude clamping
@@ -95,7 +95,7 @@ struct QgsLineVertexData
     Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
 #endif
 
-    void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0 );
+    void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0, bool closePolygon = false );
     void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );
 };
 

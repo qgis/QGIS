@@ -15,6 +15,7 @@ set(PYQT_COMPAT_FILES
   QtWebEngineWidgets.py
   QtNetwork.py
   QtXml.py
+  QtQuickWidgets.py
   QtSql.py
   QtTest.py
   QtSvg.py

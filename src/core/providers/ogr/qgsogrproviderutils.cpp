@@ -344,8 +344,13 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "GPKG" ) ) )
       {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+        sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg *.gpkg.zip" ) );
+        sExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "gpkg.zip" );
+#else
         sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg" ) );
         sExtensions << QStringLiteral( "gpkg" );
+#endif
       }
       else if ( driverName.startsWith( QLatin1String( "GRASS" ) ) )
       {

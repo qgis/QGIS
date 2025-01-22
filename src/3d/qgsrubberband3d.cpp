@@ -50,7 +50,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
   , mEngine( engine )
   , mGeometryType( geometryType )
 {
-  if ( mGeometryType == Qgis::GeometryType::Line )
+  if ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon )
   {
     // Rubberband line
     mLineEntity = new Qt3DCore::QEntity( parentEntity );
@@ -110,7 +110,7 @@ void QgsRubberBand3D::setWidth( float width )
 {
   mWidth = width;
 
-  if ( mGeometryType == Qgis::GeometryType::Line )
+  if ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon )
   {
     // when highlighting lines, the vertex markers should be wider
     mLineMaterial->setLineWidth( width );
@@ -130,7 +130,7 @@ void QgsRubberBand3D::setColor( QColor color )
 {
   mColor = color;
 
-  if ( mGeometryType == Qgis::GeometryType::Line )
+  if ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon )
   {
     mLineMaterial->setLineColor( color );
     mMarkerSymbol->setColor( color.lighter( 130 ) );
@@ -151,12 +151,14 @@ void QgsRubberBand3D::setMarkerType( MarkerType marker )
 {
   mMarkerType = marker;
 
+  const bool lineOrPolygon = mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon;
+
   const QVariantMap props {
-    { QStringLiteral( "color" ), mGeometryType == Qgis::GeometryType::Line ? mColor.lighter( 130 ).name() : mColor.name() },
+    { QStringLiteral( "color" ), lineOrPolygon ? mColor.lighter( 130 ).name() : mColor.name() },
     { QStringLiteral( "size_unit" ), QStringLiteral( "pixel" ) },
-    { QStringLiteral( "size" ), QString::number( mGeometryType == Qgis::GeometryType::Line ? mWidth * 3.f : mWidth ) },
+    { QStringLiteral( "size" ), QString::number( lineOrPolygon ? mWidth * 3.f : mWidth ) },
     { QStringLiteral( "outline_color" ), mColor.name() },
-    { QStringLiteral( "outline_width" ), QString::number( mGeometryType == Qgis::GeometryType::Line ? 0.5 : 1 ) },
+    { QStringLiteral( "outline_width" ), QString::number( lineOrPolygon ? 0.5 : 1 ) },
     { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
   };
 
@@ -181,6 +183,12 @@ void QgsRubberBand3D::addPoint( const QgsPoint &pt )
   updateGeometry();
 }
 
+void QgsRubberBand3D::setPoints( const QgsLineString &points )
+{
+  mLineString = points;
+  updateGeometry();
+}
+
 void QgsRubberBand3D::removeLastPoint()
 {
   const int lastVertexIndex = mLineString.numPoints() - 1;
@@ -200,9 +208,10 @@ void QgsRubberBand3D::updateGeometry()
   QgsLineVertexData lineData;
   lineData.withAdjacency = true;
   lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mMapSettings->origin() );
-  lineData.addLineString( mLineString );
+  const bool closed = mGeometryType == Qgis::GeometryType::Polygon;
+  lineData.addLineString( mLineString, 0, closed );
 
-  if ( mGeometryType == Qgis::GeometryType::Line )
+  if ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon )
   {
     mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
     mIndexAttribute->buffer()->setData( lineData.createIndexBuffer() );

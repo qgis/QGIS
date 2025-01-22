@@ -348,6 +348,7 @@ if (WITH_3D)
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
+    3d/qgs3dmaptoolpointcloudchangeattribute.cpp
     3d/qgs3dmeasuredialog.cpp
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp

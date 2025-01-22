@@ -120,12 +120,16 @@ class _3D_EXPORT QgsRubberBand3D
 
     void addPoint( const QgsPoint &pt );
 
+    void setPoints( const QgsLineString &points );
+
     void removeLastPoint();
 
     void moveLastPoint( const QgsPoint &pt );
 
     //! Sets whether the marker on the last vertex is displayed. We typically do not want it displayed while it is still tracked by the mouse.
     void setHideLastMarker( bool hide ) { mHideLastMarker = hide; }
+
+    bool isEmpty() const { return mLineString.isEmpty(); }
 
   private:
     void updateGeometry();

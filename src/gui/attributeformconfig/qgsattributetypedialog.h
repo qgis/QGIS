@@ -49,7 +49,15 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
 
     const QString editorWidgetText();
 
-    void setEditorWidgetType( const QString &type );
+    /**
+     * Sets the \a type in the widget combobox. Widget config is remembered,
+     * allowing users to switch between types without losing configs, unless
+     * \a forceWidgetRefresh is passed as true.
+     *
+     * \param type Editor widget type to be set
+     * \param forceWidgetRefresh Always sets the config, ensuring a widget refresh
+     */
+    void setEditorWidgetType( const QString &type, bool forceWidgetRefresh = false );
 
     const QVariantMap editorWidgetConfig();
 

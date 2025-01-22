@@ -15,13 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgisapp.h"
+//#include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
-#include "qgssnappingutils.h"
 #include "qgsmaptooladvanceddigitizing.h"
 
 /**

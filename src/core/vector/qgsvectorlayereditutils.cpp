@@ -211,6 +211,28 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
   return success ? Qgis::GeometryOperationResult::Success : addRingReturnCode;
 }
 
+///@cond PRIVATE
+double QgsVectorLayerEditUtils::getTopologicalSearchRadius( const QgsVectorLayer *layer )
+{
+  double threshold = layer->geometryOptions()->geometryPrecision();
+
+  if ( qgsDoubleNear( threshold, 0.0 ) )
+  {
+    threshold = 1e-8;
+
+    if ( layer->crs().mapUnits() == Qgis::DistanceUnit::Meters )
+    {
+      threshold = 0.001;
+    }
+    else if ( layer->crs().mapUnits() == Qgis::DistanceUnit::Feet )
+    {
+      threshold = 0.0001;
+    }
+  }
+  return threshold;
+}
+///@endcond
+
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
   QgsPointSequence l;
@@ -801,21 +823,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   double segmentSearchEpsilon = mLayer->crs().isGeographic() ? 1e-12 : 1e-8;
 
   //work with a tolerance because coordinate projection may introduce some rounding
-  double threshold = mLayer->geometryOptions()->geometryPrecision();
-
-  if ( qgsDoubleNear( threshold, 0.0 ) )
-  {
-    threshold = 1e-8;
-
-    if ( mLayer->crs().mapUnits() == Qgis::DistanceUnit::Meters )
-    {
-      threshold = 0.001;
-    }
-    else if ( mLayer->crs().mapUnits() == Qgis::DistanceUnit::Feet )
-    {
-      threshold = 0.0001;
-    }
-  }
+  double threshold = getTopologicalSearchRadius( mLayer );
 
   QgsRectangle searchRect( p, p, false );
   searchRect.grow( threshold );

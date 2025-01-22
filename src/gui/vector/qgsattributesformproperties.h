@@ -33,6 +33,9 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QPlainTextEdit>
+#include <QAction>
+#include <QMenu>
+#include <QClipboard>
 
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_gui.h"
@@ -40,6 +43,7 @@
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsattributeeditorelement.h"
 #include "qgspropertycollection.h"
+#include "qgsmessagebar.h"
 
 class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
@@ -431,6 +435,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void onAttributeSelectionChanged();
     void onFormLayoutSelectionChanged();
 
+    //! Context menu for Fields to enable Copy&Paste
+    void onContextMenuRequested( QPoint );
+
     void updatedFields();
 
   private:
@@ -441,6 +448,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void storeAttributeWidgetEdit();
 
     void loadAttributeTypeDialog();
+    void loadAttributeTypeDialogFromConfiguration( const FieldConfig cfg );
     void storeAttributeTypeDialog();
 
     void storeAttributeContainerEdit();
@@ -448,13 +456,23 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void loadInfoWidget( const QString &infoText );
 
+    void copyWidgetConfiguration();
+    void pasteWidgetConfiguration();
+
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
+
+    QgsMessageBar *mMessageBar = nullptr;
 
     Qgis::AttributeFormPythonInitCodeSource mInitCodeSource = Qgis::AttributeFormPythonInitCodeSource::NoSource;
     QString mInitFunction;
     QString mInitFilePath;
     QString mInitCode;
     int mBlockUpdates = 0;
+
+    //! Context menu for Fields
+    QMenu *mAvailableWidgetsTreeContextMenu = nullptr;
+    QAction *mActionCopyWidgetConfiguration = nullptr;
+    QAction *mActionPasteWidgetConfiguration = nullptr;
 };
 
 

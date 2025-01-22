@@ -57,6 +57,24 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     createChunkedEntityForSubIndex( i );
   }
 
+  if ( provider()->overview() )
+  {
+    mOverviewEntity = new QgsPointCloudLayerChunkedEntity(
+      mapSettings(),
+      provider()->overview(),
+      mCoordinateTransform,
+      dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
+      mMaximumScreenSpaceError,
+      false,
+      mZValueScale,
+      mZValueOffset,
+      mPointBudget
+    );
+    mOverviewEntity->setParent( this );
+    connect( mOverviewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
+    emit newEntityCreated( mOverviewEntity );
+  }
+
   updateBboxEntity();
   connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
@@ -82,8 +100,8 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   const QgsPointCloudSubIndex &si = subIndexes.at( i );
 
-  // Skip if Index is not yet loaded or is outside the map extents
-  if ( !si.index() || mBboxes.at( i ).isEmpty() )
+  // Skip if Index is not yet loaded or is outside the map extents, or it's not valid (e.g. file is missing)
+  if ( !si.index() || mBboxes.at( i ).isEmpty() || !si.index().isValid() )
     return;
 
   QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity(
@@ -132,6 +150,12 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
       mChunkedEntitiesMap[i]->handleSceneUpdate( sceneContext );
   }
   updateBboxEntity();
+
+  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+  if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
+  {
+    mOverviewEntity->handleSceneUpdate( sceneContext );
+  }
 }
 
 QgsRange<float> QgsVirtualPointCloudEntity::getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
@@ -189,16 +213,21 @@ bool QgsVirtualPointCloudEntity::needsUpdate() const
 void QgsVirtualPointCloudEntity::updateBboxEntity()
 {
   QList<QgsAABB> bboxes;
-  const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
-  for ( int i = 0; i < subIndexes.size(); ++i )
+  // we want to render bounding boxes only when zoomOutBehavior is RenderExtents or RenderOverviewAndExtents
+  const QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+  if ( renderer && renderer->zoomOutBehavior() != Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )
   {
-    if ( mChunkedEntitiesMap.contains( i ) && mChunkedEntitiesMap[i]->isEnabled() )
-      continue;
+    const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
+    for ( int i = 0; i < subIndexes.size(); ++i )
+    {
+      if ( mChunkedEntitiesMap.contains( i ) && mChunkedEntitiesMap[i]->isEnabled() )
+        continue;
 
-    if ( mBboxes.at( i ).isEmpty() )
-      continue;
+      if ( mBboxes.at( i ).isEmpty() )
+        continue;
 
-    bboxes << mBboxes.at( i );
+      bboxes << mBboxes.at( i );
+    }
   }
 
   mBboxesEntity->setBoxes( bboxes );
