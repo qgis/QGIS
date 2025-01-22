@@ -13,7 +13,7 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 import os
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QTemporaryDir, QVariant
+from qgis.PyQt.QtCore import QMetaType, QTemporaryDir, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
@@ -855,6 +855,29 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             _test(Qgis.TransactionMode.AutomaticGroups)
 
         _test(Qgis.TransactionMode.BufferedGroups)
+
+    def testAddNewFeatureAndNewAttribute(self):
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string", "addfeat", "memory"
+        )
+        layer.startEditing()
+
+        # Add a new feature with fields information attached to it
+        f = QgsFeature(layer.fields())
+        f.setAttributes(["test"])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        layer.addFeature(f)
+
+        # Add a new attribute to the layer
+        layer.addAttribute(QgsField("fldint", QMetaType.Type.Int))
+
+        # Change the newly-added attribute value for the new feature
+        layer.changeAttributeValue(f.id(), 1, 123)
+
+        # Commit changes
+        layer.commitChanges()
+
+        self.assertEqual(layer.getFeature(1).attributes(), ["test", 123])
 
 
 if __name__ == "__main__":
