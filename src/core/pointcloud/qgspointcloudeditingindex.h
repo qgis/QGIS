@@ -66,6 +66,9 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
     bool isModified() const;
 
+    //! Returns a list of node IDs that have been modified
+    QList<QgsPointCloudNodeId> updatedNodes() const;
+
 
   private:
     QgsPointCloudIndex mIndex;
