@@ -341,7 +341,7 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
 
 QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
   : mLayer( layer )
-  , mIndex( layer->dataProvider()->index() )
+  , mIndex( layer->index() )
   , mSubIndexes( layer->dataProvider()->subIndexes() )
   , mLayerAttributes( layer->attributes() )
   , mRenderer( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->respectLayerColors() && mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
@@ -363,10 +363,10 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mZScale( layer->elevationProperties()->zScale() )
   , mStepDistance( request.stepDistance() )
 {
-  if ( mLayer->index() )
+  if ( mIndex )
   {
-    mScale = mLayer->index().scale();
-    mOffset = mLayer->index().offset();
+    mScale = mIndex.scale();
+    mOffset = mIndex.offset();
   }
 }
 

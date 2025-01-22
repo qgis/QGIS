@@ -52,7 +52,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   if ( !layer->dataProvider() || !layer->renderer() )
     return;
 
-  mIndex = layer->dataProvider()->index();
+  mIndex = layer->index();
 
   QElapsedTimer timer;
   timer.start();

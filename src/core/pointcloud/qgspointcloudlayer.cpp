@@ -1131,7 +1131,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
 
 QgsPointCloudIndex QgsPointCloudLayer::index() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
   if ( mEditIndex )
     return mEditIndex;
 
