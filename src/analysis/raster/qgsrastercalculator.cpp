@@ -79,6 +79,11 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mRasterEntries( rasterEntries )
   , mTransformContext( transformContext )
 {
+  //default to first layer's crs
+  if ( !mRasterEntries.isEmpty() )
+  {
+    mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  }
 }
 
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
@@ -105,7 +110,10 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mRasterEntries( rasterEntries )
 {
   //default to first layer's crs
-  mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  if ( !mRasterEntries.isEmpty() )
+  {
+    mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  }
   mTransformContext = QgsProject::instance()->transformContext();
 }
 
