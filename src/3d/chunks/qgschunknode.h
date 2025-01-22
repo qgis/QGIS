@@ -239,6 +239,9 @@ class QgsChunkNode
     //! mark node that it finished updating - back to loaded node
     void setUpdated();
 
+    //! replaces an existing entity with a newly created one (only allowed when updating the node)
+    void replaceEntity( Qt3DCore::QEntity *newEntity );
+
     //! called when the true bounding box is known so that we can use tighter bounding box
     void setExactBox3D( const QgsBox3D &box3D );
 

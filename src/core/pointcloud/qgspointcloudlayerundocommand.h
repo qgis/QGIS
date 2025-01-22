@@ -24,6 +24,8 @@
 
 #include <QUndoCommand>
 
+class QgsPointCloudLayer;
+
 /**
  * \ingroup core
  *
@@ -35,8 +37,8 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommand : public QUndoCommand
 {
   protected:
     //! Ctor
-    QgsPointCloudLayerUndoCommand( QgsPointCloudIndex index );
-    QgsPointCloudIndex mIndex;
+    QgsPointCloudLayerUndoCommand( QgsPointCloudLayer *layer );
+    QgsPointCloudLayer *mLayer;
 };
 
 /**
@@ -52,13 +54,13 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
 
     /**
      * Constructor for QgsPointCloudLayerUndoCommandChangeAttribute
-     * \param index associated point cloud index
+     * \param layer associated point cloud layer
      * \param n the node id whose points will be modified
      * \param points the list of points to be modified
      * \param attribute the attribute whose value will be modified
      * \param value the new value for the modified attribure
      */
-    QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudIndex index, const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value );
+    QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value );
 
     void undo() override;
     void redo() override;

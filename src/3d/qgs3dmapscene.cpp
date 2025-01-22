@@ -713,7 +713,6 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
-    connect( pclayer, &QgsPointCloudLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 }
 

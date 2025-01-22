@@ -1112,7 +1112,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
        sortedPoints.constLast() >= mEditIndex.getNode( n ).pointCount() )
     return false;
 
-  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( mEditIndex, n, sortedPoints, attribute, value ) );
+  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( this, n, sortedPoints, attribute, value ) );
 
   return true;
 }

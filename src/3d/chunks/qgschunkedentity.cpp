@@ -612,9 +612,10 @@ void QgsChunkedEntity::onActiveJobFinished()
 
   QgsChunkNode *node = job->chunk();
 
-  if ( QgsChunkLoader *loader = qobject_cast<QgsChunkLoader *>( job ) )
+  if ( node->state() == QgsChunkNode::Loading )
   {
-    Q_ASSERT( node->state() == QgsChunkNode::Loading );
+    QgsChunkLoader *loader = qobject_cast<QgsChunkLoader *>( job );
+    Q_ASSERT( loader );
     Q_ASSERT( node->loader() == loader );
 
     QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
@@ -653,6 +654,18 @@ void QgsChunkedEntity::onActiveJobFinished()
   else
   {
     Q_ASSERT( node->state() == QgsChunkNode::Updating );
+
+    // This is a special case when we're replacing the node's entity
+    // with QgsChunkUpdaterFactory passed to updatedNodes(). The returned
+    // updater is actually a chunk loader that will give us a completely
+    // new QEntity, so we just delete the old one and use the new one
+    if ( QgsChunkLoader* nodeUpdater = qobject_cast<QgsChunkLoader*>( node->updater() ) )
+    {
+      Qt3DCore::QEntity *newEntity = nodeUpdater->createEntity( this );
+      node->replaceEntity( newEntity );
+      emit newEntityCreated( newEntity );
+    }
+
     QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
     node->setUpdated();
   }

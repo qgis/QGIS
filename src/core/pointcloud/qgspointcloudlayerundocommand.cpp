@@ -16,23 +16,25 @@
 #include "qgspointcloudlayerundocommand.h"
 #include "qgspointcloudeditingindex.h"
 #include "qgscopcpointcloudindex.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayereditutils.h"
 
 
-QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudIndex index )
-  : mIndex( index )
+QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudLayer *layer )
+  : mLayer( layer )
 {}
 
-QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudIndex index, const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
-  : QgsPointCloudLayerUndoCommand( index )
+QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
+  : QgsPointCloudLayerUndoCommand( layer )
   , mNode( n )
   , mAttribute( attribute )
   , mNewValue( value )
 {
-  const QgsPointCloudAttributeCollection allAttributes = mIndex.attributes();
+  QgsPointCloudIndex index = mLayer->index();
+  const QgsPointCloudAttributeCollection allAttributes = index.attributes();
   QgsPointCloudRequest req;
   req.setAttributes( allAttributes );
-  std::unique_ptr<QgsPointCloudBlock> block = mIndex.nodeData( n, req );
+  std::unique_ptr<QgsPointCloudBlock> block = index.nodeData( n, req );
   const char *ptr = block->data();
   block->attributes().find( attribute.name(), mAttributeOffset );
   const int size = block->pointRecordSize();
@@ -56,7 +58,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::redo()
 
 void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo )
 {
-  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( mIndex.get() );
+  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( mLayer->index().get() );
   QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( editIndex->mIndex.get() );
 
   QByteArray chunkData;
@@ -80,5 +82,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
     data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, mAttribute, mNode, mPointValues, mNewValue );
   }
 
-  mIndex.updateNodeData( {{mNode, data}} );
+  mLayer->index().updateNodeData( {{mNode, data}} );
+
+  emit mLayer->chunkAttributeValuesChanged( mNode );
 }
