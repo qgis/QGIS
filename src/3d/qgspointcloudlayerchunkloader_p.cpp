@@ -286,11 +286,11 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettin
 
     mChunkUpdaterFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
 
-    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n) {
-      QList<QgsChunkNode*> nodes;
+    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n ) {
+      QList<QgsChunkNode *> nodes;
       nodes << findChunkNodeFromNodeId( mRootNode, n );
       updateNodes( nodes, mChunkUpdaterFactory.get() );
-    });
+    } );
   }
 }
 
@@ -302,7 +302,7 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 
 void QgsPointCloudLayerChunkedEntity::updateIndex()
 {
-  static_cast<QgsPointCloudLayerChunkLoaderFactory*>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();
+  static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();
 }
 
 QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const

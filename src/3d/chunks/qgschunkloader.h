@@ -166,7 +166,7 @@ class QgsChunkUpdaterFactory : public QgsChunkQueueJobFactory
     }
 
   private:
-    QgsChunkLoaderFactory* mChunkLoaderFactory;
+    QgsChunkLoaderFactory *mChunkLoaderFactory;
 };
 
 /// @endcond
