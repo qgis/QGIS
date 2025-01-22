@@ -56,6 +56,7 @@ class QgsZonalHistogramAlgorithm : public QgsProcessingAlgorithm
     double mCellSizeY = 0;
     double mNbCellsXProvider = 0;
     double mNbCellsYProvider = 0;
+    bool mIsInteger = false;
 };
 
 ///@endcond PRIVATE
