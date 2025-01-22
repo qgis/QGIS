@@ -67,6 +67,7 @@ class TestQgsRasterCalculator : public QgsTest
     void findNodes();
 
     void testRasterEntries();
+    void testOutputCrsFromRasterEntries();
     void calcFormulasWithReprojectedLayers();
 
     void testStatistics();
@@ -715,6 +716,30 @@ void TestQgsRasterCalculator::toString()
   QVERIFY( calcNode == nullptr );
   calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "max( \"raster@1\" )" ), error ) );
   QVERIFY( calcNode == nullptr );
+}
+
+void TestQgsRasterCalculator::testOutputCrsFromRasterEntries()
+{
+  QgsRasterCalculatorEntry entry1;
+  entry1.bandNumber = 1;
+  entry1.raster = mpLandsatRasterLayer;
+  entry1.ref = QStringLiteral( "landsat@0" );
+
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry1;
+  
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+  
+  QTemporaryFile tmpFile;
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+  
+  QgsRasterCalculator rc( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, 2, 3, entries, QgsProject::instance()->transformContext() );
+  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  //open output file and check results
+  QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  QCOMPARE( result->crs(), mpLandsatRasterLayer->crs() );
 }
 
 void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
