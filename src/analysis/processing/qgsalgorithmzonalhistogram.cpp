@@ -68,7 +68,7 @@ QgsZonalHistogramAlgorithm *QgsZonalHistogramAlgorithm::createInstance() const
   return new QgsZonalHistogramAlgorithm();
 }
 
-bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
   if ( !layer )
@@ -93,10 +93,10 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
     case Qgis::DataType::UInt16:
     case Qgis::DataType::Int32:
     case Qgis::DataType::UInt32:
-      mIsInteger = true;
       break;
     default:
-      mIsInteger = false;
+      feedback->pushWarning( QObject::tr( "The input raster is a floating-point raster. Such rasters are not suitable for use with zonal histogram algorithm.\n"
+      "Please use Round raster or Reclassify by table tools to reduce number of decimal places or define histogram bins." ) );
       break;
   }
 
@@ -108,12 +108,6 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   std::unique_ptr<QgsFeatureSource> zones( parameterAsSource( parameters, QStringLiteral( "INPUT_VECTOR" ), context ) );
   if ( !zones )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_VECTOR" ) ) );
-
-  if ( !mIsInteger )
-  {
-    feedback->pushWarning( QObject::tr( "The input raster is a floating-point raster. Such rasters are not suitable for use with zonal histogram algorithm.\n"
-                                        "Please use Round raster or Reclassify by table tools to reduce number of decimal places or define histogram bins." ) );
-  }
 
   const long count = zones->featureCount();
   const double step = count > 0 ? 100.0 / count : 1;
