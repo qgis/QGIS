@@ -173,7 +173,7 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
   if ( !options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
-    tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( sanitizeSqlForQueryLayer( options.sql ) ) );
   }
   else
   {
