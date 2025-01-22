@@ -784,7 +784,7 @@ class TestPyQgsProviderConnectionBase:
         self.assertEqual(vl.sourceCrs().authid(), crs)
 
         # Test issue https://github.com/qgis/QGIS/issues/56993
-        options.sql += ';;;'
+        options.sql += ";;;"
         vl2 = conn.createSqlVectorLayer(options)
         self.assertTrue(vl2.isValid())
         self.assertTrue(vl2.isSqlQuery())
