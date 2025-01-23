@@ -35,13 +35,21 @@ struct MapToPixel3D
     QgsVector3D origin; // shift of world coordinates
     QSize canvasSize;
 
-    QPointF transform( double x, double y, double z ) const
+    QPointF transform( double x, double y, double z, bool *isInView = nullptr ) const
     {
-      QVector4D cClip = VP * QVector4D( x - origin.x(), y - origin.y(), z - origin.z(), 1 );
-      float xNdc = cClip.x() / cClip.w();
-      float yNdc = cClip.y() / cClip.w();
-      float xScreen = ( xNdc + 1 ) * 0.5 * canvasSize.width();
-      float yScreen = ( -yNdc + 1 ) * 0.5 * canvasSize.height();
+      const QVector4D cClip = VP * QVector4D( x - origin.x(), y - origin.y(), z - origin.z(), 1 );
+      // normalized device coordinates (-1 to +1)
+      // z == -1 is near plane, z == +1 is far plane
+      const float xNdc = cClip.x() / cClip.w();
+      const float yNdc = cClip.y() / cClip.w();
+      const float zNdc = cClip.z() / cClip.w();
+      if ( isInView )
+        *isInView = !( zNdc < -1 || zNdc > 1 || yNdc < -1 || yNdc > 1 || zNdc < -1 || xNdc > 1 );
+
+      // window / sceen space coordinates
+      const float xScreen = ( xNdc + 1 ) * 0.5 * canvasSize.width();
+      const float yScreen = ( -yNdc + 1 ) * 0.5 * canvasSize.height();
+
       return QPointF( xScreen, yScreen );
     }
 };

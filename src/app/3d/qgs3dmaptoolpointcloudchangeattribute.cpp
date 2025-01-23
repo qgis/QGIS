@@ -246,7 +246,11 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
 
     // project to screen (map coords -> world coords -> clip coords -> NDC -> screen coords)
-    const QPointF ptScreen = mapToPixel3D.transform( x, y, z );
+    bool isInFrustum;
+    const QPointF ptScreen = mapToPixel3D.transform( x, y, z, &isInFrustum );
+
+    if ( !isInFrustum )
+      continue;
 
     if ( searchPolygon.intersects( QgsGeometry( new QgsPoint( ptScreen.x(), ptScreen.y() ) ) ) )
     {
