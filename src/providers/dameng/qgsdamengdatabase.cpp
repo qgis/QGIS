@@ -3192,7 +3192,7 @@ QString QgsDMResult::getGeoName( const uint &objClassId )
   case NDCT_CLSID_GEO2_ST_TIN:
     return QStringLiteral( "ST_TIN" );
   default:
-    return QStringLiteral( "unknow" );
+    return QStringLiteral( "unknown" );
   }
 }
 
@@ -3220,7 +3220,7 @@ QString QgsDMResult::getGeoTypeName( sdint2 geoType )
   case SctTopoGeometry:
     return QStringLiteral( "topoGeometry" );
   default:
-    return QStringLiteral( "unknow" );
+    return QStringLiteral( "unknown" );
   }
 
 }

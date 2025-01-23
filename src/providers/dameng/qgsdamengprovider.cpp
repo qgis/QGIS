@@ -1035,7 +1035,7 @@ bool QgsDamengProvider::loadFields()
               fieldTypeName.mid( 5 ).toInt() <= NDCT_CLSID_GEO2_ST_GEOGRAPHY )
     {
       fieldTypeName = QgsDMResult::getGeoName( fieldTypeName.mid( 5 ).toUInt() );
-      if ( fieldTypeName != QLatin1String( "unknow" ) )
+      if ( fieldTypeName != QLatin1String( "unknown" ) )
       {
         if ( fieldTypeName == QLatin1String( "ST_GEOGRAPHY" ) )
           fieldTypeName = QStringLiteral( "geography" );
