@@ -11168,6 +11168,7 @@ QgsPointCloudLayer.QgsPointCloudLayer.LayerOptions: src/core/pointcloud/qgspoint
 QgsPointCloudLayer.QgsPointCloudLayer: src/core/pointcloud/qgspointcloudlayer.h#L112
 QgsPointCloudLayer.__repr__: src/core/pointcloud/qgspointcloudlayer.h#L123
 QgsPointCloudLayer.attributes: src/core/pointcloud/qgspointcloudlayer.h#L165
+QgsPointCloudLayer.chunkAttributeValuesChanged: src/core/pointcloud/qgspointcloudlayer.h#L359
 QgsPointCloudLayer.clone: src/core/pointcloud/qgspointcloudlayer.h#L130
 QgsPointCloudLayer.commitChanges: src/core/pointcloud/qgspointcloudlayer.h#L286
 QgsPointCloudLayer.commitError: src/core/pointcloud/qgspointcloudlayer.h#L294
