@@ -261,6 +261,8 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
   bool threadFinished = false;
   bool success = false;
 
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
+
   const std::function<void()> downloaderFunction = [this, request, synchronous, data, &verb, &waitConditionMutex, &waitCondition, &threadFinished, &success]() {
     if ( QThread::currentThread() != QApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
@@ -641,6 +643,7 @@ void QgsBaseNetworkRequest::replyFinished()
             emit downloadFinished();
             return;
           }
+          request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
