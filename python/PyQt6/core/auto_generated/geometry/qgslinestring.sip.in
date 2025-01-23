@@ -864,7 +864,7 @@ Calculates the minimal 3D bounding box for the geometry.
 
 .. deprecated:: 3.34
 
-   Use :py:func:`~QgsLineString.calculateBoundingBox3D` instead.
+   use :py:func:`~QgsLineString.calculateBoundingBox3D` instead
 %End
 
     virtual QgsBox3D calculateBoundingBox3D() const;
