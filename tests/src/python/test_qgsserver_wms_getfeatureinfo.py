@@ -40,7 +40,12 @@ from qgis.core import (
     QgsPointXY,
 )
 from qgis.PyQt.QtCore import QVariant, QUrl
-from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse, QgsServer, QgsServerRequest
+from qgis.server import (
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServer,
+    QgsServerRequest,
+)
 from qgis.testing import unittest, QgisTestCase
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 
@@ -1362,29 +1367,34 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         # create a memory layer with points
         fields = QgsFields()
-        fields.append(QgsField('id', QVariant.Int))
-        fields.append(QgsField('name', QVariant.String))
-        layer = QgsMemoryProviderUtils.createMemoryLayer('points', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
+        fields.append(QgsField("id", QVariant.Int))
+        fields.append(QgsField("name", QVariant.String))
+        layer = QgsMemoryProviderUtils.createMemoryLayer(
+            "points",
+            fields,
+            QgsWkbTypes.Point,
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+        )
 
         provider = layer.dataProvider()
         self.assertTrue(layer.isValid())
 
         # add some features
         f = QgsFeature(fields)
-        f.setAttribute('id', 1)
-        f.setAttribute('name', 'point1')
+        f.setAttribute("id", 1)
+        f.setAttribute("name", "point1")
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(0, 0)))
         provider.addFeature(f)
 
         f = QgsFeature(fields)
-        f.setAttribute('id', 2)
-        f.setAttribute('name', 'point2')
+        f.setAttribute("id", 2)
+        f.setAttribute("name", "point2")
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 1)))
         provider.addFeature(f)
 
         f = QgsFeature(fields)
-        f.setAttribute('id', 2)
-        f.setAttribute('name', 'point2')
+        f.setAttribute("id", 2)
+        f.setAttribute("name", "point2")
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-1, -1)))
         provider.addFeature(f)
 
@@ -1397,12 +1407,16 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         # Choose a small extent to trigger the sub-pixel tolerance adjustment
         w = 10
         w2 = int(w / 2)
-        request.setUrl(QUrl(f"?SERVICE=WMS&REQUEST=GetFeatureInfo&LAYERS=points&QUERY_LAYERS=points&INFO_FORMAT=application/json&FEATURE_COUNT=1&WIDTH={w}&HEIGHT={w}&CRS=EPSG:4326&STYLES=&BBOX=-1,-1,1,1&X={w2}&Y={w2}&VERSION=1.3.0"))
+        request.setUrl(
+            QUrl(
+                f"?SERVICE=WMS&REQUEST=GetFeatureInfo&LAYERS=points&QUERY_LAYERS=points&INFO_FORMAT=application/json&FEATURE_COUNT=1&WIDTH={w}&HEIGHT={w}&CRS=EPSG:4326&STYLES=&BBOX=-1,-1,1,1&X={w2}&Y={w2}&VERSION=1.3.0"
+            )
+        )
         response = QgsBufferServerResponse()
 
         server.handleRequest(request, response, project)
         body = response.body().data().decode("utf8").replace("\n", "")
-        self.assertEqual(len(json.loads(body)['features']), 1)
+        self.assertEqual(len(json.loads(body)["features"]), 1)
 
 
 if __name__ == "__main__":
