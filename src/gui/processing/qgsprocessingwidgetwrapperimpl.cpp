@@ -7980,7 +7980,7 @@ QStringList QgsProcessingPointCloudLayerWidgetWrapper::compatibleOutputTypes() c
 {
   return QStringList()
          << QgsProcessingOutputString::typeName()
-         // TODO  << QgsProcessingOutputPointCloudLayer::typeName()
+         << QgsProcessingOutputPointCloudLayer::typeName()
          << QgsProcessingOutputMapLayer::typeName()
          << QgsProcessingOutputFile::typeName()
          << QgsProcessingOutputFolder::typeName();
