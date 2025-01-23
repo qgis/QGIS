@@ -84,6 +84,16 @@ void QgsAbstractDatabaseProviderConnection::checkCapability( Qgis::DatabaseProvi
   }
 }
 
+QString QgsAbstractDatabaseProviderConnection::sanitizeSqlForQueryLayer( const QString &sql ) const
+{
+  QString sanitizedSql { sql.trimmed() };
+  while ( sanitizedSql.endsWith( ';' ) )
+  {
+    sanitizedSql.chop( 1 );
+  }
+  return sanitizedSql;
+}
+
 ///@endcond
 
 QString QgsAbstractDatabaseProviderConnection::providerKey() const
