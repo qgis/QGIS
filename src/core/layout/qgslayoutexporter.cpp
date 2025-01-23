@@ -1727,6 +1727,10 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   if ( !mLayout )
     return false;
 
+  const char *const apszAllowedDrivers[] = { "GTiff", "PDF", nullptr };
+  if ( !GDALIdentifyDriverEx( file.toUtf8().constData(), GDAL_OF_RASTER, apszAllowedDrivers, nullptr ) )
+    return false;
+
   if ( !map && includeGeoreference )
     map = mLayout->referenceMap();
 
@@ -1743,12 +1747,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   // important - we need to manually specify the DPI in advance, as GDAL will otherwise
   // assume a DPI of 150
   CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toUtf8().constData() );
-
-  CPLPushErrorHandler( CPLQuietErrorHandler );
-  CPLErrorReset();
   gdal::dataset_unique_ptr outputDS( GDALOpen( file.toUtf8().constData(), GA_Update ) );
-  CPLPopErrorHandler();
-
   if ( outputDS )
   {
     if ( t )
