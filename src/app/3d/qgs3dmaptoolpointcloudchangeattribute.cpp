@@ -26,6 +26,7 @@
 #include "qgspolygon.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmultipoint.h"
 #include "qgsguiutils.h"
 #include "qgisapp.h"
@@ -282,6 +283,10 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
   const QgsPointCloudAttribute *categoryAttribute = const_cast<QgsPointCloudAttribute *>( blockAttributes.find( categoryAttributeName, categoryAttributeOffset ) );
 
+  // we should adjust the Z based on the layer's elevation properties scale and offset
+  const double layerZScale = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zScale();
+  const double layerZOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zOffset();
+
   for ( int i = 0; i < block->pointCount(); ++i )
   {
     // ignore filtered out points
@@ -305,6 +310,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     // get map coordinates
     double x, y, z;
     QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
+    z = z * layerZScale + layerZOffset;
 
     // check if inside map extent
     if ( !mapExtent.contains( x, y ) )
