@@ -352,7 +352,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     void statisticsCalculationStateChanged( QgsPointCloudLayer::PointCloudStatisticsCalculationState state );
 
     /**
-     * Emitted when a node gets some attribute values of a node changed
+     * Emitted when a node gets some attribute values of some points changed
      *
      * \since QGIS 3.42
      */
