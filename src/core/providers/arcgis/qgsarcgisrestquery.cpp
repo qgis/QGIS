@@ -535,11 +535,13 @@ void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteA
   }
 
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
   if ( allowCache )
   {
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
+
   mReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mReply, &QNetworkReply::finished, this, &QgsArcGisAsyncQuery::handleReply );
 }
@@ -560,6 +562,7 @@ void QgsArcGisAsyncQuery::handleReply()
   if ( !QgsVariantUtils::isNull( redirect ) )
   {
     QNetworkRequest request = mReply->request();
+    request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
     QgsDebugMsgLevel( "redirecting to " + redirect.toUrl().toString(), 2 );
     request.setUrl( redirect.toUrl() );
@@ -633,6 +636,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   {
     // Handle HTTP redirects
     QNetworkRequest request = reply->request();
+    request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
     QgsDebugMsgLevel( "redirecting to " + redirect.toUrl().toString(), 2 );
     request.setUrl( redirect.toUrl() );
