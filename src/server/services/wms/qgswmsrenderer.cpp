@@ -3154,7 +3154,7 @@ namespace QgsWms
     }
 
     // Make sure the map unit tolerance is at least 1 pixel
-    mapUnitTolerance = std::max( mapUnitTolerance, 1.0 * rct.mapToPixel().mapUnitsPerPixel());
+    mapUnitTolerance = std::max( mapUnitTolerance, 1.0 * rct.mapToPixel().mapUnitsPerPixel() );
 
     QgsRectangle mapRectangle( infoPoint.x() - mapUnitTolerance, infoPoint.y() - mapUnitTolerance, infoPoint.x() + mapUnitTolerance, infoPoint.y() + mapUnitTolerance );
     return ( mapSettings.mapToLayerCoordinates( ml, mapRectangle ) );
