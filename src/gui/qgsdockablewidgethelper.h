@@ -90,8 +90,7 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
      * The ownership of \a widget is returned to \a ownerWindow once the object is destroyed.
      *
      * With a unique \a dockId, the status (docked, area and geometry) are saved in the settings and re-used on creation.
-     *
-     * If \a usePersistentWidget is TRUE then the \a widget (either as a dock or window) cannot be destroyed and must be hidden instead.
+     * The default values of the settings can be overridden with \a defaultIsDocked and \a defaultDockArea.
      *
      * \since QGIS 3.42
      */
