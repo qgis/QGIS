@@ -218,6 +218,12 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
 {
   QVector<int> selected;
 
+  // Get the map's clipping extent in layer crs and skip if empty. We only need points within this extent.
+  const Qgs3DMapSettings *map = mCanvas->mapSettings();
+  const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( map->extent(), map->crs(), layer->crs(), map->transformContext() );
+  if ( mapExtent.isEmpty() )
+    return selected;
+
   const QgsPointCloudNodeId n( ch->tileId().d, ch->tileId().x, ch->tileId().y, ch->tileId().z );
   QgsPointCloudRequest request;
   // TODO: apply filtering (if any)
@@ -244,6 +250,10 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     // get map coordinates
     double x, y, z;
     QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
+
+    // check if inside map extent
+    if ( !mapExtent.contains( x, y ) )
+      continue;
 
     // project to screen (map coords -> world coords -> clip coords -> NDC -> screen coords)
     bool isInFrustum;
