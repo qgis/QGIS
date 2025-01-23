@@ -334,8 +334,7 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
     return;
   }
 
-  if ( forceUpdate )
-    QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
+  QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), forceUpdate ? QStringLiteral( "Force update scene" ) : QStringLiteral( "Update scene" ) );
 
   Qgs3DMapSceneEntity::SceneContext sceneContext;
   Qt3DRender::QCamera *camera = mEngine->camera();
@@ -421,6 +420,8 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
 void Qgs3DMapScene::onFrameTriggered( float dt )
 {
+  QgsEventTracing::addEvent( QgsEventTracing::EventType::Instant, QStringLiteral( "3D" ), QStringLiteral( "Frame begins" ) );
+
   mCameraController->frameTriggered( dt );
 
   updateScene();
