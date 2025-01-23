@@ -258,7 +258,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
   mMapToolPointCloudChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
-  onPointCloudChangeAttributeSettingsChanged();
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -446,8 +445,11 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
 
     whileBlocking( mCboChangeAttribute )->addItem( attribute.name() );
   }
-  if ( mCboChangeAttribute->findText( previousAttribute ) != -1 )
-    mCboChangeAttribute->setCurrentText( previousAttribute );
+
+  int index = mCboChangeAttribute->findText( previousAttribute );
+  if ( index < 0 )
+    index = mCboChangeAttribute->findText( QStringLiteral( "Classification" ) );
+  mCboChangeAttribute->setCurrentIndex( std::max( index, 0 ) );
 
   enableEditingTools( pcLayer->isEditable() );
 }
@@ -923,7 +925,6 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
   }
 
   mMapToolPointCloudChangeAttribute->setAttribute( attributeName );
-  // TODO: validate values for attribute
   mMapToolPointCloudChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() );
 }
 
