@@ -385,6 +385,9 @@ class _3D_EXPORT QgsCameraController : public QObject
     // 3D world's origin in map coordinates
     QgsVector3D mOrigin;
 
+    //! Did camera change since last frame? Need to know if we should emit cameraChanged().
+    bool mCameraChanged = false;
+
     // To test the cameracontroller
     friend class TestQgs3DRendering;
     friend class TestQgs3DCameraController;
