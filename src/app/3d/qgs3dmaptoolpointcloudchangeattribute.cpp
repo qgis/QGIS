@@ -25,6 +25,7 @@
 #include "qgscameracontroller.h"
 #include "qgspolygon.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgsmultipoint.h"
 #include "qgsguiutils.h"
 #include "qgisapp.h"
@@ -169,10 +170,11 @@ QgsPoint Qgs3DMapToolPointCloudChangeAttribute::screenPointToMap( const QPoint &
   return pointMap;
 }
 
-QgsGeometry Qgs3DMapToolPointCloudChangeAttribute::box3DToPolygonInScreenSpace( QgsBox3D box, const MapToPixel3D &mapToPixel3D )
+
+QgsGeometry Qgs3DMapToolPointCloudChangeAttribute::box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D )
 {
   QVector<QgsPointXY> pts;
-  for ( QgsVector3D c : box.corners() )
+  for ( const QgsVector3D &c : box.corners() )
   {
     const QPointF pt = mapToPixel3D.transform( c.x(), c.y(), c.z() );
     pts.append( QgsPointXY( pt.x(), pt.y() ) );
@@ -194,7 +196,6 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   mapToPixel3D.origin = mCanvas->mapSettings()->origin();
   mapToPixel3D.canvasSize = mCanvas->size();
 
-  QgsPointCloudIndex pcIndex = layer->index();
   const QVector<const QgsChunkNode *> chunks = mCanvas->scene()->getLayerActiveChunkNodes( layer );
   for ( const QgsChunkNode *chunk : chunks )
   {
@@ -203,10 +204,10 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
     if ( !hull.intersects( searchPolygon ) )
       continue;
 
-    const QVector<int> pts = selectedPointsInNode( searchPolygon, chunk, mapToPixel3D, pcIndex );
+    const QgsPointCloudNodeId n( chunk->tileId().d, chunk->tileId().x, chunk->tileId().y, chunk->tileId().z );
+    const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, layer );
     if ( !pts.isEmpty() )
     {
-      const QgsPointCloudNodeId n( chunk->tileId().d, chunk->tileId().x, chunk->tileId().y, chunk->tileId().z );
       result.insert( n, pts );
     }
   }
@@ -214,7 +215,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 }
 
 
-QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsChunkNode *ch, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex &pcIndex )
+QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const
 {
   QVector<int> selected;
 
@@ -224,10 +225,33 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   if ( mapExtent.isEmpty() )
     return selected;
 
-  const QgsPointCloudNodeId n( ch->tileId().d, ch->tileId().x, ch->tileId().y, ch->tileId().z );
+  QgsPointCloudIndex pcIndex = layer->index();
+  QgsPointCloudAttributeCollection attributes;
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+
+  QString categoryAttributeName;
+  QSet<int> categoryValues;
+  if ( QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+  {
+    if ( const QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( renderer->symbol() ) )
+    {
+      const QgsPointCloudCategoryList categories = symbol->categoriesList();
+      for ( const auto &category : categories )
+      {
+        if ( category.renderState() )
+          categoryValues.insert( category.value() );
+      }
+
+      const QgsPointCloudAttributeCollection allAttributes = pcIndex.attributes();
+      categoryAttributeName = symbol->attribute();
+      attributes.extend( allAttributes, { categoryAttributeName } );
+    }
+  }
   QgsPointCloudRequest request;
   // TODO: apply filtering (if any)
-  request.setAttributes( pcIndex.attributes() );
+  request.setAttributes( attributes );
 
   // TODO: reuse cached block(s) if possible
 
@@ -241,12 +265,22 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const char *ptr = block->data();
   const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
   const std::size_t recordSize = blockAttributes.pointRecordSize();
-  int xOffset = 0, yOffset = 0, zOffset = 0;
+  int xOffset = 0, yOffset = 0, zOffset = 0, categoryAttributeOffset = 0;
   const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
   const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
   const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+  const QgsPointCloudAttribute *categoryAttribute = const_cast<QgsPointCloudAttribute *>( blockAttributes.find( categoryAttributeName, categoryAttributeOffset ) );
+
   for ( int i = 0; i < block->pointCount(); ++i )
   {
+    // if using categorized renderer, point might not be in a visible category
+    if ( categoryAttribute )
+    {
+      const double categoryAttributeValue = categoryAttribute->convertValueToDouble( ptr + i * recordSize + categoryAttributeOffset );
+      if ( !categoryValues.contains( categoryAttributeValue ) )
+        continue;
+    }
+
     // get map coordinates
     double x, y, z;
     QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );

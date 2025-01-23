@@ -84,8 +84,8 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     void restart();
     QgsPoint screenPointToMap( const QPoint &pos ) const;
     SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const;
-    static QVector<int> selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsChunkNode *ch, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex &pcIndex );
-    static QgsGeometry box3DToPolygonInScreenSpace( QgsBox3D box, const MapToPixel3D &mapToPixel3D );
+    QVector<int> selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const;
+    static QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
 
     QVector<QgsPointXY> mScreenPoints;
     QgsRubberBand3D *mPolygonRubberBand = nullptr;
