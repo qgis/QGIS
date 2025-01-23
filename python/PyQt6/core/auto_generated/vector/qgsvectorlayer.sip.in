@@ -109,6 +109,13 @@ Connects to a Microsoft SQL server database. The url defines the connection para
 geometry column, and other attributes. The url can be constructed using the
 :py:class:`QgsDataSourceUri` class.
 
+Dameng data provider (dameng)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Connects to a Dameng database. The url defines the connection parameters, table,
+geometry column, and other attributes. The url can be constructed using the
+:py:class:`QgsDataSourceUri` class.
+
 WFS (web feature service) data provider (wfs)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -166,6 +173,13 @@ The URI should be constructed using the :py:class:`QgsDataSourceUri` class with 
 - pageSize=number: number of features to retrieve in a single request
 - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
 - hideDownloadProgressDialog=1: to hide the download progress dialog.
+
+Also note:
+
+- You can use various functions available in the QGIS Expression list,
+  however the function must exist server side and have the same name and arguments to work.
+- Use the special $geometry parameter to provide the layer geometry column as input
+  into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
 
 Delimited text file data provider (delimitedtext)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

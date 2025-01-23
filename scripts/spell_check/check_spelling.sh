@@ -75,11 +75,16 @@ fi
 
 if [ -n "$SCRIPT_INPUT" ]; then
   EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
-  INPUTFILES=$(echo "$SCRIPT_INPUT" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE" | tr '\n' ' ' )
+  # INPUTFILES=$(echo "$SCRIPT_INPUT" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE" | tr '\n' ' ' )
+  INPUTFILES=$(echo "$SCRIPT_INPUT" | tr -s '[[:blank:]]' '\n' | ${GP}grep -Eiv "$EXCLUDE")
   if [[ -z $INPUTFILES  ]]; then
     exit 0
   fi
   echo "Running spell check on files: $INPUTFILES"
+
+    # 分批处理文件列表
+  echo "$INPUTFILES" | tr '\n' '\0' | xargs -0 -n 100 -I {} ./check_spelling.sh "{}"
+
 else
   INPUTFILES="."
 fi

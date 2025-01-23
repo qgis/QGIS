@@ -73,7 +73,9 @@ if test "$HAS_AG" != "true"; then
 elif test "$HAS_UNBUFFER" != "true"; then
   echo "WARNING: the unbuffer(1) executable was not found, spell checker could not run" >&2
 else
-  "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
+  # echo "$MODIFIED"
+  # "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
+  "$MODIFIED" | xargs -n 100 "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh
 fi
 
 # Run doxygen layout test if requirements are met

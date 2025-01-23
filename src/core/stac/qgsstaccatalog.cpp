@@ -33,7 +33,7 @@ QString QgsStacCatalog::toHtml() const
 {
   QString html = QStringLiteral( "<html><head></head>\n<body>\n" );
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Catalog") );
+  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Catalog" ) );
   html += QLatin1String( "<table class=\"list-view\">\n" );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), id() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "stac_version" ), stacVersion() );
@@ -43,7 +43,7 @@ QString QgsStacCatalog::toHtml() const
 
   if ( !mStacExtensions.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Extensions") );
+    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Extensions" ) );
     html += QLatin1String( "<ul>\n" );
     for ( const QString &extension : mStacExtensions )
     {
@@ -54,7 +54,7 @@ QString QgsStacCatalog::toHtml() const
 
   if ( ! mConformanceClasses.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Conformance Classes") );
+    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Conformance Classes" ) );
     html += QLatin1String( "<ul>\n" );
     for ( const QString &cc : mConformanceClasses )
     {
@@ -63,7 +63,7 @@ QString QgsStacCatalog::toHtml() const
     html += QLatin1String( "</ul>\n" );
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Links") );
+  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Links" ) );
   for ( const QgsStacLink &link : mLinks )
   {
     html += QLatin1String( "<table class=\"list-view\">\n" );

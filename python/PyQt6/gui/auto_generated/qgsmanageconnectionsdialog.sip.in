@@ -30,6 +30,7 @@ class QgsManageConnectionsDialog : QDialog
       MSSQL,
       WCS,
       Oracle,
+      Dameng,
       HANA,
       XyzTiles,
       ArcgisMapServer,

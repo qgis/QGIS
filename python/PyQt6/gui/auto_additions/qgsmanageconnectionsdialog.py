@@ -7,6 +7,7 @@ QgsManageConnectionsDialog.WFS = QgsManageConnectionsDialog.Type.WFS
 QgsManageConnectionsDialog.MSSQL = QgsManageConnectionsDialog.Type.MSSQL
 QgsManageConnectionsDialog.WCS = QgsManageConnectionsDialog.Type.WCS
 QgsManageConnectionsDialog.Oracle = QgsManageConnectionsDialog.Type.Oracle
+QgsManageConnectionsDialog.Dameng = QgsManageConnectionsDialog.Type.Dameng
 QgsManageConnectionsDialog.HANA = QgsManageConnectionsDialog.Type.HANA
 QgsManageConnectionsDialog.XyzTiles = QgsManageConnectionsDialog.Type.XyzTiles
 QgsManageConnectionsDialog.ArcgisMapServer = QgsManageConnectionsDialog.Type.ArcgisMapServer
