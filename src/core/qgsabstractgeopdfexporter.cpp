@@ -516,11 +516,11 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   page.appendChild( dpi );
   // assumes DPI of 72, as noted above.
   QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
-  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
+  const double pageWidthPdfUnits = std::round( details.pageSizeMm.width() / 25.4 * 72 );
   width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
   page.appendChild( width );
   QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
-  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
+  const double pageHeightPdfUnits = std::round( details.pageSizeMm.height() / 25.4 * 72 );
   height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
   page.appendChild( height );
 
