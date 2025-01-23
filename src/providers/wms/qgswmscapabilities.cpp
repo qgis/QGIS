@@ -2495,6 +2495,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -2566,6 +2567,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             emit downloadFinished();
             return;
           }
+          request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 

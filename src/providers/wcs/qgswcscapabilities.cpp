@@ -162,6 +162,7 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
     QgsMessageLog::logMessage( mError, tr( "WCS" ) );
     return false;
   }
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
   QgsDebugMsgLevel( QStringLiteral( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ), 2 );
@@ -382,6 +383,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
         QgsMessageLog::logMessage( mError, tr( "WCS" ) );
         return;
       }
+      request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
