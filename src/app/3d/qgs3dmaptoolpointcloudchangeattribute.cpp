@@ -187,6 +187,7 @@ QgsGeometry Qgs3DMapToolPointCloudChangeAttribute::box3DToPolygonInScreenSpace( 
   return g.convexHull();
 }
 
+
 SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const
 {
   SelectedPoints result;
@@ -249,14 +250,24 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
       attributes.extend( allAttributes, { categoryAttributeName } );
     }
   }
+
+  // we also need the filter expression so we can exclude filtered out points
+  QgsPointCloudExpression filterExpression = pcIndex.subsetString();
+  attributes.extend( pcIndex.attributes(), filterExpression.referencedAttributes() );
+
   QgsPointCloudRequest request;
-  // TODO: apply filtering (if any)
   request.setAttributes( attributes );
+  request.setIgnoreIndexFilterEnabled( true );
 
   // TODO: reuse cached block(s) if possible
 
   std::unique_ptr<QgsPointCloudBlock> block( pcIndex.nodeData( n, request ) );
+
   if ( !block )
+    return selected;
+
+  const bool filterIsValid = filterExpression.isValid();
+  if ( !filterExpression.prepare( block.get() ) && filterIsValid )
     return selected;
 
   const QgsVector3D blockScale = block->scale();
@@ -273,6 +284,16 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
 
   for ( int i = 0; i < block->pointCount(); ++i )
   {
+    // ignore filtered out points
+    if ( filterIsValid )
+    {
+      double eval = filterExpression.evaluate( i );
+      if ( !eval || std::isnan( eval ) )
+      {
+        continue;
+      }
+    }
+
     // if using categorized renderer, point might not be in a visible category
     if ( categoryAttribute )
     {

@@ -34,6 +34,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   const QgsPointCloudAttributeCollection allAttributes = index.attributes();
   QgsPointCloudRequest req;
   req.setAttributes( allAttributes );
+  req.setIgnoreIndexFilterEnabled( true );
   std::unique_ptr<QgsPointCloudBlock> block = index.nodeData( n, req );
   const char *ptr = block->data();
   block->attributes().find( attribute.name(), mAttributeOffset );
