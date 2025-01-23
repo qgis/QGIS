@@ -39,5 +39,5 @@ void QgsPointCloudRequest::setAttributes( const QgsPointCloudAttributeCollection
 
 uint qHash( const QgsPointCloudRequest &request )
 {
-  return qHash( request.filterRect() ) ^ qHash( QVariant( request.attributes().toFields() ) );
+  return qHash( request.filterRect() ) ^ qHash( QVariant( request.attributes().toFields() ) ) ^ qHash( request.ignoreIndexFilterEnabled() );
 }
