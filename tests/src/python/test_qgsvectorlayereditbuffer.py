@@ -857,9 +857,7 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         _test(Qgis.TransactionMode.BufferedGroups)
 
     def testAddNewFeatureAndNewAttribute(self):
-        layer = QgsVectorLayer(
-            "Point?field=fldtxt:string", "addfeat", "memory"
-        )
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "addfeat", "memory")
         layer.startEditing()
 
         # Add a new feature with fields information attached to it
