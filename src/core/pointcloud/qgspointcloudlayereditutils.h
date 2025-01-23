@@ -49,9 +49,6 @@ class CORE_EXPORT QgsPointCloudLayerEditUtils
     //! Ctor
     QgsPointCloudLayerEditUtils() = delete;
 
-    //! Takes \a data comprising of \a allAttributes and returns a QByteArray with data only for the attributes included in the \a request
-    static QByteArray dataForAttributes( const QgsPointCloudAttributeCollection &allAttributes, const QByteArray &data, const QgsPointCloudRequest &request );
-
     //! Check if \a value is within proper range for the \a attribute
     static bool isAttributeValueValid( const QgsPointCloudAttribute &attribute, double value );
 
