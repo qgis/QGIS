@@ -505,7 +505,7 @@ QString QgsVectorLayerEditBuffer::dumpEditBuffer()
 }
 #endif
 
-void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
+void QgsVectorLayerEditBuffer::handleAttributeAdded( int index, const QgsField &field )
 {
   // go through the changed attributes map and adapt indices
   QgsChangedAttributesMap::iterator it = mChangedAttributeValues.begin();
@@ -521,6 +521,21 @@ void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
     QgsAttributes attrs = featureIt->attributes();
     attrs.insert( index, QVariant() );
     featureIt->setAttributes( attrs );
+    QgsFields fields;
+    const QgsFields oldFields = featureIt->fields();
+    for ( int i = 0; i < oldFields.size(); i++ )
+    {
+      if ( i == index )
+      {
+        fields.append( field, L->fields().fieldOrigin( L->fields().indexFromName( field.name() ) ) );
+      }
+      fields.append( oldFields.at( i ), oldFields.fieldOrigin( i ) );
+    }
+    if ( index == oldFields.size() )
+    {
+      fields.append( field, L->fields().fieldOrigin( L->fields().indexFromName( field.name() ) ) );
+    }
+    featureIt->setFields( fields, false );
   }
 
   // go through renamed attributes and adapt
@@ -561,6 +576,9 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
     QgsAttributes attrs = featureIt->attributes();
     attrs.remove( index );
     featureIt->setAttributes( attrs );
+    QgsFields fields = featureIt->fields();
+    fields.remove( index );
+    featureIt->setFields( fields, false );
   }
 
   // go through rename attributes and adapt
@@ -922,7 +940,6 @@ bool QgsVectorLayerEditBuffer::commitChangesAddFeatures( bool &featuresAdded, QS
     for ( int i = 0; i < featuresToAdd.count(); ++i )
     {
       // Empty the feature's fields so the up-to-date fields from the data provider is used to match attributes
-      featuresToAdd[i].setFields( QgsFields(), false );
       QgsVectorLayerUtils::matchAttributesToFields( featuresToAdd[i], L->dataProvider()->fields() );
     }
 

@@ -297,7 +297,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void updateChangedAttributes( QgsFeature &f );
 
     //! Update added and changed features after addition of an attribute
-    void handleAttributeAdded( int index );
+    void handleAttributeAdded( int index, const QgsField &field );
 
     //! Update added and changed features after removal of an attribute
     void handleAttributeDeleted( int index );
