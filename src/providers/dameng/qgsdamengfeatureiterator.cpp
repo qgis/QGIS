@@ -104,11 +104,7 @@ QgsDamengFeatureIterator::QgsDamengFeatureIterator( QgsDamengFeatureSource *sour
         else
         {
           // we can safely hand this off to the backend to evaluate, so that it will nicely handle it within the query planner!
-          whereClause = QgsDamengUtils::andWhereClauses( whereClause, QStringLiteral( "DMGEO2.ST_DWithin(%1,DMGEO2.ST_GeomFromText('%2',%3),%4)" ).arg(
-                          QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ),
-                          mRequest.referenceGeometry().asWkt(),
-                          mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid )
-                        .arg( mRequest.distanceWithin() ) );
+          whereClause = QgsDamengUtils::andWhereClauses( whereClause, QStringLiteral( "DMGEO2.ST_DWithin(%1,DMGEO2.ST_GeomFromText('%2',%3),%4)" ).arg( QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ), mRequest.referenceGeometry().asWkt(), mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid ).arg( mRequest.distanceWithin() ) );
         }
       }
       break;
@@ -252,7 +248,7 @@ bool QgsDamengFeatureIterator::fetchFeature( QgsFeature &feature )
       QgsDebugMsgLevel( QStringLiteral( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
 
       lock();
-      
+
       QgsDatabaseQueryLogWrapper logWrapper { fetch, mSource->mConnInfo, QStringLiteral( "dameng" ), QStringLiteral( "QgsDamengFeatureIterator" ), QGS_QUERY_LOG_ORIGIN };
 
       QgsDamengResult queryResult;
@@ -286,7 +282,7 @@ bool QgsDamengFeatureIterator::fetchFeature( QgsFeature &feature )
         break;
       }
       unlock();
-      
+
       if ( fetchedRows > 0 )
       {
         logWrapper.setFetchedRows( fetchedRows );
@@ -342,9 +338,7 @@ bool QgsDamengFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 bool QgsDamengFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
   // setup simplification of geometries to fetch
-  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) &&
-       simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification &&
-       !simplifyMethod.forceLocalOptimization() )
+  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) && simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification && !simplifyMethod.forceLocalOptimization() )
   {
     QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
 
@@ -423,7 +417,7 @@ bool QgsDamengFeatureIterator::close()
 QString QgsDamengFeatureIterator::whereClauseRect()
 {
   QgsRectangle rect = mFilterRect;
-  
+
   // in case coordinates are around 180.0°
   if ( rect.xMinimum() > rect.xMaximum() && mSource->mCrs.isGeographic() )
   {
@@ -445,36 +439,28 @@ QString QgsDamengFeatureIterator::whereClauseRect()
   const QString bboxSrid = mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid;
 
   qBox = QStringLiteral( "DMGEO2.st_makeenvelope(%1,%2,%3,%4,%5)" )
-          .arg( qgsDoubleToString( rect.xMinimum() ),
-                qgsDoubleToString( rect.yMinimum() ),
-                qgsDoubleToString( rect.xMaximum() ),
-                qgsDoubleToString( rect.yMaximum() ),
-                bboxSrid );
+           .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ), bboxSrid );
 
   QString geom_col;
   switch ( mSource->mSpatialColType )
   {
-  case SctGeometry:
-    geom_col = QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn );
-    break;
-  case SctGeography:
-    geom_col = QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn ) + "::SYSGEO2.st_geometry";
-    break;
-  case SctTopoGeometry:
-    geom_col = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
-                .arg( QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn ) );
-    break;
-  default:
-    break;
+    case SctGeometry:
+      geom_col = QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn );
+      break;
+    case SctGeography:
+      geom_col = QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn ) + "::SYSGEO2.st_geometry";
+      break;
+    case SctTopoGeometry:
+      geom_col = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
+                   .arg( QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn ) );
+      break;
+    default:
+      break;
   }
 
   QString whereClause = QStringLiteral( "DMGEO2.ST_Box2DIntersects(%1,%2)" ).arg( geom_col, qBox );
 
-  if ( mSource->mSpatialColType == SctGeography &&
-       bboxSrid == QLatin1String( "4326" ) &&
-       std::fabs( rect.yMaximum()  - rect.yMinimum() ) <= 10 &&
-       std::fabs( rect.xMaximum()  - rect.xMinimum() ) <= 10 &&
-       std::fabs( rect.yMaximum() ) <= 70 )
+  if ( mSource->mSpatialColType == SctGeography && bboxSrid == QLatin1String( "4326" ) && std::fabs( rect.yMaximum() - rect.yMinimum() ) <= 10 && std::fabs( rect.xMaximum() - rect.xMinimum() ) <= 10 && std::fabs( rect.yMaximum() ) <= 70 )
   {
     // And noticing that the difference between the rhumb line and the geodesics
     // increases with higher latitude maximum, and differences of longitude and latitude.
@@ -493,37 +479,37 @@ QString QgsDamengFeatureIterator::whereClauseRect()
     const double yminGeog = rect.yMinimum() >= 0 ? std::max( 0.0, rect.yMinimum() - dlat ) : rect.yMinimum();
     const double ymaxGeog = rect.yMaximum() >= 0 ? rect.yMaximum() : std::min( 0.0, rect.yMaximum() + dlat );
     const QString qBoxGeog = QStringLiteral( "DMGEO2.st_makeenvelope(%1,%2,%3,%4,%5)" )
-                             .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( yminGeog ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( ymaxGeog ), bboxSrid );
+                               .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( yminGeog ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( ymaxGeog ), bboxSrid );
     whereClause += QStringLiteral( " AND DMGEO2.ST_Box2DIntersects(%1::SYSGEO2.st_geometry, %2)" )
-                   .arg( QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn ), qBoxGeog );
+                     .arg( QgsDamengConn::quotedIdentifier( mSource->mBoundingBoxColumn ), qBoxGeog );
   }
 
   switch ( mSource->mSpatialColType )
   {
-  case SctGeometry:
-    geom_col = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn );
-    break;
-  case SctGeography:
-    geom_col = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) + "::SYSGEO2.st_geometry";
-    break;
-  case SctTopoGeometry:
-    geom_col = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
-      .arg( QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) );
-    break;
-  default:
-    break;
+    case SctGeometry:
+      geom_col = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn );
+      break;
+    case SctGeography:
+      geom_col = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) + "::SYSGEO2.st_geometry";
+      break;
+    case SctTopoGeometry:
+      geom_col = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
+                   .arg( QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) );
+      break;
+    default:
+      break;
   }
   if ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
   {
     QString curveToLineFn = QStringLiteral( "DMGEO2.st_curvetoline" ); // st_ prefix is always used
     whereClause += QStringLiteral( " AND %1(%2(%3),%4 )" )
-                   .arg( "DMGEO2.st_intersects", curveToLineFn, geom_col, qBox );
+                     .arg( "DMGEO2.st_intersects", curveToLineFn, geom_col, qBox );
   }
 
   if ( !mSource->mRequestedSrid.isEmpty() && ( mSource->mRequestedSrid != mSource->mDetectedSrid || mSource->mRequestedSrid.toInt() == 0 ) )
   {
     whereClause += QStringLiteral( " AND %1(%2)=%3" )
-                   .arg( "DMGEO2.st_srid",geom_col,mSource->mRequestedSrid );
+                     .arg( "DMGEO2.st_srid", geom_col, mSource->mRequestedSrid );
   }
 
   if ( mSource->mRequestedGeomType != Qgis::WkbType::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
@@ -550,26 +536,25 @@ bool QgsDamengFeatureIterator::openQuery( const QString &whereClause, long limit
     QString geom;
     switch ( mSource->mSpatialColType )
     {
-    case SctGeometry:
-      geom = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn );
-      break;
-    case SctGeography:
-      geom = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) + QLatin1String( "::SYSGEO2.st_geometry" );
-      break;
-    case SctTopoGeometry:
-      geom = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
-                      .arg( QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) );
-      break;
-    default:
-      break;
+      case SctGeometry:
+        geom = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn );
+        break;
+      case SctGeography:
+        geom = QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) + QLatin1String( "::SYSGEO2.st_geometry" );
+        break;
+      case SctTopoGeometry:
+        geom = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
+                 .arg( QgsDamengConn::quotedIdentifier( mSource->mGeometryColumn ) );
+        break;
+      default:
+        break;
     }
 
     Qgis::WkbType usedGeomType = mSource->mRequestedGeomType != Qgis::WkbType::Unknown
-                                     ? mSource->mRequestedGeomType : mSource->mDetectedGeomType;
+                                   ? mSource->mRequestedGeomType
+                                   : mSource->mDetectedGeomType;
 
-    if ( !mRequest.simplifyMethod().forceLocalOptimization() &&
-         mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification &&
-      QgsWkbTypes::flatType( QgsWkbTypes::singleType( usedGeomType ) ) != Qgis::WkbType::Point )
+    if ( !mRequest.simplifyMethod().forceLocalOptimization() && mRequest.simplifyMethod().methodType() != QgsSimplifyMethod::NoSimplification && QgsWkbTypes::flatType( QgsWkbTypes::singleType( usedGeomType ) ) != Qgis::WkbType::Point )
     {
       // Dameng simplification method to use
       QString simplifyDAMENGMethod;
@@ -589,7 +574,6 @@ bool QgsDamengFeatureIterator::openQuery( const QString &whereClause, long limit
           simplifyDAMENGMethod = QStringLiteral( "DMGEO2.st_removerepeatedpoints" );
           postSimplification = true; // Ask to apply a post-filtering simplification
         }
-        
       }
       else
       {
@@ -598,28 +582,26 @@ bool QgsDamengFeatureIterator::openQuery( const QString &whereClause, long limit
       }
       QgsDebugMsgLevel(
         QStringLiteral( "Dameng Server side simplification : threshold %1 pixels - method %2" )
-        .arg( mRequest.simplifyMethod().threshold() )
-        .arg( simplifyDAMENGMethod ),
+          .arg( mRequest.simplifyMethod().threshold() )
+          .arg( simplifyDAMENGMethod ),
         3
       );
 
       geom = QStringLiteral( "%1(%2,%3)" )
-             .arg( simplifyDAMENGMethod, geom )
-             .arg( mRequest.simplifyMethod().tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
+               .arg( simplifyDAMENGMethod, geom )
+               .arg( mRequest.simplifyMethod().tolerance() * 0.8 ); //-> Default factor for the maximum displacement distance for simplification, similar as GeoServer does
 
       // Post-simplification
       if ( postSimplification )
       {
         geom = QStringLiteral( "DMGEO2.st_simplify( %1, %2, true )" )
-               .arg( geom )
-               .arg( mRequest.simplifyMethod().tolerance() * 0.7 ); //-> We use a smaller tolerance than pre-filtering to be on the safe side
+                 .arg( geom )
+                 .arg( mRequest.simplifyMethod().tolerance() * 0.7 ); //-> We use a smaller tolerance than pre-filtering to be on the safe side
       }
     }
 
     geom = QStringLiteral( "%1(%2,'%3')" )
-           .arg( "DMGEO2.st_asbinary",
-                 geom,
-                 QgsDamengProvider::endianString() );
+             .arg( "DMGEO2.st_asbinary", geom, QgsDamengProvider::endianString() );
 
     query += delim + geom;
     delim = ',';
@@ -671,7 +653,7 @@ bool QgsDamengFeatureIterator::openQuery( const QString &whereClause, long limit
     query += QStringLiteral( " LIMIT %1" ).arg( limit );
   else
   {
-    if( mConn->getEstimatedMetadata() )
+    if ( mConn->getEstimatedMetadata() )
       query += QStringLiteral( " LIMIT %1" ).arg( QgsDamengConn::GEOM_TYPE_SELECT_LIMIT );
   }
 
@@ -796,7 +778,6 @@ bool QgsDamengFeatureIterator::getFeature( QgsDamengResult &queryResult, int row
       }
 
       fid = mSource->mShared->lookupFid( primaryKeyVals );
-
     }
     break;
 
@@ -833,7 +814,7 @@ void QgsDamengFeatureIterator::getFeatureAttribute( int idx, QgsDamengResult &qu
   const QgsField fld = mSource->mFields.at( idx );
 
   QVariant v;
-  if( queryResult.DMftype( col ) == DSQL_ROWID )
+  if ( queryResult.DMftype( col ) == DSQL_ROWID )
     v = queryResult.DMgetvalue( col );
   else
     v = QgsDamengProvider::convertValue( fld.type(), fld.subType(), queryResult.DMgetvalue( col ), fld.typeName() );

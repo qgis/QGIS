@@ -55,7 +55,7 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
     return false;
   }
 
-  QgsDMResult *resViewCheck( conn->LoggedDMexec( "QgsDamengUtils", QStringLiteral("select ID from SYS.VSYSOBJECTS where name = %1 and TYPE$ = \'SCH\';").arg(QgsDamengConn::quotedValue(schemaName))));
+  QgsDMResult *resViewCheck( conn->LoggedDMexec( "QgsDamengUtils", QStringLiteral( "select ID from SYS.VSYSOBJECTS where name = %1 and TYPE$ = \'SCH\';" ).arg( QgsDamengConn::quotedValue( schemaName ) ) ) );
   resViewCheck->fetchNext();
   QString schemaId = resViewCheck->value( 0 ).toString();
 
@@ -63,19 +63,20 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
   QString sqlViewCheck = QStringLiteral( "select INFO5 from SYS.VSYSOBJECTS "
                                          " where SUBTYPE$ = \'VIEW\' and "
                                          " NAME = %1 and %2 in SCHID; " )
-                         .arg( QgsDamengConn::quotedValue( tableName ) ).arg( schemaId );
+                           .arg( QgsDamengConn::quotedValue( tableName ) )
+                           .arg( schemaId );
   resViewCheck = conn->LoggedDMexec( "QgsDamengUtils", sqlViewCheck );
   if ( resViewCheck->fetchNext() )
   {
     QString sql = resViewCheck->value( 0 ).toString() == "0x"
-                  ? QStringLiteral( "DROP VIEW %2" ).arg( schemaTableName )
-                  : QStringLiteral( "DROP MATERIALIZED VIEW %2" ).arg( schemaTableName );
+                    ? QStringLiteral( "DROP VIEW %2" ).arg( schemaTableName )
+                    : QStringLiteral( "DROP MATERIALIZED VIEW %2" ).arg( schemaTableName );
 
     QgsDamengResult result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
     if ( result.DMresultStatus() != DmResCommandOk )
     {
       errCause = QObject::tr( "Unable to delete view %1: \n%2" )
-        .arg( schemaTableName, result.DMresultErrorMessage() );
+                   .arg( schemaTableName, result.DMresultErrorMessage() );
       conn->unref();
       return false;
     }
@@ -88,15 +89,15 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
   if ( tableName.startsWith( "MTAB$_" ) )
   {
     tableName = tableName.mid( 6 );
-    QString sql =  QStringLiteral( "DROP MATERIALIZED VIEW %1.%2" )
-                        .arg( QgsDamengConn::quotedIdentifier( schemaName ) )
-                        .arg( QgsDamengConn::quotedIdentifier( tableName ) );
+    QString sql = QStringLiteral( "DROP MATERIALIZED VIEW %1.%2" )
+                    .arg( QgsDamengConn::quotedIdentifier( schemaName ) )
+                    .arg( QgsDamengConn::quotedIdentifier( tableName ) );
 
     QgsDamengResult result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
     if ( result.DMresultStatus() != DmResCommandOk )
     {
       errCause = QObject::tr( "Unable to delete table %1: \n%2" )
-        .arg( schemaTableName, result.DMresultErrorMessage() );
+                   .arg( schemaTableName, result.DMresultErrorMessage() );
       conn->unref();
       return false;
     }
@@ -108,13 +109,12 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
   // check the geometry column count
   QString sql = QString( "select count(*) from SYSGEO2.geometry_columns "
                          " where F_TABLE_SCHEMA = %1 and F_TABLE_NAME = %2;" )
-                .arg( QgsDamengConn::quotedValue( schemaName ),
-                      QgsDamengConn::quotedValue( tableName ) );
+                  .arg( QgsDamengConn::quotedValue( schemaName ), QgsDamengConn::quotedValue( tableName ) );
   QgsDMResult *result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
   if ( !result || !result->execstatus() )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
-               .arg( schemaTableName, result->getMsg() );
+                 .arg( schemaTableName, result->getMsg() );
     conn->unref();
     return false;
   }
@@ -126,23 +126,20 @@ bool QgsDamengUtils::deleteLayer( const QString &uri, QString &errCause )
   {
     // the table has more geometry columns, drop just the geometry column
     sql = QStringLiteral( "alter table %1.%2 drop column if exists %3;" )
-          .arg( QgsDamengConn::quotedIdentifier( schemaName ),
-                QgsDamengConn::quotedIdentifier( tableName ),
-                QgsDamengConn::quotedIdentifier( geometryCol ) );
+            .arg( QgsDamengConn::quotedIdentifier( schemaName ), QgsDamengConn::quotedIdentifier( tableName ), QgsDamengConn::quotedIdentifier( geometryCol ) );
   }
   else
   {
     // drop the table
     sql = QStringLiteral( "Drop table if exists %1.%2" )
-          .arg( QgsDamengConn::quotedIdentifier( schemaName ),
-                QgsDamengConn::quotedIdentifier( tableName ) );
+            .arg( QgsDamengConn::quotedIdentifier( schemaName ), QgsDamengConn::quotedIdentifier( tableName ) );
   }
 
   result = conn->LoggedDMexec( "QgsDamengUtils", sql );
   if ( !result || !result->execstatus() )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
-               .arg( schemaTableName, result->getMsg() );
+                 .arg( schemaTableName, result->getMsg() );
     conn->unref();
     return false;
   }
@@ -169,13 +166,13 @@ bool QgsDamengUtils::deleteSchema( const QString &schema, const QgsDataSourceUri
 
   // drop the schema
   QString sql = QStringLiteral( "DROP SCHEMA %1 %2" )
-                .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
+                  .arg( schemaName, cascade ? QStringLiteral( "CASCADE" ) : QString() );
 
   QgsDamengResult result( conn->LoggedDMexec( "QgsDamengUtils", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
     errCause = QObject::tr( "Unable to delete schema %1: \n%2" )
-               .arg( schemaName, result.DMresultErrorMessage() );
+                 .arg( schemaName, result.DMresultErrorMessage() );
     conn->unref();
     return false;
   }
@@ -195,7 +192,7 @@ QgsDamengConnectionItem::QgsDamengConnectionItem( QgsDataItem *parent, const QSt
 
 QVector<QgsDataItem *> QgsDamengConnectionItem::createChildren()
 {
-  QVector<QgsDataItem *>items;
+  QVector<QgsDataItem *> items;
 
   QgsDataSourceUri uri = QgsDamengConn::connUri( mName );
   // TODO: we need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
@@ -290,7 +287,7 @@ bool QgsDamengConnectionItem::handleDrop( const QMimeData *data, const QString &
         geomColumn = srcLayer->dataProvider()->uri().geometryColumn();
       }
 
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != Qgis::GeometryType::Null ? QStringLiteral( "GEOM" ) : QString() );
+      uri.setDataSource( QString(), u.name, srcLayer->geometryType() != Qgis::GeometryType::Null ? QStringLiteral( "GEOM" ) : QString() );
 
       QgsDebugMsgLevel( "URI " + uri.uri( false ), 2 );
 
@@ -302,15 +299,14 @@ bool QgsDamengConnectionItem::handleDrop( const QMimeData *data, const QString &
       std::unique_ptr<QgsVectorLayerExporterTask> exportTask( new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ), QStringLiteral( "dameng" ), srcLayer->crs(), QVariantMap(), owner ) );
 
       // when export is successful:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]()
-      {
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to Dameng database" ), tr( "Import was successful." ) );
         refreshSchema( toSchema );
       } );
 
       // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString & errorMessage ){
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
         if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
@@ -348,7 +344,7 @@ QgsDamengLayerItem::QgsDamengLayerItem( QgsDataItem *parent, const QString &name
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
   mUri = createUri();
-  
+
   setState( Qgis::BrowserItemState::NotPopulated );
   Q_ASSERT( mLayerProperty.size() == 1 );
 }
@@ -376,9 +372,10 @@ QString QgsDamengLayerItem::createUri()
   QString basekey = QStringLiteral( "/Dameng/connections/%1" ).arg( connName );
 
   QStringList defPk( settings.value(
-                       QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
-                       QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
-                     ).toStringList() );
+                               QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
+                               QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
+  )
+                       .toStringList() );
 
   const bool useEstimatedMetadata = QgsDamengConn::useEstimatedMetadata( connName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
@@ -408,7 +405,7 @@ QgsDamengSchemaItem::QgsDamengSchemaItem( QgsDataItem *parent, const QString &co
 
 QVector<QgsDataItem *> QgsDamengSchemaItem::createChildren()
 {
-  QVector<QgsDataItem *>items;
+  QVector<QgsDataItem *> items;
 
   QgsDataSourceUri uri = QgsDamengConn::connUri( mConnectionName );
   QgsDamengConn *conn = QgsDamengConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
@@ -438,9 +435,7 @@ QVector<QgsDataItem *> QgsDamengSchemaItem::createChildren()
     if ( layerProperty.schemaName != mName )
       continue;
 
-    if ( !layerProperty.geometryColName.isNull() &&
-         ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown  ||
-           layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
+    if ( !layerProperty.geometryColName.isNull() && ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       if ( dontResolveType )
       {

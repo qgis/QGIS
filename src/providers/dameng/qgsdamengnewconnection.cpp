@@ -171,7 +171,7 @@ void QgsDamengNewConnection::testConnection()
 
   QgsDataSourceUri uri;
   uri.setConnection( txtHost->text(), txtPort->text(), "dameng", mAuthSettings->username(), mAuthSettings->password(), QgsDataSourceUri::SslPrefer /* meaningless for dameng */, mAuthSettings->configId() );
-  
+
   QgsDamengConn *conn = QgsDamengConn::connectDb( uri.connectionInfo( false ), true );
 
   if ( conn )

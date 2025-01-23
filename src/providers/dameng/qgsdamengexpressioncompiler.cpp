@@ -48,14 +48,13 @@ QString QgsDamengExpressionCompiler::quotedValue( const QVariant &value, bool &o
       QgsGeometry geom = QgsExpressionUtils::getGeometry( value, nullptr );
       if ( geom.isNull() )
         break;
-        return QString( "DMGEO2.ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
+      return QString( "DMGEO2.ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
   }
 
   return QgsDamengConn::quotedValue( value );
 }
 
-static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
-{
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP {
   { "sqrt", "sqrt" },
   { "radians", "radians" },
   { "degrees", "degrees" },
@@ -128,12 +127,7 @@ QStringList QgsDamengExpressionCompiler::sqlArgumentsFromFunctionName( const QSt
   QStringList args( fnArgs );
   if ( fnName == QLatin1String( "make_datetime" ) )
   {
-    args = QStringList( QStringLiteral( "TIMESTAMP '%1-%2-%3 %4:%5:%6'" ).arg( args[0].rightJustified( 4, '0' ) )
-      .arg( args[1].rightJustified( 2, '0' ) )
-      .arg( args[2].rightJustified( 2, '0' ) )
-      .arg( args[3].rightJustified( 2, '0' ) )
-      .arg( args[4].rightJustified( 2, '0' ) )
-      .arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "TIMESTAMP '%1-%2-%3 %4:%5:%6'" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == QLatin1String( "geom_from_wkt" ) )
   {
@@ -200,8 +194,7 @@ QgsSqlExpressionCompiler::Result QgsDamengExpressionCompiler::compileNode( const
         {
           QString op1, op2;
 
-          if ( compileNode( bin->opLeft(), op1 ) != Complete ||
-               compileNode( bin->opRight(), op2 ) != Complete )
+          if ( compileNode( bin->opLeft(), op1 ) != Complete || compileNode( bin->opRight(), op2 ) != Complete )
             return Fail;
 
           switch ( bin->op() )
@@ -227,7 +220,7 @@ QgsSqlExpressionCompiler::Result QgsDamengExpressionCompiler::compileNode( const
               return Complete;
 
 
-            case QgsExpressionNodeBinaryOperator::boMod  :
+            case QgsExpressionNodeBinaryOperator::boMod:
               result = QStringLiteral( "MOD(%1,%2)" ).arg( op1, op2 );
               return Complete;
 

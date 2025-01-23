@@ -26,10 +26,9 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 
 //! Provider for dameng source select
-class QgsDamengSourceSelectProvider : public QgsSourceSelectProvider  //#spellok
+class QgsDamengSourceSelectProvider : public QgsSourceSelectProvider //#spellok
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "dameng" ); }
     QString text() const override { return QObject::tr( "Dameng" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
@@ -67,19 +66,18 @@ class QgsDamengProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 
       return dlg.currentProjectUri();
     }
-
 };
 
 
-QgsDamengProviderGuiMetadata::QgsDamengProviderGuiMetadata():
-  QgsProviderGuiMetadata( QgsDamengProvider::DAMENG_KEY )
+QgsDamengProviderGuiMetadata::QgsDamengProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QgsDamengProvider::DAMENG_KEY )
 {
 }
 
 QList<QgsSourceSelectProvider *> QgsDamengProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsDamengSourceSelectProvider;  //#spellok
+  providers << new QgsDamengSourceSelectProvider; //#spellok
   return providers;
 }
 

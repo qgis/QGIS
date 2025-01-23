@@ -39,10 +39,10 @@ class QgsDamengNewConnection : public QDialog, private Ui::QgsDamengNewConnectio
   private slots:
     //! Updates state of the OK button depending of the filled fields
     void updateOkButtonState();
+
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
-
 };
 
 #endif //  QGSDAMENGNEWCONNECTIONBASE_H

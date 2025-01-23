@@ -395,7 +395,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         }
         break;
       case Dameng:
-        if (root.tagName() != QLatin1String( "qgsDamengConnections" ) )
+        if ( root.tagName() != QLatin1String( "qgsDamengConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a Dameng connections exchange file." ) );
           return false;
@@ -682,9 +682,9 @@ QDomDocument QgsManageConnectionsDialog::saveDamengConnections( const QStringLis
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/Dameng/connections/" + connections[ i ];
+    path = "/Dameng/connections/" + connections[i];
     QDomElement el = doc.createElement( QStringLiteral( "dameng" ) );
-    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "name" ), connections[i] );
     el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host" ).toString() );
     el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port" ).toString() );
     el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database" ).toString() );
@@ -1393,14 +1393,12 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
   }
 }
 
-void QgsManageConnectionsDialog::loadDamengConnections(const QDomDocument& doc, const QStringList& items)
+void QgsManageConnectionsDialog::loadDamengConnections( const QDomDocument &doc, const QStringList &items )
 {
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsDamengConnections" ) )
   {
-    QMessageBox::information( this,
-                              tr( "Loading Connections" ),
-                              tr( "The file is not a Dameng connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a Dameng connections exchange file." ) );
     return;
   }
 
@@ -1425,11 +1423,7 @@ void QgsManageConnectionsDialog::loadDamengConnections(const QDomDocument& doc, 
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this,
-                                            tr( "Loading Connections" ),
-                                            tr( "Connection with name '%1' already exists. Overwrite?" )
-                                            .arg( connectionName ),
-                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:

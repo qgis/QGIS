@@ -129,7 +129,6 @@ void QgsDamengSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
           break;
         }
       }
-
     }
   }
 
@@ -137,7 +136,7 @@ void QgsDamengSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
   if ( le )
   {
     bool ok;
-    ( void )value.toInt( &ok );
+    ( void ) value.toInt( &ok );
     if ( index.column() == QgsDamengTableModel::DbtmSrid && !ok )
       value.clear();
 
@@ -246,7 +245,7 @@ void QgsDamengSourceSelect::btnNew_clicked()
 void QgsDamengSourceSelect::btnDelete_clicked()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+                  .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -265,8 +264,7 @@ void QgsDamengSourceSelect::btnSave_clicked()
 
 void QgsDamengSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML )" ) );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML )" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -366,7 +364,6 @@ void QgsDamengSourceSelect::addButtonClicked()
 
     mSelectedTables << uri;
     dbTables.append( uri );
-    
   }
 
   if ( mSelectedTables.empty() )
@@ -375,7 +372,7 @@ void QgsDamengSourceSelect::addButtonClicked()
   }
   else
   {
-    if ( ! dbTables.isEmpty() )
+    if ( !dbTables.isEmpty() )
     {
       emit addDatabaseLayers( dbTables, QStringLiteral( "dameng" ) );
     }
@@ -387,7 +384,6 @@ void QgsDamengSourceSelect::addButtonClicked()
 
     // Clear selection after layers have been added
     mTablesTreeView->selectionModel()->clearSelection();
-
   }
 }
 
@@ -419,17 +415,12 @@ void QgsDamengSourceSelect::btnConnect_clicked()
   mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
-  connect( mColumnTypeThread, &QgsDamengGeomColumnTypeThread::setLayerType,
-           this, &QgsDamengSourceSelect::setLayerType );
-  connect( mColumnTypeThread, &QThread::finished,
-           this, &QgsDamengSourceSelect::columnThreadFinished );
-  connect( mColumnTypeThread, &QgsDamengGeomColumnTypeThread::progress,
-           mColumnTypeTask, [=]( int i, int n )
-  {
+  connect( mColumnTypeThread, &QgsDamengGeomColumnTypeThread::setLayerType, this, &QgsDamengSourceSelect::setLayerType );
+  connect( mColumnTypeThread, &QThread::finished, this, &QgsDamengSourceSelect::columnThreadFinished );
+  connect( mColumnTypeThread, &QgsDamengGeomColumnTypeThread::progress, mColumnTypeTask, [=]( int i, int n ) {
     mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
   } );
-  connect( mColumnTypeThread, &QgsDamengGeomColumnTypeThread::progressMessage,
-           this, &QgsDamengSourceSelect::progressMessage );
+  connect( mColumnTypeThread, &QgsDamengGeomColumnTypeThread::progressMessage, this, &QgsDamengSourceSelect::progressMessage );
 
   btnConnect->setText( tr( "Stop" ) );
   mColumnTypeThread->start();
@@ -508,7 +499,7 @@ void QgsDamengSourceSelect::setSql( const QModelIndex &index )
   QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
-    mTableModel->setSql( index , gb->sql() );
+    mTableModel->setSql( index, gb->sql() );
   }
 
   delete gb;

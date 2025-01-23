@@ -28,7 +28,7 @@ class QgsDamengResult;
 class QgsDamengTransaction;
 
 
-class QgsDamengFeatureSource final: public QgsAbstractFeatureSource
+class QgsDamengFeatureSource final : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDamengFeatureSource( const QgsDamengProvider *p );
@@ -37,7 +37,6 @@ class QgsDamengFeatureSource final: public QgsAbstractFeatureSource
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
-
     QString mConnInfo;
 
     QString mGeometryColumn;
@@ -71,7 +70,7 @@ class QgsDamengFeatureSource final: public QgsAbstractFeatureSource
 
 class QgsDamengConn;
 
-class QgsDamengFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsDamengFeatureSource>
+class QgsDamengFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsDamengFeatureSource>
 {
   public:
     QgsDamengFeatureIterator( QgsDamengFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -87,7 +86,6 @@ class QgsDamengFeatureIterator final: public QgsAbstractFeatureIteratorFromSourc
     bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
   private:
-
     QgsDamengConn *mConn = nullptr;
 
 

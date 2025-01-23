@@ -52,7 +52,7 @@ class QgsDamengConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
 
   public:
     explicit QgsDamengConnPoolGroup( const QString &name )
-      : QgsConnectionPoolGroup<QgsDamengConn*>( name ) { initTimer( this ); }
+      : QgsConnectionPoolGroup<QgsDamengConn *>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -61,7 +61,6 @@ class QgsDamengConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
 
   protected:
     Q_DISABLE_COPY( QgsDamengConnPoolGroup )
-
 };
 
 //! Dameng connection pool - singleton

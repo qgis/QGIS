@@ -27,7 +27,7 @@
 
 #include <chrono>
 
- // From configuration
+// From configuration
 const QStringList QgsDamengProviderConnection::CONFIGURATION_PARAMETERS = {
   QStringLiteral( "sysdbaOnly" ),
   QStringLiteral( "dontResolveType" ),
@@ -70,8 +70,8 @@ QgsDamengProviderConnection::QgsDamengProviderConnection( const QString &name )
   setDefaultCapabilities();
 }
 
-QgsDamengProviderConnection::QgsDamengProviderConnection( const QString &uri, const QVariantMap &configuration ) :
-  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+QgsDamengProviderConnection::QgsDamengProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
   mProviderKey = QStringLiteral( "dameng" );
   setDefaultCapabilities();
@@ -81,8 +81,7 @@ void QgsDamengProviderConnection::setDefaultCapabilities()
 {
   // TODO: we might check at this point if the user actually has the privileges and return
   //       properly filtered capabilities instead of all of them
-  mCapabilities =
-  {
+  mCapabilities = {
     Capability::DropVectorTable,
     Capability::CreateVectorTable,
     Capability::RenameSchema,
@@ -103,15 +102,13 @@ void QgsDamengProviderConnection::setDefaultCapabilities()
     Capability::DeleteFieldCascade,
     Capability::AddField
   };
-  mGeometryColumnCapabilities =
-  {
+  mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
     GeometryColumnCapability::SinglePart,
     GeometryColumnCapability::Curves
   };
-  mSqlLayerDefinitionCapabilities =
-  {
+  mSqlLayerDefinitionCapabilities = {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
@@ -155,7 +152,7 @@ void QgsDamengProviderConnection::remove( const QString &name ) const
 }
 
 
-void QgsDamengProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant>* options ) const
+void QgsDamengProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
 {
   checkCapability( Capability::CreateVectorTable );
 
@@ -242,7 +239,7 @@ QString QgsDamengProviderConnection::tableUri( const QString &schema, const QStr
 void QgsDamengProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
 {
   executeSqlPrivate( QStringLiteral( "DROP TABLE if exists %1.%2" )
-    .arg( QgsDamengConn::quotedIdentifier( schema ), QgsDamengConn::quotedIdentifier( name ) ) );
+                       .arg( QgsDamengConn::quotedIdentifier( schema ), QgsDamengConn::quotedIdentifier( name ) ) );
 }
 
 void QgsDamengProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
@@ -255,7 +252,7 @@ void QgsDamengProviderConnection::dropVectorTable( const QString &schema, const 
 void QgsDamengProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
-    .arg( QgsDamengConn::quotedIdentifier( schema ), QgsDamengConn::quotedIdentifier( name ), QgsDamengConn::quotedIdentifier( newName ) ) );
+                       .arg( QgsDamengConn::quotedIdentifier( schema ), QgsDamengConn::quotedIdentifier( name ), QgsDamengConn::quotedIdentifier( newName ) ) );
 }
 
 void QgsDamengProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
@@ -269,14 +266,13 @@ void QgsDamengProviderConnection::createSchema( const QString &name ) const
 {
   checkCapability( Capability::CreateSchema );
   executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" ).arg( QgsDamengConn::quotedIdentifier( name ) ) );
-
 }
 
 void QgsDamengProviderConnection::dropSchema( const QString &name, bool force ) const
 {
   checkCapability( Capability::DropSchema );
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
-    .arg( QgsDamengConn::quotedIdentifier( name ), force ? QStringLiteral( "CASCADE" ) : QString() ) );
+                       .arg( QgsDamengConn::quotedIdentifier( name ), force ? QStringLiteral( "CASCADE" ) : QString() ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsDamengProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -320,11 +316,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsDamengProviderConnection::
     QMetaObject::Connection qtConnection;
     if ( feedback )
     {
-      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &dmconn ]
-        {
-          if ( dmconn )
-            dmconn->get()->DMCancel();
-        } );
+      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [&dmconn] {
+        if ( dmconn )
+          dmconn->get()->DMCancel();
+      } );
     }
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -341,19 +336,19 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsDamengProviderConnection::
     if ( !conn->DMconnStatus() || !res->result() )
     {
       errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
-                  .arg( sql )
-                  .arg( conn->DMconnStatus() )
-                  .arg( conn->DMconnErrorMessage() );
+                   .arg( sql )
+                   .arg( conn->DMconnStatus() )
+                   .arg( conn->DMconnErrorMessage() );
     }
     else
     {
       const QString err { res->DMresultErrorMessage() };
-      if ( ! err.isEmpty() )
+      if ( !err.isEmpty() )
       {
         errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
-                   .arg( sql )
-                   .arg( conn->DMconnStatus() )
-                   .arg( err );
+                     .arg( sql )
+                     .arg( conn->DMconnStatus() )
+                     .arg( err );
       }
     }
 
@@ -367,7 +362,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsDamengProviderConnection::
     {
       // Get column names
       const int numFields { result->nfields() };
-      for ( int rowIdx = 0; rowIdx < numFields; rowIdx++)
+      for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
       {
         results.appendColumn( res->DMfname( rowIdx ) );
       }
@@ -378,7 +373,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsDamengProviderConnection::
         // Collect oids
         QStringList oids;
         oids.reserve( numFields );
-        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++)
+        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
         {
           if ( feedback && feedback->isCanceled() )
           {
@@ -391,29 +386,29 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsDamengProviderConnection::
         for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
         {
           static const QStringList intTypes = {
-                                                QStringLiteral( "byte" ),
-                                                QStringLiteral( "tinyint" ),
-                                                QStringLiteral( "smallint" ),
-                                                QStringLiteral( "int" ),
-                                                QStringLiteral( "bigint" ),
-                                              };
+            QStringLiteral( "byte" ),
+            QStringLiteral( "tinyint" ),
+            QStringLiteral( "smallint" ),
+            QStringLiteral( "int" ),
+            QStringLiteral( "bigint" ),
+          };
           static const QStringList floatTypes = {
-                                                  QStringLiteral( "float" ),
-                                                  QStringLiteral( "double" ),
-                                                  QStringLiteral( "real" ),
-                                                  QStringLiteral( "numeric" ),
-                                                  QStringLiteral( "decimal" )
-                                                };
+            QStringLiteral( "float" ),
+            QStringLiteral( "double" ),
+            QStringLiteral( "real" ),
+            QStringLiteral( "numeric" ),
+            QStringLiteral( "decimal" )
+          };
           static const QStringList stringTypes = {
-                                                   QStringLiteral( "char" ),
-                                                   QStringLiteral( "varchar" ),
-                                                   QStringLiteral( "text" )
-                                                 };
+            QStringLiteral( "char" ),
+            QStringLiteral( "varchar" ),
+            QStringLiteral( "text" )
+          };
           static const QStringList byteTypes = {
-                                                 QStringLiteral( "binary" ),
-                                                 QStringLiteral( "varbinary" ),
-                                                 QStringLiteral( "image" )
-                                               };
+            QStringLiteral( "binary" ),
+            QStringLiteral( "varbinary" ),
+            QStringLiteral( "image" )
+          };
 
           const QString typName { res->DMftypeName( rowIdx, res->DMftype( rowIdx ) ) };
           QMetaType::Type vType { QMetaType::Type::QString };
@@ -491,7 +486,7 @@ QVariantList QgsDamengProviderResultIterator::nextRowPrivate()
       row.push_back( res->value( col ).toString() );
     }
   }
-  
+
   ++mRowIndex;
 
   return row;
@@ -500,7 +495,7 @@ QVariantList QgsDamengProviderResultIterator::nextRowPrivate()
 bool QgsDamengProviderResultIterator::hasNextRowPrivate() const
 {
   QgsDMResult *res;
-  
+
   if ( result )
   {
     res = result->result();
@@ -511,7 +506,7 @@ bool QgsDamengProviderResultIterator::hasNextRowPrivate() const
 
     return hasnext;
   }
-  
+
   return false;
 }
 
@@ -547,7 +542,7 @@ void QgsDamengProviderConnection::createSpatialIndex( const QString &schema, con
 
   const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
   executeSql( QStringLiteral( "CREATE SPATIAL INDEX %1 ON %2.%3(%4);" )
-    .arg( QgsDamengConn::quotedIdentifier( indexName ), QgsDamengConn::quotedIdentifier( schema ), QgsDamengConn::quotedIdentifier( name ), QgsDamengConn::quotedIdentifier( geometryColumnName ) ) );
+                .arg( QgsDamengConn::quotedIdentifier( indexName ), QgsDamengConn::quotedIdentifier( schema ), QgsDamengConn::quotedIdentifier( name ), QgsDamengConn::quotedIdentifier( geometryColumnName ) ) );
 }
 
 bool QgsDamengProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
@@ -555,12 +550,14 @@ bool QgsDamengProviderConnection::spatialIndexExists( const QString &schema, con
   checkCapability( Capability::SpatialIndexExists );
 
   const QList<QVariantList> res = executeSql( QStringLiteral( "select count(*) from ALL_IND_COLUMNS A,( select TYPE$,ID from SYSINDEXES ) S,( select ID,NAME from SYS.VSYSOBJECTS ) O "
-                                                            " where A.TABLE_OWNER = %1 and A.TABLE_NAME = %2 and A.COLUMN_NAME = %3 and "
-                                                            " S.TYPE$ = \'ST\' and A.index_name in O.NAME and S.ID = O.ID;"
-                                                           ).arg(
-                                                                QgsDamengConn::quotedValue( schema ),
-                                                                QgsDamengConn::quotedValue( name ),
-                                                                QgsDamengConn::quotedValue( geometryColumn ) ) );
+                                                              " where A.TABLE_OWNER = %1 and A.TABLE_NAME = %2 and A.COLUMN_NAME = %3 and "
+                                                              " S.TYPE$ = \'ST\' and A.index_name in O.NAME and S.ID = O.ID;"
+  )
+                                                .arg(
+                                                  QgsDamengConn::quotedValue( schema ),
+                                                  QgsDamengConn::quotedValue( name ),
+                                                  QgsDamengConn::quotedValue( geometryColumn )
+                                                ) );
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
@@ -569,20 +566,20 @@ void QgsDamengProviderConnection::deleteSpatialIndex( const QString &schema, con
   checkCapability( Capability::DeleteSpatialIndex );
 
   const QList<QVariantList> res = executeSql( QStringLiteral( "select A.index_name from ALL_IND_COLUMNS A,( select TYPE$,ID from SYS.VSYSINDEXES ) S,( select ID,NAME from SYS.VSYSOBJECTS ) O "
-                                                            " where A.TABLE_OWNER = %1 and A.TABLE_NAME = %2 and A.COLUMN_NAME = %3 and "
-                                                            " S.TYPE$ = \'ST\' and A.index_name in O.NAME and S.ID = O.ID;"
-                                                           ).arg(
-                                                            QgsDamengConn::quotedValue( schema ),
-                                                            QgsDamengConn::quotedValue( name ),
-                                                            QgsDamengConn::quotedValue( geometryColumn )
-                                                           ) );
+                                                              " where A.TABLE_OWNER = %1 and A.TABLE_NAME = %2 and A.COLUMN_NAME = %3 and "
+                                                              " S.TYPE$ = \'ST\' and A.index_name in O.NAME and S.ID = O.ID;"
+  )
+                                                .arg(
+                                                  QgsDamengConn::quotedValue( schema ),
+                                                  QgsDamengConn::quotedValue( name ),
+                                                  QgsDamengConn::quotedValue( geometryColumn )
+                                                ) );
   if ( res.isEmpty() )
     throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2" ).arg( schema, name ) );
 
   const QString indexName = res.at( 0 ).at( 0 ).toString();
 
-  executeSql( QStringLiteral( "DROP INDEX %1.%2;" ).arg( QgsDamengConn::quotedIdentifier( schema ),
-    QgsDamengConn::quotedIdentifier( indexName ) ) );
+  executeSql( QStringLiteral( "DROP INDEX %1.%2;" ).arg( QgsDamengConn::quotedIdentifier( schema ), QgsDamengConn::quotedIdentifier( indexName ) ) );
 }
 
 QStringList QgsDamengProviderConnection::schemas() const
@@ -710,15 +707,13 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsDamengProviderCon
         if ( !flags || ( prFlags & flags ) )
         {
           // retrieve layer types if needed
-          if ( !dontResolveType && (!pr.geometryColName.isNull() &&
-            ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown ||
-              pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
+          if ( !dontResolveType && ( !pr.geometryColName.isNull() && ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
             conn->retrieveLayerTypes( pr, useEstimatedMetadata );
           }
           QgsDamengProviderConnection::TableProperty property;
           property.setFlags( prFlags );
-          for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ); i++)
+          for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ); i++ )
           {
             property.addGeometryColumnType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
           }
@@ -736,16 +731,17 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsDamengProviderCon
             // Set the candidates
             property.setPrimaryKeyColumns( pr.pkCols );
           }
-          else  // Fetch and set the real pks
+          else // Fetch and set the real pks
           {
             try
             {
               QString sql = QStringLiteral( "select distinct( COLUMN_NAME ) from ALL_CONS_COLUMNS a "
-                " where a.OWNER = \'%1\' and a.table_name = \'%2\' and exists("
-                " select OWNER,TABLE_NAME,CONSTRAINT_TYPE from ALL_CONSTRAINTS u "
-                " where u.OWNER = a.OWNER and u.table_name = a.table_name and "
-                " ( CONSTRAINT_TYPE = \'P\' or CONSTRAINT_TYPE = \'U\') ); "
-              ).arg( pr.schemaName, pr.tableName );
+                                            " where a.OWNER = \'%1\' and a.table_name = \'%2\' and exists("
+                                            " select OWNER,TABLE_NAME,CONSTRAINT_TYPE from ALL_CONSTRAINTS u "
+                                            " where u.OWNER = a.OWNER and u.table_name = a.table_name and "
+                                            " ( CONSTRAINT_TYPE = \'P\' or CONSTRAINT_TYPE = \'U\') ); "
+              )
+                              .arg( pr.schemaName, pr.tableName );
               const auto pks = execSql( sql ).rows();
               QStringList pkNames;
               for ( const auto &pk : std::as_const( pks ) )
@@ -819,7 +815,7 @@ QgsFields QgsDamengProviderConnection::fields( const QString &schema, const QStr
         return vl.fields();
       }
     }
-    catch ( QgsProviderConnectionException&)
+    catch ( QgsProviderConnectionException & )
     {
       // fall-through
     }
@@ -836,7 +832,7 @@ QIcon QgsDamengProviderConnection::icon() const
 QList<QgsVectorDataProvider::NativeType> QgsDamengProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsDamengConn *conn = QgsDamengConnPool::instance()->acquireConnection( QgsDataSourceUri { uri() } .connectionInfo( false ) );
+  QgsDamengConn *conn = QgsDamengConnPool::instance()->acquireConnection( QgsDataSourceUri { uri() }.connectionInfo( false ) );
   if ( conn )
   {
     types = conn->nativeTypes();
@@ -1664,8 +1660,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsDamengProviderConnection::sq
           QStringLiteral( "ZONE" ),
         }
       },
-      {
-        Qgis::SqlKeywordCategory::Aggregate,
+      { Qgis::SqlKeywordCategory::Aggregate,
         {
           QStringLiteral( "Avg" ),
           QStringLiteral( "COLLECT" ),
@@ -1696,8 +1691,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsDamengProviderConnection::sq
           QStringLiteral( "XMLAGG" ),
         }
       },
-      {
-        Qgis::SqlKeywordCategory::Math,
+      { Qgis::SqlKeywordCategory::Math,
         {
           QStringLiteral( "Abs" ),
           QStringLiteral( "ACos" ),
@@ -1731,8 +1725,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsDamengProviderConnection::sq
           QStringLiteral( "Var_Samp" ),
         }
       },
-      {
-        Qgis::SqlKeywordCategory::Geospatial,
+      { Qgis::SqlKeywordCategory::Geospatial,
         {
           QStringLiteral( "DMGEO2.AddEdge" ),
           QStringLiteral( "DMGEO2.AddFace" ),
@@ -2108,7 +2101,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsDamengProviderConnection::sq
           QStringLiteral( "DMGEO2.ST_SymDifference" ),
           QStringLiteral( "DMGEO2.ST_TPI" ),
           QStringLiteral( "DMGEO2.ST_TRI" ),
-          QStringLiteral( "DMGEO2.ST_Tesselate" ),  //#spellok
+          QStringLiteral( "DMGEO2.ST_Tesselate" ), //#spellok
           QStringLiteral( "DMGEO2.ST_Tile" ),
           QStringLiteral( "DMGEO2.ST_TileEnvelope" ),
           QStringLiteral( "DMGEO2.ST_Touches" ),
@@ -2206,4 +2199,3 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsDamengProviderConnection::sq
     }
   );
 }
-

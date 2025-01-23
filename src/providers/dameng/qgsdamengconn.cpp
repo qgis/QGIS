@@ -41,8 +41,8 @@
 
 #include <nlohmann/json.hpp>
 
-  // for htonl
-  // for htonl
+// for htonl
+// for htonl
 #ifdef Q_OS_WIN
 #include <winsock.h>
 #else
@@ -176,8 +176,8 @@ QgsPoolDamengConn::~QgsPoolDamengConn()
 }
 
 
-QMap<QString, QgsDamengConn*> QgsDamengConn::sConnectionsRO;
-QMap<QString, QgsDamengConn*> QgsDamengConn::sConnectionsRW;
+QMap<QString, QgsDamengConn *> QgsDamengConn::sConnectionsRO;
+QMap<QString, QgsDamengConn *> QgsDamengConn::sConnectionsRW;
 
 const int QgsDamengConn::GEOM_TYPE_SELECT_LIMIT = 100;
 
@@ -205,7 +205,7 @@ DmConn *QgsDamengConn::DMconnect( const QString &ipaddr, const QString &port, co
   }
 
   rt = conn->dmDriver->open( UserTrans, user, pwd, ipaddr, port.toInt(), NULL );
-  
+
   if ( !rt )
     conn->connStatus = false;
   else
@@ -228,11 +228,11 @@ QgsDamengConn *QgsDamengConn::connectDb( const QString &conninfo, bool readonly,
     shared = false;
   }
 
-  QgsDamengConn* conn;
+  QgsDamengConn *conn;
 
   if ( shared )
   {
-    QMap<QString, QgsDamengConn*>::iterator it = connections.find( conninfo );
+    QMap<QString, QgsDamengConn *>::iterator it = connections.find( conninfo );
     if ( it != connections.end() )
     {
       conn = *it;
@@ -317,7 +317,6 @@ QgsDamengConn::QgsDamengConn( const QString &conninfo, bool readOnly, bool share
   , mShared( shared )
   , mTransaction( transaction )
 {
-
   QgsDebugMsgLevel( QStringLiteral( "New Dameng connection for " ) + conninfo, 2 );
 
   // expand connectionInfo
@@ -325,8 +324,7 @@ QgsDamengConn::QgsDamengConn( const QString &conninfo, bool readOnly, bool share
   QString expandedConnectionInfo = uri.connectionInfo( true );
   UserTrans = QgsApplication::settingsLocaleUserLocale->value();
 
-  auto addDefaultTimeoutAndClientEncoding = []( QString &connectString )
-  {
+  auto addDefaultTimeoutAndClientEncoding = []( QString &connectString ) {
     if ( !connectString.contains( QStringLiteral( "connect_timeout=" ) ) )
     {
       // add default timeout
@@ -368,7 +366,7 @@ QgsDamengConn::QgsDamengConn( const QString &conninfo, bool readOnly, bool share
       {
         break;
       }
-      
+
       const QString errorMsg = DMconnErrorMessage();
       DMfinish();
       logWrapper->setError( errorMsg );
@@ -422,7 +420,6 @@ QgsDamengConn::QgsDamengConn( const QString &conninfo, bool readOnly, bool share
       QgsDebugMsgLevel( QStringLiteral( "GEOS support available!" ), 3 );
     }
   }
-
 }
 
 QgsDamengConn::~QgsDamengConn()
@@ -441,7 +438,7 @@ int QgsDamengConn::DMserverVersion() const
     return 0;
 
   QString version = "select substr( substr( SVR_VERSION,instr( SVR_VERSION,'V' ) ) || "
-    " substr( id_code,15,8 ),2 ) from v$instance";
+                    " substr( id_code,15,8 ),2 ) from v$instance";
   QgsDMResult *res = LoggedDMexec( "QgsDamengConn", version );
   if ( res && res->execstatus() && res->fetchNext() )
     return res->value( 0 ).toString().remove( '\n' ).toInt();
@@ -463,7 +460,7 @@ void QgsDamengConn::unref()
 
   if ( mShared )
   {
-    QMap< QString, QgsDamengConn*> &connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
+    QMap< QString, QgsDamengConn *> &connections = mReadOnly ? sConnectionsRO : sConnectionsRW;
 
     int removed = connections.remove( mConnInfo );
     Q_ASSERT( removed == 1 );
@@ -522,7 +519,7 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
       dimName = QStringLiteral( "G.COORD_DIMENSION" );
       gtableName = QStringLiteral( "SYSGEO2.GEOMETRY_COLUMNS" );
     }
-    // Geography 
+    // Geography
     else if ( i == SctGeography )
     {
       tableName = QStringLiteral( "G.F_TABLE_NAME" );
@@ -542,11 +539,11 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
       tableName = QStringLiteral( "G.TABLE_NAME" );
       columnName = QStringLiteral( "G.FEATURE_COLUMN" );
       typeName = "CASE "
-        "WHEN G.FEATURE_TYPE = 1 THEN \'MULTIPOINT\' "
-        "WHEN G.FEATURE_TYPE = 2 THEN \'MULTILINESTRING\' "
-        "WHEN G.FEATURE_TYPE = 3 THEN \'MULTIPOLYGON\' "
-        "WHEN G.FEATURE_TYPE = 4 THEN \'GEOMETRYCOLLECTION\' "
-        "END AS type";
+                 "WHEN G.FEATURE_TYPE = 1 THEN \'MULTIPOINT\' "
+                 "WHEN G.FEATURE_TYPE = 2 THEN \'MULTILINESTRING\' "
+                 "WHEN G.FEATURE_TYPE = 3 THEN \'MULTIPOLYGON\' "
+                 "WHEN G.FEATURE_TYPE = 4 THEN \'GEOMETRYCOLLECTION\' "
+                 "END AS type";
       sridName = QStringLiteral( "( SELECT srid FROM SYSTOPOLOGY.SYSTOPOLOGY t WHERE G.TOPOLOGY_ID=t.id )" );
       dimName = QStringLiteral( "2" );
       gtableName = QStringLiteral( "SYSTOPOLOGY.SYSLAYER" );
@@ -554,37 +551,38 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
     else
     {
       QgsMessageLog::logMessage( tr( "Unsupported spatial column type %1" )
-        .arg( displayStringForGeomType( ( QgsDamengGeometryColumnType )i ) ) );
+                                   .arg( displayStringForGeomType( ( QgsDamengGeometryColumnType ) i ) ) );
       continue;
     }
 
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
     sql = QString( "SELECT distinct(%1),%2,%3,%4,%5,%6,c.SUBTYPE$,c.INFO5,"
-                    "( select COMMENT$ from SYS.VSYSTABLECOMMENTS where SCHNAME = c.SCH_NAME and "
-                    "   TVNAME = ( select NAME from SYS.VSYSOBJECTS where ID = c.ID ) ), "
-                    "( select JSONB_AGG( NAME ) from SYS.VSYSCOLUMNS where ID = c.ID ), "
-                    "G.SPCOLS, "
-                    "%8 "
-                    " FROM ( select * from %7 G join "
-                    "        ( select %2 SCHEMA_2, %1 TABLE_2, count(*) as SPCOLS "
-                    "       from %7 G group by (%2,%1) ) as GD "
-                    "       on %1 = GD.TABLE_2 ) G "
-                    " left outer join"
-                    "   ( select n.name SCH_NAME, c1.name TAB_NAME, c1.ID, c1.SUBTYPE$, c1.INFO5 "
-                    "     from SYS.VSYSOBJECTS c1, SYS.VSYSOBJECTS n "
-                    "     where n.ID = c1.schid	) c"
-                    " on c.TAB_NAME = %1 and c.SCH_NAME = %2"
-                    " WHERE %2 in ( select unique(OWNER) from SYS.ALL_TABLES ) "
-                  ).arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName )
-                    .arg( i );
+                   "( select COMMENT$ from SYS.VSYSTABLECOMMENTS where SCHNAME = c.SCH_NAME and "
+                   "   TVNAME = ( select NAME from SYS.VSYSOBJECTS where ID = c.ID ) ), "
+                   "( select JSONB_AGG( NAME ) from SYS.VSYSCOLUMNS where ID = c.ID ), "
+                   "G.SPCOLS, "
+                   "%8 "
+                   " FROM ( select * from %7 G join "
+                   "        ( select %2 SCHEMA_2, %1 TABLE_2, count(*) as SPCOLS "
+                   "       from %7 G group by (%2,%1) ) as GD "
+                   "       on %1 = GD.TABLE_2 ) G "
+                   " left outer join"
+                   "   ( select n.name SCH_NAME, c1.name TAB_NAME, c1.ID, c1.SUBTYPE$, c1.INFO5 "
+                   "     from SYS.VSYSOBJECTS c1, SYS.VSYSOBJECTS n "
+                   "     where n.ID = c1.schid	) c"
+                   " on c.TAB_NAME = %1 and c.SCH_NAME = %2"
+                   " WHERE %2 in ( select unique(OWNER) from SYS.ALL_TABLES ) "
+    )
+            .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName )
+            .arg( i );
 
     if ( searchSysdbaOnly )
       sql += QStringLiteral( " AND %1=%2" ).arg( schemaName, quotedValue( "SYSDBA" ) );
-    
+
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND %1=%2" ).arg( schemaName, quotedValue( schema ) );
-    
+
     if ( !name.isEmpty() )
       sql += QStringLiteral( " AND %1=%2" ).arg( tableName, quotedString( name ) );
 
@@ -602,7 +600,7 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
   QgsDebugMsgLevel( "getting table info from layer registries: " + query, 2 );
   QgsDMResult *res = LoggedDMexec( "QgsDamengConn", query );
 
-  if( !res || !res->execstatus() )
+  if ( !res || !res->execstatus() )
   {
     return false;
   }
@@ -636,7 +634,7 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
     else
     {
       QgsDebugError( QStringLiteral( "Unhandled columnType index %1" )
-        .arg( columnTypeInt ) );
+                       .arg( columnTypeInt ) );
     }
 
     int srid = ssrid.isEmpty() ? std::numeric_limits<int>::min() : ssrid.toInt();
@@ -691,21 +689,20 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
 
     mLayersSupported << layerProperty;
     nColumns++;
-
   }
 
   if ( allowGeometrylessTables )
   {
     QString sql = QStringLiteral( "SELECT distinct( c.NAME ) ,n.NAME ,c.SUBTYPE$"
-      ",( select COMMENT$ from SYS.VSYSTABLECOMMENTS where "
-      "     SCHNAME = n.name AND TVNAME = ( select NAME from SYS.VSYSOBJECTS where ID = c.ID ) )"
-      ",%1,c.INFO5"
-      " FROM ( select NAME,SCHID,ID,SUBTYPE$,INFO5 from SYS.VSYSOBJECTS where SUBTYPE$ IN (\'VIEW\', \'UTAB\') ) c,"
-      " ( select ID,NAME,TYPE$ from SYS.VSYSOBJECTS ) n,"
-      " ( select ID,NAME from SYS.VSYSCOLUMNS where COLID >= 0 ) a"
-      " WHERE n.ID = c.SCHID"
-      " AND c.ID = a.ID" )
-      .arg( "( select JSONB_AGG( a.NAME ) from SYS.VSYSCOLUMNS a where a.ID = c.ID )" );
+                                  ",( select COMMENT$ from SYS.VSYSTABLECOMMENTS where "
+                                  "     SCHNAME = n.name AND TVNAME = ( select NAME from SYS.VSYSOBJECTS where ID = c.ID ) )"
+                                  ",%1,c.INFO5"
+                                  " FROM ( select NAME,SCHID,ID,SUBTYPE$,INFO5 from SYS.VSYSOBJECTS where SUBTYPE$ IN (\'VIEW\', \'UTAB\') ) c,"
+                                  " ( select ID,NAME,TYPE$ from SYS.VSYSOBJECTS ) n,"
+                                  " ( select ID,NAME from SYS.VSYSCOLUMNS where COLID >= 0 ) a"
+                                  " WHERE n.ID = c.SCHID"
+                                  " AND c.ID = a.ID" )
+                    .arg( "( select JSONB_AGG( a.NAME ) from SYS.VSYSCOLUMNS a where a.ID = c.ID )" );
 
     sql += searchSysdbaOnly ? QStringLiteral( " AND n.NAME = \'SYSDBA\' AND n.TYPE$ = \'SCH\'" )
                             : QStringLiteral( " AND n.NAME = %1 AND n.TYPE$ = \'SCH\'" )
@@ -715,33 +712,31 @@ bool QgsDamengConn::getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessT
       sql += QStringLiteral( " AND c.name=%1" ).arg( quotedString( name ) );
     else
       sql += QStringLiteral( " AND ( c.name not like \'TOPO$%\' "
-                              "and c.name not like \'MTAB$%\' "
-                              "and c.name not like \'MDRT$%\' )" );
+                             "and c.name not like \'MTAB$%\' "
+                             "and c.name not like \'MDRT$%\' )" );
 
     QgsDebugMsgLevel( "getting non-spatial table info: " + sql, 2 );
 
     res = LoggedDMexec( "QgsDamengConn", sql );
     if ( !res || !res->execstatus() )
     {
-      QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined.\nThe error message from the database was:\n%1" )
-        .arg( res->getMsg() ),
-        tr( "Dameng" ) );
+      QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined.\nThe error message from the database was:\n%1" ).arg( res->getMsg() ), tr( "Dameng" ) );
       return false;
     }
 
     while ( res->fetchNext() )
     {
-      QString table = res->value( 0 ).toString(); // relname
+      QString table = res->value( 0 ).toString();  // relname
       QString schema = res->value( 1 ).toString(); // nspname
       if ( schema == "SYSRASTER" && table == "RASTER_OVERVIEWS" )
         continue;
-      QString relkind = res->value( 2 ).toString(); // relation kind
-      QString comment = res->value( 3 ).toString(); // table comment
+      QString relkind = res->value( 2 ).toString();    // relation kind
+      QString comment = res->value( 3 ).toString();    // table comment
       QString attributes = res->value( 4 ).toString(); // attributes array
       QString isView_info = res->value( 5 ).toString();
       bool isView = relkind == QLatin1String( "VIEW" ) && isView_info == QLatin1String( "0x" );
       bool isMaterializedView = relkind == QLatin1String( "VIEW" ) && isView_info != QLatin1String( "0x" );
-      
+
       QgsDamengLayerProperty layerProperty;
       layerProperty.types = QList<Qgis::WkbType>() << Qgis::WkbType::NoGeometry;
       layerProperty.srids = QList<int>() << std::numeric_limits<int>::min();
@@ -832,13 +827,13 @@ bool QgsDamengConn::getSchemas( QList<QgsDamengSchemaProperty> &schemas )
   schemas.clear();
 
   QString sql = QStringLiteral( "select SCH_OBJ.NAME sch_name, USER_OBJ.NAME user_name "
-    "from ( select NAME, ID, PID, CRTDATE from SYS.VSYSOBJECTS where TYPE$ = \'SCH\') SCH_OBJ, "
-    "( select NAME, ID from SYS.VSYSOBJECTS where TYPE$ = \'UR\' and SUBTYPE$ = \'USER\') USER_OBJ "
-    "where SCH_OBJ.PID = USER_OBJ.ID "
-    " and USER_OBJ.NAME != \'SYS\' and USER_OBJ.NAME != \'SYSAUDITOR\' and USER_OBJ.NAME != \'SYSSSO\';" );
+                                "from ( select NAME, ID, PID, CRTDATE from SYS.VSYSOBJECTS where TYPE$ = \'SCH\') SCH_OBJ, "
+                                "( select NAME, ID from SYS.VSYSOBJECTS where TYPE$ = \'UR\' and SUBTYPE$ = \'USER\') USER_OBJ "
+                                "where SCH_OBJ.PID = USER_OBJ.ID "
+                                " and USER_OBJ.NAME != \'SYS\' and USER_OBJ.NAME != \'SYSAUDITOR\' and USER_OBJ.NAME != \'SYSSSO\';" );
 
   QgsDMResult *res = LoggedDMexec( "QgsDamengConn", sql );
-  if( !res || !res->execstatus() )
+  if ( !res || !res->execstatus() )
   {
     return false;
   }
@@ -924,8 +919,8 @@ QString QgsDamengConn::dmSpatialVersion() const
   mTopologyAvailable = false;
 
   QString sql = QStringLiteral( "SELECT SF_CHECK_USER_TABLE_PRIV(\'SYSTOPOLOGY\', \'SYSTOPOLOGY\', user, 0 ) "
-            " & SF_CHECK_USER_TABLE_PRIV(\'SYSTOPOLOGY\', \'SYSLAYER\', user, 0 );" );
-  
+                                " & SF_CHECK_USER_TABLE_PRIV(\'SYSTOPOLOGY\', \'SYSLAYER\', user, 0 );" );
+
   res = LoggedDMexec( "QgsDamengConn", sql );
   if ( res->fetchNext() && res->value( 0 ).toInt() == 1 )
   {
@@ -1003,27 +998,27 @@ QString QgsDamengConn::quotedValue( const QVariant &value )
 
   switch ( value.userType() )
   {
-  case QMetaType::Type::Int:
-  case QMetaType::Type::LongLong:
-    return value.toString();
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+      return value.toString();
 
-  case QMetaType::Type::QDateTime:
-    return quotedString( value.toDateTime().toString( Qt::ISODateWithMs ) );
+    case QMetaType::Type::QDateTime:
+      return quotedString( value.toDateTime().toString( Qt::ISODateWithMs ) );
 
-  case QMetaType::Type::Bool:
-    return value.toBool() ? "TRUE" : "FALSE";
+    case QMetaType::Type::Bool:
+      return value.toBool() ? "TRUE" : "FALSE";
 
-  case QMetaType::Type::QVariantMap:
-    return quotedMap( value.toMap() );
-    
-  case QMetaType::Type::QStringList:
-  case QMetaType::Type::QVariantList:
-    return quotedList( value.toList() );
+    case QMetaType::Type::QVariantMap:
+      return quotedMap( value.toMap() );
 
-  case QMetaType::Type::Double:
-  case QMetaType::Type::QString:
-  default:
-    return quotedString( value.toString() );
+    case QMetaType::Type::QStringList:
+    case QMetaType::Type::QVariantList:
+      return quotedList( value.toList() );
+
+    case QMetaType::Type::Double:
+    case QMetaType::Type::QString:
+    default:
+      return quotedString( value.toString() );
   }
 }
 
@@ -1054,7 +1049,9 @@ QgsDMResult *QgsDamengConn::DMexec( const QString &query, bool logError, bool ac
     if ( resStatus != DmResCommandOk && resStatus != DmResSuccessInfo )
     {
       const QString error { tr( "Erroneous query: %1 returned %2 [%3]" )
-                              .arg( query ).arg( resStatus ).arg( res->getMsg() ) };
+                              .arg( query )
+                              .arg( resStatus )
+                              .arg( res->getMsg() ) };
       logWrapper->setError( error );
       if ( logError )
       {
@@ -1063,7 +1060,9 @@ QgsDMResult *QgsDamengConn::DMexec( const QString &query, bool logError, bool ac
       else
       {
         QgsDebugError( QStringLiteral( "Not logged erroneous query: %1 returned %2 [%3]" )
-          .arg( query ).arg( resStatus ).arg( res->getMsg() ) );
+                         .arg( query )
+                         .arg( resStatus )
+                         .arg( res->getMsg() ) );
       }
     }
     logWrapper->setFetchedRows( res->ntuples() );
@@ -1073,7 +1072,9 @@ QgsDMResult *QgsDamengConn::DMexec( const QString &query, bool logError, bool ac
   if ( !DMconnStatus() )
   {
     const QString error { tr( "Connection error: %1 returned %2 [%3]" )
-        .arg( query ).arg( DMconnStatus() ).arg( DMconnErrorMessage() ) };
+                            .arg( query )
+                            .arg( DMconnStatus() )
+                            .arg( DMconnErrorMessage() ) };
     logWrapper->setError( error );
     if ( logError )
     {
@@ -1082,7 +1083,9 @@ QgsDMResult *QgsDamengConn::DMexec( const QString &query, bool logError, bool ac
     else
     {
       QgsDebugError( QStringLiteral( "Connection error: %1 returned %2 [%3]" )
-        .arg( query ).arg( DMconnStatus() ).arg( DMconnErrorMessage() ) );
+                       .arg( query )
+                       .arg( DMconnStatus() )
+                       .arg( DMconnErrorMessage() ) );
     }
   }
   else
@@ -1102,7 +1105,7 @@ QgsDMResult *QgsDamengConn::DMexec( const QString &query, bool logError, bool ac
   return nullptr;
 }
 
-bool QgsDamengConn::DMexecNR( const QString &query, const QString &originatorClass, const QString &queryOrigin  )
+bool QgsDamengConn::DMexecNR( const QString &query, const QString &originatorClass, const QString &queryOrigin )
 {
   QMutexLocker locker( &mLock );
 
@@ -1149,42 +1152,38 @@ ExecStatusType QgsDamengConn::DMprepare( const QString &query, int nParams, cons
 QgsDMResult *QgsDamengConn::DMexecPrepared( const QByteArray &wkb, const QStringList &params, const QString &originatorClass, const QString &queryOrigin )
 {
   QMutexLocker locker( &mLock );
-  sdint2		sql_type;
-  ulength		prec;
-  sdint2		scale;
-  slength   size_null = DSQL_NULL_DATA;
-  sdint2    nullable = 1;
+  sdint2 sql_type;
+  ulength prec;
+  sdint2 scale;
+  slength size_null = DSQL_NULL_DATA;
+  sdint2 nullable = 1;
 
-  slength   size = wkb.size();
+  slength size = wkb.size();
   if ( size == 0 )
   {
-      dpi_desc_param( *mConn->dmResult->getStmt(), 1, &sql_type, &prec, &scale, &nullable );
-      dpi_bind_param( *mConn->dmResult->getStmt(), 1, DSQL_PARAM_INPUT, DSQL_C_BINARY, DSQL_CLASS,
-          prec, scale, ( dpointer )NULL, 0, &size_null );
+    dpi_desc_param( *mConn->dmResult->getStmt(), 1, &sql_type, &prec, &scale, &nullable );
+    dpi_bind_param( *mConn->dmResult->getStmt(), 1, DSQL_PARAM_INPUT, DSQL_C_BINARY, DSQL_CLASS, prec, scale, ( dpointer ) NULL, 0, &size_null );
   }
   else
-      dpi_bind_param( *mConn->dmResult->getStmt(), 1, DSQL_PARAM_INPUT, DSQL_C_BINARY, DSQL_CLASS,
-        ( ulength )wkb.size(), 0, ( dpointer )wkb.data(), wkb.size(), &size );
+    dpi_bind_param( *mConn->dmResult->getStmt(), 1, DSQL_PARAM_INPUT, DSQL_C_BINARY, DSQL_CLASS, ( ulength ) wkb.size(), 0, ( dpointer ) wkb.data(), wkb.size(), &size );
 
-  char** str = new char*[ params.size() + 1 ];
-  for ( int i = 0; i < params.size(); i++)
+  char **str = new char *[params.size() + 1];
+  for ( int i = 0; i < params.size(); i++ )
   {
     sdint2 nullable = 1;
-    str[i] = new char[ params[i].size() * 8 + 33 ];
+    str[i] = new char[params[i].size() * 8 + 33];
     strcpy( str[i], params[i].toUtf8().data() );
-    dpi_desc_param( *mConn->dmResult->getStmt(), i+2, &sql_type, &prec, &scale, &nullable );
+    dpi_desc_param( *mConn->dmResult->getStmt(), i + 2, &sql_type, &prec, &scale, &nullable );
     if ( !params[i].isNull() )
-      dpi_bind_param( *mConn->dmResult->getStmt(), i+2, DSQL_PARAM_INPUT, DSQL_C_NCHAR, sql_type,
-                    prec, scale, ( dpointer )str[i], strlen( str[i]), NULL );
+      dpi_bind_param( *mConn->dmResult->getStmt(), i + 2, DSQL_PARAM_INPUT, DSQL_C_NCHAR, sql_type, prec, scale, ( dpointer ) str[i], strlen( str[i] ), NULL );
     else
-      dpi_bind_param( *mConn->dmResult->getStmt(), i + 2, DSQL_PARAM_INPUT, DSQL_C_NCHAR, sql_type,
-        prec, scale, ( dpointer )NULL, 0, &size_null );
+      dpi_bind_param( *mConn->dmResult->getStmt(), i + 2, DSQL_PARAM_INPUT, DSQL_C_NCHAR, sql_type, prec, scale, ( dpointer ) NULL, 0, &size_null );
   }
   std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "DMexecPrepared()" ), mConnInfo, QStringLiteral( "dameng" ), originatorClass, queryOrigin );
 
   QgsDMResult *res = mConn->dmResult;
   res->exec();
-  
+
   const int errorStatus = res->getResStatus();
 
   if ( errorStatus != DmResCommandOk && errorStatus != DmResSuccessInfo )
@@ -1192,8 +1191,8 @@ QgsDMResult *QgsDamengConn::DMexecPrepared( const QByteArray &wkb, const QString
     logWrapper->setError( res->getMsg() );
   }
 
-  for ( int i = 0; i < params.size(); i++)
-      delete[] str[i];
+  for ( int i = 0; i < params.size(); i++ )
+    delete[] str[i];
   delete[] str;
 
   return res;
@@ -1259,7 +1258,7 @@ bool QgsDamengConn::commit()
   QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
-    return LoggedDMexecNR( "QgsDamengConn", QStringLiteral("RELEASE SAVEPOINT transaction_savepoint"));
+    return LoggedDMexecNR( "QgsDamengConn", QStringLiteral( "RELEASE SAVEPOINT transaction_savepoint" ) );
   }
   else
   {
@@ -1293,9 +1292,9 @@ QString QgsDamengConn::fieldExpressionForWhereClause( const QgsField &fld, QMeta
   const QString &type = fld.typeName();
 
   if ( type == QLatin1String( "timestamp" ) || type == QLatin1String( "time" ) || type == QLatin1String( "date" )
-    || type == QLatin1String( "bigint" ) || type == QLatin1String( "smallint" ) || type == QLatin1String( "int" ) 
-    || type == QLatin1String( "real" ) || type == QLatin1String( "double precision" ) || type == QLatin1String( "float" ) || type == QLatin1String( "double" ) //
-    || type == QLatin1String( "numeric" ) || type == QLatin1String( "dec" ) || type == QLatin1String( "decimal" ) )
+       || type == QLatin1String( "bigint" ) || type == QLatin1String( "smallint" ) || type == QLatin1String( "int" )
+       || type == QLatin1String( "real" ) || type == QLatin1String( "double precision" ) || type == QLatin1String( "float" ) || type == QLatin1String( "double" ) //
+       || type == QLatin1String( "numeric" ) || type == QLatin1String( "dec" ) || type == QLatin1String( "decimal" ) )
   {
     out = expr.arg( quotedIdentifier( fld.name() ) );
     // if field and value havev incompatible types, rollback to text cast
@@ -1324,8 +1323,7 @@ QString QgsDamengConn::fieldExpression( const QgsField &fld, QString expr )
   else if ( type == QLatin1String( "geometry" ) )
   {
     return QStringLiteral( "%1(%2)" )
-      .arg( "DMGEO2.st_asewkt",
-        expr );
+      .arg( "DMGEO2.st_asewkt", expr );
   }
   else if ( type == QLatin1String( "geography" ) )
   {
@@ -1345,49 +1343,48 @@ QList<QgsVectorDataProvider::NativeType> QgsDamengConn::nativeTypes()
 {
   QList<QgsVectorDataProvider::NativeType> types;
 
-  types     // integer types
-    <<QgsVectorDataProvider::NativeType( tr( "8 Bytes integer( bigint )" ), QStringLiteral( "bigint" ), QMetaType::Type::LongLong, -1, -1, 0, 0 )
-    <<QgsVectorDataProvider::NativeType( tr( "4 Bytes integer( int )" ), QStringLiteral( "int" ), QMetaType::Type::Int, -1, -1, 0, 0 )
-    <<QgsVectorDataProvider::NativeType( tr( "2 Bytes integer( smallint )" ), QStringLiteral( "smallint" ), QMetaType::Type::Int, -1, -1, 0, 0 )
-    <<QgsVectorDataProvider::NativeType( tr( "1 Bytes integer( tinyint )" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int, -1, -1, 0, 0 )
-    <<QgsVectorDataProvider::NativeType( tr( "1 Bytes integer( byte )" ), QStringLiteral( "byte" ), QMetaType::Type::Int, -1, -1, 0, 0 )
-    <<QgsVectorDataProvider::NativeType( tr( "Decimal number ( number )" ), QStringLiteral( "number " ), QMetaType::Type::Double, 1, 38, 0, 38 )
-    <<QgsVectorDataProvider::NativeType( tr( "Decimal number ( numeric )" ), QStringLiteral( "numeric" ), QMetaType::Type::Double, 1, 38, 0, 38 )
-    <<QgsVectorDataProvider::NativeType( tr( "Decimal number ( decimal )" ), QStringLiteral( "decimal" ), QMetaType::Type::Double, 1, 38, 0, 38 )
+  types // integer types
+    << QgsVectorDataProvider::NativeType( tr( "8 Bytes integer( bigint )" ), QStringLiteral( "bigint" ), QMetaType::Type::LongLong, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "4 Bytes integer( int )" ), QStringLiteral( "int" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "2 Bytes integer( smallint )" ), QStringLiteral( "smallint" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "1 Bytes integer( tinyint )" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "1 Bytes integer( byte )" ), QStringLiteral( "byte" ), QMetaType::Type::Int, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number ( number )" ), QStringLiteral( "number " ), QMetaType::Type::Double, 1, 38, 0, 38 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number ( numeric )" ), QStringLiteral( "numeric" ), QMetaType::Type::Double, 1, 38, 0, 38 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number ( decimal )" ), QStringLiteral( "decimal" ), QMetaType::Type::Double, 1, 38, 0, 38 )
 
     // floating point
-    <<QgsVectorDataProvider::NativeType( tr( "Decimal number ( real )" ), QStringLiteral( "real" ), QMetaType::Type::Double, -1, -1, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Decimal number ( float )" ), QStringLiteral( "float" ), QMetaType::Type::Double, 1, 126, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Decimal number ( double )" ), QStringLiteral( "double" ), QMetaType::Type::Double, 1, 126, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Decimal number ( double precision )" ), QStringLiteral( "double precision" ), QMetaType::Type::Double, 1, 126, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number ( real )" ), QStringLiteral( "real" ), QMetaType::Type::Double, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number ( float )" ), QStringLiteral( "float" ), QMetaType::Type::Double, 1, 126, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number ( double )" ), QStringLiteral( "double" ), QMetaType::Type::Double, 1, 126, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal number ( double precision )" ), QStringLiteral( "double precision" ), QMetaType::Type::Double, 1, 126, -1, -1 )
 
     // string types
-    <<QgsVectorDataProvider::NativeType( tr( "Text, fixed length ( char )" ), QStringLiteral( "char" ), QMetaType::Type::QString, 1, 255, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Text, fixed length ( character )" ), QStringLiteral( "character" ), QMetaType::Type::QString, 1, 255, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Text, limited variable length ( varchar )" ), QStringLiteral( "varchar" ), QMetaType::Type::QString, 1, 8188, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Text, unlimited length ( text )" ), QStringLiteral( "text" ), QMetaType::Type::QString, -1, -1, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Text, unlimited length ( clob )" ), QStringLiteral( "clob" ), QMetaType::Type::QString, -1, -1, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Text, unlimited length ( longvarchar )" ), QStringLiteral( "longvarchar" ), QMetaType::Type::QString, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text, fixed length ( char )" ), QStringLiteral( "char" ), QMetaType::Type::QString, 1, 255, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text, fixed length ( character )" ), QStringLiteral( "character" ), QMetaType::Type::QString, 1, 255, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length ( varchar )" ), QStringLiteral( "varchar" ), QMetaType::Type::QString, 1, 8188, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length ( text )" ), QStringLiteral( "text" ), QMetaType::Type::QString, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length ( clob )" ), QStringLiteral( "clob" ), QMetaType::Type::QString, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length ( longvarchar )" ), QStringLiteral( "longvarchar" ), QMetaType::Type::QString, -1, -1, -1, -1 )
 
     // date type
-    <<QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate, -1, -1, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime, 0, 6, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "timestamp" ), QMetaType::Type::QDateTime, 0, 9, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime, 0, 9, -1, -1 )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime, 0, 6, -1, -1 )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "timestamp" ), QMetaType::Type::QDateTime, 0, 9, -1, -1 )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime, 0, 9, -1, -1 )
 
     // boolean
-    <<QgsVectorDataProvider::NativeType( tr( "Boolean ( bit )" ), QStringLiteral( "bit" ), QMetaType::Type::Bool, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Boolean ( bit )" ), QStringLiteral( "bit" ), QMetaType::Type::Bool, -1, -1, -1, -1 )
 
     // binary ( binary )
-    <<QgsVectorDataProvider::NativeType( tr( "Binary object ( binary )" ), QStringLiteral( "binary" ), QMetaType::Type::QByteArray, 1, 8188, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Binary object ( varbinary )" ), QStringLiteral( "varbinary" ), QMetaType::Type::QByteArray, 1, 8188, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Binary object ( raw )" ), QStringLiteral( "raw" ), QMetaType::Type::QByteArray, 1, 8188, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Binary object ( blob )" ), QStringLiteral( "blob" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Binary object ( image )" ), QStringLiteral( "image" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 )
-    <<QgsVectorDataProvider::NativeType( tr( "Binary object ( longvarbinary )" ), QStringLiteral( "longvarbinary" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 )
-    ;
+    << QgsVectorDataProvider::NativeType( tr( "Binary object ( binary )" ), QStringLiteral( "binary" ), QMetaType::Type::QByteArray, 1, 8188, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Binary object ( varbinary )" ), QStringLiteral( "varbinary" ), QMetaType::Type::QByteArray, 1, 8188, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Binary object ( raw )" ), QStringLiteral( "raw" ), QMetaType::Type::QByteArray, 1, 8188, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Binary object ( blob )" ), QStringLiteral( "blob" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Binary object ( image )" ), QStringLiteral( "image" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Binary object ( longvarbinary )" ), QStringLiteral( "longvarbinary" ), QMetaType::Type::QByteArray, -1, -1, -1, -1 );
 
-    types <<QgsVectorDataProvider::NativeType( tr( "JSON ( json )" ), QStringLiteral( "json" ), QMetaType::Type::QVariantMap, -1, -1, -1, -1, QMetaType::Type::QString );
+  types << QgsVectorDataProvider::NativeType( tr( "JSON ( json )" ), QStringLiteral( "json" ), QMetaType::Type::QVariantMap, -1, -1, -1, -1, QMetaType::Type::QString );
 
   return types;
 }
@@ -1415,12 +1412,11 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
 
     QgsDamengLayerProperty &layerProperty = *layerPropertyPtr;
 
-    if ( i++)
+    if ( i++ )
       query += QLatin1String( " UNION " );
 
     if ( !layerProperty.schemaName.isEmpty() )
-      table = QStringLiteral( "%1.%2" ).arg( quotedIdentifier( layerProperty.schemaName ),
-                                          quotedIdentifier( layerProperty.tableName ) );
+      table = QStringLiteral( "%1.%2" ).arg( quotedIdentifier( layerProperty.schemaName ), quotedIdentifier( layerProperty.tableName ) );
     else
       table = layerProperty.tableName;
 
@@ -1432,10 +1428,8 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
     if ( useEstimatedMetadata )
     {
       table = QStringLiteral( "( SELECT %1 FROM %2 WHERE %3%1 IS NOT NULL %4 ) AS t" )
-        .arg( quotedIdentifier( layerProperty.geometryColName ),
-          table,
-          layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " (%1) AND " ).arg( layerProperty.sql ) )
-        .arg( tableScanLimit );
+                .arg( quotedIdentifier( layerProperty.geometryColName ), table, layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " (%1) AND " ).arg( layerProperty.sql ) )
+                .arg( tableScanLimit );
     }
     else if ( !layerProperty.sql.isEmpty() )
     {
@@ -1447,18 +1441,18 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
     QString geom_col;
     switch ( geomType )
     {
-    case SctGeometry:
-      geom_col = quotedIdentifier( layerProperty.geometryColName );
-      break;
-    case SctGeography:
-      geom_col = quotedIdentifier( layerProperty.geometryColName ) + "::SYSGEO2.st_geometry";
-      break;
-    case SctTopoGeometry:
-      geom_col = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
-                  .arg( quotedIdentifier( layerProperty.geometryColName ) );
-      break;
-    default:
-      break;
+      case SctGeometry:
+        geom_col = quotedIdentifier( layerProperty.geometryColName );
+        break;
+      case SctGeography:
+        geom_col = quotedIdentifier( layerProperty.geometryColName ) + "::SYSGEO2.st_geometry";
+        break;
+      case SctTopoGeometry:
+        geom_col = QStringLiteral( "SYSTOPOLOGY.DMTOPOLOGY.Geometry(%1)" )
+                     .arg( quotedIdentifier( layerProperty.geometryColName ) );
+        break;
+      default:
+        break;
     }
 
     sql += QLatin1String( "JSONB_AGG( DISTINCT " );
@@ -1475,14 +1469,15 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
     if ( type == Qgis::WkbType::Unknown )
     {
       sql += QStringLiteral( "( UPPER( DMGEO2.ST_GeometryType(%1) ) )  || \':\' "
-        "|| ( DMGEO2.ST_Zmflag(%1) )" ).arg( geom_col );
+                             "|| ( DMGEO2.ST_Zmflag(%1) )" )
+               .arg( geom_col );
       table = QStringLiteral( "(select * from %1 order by DMGEO2.ST_Zmflag(%2))" ).arg( table ).arg( geom_col );
     }
     else
     {
       QString WkbTypeName = QgsDamengConn::dmSpatialWkbTypeName( type );
       sql += WkbTypeName == "NULL" ? QStringLiteral( "\':-1\'" )
-              : QStringLiteral( " \'ST_\' || %1  || \':-1\' " ).arg( quotedValue( WkbTypeName ) );
+                                   : QStringLiteral( " \'ST_\' || %1  || \':-1\' " ).arg( quotedValue( WkbTypeName ) );
     }
     sql += QLatin1String( ") " );
 
@@ -1494,7 +1489,6 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
     QgsDebugMsgLevel( "Geometry types,srids and dims query: " + sql, 2 );
 
     query += QStringLiteral( "(%1)" ).arg( sql );
-    
   }
 
   QgsDebugMsgLevel( "Layer types,srids and dims query: " + query, 3 );
@@ -1511,9 +1505,7 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
     auto srids_and_types = QgsPostgresStringUtils::parseArray( res->value( 1 ).toString() );
     QgsDamengLayerProperty &layerProperty = *layerProperties[idx];
 
-    QgsDebugMsgLevel( QStringLiteral( "Layer %1.%2.%3 has %4 srid/type combinations" )
-                        .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName )
-                        .arg( srids_and_types.length() ), 3);
+    QgsDebugMsgLevel( QStringLiteral( "Layer %1.%2.%3 has %4 srid/type combinations" ).arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ).arg( srids_and_types.length() ), 3 );
 
     /* Gather found types */
     QList< std::pair<Qgis::WkbType, int> > foundCombinations;
@@ -1522,14 +1514,16 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
       QString sridAndTypeString = sridAndTypeVariant.toString();
 
       QgsDebugMsgLevel( QStringLiteral( "Analyzing layer's %1.%2.%3 sridAndType %4"
-                                        " against %6 found combinations"
-                        ).arg( layerProperty.schemaName,layerProperty.tableName,layerProperty.geometryColName )
-                        .arg( sridAndTypeString ).arg( foundCombinations.length() ), 3 );
-      
+                                        " against %6 found combinations" )
+                          .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName )
+                          .arg( sridAndTypeString )
+                          .arg( foundCombinations.length() ),
+                        3 );
+
       const QStringList sridAndType = sridAndTypeString.split( ':' );
       Q_ASSERT( sridAndType.size() == 3 );
       const int srid = sridAndType[0].toInt();
-      QString typeString = sridAndType[1]; 
+      QString typeString = sridAndType[1];
       const int zmFlags = sridAndType[2].toInt();
 
       if ( sridAndTypeString == "NULL" || sridAndTypeString.startsWith( ":" ) || typeString.isEmpty() )
@@ -1537,19 +1531,19 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
 
       switch ( zmFlags )
       {
-      case 1:
-        typeString.append( 'M' );
-        break;
-      case 2:
-        typeString.append( 'Z' );
-        break;
-      case 3:
-        typeString.append( QStringLiteral( "ZM" ) );
-        break;
-      default:
-      case 0:
-      case -1:
-        break;
+        case 1:
+          typeString.append( 'M' );
+          break;
+        case 2:
+          typeString.append( 'Z' );
+          break;
+        case 3:
+          typeString.append( QStringLiteral( "ZM" ) );
+          break;
+        default:
+        case 0:
+        case -1:
+          break;
       }
 
       auto type = QgsDamengConn::wkbTypeFromDmSpatial( typeString );
@@ -1559,7 +1553,7 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
       auto multiCurveType = QgsWkbTypes::multiType( curveType );
 
       int j;
-      for ( j = 0; j < foundCombinations.length(); j++)
+      for ( j = 0; j < foundCombinations.length(); j++ )
       {
         auto foundPair = foundCombinations.at( j );
         if ( foundPair.second != srid )
@@ -1577,12 +1571,10 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
         {
           QgsDebugMsgLevel( QStringLiteral( "Udmrading type[%1] of layer %2.%3.%4 "
                                             "to multiCurved type %5" )
-                            .arg( j )
-                            .arg( layerProperty.schemaName,
-                              layerProperty.tableName,
-                              layerProperty.geometryColName )
-                            .arg( multiCurveType ),
-                          3);
+                              .arg( j )
+                              .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName )
+                              .arg( multiCurveType ),
+                            3 );
           foundCombinations[j].first = multiCurveType;
           break;
         }
@@ -1590,12 +1582,10 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
         {
           QgsDebugMsgLevel( QStringLiteral( "Udmrading type[%1] of layer %2.%3.%4 "
                                             "to multi type %5" )
-                            .arg( j )
-                            .arg( layerProperty.schemaName,
-                              layerProperty.tableName,
-                              layerProperty.geometryColName )
-                            .arg( multiType ),
-                          3);
+                              .arg( j )
+                              .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName )
+                              .arg( multiType ),
+                            3 );
           foundCombinations[j].first = multiType;
           break;
         }
@@ -1604,11 +1594,9 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
           QgsDebugMsgLevel( QStringLiteral( "Udmrading type[%1] of layer %2.%3.%4 "
                                             "to curved type %5" )
                               .arg( j )
-                              .arg( layerProperty.schemaName,
-                                layerProperty.tableName,
-                                layerProperty.geometryColName )
+                              .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName )
                               .arg( multiType ),
-                            3);
+                            3 );
           foundCombinations[j].first = curveType;
           break;
         }
@@ -1618,34 +1606,29 @@ void QgsDamengConn::retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layer
       {
         QgsDebugMsgLevel( QStringLiteral( "Pre-existing compatible combination %1/%2 "
                                           "found for layer %3.%4.%5 " )
-                            .arg( j ).arg( foundCombinations.length() )
-                            .arg( layerProperty.schemaName,
-                              layerProperty.tableName,
-                              layerProperty.geometryColName ),
-                          3);
+                            .arg( j )
+                            .arg( foundCombinations.length() )
+                            .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ),
+                          3 );
         continue; // already found
       }
 
       QgsDebugMsgLevel( QStringLiteral( "Setting typeSridCombination[%1] of layer %2.%3.%4 "
                                         "to srid %5 and type %6" )
-                        .arg( j )
-                        .arg( layerProperty.schemaName,
-                          layerProperty.tableName,
-                          layerProperty.geometryColName )
-                        .arg( srid )
-                        .arg( type ),
-                      3);
+                          .arg( j )
+                          .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName )
+                          .arg( srid )
+                          .arg( type ),
+                        3 );
 
       foundCombinations << std::make_pair( type, srid );
     }
 
     QgsDebugMsgLevel( QStringLiteral( "Completed scan of %1 srid/type combinations "
                                       "for layer of layer %2.%3.%4 " )
-                      .arg( srids_and_types.length() )
-                      .arg( layerProperty.schemaName,
-                        layerProperty.tableName,
-                        layerProperty.geometryColName ),
-                    2 );
+                        .arg( srids_and_types.length() )
+                        .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ),
+                      2 );
 
     /* Rewrite srids and types to match found combinations
      * of srids and types */
@@ -1667,70 +1650,70 @@ void QgsDamengConn::dmSpatialWkbType( Qgis::WkbType wkbType, QString &geometryTy
   Qgis::WkbType flatType = QgsWkbTypes::flatType( wkbType );
   switch ( flatType )
   {
-  case Qgis::WkbType::Point:
-    geometryType = QStringLiteral( "POINT" );
-    break;
+    case Qgis::WkbType::Point:
+      geometryType = QStringLiteral( "POINT" );
+      break;
 
-  case Qgis::WkbType::LineString:
-    geometryType = QStringLiteral( "LINESTRING" );
-    break;
+    case Qgis::WkbType::LineString:
+      geometryType = QStringLiteral( "LINESTRING" );
+      break;
 
-  case Qgis::WkbType::Polygon:
-    geometryType = QStringLiteral( "POLYGON" );
-    break;
+    case Qgis::WkbType::Polygon:
+      geometryType = QStringLiteral( "POLYGON" );
+      break;
 
-  case Qgis::WkbType::MultiPoint:
-    geometryType = QStringLiteral( "MULTIPOINT" );
-    break;
+    case Qgis::WkbType::MultiPoint:
+      geometryType = QStringLiteral( "MULTIPOINT" );
+      break;
 
-  case Qgis::WkbType::MultiLineString:
-    geometryType = QStringLiteral( "MULTILINESTRING" );
-    break;
+    case Qgis::WkbType::MultiLineString:
+      geometryType = QStringLiteral( "MULTILINESTRING" );
+      break;
 
-  case Qgis::WkbType::MultiPolygon:
-    geometryType = QStringLiteral( "MULTIPOLYGON" );
-    break;
+    case Qgis::WkbType::MultiPolygon:
+      geometryType = QStringLiteral( "MULTIPOLYGON" );
+      break;
 
-  case Qgis::WkbType::CircularString:
-    geometryType = QStringLiteral( "CIRCULARSTRING" );
-    break;
+    case Qgis::WkbType::CircularString:
+      geometryType = QStringLiteral( "CIRCULARSTRING" );
+      break;
 
-  case Qgis::WkbType::CompoundCurve:
-    geometryType = QStringLiteral( "COMPOUNDCURVE" );
-    break;
+    case Qgis::WkbType::CompoundCurve:
+      geometryType = QStringLiteral( "COMPOUNDCURVE" );
+      break;
 
-  case Qgis::WkbType::CurvePolygon:
-    geometryType = QStringLiteral( "CURVEPOLYGON" );
-    break;
+    case Qgis::WkbType::CurvePolygon:
+      geometryType = QStringLiteral( "CURVEPOLYGON" );
+      break;
 
-  case Qgis::WkbType::MultiCurve:
-    geometryType = QStringLiteral( "MULTICURVE" );
-    break;
+    case Qgis::WkbType::MultiCurve:
+      geometryType = QStringLiteral( "MULTICURVE" );
+      break;
 
-  case Qgis::WkbType::MultiSurface:
-    geometryType = QStringLiteral( "MULTISURFACE" );
-    break;
+    case Qgis::WkbType::MultiSurface:
+      geometryType = QStringLiteral( "MULTISURFACE" );
+      break;
 
-  case Qgis::WkbType::Triangle:
-    geometryType = QStringLiteral( "TRIANGLE" );
-    break;
+    case Qgis::WkbType::Triangle:
+      geometryType = QStringLiteral( "TRIANGLE" );
+      break;
 
-  case Qgis::WkbType::PolyhedralSurface:
-    geometryType = QStringLiteral( "POLYHEDRALSURFACE" );
-    break;
+    case Qgis::WkbType::PolyhedralSurface:
+      geometryType = QStringLiteral( "POLYHEDRALSURFACE" );
+      break;
 
-  case Qgis::WkbType::TIN:
-    geometryType = QStringLiteral( "TIN" );
-    break;
+    case Qgis::WkbType::TIN:
+      geometryType = QStringLiteral( "TIN" );
+      break;
 
-  case Qgis::WkbType::Unknown:
-    geometryType = QStringLiteral( "GEOMETRY" );
-    break;
+    case Qgis::WkbType::Unknown:
+      geometryType = QStringLiteral( "GEOMETRY" );
+      break;
 
-  case Qgis::WkbType::NoGeometry:
-  default:
-    dim = 0;
-    break;
+    case Qgis::WkbType::NoGeometry:
+    default:
+      dim = 0;
+      break;
   }
 
   if ( QgsWkbTypes::hasZ( wkbType ) && QgsWkbTypes::hasM( wkbType ) )
@@ -1773,16 +1756,16 @@ QString QgsDamengConn::dmSpatialTypeFilter( QString geomCol, Qgis::WkbType wkbTy
   Qgis::GeometryType geomType = QgsWkbTypes::geometryType( wkbType );
   switch ( geomType )
   {
-  case Qgis::GeometryType::Point:
-    return QStringLiteral( "upper( DMGEO2.st_geometrytype(%1) ) IN ('ST_POINT','ST_POINTZ','ST_POINTM','ST_POINTZM','ST_MULTIPOINT','ST_MULTIPOINTZ','ST_MULTIPOINTM','ST_MULTIPOINTZM')" ).arg( geomCol );
-  case Qgis::GeometryType::Line:
-    return QStringLiteral( "upper( DMGEO2.st_geometrytype(%1) ) IN ('ST_LINESTRING','ST_LINESTRINGZ','ST_LINESTRINGM','ST_LINESTRINGZM','ST_CIRCULARSTRING','ST_CIRCULARSTRINGZ','ST_CIRCULARSTRINGM','ST_CIRCULARSTRINGZM','ST_COMPOUNDCURVE','ST_COMPOUNDCURVEZ','ST_COMPOUNDCURVEM','ST_COMPOUNDCURVEZM','ST_MULTILINESTRING','ST_MULTILINESTRINGZ','ST_MULTILINESTRINGM','ST_MULTILINESTRINGZM','ST_MULTICURVE','ST_MULTICURVEZ','ST_MULTICURVEM','ST_MULTICURVEZM')" ).arg( geomCol );
-  case Qgis::GeometryType::Polygon:
-    return QStringLiteral( "upper( DMGEO2.st_geometrytype(%1) ) IN ('ST_POLYGON','ST_POLYGONZ','ST_POLYGONM','ST_POLYGONZM','ST_CURVEPOLYGON','ST_CURVEPOLYGONZ','ST_CURVEPOLYGONM','ST_CURVEPOLYGONZM','ST_MULTIPOLYGON','ST_MULTIPOLYGONZ','ST_MULTIPOLYGONM','ST_MULTIPOLYGONZM','ST_MULTIPOLYGONM','ST_MULTISURFACE','ST_MULTISURFACEZ','ST_MULTISURFACEM','ST_MULTISURFACEZM','ST_POLYHEDRALSURFACE','ST_TIN')" ).arg( geomCol );
-  case Qgis::GeometryType::Null:
-    return QStringLiteral( "DMGEO2.st_geometrytype(%1) IS NULL" ).arg( geomCol );
-  default: //unknown geometry
-    return QString();
+    case Qgis::GeometryType::Point:
+      return QStringLiteral( "upper( DMGEO2.st_geometrytype(%1) ) IN ('ST_POINT','ST_POINTZ','ST_POINTM','ST_POINTZM','ST_MULTIPOINT','ST_MULTIPOINTZ','ST_MULTIPOINTM','ST_MULTIPOINTZM')" ).arg( geomCol );
+    case Qgis::GeometryType::Line:
+      return QStringLiteral( "upper( DMGEO2.st_geometrytype(%1) ) IN ('ST_LINESTRING','ST_LINESTRINGZ','ST_LINESTRINGM','ST_LINESTRINGZM','ST_CIRCULARSTRING','ST_CIRCULARSTRINGZ','ST_CIRCULARSTRINGM','ST_CIRCULARSTRINGZM','ST_COMPOUNDCURVE','ST_COMPOUNDCURVEZ','ST_COMPOUNDCURVEM','ST_COMPOUNDCURVEZM','ST_MULTILINESTRING','ST_MULTILINESTRINGZ','ST_MULTILINESTRINGM','ST_MULTILINESTRINGZM','ST_MULTICURVE','ST_MULTICURVEZ','ST_MULTICURVEM','ST_MULTICURVEZM')" ).arg( geomCol );
+    case Qgis::GeometryType::Polygon:
+      return QStringLiteral( "upper( DMGEO2.st_geometrytype(%1) ) IN ('ST_POLYGON','ST_POLYGONZ','ST_POLYGONM','ST_POLYGONZM','ST_CURVEPOLYGON','ST_CURVEPOLYGONZ','ST_CURVEPOLYGONM','ST_CURVEPOLYGONZM','ST_MULTIPOLYGON','ST_MULTIPOLYGONZ','ST_MULTIPOLYGONM','ST_MULTIPOLYGONZM','ST_MULTIPOLYGONM','ST_MULTISURFACE','ST_MULTISURFACEZ','ST_MULTISURFACEM','ST_MULTISURFACEZM','ST_POLYHEDRALSURFACE','ST_TIN')" ).arg( geomCol );
+    case Qgis::GeometryType::Null:
+      return QStringLiteral( "DMGEO2.st_geometrytype(%1) IS NULL" ).arg( geomCol );
+    default: //unknown geometry
+      return QString();
   }
 }
 
@@ -1798,14 +1781,14 @@ int QgsDamengConn::dmSpatialWkbTypeDim( Qgis::WkbType wkbType )
 
 Qgis::WkbType QgsDamengConn::wkbTypeFromDmSpatial( const QString &type1 )
 {
-  QString type = type1.mid( 3, -1 );  // Remove the prefix "ST_" from the Dameng spatial type name
-  
+  QString type = type1.mid( 3, -1 ); // Remove the prefix "ST_" from the Dameng spatial type name
+
   return QgsWkbTypes::parseType( type );
 }
 
 Qgis::WkbType QgsDamengConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
 {
-  return ( Qgis::WkbType )wkbType;
+  return ( Qgis::WkbType ) wkbType;
 }
 
 QString QgsDamengConn::displayStringForWkbType( Qgis::WkbType type )
@@ -1817,14 +1800,14 @@ QString QgsDamengConn::displayStringForGeomType( QgsDamengGeometryColumnType typ
 {
   switch ( type )
   {
-  case SctNone:
-    return tr( "None" );
-  case SctGeometry:
-    return tr( "Geometry" );
-  case SctGeography:
-    return tr( "Geography" );
-  case SctTopoGeometry:
-    return tr( "TopoGeometry" );
+    case SctNone:
+      return tr( "None" );
+    case SctGeometry:
+      return tr( "Geometry" );
+    case SctGeography:
+      return tr( "Geography" );
+    case SctTopoGeometry:
+      return tr( "TopoGeometry" );
   }
 
   Q_ASSERT( !"unexpected geometry column type" );
@@ -1835,16 +1818,16 @@ Qgis::WkbType QgsDamengConn::wkbTypeFromGeomType( Qgis::GeometryType geomType )
 {
   switch ( geomType )
   {
-  case Qgis::GeometryType::Point:
-    return Qgis::WkbType::Point;
-  case Qgis::GeometryType::Line:
-    return Qgis::WkbType::LineString;
-  case Qgis::GeometryType::Polygon:
-    return Qgis::WkbType::Polygon;
-  case Qgis::GeometryType::Null:
-    return Qgis::WkbType::NoGeometry;
-  case Qgis::GeometryType::Unknown:
-    return Qgis::WkbType::Unknown;
+    case Qgis::GeometryType::Point:
+      return Qgis::WkbType::Point;
+    case Qgis::GeometryType::Line:
+      return Qgis::WkbType::LineString;
+    case Qgis::GeometryType::Polygon:
+      return Qgis::WkbType::Polygon;
+    case Qgis::GeometryType::Null:
+      return Qgis::WkbType::NoGeometry;
+    case Qgis::GeometryType::Unknown:
+      return Qgis::WkbType::Unknown;
   }
 
   Q_ASSERT( !"unexpected geomType" );
@@ -2053,10 +2036,9 @@ QgsCoordinateReferenceSystem QgsDamengConn::sridToCrs( int srid )
       }
       if ( !ok )
         crs = QgsCoordinateReferenceSystem::fromProj( result->value( 3 ).toString() );
-      sCrsCache.insert( srid, crs);
+      sCrsCache.insert( srid, crs );
     }
-    
   }
-  
+
   return crs;
 }

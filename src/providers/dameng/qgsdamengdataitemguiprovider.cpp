@@ -26,59 +26,57 @@
 #include <QMessageBox>
 
 
-void QgsDamengDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *>&, QgsDataItemGuiContext context )
+void QgsDamengDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( QgsDamengRootItem *rootItem = qobject_cast<QgsDamengRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
-    connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); });
+    connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
     QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), menu );
-    connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); });
+    connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
     menu->addAction( actionSaveServers );
 
     QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), menu );
-    connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); });
+    connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
     menu->addAction( actionLoadServers );
   }
 
   if ( QgsDamengConnectionItem *connItem = qobject_cast<QgsDamengConnectionItem *>( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); });
+    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
     menu->addAction( actionRefresh );
 
     menu->addSeparator();
 
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); });
+    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
     QAction *actionDelete = new QAction( tr( "Remove Connection" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); });
+    connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
 
     menu->addSeparator();
 
     QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
-    connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); });
+    connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
     menu->addAction( actionCreateSchema );
-
   }
 
   if ( QgsDamengSchemaItem *schemaItem = qobject_cast<QgsDamengSchemaItem *>( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [schemaItem] { schemaItem->refresh(); });
+    connect( actionRefresh, &QAction::triggered, this, [schemaItem] { schemaItem->refresh(); } );
     menu->addAction( actionRefresh );
 
     menu->addSeparator();
 
     QAction *actionDelete = new QAction( tr( "Delete Schema…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [schemaItem, context] { deleteSchema( schemaItem, context ); });
+    connect( actionDelete, &QAction::triggered, this, [schemaItem, context] { deleteSchema( schemaItem, context ); } );
     menu->addAction( actionDelete );
-
   }
 
   if ( QgsDamengLayerItem *layerItem = qobject_cast<QgsDamengLayerItem *>( item ) )
@@ -96,17 +94,17 @@ void QgsDamengDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     if ( !layerInfo.isMaterializedView )
     {
       QAction *actionTruncateLayer = new QAction( tr( "Truncate %1…" ).arg( typeName ), menu );
-      connect( actionTruncateLayer, &QAction::triggered, this, [layerItem, context] { truncateTable( layerItem, context ); });
+      connect( actionTruncateLayer, &QAction::triggered, this, [layerItem, context] { truncateTable( layerItem, context ); } );
       maintainMenu->addAction( actionTruncateLayer );
-      
-      QAction *actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), menu);
-      connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); });
+
+      QAction *actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), menu );
+      connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
       maintainMenu->addAction( actionRenameLayer );
     }
     else
     {
       QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View…" ), menu );
-      connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem, context] { refreshMaterializedView( layerItem, context ); });
+      connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem, context] { refreshMaterializedView( layerItem, context ); } );
       maintainMenu->addAction( actionRefreshMaterializedView );
     }
     menu->addMenu( maintainMenu );
@@ -121,9 +119,7 @@ bool QgsDamengDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemG
     const QgsDamengLayerProperty &layerInfo = layerItem->layerInfo();
     const QString typeName = layerInfo.isView || layerInfo.isMaterializedView ? tr( "View" ) : tr( "Table" );
 
-    if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ),
-                                QObject::tr( "Are you sure you want to delete %1 '%2.%3'?" ).arg( typeName.toLower(), layerInfo.schemaName, layerInfo.tableName ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::question( nullptr, tr( "Delete %1" ).arg( typeName ), QObject::tr( "Are you sure you want to delete %1 '%2.%3'?" ).arg( typeName.toLower(), layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return false;
 
     QString errCause;
@@ -215,9 +211,7 @@ void QgsDamengDataItemGuiProvider::editConnection( QgsDataItem *item )
 
 void QgsDamengDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ),
-                              QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( item->name() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, QObject::tr( "Remove Connection" ), QObject::tr( "Are you sure you want to remove the connection to %1?" ).arg( item->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
   QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "dameng" ) );
@@ -257,8 +251,7 @@ void QgsDamengDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataItemG
   QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
-    notify( tr( "New Schema" ), tr( "Unable to create schema '%1'\n%2" ).arg( schemaName,
-            result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
+    notify( tr( "New Schema" ), tr( "Unable to create schema '%1'\n%2" ).arg( schemaName, result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
@@ -284,10 +277,8 @@ void QgsDamengDataItemGuiProvider::deleteSchema( QgsDamengSchemaItem *schemaItem
     return;
   }
 
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ),
-                                QObject::tr( "Are you sure you want to delete schema '%1'?" ).arg( schemaItem->name() ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-      return;
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Schema" ), QObject::tr( "Are you sure you want to delete schema '%1'?" ).arg( schemaItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
 
   QString errCause;
   const bool res = QgsDamengUtils::deleteSchema( schemaItem->name(), uri, errCause, true );
@@ -336,14 +327,12 @@ void QgsDamengDataItemGuiProvider::renameLayer( QgsDamengLayerItem *layerItem, Q
   QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
-    notify( tr( "Rename Table" ), tr( "Unable to rename 'table' %1\n%2" ).arg( layerItem->name(),
-            result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
+    notify( tr( "Rename Table" ), tr( "Unable to rename 'table' %1\n%2" ).arg( layerItem->name(), result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
 
-  notify( tr( "Rename Table" ), tr( "Table '%1' renamed correctly to '%2'." ).arg( oldName, newName ),
-          context, Qgis::MessageLevel::Success );
+  notify( tr( "Rename Table" ), tr( "Table '%1' renamed correctly to '%2'." ).arg( oldName, newName ), context, Qgis::MessageLevel::Success );
 
   conn->unref();
 
@@ -354,9 +343,7 @@ void QgsDamengDataItemGuiProvider::renameLayer( QgsDamengLayerItem *layerItem, Q
 void QgsDamengDataItemGuiProvider::truncateTable( QgsDamengLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsDamengLayerProperty &layerInfo = layerItem->layerInfo();
-  if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ),
-                              QObject::tr( "Are you sure you want to truncate \"%1.%2\"?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ), QObject::tr( "Are you sure you want to truncate \"%1.%2\"?\n\nThis will delete all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
   const QgsDataSourceUri dsUri( layerItem->uri() );
@@ -381,8 +368,7 @@ void QgsDamengDataItemGuiProvider::truncateTable( QgsDamengLayerItem *layerItem,
   QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
-    notify( tr( "Truncate Table" ), tr( "Unable to truncate '%1'\n%2" ).arg( tableName,
-            result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
+    notify( tr( "Truncate Table" ), tr( "Unable to truncate '%1'\n%2" ).arg( tableName, result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
@@ -394,9 +380,7 @@ void QgsDamengDataItemGuiProvider::truncateTable( QgsDamengLayerItem *layerItem,
 void QgsDamengDataItemGuiProvider::refreshMaterializedView( QgsDamengLayerItem *layerItem, QgsDataItemGuiContext context )
 {
   const QgsDamengLayerProperty &layerInfo = layerItem->layerInfo();
-  if ( QMessageBox::question( nullptr, QObject::tr( "Refresh Materialized View" ),
-                              QObject::tr( "Are you sure you want to refresh the materialized view \"%1.%2\"?\n\nThis will update all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, QObject::tr( "Refresh Materialized View" ), QObject::tr( "Are you sure you want to refresh the materialized view \"%1.%2\"?\n\nThis will update all data within the table." ).arg( layerInfo.schemaName, layerInfo.tableName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
   const QgsDataSourceUri dsUri( layerItem->uri() );
@@ -421,8 +405,7 @@ void QgsDamengDataItemGuiProvider::refreshMaterializedView( QgsDamengLayerItem *
   QgsDamengResult result( conn->LoggedDMexec( "QgsDamengDataItemGuiProvider", sql ) );
   if ( result.DMresultStatus() != DmResCommandOk )
   {
-    notify( tr( "Refresh View" ), tr( "Unable to refresh the view '%1'\n%2" ).arg( tableRef,
-            result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
+    notify( tr( "Refresh View" ), tr( "Unable to refresh the view '%1'\n%2" ).arg( tableRef, result.DMresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
   }
@@ -439,8 +422,7 @@ void QgsDamengDataItemGuiProvider::saveConnections()
 
 void QgsDamengDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML )" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML )" ) );
   if ( fileName.isEmpty() )
   {
     return;

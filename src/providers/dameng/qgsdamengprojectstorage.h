@@ -24,12 +24,12 @@
 //! Stores information parsed from dameng project URI
 typedef struct
 {
-  bool valid;
+    bool valid;
 
-  QgsDataSourceUri connInfo;  // using only the bits about connection info ( server, port, username, password, service, ssl mode )
+    QgsDataSourceUri connInfo; // using only the bits about connection info ( server, port, username, password, service, ssl mode )
 
-  QString schemaName;
-  QString projectName;
+    QString schemaName;
+    QString projectName;
 
 } QgsDamengProjectUri;
 
@@ -38,7 +38,6 @@ typedef struct
 class QgsDamengProjectStorage : public QgsProjectStorage
 {
   public:
-
     QString type() override { return QStringLiteral( "dameng" ); }
 
     QStringList listProjects( const QString &uri ) override;

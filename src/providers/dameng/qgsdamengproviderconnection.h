@@ -18,7 +18,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdamengconnpool.h"
 
-struct QgsDamengProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsDamengProviderResultIterator : public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
     QgsDamengProviderResultIterator( bool resolveTypes )
       : mResolveTypes( resolveTypes )
@@ -28,7 +28,6 @@ struct QgsDamengProviderResultIterator: public QgsAbstractDatabaseProviderConnec
     std::unique_ptr<QgsDamengResult> result;
 
   private:
-
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
     long long rowCountPrivate() const override;

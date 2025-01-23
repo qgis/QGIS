@@ -49,10 +49,10 @@ static bool _projectsTableExists( QgsDamengConn &conn, const QString &schemaName
 {
   QString tableName( "QGIS_PROJECTS" );
   QString sql( QStringLiteral( "SELECT COUNT(*) FROM ALL_ALL_TABLES WHERE table_name=%1 and OWNER=%2" )
-               .arg( QgsDamengConn::quotedValue( tableName ), QgsDamengConn::quotedValue( schemaName ) )
-             );
+                 .arg( QgsDamengConn::quotedValue( tableName ), QgsDamengConn::quotedValue( schemaName ) )
+  );
   QgsDMResult *res = conn.DMexec( sql );
-  
+
   res->fetchFirst();
   return res->value( 0 ).toInt() > 0;
 }
@@ -167,22 +167,16 @@ bool QgsDamengProjectStorage::writeProject( const QString &uri, QIODevice *devic
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  QString metadataExpr = QStringLiteral( "(%1 || ( now() at time zone 'utc') || %2 || current_user || %3 )" ).arg(
-                           QgsDamengConn::quotedValue( "{ \"last_modified_time\": \"" ),
-                           QgsDamengConn::quotedValue( "\", \"last_modified_user\": \"" ),
-                           QgsDamengConn::quotedValue( "\" }" )
-                         );
+  QString metadataExpr = QStringLiteral( "(%1 || ( now() at time zone 'utc') || %2 || current_user || %3 )" ).arg( QgsDamengConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsDamengConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsDamengConn::quotedValue( "\" }" ) );
 
-  QString sql(  "begin "
-                " delete from %1.QGIS_PROJECTS where name = %2 and "
-                      " 1 = ( select count( name ) from %1.QGIS_PROJECTS where name = %2 );"
-                " INSERT INTO %1.QGIS_PROJECTS VALUES (%2, %3, '0x%4');"
-                "end;" );
-  sql = sql.arg( QgsDamengConn::quotedIdentifier( projectUri.schemaName ),
-                 QgsDamengConn::quotedValue( projectUri.projectName ),
-                 metadataExpr,  // no need to quote: already quoted
-                 QString::fromLatin1( content.toHex() )
-               );
+  QString sql( "begin "
+               " delete from %1.QGIS_PROJECTS where name = %2 and "
+               " 1 = ( select count( name ) from %1.QGIS_PROJECTS where name = %2 );"
+               " INSERT INTO %1.QGIS_PROJECTS VALUES (%2, %3, '0x%4');"
+               "end;" );
+  sql = sql.arg( QgsDamengConn::quotedIdentifier( projectUri.schemaName ), QgsDamengConn::quotedValue( projectUri.projectName ),
+                 metadataExpr, // no need to quote: already quoted
+                 QString::fromLatin1( content.toHex() ) );
 
   QgsDamengResult res( conn->DMexec( sql ) );
   if ( res.DMresultStatus() != DmResCommandOk )

@@ -24,11 +24,9 @@ class QgsDamengDataItemGuiProvider : public QObject, public QgsDataItemGuiProvid
 {
     Q_OBJECT
   public:
-
     QString name() override;
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
     bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context ) override;
 
@@ -49,7 +47,6 @@ class QgsDamengDataItemGuiProvider : public QObject, public QgsDataItemGuiProvid
     static void refreshMaterializedView( QgsDamengLayerItem *layerItem, QgsDataItemGuiContext context );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 #endif // QGSDAMENGDATAITEMGUIPROVIDER_H

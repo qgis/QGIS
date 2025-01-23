@@ -23,14 +23,12 @@
 
 class QgsDamengProviderGuiMetadata : public QgsProviderGuiMetadata
 {
-public:
-  QgsDamengProviderGuiMetadata();
+  public:
+    QgsDamengProviderGuiMetadata();
 
-  QList<QgsSourceSelectProvider*> sourceSelectProviders() override;
-  QList<QgsDataItemGuiProvider*> dataItemGuiProviders() override;
-  QList<QgsProjectStorageGuiProvider*> projectStorageGuiProviders() override;
-
-
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override;
 };
 
 #endif // QGSDAMENGPROVIDERGUI_H

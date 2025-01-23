@@ -42,8 +42,7 @@ class QgsDamengProjectStorageDialog : public QDialog, private Ui::QgsDamengProje
     void removeProject();
 
   private:
-
-    bool mSaving = false;  //!< Whether using this dialog for loading or saving a project
+    bool mSaving = false; //!< Whether using this dialog for loading or saving a project
     QAction *mActionRemoveProject = nullptr;
     QStringList mExistingProjects;
 };

@@ -34,100 +34,100 @@ class QgsField;
 //! Schema properties structure
 struct QgsDamengSchemaProperty
 {
-  QString name;
-  QString description;
-  QString owner;
+    QString name;
+    QString description;
+    QString owner;
 };
 
 //! Layer Property structure
 // TODO: Fill to Dameng/DAMENG specifications
 struct QgsDamengLayerProperty
 {
-  // Dameng/DAMENG layer properties
-  QList<Qgis::WkbType>          types;
-  QString                       schemaName;
-  QString                       tableName;
-  QString                       geometryColName;
-  QgsDamengGeometryColumnType   geometryColType;
-  QStringList                   pkCols;
-  QList<int>                    srids;
-  unsigned int                  nSpCols;
-  QString                       sql;
-  QString                       relKind;
-  bool                          isView = false;
-  bool                          isMaterializedView = false;
-  QString                       tableComment;
+    // Dameng/DAMENG layer properties
+    QList<Qgis::WkbType> types;
+    QString schemaName;
+    QString tableName;
+    QString geometryColName;
+    QgsDamengGeometryColumnType geometryColType;
+    QStringList pkCols;
+    QList<int> srids;
+    unsigned int nSpCols;
+    QString sql;
+    QString relKind;
+    bool isView = false;
+    bool isMaterializedView = false;
+    QString tableComment;
 
-  // TODO: rename this !
-  int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+    // TODO: rename this !
+    int size() const
+    {
+      Q_ASSERT( types.size() == srids.size() );
+      return types.size();
+    }
 
-  QString defaultName() const
-  {
-    QString n = tableName;
-    if ( nSpCols > 1 ) n += '.' + geometryColName;
-    return n;
-  }
+    QString defaultName() const
+    {
+      QString n = tableName;
+      if ( nSpCols > 1 )
+        n += '.' + geometryColName;
+      return n;
+    }
 
-  QgsDamengLayerProperty at( int i ) const
-  {
-    QgsDamengLayerProperty property;
+    QgsDamengLayerProperty at( int i ) const
+    {
+      QgsDamengLayerProperty property;
 
-    Q_ASSERT( i >= 0 && i < size() );
+      Q_ASSERT( i >= 0 && i < size() );
 
-    property.types << types[i];
-    property.srids << srids[i];
-    property.schemaName = schemaName;
-    property.tableName = tableName;
-    property.geometryColName = geometryColName;
-    property.geometryColType = geometryColType;
-    property.pkCols = pkCols;
-    property.nSpCols = nSpCols;
-    property.sql = sql;
-    property.relKind = relKind;
-    property.isView = isView;
-    property.isMaterializedView = isMaterializedView;
-    property.tableComment = tableComment;
+      property.types << types[i];
+      property.srids << srids[i];
+      property.schemaName = schemaName;
+      property.tableName = tableName;
+      property.geometryColName = geometryColName;
+      property.geometryColType = geometryColType;
+      property.pkCols = pkCols;
+      property.nSpCols = nSpCols;
+      property.sql = sql;
+      property.relKind = relKind;
+      property.isView = isView;
+      property.isMaterializedView = isMaterializedView;
+      property.tableComment = tableComment;
 
-    return property;
-  }
+      return property;
+    }
 
 #ifdef QGISDEBUG
-  QString toString() const
-  {
-    QString typeString;
-    const auto constTypes = types;
-    for ( const Qgis::WkbType type : constTypes )
+    QString toString() const
     {
-      if (!typeString.isEmpty())
-        typeString += '|';
-      typeString += QString::number( type );
-    }
-    QString sridString;
-    const auto constSrids = srids;
-    for ( const int srid : constSrids )
-    {
-      if (!sridString.isEmpty())
-        sridString += '|';
-      sridString += QString::number( srid );
-    }
+      QString typeString;
+      const auto constTypes = types;
+      for ( const Qgis::WkbType type : constTypes )
+      {
+        if ( !typeString.isEmpty() )
+          typeString += '|';
+        typeString += QString::number( type );
+      }
+      QString sridString;
+      const auto constSrids = srids;
+      for ( const int srid : constSrids )
+      {
+        if ( !sridString.isEmpty() )
+          sridString += '|';
+        sridString += QString::number( srid );
+      }
 
-    return QStringLiteral("%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8")
-      .arg( schemaName,
-        tableName,
-        geometryColName,
-        typeString,
-        sridString,
-        pkCols.join( QLatin1Char('|')),
-        sql )
-      .arg( nSpCols );
-  }
+      return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
+        .arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( QLatin1Char( '|' ) ), sql )
+        .arg( nSpCols );
+    }
 #endif
 };
 
 class QgsDamengResult
 {
   public:
-    explicit QgsDamengResult( QgsDMResult *result = nullptr ) : mRes( result ) {}
+    explicit QgsDamengResult( QgsDMResult *result = nullptr )
+      : mRes( result ) {}
     ~QgsDamengResult();
 
     QgsDamengResult &operator=( QgsDMResult *result );
@@ -162,6 +162,7 @@ class QgsDamengResult
 class QgsPoolDamengConn
 {
     class QgsDamengConn *mDmConn;
+
   public:
     QgsPoolDamengConn( const QString &connInfo );
     ~QgsPoolDamengConn();
@@ -195,7 +196,7 @@ class QgsDamengConn : public QObject
     void ref();
     void unref();
 
-    DmConn *DMconnect( const QString &ipaddr, const QString &port, const QString &user, const QString &pwd );//连接数据库
+    DmConn *DMconnect( const QString &ipaddr, const QString &port, const QString &user, const QString &pwd ); //连接数据库
     DmConn *dmConnection() { return mConn; }
     bool getEstimatedMetadata() { return mUseEstimatedMetadata; }
 
@@ -203,10 +204,10 @@ class QgsDamengConn : public QObject
     QString currentDatabase() const;
 
     int DMserverVersion() const;
-    QString dmSpatialVersion() const; //! Gets dmSpatial version string
-    int dmVersion() const { return mDamengVersion; }  //! Dameng version
+    QString dmSpatialVersion() const;                //! Gets dmSpatial version string
+    int dmVersion() const { return mDamengVersion; } //! Dameng version
 
-    bool hasGEOS() const; //! Gets status of GEOS capability
+    bool hasGEOS() const;     //! Gets status of GEOS capability
     bool hasTopology() const; //! Gets status of topology capability
 
     //! run a query and free result buffer
@@ -229,8 +230,8 @@ class QgsDamengConn : public QObject
     // cancel running query
     bool cancel();
 
-    static QString quotedIdentifier( const QString &ident );/** Double quote("") */
-    static QString quotedValue( const QVariant &value );/** Quote a value */
+    static QString quotedIdentifier( const QString &ident ); /** Double quote("") */
+    static QString quotedValue( const QVariant &value );     /** Quote a value */
 
     /**
      * Gets the list of supported layers
@@ -241,7 +242,7 @@ class QgsDamengConn : public QObject
      * \returns true if layers were fetched successfully
      */
     bool supportedLayers( QVector<QgsDamengLayerProperty> &layers, bool searchSysdbaOnly = true, bool allowGeometrylessTables = false, const QString &schema = QString() );
-    
+
     /**
      * Get the information about a supported layer
      * \param schema
@@ -249,7 +250,7 @@ class QgsDamengConn : public QObject
      * \returns TRUE if the table was found
      */
     bool supportedLayer( QgsDamengLayerProperty &layerProperty, const QString &schema, const QString &table );
-    
+
     /**
      * Gets the list of supported layers
      * \param layers list to store layers in
@@ -265,7 +266,7 @@ class QgsDamengConn : public QObject
 
     /** Determine type and srid of a ( vector )layer from data ( possibly estimated ) */
     void retrieveLayerTypes( QgsDamengLayerProperty &layerProperty, bool useEstimatedMetadata );
-    void retrieveLayerTypes( QVector<QgsDamengLayerProperty*> &layerProperties, bool useEstimatedMetadata );
+    void retrieveLayerTypes( QVector<QgsDamengLayerProperty *> &layerProperties, bool useEstimatedMetadata );
 
     /**
      * Gets the list of database schemas
@@ -284,9 +285,9 @@ class QgsDamengConn : public QObject
      */
     bool getTableInfo( bool searchSysdbaOnly, bool allowGeometrylessTables, const QString &schema = QString(), const QString &name = QString() );
 
-    QString fieldExpressionForWhereClause( const QgsField &fld, QMetaType::Type valueType = QMetaType::Type::UnknownType, QString expr = "%1");
+    QString fieldExpressionForWhereClause( const QgsField &fld, QMetaType::Type valueType = QMetaType::Type::UnknownType, QString expr = "%1" );
 
-    QString fieldExpression( const QgsField &fld, QString expr = "%1");
+    QString fieldExpression( const QgsField &fld, QString expr = "%1" );
 
     QString connInfo() const { return mConnInfo; }
 
@@ -324,32 +325,31 @@ class QgsDamengConn : public QObject
     //! A connection needs to be locked when it uses transactions, see QgsDamengConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
-    
+
     QgsCoordinateReferenceSystem sridToCrs( int srsId );
 
   private:
-
     int mRef;
     DmConn *mConn = nullptr;
     QString mConnInfo;
     bool mUseEstimatedMetadata = false;
 
-    mutable bool mGeosAvailable;  //! GEOS capability
-    mutable bool mProjAvailable;  //! PROJ capability
-    mutable bool mTopologyAvailable;  //! Topology capability
+    mutable bool mGeosAvailable;     //! GEOS capability
+    mutable bool mProjAvailable;     //! PROJ capability
+    mutable bool mTopologyAvailable; //! Topology capability
 
-    mutable int mDamengVersion; //! Dameng version
-    mutable bool mGotDmSpatialVersion;  //! DAMENG Spatial version
-    mutable QString mDmSpatialVersionInfo;  //! DAMENG Spatial version string
+    mutable int mDamengVersion;            //! Dameng version
+    mutable bool mGotDmSpatialVersion;     //! DAMENG Spatial version
+    mutable QString mDmSpatialVersionInfo; //! DAMENG Spatial version string
 
 
     bool mReadOnly;
-    void setEstimatedMetadata(bool EstimatedMetadata) { mUseEstimatedMetadata = EstimatedMetadata; };
+    void setEstimatedMetadata( bool EstimatedMetadata ) { mUseEstimatedMetadata = EstimatedMetadata; };
 
     QStringList supportedSpatialTypes() const;
 
-    static QMap< QString, QgsDamengConn*> sConnectionsRW;
-    static QMap< QString, QgsDamengConn*> sConnectionsRO;
+    static QMap< QString, QgsDamengConn *> sConnectionsRW;
+    static QMap< QString, QgsDamengConn *> sConnectionsRO;
 
     //! List of the supported layers
     QVector<QgsDamengLayerProperty> mLayersSupported;
@@ -373,7 +373,7 @@ class QgsDamengConn : public QObject
     bool mTransaction;
 
 #if QT_VERSION < QT_VERSION_CHECK( 5, 14, 0 )
-    mutable QMutex mLock{ QMutex::Recursive };
+    mutable QMutex mLock { QMutex::Recursive };
 #else
     mutable QRecursiveMutex mLock;
 #endif

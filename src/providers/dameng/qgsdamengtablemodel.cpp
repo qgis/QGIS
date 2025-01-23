@@ -56,20 +56,20 @@ bool QgsDamengTableModel::searchableColumn( int column ) const
   Columns col = static_cast<Columns>( column );
   switch ( col )
   {
-  case DbtmSchema:
-  case DbtmTable:
-  case DbtmComment:
-  case DbtmGeomCol:
-  case DbtmType:
-  case DbtmSrid:
-  case DbtmSql:
-    return true;
+    case DbtmSchema:
+    case DbtmTable:
+    case DbtmComment:
+    case DbtmGeomCol:
+    case DbtmType:
+    case DbtmSrid:
+    case DbtmSql:
+      return true;
 
-  case DbtmGeomType:
-  case DbtmPkCol:
-  case DbtmSelectAtId:
-  case DbtmCheckPkUnicity:
-    return false;
+    case DbtmGeomType:
+    case DbtmPkCol:
+    case DbtmSelectAtId:
+    case DbtmCheckPkUnicity:
+      return false;
   }
 
   BUILTIN_UNREACHABLE
@@ -84,8 +84,8 @@ void QgsDamengTableModel::addTableEntry( const QgsDamengLayerProperty &layerProp
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    Qgis::WkbType wkbType = layerProperty.types[ i ];
-    
+    Qgis::WkbType wkbType = layerProperty.types[i];
+
     const int srid = layerProperty.srids[i];
     if ( wkbType == Qgis::WkbType::Unknown && layerProperty.geometryColName.isEmpty() )
     {
@@ -113,7 +113,7 @@ void QgsDamengTableModel::addTableEntry( const QgsDamengLayerProperty &layerProp
     QStandardItem *typeItem = nullptr;
 
     typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ), wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsDamengConn::displayStringForWkbType( wkbType ) );
-    
+
     typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
     typeItem->setData( static_cast<quint32>( wkbType ), Qt::UserRole + 2 );
 
@@ -124,7 +124,7 @@ void QgsDamengTableModel::addTableEntry( const QgsDamengLayerProperty &layerProp
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
-    if ( ! layerProperty.tableComment.isEmpty() )
+    if ( !layerProperty.tableComment.isEmpty() )
     {
       // word wrap
       QString commentText { layerProperty.tableComment };
@@ -134,8 +134,8 @@ void QgsDamengTableModel::addTableEntry( const QgsDamengLayerProperty &layerProp
       commentItem->setToolTip( QStringLiteral( "<span>%1</span >" ).arg( commentText.replace( '\n', QLatin1String( "< br/>" ) ) ) );
       commentItem->setTextAlignment( Qt::AlignTop );
     }
-    QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : QString() );
+    QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
+    QStandardItem *sridItem = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : QString() );
     sridItem->setEditable( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() );
     if ( sridItem->isEditable() )
     {
@@ -173,7 +173,7 @@ void QgsDamengTableModel::addTableEntry( const QgsDamengLayerProperty &layerProp
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( headerData( Columns::DbtmSelectAtId, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
 
-    QStandardItem *checkPkUnicityItem  = new QStandardItem( QString() );
+    QStandardItem *checkPkUnicityItem = new QStandardItem( QString() );
     checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
 
     if ( layerProperty.isView || layerProperty.isMaterializedView )
@@ -425,7 +425,7 @@ QString QgsDamengTableModel::layerURI( const QModelIndex &index, const QString &
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    ( void )srid.toInt( &ok );
+    ( void ) srid.toInt( &ok );
     if ( !ok )
     {
       QgsDebugError( QStringLiteral( "srid not numeric" ) );
