@@ -1422,6 +1422,8 @@ namespace QgsWms
     //then set destinationCrs
     mapSettings.setDestinationCrs( outputCRS );
 
+    mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
+
     // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
     if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && outputCRS.hasAxisInverted() )
     {
