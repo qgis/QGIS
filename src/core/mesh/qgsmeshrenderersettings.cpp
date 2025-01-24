@@ -134,9 +134,9 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
   elem.setAttribute( QStringLiteral( "interpolation-method" ), methodTxt );
 
   if ( mRangeExtent != Qgis::MeshRangeExtent::WholeMesh )
-    elem.setAttribute( QStringLiteral( "range-extent" ), QgsMeshRendererScalarSettings::extentString( mRangeExtent ) );
+    elem.setAttribute( QStringLiteral( "range-extent" ), qgsEnumValueToKey( mRangeExtent ) );
   if ( mRangeLimit != Qgis::MeshRangeLimit::NotSet )
-    elem.setAttribute( QStringLiteral( "range-limit" ), QgsMeshRendererScalarSettings::limitsString( mRangeLimit ) );
+    elem.setAttribute( QStringLiteral( "range-limit" ), qgsEnumValueToKey( mRangeLimit ) );
 
   const QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   elem.appendChild( elemShader );
@@ -165,8 +165,8 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
     mDataResamplingMethod = DataResamplingMethod::NoResampling;
   }
 
-  mRangeExtent = QgsMeshRendererScalarSettings::extentFromString( elem.attribute( "range-extent" ) );
-  mRangeLimit = QgsMeshRendererScalarSettings::limitsFromString( elem.attribute( "range-limit" ) );
+  mRangeExtent = qgsEnumKeyToValue( elem.attribute( "range-extent" ), Qgis::MeshRangeExtent::WholeMesh );
+  mRangeLimit = qgsEnumKeyToValue( elem.attribute( "range-limit" ), Qgis::MeshRangeLimit::NotSet );
 
   const QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader, context );
@@ -208,58 +208,6 @@ void QgsMeshRendererScalarSettings::updateShader()
     mColorRampShader.classifyColorRamp( mColorRampShader.sourceColorRamp()->count(), 1, QgsRectangle(), nullptr );
 }
 
-QString QgsMeshRendererScalarSettings::extentString( Qgis::MeshRangeExtent extent )
-{
-  switch ( extent )
-  {
-    case Qgis::MeshRangeExtent::WholeMesh:
-      return QStringLiteral( "WholeMesh" );
-    case Qgis::MeshRangeExtent::FixedCanvas:
-      return QStringLiteral( "CurrentCanvas" );
-    case Qgis::MeshRangeExtent::UpdatedCanvas:
-      return QStringLiteral( "UpdatedCanvas" );
-  }
-  return QStringLiteral( "WholeMesh" );
-}
-
-Qgis::MeshRangeExtent QgsMeshRendererScalarSettings::extentFromString( const QString &extent )
-{
-  if ( extent == QLatin1String( "WholeMesh" ) )
-  {
-    return Qgis::MeshRangeExtent::WholeMesh;
-  }
-  else if ( extent == QLatin1String( "CurrentCanvas" ) )
-  {
-    return Qgis::MeshRangeExtent::FixedCanvas;
-  }
-  else if ( extent == QLatin1String( "UpdatedCanvas" ) )
-  {
-    return Qgis::MeshRangeExtent::UpdatedCanvas;
-  }
-
-  return Qgis::MeshRangeExtent::WholeMesh;
-}
-
-QString QgsMeshRendererScalarSettings::limitsString( Qgis::MeshRangeLimit limits )
-{
-  switch ( limits )
-  {
-    case Qgis::MeshRangeLimit::MinimumMaximum:
-      return QStringLiteral( "MinMax" );
-    default:
-      break;
-  }
-  return QStringLiteral( "None" );
-}
-
-Qgis::MeshRangeLimit QgsMeshRendererScalarSettings::limitsFromString( const QString &limits )
-{
-  if ( limits == QLatin1String( "MinMax" ) )
-  {
-    return Qgis::MeshRangeLimit::MinimumMaximum;
-  }
-  return Qgis::MeshRangeLimit::NotSet;
-}
 
 // ---------------------------------------------------------------------
 
