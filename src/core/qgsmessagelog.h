@@ -51,7 +51,8 @@ class CORE_EXPORT QgsMessageLog : public QObject
      * If it is FALSE, the message should appear in logs silently. Note that log viewer implementations may
      * only respect notification hints for certain message levels.
      */
-    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true );
+    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
+                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() );
 
   signals:
 
