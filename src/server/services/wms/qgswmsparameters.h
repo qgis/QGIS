@@ -218,7 +218,7 @@ namespace QgsWms
        * \returns A list of strings
        * \since QGIS 3.8
        */
-      QStringList toStyleList( const char delimiter = ',', bool skipEmptyParts = true ) const;
+      QStringList toStyleList( const char delimiter = ',', bool skipEmptyParts = false ) const;
 
       /**
        * Converts the parameter into a list of geometries.
