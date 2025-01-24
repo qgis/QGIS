@@ -55,7 +55,8 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
   element.setAttribute( QStringLiteral( "extrusionEnabled" ), mEnableExtrusion ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "extrusion" ), qgsDoubleToString( mExtrusionHeight ) );
   element.setAttribute( QStringLiteral( "customToleranceEnabled" ), mEnableCustomTolerance ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "customTolerance" ), qgsDoubleToString( mCustomTolerance ) );
+  if ( mCustomTolerance != 0 )
+    element.setAttribute( QStringLiteral( "customTolerance" ), qgsDoubleToString( mCustomTolerance ) );
   element.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mClamping ) );
   element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
   element.setAttribute( QStringLiteral( "type" ), qgsEnumValueToKey( mType ) );
