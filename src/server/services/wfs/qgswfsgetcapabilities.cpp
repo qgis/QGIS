@@ -530,7 +530,7 @@ namespace QgsWfs
           operationsElement.appendChild( operationElement );
         }
 
-        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) && ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) && wfstUpdateLayersId.contains( layer->id() ) )
+        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) && ( !layer->isSpatial() || provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) && wfstUpdateLayersId.contains( layer->id() ) )
         {
           //wfs:Update element
           QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
