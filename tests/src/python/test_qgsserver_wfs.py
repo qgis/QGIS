@@ -38,10 +38,16 @@ from qgis.core import (
     QgsGeometry,
     QgsProject,
     QgsVectorLayer,
+    QgsMemoryProviderUtils,
+    QgsWkbTypes,
+    QgsVectorDataProvider,
+    QgsFields,
+    QgsField,
 )
-from qgis.server import QgsServerRequest
+from qgis.server import QgsServerRequest, QgsServer, QgsBufferServerResponse
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
+from qgis.PyQt.QtCore import QVariant, QUrl
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = rb'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
@@ -1530,6 +1536,35 @@ class TestQgsServerWFS(QgsServerTestBase):
             project_file=project_file,
         )
 
+
+    def test_wfs_aspatial_getcapabilities(self):
+        ### Test issue GH #60185 - WFS GetCapabilities for aspatial layers"""
+
+        # create a memory layer with no geometry
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int))
+        fields.append(QgsField('name', QVariant.String))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('no_geom', fields, QgsWkbTypes.NoGeometry)
+
+        provider = layer.dataProvider()
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.isSpatial())
+        self.assertFalse(provider.capabilities( ) & QgsVectorDataProvider.Capability.ChangeGeometries)
+
+        project = QgsProject()
+        project.addMapLayer(layer)
+        project.writeEntry( "WFSLayers" , "/", [layer.id()] )
+        project.writeEntry( "WFSTLayers" , "Update", [layer.id()] )
+        project.writeEntry( "WFSTLayers" , "Insert", [layer.id()] )
+        project.writeEntry( "WFSTLayers" , "Delete", [layer.id()] )
+
+        server = QgsServer()
+        request = QgsServerRequest()
+        request.setUrl(QUrl("?SERVICE=WFS&REQUEST=GetCapabilities"))
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        body = response.body().data().decode("utf8").replace("\n", "")
+        self.assertIn("<Operation>Update</Operation>", body)
 
 if __name__ == "__main__":
     unittest.main()
