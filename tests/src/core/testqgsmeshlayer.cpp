@@ -90,6 +90,7 @@ class TestQgsMeshLayer : public QgsTest
     void test_mesh_simplification();
 
     void test_snap_on_mesh();
+    void test_closest_element_mesh();
     void test_dataset_value_from_layer();
 
     void test_dataset_group_item_tree_item();
@@ -1369,6 +1370,119 @@ void TestQgsMeshLayer::test_snap_on_mesh()
   QCOMPARE( snappedPoint, transform.transform( QgsPointXY( 1500, 2500 ) ) );
   snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face, transform.transform( QgsPointXY( 1998, 2998 ) ), searchRadius );
   QCOMPARE( snappedPoint, transform.transform( QgsPointXY( 1500, 2500 ) ) );
+}
+
+void TestQgsMeshLayer::test_closest_element_mesh()
+{
+  //1D mesh
+  mMdal1DLayer->updateTriangularMesh();
+  double searchRadius = 10;
+
+  QgsPointXY closestPoint;
+  int closestId;
+
+  //1D mesh
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Vertex, QgsPointXY(), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Vertex, QgsPointXY( 1002, 2005 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 1000, 2000 ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Edge, QgsPointXY( 1002, 2005 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 1002, 2000 ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Edge, QgsPointXY( 998, 2005 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 1000, 2000 ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Edge, QgsPointXY( 990, 2010 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Vertex, QgsPointXY( 2002, 2998 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 2000, 3000 ) );
+  QCOMPARE( closestId, 3 );
+
+  //2D mesh
+  mMdalLayer->updateTriangularMesh();
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, QgsPointXY(), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, QgsPointXY(), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, QgsPointXY( 1002, 2005 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 1000, 2000 ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, QgsPointXY( 2002, 2998 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 2000, 3000 ) );
+  QCOMPARE( closestId, 3 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, QgsPointXY( 998, 1998 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 1500, 2500 ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, QgsPointXY( 1002, 2001 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 1500, 2500 ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, QgsPointXY( 1998, 2998 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 1500, 2500 ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, QgsPointXY( 2002, 1998 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY( 2333.33333333, 2333.333333333 ) );
+  QCOMPARE( closestId, 1 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, QgsPointXY( 500, 500 ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+
+  // same test but with coordinates in geographic system with transform coordinates
+  QgsCoordinateReferenceSystem wgs84Crs;
+  wgs84Crs.createFromProj( "+proj=longlat +datum=WGS84 +no_defs" );
+  QVERIFY( wgs84Crs.isValid() );
+  QgsCoordinateReferenceSystem EPSG32620crs;
+  EPSG32620crs.createFromProj( "+proj=utm +zone=20 +datum=WGS84 +units=m +no_defs" );
+
+  //1D mesh
+  mMdal1DLayer->setCrs( EPSG32620crs );
+  QgsCoordinateTransform transform( EPSG32620crs, wgs84Crs, QgsProject::instance() );
+  mMdal1DLayer->updateTriangularMesh( transform );
+  searchRadius = 1;
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Vertex, QgsPointXY(), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Vertex, transform.transform( QgsPointXY( 1002, 2005 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 1000, 2000 ) ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Edge, transform.transform( QgsPointXY( 1002, 2005 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 1002, 2000 ) ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Edge, transform.transform( QgsPointXY( 998, 2005 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 1000, 2000 ) ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdal1DLayer->closestElement( QgsMesh::Vertex, transform.transform( QgsPointXY( 2002, 2998 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 2000, 3000 ) ) );
+  QCOMPARE( closestId, 3 );
+
+  //2D mesh
+  mMdalLayer->setCrs( EPSG32620crs );
+  mMdalLayer->updateTriangularMesh( transform );
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, QgsPointXY(), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, QgsPointXY(), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, QgsPointXY() );
+  QCOMPARE( closestId, -1 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, transform.transform( QgsPointXY( 1002, 2005 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 1000, 2000 ) ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Vertex, transform.transform( QgsPointXY( 2002, 2998 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 2000, 3000 ) ) );
+  QCOMPARE( closestId, 3 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, transform.transform( QgsPointXY( 998, 1998 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 1500, 2500 ) ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, transform.transform( QgsPointXY( 1002, 2001 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 1500, 2500 ) ) );
+  QCOMPARE( closestId, 0 );
+  closestId = mMdalLayer->closestElement( QgsMesh::Face, transform.transform( QgsPointXY( 1998, 2998 ) ), searchRadius, closestPoint );
+  QCOMPARE( closestPoint, transform.transform( QgsPointXY( 1500, 2500 ) ) );
+  QCOMPARE( closestId, 0 );
 }
 
 void TestQgsMeshLayer::test_dataset_value_from_layer()
