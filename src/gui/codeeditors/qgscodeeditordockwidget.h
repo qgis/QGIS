@@ -41,7 +41,7 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
      *
      * If \a usePersistentWidget is TRUE then the widget (either as a dock or window) cannot be destroyed and must be hidden instead.
      */
-    QgsCodeEditorDockWidget( const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
+    QgsCodeEditorDockWidget( const QString &dockId = QString(), bool usePersistentWidget = false );
     ~QgsCodeEditorDockWidget() override;
 
     /**

@@ -325,7 +325,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   onTotalPendingJobsCountChanged();
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
+
   if ( QDialog *dialog = mDockableWidgetHelper->dialog() )
   {
     QFontMetrics fm( font() );

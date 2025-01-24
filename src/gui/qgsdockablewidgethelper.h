@@ -57,7 +57,8 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     static inline QgsSettingsTreeNode *sTtreeDockConfigs = QgsGui::sTtreeWidgetGeometry->createNamedListNode( QStringLiteral( "docks" ) ) SIP_SKIP;
 
     static const QgsSettingsEntryBool *sSettingsIsDocked SIP_SKIP;
-    static const QgsSettingsEntryVariant *sSettingsWindowGeometry SIP_SKIP;
+    static const QgsSettingsEntryVariant *sSettingsDockGeometry SIP_SKIP;
+    static const QgsSettingsEntryVariant *sSettingsDialogGeometry SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<Qt::DockWidgetArea> *sSettingsDockArea SIP_SKIP;
 
     Q_OBJECT
@@ -76,14 +77,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     };
     Q_ENUM( Option )
     Q_DECLARE_FLAGS( Options, Option )
-
-    /**
-     * Constructs an object that is responsible of making a docked widget or a window titled \a windowTitle that holds the \a widget
-     * The ownership of \a widget is returned to \a ownerWindow once the object is destroyed.
-     *
-     * If \a usePersistentWidget is TRUE then the \a widget (either as a dock or window) cannot be destroyed and must be hidden instead.
-     */
-    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow, Qt::DockWidgetArea defaultDockArea = Qt::NoDockWidgetArea, const QStringList &tabifyWith = QStringList(), bool raiseTab = false, const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
 
     /**
      * Constructs an object that is responsible of making a docked widget or a window titled \a windowTitle that holds the \a widget
@@ -192,8 +185,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     QStringList mTabifyWith;
     Options mOptions;
-
-    QString mWindowGeometrySettingsKey;
 
     // Unique identifier of dock
     QString mUuid;
