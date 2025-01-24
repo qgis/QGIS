@@ -525,7 +525,10 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
       context.renderContext().expressionContext().setFeature( feature );
       QgsSymbol *rendererSymbol = renderer->symbolForFeature( feature, context.renderContext() );
       if ( !rendererSymbol )
+      {
+        features.remove( feature.id() );
         continue;
+      }
 
       marker->setColor( rendererSymbol->color() );
       marker->setOpacity( rendererSymbol->opacity() );
