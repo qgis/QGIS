@@ -5409,8 +5409,8 @@ void QgisApp::about()
   if ( !sAbt )
   {
     sAbt = new QgsAbout( this );
-    sAbt->setVersion( QgisApp::getVersionString() );
   }
+  sAbt->setVersion( QgisApp::getVersionString() );
   sAbt->show();
   sAbt->raise();
   sAbt->activateWindow();
