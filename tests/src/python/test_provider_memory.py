@@ -739,9 +739,20 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
 
         layer = QgsMemoryProviderUtils.createMemoryLayer("my name", QgsFields())
         self.assertTrue(layer.isValid())
+        self.assertFalse(layer.isSpatial())
         self.assertFalse(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.ChangeGeometries)
         self.assertFalse(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.CircularGeometries)
         self.assertFalse(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.CreateSpatialIndex)
+
+    def testSpatialLayerHasGeometryRelatedCapabilities(self):
+
+        layer = QgsMemoryProviderUtils.createMemoryLayer("my name", QgsFields(), QgsWkbTypes.Type.Point)
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        self.assertTrue(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.ChangeGeometries)
+        self.assertTrue(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.CircularGeometries)
+        self.assertTrue(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.CreateSpatialIndex)
+
 
     def testCreateMemoryLayer(self):
         """
