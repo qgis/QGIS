@@ -185,6 +185,10 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
   else
   {
     // html vertical margins between blocks collapse and take the size of the highest margin:
+    if (documentMetrics.verticalMarginsBetweenBlocks.isEmpty()) {
+      qWarning() << "verticalMarginsBetweenBlocks is empty!";
+      documentMetrics.verticalMarginsBetweenBlocks.append(0.0);
+    }
     const double verticalMarginBeforeBlock = std::max( documentMetrics.verticalMarginsBetweenBlocks.last(), metrics.marginTop );
     documentMetrics.verticalMarginsBetweenBlocks.last() = verticalMarginBeforeBlock;
     documentMetrics.verticalMarginsBetweenBlocks.append( metrics.marginBottom );
