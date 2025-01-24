@@ -15,6 +15,7 @@ from urllib.parse import parse_qs
 from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
     NULL,
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsEditorWidgetSetup,
     QgsFeature,
@@ -733,6 +734,14 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         layer = QgsVectorLayer("Point", "test", "memory")
         layer2 = QgsVectorLayer("Point", "test2", "memory")
         self.assertNotEqual(layer.source(), layer2.source())
+
+    def testAspatialLayerHasNoGeometryRelatedCapabilities(self):
+
+        layer = QgsMemoryProviderUtils.createMemoryLayer("my name", QgsFields())
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.ChangeGeometries)
+        self.assertFalse(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.CircularGeometries)
+        self.assertFalse(layer.dataProvider().capabilities() & Qgis.VectorProviderCapability.CreateSpatialIndex)
 
     def testCreateMemoryLayer(self):
         """
