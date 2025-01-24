@@ -133,8 +133,10 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
   }
   elem.setAttribute( QStringLiteral( "interpolation-method" ), methodTxt );
 
-  elem.setAttribute( QStringLiteral( "range-extent" ), QgsMeshRendererScalarSettings::extentString( mRangeExtent ) );
-  elem.setAttribute( QStringLiteral( "range-limit" ), QgsMeshRendererScalarSettings::limitsString( mRangeLimit ) );
+  if ( mRangeExtent != Qgis::MeshRangeExtent::WholeMesh )
+    elem.setAttribute( QStringLiteral( "range-extent" ), QgsMeshRendererScalarSettings::extentString( mRangeExtent ) );
+  if ( mRangeLimit != Qgis::MeshRangeLimit::NotSet )
+    elem.setAttribute( QStringLiteral( "range-limit" ), QgsMeshRendererScalarSettings::limitsString( mRangeLimit ) );
 
   const QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   elem.appendChild( elemShader );
