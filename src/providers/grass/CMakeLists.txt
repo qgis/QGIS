@@ -132,7 +132,10 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       )
     endif()
 
-    target_link_libraries(qgisgrass${GRASS_BUILD_VERSION} ${GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}} PostgreSQL::PostgreSQL)
+    target_link_libraries(qgisgrass${GRASS_BUILD_VERSION} ${GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}})
+	if(WITH_POSTGRESQL)
+	  target_link_libraries(qgisgrass${GRASS_BUILD_VERSION} PostgreSQL::PostgreSQL)
+	endif()
 
     if (WITH_GUI)
       target_link_libraries(qgisgrass${GRASS_BUILD_VERSION}
