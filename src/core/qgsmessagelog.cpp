@@ -28,6 +28,11 @@ class QgsMessageLogConsole;
 void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser,
                                 const char *file, const char *function, int line )
 {
+#ifndef QGISDEBUG
+  Q_UNUSED( file )
+  Q_UNUSED( function )
+  Q_UNUSED( line )
+#endif
   switch ( level )
   {
     case Qgis::MessageLevel::Info:

@@ -1531,7 +1531,7 @@ namespace QgsWms
       QgsWmsParameter idParameter( QgsWmsParameter::Name name, int id ) const;
 
       void raiseError( const QString &msg ) const;
-      void log( const QString &msg ) const;
+      void log( const QString &msg, const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() ) const;
 
       QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
 

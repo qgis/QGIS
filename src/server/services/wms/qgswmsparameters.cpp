@@ -2056,9 +2056,9 @@ namespace QgsWms
     return mWmsParameters.value( QgsWmsParameter::WMTVER ).toString();
   }
 
-  void QgsWmsParameters::log( const QString &msg ) const
+  void QgsWmsParameters::log( const QString &msg, const char *file, const char *function, int line ) const
   {
-    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), Qgis::MessageLevel::Info, true, file, function, line );
   }
 
   void QgsWmsParameters::raiseError( const QString &msg ) const
