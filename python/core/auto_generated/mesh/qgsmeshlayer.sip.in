@@ -719,6 +719,45 @@ the face The returned position is in map coordinates.
 .. versionadded:: 3.14
 %End
 
+    int closestElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint /Out/ ) const;
+%Docstring
+Returns the index of the snapped point on the mesh element closest to
+``point`` intersecting with the searching area defined by ``point`` and
+``searchRadius`` The position of the snapped point on the closest
+element is stored in ``projectedPoint``
+
+For vertex, the snapped position is the vertex position For edge, the
+snapped position is the projected point on the edge, extremity of edge
+if outside the edge For face, the snapped position is the centroid of
+the face The snapped position is in map coordinates.
+
+.. note::
+
+   It uses previously cached and indexed triangular mesh
+   and so if the layer has not been rendered previously
+   (e.g. when used in a script) it returns empty :py:class:`QgsPointXY`
+
+.. seealso:: :py:func:`updateTriangularMesh`
+
+.. note::
+
+   This is similar to the :py:func:`~QgsMeshLayer.snapOnElement` method, except it also returns the index of the snapped point
+
+.. seealso:: :py:func:`snapOnElement`
+
+:param elementType: the type of element to snap
+:param point: the center of the search area in map coordinates
+:param searchRadius: the radius of the search area in map units
+
+:return: - index of the snapped point on the closest element, -1 if no
+           element of type ``elementType``
+         - projectedPoint: the position of the snapped point on the
+           closest element, empty :py:class:`QgsPointXY` if no element
+           of type ``elementType``
+
+.. versionadded:: 3.44
+%End
+
     QList<int> selectVerticesByExpression( QgsExpression expression );
 %Docstring
 Returns a list of vertex indexes that meet the condition defined by
