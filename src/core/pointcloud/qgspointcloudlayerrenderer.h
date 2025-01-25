@@ -98,8 +98,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     const QVector< QgsPointCloudSubIndex > mSubIndexes;
     std::optional<QgsPointCloudIndex> mOverviewIndex;
-    double mAverageSubIndexWidth;
-    double mAverageSubIndexHeight;
+    double mAverageSubIndexWidth = 0;
+    double mAverageSubIndexHeight = 0;
 
     int mRenderTimeHint = 0;
     bool mBlockRenderUpdates = false;
