@@ -292,8 +292,10 @@ namespace QgsWfs
 
       // get provider capabilities
       Qgis::VectorProviderCapabilities cap = provider->capabilities();
-      if ( !( cap & Qgis::VectorProviderCapability::ChangeAttributeValues ) && !( cap & Qgis::VectorProviderCapability::ChangeGeometries )
-           && !( cap & Qgis::VectorProviderCapability::DeleteFeatures ) && !( cap & Qgis::VectorProviderCapability::AddFeatures ) )
+
+      const bool canUpdateAnything { cap.testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) || ( vlayer->isSpatial() && cap.testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) ) };
+
+      if ( !canUpdateAnything && !( cap & Qgis::VectorProviderCapability::DeleteFeatures ) && !( cap & Qgis::VectorProviderCapability::AddFeatures ) )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "No capabilities to do WFS changes on layer '%1'" ).arg( name ) );
       }
@@ -357,7 +359,7 @@ namespace QgsWfs
 
       // verifying specific capabilities
       Qgis::VectorProviderCapabilities cap = provider->capabilities();
-      if ( !( cap & Qgis::VectorProviderCapability::ChangeAttributeValues ) || !( cap & Qgis::VectorProviderCapability::ChangeGeometries ) )
+      if ( !( cap.testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) || ( vlayer->isSpatial() && cap.testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) ) ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No capabilities to do WFS updates on layer '%1'" ).arg( typeName );
