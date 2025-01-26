@@ -48,7 +48,7 @@ from qgis.PyQt.QtCore import (
     Qt,
     QUrl,
 )
-from qgis.PyQt.QtGui import QKeySequence
+from qgis.PyQt.QtGui import QKeySequence, QColor, QPalette
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
     QAction,
@@ -251,7 +251,10 @@ class Editor(QgsCodeEditorPython):
 
         menu.addSeparator()
         toggle_comment_action = QAction(
-            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"),
+            QgsApplication.getThemeIcon(
+                "console/iconCommentEditorConsole.svg",
+                self.palette().color(QPalette.WindowText),
+            ),
             QCoreApplication.translate("PythonConsole", "Toggle Comment"),
             menu,
         )
