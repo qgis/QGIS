@@ -133,15 +133,16 @@ void QgsGeometryValidationService::onGeometryChanged( QgsVectorLayer *layer, Qgs
 
 void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
+  VectorLayerCheckInformation &checkInformation = mLayerChecks[layer];
+  checkInformation.singleFeatureCheckErrors.remove( fid );
 
-  if ( !mLayerChecks[layer].topologyChecks.empty() )
+  if ( !checkInformation.topologyChecks.empty() )
   {
     invalidateTopologyChecks( layer );
   }
   else
   {
-    layer->setAllowCommit( mLayerChecks[layer].singleFeatureCheckErrors.empty() );
+    layer->setAllowCommit( checkInformation.singleFeatureCheckErrors.empty() );
   }
 
   // There should be no geometry errors on a non-existent feature, right?
