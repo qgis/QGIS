@@ -43,6 +43,13 @@ if(WITH_BINDINGS)
   elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     cmake_path(GET Python_SITEARCH PARENT_PATH _SOURCE_PYTHON_DIR)
     set(_TARGET_PYTHON_DIR "${APP_FRAMEWORKS_DIR}/lib")
+
+    set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}")
+    install(PROGRAMS ${PYTHON_EXECUTABLE}
+      DESTINATION "${QGIS_BIN_SUBDIR}")
+    configure_file("${CMAKE_SOURCE_DIR}/platform/macos/python.in" "${CMAKE_BINARY_DIR}/platform/macos/python")
+    install(PROGRAMS  "${CMAKE_BINARY_DIR}/platform/macos/python"
+      DESTINATION "${QGIS_BIN_SUBDIR}")
   endif()
 
   install(DIRECTORY "${_SOURCE_PYTHON_DIR}"
@@ -50,39 +57,99 @@ if(WITH_BINDINGS)
     PATTERN "*.sip" EXCLUDE)
 endif()
 
-set(BUNDLED_EXECUTABLES
-  "tools/gdal/gdal_contour"
-  "tools/gdal/gdal_create"
-  "tools/gdal/gdal_footprint"
-  "tools/gdal/gdal_grid"
-  "tools/gdal/gdal_rasterize"
-  "tools/gdal/gdal_translate"
-  "tools/gdal/gdal_viewshed"
-  "tools/gdal/gdaladdo"
-  "tools/gdal/gdalbuildvrt"
-  "tools/gdal/gdaldem"
-  "tools/gdal/gdalenhance"
-  "tools/gdal/gdalinfo"
-  "tools/gdal/gdallocationinfo"
-  "tools/gdal/gdalmanage"
-  "tools/gdal/gdalmdiminfo"
-  "tools/gdal/gdalmdimtranslate"
-  "tools/gdal/gdalsrsinfo"
-  "tools/gdal/gdaltindex"
-  "tools/gdal/gdaltransform"
-  "tools/gdal/gdalwarp"
-  "tools/gdal/gnmanalyse"
-  "tools/gdal/gnmmanage"
-  "tools/gdal/nearblack"
-  "tools/gdal/ogr2ogr"
-  "tools/gdal/ogrinfo"
-  "tools/gdal/ogrlineref"
-  "tools/gdal/ogrtindex"
-  "tools/gdal/sozip"
-)
+function(fixup_shebang INPUT_FILE OUTPUT_VARIABLE)
+  get_filename_component(_FILE ${INPUT_FILE} NAME)
+  file(READ ${INPUT_FILE} CONTENTS)
+  string(REGEX MATCH "^#!" SHEBANG_PRESENT "${CONTENTS}")
+  if (NOT SHEBANG_PRESENT)
+    message(FATAL_ERROR "File ${INPUT_FILE} does not start with a shebang (#!).")
+  endif()
+
+  # Replace the first line
+  string(REGEX REPLACE "^#![^\n]*" "#!/bin/sh\n\"exec\" \"\`dirname \$0\`/python\" \"\$0\" \"\$@\"" TRANSFORMED_CONTENTS "${CONTENTS}")
+  
+  # Write the transformed contents to the output file
+  set(OUTPUT_FILE "${CMAKE_BINARY_DIR}/bundled_program/${_FILE}")
+  file(WRITE "${OUTPUT_FILE}" "${TRANSFORMED_CONTENTS}")
+  set(${OUTPUT_VARIABLE} ${OUTPUT_FILE} PARENT_SCOPE)
+endfunction()
+
 if(NOT MSVC)
-  list(TRANSFORM BUNDLED_EXECUTABLES PREPEND "${VCPKG_BASE_DIR}/")
-  install(PROGRAMS ${BUNDLED_EXECUTABLES}
+  set(BUNDLED_PROGRAMS
+    "tools/gdal/gdal_contour"
+    "tools/gdal/gdal_create"
+    "tools/gdal/gdal_footprint"
+    "tools/gdal/gdal_grid"
+    "tools/gdal/gdal_rasterize"
+    "tools/gdal/gdal_translate"
+    "tools/gdal/gdal_viewshed"
+    "tools/gdal/gdaladdo"
+    "tools/gdal/gdalbuildvrt"
+    "tools/gdal/gdaldem"
+    "tools/gdal/gdalenhance"
+    "tools/gdal/gdalinfo"
+    "tools/gdal/gdallocationinfo"
+    "tools/gdal/gdalmanage"
+    "tools/gdal/gdalmdiminfo"
+    "tools/gdal/gdalmdimtranslate"
+    "tools/gdal/gdalsrsinfo"
+    "tools/gdal/gdaltindex"
+    "tools/gdal/gdaltransform"
+    "tools/gdal/gdalwarp"
+    "tools/gdal/gnmanalyse"
+    "tools/gdal/gnmmanage"
+    "tools/gdal/nearblack"
+    "tools/gdal/ogr2ogr"
+    "tools/gdal/ogrinfo"
+    "tools/gdal/ogrlineref"
+    "tools/gdal/ogrtindex"
+    "tools/gdal/sozip"
+  )
+  set(PYTHON_SCRIPTS
+    "bin/gdal2tiles"
+    "bin/gdal2tiles.py"
+    "bin/gdal2xyz"
+    "bin/gdal2xyz.py"
+    "bin/gdal_calc"
+    "bin/gdal_calc.py"
+    "bin/gdal_edit"
+    "bin/gdal_edit.py"
+    "bin/gdal_fillnodata"
+    "bin/gdal_fillnodata.py"
+    "bin/gdal_merge"
+    "bin/gdal_merge.py"
+    "bin/gdal_pansharpen"
+    "bin/gdal_pansharpen.py"
+    "bin/gdal_polygonize"
+    "bin/gdal_polygonize.py"
+    "bin/gdal_proximity"
+    "bin/gdal_proximity.py"
+    "bin/gdal_retile"
+    "bin/gdal_retile.py"
+    "bin/gdal_sieve"
+    "bin/gdal_sieve.py"
+    "bin/gdalattachpct"
+    "bin/gdalattachpct.py"
+    "bin/gdalcompare"
+    "bin/gdalcompare.py"
+    "bin/gdalmove"
+    "bin/gdalmove.py"
+    "bin/ogr_layer_algebra"
+    "bin/ogr_layer_algebra.py"
+    "bin/ogrmerge"
+    "bin/ogrmerge.py"
+    "bin/pct2rgb"
+    "bin/pct2rgb.py"
+    "bin/rgb2pct"
+    "bin/rgb2pct.py"
+  )
+  list(TRANSFORM BUNDLED_PROGRAMS PREPEND "${VCPKG_BASE_DIR}/")
+  list(TRANSFORM PYTHON_SCRIPTS PREPEND "${VCPKG_BASE_DIR}/")
+  foreach(FILE ${PYTHON_SCRIPTS})
+    fixup_shebang("${FILE}" OUTPUT_FILE)
+    list(APPEND BUNDLED_PROGRAMS "${OUTPUT_FILE}")
+  endforeach()
+  install(PROGRAMS ${BUNDLED_PROGRAMS}
     DESTINATION "${QGIS_BIN_SUBDIR}")
 endif()
 

@@ -1,0 +1,5 @@
+#!/bin/bash
+# This is a wrapper for python, to launch python with the proper PYTHONHOME set
+# to make it relocatable.
+export PYTHONHOME="$(cd "$(dirname "$0")/../Frameworks" && pwd)"
+exec @PYTHON_EXECUTABLE@ "$@"
