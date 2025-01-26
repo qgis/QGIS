@@ -47,10 +47,12 @@ class TestQgsRasterBlock(QgisTestCase):
         self.assertTrue((block.as_numpy() == expected_array).all())
 
         # test with noDataValue set
-        block.setNoDataValue(0)
+        block.setNoDataValue(-999)
         data = numpy.array([[numpy.nan, 2], [4, 4]])
         expected_masked_array = numpy.ma.masked_array(data, mask=numpy.isnan(data))
         self.assertTrue((block.as_numpy() == expected_masked_array).all())
+        self.assertTrue(numpy.ma.isMaskedArray(block.as_numpy()))
+        self.assertTrue(block.as_numpy().fill_value == -999)
 
         # test with noDataValue set and use_masking == False
         self.assertTrue((block.as_numpy(use_masking=False) == expected_array).all())
