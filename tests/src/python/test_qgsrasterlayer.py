@@ -18,6 +18,7 @@ import os
 from shutil import copyfile
 
 import numpy as np
+import numpy.ma
 from osgeo import gdal
 from qgis.PyQt.QtCore import QFileInfo, QSize, QTemporaryDir
 from qgis.PyQt.QtGui import QColor, QResizeEvent
@@ -1267,13 +1268,13 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
     def test_as_numpy(self):
         layer = QgsRasterLayer(self.rpath, 'raster')
         arrays = layer.as_numpy()
-        self.assertEqual(type(arrays[5]), np.ndarray)
+        self.assertTrue(numpy.ma.isMaskedArray(arrays[0]))
         self.assertEqual(arrays.shape, (9, 200, 200))
         self.assertEqual(arrays[0].dtype, np.int8)
 
         # test with bands parameter
         arrays = layer.as_numpy(bands=[1, 3])
-        self.assertEqual(type(arrays[0]), np.ndarray)
+        self.assertTrue(numpy.ma.isMaskedArray(arrays[0]))
         self.assertEqual(arrays.shape, (2, 200, 200))
         self.assertEqual(arrays[0].dtype, np.int8)
 
@@ -1281,7 +1282,7 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
                             'rgb_with_mask.tif')
         layer = QgsRasterLayer(path, QFileInfo(path).baseName())
         arrays = layer.as_numpy()
-        self.assertEqual(type(arrays[0]), np.ndarray)
+        self.assertTrue(numpy.ma.isMaskedArray(arrays[0]))
         self.assertEqual(arrays.shape, (4, 150, 162))
         self.assertEqual(arrays[0].dtype, np.int8)
 
@@ -1289,7 +1290,7 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
                             'rnd_percentile_raster5_float64.tif')
         layer = QgsRasterLayer(path, QFileInfo(path).baseName())
         arrays = layer.as_numpy()
-        self.assertEqual(type(arrays[0]), np.ndarray)  # All maskedArrays are converted to numpy.array
+        self.assertTrue(numpy.ma.isMaskedArray(arrays[0]))
         self.assertEqual(arrays.shape, (1, 4, 4))
         self.assertEqual(arrays[0].dtype, np.float64)
 
