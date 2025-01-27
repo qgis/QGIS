@@ -100,7 +100,7 @@ class TestQgsWmsCapabilities : public QObject
     {
       QgsWmsSettings settings = QgsWmsSettings();
 
-      QMap<QString, QString> map = { { "2020-02-13T12:00:00Z", "yyyy-MM-ddThh:mm:ssZ" }, { "2020-02-13", "yyyy-MM-dd" } };
+      QMap<QString, QString> map = { { "2020-02-13T12:00:00Z", "yyyy-MM-ddThh:mm:ssZ" }, { "2020-02-13", "yyyy-MM-dd" }, { "2020", "yyyy" } };
       QMapIterator<QString, QString> iterator( map );
 
       while ( iterator.hasNext() )
