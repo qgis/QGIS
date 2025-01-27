@@ -32,6 +32,7 @@ from qgis.core import (
 from qgis.analysis import (
     QgsInterpolator,
     QgsIDWInterpolator,
+    QgsTinInterpolator,
     QgsGridFileWriter,
 )
 
@@ -88,6 +89,50 @@ class TestInterpolation(QgisTestCase):
         self.report += checker.report()
 
         report_file = os.path.join(tempfile.gettempdir(), "idw_interpolation_test.html")
+        with open(report_file, "w", encoding="utf-8") as f:
+            f.write(self.report)
+
+        self.assertTrue(ok)
+
+    def test_tin_interpolator(self):
+        layer = QgsVectorLayer(
+            os.path.join(TEST_DATA_DIR, "points.shp"), "points", "ogr"
+        )
+        self.assertTrue(layer.isValid())
+
+        pixel_size = 5
+        extent = layer.extent()
+        context = QgsCoordinateTransformContext()
+
+        cols = max(math.ceil(extent.width() / pixel_size), 1)
+        rows = max(math.ceil(extent.height() / pixel_size), 1)
+
+        data = QgsInterpolator.LayerData()
+        data.source = layer
+        data.sourceType = QgsInterpolator.SourceType.SourcePoints
+        data.transformContext = context
+        data.valueSource = QgsInterpolator.ValueSource.ValueAttribute
+        data.interpolationAttribute = 3
+
+        interpolator = QgsTinInterpolator(
+            [data], QgsTinInterpolator.TinInterpolation.Linear
+        )
+
+        output_file = os.path.join(tempfile.gettempdir(), "tin_interpolation.asc")
+
+        writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
+        writer.writeFile()
+
+        checker = QgsRasterChecker()
+        ok = checker.runTest(
+            "gdal",
+            output_file,
+            "gdal",
+            os.path.join(TEST_DATA_DIR, "analysis", "tin_interpolation.asc"),
+        )
+        self.report += checker.report()
+
+        report_file = os.path.join(tempfile.gettempdir(), "tin_interpolation_test.html")
         with open(report_file, "w", encoding="utf-8") as f:
             f.write(self.report)
 
