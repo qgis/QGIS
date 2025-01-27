@@ -12306,6 +12306,20 @@ void QgisApp::loadPythonSupport()
   {
     QgsCrashHandler::sPythonCrashLogFile = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 ) + "/qgis-python-crash-info-" + QString::number( QCoreApplication::applicationPid() );
     mPythonUtils->initPython( mQgisInterface, true, QgsCrashHandler::sPythonCrashLogFile );
+
+    // do not permit calls to initQgis, exitQgis from Python when running within the QGIS application -- this will crash!
+    mPythonUtils->runString( QStringLiteral( "from qgis.core import QgsApplication as _QgsApplication\n"
+                                             "\n"
+                                             "def _qgis_app_init_qgis():\n"
+                                             "  raise RuntimeError('QgsApplication.initQgis() must never be called from within the QGIS application. This method is exclusively for standalone scripts.')\n"
+                                             "\n"
+                                             "_QgsApplication.initQgis = _qgis_app_init_qgis\n"
+                                             "\n"
+                                             "def _qgis_app_exit_qgis():\n"
+                                             "  raise RuntimeError('QgsApplication.exitQgis() must never be called from within the QGIS application. This method is exclusively for standalone scripts.')\n"
+                                             "\n"
+                                             "_QgsApplication.exitQgis = _qgis_app_exit_qgis\n" ),
+                             QString(), false );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
