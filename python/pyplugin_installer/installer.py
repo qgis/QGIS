@@ -605,7 +605,7 @@ class QgsPluginInstaller(QObject):
             reposName = reposName + "(2)"
         # add to settings
         settings.setValue(reposName + "/url", reposURL)
-        settings.setValue(reposName + "/authcfg", dlg.editAuthCfg.text().strip())
+        settings.setValue(reposName + "/authcfg", dlg.configId().strip())
         settings.setValue(
             reposName + "/enabled", bool(dlg.checkBoxEnabled.checkState())
         )
@@ -622,7 +622,7 @@ class QgsPluginInstaller(QObject):
         dlg = QgsPluginInstallerRepositoryDialog(iface.mainWindow())
         dlg.editName.setText(reposName)
         dlg.editURL.setText(repositories.all()[reposName]["url"])
-        dlg.editAuthCfg.setText(repositories.all()[reposName]["authcfg"])
+        dlg.editAuthCfgWgt.setConfigId(repositories.all()[reposName]["authcfg"])
         dlg.editParams.setText(repositories.urlParams())
         dlg.checkBoxEnabled.setCheckState(
             checkState[repositories.all()[reposName]["enabled"]]
@@ -658,10 +658,15 @@ class QgsPluginInstaller(QObject):
         if newName in repositories.all() and newName != reposName:
             newName = newName + "(2)"
         settings.setValue(newName + "/url", dlg.editURL.text().strip())
-        settings.setValue(newName + "/authcfg", dlg.editAuthCfg.text().strip())
+        settings.setValue(newName + "/authcfg", dlg.configId().strip())
         settings.setValue(newName + "/enabled", bool(dlg.checkBoxEnabled.checkState()))
-        if dlg.editAuthCfg.text().strip() != repositories.all()[reposName]["authcfg"]:
-            repositories.all()[reposName]["authcfg"] = dlg.editAuthCfg.text().strip()
+        if (
+            dlg.editAuthCfgWgt.configId().strip()
+            != repositories.all()[reposName]["authcfg"]
+        ):
+            repositories.all()[reposName][
+                "authcfg"
+            ] = dlg.editAuthCfgWgt.configId().strip()
         if (
             dlg.editURL.text().strip() == repositories.all()[reposName]["url"]
             and dlg.checkBoxEnabled.checkState()
