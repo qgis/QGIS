@@ -406,8 +406,6 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
     if ( !index.isValid() || index.column() != 0 )
       continue;
 
-    // we use a clone of the existing rule because it has a new unique rule key
-    // non-unique rule keys would confuse other components using them (e.g. legend)
     QgsDiagramRenderer *diagram = mRenderers.at( index.row() );
     if ( diagram )
     {
