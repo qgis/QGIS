@@ -45,6 +45,7 @@
 #include <Qt3DRender/QRenderSettings>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <qframeaction.h>
 
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
@@ -58,6 +59,17 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 // declared here as Qgs3DTypes has no cpp file
 const char *Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG = "PROP_NAME_3D_RENDERER_FLAG";
 
+static void waitForFrame( Qgs3DMapScene *scene )
+{
+  // Wait for at least one frame to render
+  Qt3DLogic::QFrameAction *frameAction = new Qt3DLogic::QFrameAction();
+  scene->addComponent( frameAction );
+  QEventLoop evLoop;
+  QObject::connect( frameAction, &Qt3DLogic::QFrameAction::triggered, &evLoop, &QEventLoop::quit );
+  evLoop.exec();
+  scene->removeComponent( frameAction );
+}
+
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
 {
   QImage resImage;
@@ -66,13 +78,7 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
   engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
-  auto requestImageFcn = [&engine, scene] {
-    if ( scene->sceneState() == Qgs3DMapScene::Ready )
-    {
-      engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
-      engine.requestCaptureImage();
-    }
-  };
+  waitForFrame( scene );
 
   auto saveImageFcn = [&evLoop, &resImage]( const QImage &img ) {
     resImage = img;
@@ -81,6 +87,14 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
 
   const QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, saveImageFcn );
   QMetaObject::Connection conn2;
+
+  auto requestImageFcn = [&engine, scene] {
+    if ( scene->sceneState() == Qgs3DMapScene::Ready )
+    {
+      engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
+      engine.requestCaptureImage();
+    }
+  };
 
   if ( scene->sceneState() == Qgs3DMapScene::Ready )
   {
@@ -109,6 +123,8 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
 
   // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
   engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
+
+  waitForFrame( scene );
 
   auto requestImageFcn = [&engine, scene] {
     if ( scene->sceneState() == Qgs3DMapScene::Ready )
