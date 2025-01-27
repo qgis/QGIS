@@ -134,7 +134,7 @@ QgsVectorLayer *QgsSpatiaLiteProviderConnection::createSqlVectorLayer( const Qgs
   QgsDataSourceUri tUri( uri() );
 
   tUri.setSql( options.filter );
-  tUri.setTable( '(' + options.sql + ')' );
+  tUri.setTable( '(' + sanitizeSqlForQueryLayer( options.sql ) + ')' );
 
   if ( !options.geometryColumn.isEmpty() )
   {

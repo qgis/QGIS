@@ -783,6 +783,14 @@ class TestPyQgsProviderConnectionBase:
         self.assertEqual(vl.name(), options.layerName)
         self.assertEqual(vl.sourceCrs().authid(), crs)
 
+        # Test issue https://github.com/qgis/QGIS/issues/56993
+        options.sql += ";;;"
+        vl2 = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl2.isValid())
+        self.assertTrue(vl2.isSqlQuery())
+        self.assertTrue(vl2.isSpatial())
+        del vl2
+
         # Test that a database connection can be retrieved from an existing layer
         vlconn = QgsMapLayerUtils.databaseConnection(vl)
         self.assertIsNotNone(vlconn)
