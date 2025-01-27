@@ -62,7 +62,6 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
 
   mModel = new QgsStackedDiagramPropertiesModel();
   mSubDiagramsView->setModel( mModel );
-  mSubDiagramsView->resizeColumnToContents( 0 );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::widgetChanged );
@@ -376,7 +375,7 @@ Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index 
   const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
   // allow drop only at first column
-  const Qt::ItemFlag drop = ( index.column() < 2 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
+  const Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | drop | checkable;
 }
@@ -435,7 +434,7 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
   if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
     return false;
 
-  if ( parent.column() > 1 )
+  if ( parent.column() > 0 )
     return false;
 
   QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
@@ -499,7 +498,7 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
   {
     switch ( index.column() )
     {
-      case 1:
+      case 0:
         if ( dr && dr->diagram() )
         {
           if ( dr->diagram()->diagramName() == QgsPieDiagram::DIAGRAM_NAME_PIE )
@@ -531,7 +530,7 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
         {
           return tr( "(no diagram)" );
         }
-      case 2:
+      case 1:
         if ( !dr )
         {
           return tr( "(no renderer)" );
@@ -545,7 +544,7 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
           else
             return tr( "Unknown" );
         }
-      case 3:
+      case 2:
         if ( dr && dr->diagram() && !dr->diagramSettings().isEmpty() )
         {
           if ( QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM == dr->diagram()->diagramName() || QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR == dr->diagram()->diagramName() )
@@ -564,14 +563,9 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
           }
         }
         return QVariant();
-      case 0:
       default:
         return QVariant();
     }
-  }
-  else if ( role == Qt::TextAlignmentRole )
-  {
-    return index.column() == 0 ? static_cast<Qt::Alignment::Int>( Qt::AlignCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
   }
   else if ( role == Qt::CheckStateRole )
   {
@@ -588,10 +582,10 @@ QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int r
 
 QVariant QgsStackedDiagramPropertiesModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 4 )
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
   {
     QStringList lst;
-    lst << tr( "Enabled" ) << tr( "Diagram type" ) << tr( "Size" ) << tr( "Orientation" );
+    lst << tr( "Diagram type" ) << tr( "Size" ) << tr( "Orientation" );
     return lst[section];
   }
 
@@ -605,7 +599,7 @@ int QgsStackedDiagramPropertiesModel::rowCount( const QModelIndex & ) const
 
 int QgsStackedDiagramPropertiesModel::columnCount( const QModelIndex & ) const
 {
-  return 4;
+  return 3;
 }
 
 bool QgsStackedDiagramPropertiesModel::setData( const QModelIndex &index, const QVariant &value, int role )
