@@ -404,6 +404,7 @@ ADD_PYTHON_TEST(PyQgsAttributeEditorAction test_qgsattributeeditoraction.py)
 ADD_PYTHON_TEST(PyQgsVectorTile test_qgsvectortile.py)
 ADD_PYTHON_TEST(PyQgsVtpk test_qgsvtpk.py)
 ADD_PYTHON_TEST(PyQgsProcessingAlgsGdalGdalUtils test_processing_algs_gdal_gdalutils.py)
+ADD_PYTHON_TEST(PyQgsInterpolation test_analysis_interpolation.py)
 
 if (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)
