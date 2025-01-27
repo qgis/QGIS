@@ -19,7 +19,7 @@ SRC_DIR=${1:-${SCRIPT_DIR}/../src}
 LOG_FILE=/tmp/cppcheck_qgis.txt
 
 rm -f ${LOG_FILE}
-echo "Checking ${SCRIPT_DIR}/${SRC_DIR} ..."
+echo "Checking ${SRC_DIR} ..."
 
 # qgsgcptransformer.cpp causes an effective hang on newer cppcheck!
 
