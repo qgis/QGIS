@@ -34,13 +34,6 @@ window for the user.
 
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
                             const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() );
-%Docstring
-Adds a ``message`` to the log instance (and creates it if necessary).
-
-If ``notifyUser`` is ``True``, then the message should be brought to the user's attention by various UI hints.
-If it is ``False``, the message should appear in logs silently. Note that log viewer implementations may
-only respect notification hints for certain message levels.
-%End
 
   signals:
 
