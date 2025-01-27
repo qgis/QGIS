@@ -86,6 +86,7 @@ class TestQgsCopcProvider : public QgsTest
     void testStatsCalculator();
     void testSaveLoadStats();
     void testPointCloudRequest();
+    void testPointCloudRequestIgnoreFilter();
     void testQgsRangeRequestCache();
 };
 
@@ -1219,5 +1220,54 @@ void TestQgsCopcProvider::testPointCloudRequest()
   }
   QCOMPARE( count, layer->pointCount() );
 }
+
+void TestQgsCopcProvider::testPointCloudRequestIgnoreFilter()
+{
+  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
+
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  QVERIFY( layer->isValid() );
+
+  layer->setSubsetString( QStringLiteral( "Intensity < 1000" ) );
+  QgsPointCloudIndex index = layer->dataProvider()->index();
+  QVERIFY( index.isValid() );
+
+  QVector<QgsPointCloudNodeId> nodes;
+  QQueue<QgsPointCloudNodeId> queue;
+  queue.push_back( index.root() );
+  while ( !queue.empty() )
+  {
+    QgsPointCloudNodeId node = queue.front();
+    queue.pop_front();
+    nodes.push_back( node );
+
+    for ( const QgsPointCloudNodeId &child : index.getNode( node ).children() )
+    {
+      queue.push_back( child );
+    }
+  }
+
+  QgsPointCloudRequest request;
+  request.setAttributes( layer->attributes() );
+  // layer has a filter, point count is reduced
+  int count = 0;
+  for ( QgsPointCloudNodeId node : nodes )
+  {
+    auto block = index.nodeData( node, request );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, 247636 );
+
+  // Now let's repeat the counting but ignore the subset string filter
+  request.setIgnoreIndexFilterEnabled( true );
+  count = 0;
+  for ( QgsPointCloudNodeId node : nodes )
+  {
+    auto block = index.nodeData( node, request );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, layer->pointCount() );
+}
+
 QGSTEST_MAIN( TestQgsCopcProvider )
 #include "testqgscopcprovider.moc"

@@ -34,6 +34,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   const QgsPointCloudAttributeCollection allAttributes = index.attributes();
   QgsPointCloudRequest req;
   req.setAttributes( allAttributes );
+  // we want to iterate all points so we have the correct point indexes within the node
   req.setIgnoreIndexFilterEnabled( true );
   std::unique_ptr<QgsPointCloudBlock> block = index.nodeData( n, req );
   const char *ptr = block->data();
