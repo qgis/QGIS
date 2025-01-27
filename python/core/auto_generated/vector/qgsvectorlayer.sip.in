@@ -502,11 +502,9 @@ Uses :py:class:`QgsExpression`
 :return: The expression which will be used to preview features for this layer
 %End
 
-    virtual bool hasMapTips() const ${SIP_FINAL};
+    bool hasMapTips() const final;
 
-
-    virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
-
+    QgsVectorDataProvider *dataProvider() final;
     virtual QgsMapLayerSelectionProperties *selectionProperties();
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
@@ -560,8 +558,7 @@ Returns the join buffer object.
 
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 
-    virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) ${SIP_FINAL};
-
+    bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) final;
 %Docstring
 Sets the list of dependencies.
 
@@ -572,8 +569,7 @@ Sets the list of dependencies.
 :return: ``False`` if a dependency cycle has been detected
 %End
 
-    virtual QSet<QgsMapLayerDependency> dependencies() const ${SIP_FINAL};
-
+    QSet<QgsMapLayerDependency> dependencies() const final;
 %Docstring
 Gets the list of dependencies. This includes data dependencies set by the user (:py:func:`setDataDependencies`)
 as well as dependencies given by the provider
@@ -861,19 +857,15 @@ Returns a list of the feature renderer generators owned by the layer.
 Returns point, line or polygon
 %End
 
-    virtual Qgis::WkbType wkbType() const ${SIP_FINAL};
-
+    Qgis::WkbType wkbType() const final;
 %Docstring
 Returns the WKBType or WKBUnknown in case of error
 %End
 
-    virtual QgsCoordinateReferenceSystem sourceCrs() const ${SIP_FINAL};
+    QgsCoordinateReferenceSystem sourceCrs() const final;
+    QString sourceName() const final;
 
-    virtual QString sourceName() const ${SIP_FINAL};
-
-
-    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) ${SIP_FINAL};
-
+    bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) final;
 %Docstring
 Reads vector layer specific state from project file Dom node.
 
@@ -882,8 +874,7 @@ Reads vector layer specific state from project file Dom node.
    Called by :py:func:`QgsMapLayer.readXml()`.
 %End
 
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const ${SIP_FINAL};
-
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const final;
 %Docstring
 Writes vector layer specific state to project file Dom node.
 
@@ -892,13 +883,10 @@ Writes vector layer specific state to project file Dom node.
    Called by :py:func:`QgsMapLayer.writeXml()`.
 %End
 
-    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const ${SIP_FINAL};
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const final;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const final;
 
-    virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const ${SIP_FINAL};
-
-
-    virtual void resolveReferences( QgsProject *project ) ${SIP_FINAL};
-
+    void resolveReferences( QgsProject *project ) final;
 %Docstring
 Resolves references to other layers (kept as layer IDs after reading XML) into layer objects.
 %End
@@ -930,14 +918,14 @@ Returns the current auxiliary layer.
 %End
 
 
-     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
-                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) ${SIP_FINAL};
-     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
-                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) ${SIP_FINAL};
-     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
-     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const ${SIP_FINAL};
+    bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) final;
+    bool readStyle( const QDomNode &node, QString &errorMessage,
+                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) final;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const final;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const final;
 
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
@@ -951,8 +939,7 @@ Writes the symbology of the layer into the document provided in SLD 1.1 format
 :return: ``True`` in case of success
 %End
 
-    virtual bool readSld( const QDomNode &node, QString &errorMessage ) ${SIP_FINAL};
-
+    bool readSld( const QDomNode &node, QString &errorMessage ) final;
 
     long long featureCount( const QString &legendKey ) const;
 %Docstring
@@ -972,8 +959,7 @@ calculated by :py:func:`~QgsVectorLayer.countSymbolFeatures`
 .. versionadded:: 3.10
 %End
 
-    virtual Qgis::FeatureAvailability hasFeatures() const ${SIP_FINAL};
-
+    Qgis::FeatureAvailability hasFeatures() const final;
 %Docstring
 Determines if this vector layer has features.
 
@@ -987,8 +973,7 @@ Determines if this vector layer has features.
 .. versionadded:: 3.4
 %End
 
-    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
-
+    QString loadDefaultStyle( bool &resultFlag /Out/ ) final;
 
     QgsVectorLayerFeatureCounter *countSymbolFeatures( bool storeSymbolFids = false );
 %Docstring
@@ -1024,8 +1009,7 @@ Returns the string (typically sql) used to define a subset of the layer.
 :return: The subset string or null QString if not implemented by the provider
 %End
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const ${SIP_FINAL};
-
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const final;
 %Docstring
 Queries the layer for features specified in request.
 
@@ -1061,8 +1045,7 @@ Queries the layer for the features with the given ids.
 Queries the layer for the features which intersect the specified rectangle.
 %End
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) ${SIP_FINAL};
-
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) final;
 
     bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
@@ -1652,14 +1635,12 @@ Access to labeling configuration. May be ``None`` if labeling is not used.
 Sets labeling configuration. Takes ownership of the object.
 %End
 
-    virtual bool isEditable() const ${SIP_FINAL};
-
+    bool isEditable() const final;
 %Docstring
 Returns ``True`` if the provider is in editing mode
 %End
 
-    virtual bool isSpatial() const ${SIP_FINAL};
-
+    bool isSpatial() const final;
 %Docstring
 Returns ``True`` if this is a geometry layer and ``False`` in case of NoGeometry (table only) or UnknownGeometry
 %End
@@ -1676,30 +1657,23 @@ Returns ``True`` if the field comes from the auxiliary layer,
 ``False`` otherwise.
 %End
 
-    virtual void reload() ${SIP_FINAL};
-
+    void reload() final;
 %Docstring
 Synchronises with changes in the datasource
 %End
 
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) ${SIP_FINAL} /Factory/;
-
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) final /Factory/;
 %Docstring
 Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for rendering of given context
 %End
 
-    virtual QgsRectangle extent() const ${SIP_FINAL};
+    QgsRectangle extent() const final;
+    QgsRectangle sourceExtent() const final;
 
-    virtual QgsRectangle sourceExtent() const ${SIP_FINAL};
+    QgsBox3D extent3D() const final;
+    QgsBox3D sourceExtent3D() const final;
 
-
-    virtual QgsBox3D extent3D() const ${SIP_FINAL};
-
-    virtual QgsBox3D sourceExtent3D() const ${SIP_FINAL};
-
-
-    virtual QgsFields fields() const ${SIP_FINAL};
-
+    QgsFields fields() const final;
 %Docstring
 Returns the list of fields of this layer.
 This also includes fields which have not yet been saved to the provider.
@@ -1717,8 +1691,7 @@ Returns list of attribute indexes. i.e. a list from 0 ... :py:func:`~QgsVectorLa
 Returns the list of attributes which make up the layer's primary keys.
 %End
 
-    virtual long long featureCount() const ${SIP_FINAL};
-
+    long long featureCount() const final;
 %Docstring
 Returns feature count including changes which have not yet been committed
 If you need only the count of committed features call this method on this layer's provider.
@@ -2010,8 +1983,7 @@ Deletes a list of attribute fields (but does not commit it)
 :return: ``True`` if at least one attribute has been deleted
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) ${SIP_FINAL};
-
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) final;
 
     bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
@@ -2312,8 +2284,7 @@ for the field.
 .. seealso:: :py:func:`setEditorWidgetSetup`
 %End
 
-    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const ${SIP_FINAL};
-
+    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const final;
 %Docstring
 Calculates a list of unique values contained within an attribute in the layer. Note that
 in some circumstances when unsaved changes are present for the layer then the returned list
@@ -2347,8 +2318,7 @@ returned list).
 :return: list of unique strings containing substring
 %End
 
-    virtual QVariant minimumValue( int index ) const ${SIP_FINAL};
-
+    QVariant minimumValue( int index ) const final;
 %Docstring
 Returns the minimum value for an attribute column or an invalid variant in case of error.
 
@@ -2370,8 +2340,7 @@ Returns the minimum value for an attribute column or an invalid variant in case 
 .. seealso:: :py:func:`uniqueValues`
 %End
 
-    virtual QVariant maximumValue( int index ) const ${SIP_FINAL};
-
+    QVariant maximumValue( int index ) const final;
 %Docstring
 Returns the maximum value for an attribute column or an invalid variant in case of error.
 
@@ -2450,8 +2419,7 @@ Sets the blending mode used for rendering each feature
 Returns the current blending mode for features
 %End
 
-    virtual QString htmlMetadata() const ${SIP_FINAL};
-
+    QString htmlMetadata() const final;
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
@@ -2493,11 +2461,9 @@ Sets the attribute table configuration object.
 This defines the appearance of the attribute table.
 %End
 
-    virtual QgsExpressionContext createExpressionContext() const ${SIP_FINAL};
+    QgsExpressionContext createExpressionContext() const final;
 
-
-    virtual QgsExpressionContextScope *createExpressionContextScope() const ${SIP_FINAL} /Factory/;
-
+    QgsExpressionContextScope *createExpressionContextScope() const final /Factory/;
 
     QgsEditFormConfig editFormConfig() const;
 %Docstring
@@ -2916,13 +2882,11 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 %End
 
   protected:
-    virtual void setExtent( const QgsRectangle &rect ) ${SIP_FINAL};
-
+    void setExtent( const QgsRectangle &rect ) final;
 %Docstring
 Sets the extent
 %End
-    virtual void setExtent3D( const QgsBox3D &rect ) ${SIP_FINAL};
-
+    void setExtent3D( const QgsBox3D &rect ) final;
 %Docstring
 Sets the extent
 %End

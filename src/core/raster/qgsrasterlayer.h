@@ -381,8 +381,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     double rasterUnitsPerPixelY() const;
 
-    void setOpacity( double opacity ) FINAL;
-    double opacity() const FINAL;
+    void setOpacity( double opacity ) final;
+    double opacity() const final;
 
     /**
      * \brief Set contrast enhancement algorithm

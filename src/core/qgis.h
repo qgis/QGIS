@@ -6720,10 +6720,6 @@ typedef unsigned long long qgssize;
 #define MAYBE_UNUSED
 #endif
 
-#ifndef FINAL
-#define FINAL final
-#endif
-
 #ifndef SIP_RUN
 #ifdef _MSC_VER
 #define BUILTIN_UNREACHABLE \

@@ -2325,7 +2325,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     QColor color() const override;
 
     QgsSymbol *subSymbol() override;
-    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) FINAL;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) final;
 
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;
@@ -2509,7 +2509,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     void setColor( const QColor &color ) override;
     QColor color() const override;
     QgsSymbol *subSymbol() override;
-    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) FINAL;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) final;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;

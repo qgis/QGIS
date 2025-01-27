@@ -65,9 +65,9 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
-    void syncToLayer() FINAL;
-    void apply() FINAL;
-    void rollback() FINAL;
+    void syncToLayer() final;
+    void apply() final;
+    void rollback() final;
 
   private slots:
 

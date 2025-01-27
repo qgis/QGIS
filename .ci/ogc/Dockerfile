@@ -39,9 +39,9 @@ RUN apt-get update \
   python3-pyqt5.qsci \
   python3-all-dev \
   python3-dev \
-  python3-sip-dev \
   pyqt5-dev-tools \
-  spawn-fcgi
+  spawn-fcgi \
+  sip-tools
 
 ADD qgis_mapserv.sh /root/qgis_mapserv.sh
 CMD ["sh", "/root/qgis_mapserv.sh"]

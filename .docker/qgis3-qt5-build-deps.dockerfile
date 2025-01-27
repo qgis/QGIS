@@ -76,7 +76,6 @@ RUN  apt-get update \
     python3-pyqt5.qtpositioning \
     python3-pyqt5.qtmultimedia \
     python3-pyqt5.qtserialport \
-    python3-sip \
     python3-termcolor \
     python3-yaml \
     qpdf \
@@ -86,6 +85,7 @@ RUN  apt-get update \
     qt3d-scene2d-plugin \
     qt5-image-formats-plugins \
     saga \
+    sip-tools \
     supervisor \
     unzip \
     xauth \
@@ -211,7 +211,7 @@ RUN  apt-get update \
     pyqt5.qsci-dev \
     python3-all-dev \
     python3-dev \
-    python3-sip-dev \
+    python3-pyqtbuild \
     qt3d5-dev \
     qt5keychain-dev \
     qtbase5-dev \

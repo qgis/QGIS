@@ -31,9 +31,9 @@ class APP_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog,
     QgsTiledSceneLayerProperties( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
   protected slots:
-    void syncToLayer() FINAL;
-    void apply() FINAL;
-    void rollback() FINAL;
+    void syncToLayer() final;
+    void apply() final;
+    void rollback() final;
 
   private slots:
     void aboutToShowStyleMenu();

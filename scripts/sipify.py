@@ -2387,9 +2387,6 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     )
     CONTEXT.current_line = re.sub(r"\s*\boverride\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bSIP_MAKE_PRIVATE\b", "", CONTEXT.current_line)
-    CONTEXT.current_line = re.sub(
-        r"\s*\bFINAL\b", " ${SIP_FINAL}", CONTEXT.current_line
-    )
     CONTEXT.current_line = re.sub(r"\s*\bextern \b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bMAYBE_UNUSED \b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bNODISCARD \b", "", CONTEXT.current_line)

@@ -195,7 +195,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QString htmlMetadata() const override;
     bool isEditable() const override;
     bool supportsEditing() const override;
-    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) final;
 
     //! Returns the provider type for this layer
     QString providerType() const;

@@ -144,8 +144,7 @@ Removes the child at the specified ``index``.
 Clears the group, removing all its children.
 %End
 
-    virtual int childCount() const ${SIP_FINAL};
-
+    int childCount() const final;
 
   protected:
 

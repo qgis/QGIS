@@ -169,8 +169,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
-    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
-    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const FINAL;
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const final;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const final;
     QString htmlMetadata() const override;
 
     // new methods

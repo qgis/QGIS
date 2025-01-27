@@ -61,12 +61,9 @@ Saves a style when appriate button is pressed
 %End
 
   protected slots:
-    virtual void syncToLayer() ${SIP_FINAL};
-
-    virtual void apply() ${SIP_FINAL};
-
-    virtual void rollback() ${SIP_FINAL};
-
+    void syncToLayer() final;
+    void apply() final;
+    void rollback() final;
 
 };
 

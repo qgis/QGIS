@@ -26,12 +26,9 @@ class QgsVectorLayerProperties : QgsLayerPropertiesDialog
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
-    virtual void syncToLayer() ${SIP_FINAL};
-
-    virtual void apply() ${SIP_FINAL};
-
-    virtual void rollback() ${SIP_FINAL};
-
+    void syncToLayer() final;
+    void apply() final;
+    void rollback() final;
 
   signals:
 

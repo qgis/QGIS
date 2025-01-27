@@ -75,9 +75,9 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     Q_DECL_DEPRECATED void saveStyleAs() SIP_DEPRECATED;
 
   protected slots:
-    void syncToLayer() FINAL;
-    void apply() FINAL;
-    void rollback() FINAL;
+    void syncToLayer() final;
+    void apply() final;
+    void rollback() final;
 
   private slots:
 

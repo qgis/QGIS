@@ -476,8 +476,7 @@ priority over earlier collections.
 Returns the number of collections contained within the stack.
 %End
 
-    virtual void clear() ${SIP_FINAL};
-
+    void clear() final;
 %Docstring
 Removes all collections from the stack.
 %End

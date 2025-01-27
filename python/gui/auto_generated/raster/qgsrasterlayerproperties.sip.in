@@ -34,8 +34,7 @@ Constructor
 :param fl: windows flag
 %End
 
-    virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) ${SIP_FINAL};
-
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory ) final;
 
     virtual QgsExpressionContext createExpressionContext() const;
 
@@ -53,12 +52,9 @@ Saves the default style when appropriate button is pressed
 %End
 
   protected slots:
-    virtual void optionsStackedWidget_CurrentChanged( int index ) ${SIP_FINAL};
-
-    virtual void apply() ${SIP_FINAL};
-
-    virtual void rollback() ${SIP_FINAL};
-
+    void optionsStackedWidget_CurrentChanged( int index ) final;
+    void apply() final;
+    void rollback() final;
 
 };
 /************************************************************************

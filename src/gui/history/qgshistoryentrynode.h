@@ -168,7 +168,7 @@ class GUI_EXPORT QgsHistoryEntryGroup : public QgsHistoryEntryNode
      */
     void clear();
 
-    int childCount() const FINAL;
+    int childCount() const final;
 
   protected:
     std::deque<std::unique_ptr<QgsHistoryEntryNode>> mChildren SIP_SKIP;

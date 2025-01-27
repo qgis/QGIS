@@ -137,10 +137,8 @@ Ownership of the ``subLayers`` is transferrred to the caller.
     virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
 
 
-    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const ${SIP_FINAL};
-
-    virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const ${SIP_FINAL};
-
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const final;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const final;
     virtual QString htmlMetadata() const;
 
 

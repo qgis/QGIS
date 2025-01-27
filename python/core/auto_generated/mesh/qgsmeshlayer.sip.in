@@ -160,8 +160,7 @@ data.
 
     virtual bool supportsEditing() const;
 
-    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
-
+    QString loadDefaultStyle( bool &resultFlag /Out/ ) final;
 
     QString providerType() const;
 %Docstring
