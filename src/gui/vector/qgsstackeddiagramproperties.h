@@ -62,8 +62,13 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
-    // new methods
+    // drag'n'drop support
+    Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
+    // new methods
     //! Returns the diagram renderer at the specified index. Does not transfer ownership.
     QgsDiagramRenderer *subDiagramForIndex( const QModelIndex &index ) const;
 
