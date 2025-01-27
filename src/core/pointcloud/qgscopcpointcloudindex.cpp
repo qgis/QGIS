@@ -221,7 +221,7 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object might be concurrently
   // used on another thread, for example in a 3d view
-  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
   auto [ blockOffset, blockSize ] = mHierarchyNodePos.value( n );

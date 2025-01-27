@@ -79,6 +79,7 @@ class TestQgsEptProvider : public QgsTest
     void testExtraBytesAttributesValues();
     void testPointCloudIndex();
     void testPointCloudRequest();
+    void testPointCloudRequestIgnoreFilter();
     void testStatsCalculator();
 };
 
@@ -742,6 +743,54 @@ void TestQgsEptProvider::testPointCloudRequest()
   for ( QgsPointCloudNodeId node : nodes )
   {
     std::unique_ptr<QgsPointCloudBlock> block( index.nodeData( node, request ) );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, layer->pointCount() );
+}
+
+void TestQgsEptProvider::testPointCloudRequestIgnoreFilter()
+{
+  const QString path = copyTestDataDirectory( QStringLiteral( "point_clouds/ept/lone-star-laszip" ) );
+
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( path + QStringLiteral( "/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( layer->isValid() );
+
+  layer->setSubsetString( QStringLiteral( "Intensity < 1000" ) );
+  QgsPointCloudIndex index = layer->dataProvider()->index();
+  QVERIFY( index.isValid() );
+
+  QVector<QgsPointCloudNodeId> nodes;
+  QQueue<QgsPointCloudNodeId> queue;
+  queue.push_back( index.root() );
+  while ( !queue.empty() )
+  {
+    QgsPointCloudNodeId node = queue.front();
+    queue.pop_front();
+    nodes.push_back( node );
+
+    for ( const QgsPointCloudNodeId &child : index.getNode( node ).children() )
+    {
+      queue.push_back( child );
+    }
+  }
+
+  QgsPointCloudRequest request;
+  request.setAttributes( layer->attributes() );
+  // layer has a filter, point count is reduced
+  int count = 0;
+  for ( QgsPointCloudNodeId node : nodes )
+  {
+    auto block = index.nodeData( node, request );
+    count += block->pointCount();
+  }
+  QCOMPARE( count, 247636 );
+
+  // Now let's repeat the counting but ignore the subset string filter
+  request.setIgnoreIndexFilterEnabled( true );
+  count = 0;
+  for ( QgsPointCloudNodeId node : nodes )
+  {
+    auto block = index.nodeData( node, request );
     count += block->pointCount();
   }
   QCOMPARE( count, layer->pointCount() );

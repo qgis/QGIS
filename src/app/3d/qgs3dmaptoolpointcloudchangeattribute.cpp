@@ -258,6 +258,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
+  // we want to iterate all points so we have the correct point indexes within the node
   request.setIgnoreIndexFilterEnabled( true );
 
   // TODO: reuse cached block(s) if possible

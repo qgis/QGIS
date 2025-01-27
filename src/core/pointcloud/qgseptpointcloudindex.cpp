@@ -398,7 +398,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPo
     // we need to create a copy of the expression to pass to the decoder
     // as the same QgsPointCloudExpression object mighgt be concurrently
     // used on another thread, for example in a 3d view
-    QgsPointCloudExpression filterExpression = mFilterExpression;
+    QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
     QgsPointCloudAttributeCollection requestAttributes = request.attributes();
     requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
     QgsRectangle filterRect = request.filterRect();
@@ -459,7 +459,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object might be concurrently
   // used on another thread, for example in a 3d view
-  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
   return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect() );
