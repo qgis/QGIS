@@ -322,7 +322,7 @@ class PythonConsoleWidget(QWidget):
         self.toggleCommentEditorButton.setIcon(
             QgsApplication.getThemeIcon(
                 "console/iconCommentEditorConsole.svg",
-                self.palette().color(QPalette.WindowText),
+                self.palette().color(QPalette.ColorRole.WindowText),
             ),
         )
         self.toggleCommentEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
