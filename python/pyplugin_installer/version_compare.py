@@ -49,7 +49,7 @@ ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 from qgis.core import Qgis
 
 import re
-
+from packaging.version import Version, InvalidVersion
 
 # ------------------------------------------------------------------------ #
 
@@ -80,106 +80,30 @@ def normalizeVersion(s):
 
 
 # ------------------------------------------------------------------------ #
-def classifyCharacter(c):
-    """return 0 for delimiter, 1 for digit and 2 for alphabetic character"""
-    if c in [".", "-", "_", " "]:
-        return 0
-    if c.isdigit():
-        return 1
-    else:
-        return 2
-
-
-# ------------------------------------------------------------------------ #
-def chopString(s):
-    """convert string to list of numbers and words"""
-    l = [s[0]]
-    for i in range(1, len(s)):
-        if classifyCharacter(s[i]) == 0:
-            pass
-        elif classifyCharacter(s[i]) == classifyCharacter(s[i - 1]):
-            l[len(l) - 1] += s[i]
-        else:
-            l += [s[i]]
-    return l
-
-
-# ------------------------------------------------------------------------ #
-def compareElements(s1, s2):
-    """compare two particular elements"""
-    # check if the matter is easy solvable:
-    if s1 == s2:
-        return 0
-    # try to compare as numeric values (but only if the first character is not 0):
-    if (
-        s1
-        and s2
-        and s1.isnumeric()
-        and s2.isnumeric()
-        and s1[0] != "0"
-        and s2[0] != "0"
-    ):
-        if float(s1) == float(s2):
-            return 0
-        elif float(s1) > float(s2):
-            return 1
-        else:
-            return 2
-
-    # if the strings aren't numeric or start from 0, compare them as a strings:
-    # but first, set ALPHA < BETA < PREVIEW < RC < TRUNK < [NOTHING] < [ANYTHING_ELSE] < POST < DEV
-    pre = ["A", "ALPHA", "B", "BETA", "PREV", "PREVIEW", "RC", "TRUNK"]
-    post = ["POST", "DEV"]
-
-    if s1 in pre:  # make it inferior to anything
-        s1 = chr(0) + str(pre.index(s1.replace("ALPHA", "A").replace("BETA", "B")))
-    elif s1 in post:  # make it posterior to anything
-        s1 = chr(0x10FFFF) + str(post.index(s1))
-
-    if s2 in pre:  # make it inferior to anything
-        s2 = chr(0) + str(pre.index(s2.replace("ALPHA", "A").replace("BETA", "B")))
-    elif s2 in post:  # make it posterior to anything
-        s2 = chr(0x10FFFF) + str(post.index(s2))
-
-    # the final test:
-    if s1 > s2:
-        return 1
-    elif s1 < s2:
-        return 2
-    else:
-        return 0
-
-
-# ------------------------------------------------------------------------ #
 def compareVersions(a, b):
     """Compare two version numbers. Return 0 if a==b or error, 1 if a>b and 2 if b>a"""
     if not a or not b:
         return 0
     a = normalizeVersion(a)
     b = normalizeVersion(b)
-    if a == b:
-        return 0
-    # convert the strings to lists
-    v1 = chopString(a)
-    v2 = chopString(b)
-    # set the shorter string as a base
-    l1, l2 = len(v1), len(v2)
-    l = min(l1, l2)
-    # try to determine within the common length
-    for i in range(l):
-        if return_code := compareElements(v1[i], v2[i]):
-            return return_code
-    # if the lists are identical till the end of the shorter string, try to compare the odd tail
-    # element-wise padding with "0"
-    if l1 > l:
-        for i in range(l, l1):
-            if return_code := compareElements(v1[i], "0"):
-                return return_code
-    elif l2 > l:
-        for i in range(l, l2):
-            if return_code := compareElements("0", v2[i]):
-                return return_code
-    return 0
+
+    try:
+        # PEP 440 comparison
+        va, vb = Version(a), Version(b)
+        if va < vb:
+            return 2
+        elif va > vb:
+            return 1
+        else:
+            return 0
+    except InvalidVersion:
+        # blunt str comparison
+        if a < b:
+            return 2
+        elif a > b:
+            return 1
+        else:
+            return 0
 
 
 """
