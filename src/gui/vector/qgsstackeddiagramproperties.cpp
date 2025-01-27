@@ -30,6 +30,8 @@
 #include "qgsvectorlayer.h"
 #include "qgshelp.h"
 
+#include <QMimeData>
+
 QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas )
   : QgsPanelWidget( parent )
   , mLayer( layer )
@@ -373,7 +375,117 @@ Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index 
 {
   const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | checkable;
+  // allow drop only at first column
+  const Qt::ItemFlag drop = ( index.column() < 2 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
+
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | drop | checkable;
+}
+
+Qt::DropActions QgsStackedDiagramPropertiesModel::supportedDropActions() const
+{
+  return Qt::MoveAction; // | Qt::CopyAction
+}
+
+QStringList QgsStackedDiagramPropertiesModel::mimeTypes() const
+{
+  QStringList types;
+  types << QStringLiteral( "application/vnd.text.list" );
+  return types;
+}
+
+QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &indexes ) const
+{
+  QMimeData *mimeData = new QMimeData();
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
+  {
+    // each item consists of several columns - let's add it with just first one
+    if ( !index.isValid() || index.column() != 0 )
+      continue;
+
+    // we use a clone of the existing rule because it has a new unique rule key
+    // non-unique rule keys would confuse other components using them (e.g. legend)
+    QgsDiagramRenderer *diagram = mRenderers.at( index.row() );
+    if ( diagram )
+    {
+      QDomDocument doc;
+
+      QDomElement rootElem = doc.createElement( QStringLiteral( "diagram_mime" ) );
+      diagram->writeXml( rootElem, doc, QgsReadWriteContext() );
+      doc.appendChild( rootElem );
+      stream << doc.toString( -1 );
+    }
+  }
+
+  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
+  return mimeData;
+}
+
+bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+{
+  Q_UNUSED( column )
+
+  if ( action == Qt::IgnoreAction )
+    return true;
+
+  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
+    return false;
+
+  if ( parent.column() > 1 )
+    return false;
+
+  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
+  QDataStream stream( &encodedData, QIODevice::ReadOnly );
+  int rows = 0;
+
+  if ( row == -1 )
+  {
+    // the item was dropped at a parent - we may decide where to put the items - let's append them
+    row = rowCount( parent );
+  }
+
+  while ( !stream.atEnd() )
+  {
+    QString text;
+    stream >> text;
+
+    QDomDocument doc;
+    if ( !doc.setContent( text ) )
+      continue;
+    const QDomElement rootElem = doc.documentElement();
+    if ( rootElem.tagName() != QLatin1String( "diagram_mime" ) || !rootElem.hasChildNodes() )
+      continue;
+    const QDomElement childElem = rootElem.firstChild().toElement();
+
+    QgsDiagramRenderer *diagram = nullptr;
+    if ( childElem.nodeName() == QLatin1String( "SingleCategoryDiagramRenderer" ) )
+    {
+      diagram = new QgsSingleCategoryDiagramRenderer();
+      diagram->readXml( childElem, QgsReadWriteContext() );
+    }
+    else if ( childElem.nodeName() == QLatin1String( "LinearlyInterpolatedDiagramRenderer" ) )
+    {
+      diagram = new QgsLinearlyInterpolatedDiagramRenderer();
+      diagram->readXml( childElem, QgsReadWriteContext() );
+    }
+    else if ( childElem.nodeName() == QLatin1String( "StackedDiagramRenderer" ) )
+    {
+      diagram = new QgsStackedDiagramRenderer();
+      diagram->readXml( childElem, QgsReadWriteContext() );
+    }
+
+    if ( diagram )
+    {
+      insertSubDiagram( row + rows, diagram );
+      rows++;
+    }
+  }
+
+  return true;
 }
 
 QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int role ) const
