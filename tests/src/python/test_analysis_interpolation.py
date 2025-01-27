@@ -74,7 +74,7 @@ class TestInterpolation(QgisTestCase):
         interpolator = QgsIDWInterpolator([data])
         interpolator.setDistanceCoefficient(2.0)
 
-        output_file = os.path.join(tempfile.gettempdir(), "idw_interpolation.asc")
+        output_file = os.path.join(tempfile.gettempdir(), "idw_interpolation.tif")
 
         writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
         writer.writeFile()
@@ -84,7 +84,7 @@ class TestInterpolation(QgisTestCase):
             "gdal",
             output_file,
             "gdal",
-            os.path.join(TEST_DATA_DIR, "analysis", "idw_interpolation.asc"),
+            os.path.join(TEST_DATA_DIR, "analysis", "idw_interpolation.tif"),
         )
         self.report += checker.report()
 
@@ -118,7 +118,7 @@ class TestInterpolation(QgisTestCase):
             [data], QgsTinInterpolator.TinInterpolation.Linear
         )
 
-        output_file = os.path.join(tempfile.gettempdir(), "tin_interpolation.asc")
+        output_file = os.path.join(tempfile.gettempdir(), "tin_interpolation.tif")
 
         writer = QgsGridFileWriter(interpolator, output_file, extent, cols, rows)
         writer.writeFile()
@@ -128,7 +128,7 @@ class TestInterpolation(QgisTestCase):
             "gdal",
             output_file,
             "gdal",
-            os.path.join(TEST_DATA_DIR, "analysis", "tin_interpolation.asc"),
+            os.path.join(TEST_DATA_DIR, "analysis", "tin_interpolation.tif"),
         )
         self.report += checker.report()
 
