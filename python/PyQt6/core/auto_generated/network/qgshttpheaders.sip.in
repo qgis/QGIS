@@ -109,14 +109,21 @@ KEY_REFERER value will be available at key "KEY_PREFIX+KEY_REFERER" and key "KEY
 :return: ``True`` if the update succeed
 %End
 
-    bool updateDomElement( QDomElement &el ) const;
+ bool updateDomElement( QDomElement &el ) const /Deprecated/;
 %Docstring
-Updates a ``map`` by adding all the HTTP headers
+Updates a DOM element by adding all the HTTP headers.
 
 KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
 
+:param el: DOM element
+
 :return: ``True`` if the update succeed
+
+.. deprecated:: 3.42
+
+   Will be removed in QGIS 4.0.
 %End
+
 
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
 %Docstring
@@ -184,6 +191,7 @@ Returns key/value pairs as strings separated by space
 
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

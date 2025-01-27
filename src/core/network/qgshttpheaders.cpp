@@ -123,8 +123,18 @@ bool QgsHttpHeaders::updateMap( QVariantMap &map ) const
 
 bool QgsHttpHeaders::updateDomElement( QDomElement &el ) const
 {
+  QMap<QString, QString> namespaceDeclarations;
+  return updateDomElement( el, namespaceDeclarations );
+}
+
+bool QgsHttpHeaders::updateDomElement( QDomElement &el, QMap<QString, QString> &namespaceDeclarations ) const
+{
+  QString httpHeaderURIPrefix( QgsHttpHeaders::PARAM_PREFIX );
+  httpHeaderURIPrefix.chop( 1 );
+
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
+    namespaceDeclarations.insert( httpHeaderURIPrefix, QStringLiteral( "https://qgis.org/" ) + httpHeaderURIPrefix );
     el.setAttribute( QgsHttpHeaders::PARAM_PREFIX + ite.key().toUtf8(), ite.value().toString() );
   }
 
