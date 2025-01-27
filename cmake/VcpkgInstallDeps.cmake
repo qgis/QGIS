@@ -44,10 +44,10 @@ if(WITH_BINDINGS)
     cmake_path(GET Python_SITEARCH PARENT_PATH _SOURCE_PYTHON_DIR)
     set(_TARGET_PYTHON_DIR "${APP_FRAMEWORKS_DIR}/lib")
 
-    set(PYTHON_EXECUTABLE "${Python_EXECUTABLE}")
-    install(PROGRAMS ${PYTHON_EXECUTABLE}
+    get_filename_component(PYTHON_EXECUTABLE "${Python_EXECUTABLE}" NAME)
+    install(PROGRAMS ${Python_EXECUTABLE}
       DESTINATION "${QGIS_BIN_SUBDIR}")
-    configure_file("${CMAKE_SOURCE_DIR}/platform/macos/python.in" "${CMAKE_BINARY_DIR}/platform/macos/python")
+    configure_file("${CMAKE_SOURCE_DIR}/platform/macos/python.in" "${CMAKE_BINARY_DIR}/platform/macos/python" @ONLY)
     install(PROGRAMS  "${CMAKE_BINARY_DIR}/platform/macos/python"
       DESTINATION "${QGIS_BIN_SUBDIR}")
   endif()
