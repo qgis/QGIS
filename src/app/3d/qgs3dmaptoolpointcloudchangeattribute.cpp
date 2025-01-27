@@ -288,6 +288,8 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const double layerZScale = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zScale();
   const double layerZOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zOffset();
 
+  const QgsRectangle searchPolygonBbox = searchPolygon.boundingBox();
+
   for ( int i = 0; i < block->pointCount(); ++i )
   {
     // ignore filtered out points
@@ -322,6 +324,9 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     const QPointF ptScreen = mapToPixel3D.transform( x, y, z, &isInFrustum );
 
     if ( !isInFrustum )
+      continue;
+
+    if ( !searchPolygonBbox.contains( ptScreen.x(), ptScreen.y() ) )
       continue;
 
     if ( searchPolygon.intersects( QgsGeometry( new QgsPoint( ptScreen.x(), ptScreen.y() ) ) ) )
