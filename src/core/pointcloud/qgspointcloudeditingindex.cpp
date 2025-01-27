@@ -44,7 +44,6 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mZMax = mIndex.zMax();
   mRootBounds = mIndex.rootNodeBounds();
   mSpan = mIndex.span();
-  mFilterExpression = mIndex.subsetString();
   mIsValid = true;
 }
 
@@ -91,6 +90,16 @@ bool QgsPointCloudEditingIndex::hasNode( const QgsPointCloudNodeId &n ) const
 QgsPointCloudNode QgsPointCloudEditingIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
   return mIndex.getNode( id );
+}
+
+bool QgsPointCloudEditingIndex::setSubsetString( const QString &subset )
+{
+  return mIndex.setSubsetString( subset );
+}
+
+QString QgsPointCloudEditingIndex::subsetString() const
+{
+  return mIndex.subsetString();
 }
 
 std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )

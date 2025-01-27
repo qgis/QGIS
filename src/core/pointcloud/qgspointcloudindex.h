@@ -336,7 +336,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      * \returns true if the expression is parsed with no errors, false otherwise
      * \since QGIS 3.26
      */
-    bool setSubsetString( const QString &subset );
+    virtual bool setSubsetString( const QString &subset );
 
     /**
      * Returns the string used to define a subset of the point cloud.
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      *
      * \since QGIS 3.26
      */
-    QString subsetString() const;
+    virtual QString subsetString() const;
 
     /**
      * Copies common properties to the \a destination index
