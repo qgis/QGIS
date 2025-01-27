@@ -52,6 +52,11 @@ namespace QgsWms
     QgsRenderer renderer( context );
     std::unique_ptr<QImage> result( renderer.getMap() );
 
+    if ( response.feedback() && response.feedback()->isCanceled() )
+    {
+      throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
+    }
+
     if ( result )
     {
       const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );

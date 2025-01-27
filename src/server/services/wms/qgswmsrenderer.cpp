@@ -1052,6 +1052,11 @@ namespace QgsWms
       throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QStringLiteral( "The requested map size is too large" ) );
     }
 
+    if ( mContext.socketFeedback() && mContext.socketFeedback()->isCanceled() )
+    {
+      return nullptr;
+    }
+
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
     restorer.reset( new QgsWmsRestorer( mContext ) );
@@ -1094,6 +1099,10 @@ namespace QgsWms
       image.reset( scaledImage );
 
     // return
+    if ( mContext.socketFeedback() && mContext.socketFeedback()->isCanceled() )
+    {
+      return nullptr;
+    }
     return image;
   }
 
