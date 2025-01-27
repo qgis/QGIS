@@ -94,6 +94,11 @@ QgsProcessingModelAlgorithm *QgsModelComponentGraphicItem::model()
   return mModel;
 }
 
+const QgsProcessingModelAlgorithm *QgsModelComponentGraphicItem::model() const
+{
+  return mModel;
+}
+
 QgsModelGraphicsView *QgsModelComponentGraphicItem::view()
 {
   if ( scene()->views().isEmpty() )
@@ -853,7 +858,11 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge edge, int index ) 
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
     {
     
-    return truncatedTextForItem(QStringLiteral( "lorem:" ) + parameter->description() + parameter->parameterName());
+    QString text =  this->model()->parameterDefinition(parameter->parameterName())->type();
+    return truncatedTextForItem(text);
+    // return truncatedTextForItem(QStringLiteral( "lorem:" ) + parameter->description() + parameter->parameterName());
+        // const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const SIP_HOLDGIL;
+    
     //return model()->parameterDefinition(  parameter->parameterName())->description();
     
     }

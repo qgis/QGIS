@@ -412,9 +412,9 @@ void QgsProcessingModelerParameterWidget::updateUi()
 
 void QgsProcessingModelerParameterWidget::populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes )
 {
-  const QList<QgsProcessingModelChildParameterSource> sources = mModel->availableSourcesForChild( mChildId, compatibleParameterTypes, compatibleOutputTypes, compatibleDataTypes );
+  mSources = mModel->availableSourcesForChild( mChildId, compatibleParameterTypes, compatibleOutputTypes, compatibleDataTypes );
 
-  for ( const QgsProcessingModelChildParameterSource &source : sources )
+  for ( const QgsProcessingModelChildParameterSource &source : mSources )
   {
     switch ( source.source() )
     {
@@ -445,6 +445,11 @@ void QgsProcessingModelerParameterWidget::populateSources( const QStringList &co
     }
   }
 }
+
+QList<QgsProcessingModelChildParameterSource> QgsProcessingModelerParameterWidget::availableSourcesForChild() 
+{ 
+  return mSources;
+};
 
 void QgsProcessingModelerParameterWidget::setExpressionHelpText( const QString &text )
 {

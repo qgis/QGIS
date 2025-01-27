@@ -15,6 +15,11 @@
 
 #include "qgsmodelviewtoollink.h"
 #include "moc_qgsmodelviewtoollink.cpp"
+#include "qgsprocessingmodelerparameterwidget.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsgui.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelgraphicsview.h"
@@ -32,7 +37,7 @@ QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
 
 void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
 {
-  qDebug() << "QgsModelViewToolLink::modelMoveEvent";
+  // qDebug() << "QgsModelViewToolLink::modelMoveEvent";
 
   
   mBezierRubberBand->update( event->modelPoint(), Qt::KeyboardModifiers() );
@@ -45,7 +50,7 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
     {
       socket->modelHoverEnterEvent( event );
       // snap 
-      if ( mFrom != socket){
+      if ( mFrom != socket && mFrom->edge() != socket->edge()){
         QPointF rubberEndPos = socket->mapToScene(socket->getPosition());
         mBezierRubberBand->update( rubberEndPos, Qt::KeyboardModifiers() );
       }
@@ -56,10 +61,109 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
 
 void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 {
-  if ( event->button() == Qt::LeftButton )
+
+  if ( event->button() != Qt::LeftButton )
   {
+    return;
+  }
     view()->setTool( mPreviousViewTool );
     mBezierRubberBand->finish( event->modelPoint() );
+
+  // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate 
+  QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
+
+  mTo = nullptr;
+
+  for ( QGraphicsItem *item : items )
+  {
+    if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
+    {
+      mTo = socket;
+    }
+  }
+
+  // Do nothing or remove existing link
+  if (mTo == nullptr){
+    return;
+  }
+
+
+  QList<QgsProcessingModelChildParameterSource> sources;
+  
+
+  QgsProcessingModelComponent *component_from;
+  QgsProcessingModelChildAlgorithm *child_to;
+
+  // ReOrder in out socket
+  // always fix on the input end receiving
+  if( mTo->edge() == Qt::TopEdge ) {
+    component_from = mFrom->component();
+    child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mTo->component() );
+  }
+  else{
+    component_from = mTo->component();
+    child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFrom->component() );
+  }
+
+  
+
+  // QString inputName = "INPUT";
+  const QgsProcessingParameterDefinition* toParam = child_to->algorithm()->parameterDefinitions().at(mTo->index());
+  
+  
+
+  QgsProcessingModelChildParameterSource source;
+  if ( QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( component_from ) )
+  {
+    QString outputName = child_from->algorithm()->outputDefinitions().at(mFrom->index())->name();
+    source =  QgsProcessingModelChildParameterSource::fromChildOutput( child_from->childId(),  outputName );
+
+    qDebug() << "child_from->childId: " << child_from->childId();
+
+  }
+  else if ( QgsProcessingModelParameter *param_from = dynamic_cast<QgsProcessingModelParameter *>( component_from) ) {
+    source =  QgsProcessingModelChildParameterSource::fromModelParameter(param_from->parameterName());
+  }
+  
+  // QgsProcessingModelChildParameterSource source =  QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c2_CONCATENATION || 'x'" ) ) ;
+  qDebug() << "OUTPUTT:" << source.outputName();
+  qDebug() << "OUTPUT  child id" << source.outputChildId();
+
+  
+
+
+
+  // setChildAlgorithm
+  
+  QgsProcessingContext context;
+  QgsProcessingModelerParameterWidget *widget = QgsGui::processingGuiRegistry()->createModelerParameterWidget(view()->modelScene()->model(),
+                                                               child_to->childId(),
+                                                               toParam,
+                                                               context
+                                                               );
+
+
+  QList<QgsProcessingModelChildParameterSource> compatible_param_type = widget->availableSourcesForChild();
+  delete widget;
+
+  if ( !compatible_param_type.contains(source) ) {
+    //Type are incomatible
+    QString title = "Impossible to connect socket";
+    QString message = "Impossible to connect socket either type are incompatibles or theres is a circular dependency";
+    scene()->showWarning(message, title, message);
+    return;
+  }
+
+  sources << source;
+  child_to->addParameterSources(toParam->name(), sources);
+
+  // bke::node_add_link
+  
+  //We need to pass the update child algorithm to the model
+  scene()->model()->setChildAlgorithm(*child_to);
+
+  // Redraw
+  emit scene()->rebuildRequired();
 
 
     // // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events

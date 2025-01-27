@@ -99,6 +99,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsProcessingModelAlgorithm *model();
 
     /**
+     * Returns the model associated with this item.
+     */
+    const QgsProcessingModelAlgorithm *model() const;
+
+    /**
      * Returns the associated view.
      */
     QgsModelGraphicsView *view();
