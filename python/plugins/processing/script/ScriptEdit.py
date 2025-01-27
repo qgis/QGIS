@@ -49,7 +49,7 @@ class ScriptEdit(QgsCodeEditorPython):
 
         # Use Ctrl+Space for autocompletion
         self.shortcutAutocomplete = QShortcut(
-            QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_Space), self
+            QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_Space), self
         )
         self.shortcutAutocomplete.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
