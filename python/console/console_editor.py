@@ -263,7 +263,7 @@ class Editor(QgsCodeEditorPython):
         toggle_comment_action = QAction(
             QgsApplication.getThemeIcon(
                 "console/iconCommentEditorConsole.svg",
-                self.palette().color(QPalette.WindowText),
+                self.palette().color(QPalette.ColorRole.WindowText),
             ),
             QCoreApplication.translate("PythonConsole", "Toggle Comment"),
             menu,
