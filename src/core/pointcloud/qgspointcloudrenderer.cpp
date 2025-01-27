@@ -270,7 +270,8 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
     QDomDocument doc = element.ownerDocument();
     element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
   }
-  element.setAttribute( QStringLiteral( "zoomOutBehavior" ), qgsEnumValueToKey( mZoomOutBehavior ) );
+  if ( mZoomOutBehavior != Qgis::PointCloudZoomOutRenderBehavior::RenderExtents )
+    element.setAttribute( QStringLiteral( "zoomOutBehavior" ), qgsEnumValueToKey( mZoomOutBehavior ) );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
