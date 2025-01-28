@@ -632,6 +632,13 @@ class CORE_EXPORT QgsSymbolLayer
     virtual QList<QgsSymbolLayerReference> masks() const;
 
     /**
+     * Remove masks defined by this symbol layer.
+     * \see masks()
+     * \since QGIS 3.42
+     */
+    virtual void clearMasks();
+
+    /**
      * Prepares all mask internal objects according to what is defined in \a context
      * This should be called prior to calling startRender() method.
      * \see QgsRenderContext::addSymbolLayerClipPath()
