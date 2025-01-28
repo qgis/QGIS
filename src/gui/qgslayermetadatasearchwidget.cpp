@@ -145,10 +145,6 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   } );
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayerMetadataSearchWidget::showHelp );
-
-  // Start loading metadata in the model
-  mSourceModel->reloadAsync();
-  mIsLoading = true;
 }
 
 void QgsLayerMetadataSearchWidget::setMapCanvas( QgsMapCanvas *newMapCanvas )
@@ -185,6 +181,7 @@ void QgsLayerMetadataSearchWidget::updateExtentFilter( int index )
 
 void QgsLayerMetadataSearchWidget::refresh()
 {
+  mIsLoading = true;
   mSourceModel->reloadAsync();
 }
 
@@ -261,6 +258,12 @@ void QgsLayerMetadataSearchWidget::showEvent( QShowEvent *event )
 {
   QgsAbstractDataSourceWidget::showEvent( event );
   mSearchFilterLineEdit->setText( mProxyModel->filterString() );
+  // The first show event triggers the metadata loading
+  if ( !mIsInitialized )
+  {
+    refresh();
+    mIsInitialized = true;
+  }
 }
 
 void QgsLayerMetadataSearchWidget::showHelp()
