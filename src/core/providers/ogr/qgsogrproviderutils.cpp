@@ -922,6 +922,11 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     {
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDateTime );
     }
+    else if ( fields[0] == QLatin1String( "bool" ) )
+    {
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTInteger );
+      OGR_Fld_SetSubType( field, OFSTBoolean );
+    }
     else
     {
       QgsMessageLog::logMessage( QObject::tr( "field %1 with unsupported type %2 skipped" ).arg( it->first, fields[0] ), QObject::tr( "OGR" ) );
