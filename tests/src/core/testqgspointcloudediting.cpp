@@ -48,6 +48,7 @@ class TestQgsPointCloudEditing : public QgsTest
     void testStartStopEditing();
     void testModifyAttributeValue();
     void testModifyAttributeValueInvalid();
+    void testModifyAttributeValueFiltered();
     void testCommitChanges();
 };
 
@@ -434,6 +435,53 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QCOMPARE( spy.size(), 0 );
 
   QCOMPARE( layer->undoStack()->index(), 0 );
+}
+
+void TestQgsPointCloudEditing::testModifyAttributeValueFiltered()
+{
+  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  QVERIFY( layer->isValid() );
+
+  QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
+
+  QgsPointCloudCategoryList categories = QgsPointCloudRendererRegistry::classificationAttributeCategories( layer.get() );
+  QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), categories );
+  layer->setRenderer( renderer );
+
+  layer->renderer()->setPointSize( 2 );
+  layer->renderer()->setPointSizeUnit( Qgis::RenderUnit::Millimeters );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( QSize( 400, 400 ) );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( layer->crs() );
+  mapSettings.setExtent( QgsRectangle( 498061, 7050991, 498069, 7050999 ) );
+  mapSettings.setLayers( { layer.get() } );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
+
+  // Set a filter
+  QVERIFY( layer->setSubsetString( QStringLiteral( "Classification != 3" ) ) );
+  QVERIFY( layer->startEditing() );
+  QVERIFY( layer->isEditable() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_filtered", "classified_render_filtered", mapSettings );
+
+  // Change some points, some where filtered out
+  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+  QgsPointCloudNodeId n( 0, 0, 0, 0 );
+  QVERIFY( layer->changeAttributeValue( n, { 42, 82, 62, 52, 72 }, at, 6 ) );
+  QVERIFY( layer->isModified() );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_filtered_edit", "classified_render_filtered_edit", mapSettings );
+
+  // Commit changes and clear filter
+  QVERIFY( layer->commitChanges() );
+  QVERIFY( !layer->isModified() );
+  QVERIFY( layer->setSubsetString( QString() ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_filtered_edit_saved", "classified_render_filtered_edit_saved", mapSettings );
 }
 
 void TestQgsPointCloudEditing::testCommitChanges()
