@@ -109,7 +109,7 @@ std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const
     // we need to create a copy of the expression to pass to the decoder
     // as the same QgsPointCloudExpression object mighgt be concurrently
     // used on another thread, for example in a 3d view
-    QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
+    QgsPointCloudExpression filterExpression = QgsPointCloudExpression( request.ignoreIndexFilterEnabled() ? QString() : subsetString() );
     QgsPointCloudAttributeCollection requestAttributes = request.attributes();
     requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
