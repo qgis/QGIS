@@ -841,9 +841,9 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point || qgsDoubleNear( distance, 0 ) )
   {
-    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+    return QgsGeometry( mGeometry->clone() ); // point geometry (or distance ~= 0), nothing to do
   }
 
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
