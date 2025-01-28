@@ -28,6 +28,7 @@ import urllib.request
 import osgeo.gdal  # NOQA
 
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsField,
@@ -38,6 +39,7 @@ from qgis.core import (
     QgsProject,
     QgsWkbTypes,
     QgsPointXY,
+    QgsAttributeEditorField,
 )
 from qgis.PyQt.QtCore import QVariant, QUrl
 from qgis.server import (
@@ -1393,8 +1395,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         provider.addFeature(f)
 
         f = QgsFeature(fields)
-        f.setAttribute("id", 2)
-        f.setAttribute("name", "point2")
+        f.setAttribute("id", 3)
+        f.setAttribute("name", "point3")
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-1, -1)))
         provider.addFeature(f)
 
@@ -1417,6 +1419,82 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         server.handleRequest(request, response, project)
         body = response.body().data().decode("utf8").replace("\n", "")
         self.assertEqual(len(json.loads(body)["features"]), 1)
+
+    def test_getfeatureinfo_form_config(self):
+        """Test issue GH #59335 : getfeatureinfo with form config drag and drop settings"""
+
+        # create a memory layer with points
+        fields = QgsFields()
+        fields.append(QgsField("id_xyz", QVariant.Int))
+        fields.append(QgsField("name_xyz", QVariant.String))
+        layer = QgsMemoryProviderUtils.createMemoryLayer(
+            "points",
+            fields,
+            QgsWkbTypes.Point,
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+        )
+
+        provider = layer.dataProvider()
+        self.assertTrue(layer.isValid())
+
+        # add some features
+        f = QgsFeature(fields)
+        f.setAttribute("id_xyz", 1)
+        f.setAttribute("name_xyz", "point1")
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(0, 0)))
+        provider.addFeature(f)
+
+        f = QgsFeature(fields)
+        f.setAttribute("id_xyz", 2)
+        f.setAttribute("name_xyz", "point2")
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 1)))
+        provider.addFeature(f)
+
+        f = QgsFeature(fields)
+        f.setAttribute("id_xyz", 3)
+        f.setAttribute("name_xyz", "point3")
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-1, -1)))
+        provider.addFeature(f)
+
+        project = QgsProject()
+        project.addMapLayer(layer)
+        project.writeEntry("WMSFeatureInfoUseAttributeFormSettings", "/", "true")
+
+        # Set the form settings
+        editFormConfig = layer.editFormConfig()
+        editFormConfig.clearTabs()
+        editFormConfig.addTab(
+            QgsAttributeEditorField(
+                "id_xyz", 0, editFormConfig.invisibleRootContainer()
+            )
+        )
+        editFormConfig.setLayout(Qgis.AttributeFormLayout.DragAndDrop)
+        layer.setEditFormConfig(editFormConfig)
+
+        # set up the WMS server
+        server = QgsServer()
+        request = QgsServerRequest()
+        w = 10
+        w2 = int(w / 2)
+
+        for info_format in [
+            "text/plain",
+            "application/json",
+            "text/xml",
+            "application/vnd.ogc.gml",
+        ]:
+
+            request.setUrl(
+                QUrl(
+                    f"?SERVICE=WMS&REQUEST=GetFeatureInfo&LAYERS=points&QUERY_LAYERS=points&INFO_FORMAT={info_format}&FEATURE_COUNT=1&WIDTH={w}&HEIGHT={w}&CRS=EPSG:4326&STYLES=&BBOX=-1,-1,1,1&X={w2}&Y={w2}&VERSION=1.3.0"
+                )
+            )
+            response = QgsBufferServerResponse()
+
+            server.handleRequest(request, response, project)
+            body = response.body().data().decode("utf8").replace("\n", " ")
+            self.assertNotIn("name_xyz", body)
+            self.assertIn("id_xyz", body)
 
 
 if __name__ == "__main__":

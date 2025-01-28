@@ -69,6 +69,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorrelation.h"
 #include "qgsdimensionfilter.h"
 
 #include <QImage>
@@ -2982,6 +2983,9 @@ namespace QgsWms
       expressionContext << QgsExpressionContextUtils::layerScope( layer );
     expressionContext.setFeature( *feat );
 
+    QgsEditFormConfig editConfig { layer ? layer->editFormConfig() : QgsEditFormConfig() };
+    const bool honorFormConfig { layer && QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
+
     // always add bounding box info if feature contains geometry and has been
     // explicitly configured in the project
     if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && !geom.isNull() && geom.type() != Qgis::GeometryType::Unknown && geom.type() != Qgis::GeometryType::Null )
@@ -3017,6 +3021,74 @@ namespace QgsWms
       bbElem.appendChild( boxElem );
       typeNameElement.appendChild( bbElem );
     }
+
+    // find if an attribute is in any form tab
+    std::function<bool( const QString &, const QgsAttributeEditorElement * )> findAttributeInTree;
+    findAttributeInTree = [&findAttributeInTree, &layer]( const QString &attributeName, const QgsAttributeEditorElement *group ) -> bool {
+      const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
+      if ( container )
+      {
+        const QList<QgsAttributeEditorElement *> children = container->children();
+        for ( const QgsAttributeEditorElement *child : children )
+        {
+          switch ( child->type() )
+          {
+            case Qgis::AttributeEditorType::Container:
+            {
+              if ( findAttributeInTree( attributeName, child ) )
+              {
+                return true;
+              }
+              break;
+            }
+            case Qgis::AttributeEditorType::Field:
+            {
+              if ( child->name() == attributeName )
+              {
+                return true;
+              }
+              break;
+            }
+            case Qgis::AttributeEditorType::Relation:
+            {
+              const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( child );
+              if ( relationEditor )
+              {
+                const QgsRelation &relation { relationEditor->relation() };
+                if ( relation.referencedLayer() == layer )
+                {
+                  const QgsAttributeList &referencedFields { relation.referencedFields() };
+                  for ( const auto &idx : std::as_const( referencedFields ) )
+                  {
+                    const QgsField f { layer->fields().at( idx ) };
+                    if ( f.name() == attributeName )
+                    {
+                      return true;
+                    }
+                  }
+                }
+                else if ( relation.referencingLayer() == layer )
+                {
+                  const QgsAttributeList &referencingFields { relation.referencingFields() };
+                  for ( const auto &idx : std::as_const( referencingFields ) )
+                  {
+                    const QgsField f { layer->fields().at( idx ) };
+                    if ( f.name() == attributeName )
+                    {
+                      return true;
+                    }
+                  }
+                }
+              }
+              break;
+            }
+            default:
+              break;
+          }
+        }
+      }
+      return false;
+    };
 
     if ( withGeom && !geom.isNull() )
     {
@@ -3064,6 +3136,15 @@ namespace QgsWms
       if ( attributes && !attributes->contains( attributeName ) )
       {
         continue;
+      }
+
+      if ( honorFormConfig )
+      {
+        const QgsAttributeEditorContainer *editorContainer = editConfig.invisibleRootContainer();
+        if ( !editorContainer || !findAttributeInTree( attributeName, editorContainer ) )
+        {
+          continue;
+        }
       }
 
       QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
