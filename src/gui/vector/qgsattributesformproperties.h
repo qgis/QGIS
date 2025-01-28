@@ -448,7 +448,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void storeAttributeWidgetEdit();
 
     void loadAttributeTypeDialog();
-    void loadAttributeTypeDialogFromConfiguration( const FieldConfig cfg );
+    void loadAttributeTypeDialogFromConfiguration( const FieldConfig &cfg );
     void storeAttributeTypeDialog();
 
     void storeAttributeContainerEdit();
