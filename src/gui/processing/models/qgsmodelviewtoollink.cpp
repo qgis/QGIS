@@ -82,8 +82,13 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     }
   }
 
-  // Do nothing or remove existing link
+  // Do nothing if cursor don't land on another socket
   if (mTo == nullptr){
+    return;
+  }
+
+  // Do nothing if from socket and to socket are both input or both output
+  if ( mFrom->edge() == mTo->edge()){
     return;
   }
 
@@ -116,13 +121,12 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   if ( QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( component_from ) )
   {
     QString outputName = child_from->algorithm()->outputDefinitions().at(mFrom->index())->name();
-    source =  QgsProcessingModelChildParameterSource::fromChildOutput( child_from->childId(),  outputName );
-
+    source = QgsProcessingModelChildParameterSource::fromChildOutput( child_from->childId(),  outputName );
     qDebug() << "child_from->childId: " << child_from->childId();
 
   }
   else if ( QgsProcessingModelParameter *param_from = dynamic_cast<QgsProcessingModelParameter *>( component_from) ) {
-    source =  QgsProcessingModelChildParameterSource::fromModelParameter(param_from->parameterName());
+    source = QgsProcessingModelChildParameterSource::fromModelParameter(param_from->parameterName());
   }
   
   // QgsProcessingModelChildParameterSource source =  QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c2_CONCATENATION || 'x'" ) ) ;
@@ -205,3 +209,81 @@ void QgsModelViewToolLink::deactivate()
   mBezierRubberBand->finish( );
   QgsModelViewTool::deactivate();
 }
+
+void QgsModelViewToolLink::setFromSocket(QgsModelDesignerSocketGraphicItem *socket) { 
+  mFrom = socket;
+
+  if (mFrom->edge() == Qt::TopEdge)
+  {
+    QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFrom->component() );
+    const QgsProcessingParameterDefinition* param = child_from->algorithm()->parameterDefinitions().at(mFrom->index());
+
+    auto current_sources = child_from->parameterSources().value(param->name());
+    qDebug() << "SOURCES :" << current_sources.size();
+
+    // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate 
+    QList<QGraphicsItem *> items = scene()->items();
+
+    for ( const QgsProcessingModelChildParameterSource &source : std::as_const( current_sources ) )
+    {
+      switch ( source.source() )
+      {
+        case Qgis::ProcessingModelChildParameterSource::ModelParameter:
+        case Qgis::ProcessingModelChildParameterSource::ChildOutput:
+        {
+          // source.outputName();
+          // source.outputChildId();
+
+          QgsProcessingModelChildAlgorithm source_alg = scene()->model()->childAlgorithm(source.outputChildId());
+          
+          // This is not so nice to have the UI tangled gotta think of a better abstraction later
+          // Loop trought all items to get the output socket 
+          for ( QGraphicsItem *item : items )
+          {
+            if ( QgsModelDesignerSocketGraphicItem *output_socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
+            {
+              if ( QgsProcessingModelChildAlgorithm *_alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( output_socket->component() ) ){
+                if (source.outputChildId() != _alg->childId() || 
+                    output_socket->edge() == Qt::TopEdge ){
+                  continue;
+                }
+                if (output_socket->index() == _alg->algorithm()->outputDefinitionIndex(source.outputName()) ){
+                  mFrom = output_socket;
+                }
+              }
+            }
+          }
+
+
+          qDebug() << "new source";
+          // child_alg
+              //reset to default value
+          QList<QgsProcessingModelChildParameterSource> new_sources;
+          new_sources << QgsProcessingModelChildParameterSource::fromStaticValue(param->defaultValue());
+
+
+          child_from->addParameterSources(param->name(), new_sources);
+          //We need to pass the update child algorithm to the model
+          scene()->model()->setChildAlgorithm(*child_from);
+          // Redraw
+          emit scene()->rebuildRequired();
+
+
+        }
+          
+
+
+          break;
+        default:
+         continue;
+
+        
+      }
+
+      // Stop on first iteration to get only one link at a time
+      break;
+    }
+    
+  }
+  
+};
