@@ -327,7 +327,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 }
 
-void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( const FieldConfig config )
+void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( const FieldConfig &config )
 {
   const QgsFieldConstraints constraints = config.mFieldConstraints;
 
