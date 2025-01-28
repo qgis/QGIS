@@ -92,6 +92,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     return;
   }
 
+  emit view()->beginCommand("Edit link");
 
   QList<QgsProcessingModelChildParameterSource> sources;
   
@@ -166,6 +167,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   //We need to pass the update child algorithm to the model
   scene()->model()->setChildAlgorithm(*child_to);
 
+  emit view()->endCommand();
   // Redraw
   emit scene()->rebuildRequired();
  
@@ -251,12 +253,14 @@ void QgsModelViewToolLink::setFromSocket(QgsModelDesignerSocketGraphicItem *sock
                 }
                 if (output_socket->index() == _alg->algorithm()->outputDefinitionIndex(source.outputName()) ){
                   mFrom = output_socket;
+                  emit view()->beginCommand("Edit link");
                 }
               }
               else if ( QgsProcessingModelParameter *_param = dynamic_cast<QgsProcessingModelParameter *>( output_socket->component() ) ){
-                  if ( source.parameterName() == _param->parameterName()) {
-                    mFrom = output_socket;
-                  }
+                if ( source.parameterName() == _param->parameterName()) {
+                  mFrom = output_socket;
+                  emit view()->beginCommand("Edit link");
+                }
               }
             }
           }
