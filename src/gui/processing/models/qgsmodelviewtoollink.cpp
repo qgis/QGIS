@@ -66,8 +66,8 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   {
     return;
   }
-    view()->setTool( mPreviousViewTool );
-    mBezierRubberBand->finish( event->modelPoint() );
+  view()->setTool( mPreviousViewTool );
+  mBezierRubberBand->finish( event->modelPoint() );
 
   // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate 
   QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
@@ -161,14 +161,14 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   sources << source;
   child_to->addParameterSources(toParam->name(), sources);
 
-  // bke::node_add_link
+
   
   //We need to pass the update child algorithm to the model
   scene()->model()->setChildAlgorithm(*child_to);
 
   // Redraw
   emit scene()->rebuildRequired();
-
+ 
 
     // // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
     // // to multiple items
@@ -185,7 +185,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     // }
 
 
-  }
 }
 
 bool QgsModelViewToolLink::allowItemInteraction()
@@ -195,17 +194,20 @@ bool QgsModelViewToolLink::allowItemInteraction()
 
 void QgsModelViewToolLink::activate()
 {
-  qDebug() << "activate";
+  qDebug() << "activate link tool";
   mPreviousViewTool = view()->tool();
 
   QPointF rubberStartPos = mFrom->mapToScene(mFrom->getPosition());
   mBezierRubberBand->start( rubberStartPos, Qt::KeyboardModifiers() );
+
+  // if mFrom 
 
   QgsModelViewTool::activate();
 }
 
 void QgsModelViewToolLink::deactivate()
 {
+  qDebug() << "deactivate link tool";
   mBezierRubberBand->finish( );
   QgsModelViewTool::deactivate();
 }
@@ -250,6 +252,11 @@ void QgsModelViewToolLink::setFromSocket(QgsModelDesignerSocketGraphicItem *sock
                 if (output_socket->index() == _alg->algorithm()->outputDefinitionIndex(source.outputName()) ){
                   mFrom = output_socket;
                 }
+              }
+              else if ( QgsProcessingModelParameter *_param = dynamic_cast<QgsProcessingModelParameter *>( output_socket->component() ) ){
+                  if ( source.parameterName() == _param->parameterName()) {
+                    mFrom = output_socket;
+                  }
               }
             }
           }
