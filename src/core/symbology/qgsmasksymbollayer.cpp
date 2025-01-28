@@ -136,6 +136,11 @@ void QgsMaskMarkerSymbolLayer::setMasks( const QList<QgsSymbolLayerReference> &m
   mMaskedSymbolLayers = maskedLayers;
 }
 
+void QgsMaskMarkerSymbolLayer::clearMasks()
+{
+  mMaskedSymbolLayers.clear();
+}
+
 QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
   return mSymbol->bounds( point, context.renderContext() );

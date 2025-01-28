@@ -79,6 +79,8 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
      */
     QList<QgsSymbolLayerReference> masks() const override;
 
+    void clearMasks() override;
+
     /**
      * Sets the symbol layers that will be masked by the sub symbol's shape.
      * \param maskedLayers list of references to symbol layers
@@ -101,5 +103,3 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
 };
 
 #endif
-
-

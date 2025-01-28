@@ -5605,6 +5605,26 @@ void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbolLayer *symbolLayer )
   changeSymbolLayerIds( symbolLayer, []() { return QUuid::createUuid().toString(); } );
 }
 
+void QgsSymbolLayerUtils::clearSymbolLayerMasks( QgsSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+  {
+    if ( QgsSymbolLayer *sl = symbol->symbolLayer( idx ) )
+    {
+      sl->clearMasks();
+
+      // recurse over sub symbols
+      if ( QgsSymbol *subSymbol = sl->subSymbol() )
+      {
+        clearSymbolLayerMasks( subSymbol );
+      }
+    }
+  }
+}
+
 QVector<QgsGeometry> QgsSymbolLayerUtils::collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds )
 {
   QVector<QgsGeometry> clipGeometries = context.symbolLayerClipGeometries( symbolLayerId );
