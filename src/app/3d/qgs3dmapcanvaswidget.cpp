@@ -69,6 +69,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 {
   const QgsSettings setting;
 
+  mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
+  mToolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
+
   QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( isDocked ) );
 
@@ -79,6 +82,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   // Editing toolbar
   mEditingToolBar = new QToolBar( this );
+  mEditingToolBar->setWindowTitle( tr( "Editing Toolbar" ) );
   mEditingToolBar->setVisible( false );
 
   QAction *actionPointCloudChangeAttributeTool = mEditingToolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
@@ -90,8 +94,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
   mEditingToolBar->addWidget( new QLabel( tr( "Value" ) ) );
   mEditingToolBar->addWidget( mSpinChangeAttributeValue );
-  QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
-  actionEditingToolbar->setCheckable( true );
   connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
   connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { onPointCloudChangeAttributeSettingsChanged(); } );
 
@@ -342,6 +344,24 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
+
+  QList<QAction *> toolbarMenuActions;
+  // Set action names so that they can be used in customization
+  for ( QToolBar *toolBar : { mEditingToolBar } )
+  {
+    toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
+    toolbarMenuActions << toolBar->toggleViewAction();
+  }
+
+  // sort actions in toolbar menu
+  std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), []( QAction *a, QAction *b ) {
+    return QString::localeAwareCompare( a->text(), b->text() ) < 0;
+  } );
+
+  mToolbarMenu->addActions( toolbarMenuActions );
+
+  toolBar->installEventFilter( this );
+  mEditingToolBar->installEventFilter( this );
 }
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
@@ -452,6 +472,26 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
   mCboChangeAttribute->setCurrentIndex( std::max( index, 0 ) );
 
   enableEditingTools( pcLayer->isEditable() );
+}
+
+bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( qobject_cast< QToolBar * >( watched ) )
+  {
+    if ( event->type() != QEvent::MouseButtonPress )
+      return QObject::eventFilter( watched, event );
+
+    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+    if ( !mouseEvent )
+      return QObject::eventFilter( watched, event );
+
+    if ( mouseEvent->button() != Qt::RightButton )
+      return QObject::eventFilter( watched, event );
+
+    mToolbarMenu->exec( mouseEvent->globalPos() );
+    return false;
+  }
+  return QObject::eventFilter( watched, event );
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )
