@@ -3549,7 +3549,7 @@ QgsLayerMetadataSearchWidget.addButtonClicked: src/gui/qgslayermetadatasearchwid
 QgsLayerMetadataSearchWidget.refresh: src/gui/qgslayermetadatasearchwidget.h#L52
 QgsLayerMetadataSearchWidget.reset: src/gui/qgslayermetadatasearchwidget.h#L54
 QgsLayerMetadataSearchWidget.setMapCanvas: src/gui/qgslayermetadatasearchwidget.h#L45
-QgsLayerMetadataSearchWidget.showEvent: src/gui/qgslayermetadatasearchwidget.h#L66
+QgsLayerMetadataSearchWidget.showEvent: src/gui/qgslayermetadatasearchwidget.h#L67
 QgsLayerMetadataSearchWidget.updateExtentFilter: src/gui/qgslayermetadatasearchwidget.h#L50
 QgsLayerMetadataSearchWidget: src/gui/qgslayermetadatasearchwidget.h#L36
 QgsLayerPropertiesDialog.addPropertiesPageFactory: src/gui/qgslayerpropertiesdialog.h#L81
