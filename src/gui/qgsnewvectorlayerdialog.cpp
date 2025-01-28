@@ -31,6 +31,8 @@
 #include "qgsvariantutils.h"
 #include "qgsogrproviderutils.h"
 
+#include <gdal.h>
+
 #include <QPushButton>
 #include <QComboBox>
 #include <QFileDialog>
@@ -57,6 +59,9 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), "Integer" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::Double ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), "Real" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDate ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "Date" );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 9, 0 )
+  mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::Bool ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), "bool" );
+#endif
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
@@ -154,6 +159,7 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
         mWidth->setText( QStringLiteral( "80" ) );
       mPrecision->setEnabled( false );
+      mWidth->setEnabled( true );
       mWidth->setValidator( new QIntValidator( 1, 255, this ) );
       break;
 
@@ -161,6 +167,7 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
         mWidth->setText( QStringLiteral( "10" ) );
       mPrecision->setEnabled( false );
+      mWidth->setEnabled( true );
       mWidth->setValidator( new QIntValidator( 1, 10, this ) );
       break;
 
@@ -171,11 +178,15 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
         mPrecision->setText( QStringLiteral( "6" ) );
 
       mPrecision->setEnabled( true );
+      mWidth->setEnabled( true );
       mWidth->setValidator( new QIntValidator( 1, 20, this ) );
       break;
 
     default:
-      QgsDebugError( QStringLiteral( "unexpected index" ) );
+      mPrecision->setEnabled( false );
+      mWidth->setEnabled( false );
+      mWidth->clear();
+      mPrecision->clear();
       break;
   }
 }
