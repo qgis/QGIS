@@ -87,6 +87,9 @@ Returns a list of references to symbol layers that are masked by the sub symbol'
 .. seealso:: :py:func:`setMasks`
 %End
 
+    virtual void clearMasks();
+
+
     void setMasks( const QList<QgsSymbolLayerReference> &maskedLayers );
 %Docstring
 Sets the symbol layers that will be masked by the sub symbol's shape.
@@ -99,8 +102,6 @@ Sets the symbol layers that will be masked by the sub symbol's shape.
   private:
     QgsMaskMarkerSymbolLayer( const QgsMaskMarkerSymbolLayer & );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

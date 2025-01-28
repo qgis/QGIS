@@ -1022,6 +1022,13 @@ Regenerate recursively unique id from ``symbolLayer`` and its children
 .. versionadded:: 3.30
 %End
 
+    static void clearSymbolLayerMasks( QgsSymbol *symbol );
+%Docstring
+Remove recursively masks from all ``symbol`` symbol layers
+
+.. versionadded:: 3.42
+%End
+
     static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
 %Docstring
 Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified
