@@ -53,6 +53,10 @@ QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
 // a html or css tag doesn't mess things up. Instead, Qt will just silently
 // ignore html attributes it doesn't know about, like this replacement string
 #define TAB_REPLACEMENT_MARKER " ignore_me_i_am_a_tab "
+// when splitting by the tab replacement marker we need to be tolerant to the
+// spaces surrounding REPLACEMENT_MARKER being swallowed when multiple consecutive
+// tab characters exist
+#define TAB_REPLACEMENT_MARKER_RX " ?ignore_me_i_am_a_tab ?"
 
 QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
 {
@@ -73,6 +77,7 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
     // by first replacing it with a string which QTextDocument won't mess with, and then
     // handle these markers as tab characters in the parsed HTML document.
     line.replace( QString( '\t' ), QStringLiteral( TAB_REPLACEMENT_MARKER ) );
+    const thread_local QRegularExpression sTabReplacementMarkerRx( QStringLiteral( TAB_REPLACEMENT_MARKER_RX ) );
 
     // cheat a little. Qt css requires word-spacing to have the "px" suffix. But we don't treat word spacing
     // as pixels, because that doesn't scale well with different dpi render targets! So let's instead use just instead treat the suffix as
@@ -156,7 +161,7 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
                 }
                 splitFragment.setCharacterFormat( newFormat );
 
-                const QStringList tabSplit = splitLine.split( QStringLiteral( TAB_REPLACEMENT_MARKER ) );
+                const QStringList tabSplit = splitLine.split( sTabReplacementMarkerRx );
                 int index = 0;
                 for ( const QString &part : tabSplit )
                 {
@@ -204,7 +209,7 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
             newFormat.overrideWith( blockFormat );
             tmpFragment.setCharacterFormat( newFormat );
 
-            const QStringList tabSplit = fragmentText.split( QStringLiteral( TAB_REPLACEMENT_MARKER ) );
+            const QStringList tabSplit = fragmentText.split( sTabReplacementMarkerRx );
             int index = 0;
             for ( const QString &part : tabSplit )
             {
