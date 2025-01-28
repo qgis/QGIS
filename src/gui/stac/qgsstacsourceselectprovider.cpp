@@ -49,5 +49,5 @@ QgsAbstractDataSourceWidget *QgsStacSourceSelectProvider::createDataSourceWidget
 
 int QgsStacSourceSelectProvider::ordering() const
 {
-  return OrderSearchProvider;
+  return OrderRemoteProvider + 201;
 }
