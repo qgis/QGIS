@@ -11857,6 +11857,7 @@ QgsProcessingContext.LayerDetails: src/core/processing/qgsprocessingcontext.h#L2
 QgsProcessingContext.addLayerToLoadOnCompletion: src/core/processing/qgsprocessingcontext.h#L383
 QgsProcessingContext.areaUnit: src/core/processing/qgsprocessingcontext.h#L208
 QgsProcessingContext.asQgisProcessArguments: src/core/processing/qgsprocessingcontext.h#L731
+QgsProcessingContext.clearModelResult: src/core/processing/qgsprocessingcontext.h#L802
 QgsProcessingContext.copyThreadSafeSettings: src/core/processing/qgsprocessingcontext.h#L89
 QgsProcessingContext.currentTimeRange: src/core/processing/qgsprocessingcontext.h#L227
 QgsProcessingContext.defaultEncoding: src/core/processing/qgsprocessingcontext.h#L492
@@ -11969,8 +11970,8 @@ QgsProcessingFeedback.reportError: src/core/processing/qgsprocessingfeedback.h#L
 QgsProcessingFeedback.setProgressText: src/core/processing/qgsprocessingfeedback.h#L57
 QgsProcessingFeedback.textLog: src/core/processing/qgsprocessingfeedback.h#L165
 QgsProcessingFeedback: src/core/processing/qgsprocessingfeedback.h#L37
-QgsProcessingLayerPostProcessorInterface.postProcessLayer: src/core/processing/qgsprocessingcontext.h#L875
-QgsProcessingLayerPostProcessorInterface: src/core/processing/qgsprocessingcontext.h#L855
+QgsProcessingLayerPostProcessorInterface.postProcessLayer: src/core/processing/qgsprocessingcontext.h#L882
+QgsProcessingLayerPostProcessorInterface: src/core/processing/qgsprocessingcontext.h#L862
 QgsProcessingModelAlgorithm.VariableDefinition: src/core/processing/models/qgsprocessingmodelalgorithm.h#L466
 QgsProcessingModelAlgorithm.activateChildAlgorithm: src/core/processing/models/qgsprocessingmodelalgorithm.h#L158
 QgsProcessingModelAlgorithm.addChildAlgorithm: src/core/processing/models/qgsprocessingmodelalgorithm.h#L124
