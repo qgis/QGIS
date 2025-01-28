@@ -14,9 +14,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
-          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
-          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -31,9 +29,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
-          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
-          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -48,9 +44,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - b8e49813c507b73cb39a5ad904b2d302ccb25c591a2e577b6405f982
-          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
-          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -66,9 +60,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
-          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
-          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -84,9 +76,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
-          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
-          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
@@ -102,9 +92,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - b8e49813c507b73cb39a5ad904b2d302ccb25c591a2e577b6405f982
-          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
-          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -119,8 +107,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
-          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
+          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -135,8 +122,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
-          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
+          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -151,8 +137,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - d53cd7327d53bd4b8fb2de8b206e5aa0a1366963f2b63f58c2b7926e
-          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
+          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -168,8 +153,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
-          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
+          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -185,8 +169,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
-          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
+          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
@@ -202,8 +185,7 @@ tests:
     results:
       OUTPUT:
         hash:
-          - d53cd7327d53bd4b8fb2de8b206e5aa0a1366963f2b63f58c2b7926e
-          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
+          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
   - algorithm: native:removenullgeometries
