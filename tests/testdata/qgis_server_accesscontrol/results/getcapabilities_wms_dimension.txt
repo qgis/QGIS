@@ -114,13 +114,13 @@ Content-Type: text/xml; charset=utf-8
    <CRS>EPSG:4326</CRS>
    <CRS>EPSG:3857</CRS>
    <EX_GeographicBoundingBox>
-    <westBoundLongitude>-174.766579</westBoundLongitude>
-    <eastBoundLongitude>177.930822</eastBoundLongitude>
+    <westBoundLongitude>-180</westBoundLongitude>
+    <eastBoundLongitude>180</eastBoundLongitude>
     <southBoundLatitude>-69.957839</southBoundLatitude>
     <northBoundLatitude>84.307877</northBoundLatitude>
    </EX_GeographicBoundingBox>
    <BoundingBox CRS="EPSG:3857" miny="-11055007" minx="-20609694" maxy="19143773" maxx="20961936"/>
-   <BoundingBox CRS="EPSG:4326" miny="-174.766579" minx="-69.957839" maxy="177.930822" maxx="84.307877"/>
+   <BoundingBox CRS="EPSG:4326" miny="-180" minx="-69.957839" maxy="180" maxx="84.307877"/>
    <Layer queryable="1">
     <Name>Datetime_dim</Name>
     <Title>Datetime_dim</Title>
