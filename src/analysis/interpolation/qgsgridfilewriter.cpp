@@ -64,6 +64,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   double currentXValue;
   double interpolatedValue;
 
+  std::vector<float> float32Row( mNumColumns );
   const double step = mNumRows > 0 ? 100.0 / mNumRows : 1;
   for ( int row = 0; row < mNumRows; row++ )
   {
@@ -73,10 +74,8 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
     }
 
     currentXValue = mInterpolationExtent.xMinimum() + mCellSizeX / 2.0; //calculate value in the center of the cell
-
     QgsRasterBlock block( Qgis::DataType::Float32, mNumColumns, 1 );
 
-    std::vector<float> float32Row( mNumColumns );
     for ( int col = 0; col < mNumColumns; col++ )
     {
       if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue, feedback ) == 0 )
