@@ -282,7 +282,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       {
         QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
         toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
-        toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ) ) );
+        toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ), palette().color( QPalette::ColorRole::WindowText ) ) );
         toggleCommentAction->setEnabled( !isReadOnly() );
         connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
         menu->addAction( toggleCommentAction );
