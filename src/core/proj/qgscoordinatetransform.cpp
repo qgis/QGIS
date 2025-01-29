@@ -645,9 +645,11 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   double transYMax = 0;
 
   proj_errno_reset( projData );
+  // proj documentation recommends 21 points for densification
+  constexpr int DENSIFY_POINTS = 21;
   const int projResult = proj_trans_bounds( projContext, projData, ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ? PJ_FWD : PJ_INV,
                          xMin, yMin, xMax, yMax,
-                         &transXMin, &transYMin, &transXMax, &transYMax, 21 );
+                         &transXMin, &transYMin, &transXMax, &transYMax, DENSIFY_POINTS );
   if ( projResult != 1
        || !std::isfinite( transXMin )
        || !std::isfinite( transXMax )
