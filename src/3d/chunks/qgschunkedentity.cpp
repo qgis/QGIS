@@ -201,9 +201,9 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
 
   if ( mBboxesEntity )
   {
-    QList<QgsAABB> bboxes;
+    QList<QgsBox3D> bboxes;
     for ( QgsChunkNode *n : std::as_const( mActiveNodes ) )
-      bboxes << Qgs3DUtils::mapToWorldExtent( n->box3D(), mMapSettings->origin() );
+      bboxes << n->box3D();
     mBboxesEntity->setBoxes( bboxes );
   }
 
@@ -301,7 +301,7 @@ void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )
 
   if ( enabled )
   {
-    mBboxesEntity = new QgsChunkBoundsEntity( this );
+    mBboxesEntity = new QgsChunkBoundsEntity( mRootNode->box3D().center(), this );
   }
   else
   {

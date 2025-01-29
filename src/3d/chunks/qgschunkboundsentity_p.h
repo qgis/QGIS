@@ -29,7 +29,9 @@
 
 #include <Qt3DCore/QEntity>
 
-class QgsAABB;
+#include "qgsvector3d.h"
+
+class QgsBox3D;
 class Qgs3DWiredMesh;
 
 #define SIP_NO_FILE
@@ -46,12 +48,16 @@ class QgsChunkBoundsEntity : public Qt3DCore::QEntity
 
   public:
     //! Constructs the entity
-    QgsChunkBoundsEntity( Qt3DCore::QNode *parent = nullptr );
+    QgsChunkBoundsEntity( const QgsVector3D &vertexDataOrigin, Qt3DCore::QNode *parent = nullptr );
 
     //! Sets a list of bounding boxes to be rendered by the entity
-    void setBoxes( const QList<QgsAABB> &bboxes );
+    void setBoxes( const QList<QgsBox3D> &bboxes );
+
+    //! Returns origin of vertex data used in this entity
+    QgsVector3D vertexDataOrigin() const { return mVertexDataOrigin; }
 
   private:
+    QgsVector3D mVertexDataOrigin;
     Qgs3DWiredMesh *mAabbMesh = nullptr;
 };
 
