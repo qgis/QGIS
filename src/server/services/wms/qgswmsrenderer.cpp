@@ -2810,6 +2810,7 @@ namespace QgsWms
       { "features", json::array() },
     };
     const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
+    const bool withDisplayName = mWmsParameters.withDisplayName();
 
     const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
     for ( int i = 0; i < layerList.size(); ++i )
@@ -2841,6 +2842,7 @@ namespace QgsWms
           continue;
 
         QMap<QgsFeatureId, QString> fidMap;
+        QMap<QgsFeatureId, QString> fidDisplayNameMap;
 
         for ( int j = 0; j < featuresNode.size(); ++j )
         {
@@ -2881,6 +2883,24 @@ namespace QgsWms
               feature.setGeometry( QgsGeometry::fromWkt( wkt ) );
             }
           }
+
+          // Note: this is the feature expression display name, not the field alias
+          if ( withDisplayName )
+          {
+            QString displayName;
+            const QDomNodeList attrs = featureNode.elementsByTagName( "Attribute" );
+            for ( int k = 0; k < attrs.count(); k++ )
+            {
+              const QDomElement elm = attrs.at( k ).toElement();
+              if ( elm.attribute( QStringLiteral( "name" ) ).compare( "displayName" ) == 0 )
+              {
+                displayName = elm.attribute( "value" );
+                break;
+              }
+            }
+            fidDisplayNameMap.insert( feature.id(), displayName );
+          }
+
           features << feature;
 
           // search attributes to export (one time only)
@@ -2892,7 +2912,6 @@ namespace QgsWms
           {
             const QDomElement attributeElement = attributesNode.at( k ).toElement();
             const QString fieldName = attributeElement.attribute( QStringLiteral( "name" ) );
-
             attributes << feature.fieldNameIndex( fieldName );
           }
         }
@@ -2909,7 +2928,12 @@ namespace QgsWms
         for ( const auto &feature : std::as_const( features ) )
         {
           const QString id = QStringLiteral( "%1.%2" ).arg( layerName ).arg( fidMap.value( feature.id() ) );
-          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, QVariantMap(), id ) );
+          QVariantMap extraProperties;
+          if ( withDisplayName )
+          {
+            extraProperties.insert( QStringLiteral( "display_name" ), fidDisplayNameMap.value( feature.id() ) );
+          }
+          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id ) );
         }
       }
       else // raster layer
