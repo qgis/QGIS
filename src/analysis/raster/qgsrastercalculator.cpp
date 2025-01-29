@@ -446,10 +446,10 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
         entry.typeName = QStringLiteral( "unsigned char" );
         break;
       case Qgis::DataType::Int8:
-        entry.typeName = QStringLiteral( "signed char" );
+        entry.typeName = QStringLiteral( "char" );
         break;
       case Qgis::DataType::UInt16:
-        entry.typeName = QStringLiteral( "unsigned int" );
+        entry.typeName = QStringLiteral( "unsigned short" );
         break;
       case Qgis::DataType::Int16:
         entry.typeName = QStringLiteral( "short" );
@@ -544,7 +544,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION##" ), cExpression );
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION_ORIGINAL##" ), calcNode->toString() );
 
-    //qDebug() << programTemplate;
+    // qDebug() << programTemplate;
 
     // Create a program from the kernel source
     cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );
