@@ -400,7 +400,7 @@ class CORE_EXPORT QgsBox3D
      * \since QGIS 3.18
      * \deprecated QGIS 3.42. Use distanceTo() with QgsVector3D instead (QVector3D uses floats).
      */
-    double distanceTo( const QVector3D &point ) const SIP_DEPRECATED { return distanceTo( QgsVector3D( point ) ); }
+    Q_DECL_DEPRECATED double distanceTo( const QVector3D &point ) const SIP_DEPRECATED { return distanceTo( QgsVector3D( point ) ); }
 
     /**
      * Returns the smallest distance between the box and the point \a point
