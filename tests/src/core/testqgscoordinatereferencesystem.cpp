@@ -1672,7 +1672,6 @@ void TestQgsCoordinateReferenceSystem::isDynamic()
 
 void TestQgsCoordinateReferenceSystem::celestialBody()
 {
-#if ( PROJ_VERSION_MAJOR > 8 || ( PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR >= 1 ) )
   QgsCoordinateReferenceSystem crs;
   QCOMPARE( crs.celestialBodyName(), QString() );
 
@@ -1681,7 +1680,6 @@ void TestQgsCoordinateReferenceSystem::celestialBody()
 
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) );
   QCOMPARE( crs.celestialBodyName(), QStringLiteral( "Moon" ) );
-#endif
 }
 
 void TestQgsCoordinateReferenceSystem::operation()

@@ -312,13 +312,11 @@ void TestQgsCoordinateTransform::constructorFlags()
   QVERIFY( !tr4.isShortCircuited() );
   QVERIFY( tr4.mIgnoreImpossible );
 
-#if ( PROJ_VERSION_MAJOR > 8 || ( PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR >= 1 ) )
   QgsCoordinateTransform tr5( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) ), QgsProject::instance(), Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
   QVERIFY( !tr5.mBallparkTransformsAreAppropriate );
   // crses are from two different celestial bodies, the transform is impossible and should be short-circuited
   QVERIFY( tr5.isShortCircuited() );
   QVERIFY( tr5.mIgnoreImpossible );
-#endif
 }
 
 void TestQgsCoordinateTransform::scaleFactor_data()
@@ -848,10 +846,8 @@ void TestQgsCoordinateTransform::testTransformationIsPossible()
   QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem() ) );
 
   QVERIFY( QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
-#if ( PROJ_VERSION_MAJOR > 8 || ( PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR >= 1 ) )
   // crses from two different celestial bodies => transformation is not possible
   QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) ) ) );
-#endif
 }
 
 

@@ -193,10 +193,8 @@ bool QgsCoordinateTransform::isTransformationPossible( const QgsCoordinateRefere
   if ( !source.isValid() || !destination.isValid() )
     return false;
 
-#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
   if ( source.celestialBodyName() != destination.celestialBodyName() )
     return false;
-#endif
 
   return true;
 }
@@ -899,12 +897,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
 
-#if PROJ_VERSION_MAJOR>=8
     PJ_CONTEXT *projContext = QgsProjContext::get();
     const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_context_errno_string( projContext, projResult ) ) : QObject::tr( "Fallback transform failed" );
-#else
-    const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" );
-#endif
 
     const QString msg = QObject::tr( "%1 (%2 to %3) of%4%5Error: %6" )
                         .arg( dir,
