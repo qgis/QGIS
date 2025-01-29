@@ -788,9 +788,6 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #endif
 
   // use proj4 to do the transform
-
-  // if the source/destination projection is lat/long, convert the points to radians
-  // prior to transforming
   ProjData projData = d->threadLocalProjData();
 
   int projResult = 0;
