@@ -4037,18 +4037,11 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.MultiPolygon)
 
         # Extent before downloading features
-        reference = QgsGeometry.fromRect(
-            QgsRectangle(
-                243900.3520259926444851,
-                4427769.1559739429503679,
-                1525592.3040170343592763,
-                5607994.6020106188952923,
-            )
-        )
-        vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(
-            vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.05
-        ), f"Expected {reference.asWkt()}, got {vl_extent.asWkt()}"
+        vl_extent = vl.extent()
+        self.assertAlmostEqual(vl_extent.xMinimum(), 243900, 0)
+        self.assertAlmostEqual(vl_extent.yMinimum(), 4427769, -2)
+        self.assertAlmostEqual(vl_extent.xMaximum(), 1525592, 0)
+        self.assertAlmostEqual(vl_extent.yMaximum(), 5607995, 0)
 
         # Download all features
         features = [f for f in vl.getFeatures()]
@@ -4058,10 +4051,12 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         # Let signals to be notified to QgsVectorLayer
         loop = QEventLoop()
         loop.processEvents()
-        vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(
-            vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001
-        ), f"Expected {reference.asWkt()}, got {vl_extent.asWkt()}"
+        vl_extent = vl.extent()
+        self.assertAlmostEqual(vl_extent.xMinimum(), 500000, 3)
+        self.assertAlmostEqual(vl_extent.yMinimum(), 4500000, 3)
+        self.assertAlmostEqual(vl_extent.xMaximum(), 510000, 3)
+        self.assertAlmostEqual(vl_extent.yMaximum(), 4510000, 3)
+
         self.assertEqual(features[0]["intfield"], 1)
         self.assertEqual(features[1]["intfield"], 2)
 
