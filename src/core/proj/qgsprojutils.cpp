@@ -359,6 +359,10 @@ void QgsProjUtils::proj_collecting_logger( void *user_data, int /*level*/, const
   dest->append( messageString );
 }
 
+void QgsProjUtils::proj_silent_logger( void * /*user_data*/, int /*level*/, const char * /*message*/ )
+{
+}
+
 void QgsProjUtils::proj_logger( void *, int level, const char *message )
 {
 #ifdef QGISDEBUG
@@ -615,6 +619,21 @@ QgsScopedProjCollectingLogger::QgsScopedProjCollectingLogger()
 }
 
 QgsScopedProjCollectingLogger::~QgsScopedProjCollectingLogger()
+{
+  // reset logger back to terminal output
+  proj_log_func( QgsProjContext::get(), nullptr, QgsProjUtils::proj_logger );
+}
+
+//
+// QgsScopedProjSilentLogger
+//
+
+QgsScopedProjSilentLogger::QgsScopedProjSilentLogger()
+{
+  proj_log_func( QgsProjContext::get(), nullptr, QgsProjUtils::proj_silent_logger );
+}
+
+QgsScopedProjSilentLogger::~QgsScopedProjSilentLogger()
 {
   // reset logger back to terminal output
   proj_log_func( QgsProjContext::get(), nullptr, QgsProjUtils::proj_logger );
