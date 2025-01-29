@@ -135,8 +135,8 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
 
     // magic number 256 is the common span value for a COPC root node
     constexpr int SPAN = 256;
-    const float epsilon = std::min( box3D.width(), box3D.height() ) / SPAN;
-    const float distance = box3D.distanceTo( cameraPosMapCoords );
+    const float epsilon = static_cast<float>( std::min( box3D.width(), box3D.height() ) ) / SPAN;
+    const float distance = static_cast<float>( box3D.distanceTo( cameraPosMapCoords ) );
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
     constexpr float THRESHOLD = .2;
 
