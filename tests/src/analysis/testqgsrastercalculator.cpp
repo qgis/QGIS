@@ -548,7 +548,9 @@ void TestQgsRasterCalculator::calcWithDataType_data()
 
   QTest::newRow( "UInt16 without OpenCL" ) << static_cast<int>( GDT_UInt16 ) << false;
   QTest::newRow( "Byte without OpenCL" ) << static_cast<int>( GDT_Byte ) << false;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
   QTest::newRow( "Int8 without OpenCL" ) << static_cast<int>( GDT_Int8 ) << false;
+#endif
   QTest::newRow( "Int16 without OpenCL" ) << static_cast<int>( GDT_Int16 ) << false;
   QTest::newRow( "Int32 without OpenCL" ) << static_cast<int>( GDT_Int32 ) << false;
   QTest::newRow( "UInt32 without OpenCL" ) << static_cast<int>( GDT_UInt32 ) << false;
@@ -558,7 +560,9 @@ void TestQgsRasterCalculator::calcWithDataType_data()
 #ifdef HAVE_OPENCL
   QTest::newRow( "UInt16 with OpenCL" ) << static_cast<int>( GDT_UInt16 ) << true;
   QTest::newRow( "Byte with OpenCL" ) << static_cast<int>( GDT_Byte ) << true;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
   QTest::newRow( "Int8 with OpenCL" ) << static_cast<int>( GDT_Int8 ) << true;
+#endif
   QTest::newRow( "Int16 with OpenCL" ) << static_cast<int>( GDT_Int16 ) << true;
   QTest::newRow( "Int32 with OpenCL" ) << static_cast<int>( GDT_Int32 ) << true;
   QTest::newRow( "UInt32 with OpenCL" ) << static_cast<int>( GDT_UInt32 ) << true;
@@ -602,12 +606,14 @@ void TestQgsRasterCalculator::calcWithDataType()
         QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data, 2, 2, gdalDataType, 0, 0 ), CE_None );
         break;
       }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
       case GDT_Int8:
       {
         char data8[4] = { 1, 2, 3, 4 };
         QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data8, 2, 2, gdalDataType, 0, 0 ), CE_None );
         break;
       }
+#endif
       case GDT_UInt16:
       {
         unsigned short data16[4] = { 1, 2, 3, 4 };
