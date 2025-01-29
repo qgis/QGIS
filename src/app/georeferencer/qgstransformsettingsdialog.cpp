@@ -108,11 +108,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   cmbTransformType->addItem( tr( "Thin Plate Spline" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline ) );
   cmbTransformType->addItem( tr( "Projective" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::Projective ) );
 
-  // Populate CompressionComboBox
-  cmbCompressionComboBox->addItem( tr( "None" ), QStringLiteral( "None" ) );
-  cmbCompressionComboBox->addItem( tr( "LZW" ), QStringLiteral( "LZW" ) );
-  cmbCompressionComboBox->addItem( tr( "PACKBITS" ), QStringLiteral( "PACKBITS" ) );
-  cmbCompressionComboBox->addItem( tr( "DEFLATE" ), QStringLiteral( "DEFLATE" ) );
+  mCreationOptionsWidget->setFormat( "GTiff" );
 
   cmbResampling->addItem( tr( "Nearest Neighbour" ), static_cast<int>( QgsImageWarper::ResamplingMethod::NearestNeighbour ) );
   cmbResampling->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast<int>( QgsImageWarper::ResamplingMethod::Bilinear ) );
@@ -170,14 +166,14 @@ void QgsTransformSettingsDialog::setResamplingMethod( QgsImageWarper::Resampling
   cmbResampling->setCurrentIndex( cmbResampling->findData( static_cast<int>( method ) ) );
 }
 
-QString QgsTransformSettingsDialog::compressionMethod() const
+QStringList QgsTransformSettingsDialog::creationOptions() const
 {
-  return cmbCompressionComboBox->currentData().toString();
+  return mCreationOptionsGroupBox->isChecked() ? mCreationOptionsWidget->options() : QStringList();
 }
 
-void QgsTransformSettingsDialog::setCompressionMethod( const QString &method )
+void QgsTransformSettingsDialog::setCreationOptions( const QString &options )
 {
-  cmbCompressionComboBox->setCurrentIndex( cmbCompressionComboBox->findData( method ) );
+  mCreationOptionsWidget->setOptions( options );
 }
 
 QString QgsTransformSettingsDialog::destinationFilename() const
@@ -278,6 +274,13 @@ void QgsTransformSettingsDialog::accept()
       return;
     }
     outputFile->setFilePath( outputFileInfo.absoluteFilePath() );
+  }
+
+  const QString message = mCreationOptionsWidget->validateOptions( false );
+  if ( !message.isNull() )
+  {
+    QMessageBox::warning( this, tr( "Creation Options" ), tr( "Invalid creation options:\n%1" ).arg( message ) );
+    return;
   }
 
   QDialog::accept();

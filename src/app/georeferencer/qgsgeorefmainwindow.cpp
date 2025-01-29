@@ -78,7 +78,7 @@
 
 const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingCompressionMethod = new QgsSettingsEntryString( QStringLiteral( "compression-method" ), sTreeGeoreferencer, QStringLiteral( "NONE" ), QObject::tr( "Last used georeferencer compression method" ) );
+const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( QStringLiteral( "creation-options" ), sTreeGeoreferencer, QStringList(), QObject::tr( "Last used georeferencer raster creation options" ) );
 
 const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QObject::tr( "Last used georeferencer use-zero-as-transparent option" ) );
 
@@ -454,7 +454,7 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
   d.setCreateWorldFileOnly( mCreateWorldFileOnly );
   d.setTransformMethod( mTransformMethod );
   d.setResamplingMethod( mResamplingMethod );
-  d.setCompressionMethod( mCompressionMethod );
+  d.setCreationOptions( mCreationOptions.join( ' ' ) );
   d.setPdfMapFilename( mPdfOutputMapFile );
   d.setPdfReportFilename( mPdfOutputFile );
   d.setSaveGcpPoints( mSaveGcp );
@@ -472,7 +472,7 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
   mTargetCrs = d.targetCrs();
   mTransformMethod = d.transformMethod();
   mResamplingMethod = d.resamplingMethod();
-  mCompressionMethod = d.compressionMethod();
+  mCreationOptions = d.creationOptions();
   mModifiedFileName = d.destinationFilename();
   mPdfOutputMapFile = d.pdfMapFilename();
   mPdfOutputFile = d.pdfReportFilename();
@@ -534,7 +534,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
           int order = polynomialOrder( mTransformMethod );
           if ( order != 0 )
           {
-            gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order, mUserResX, mUserResY );
+            gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCreationOptions, mUseZeroForTrans, order, mUserResX, mUserResY );
             showGDALScript( QStringList() << translateCommand << gdalwarpCommand );
           }
           else
@@ -1440,7 +1440,7 @@ void QgsGeoreferencerMainWindow::readSettings()
 
   // warp options
   mResamplingMethod = settingResamplingMethod->value();
-  mCompressionMethod = settingCompressionMethod->value();
+  mCreationOptions = settingCreationOptions->value();
   mUseZeroForTrans = settingUseZeroForTransparent->value();
   mTransformMethod = settingTransformMethod->value();
   mSaveGcp = settingSaveGcps->value();
@@ -1455,7 +1455,7 @@ void QgsGeoreferencerMainWindow::writeSettings()
 
   settingTransformMethod->setValue( mTransformMethod );
   settingResamplingMethod->setValue( mResamplingMethod );
-  settingCompressionMethod->setValue( mCompressionMethod );
+  settingCreationOptions->setValue( mCreationOptions );
   settingUseZeroForTransparent->setValue( mUseZeroForTrans );
   settingSaveGcps->setValue( mSaveGcp );
   settingLoadInProject->setValue( mLoadInQgis );
@@ -1597,7 +1597,7 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
     mGeorefTransform,
     mResamplingMethod,
     mUseZeroForTrans,
-    mCompressionMethod,
+    mCreationOptions,
     mTargetCrs,
     mUserResX,
     mUserResY
@@ -2267,7 +2267,7 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
-QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order, double targetResX, double targetResY )
+QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QStringList &options, bool useZeroForTrans, int order, double targetResX, double targetResY )
 {
   QStringList gdalCommand;
   gdalCommand << QStringLiteral( "gdalwarp" ) << QStringLiteral( "-r" ) << resampling;
@@ -2282,7 +2282,12 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
     // Otherwise, use thin plate spline interpolation
     gdalCommand << QStringLiteral( "-tps" );
   }
-  gdalCommand << "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
+
+  for ( const QString &option : options )
+  {
+    gdalCommand << QStringLiteral( "-co %1" ).arg( option );
+  }
+  gdalCommand << ( useZeroForTrans ? "-dstalpha" : "" );
 
   if ( targetResX != 0.0 && targetResY != 0.0 )
   {
