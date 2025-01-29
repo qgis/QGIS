@@ -102,7 +102,7 @@ class TestPyQgsDatumTransform(QgisTestCase):
             i
             for i in range(len(ops))
             if ops[i].proj
-            == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg"
+            == "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg"
         ][0]
         self.assertTrue(ops[op2_index].name)
         self.assertEqual(
