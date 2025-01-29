@@ -437,7 +437,7 @@ if(WITH_CORE)
   message(STATUS "Found Proj: ${PROJ_VERSION} ${PROJ_DIR}")
   if(PROJ_VERSION VERSION_LESS "8.1")
     message(FATAL_ERROR "Cannot build QGIS using Proj older than 8.1")
-  endif(PROJ_VERSION VERSION_LESS "8.1")
+  endif()
 
   find_package(GEOS REQUIRED)
   message(STATUS "Found Geos: ${GEOS_VERSION} ${GEOS_DIR}")
