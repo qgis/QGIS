@@ -512,3 +512,50 @@ bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedC
 
   return res.PQresultStatus() == PGRES_COMMAND_OK;
 }
+
+bool QgsPostgresUtils::createProjectsTable( QgsPostgresConn *conn, const QString &schemaName )
+{
+  // try to create projects table
+  QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA)" )
+                  .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+
+  QgsPostgresResult res( conn->PQexec( sql ) );
+  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsPostgresUtils::deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName )
+{
+  //delete the project from db
+  const QString sql = QStringLiteral( "DELETE FROM %1.qgis_projects WHERE name=%2" )
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
+                        .arg( QgsPostgresConn::quotedValue( projectName ) );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsPostgresUtils::projectsTableExists( QgsPostgresConn *conn, const QString &schemaName )
+{
+  QString tableName( "qgis_projects" );
+  QString sql( QStringLiteral( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=%1 and table_schema=%2" )
+                 .arg( QgsPostgresConn::quotedValue( tableName ), QgsPostgresConn::quotedValue( schemaName ) )
+  );
+  QgsPostgresResult res( conn->PQexec( sql ) );
+
+  if ( !res.result() )
+  {
+    return false;
+  }
+
+  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+}
