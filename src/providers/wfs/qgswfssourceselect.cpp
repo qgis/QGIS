@@ -527,9 +527,8 @@ void QgsWFSSourceSelect::addButtonClicked()
       continue;
     }
     int row = idx.row();
-    QString typeName = mModel->item( row, MODEL_IDX_NAME )->text();   //WFS repository's name for layer
-    QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text(); //WFS type name title for layer name (if option is set)
-    QString sql = mModel->item( row, MODEL_IDX_SQL )->text();         //optional SqL specified by user
+    QString typeName = mModel->item( row, MODEL_IDX_NAME )->text(); //WFS repository's name for layer
+    QString sql = mModel->item( row, MODEL_IDX_SQL )->text();       //optional SqL specified by user
     QString layerName = typeName;
     QgsDebugMsgLevel( "Layer " + typeName + " SQL is " + sql, 3 );
 
