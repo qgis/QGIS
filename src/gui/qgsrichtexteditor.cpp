@@ -752,16 +752,20 @@ void QgsRichTextEditor::setText( const QString &text )
 {
   if ( text.isEmpty() )
   {
-    setPlainText( text );
+    mTextEdit->setPlainText( text );
+    mSourceEdit->clear();
     return;
   }
+
   if ( text[0] == '<' )
   {
-    setHtml( text );
+    mTextEdit->setHtml( text );
+    mSourceEdit->setText( text );
   }
   else
   {
-    setPlainText( text );
+    mTextEdit->setPlainText( text );
+    mSourceEdit->setText( text );
   }
 }
 
