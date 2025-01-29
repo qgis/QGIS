@@ -116,7 +116,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon("/mActionDecreaseFont.svg")
         )
         self.actionToggleComment.setIcon(
-            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
+            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"),
+            self.palette().color(QPalette.ColorRole.WindowText),
         )
 
         # Connect signals and slots
