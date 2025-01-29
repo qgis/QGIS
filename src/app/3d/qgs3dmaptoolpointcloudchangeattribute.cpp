@@ -30,6 +30,8 @@
 #include "qgsmultipoint.h"
 #include "qgsguiutils.h"
 #include "qgisapp.h"
+#include "qgschunknode.h"
+#include "qgsgeos.h"
 
 #include <QStringLiteral>
 
@@ -133,11 +135,13 @@ void Qgs3DMapToolPointCloudChangeAttribute::run()
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
   const QgsGeometry searchPolygon = QgsGeometry( new QgsPolygon( new QgsLineString( mScreenPoints ) ) );
+  QgsGeos preparedPolygon = QgsGeos( searchPolygon.constGet() );
+  preparedPolygon.prepareGeometry();
 
   QgsMapLayer *mapLayer = QgisApp::instance()->activeLayer();
   Q_ASSERT( mapLayer->type() == Qgis::LayerType::PointCloud );
   QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
-  const SelectedPoints sel = searchPoints( pcLayer, searchPolygon );
+  const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon );
 
   int offset;
   const QgsPointCloudAttribute *attribute = pcLayer->attributes().find( mAttributeName, offset );
@@ -189,7 +193,7 @@ QgsGeometry Qgs3DMapToolPointCloudChangeAttribute::box3DToPolygonInScreenSpace( 
 }
 
 
-SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const
+SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon ) const
 {
   SelectedPoints result;
 
@@ -203,7 +207,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   {
     // check whether the hull intersects the search polygon
     const QgsGeometry hull = box3DToPolygonInScreenSpace( chunk->box3D(), mapToPixel3D );
-    if ( !hull.intersects( searchPolygon ) )
+    if ( !searchPolygon.intersects( hull.constGet() ) )
       continue;
 
     const QgsPointCloudNodeId n( chunk->tileId().d, chunk->tileId().x, chunk->tileId().y, chunk->tileId().z );
@@ -217,7 +221,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 }
 
 
-QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const
+QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const
 {
   QVector<int> selected;
 
@@ -288,7 +292,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const double layerZScale = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zScale();
   const double layerZOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->zOffset();
 
-  const QgsRectangle searchPolygonBbox = searchPolygon.boundingBox();
+  QgsPoint pt;
 
   for ( int i = 0; i < block->pointCount(); ++i )
   {
@@ -326,10 +330,10 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     if ( !isInFrustum )
       continue;
 
-    if ( !searchPolygonBbox.contains( ptScreen.x(), ptScreen.y() ) )
-      continue;
+    pt.setX( ptScreen.x() );
+    pt.setY( ptScreen.y() );
 
-    if ( searchPolygon.intersects( QgsGeometry( new QgsPoint( ptScreen.x(), ptScreen.y() ) ) ) )
+    if ( searchPolygon.intersects( &pt ) )
     {
       selected.append( i );
     }

@@ -20,13 +20,13 @@
 #include "qgspointxy.h"
 #include "qgsgeometry.h"
 #include "qgspointcloudindex.h"
-#include "qgschunknode.h"
 
 #include <QMatrix4x4>
 #include <QVector>
 
 class QgsRubberBand3D;
 class QgsPointCloudLayer;
+class QgsGeos;
 
 
 struct MapToPixel3D
@@ -83,8 +83,8 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     void run();
     void restart();
     QgsPoint screenPointToMap( const QPoint &pos ) const;
-    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const;
-    QVector<int> selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const;
+    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon ) const;
+    QVector<int> selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const;
     static QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
 
     QVector<QgsPointXY> mScreenPoints;
