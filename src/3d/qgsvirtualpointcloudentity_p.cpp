@@ -44,7 +44,6 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   , mShowBoundingBoxes( showBoundingBoxes )
 {
   mSymbol.reset( symbol );
-  mBboxesEntity = new QgsChunkBoundsEntity( this );
   const QgsRectangle mapExtent = Qgs3DUtils::tryReprojectExtent2D( map->extent(), map->crs(), layer->crs(), map->transformContext() );
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   for ( int i = 0; i < subIndexes.size(); ++i )
@@ -52,7 +51,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     const QgsPointCloudSubIndex &si = subIndexes.at( i );
     const QgsRectangle intersection = si.extent().intersect( mapExtent );
 
-    mBboxes << Qgs3DUtils::mapToWorldExtent( intersection, si.zRange().lower(), si.zRange().upper(), map->origin() );
+    mBboxes << QgsBox3D( intersection, si.zRange().lower(), si.zRange().upper() );
 
     createChunkedEntityForSubIndex( i );
   }
@@ -76,6 +75,10 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     emit newEntityCreated( mOverviewEntity );
   }
 
+  // this is a rather arbitrary point, it could be somewhere else, ideally near the actual data
+  QgsVector3D boundsEntityOrigin( mapExtent.center().x(), mapExtent.center().y(), 0 );
+
+  mBboxesEntity = new QgsChunkBoundsEntity( boundsEntityOrigin, this );
   updateBboxEntity();
   connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
@@ -89,11 +92,6 @@ QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
 QgsVirtualPointCloudProvider *QgsVirtualPointCloudEntity::provider() const
 {
   return qobject_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() );
-}
-
-QgsAABB QgsVirtualPointCloudEntity::boundingBox( int i ) const
-{
-  return mBboxes.at( i );
 }
 
 void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
@@ -126,18 +124,19 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
 
 void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneContext )
 {
+  QgsVector3D cameraPosMapCoords = QgsVector3D( sceneContext.cameraPos ) + mapSettings()->origin();
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
-    const QgsAABB &bbox = mBboxes.at( i );
+    const QgsBox3D &box3D = mBboxes.at( i );
 
-    if ( bbox.isEmpty() )
+    if ( box3D.isEmpty() )
       continue;
 
     // magic number 256 is the common span value for a COPC root node
     constexpr int SPAN = 256;
-    const float epsilon = std::min( bbox.xExtent(), bbox.yExtent() ) / SPAN;
-    const float distance = bbox.distanceFromPoint( sceneContext.cameraPos );
+    const float epsilon = std::min( box3D.width(), box3D.height() ) / SPAN;
+    const float distance = box3D.distanceTo( cameraPosMapCoords );
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
     constexpr float THRESHOLD = .2;
 
@@ -178,11 +177,12 @@ QgsRange<float> QgsVirtualPointCloudEntity::getNearFarPlaneRange( const QMatrix4
   // if there were no chunked entities available, we will iterate the bboxes as a fallback instead
   if ( fnear == 1e9 && ffar == 0 )
   {
-    for ( const QgsAABB &bbox : mBboxes )
+    for ( const QgsBox3D &box : mBboxes )
     {
+      QgsAABB aabb = QgsAABB::fromBox3D( box, mBboxesEntity->vertexDataOrigin() );
       float bboxfnear;
       float bboxffar;
-      Qgs3DUtils::computeBoundingBoxNearFarPlanes( bbox, viewMatrix, bboxfnear, bboxffar );
+      Qgs3DUtils::computeBoundingBoxNearFarPlanes( aabb, viewMatrix, bboxfnear, bboxffar );
       fnear = std::min( fnear, bboxfnear );
       ffar = std::max( ffar, bboxffar );
     }
@@ -214,7 +214,7 @@ bool QgsVirtualPointCloudEntity::needsUpdate() const
 
 void QgsVirtualPointCloudEntity::updateBboxEntity()
 {
-  QList<QgsAABB> bboxes;
+  QList<QgsBox3D> bboxes;
   // we want to render bounding boxes only when zoomOutBehavior is RenderExtents or RenderOverviewAndExtents
   const QgsPointCloudLayer3DRenderer *renderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
   if ( renderer && renderer->zoomOutBehavior() != Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )
