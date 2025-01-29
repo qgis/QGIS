@@ -340,7 +340,6 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
   if ( !crs )
     return nullptr;
 
-#if PROJ_VERSION_MAJOR>=8
   PJ_CONTEXT *context = QgsProjContext::get();
   QgsProjUtils::proj_pj_unique_ptr candidate = crsToHorizontalCrs( crs );
   if ( !candidate ) // purely vertical CRS
@@ -350,9 +349,6 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
     return nullptr;
 
   return QgsProjUtils::proj_pj_unique_ptr( proj_crs_get_datum_ensemble( context, candidate.get() ) );
-#else
-  throw QgsNotSupportedException( QObject::tr( "Calculating datum ensembles requires a QGIS build based on PROJ 8.0 or later" ) );
-#endif
 }
 
 void QgsProjUtils::proj_collecting_logger( void *user_data, int /*level*/, const char *message )
