@@ -47,12 +47,7 @@ class _3D_EXPORT QgsAABB
      */
     static QgsAABB fromBox3D( const QgsBox3D &box3D, const QgsVector3D &origin )
     {
-      return QgsAABB( static_cast<float>( box3D.xMinimum() - origin.x() ),
-                      static_cast<float>( box3D.yMinimum() - origin.y() ),
-                      static_cast<float>( box3D.zMinimum() - origin.z() ),
-                      static_cast<float>( box3D.xMaximum() - origin.x() ),
-                      static_cast<float>( box3D.yMaximum() - origin.y() ),
-                      static_cast<float>( box3D.zMaximum() - origin.z() ) );
+      return QgsAABB( static_cast<float>( box3D.xMinimum() - origin.x() ), static_cast<float>( box3D.yMinimum() - origin.y() ), static_cast<float>( box3D.zMinimum() - origin.z() ), static_cast<float>( box3D.xMaximum() - origin.x() ), static_cast<float>( box3D.yMaximum() - origin.y() ), static_cast<float>( box3D.zMaximum() - origin.z() ) );
     }
 
     //! Returns box width in X axis
