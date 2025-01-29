@@ -257,6 +257,11 @@ class CORE_EXPORT QgsProjUtils
      */
     static void proj_collecting_logger( void *user_data, int level, const char *message );
 
+    /**
+     * QGIS proj log function which ignores errors.
+     */
+    static void proj_silent_logger( void *user_data, int level, const char *message );
+
 #if 0 // not possible in current Proj 6 API
 
     /**
@@ -310,6 +315,38 @@ class CORE_EXPORT QgsProjContext
     static QThreadStorage< QgsProjContext * > sProjContext;
 #endif
 };
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for temporary suppression of PROJ logging output.
+ *
+ * Temporarily sets the PROJ log function to one which suppresses errors for the lifetime of the object,
+ * before returning it to the default QGIS proj logging function on destruction.
+ *
+ * \note The collecting logger ONLY applies to the current thread.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.42
+ */
+class CORE_EXPORT QgsScopedProjSilentLogger
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedProjSilentLogger.
+     *
+     * PROJ errors will be ignored.
+     */
+    QgsScopedProjSilentLogger();
+
+    /**
+     * Returns the PROJ logger back to the default QGIS PROJ logger.
+     */
+    ~QgsScopedProjSilentLogger();
+
+};
+
 
 
 /**
