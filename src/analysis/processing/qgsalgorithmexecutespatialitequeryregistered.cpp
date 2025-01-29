@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmexecutepostgisqueryregistered.cpp
+                         qgsalgorithmexecutespatialitequeryregistered.cpp
                          ---------------------
     begin                : May 2020
     copyright            : (C) 2020 by Alexander Bruy
