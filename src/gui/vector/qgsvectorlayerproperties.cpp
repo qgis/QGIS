@@ -1305,8 +1305,16 @@ void QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked( QTreeWidgetIte
     return;
   }
 
+  // if current item is a child item, we should use its parent to be able to edit join
+  QTreeWidgetItem *currentJoinItem = item;
+  if ( item->parent() )
+  {
+    currentJoinItem = item->parent();
+  }
+
+
   QList<QgsMapLayer *> joinedLayers;
-  QString joinLayerId = item->data( 0, Qt::UserRole ).toString();
+  QString joinLayerId = currentJoinItem->data( 0, Qt::UserRole ).toString();
   const QList<QgsVectorLayerJoinInfo> &joins = mLayer->vectorJoins();
   int j = -1;
   for ( int i = 0; i < joins.size(); ++i )
@@ -1478,6 +1486,12 @@ void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
 void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
 {
   QTreeWidgetItem *currentJoinItem = mJoinTreeWidget->currentItem();
+  // if current item is a child item, we should use its parent to be able to remove join
+  if ( currentJoinItem && currentJoinItem->parent() )
+  {
+    currentJoinItem = currentJoinItem->parent();
+  }
+
   if ( !mLayer || !currentJoinItem )
   {
     return;
