@@ -314,14 +314,9 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 {
   setupUi( this );
 
-  mTextFormatWidget = new QgsTextFormatWidget();
-  QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->setContentsMargins( 0, 0, 0, 0 );
-  vLayout->addWidget( mTextFormatWidget );
-  mTextFormatWidgetContainer->setLayout( vLayout );
-
   mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
-  mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
+
+  mTextFormatButton->setMode( QgsFontButton::ModeTextRenderer );
 
   mSpinTextAngle->setClearValue( 0 );
 
@@ -330,10 +325,9 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
-  mTextFormatWidget->setDockMode( dockMode() );
-  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [=] {
+  connect( mTextFormatButton, &QgsFontButton::changed, this, [=] {
     mTextEdit->setMode(
-      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+      mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
     );
 
     if ( !mBlockChangedSignal )
@@ -377,8 +371,8 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
   if ( QgsAnnotationPointTextItem *pointTextItem = dynamic_cast<QgsAnnotationPointTextItem *>( item ) )
   {
     mBlockChangedSignal = true;
-    pointTextItem->setFormat( mTextFormatWidget->format() );
-    pointTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
+    pointTextItem->setFormat( mTextFormatButton->textFormat() );
+    pointTextItem->setText( mTextFormatButton->textFormat().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
     pointTextItem->setAngle( mSpinTextAngle->value() );
     pointTextItem->setRotationMode( mRotationModeCombo->currentData().value<Qgis::SymbolRotationMode>() );
     pointTextItem->setAlignment( mAlignmentComboBox->currentAlignment() );
@@ -387,18 +381,14 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
   }
 }
 
-void QgsAnnotationPointTextItemWidget::setDockMode( bool dockMode )
-{
-  QgsAnnotationItemBaseWidget::setDockMode( dockMode );
-  if ( mTextFormatWidget )
-    mTextFormatWidget->setDockMode( dockMode );
-}
-
 void QgsAnnotationPointTextItemWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsAnnotationItemBaseWidget::setContext( context );
-  if ( mTextFormatWidget )
-    mTextFormatWidget->setContext( context );
+  if ( mTextFormatButton )
+  {
+    mTextFormatButton->setMapCanvas( context.mapCanvas() );
+    mTextFormatButton->setMessageBar( context.messageBar() );
+  }
   mPropertiesWidget->setContext( context );
 }
 
@@ -419,7 +409,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mItem.reset( textItem->clone() );
 
   mBlockChangedSignal = true;
-  mTextFormatWidget->setFormat( mItem->format() );
+  mTextFormatButton->setTextFormat( mItem->format() );
   mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
   mTextEdit->setText( mItem->text() );
   mSpinTextAngle->setValue( mItem->angle() );
@@ -464,19 +454,13 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
 {
   setupUi( this );
 
-  mTextFormatWidget = new QgsTextFormatWidget();
-  QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->setContentsMargins( 0, 0, 0, 0 );
-  vLayout->addWidget( mTextFormatWidget );
-  mTextFormatWidgetContainer->setLayout( vLayout );
+  mTextFormatButton->setMode( QgsFontButton::ModeTextRenderer );
 
   mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
-  mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
-  mTextFormatWidget->setDockMode( dockMode() );
-  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [=] {
+  connect( mTextFormatButton, &QgsFontButton::changed, this, [=] {
     mTextEdit->setMode(
-      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+      mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
     );
 
     if ( !mBlockChangedSignal )
@@ -519,8 +503,8 @@ void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
   if ( QgsAnnotationLineTextItem *lineTextItem = dynamic_cast<QgsAnnotationLineTextItem *>( item ) )
   {
     mBlockChangedSignal = true;
-    lineTextItem->setFormat( mTextFormatWidget->format() );
-    lineTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
+    lineTextItem->setFormat( mTextFormatButton->textFormat() );
+    lineTextItem->setText( mTextFormatButton->textFormat().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
 
     lineTextItem->setOffsetFromLine( mSpinOffset->value() );
     lineTextItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
@@ -531,18 +515,14 @@ void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
   }
 }
 
-void QgsAnnotationLineTextItemWidget::setDockMode( bool dockMode )
-{
-  QgsAnnotationItemBaseWidget::setDockMode( dockMode );
-  if ( mTextFormatWidget )
-    mTextFormatWidget->setDockMode( dockMode );
-}
-
 void QgsAnnotationLineTextItemWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsAnnotationItemBaseWidget::setContext( context );
-  if ( mTextFormatWidget )
-    mTextFormatWidget->setContext( context );
+  if ( mTextFormatButton )
+  {
+    mTextFormatButton->setMapCanvas( context.mapCanvas() );
+    mTextFormatButton->setMessageBar( context.messageBar() );
+  }
   mPropertiesWidget->setContext( context );
 }
 
@@ -561,7 +541,7 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mItem.reset( textItem->clone() );
 
   mBlockChangedSignal = true;
-  mTextFormatWidget->setFormat( mItem->format() );
+  mTextFormatButton->setTextFormat( mItem->format() );
   mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
   mTextEdit->setText( mItem->text() );
   mPropertiesWidget->setItem( mItem.get() );
@@ -628,22 +608,16 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
   mSpinLeftMargin->setClearValue( 0 );
   mMarginUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
-  mTextFormatWidget = new QgsTextFormatWidget();
-  QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->setContentsMargins( 0, 0, 0, 0 );
-  vLayout->addWidget( mTextFormatWidget );
-  mTextFormatWidgetContainer->setLayout( vLayout );
+  mTextFormatButton->setMode( QgsFontButton::ModeTextRenderer );
 
   mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
-  mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight | Qt::AlignJustify );
   mVerticalAlignmentComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
 
-  mTextFormatWidget->setDockMode( dockMode() );
-  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [this] {
+  connect( mTextFormatButton, &QgsFontButton::changed, this, [this] {
     mTextEdit->setMode(
-      mTextFormatWidget->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
+      mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText
     );
 
     onWidgetChanged();
@@ -685,8 +659,8 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
   if ( QgsAnnotationRectangleTextItem *rectTextItem = dynamic_cast<QgsAnnotationRectangleTextItem *>( item ) )
   {
     mBlockChangedSignal = true;
-    rectTextItem->setFormat( mTextFormatWidget->format() );
-    rectTextItem->setText( mTextFormatWidget->format().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
+    rectTextItem->setFormat( mTextFormatButton->textFormat() );
+    rectTextItem->setText( mTextFormatButton->textFormat().allowHtmlFormatting() ? mTextEdit->toHtml() : mTextEdit->toPlainText() );
     rectTextItem->setAlignment( mAlignmentComboBox->currentAlignment() | mVerticalAlignmentComboBox->currentAlignment() );
 
     rectTextItem->setPlacementMode( mSizeModeCombo->currentData().value<Qgis::AnnotationPlacementMode>() );
@@ -714,18 +688,14 @@ void QgsAnnotationRectangleTextItemWidget::updateItem( QgsAnnotationItem *item )
   }
 }
 
-void QgsAnnotationRectangleTextItemWidget::setDockMode( bool dockMode )
-{
-  QgsAnnotationItemBaseWidget::setDockMode( dockMode );
-  if ( mTextFormatWidget )
-    mTextFormatWidget->setDockMode( dockMode );
-}
-
 void QgsAnnotationRectangleTextItemWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsAnnotationItemBaseWidget::setContext( context );
-  if ( mTextFormatWidget )
-    mTextFormatWidget->setContext( context );
+  if ( mTextFormatButton )
+  {
+    mTextFormatButton->setMapCanvas( context.mapCanvas() );
+    mTextFormatButton->setMessageBar( context.messageBar() );
+  }
   mBackgroundSymbolButton->setMapCanvas( context.mapCanvas() );
   mBackgroundSymbolButton->setMessageBar( context.messageBar() );
   mFrameSymbolButton->setMapCanvas( context.mapCanvas() );
@@ -760,7 +730,7 @@ bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mItem.reset( textItem->clone() );
 
   mBlockChangedSignal = true;
-  mTextFormatWidget->setFormat( mItem->format() );
+  mTextFormatButton->setTextFormat( mItem->format() );
   mTextEdit->setMode( mItem->format().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
   mTextEdit->setText( mItem->text() );
   mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
