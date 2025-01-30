@@ -300,7 +300,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
     if ( filterIsValid )
     {
       double eval = filterExpression.evaluate( i );
-      if ( !eval || std::isnan( eval ) )
+      if ( eval == 0.0 || std::isnan( eval ) )
       {
         continue;
       }

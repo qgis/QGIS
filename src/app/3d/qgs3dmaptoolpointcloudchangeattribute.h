@@ -37,7 +37,7 @@ struct MapToPixel3D
 
     QPointF transform( double x, double y, double z, bool *isInView = nullptr ) const
     {
-      const QVector4D cClip = VP * QVector4D( x - origin.x(), y - origin.y(), z - origin.z(), 1 );
+      QVector4D cClip = VP * QVector4D( static_cast<float>( x - origin.x() ), static_cast<float>( y - origin.y() ), static_cast<float>( z - origin.z() ), 1 );
       // normalized device coordinates (-1 to +1)
       // z == -1 is near plane, z == +1 is far plane
       const float xNdc = cClip.x() / cClip.w();
@@ -47,8 +47,8 @@ struct MapToPixel3D
         *isInView = !( zNdc < -1 || zNdc > 1 || yNdc < -1 || yNdc > 1 || zNdc < -1 || xNdc > 1 );
 
       // window / sceen space coordinates
-      const float xScreen = ( xNdc + 1 ) * 0.5 * canvasSize.width();
-      const float yScreen = ( -yNdc + 1 ) * 0.5 * canvasSize.height();
+      const float xScreen = ( xNdc + 1 ) * 0.5f * canvasSize.width();
+      const float yScreen = ( -yNdc + 1 ) * 0.5f * canvasSize.height();
 
       return QPointF( xScreen, yScreen );
     }
