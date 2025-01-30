@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>846</width>
-    <height>312</height>
+    <height>705</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -51,7 +51,7 @@
        <item>
         <widget class="QgsImageDropTextEdit" name="mTextEdit">
          <property name="autoFormatting">
-          <set>QTextEdit::AutoFormattingFlag::AutoNone</set>
+          <set>QTextEdit::AutoNone</set>
          </property>
          <property name="tabChangesFocus">
           <bool>true</bool>
