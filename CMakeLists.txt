@@ -695,8 +695,10 @@ if (ENABLE_TESTS)
   set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
   set(QT_USE_QTTEST TRUE)
   enable_testing()
-  # Adds some testing specific build targets e.g. make Experimental
-  include(Dart)
+  if (PUSH_TO_CDASH)
+    # Adds some testing specific build targets e.g. make Experimental
+    include(Dart)
+  endif()
   # Additional test configuration options e.g. max upload size of test report
   configure_file(
     "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
