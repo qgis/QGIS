@@ -95,6 +95,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsvectortileutils.h"
 #include "qgsscaleutils.h"
+#include "qgsmaplayerfactory.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -2447,6 +2448,8 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
     const QgsMimeDataUtils::Uri &u = lst.at( i );
 
     QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
+    bool ok = false;
+    Qgis::LayerType layerType = QgsMapLayerFactory::typeFromString( u.layerType, ok );
 
     if ( u.layerType == QLatin1String( "collection" ) )
     {
@@ -2455,7 +2458,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
       if ( ok )
         addedLayers.append( collectionLayers );
     }
-    else if ( u.layerType == QLatin1String( "vector" ) )
+    else if ( ok && layerType == Qgis::LayerType::Vector )
     {
       const QList<QgsVectorLayer *> layerList { QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey, addToLegend ) };
       for ( QgsVectorLayer *layer : std::as_const( layerList ) )
@@ -2463,7 +2466,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "raster" ) )
+    else if ( ok && layerType == Qgis::LayerType::Raster )
     {
       const QList<QgsRasterLayer *> layerList { QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey, addToLegend ) };
       for ( QgsRasterLayer *layer : std::as_const( layerList ) )
@@ -2471,7 +2474,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "mesh" ) )
+    else if ( ok && layerType == Qgis::LayerType::Mesh )
     {
       const QList<QgsMeshLayer *> layerList { QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey, addToLegend ) };
       for ( QgsMeshLayer *layer : std::as_const( layerList ) )
@@ -2479,17 +2482,17 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "pointcloud" ) )
+    else if ( ok && layerType == Qgis::LayerType::PointCloud )
     {
       if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
-    else if ( u.layerType == QLatin1String( "tiled-scene" ) )
+    else if ( ok && layerType == Qgis::LayerType::TiledScene )
     {
       if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsTiledSceneLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
-    else if ( u.layerType == QLatin1String( "vector-tile" ) )
+    else if ( ok && layerType == Qgis::LayerType::VectorTile )
     {
       QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
@@ -2587,7 +2590,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "plugin" ) )
+    else if ( ok && layerType == Qgis::LayerType::Plugin )
     {
       QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPluginLayer>( uri, u.name, u.providerKey, addToLegend, false );
       if ( layer )

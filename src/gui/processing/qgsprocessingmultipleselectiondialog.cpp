@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgsfileutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgspluginlayer.h"
@@ -460,7 +461,7 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
            || parameter->layerType() == Qgis::ProcessingSourceType::VectorLine
            || parameter->layerType() == Qgis::ProcessingSourceType::VectorPoint
            || parameter->layerType() == Qgis::ProcessingSourceType::VectorPolygon )
-         && u.layerType == QLatin1String( "vector" ) )
+         && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Vector ) )
     {
       bool acceptable = false;
       switch ( QgsWkbTypes::geometryType( u.wkbType ) )
@@ -493,16 +494,16 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
         res.append( u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri );
     }
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Raster )
-              && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Raster ) && u.providerKey == QLatin1String( "gdal" ) )
       res.append( u.uri );
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Mesh )
-              && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) && u.providerKey == QLatin1String( "mdal" ) )
       res.append( u.uri );
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::PointCloud )
-              && u.layerType == QLatin1String( "pointcloud" ) )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) )
       res.append( u.uri );
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::VectorTile )
-              && u.layerType == QLatin1String( "vector-tile" ) )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::VectorTile ) )
       res.append( u.uri );
     // NOLINTEND(bugprone-branch-clone)
   }
