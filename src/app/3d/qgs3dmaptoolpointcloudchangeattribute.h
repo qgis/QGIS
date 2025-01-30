@@ -47,8 +47,8 @@ struct MapToPixel3D
         *isInView = !( zNdc < -1 || zNdc > 1 || yNdc < -1 || yNdc > 1 || zNdc < -1 || xNdc > 1 );
 
       // window / sceen space coordinates
-      const float xScreen = ( xNdc + 1 ) * 0.5f * canvasSize.width();
-      const float yScreen = ( -yNdc + 1 ) * 0.5f * canvasSize.height();
+      const float xScreen = ( xNdc + 1 ) * 0.5f * static_cast<float>( canvasSize.width() );
+      const float yScreen = ( -yNdc + 1 ) * 0.5f * static_cast<float>( canvasSize.height() );
 
       return QPointF( xScreen, yScreen );
     }
