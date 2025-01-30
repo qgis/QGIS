@@ -1489,7 +1489,7 @@ void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
   // if current item is a child item, we should use its parent to be able to remove join
   if ( currentJoinItem && currentJoinItem->parent() )
   {
-    currentJoinItem = mJoinTreeWidget->currentItem()->parent();
+    currentJoinItem = currentJoinItem->parent();
   }
 
   if ( !mLayer || !currentJoinItem )
