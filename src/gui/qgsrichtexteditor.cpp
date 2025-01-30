@@ -757,7 +757,8 @@ void QgsRichTextEditor::setText( const QString &text )
     return;
   }
 
-  if ( text[0] == '<' )
+  const thread_local QRegularExpression sIsHtmlRx( QStringLiteral( "^\\s*<" ) );
+  if ( sIsHtmlRx.match( text ).hasMatch() )
   {
     mTextEdit->setHtml( text );
     mSourceEdit->setText( text );
