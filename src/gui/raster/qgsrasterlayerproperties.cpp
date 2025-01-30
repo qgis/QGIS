@@ -808,6 +808,9 @@ void QgsRasterLayerProperties::sync()
     mInvertColorsCheck->setChecked( hueSaturationFilter->invertColors() );
   }
 
+  // Resampling
+  mResamplingUtils.refreshWidgetsFromLayer();
+
   mRefreshSettingsWidget->syncToLayer();
 
   QgsDebugMsgLevel( QStringLiteral( "populate general tab" ), 3 );
