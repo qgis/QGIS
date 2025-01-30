@@ -76,27 +76,27 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgslayoutexporter.h"
 
-const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
+const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QStringLiteral( "Last used georeferencer resampling method" ) );
 
-const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( QStringLiteral( "creation-options" ), sTreeGeoreferencer, QStringList(), QObject::tr( "Last used georeferencer raster creation options" ) );
+const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( QStringLiteral( "creation-options" ), sTreeGeoreferencer, QStringList(), QStringLiteral( "Last used georeferencer raster creation options" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QObject::tr( "Last used georeferencer use-zero-as-transparent option" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QStringLiteral( "Last used georeferencer use-zero-as-transparent option" ) );
 
-const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QObject::tr( "Last used georeferencer transform method" ) );
+const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QStringLiteral( "Last used georeferencer transform method" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QObject::tr( "Whether georeferencer should automatically save .points files" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QStringLiteral( "Whether georeferencer should automatically save .points files" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QObject::tr( "Whether georeferencer should automatically load results into the current project" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QStringLiteral( "Whether georeferencer should automatically load results into the current project" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used folder for georeferencer source files" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used raster file filter for georeferencer source files" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used georeferencer target CRS" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used georeferencer target CRS" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( QStringLiteral( "snapping-enabled" ), sTreeGeoreferencer, false, QObject::tr( "Snapping enabled." ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( QStringLiteral( "snapping-enabled" ), sTreeGeoreferencer, false, QStringLiteral( "Snapping enabled." ) );
 
-const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( QStringLiteral( "snapping-types" ), sTreeGeoreferencer, Qgis::SnappingType::Vertex, QObject::tr( "Snapping types." ) );
+const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( QStringLiteral( "snapping-types" ), sTreeGeoreferencer, Qgis::SnappingType::Vertex, QStringLiteral( "Snapping types." ) );
 
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
