@@ -42,8 +42,9 @@
     "expat",
     {
       "name": "gdal",
-      "default-features": false,
       "features": [
+        "freexl",
+        "kea",
         "poppler"
       ]
     },

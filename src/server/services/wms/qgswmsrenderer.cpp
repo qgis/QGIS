@@ -69,6 +69,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorrelation.h"
 #include "qgsdimensionfilter.h"
 
 #include <QImage>
@@ -710,7 +711,6 @@ namespace QgsWms
       exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
       exportSettings.simplifyGeometries = mWmsParameters.pdfSimplifyGeometries();
       exportSettings.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
-      exportSettings.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
       if ( mWmsParameters.pdfLosslessImageCompression() )
       {
         exportSettings.flags |= QgsLayoutRenderContext::FlagLosslessImageRendering;
@@ -1218,7 +1218,6 @@ namespace QgsWms
       pdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
     }
     pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
-    pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
     const bool geospatialPdf = mWmsParameters.pdfAppendGeoreference();
     std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geospatialPdf, pdfExportDetails );
     if ( mWmsParameters.pdfAppendGeoreference() )
@@ -1423,6 +1422,8 @@ namespace QgsWms
 
     //then set destinationCrs
     mapSettings.setDestinationCrs( outputCRS );
+
+    mapSettings.setTransformContext( mProject->transformContext() );
 
     // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
     if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && outputCRS.hasAxisInverted() )
@@ -2809,6 +2810,7 @@ namespace QgsWms
       { "features", json::array() },
     };
     const bool withGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
+    const bool withDisplayName = mWmsParameters.withDisplayName();
 
     const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
     for ( int i = 0; i < layerList.size(); ++i )
@@ -2840,6 +2842,7 @@ namespace QgsWms
           continue;
 
         QMap<QgsFeatureId, QString> fidMap;
+        QMap<QgsFeatureId, QString> fidDisplayNameMap;
 
         for ( int j = 0; j < featuresNode.size(); ++j )
         {
@@ -2880,6 +2883,24 @@ namespace QgsWms
               feature.setGeometry( QgsGeometry::fromWkt( wkt ) );
             }
           }
+
+          // Note: this is the feature expression display name, not the field alias
+          if ( withDisplayName )
+          {
+            QString displayName;
+            const QDomNodeList attrs = featureNode.elementsByTagName( "Attribute" );
+            for ( int k = 0; k < attrs.count(); k++ )
+            {
+              const QDomElement elm = attrs.at( k ).toElement();
+              if ( elm.attribute( QStringLiteral( "name" ) ).compare( "displayName" ) == 0 )
+              {
+                displayName = elm.attribute( "value" );
+                break;
+              }
+            }
+            fidDisplayNameMap.insert( feature.id(), displayName );
+          }
+
           features << feature;
 
           // search attributes to export (one time only)
@@ -2891,7 +2912,6 @@ namespace QgsWms
           {
             const QDomElement attributeElement = attributesNode.at( k ).toElement();
             const QString fieldName = attributeElement.attribute( QStringLiteral( "name" ) );
-
             attributes << feature.fieldNameIndex( fieldName );
           }
         }
@@ -2908,7 +2928,12 @@ namespace QgsWms
         for ( const auto &feature : std::as_const( features ) )
         {
           const QString id = QStringLiteral( "%1.%2" ).arg( layerName ).arg( fidMap.value( feature.id() ) );
-          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, QVariantMap(), id ) );
+          QVariantMap extraProperties;
+          if ( withDisplayName )
+          {
+            extraProperties.insert( QStringLiteral( "display_name" ), fidDisplayNameMap.value( feature.id() ) );
+          }
+          json["features"].push_back( exporter.exportFeatureToJsonObject( feature, extraProperties, id ) );
         }
       }
       else // raster layer
@@ -2982,6 +3007,9 @@ namespace QgsWms
       expressionContext << QgsExpressionContextUtils::layerScope( layer );
     expressionContext.setFeature( *feat );
 
+    QgsEditFormConfig editConfig { layer ? layer->editFormConfig() : QgsEditFormConfig() };
+    const bool honorFormConfig { layer && QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
+
     // always add bounding box info if feature contains geometry and has been
     // explicitly configured in the project
     if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && !geom.isNull() && geom.type() != Qgis::GeometryType::Unknown && geom.type() != Qgis::GeometryType::Null )
@@ -3017,6 +3045,74 @@ namespace QgsWms
       bbElem.appendChild( boxElem );
       typeNameElement.appendChild( bbElem );
     }
+
+    // find if an attribute is in any form tab
+    std::function<bool( const QString &, const QgsAttributeEditorElement * )> findAttributeInTree;
+    findAttributeInTree = [&findAttributeInTree, &layer]( const QString &attributeName, const QgsAttributeEditorElement *group ) -> bool {
+      const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
+      if ( container )
+      {
+        const QList<QgsAttributeEditorElement *> children = container->children();
+        for ( const QgsAttributeEditorElement *child : children )
+        {
+          switch ( child->type() )
+          {
+            case Qgis::AttributeEditorType::Container:
+            {
+              if ( findAttributeInTree( attributeName, child ) )
+              {
+                return true;
+              }
+              break;
+            }
+            case Qgis::AttributeEditorType::Field:
+            {
+              if ( child->name() == attributeName )
+              {
+                return true;
+              }
+              break;
+            }
+            case Qgis::AttributeEditorType::Relation:
+            {
+              const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( child );
+              if ( relationEditor )
+              {
+                const QgsRelation &relation { relationEditor->relation() };
+                if ( relation.referencedLayer() == layer )
+                {
+                  const QgsAttributeList &referencedFields { relation.referencedFields() };
+                  for ( const auto &idx : std::as_const( referencedFields ) )
+                  {
+                    const QgsField f { layer->fields().at( idx ) };
+                    if ( f.name() == attributeName )
+                    {
+                      return true;
+                    }
+                  }
+                }
+                else if ( relation.referencingLayer() == layer )
+                {
+                  const QgsAttributeList &referencingFields { relation.referencingFields() };
+                  for ( const auto &idx : std::as_const( referencingFields ) )
+                  {
+                    const QgsField f { layer->fields().at( idx ) };
+                    if ( f.name() == attributeName )
+                    {
+                      return true;
+                    }
+                  }
+                }
+              }
+              break;
+            }
+            default:
+              break;
+          }
+        }
+      }
+      return false;
+    };
 
     if ( withGeom && !geom.isNull() )
     {
@@ -3064,6 +3160,15 @@ namespace QgsWms
       if ( attributes && !attributes->contains( attributeName ) )
       {
         continue;
+      }
+
+      if ( honorFormConfig )
+      {
+        const QgsAttributeEditorContainer *editorContainer = editConfig.invisibleRootContainer();
+        if ( !editorContainer || !findAttributeInTree( attributeName, editorContainer ) )
+        {
+          continue;
+        }
       }
 
       QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
@@ -3152,6 +3257,9 @@ namespace QgsWms
         mapUnitTolerance = mapSettings.extent().width() / 100.0;
       }
     }
+
+    // Make sure the map unit tolerance is at least 1 pixel
+    mapUnitTolerance = std::max( mapUnitTolerance, 1.0 * rct.mapToPixel().mapUnitsPerPixel() );
 
     QgsRectangle mapRectangle( infoPoint.x() - mapUnitTolerance, infoPoint.y() - mapUnitTolerance, infoPoint.x() + mapUnitTolerance, infoPoint.y() + mapUnitTolerance );
     return ( mapSettings.mapToLayerCoordinates( ml, mapRectangle ) );

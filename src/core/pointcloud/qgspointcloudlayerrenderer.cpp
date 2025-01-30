@@ -43,22 +43,21 @@
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mLayer( layer )
   , mLayerName( layer->name() )
   , mLayerAttributes( layer->attributes() )
   , mSubIndexes( layer && layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
   , mFeedback( new QgsFeedback )
   , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
-  // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
-  // or use some locking to prevent read/write from multiple threads
-  if ( !mLayer || !mLayer->dataProvider() || !mLayer->renderer() )
+  if ( !layer->dataProvider() || !layer->renderer() )
     return;
+
+  mIndex = layer->index();
 
   QElapsedTimer timer;
   timer.start();
 
-  mRenderer.reset( mLayer->renderer()->clone() );
+  mRenderer.reset( layer->renderer()->clone() );
   if ( !mSubIndexes.isEmpty() )
   {
     mSubIndexExtentRenderer.reset( new QgsPointCloudExtentRenderer() );
@@ -66,19 +65,26 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     mSubIndexExtentRenderer->setLabelTextFormat( mRenderer->labelTextFormat() );
   }
 
-  if ( mLayer->index() )
+  if ( mIndex )
   {
-    mScale = mLayer->index().scale();
-    mOffset = mLayer->index().offset();
+    mScale = mIndex.scale();
+    mOffset = mIndex.offset();
   }
 
-  if ( const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() ) )
+  if ( const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() ) )
   {
     mZOffset = elevationProps->zOffset();
     mZScale = elevationProps->zScale();
   }
 
-  mCloudExtent = mLayer->dataProvider()->polygonBounds();
+  if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
+  {
+    mAverageSubIndexWidth = vpcProvider->averageSubIndexWidth();
+    mAverageSubIndexHeight = vpcProvider->averageSubIndexHeight();
+    mOverviewIndex = vpcProvider->overview();
+  }
+
+  mCloudExtent = layer->dataProvider()->polygonBounds();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 
@@ -129,9 +135,7 @@ bool QgsPointCloudLayerRenderer::render()
     return true;
   }
 
-  // TODO cache!?
-  QgsPointCloudIndex pc = mLayer->index();
-  if ( mSubIndexes.isEmpty() && ( !pc || !pc.isValid() ) )
+  if ( mSubIndexes.isEmpty() && ( !mIndex || !mIndex.isValid() ) )
   {
     mReadyToCompose = true;
     return false;
@@ -195,9 +199,9 @@ bool QgsPointCloudLayerRenderer::render()
   bool canceled = false;
   if ( mSubIndexes.isEmpty() )
   {
-    canceled = !renderIndex( pc );
+    canceled = !renderIndex( mIndex );
   }
-  else if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
+  else if ( mOverviewIndex )
   {
     QVector< QgsPointCloudSubIndex > visibleIndexes;
     for ( const QgsPointCloudSubIndex &si : mSubIndexes )
@@ -207,23 +211,22 @@ bool QgsPointCloudLayerRenderer::render()
         visibleIndexes.append( si );
       }
     }
-    const bool zoomedOut = renderExtent.width() > vpcProvider->averageSubIndexWidth() ||
-                           renderExtent.height() > vpcProvider->averageSubIndexHeight();
-    QgsPointCloudIndex overviewIndex = vpcProvider->overview();
+    const bool zoomedOut = renderExtent.width() > mAverageSubIndexWidth ||
+                           renderExtent.height() > mAverageSubIndexHeight;
     // if the overview of virtual point cloud exists, and we are zoomed out, we render just overview
-    if ( vpcProvider->overview() && zoomedOut &&
+    if ( mOverviewIndex && zoomedOut &&
          mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )
     {
-      renderIndex( overviewIndex );
+      renderIndex( *mOverviewIndex );
     }
     else
     {
       // if the overview of virtual point cloud exists, and we are zoomed out, but we want both overview and extents,
       // we render overview
-      if ( vpcProvider->overview() && zoomedOut &&
+      if ( mOverviewIndex && zoomedOut &&
            mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents )
       {
-        renderIndex( overviewIndex );
+        renderIndex( *mOverviewIndex );
       }
       mSubIndexExtentRenderer->startRender( context );
       for ( const QgsPointCloudSubIndex &si : visibleIndexes )

@@ -530,7 +530,6 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   {
     QDomElement georeferencing = doc.createElement( QStringLiteral( "Georeferencing" ) );
     georeferencing.setAttribute( QStringLiteral( "id" ), QStringLiteral( "georeferenced_%1" ).arg( i++ ) );
-    georeferencing.setAttribute( QStringLiteral( "OGCBestPracticeFormat" ), details.useOgcBestPracticeFormatGeoreferencing ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
     georeferencing.setAttribute( QStringLiteral( "ISO32000ExtensionFormat" ), details.useIso32000ExtensionFormatGeoreferencing ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
     if ( section.crs.isValid() )

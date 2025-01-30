@@ -120,17 +120,7 @@
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item row="1" column="1">
-             <widget class="QComboBox" name="mGeospatialPdfFormatComboBox"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Format</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" colspan="2">
+            <item row="1" column="0" colspan="2">
              <widget class="QCheckBox" name="mExportGeospatialPdfFeaturesCheckBox">
               <property name="text">
                <string>Include vector feature information</string>
@@ -429,7 +419,6 @@ Rasterizing the map is recommended when such effects are used.</string>
   <tabstop>mSaveWorldFile</tabstop>
   <tabstop>mExportMetadataCheckBox</tabstop>
   <tabstop>mGeospatialPDFGroupBox</tabstop>
-  <tabstop>mGeospatialPdfFormatComboBox</tabstop>
   <tabstop>mExportGeospatialPdfFeaturesCheckBox</tabstop>
   <tabstop>mSaveAsRaster</tabstop>
   <tabstop>mSimplifyGeometriesCheckbox</tabstop>

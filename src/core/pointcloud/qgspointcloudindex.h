@@ -655,6 +655,9 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
     bool isModified() const;
 
+    //! Returns a list of node IDs that have been modified
+    QList<QgsPointCloudNodeId> updatedNodes() const;
+
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
 

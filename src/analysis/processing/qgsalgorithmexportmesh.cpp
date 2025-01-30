@@ -626,7 +626,12 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   // grid definition
-  double gridSpacing = parameterAsDouble( parameters, QStringLiteral( "GRID_SPACING" ), context );
+  const double gridSpacing = parameterAsDouble( parameters, QStringLiteral( "GRID_SPACING" ), context );
+  if ( qgsDoubleNear( gridSpacing, 0 ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Grid spacing cannot be 0" ) );
+  }
+
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
   if ( extent.isEmpty() )
     extent = mTriangularMesh.extent();
@@ -830,7 +835,12 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
   // create raster
-  double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
+  const double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
+  if ( qgsDoubleNear( pixelSize, 0 ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Pixel size cannot be 0" ) );
+  }
+
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
   if ( extent.isEmpty() )
     extent = mTriangularMesh.extent();

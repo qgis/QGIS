@@ -3656,6 +3656,20 @@ class PyQgsTextRenderer(QgisTestCase):
             self.checkRender(format, "text_tab_fixed_size", text=["with\ttabs", "a\tb"])
         )
 
+    def testDrawTabsMultipleHtmlFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setSize(20)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(20)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
+        self.assertTrue(
+            self.checkRender(
+                format, "text_tab_multiple_html", text=["with\t\ttabs", "a\t\tb"]
+            )
+        )
+
     def testDrawTabPositionsFixedSize(self):
         format = QgsTextFormat()
         format.setFont(getTestFont("bold"))

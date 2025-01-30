@@ -327,7 +327,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 }
 
-void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( const FieldConfig config )
+void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( const FieldConfig &config )
 {
   const QgsFieldConstraints constraints = config.mFieldConstraints;
 
@@ -643,7 +643,13 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
   const Qgis::AttributeFormLayout layout = mEditorLayoutComboBox->currentData().value<Qgis::AttributeFormLayout>();
 
   if ( layout == Qgis::AttributeFormLayout::DragAndDrop )
+  {
     storeAttributeWidgetEdit();
+  }
+  if ( mAttributeTypeDialog )
+  {
+    storeAttributeTypeDialog();
+  }
 
   clearAttributeTypeFrame();
 
@@ -673,7 +679,9 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       {
         receiver->selectFirstMatchingItem( itemData );
         if ( layout == Qgis::AttributeFormLayout::DragAndDrop )
+        {
           loadAttributeWidgetEdit();
+        }
         loadAttributeTypeDialog();
         break;
       }

@@ -25,6 +25,7 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsrastermatrix.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsgdalutils.h"
 
 #include <QDebug>
 
@@ -61,12 +62,15 @@ class TestQgsRasterCalculator : public QgsTest
 
     void calcWithLayers();
     void calcWithReprojectedLayers();
+    void calcWithDataType();
+    void calcWithDataType_data();
 
     void errors();
     void toString();
     void findNodes();
 
     void testRasterEntries();
+    void testOutputCrsFromRasterEntries();
     void calcFormulasWithReprojectedLayers();
 
     void testStatistics();
@@ -536,6 +540,148 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   delete block;
 }
 
+
+void TestQgsRasterCalculator::calcWithDataType_data()
+{
+  QTest::addColumn<int>( "dataType" );
+  QTest::addColumn<bool>( "useOpenCL" );
+
+  QTest::newRow( "UInt16 without OpenCL" ) << static_cast<int>( GDT_UInt16 ) << false;
+  QTest::newRow( "Byte without OpenCL" ) << static_cast<int>( GDT_Byte ) << false;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
+  QTest::newRow( "Int8 without OpenCL" ) << static_cast<int>( GDT_Int8 ) << false;
+#endif
+  QTest::newRow( "Int16 without OpenCL" ) << static_cast<int>( GDT_Int16 ) << false;
+  QTest::newRow( "Int32 without OpenCL" ) << static_cast<int>( GDT_Int32 ) << false;
+  QTest::newRow( "UInt32 without OpenCL" ) << static_cast<int>( GDT_UInt32 ) << false;
+  QTest::newRow( "Float32 without OpenCL" ) << static_cast<int>( GDT_Float32 ) << false;
+  QTest::newRow( "Float64 without OpenCL" ) << static_cast<int>( GDT_Float64 ) << false;
+
+#ifdef HAVE_OPENCL
+  QTest::newRow( "UInt16 with OpenCL" ) << static_cast<int>( GDT_UInt16 ) << true;
+  QTest::newRow( "Byte with OpenCL" ) << static_cast<int>( GDT_Byte ) << true;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
+  QTest::newRow( "Int8 with OpenCL" ) << static_cast<int>( GDT_Int8 ) << true;
+#endif
+  QTest::newRow( "Int16 with OpenCL" ) << static_cast<int>( GDT_Int16 ) << true;
+  QTest::newRow( "Int32 with OpenCL" ) << static_cast<int>( GDT_Int32 ) << true;
+  QTest::newRow( "UInt32 with OpenCL" ) << static_cast<int>( GDT_UInt32 ) << true;
+  QTest::newRow( "Float32 with OpenCL" ) << static_cast<int>( GDT_Float32 ) << true;
+  QTest::newRow( "Float64 with OpenCL" ) << static_cast<int>( GDT_Float64 ) << true;
+#endif
+}
+void TestQgsRasterCalculator::calcWithDataType()
+{
+  QFETCH( int, dataType );
+  QFETCH( bool, useOpenCL );
+
+#ifdef HAVE_OPENCL
+  if ( QgsOpenClUtils::available() && useOpenCL )
+    QgsOpenClUtils::setEnabled( useOpenCL );
+  else
+    QgsOpenClUtils::setEnabled( false );
+
+#endif
+
+  QTemporaryDir tempDir;
+  const QString dirPath = tempDir.path();
+  const QString tempInputFilePath = dirPath + "/temp_input.tif";
+  const QString tempResultFilePath = dirPath + "/result.tif";
+
+  QgsRectangle extent = QgsRectangle::fromCenterAndSize( { 0, 0 }, 2, 2 );
+
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+
+  const GDALDataType gdalDataType { static_cast<GDALDataType>( dataType ) };
+
+  {
+    const gdal::dataset_unique_ptr hSrcDS( QgsGdalUtils::createSingleBandTiffDataset( tempInputFilePath, gdalDataType, extent, 2, 2, crs ) );
+    // Get first band
+    auto hBand = GDALGetRasterBand( hSrcDS.get(), 1 );
+    switch ( gdalDataType )
+    {
+      case GDT_Byte:
+      {
+        unsigned char data[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
+      case GDT_Int8:
+      {
+        char data8[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data8, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+#endif
+      case GDT_UInt16:
+      {
+        unsigned short data16[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data16, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+      case GDT_Int16:
+      {
+        short data16s[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data16s, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+      case GDT_Int32:
+      {
+        int data32[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data32, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+      case GDT_UInt32:
+      {
+        unsigned int data32u[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data32u, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+      case GDT_Float32:
+      {
+        float data32f[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data32f, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+      case GDT_Float64:
+      {
+        double data64[4] = { 1, 2, 3, 4 };
+        QCOMPARE( GDALRasterIO( hBand, GF_Write, 0, 0, 2, 2, data64, 2, 2, gdalDataType, 0, 0 ), CE_None );
+        break;
+      }
+      default:
+        QVERIFY( false );
+        break;
+    }
+    GDALFlushCache( hSrcDS.get() );
+  }
+
+  // Load 16 bit usigned raster
+  std::unique_ptr<QgsRasterLayer> demRasterLayer = std::make_unique<QgsRasterLayer>( tempInputFilePath, QStringLiteral( "dem" ) );
+
+  QgsRasterCalculatorEntry entry1;
+  entry1.bandNumber = 1;
+  entry1.raster = demRasterLayer.get();
+  entry1.ref = QStringLiteral( "dem@1" );
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry1;
+
+  QgsRasterCalculator rc( QStringLiteral( "\"dem@1\" * 2" ), tempResultFilePath, QStringLiteral( "GTiff" ), extent, crs, 2, 2, entries, QgsProject::instance()->transformContext() );
+  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+
+  std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tempResultFilePath, QStringLiteral( "result" ) );
+  QCOMPARE( result->width(), 2 );
+  QCOMPARE( result->height(), 2 );
+  std::unique_ptr<QgsRasterBlock> block;
+  block.reset( result->dataProvider()->block( 1, extent, 2, 2 ) );
+  QCOMPARE( block->value( 0, 0 ), 2 );
+  QCOMPARE( block->value( 0, 1 ), 4 );
+  QCOMPARE( block->value( 1, 0 ), 6 );
+  QCOMPARE( block->value( 1, 1 ), 8 );
+}
+
+
 void TestQgsRasterCalculator::findNodes()
 {
   std::unique_ptr<QgsRasterCalcNode> calcNode;
@@ -715,6 +861,30 @@ void TestQgsRasterCalculator::toString()
   QVERIFY( calcNode == nullptr );
   calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "max( \"raster@1\" )" ), error ) );
   QVERIFY( calcNode == nullptr );
+}
+
+void TestQgsRasterCalculator::testOutputCrsFromRasterEntries()
+{
+  QgsRasterCalculatorEntry entry1;
+  entry1.bandNumber = 1;
+  entry1.raster = mpLandsatRasterLayer;
+  entry1.ref = QStringLiteral( "landsat@0" );
+
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry1;
+
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+
+  QTemporaryFile tmpFile;
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  QgsRasterCalculator rc( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, 2, 3, entries, QgsProject::instance()->transformContext() );
+  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  //open output file and check results
+  QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  QCOMPARE( result->crs(), mpLandsatRasterLayer->crs() );
 }
 
 void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()

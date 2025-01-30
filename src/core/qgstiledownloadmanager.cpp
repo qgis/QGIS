@@ -95,7 +95,9 @@ void QgsTileDownloadManagerWorker::queueUpdated()
       QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting request: " ) + it->request.url().toString(), 2 );
       // start entries which are not in progress
 
-      it->networkReply = QgsNetworkAccessManager::instance()->get( it->request );
+      QNetworkRequest request( it->request );
+      request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
+      it->networkReply = QgsNetworkAccessManager::instance()->get( request );
       connect( it->networkReply, &QNetworkReply::finished, it->objWorker, &QgsTileDownloadManagerReplyWorkerObject::replyFinished );
 
       ++mManager->mStats.networkRequestsStarted;

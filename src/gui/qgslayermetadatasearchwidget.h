@@ -59,6 +59,7 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
   private:
     QgsLayerMetadataResultsProxyModel *mProxyModel = nullptr;
     bool mIsLoading = false;
+    bool mIsInitialized = false;
     QgsLayerMetadataResultsModel *mSourceModel = nullptr;
 
     // QWidget interface

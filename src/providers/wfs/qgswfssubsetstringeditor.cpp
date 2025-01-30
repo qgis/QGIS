@@ -116,9 +116,9 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
   }
-  if ( !provider->geometryAttribute().isEmpty() )
+  if ( !provider->geometryColumnName().isEmpty() )
   {
-    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( provider->geometryAttribute() ) );
+    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( provider->geometryColumnName() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
   fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );
@@ -189,9 +189,9 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( field.name() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, field.typeName() );
   }
-  if ( !p.geometryAttribute().isEmpty() )
+  if ( !p.geometryColumnName().isEmpty() )
   {
-    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
+    QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryColumnName() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
   fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );

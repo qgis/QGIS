@@ -695,6 +695,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geometry")
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(

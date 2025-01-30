@@ -1574,7 +1574,11 @@ class QgsVectorFileWriterMetadataContainer
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "GeoPackage" ),
                                QObject::tr( "GeoPackage" ),
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+                               QStringLiteral( "*.gpkg *.gpkg.zip" ),
+#else
                                QStringLiteral( "*.gpkg" ),
+#endif
                                QStringLiteral( "gpkg" ),
                                datasetOptions,
                                layerOptions,
@@ -2251,6 +2255,7 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,11,0)
       // ESRI FileGDB (using ESRI FileGDB API SDK)
       datasetOptions.clear();
       layerOptions.clear();
@@ -2282,6 +2287,7 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "UTF-8" )
                              )
                            );
+#endif
 
       // XLSX
       datasetOptions.clear();

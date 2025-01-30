@@ -1033,6 +1033,8 @@ Checks if ``capability`` is supported.
 
 
 
+
+
 };
 
 QFlags<QgsAbstractDatabaseProviderConnection::Capability> operator|(QgsAbstractDatabaseProviderConnection::Capability f1, QFlags<QgsAbstractDatabaseProviderConnection::Capability> f2);

@@ -144,6 +144,31 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     int mMaxLevel = 0;
 };
 
+/**
+ * \ingroup 3d
+ * Factory that uses a chunk loader factory for in-place updates
+ * of loaded nodes. Use it with QgsChunkedEntity::updateNodes()
+ * to rebuild entity of an existing node.
+ *
+ * \since QGIS 3.42
+ */
+class QgsChunkUpdaterFactory : public QgsChunkQueueJobFactory
+{
+  public:
+    QgsChunkUpdaterFactory( QgsChunkLoaderFactory *loaderFactory )
+      : mChunkLoaderFactory( loaderFactory )
+    {
+    }
+
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
+    {
+      return mChunkLoaderFactory->createChunkLoader( chunk );
+    }
+
+  private:
+    QgsChunkLoaderFactory *mChunkLoaderFactory;
+};
+
 /// @endcond
 
 #endif // QGSCHUNKLOADER_H

@@ -76,6 +76,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void updateLayerRelatedActions( QgsMapLayer *layer );
 
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
+
   private slots:
     void resetView();
     void configure();
@@ -163,6 +166,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QToolBar *mEditingToolBar = nullptr;
     QComboBox *mCboChangeAttribute = nullptr;
     QgsDoubleSpinBox *mSpinChangeAttributeValue = nullptr;
+
+    QMenu *mToolbarMenu = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

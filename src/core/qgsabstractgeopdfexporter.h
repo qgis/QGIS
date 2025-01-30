@@ -236,6 +236,8 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        * \warning This results in Geospatial PDF files compatible with a unnamed suite of tools starting with Terra and ending with Go, but
        * can break compatibility with the built-in Acrobat geospatial tools (yes, Geospatial PDF
        * format is a mess!).
+       *
+       * \deprecated QGIS 3.42. This parameter has no longer any effect. Only ISO 32000 georeferencing is handled.
       */
       bool useOgcBestPracticeFormatGeoreferencing = false;
 

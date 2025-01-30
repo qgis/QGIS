@@ -521,3 +521,10 @@ bool QgsPointCloudIndex::isModified() const
   return false;
 }
 
+QList<QgsPointCloudNodeId> QgsPointCloudIndex::updatedNodes() const
+{
+  if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
+    return index->updatedNodes();
+
+  return QList<QgsPointCloudNodeId>();
+}

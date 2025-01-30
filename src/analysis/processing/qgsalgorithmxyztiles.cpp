@@ -149,7 +149,15 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
   QgsCoordinateReferenceSystem extentCrs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context );
   QgsCoordinateTransform ct( extentCrs, project->crs(), context.transformContext() );
-  mExtent = ct.transformBoundingBox( extent );
+  try
+  {
+    mExtent = ct.transformBoundingBox( extent );
+  }
+  catch ( QgsCsException & )
+  {
+    feedback->reportError( QObject::tr( "Could not transform the extent into the project CRS" ), true );
+    return false;
+  }
 
   mMinZoom = parameterAsInt( parameters, QStringLiteral( "ZOOM_MIN" ), context );
   mMaxZoom = parameterAsInt( parameters, QStringLiteral( "ZOOM_MAX" ), context );
@@ -167,8 +175,15 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mMercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
   mSrc2Wgs = QgsCoordinateTransform( project->crs(), mWgs84Crs, context.transformContext() );
   mWgs2Mercator = QgsCoordinateTransform( mWgs84Crs, mMercatorCrs, context.transformContext() );
-
-  mWgs84Extent = mSrc2Wgs.transformBoundingBox( mExtent );
+  try
+  {
+    mWgs84Extent = mSrc2Wgs.transformBoundingBox( mExtent );
+  }
+  catch ( QgsCsException & )
+  {
+    feedback->reportError( QObject::tr( "Could not transform the extent into WGS84" ), true );
+    return false;
+  }
 
   if ( parameters.contains( QStringLiteral( "TILE_WIDTH" ) ) )
   {
@@ -212,7 +227,14 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     MetaTile metaTile = mMetaTiles.takeFirst();
 
     QgsMapSettings settings;
-    settings.setExtent( mWgs2Mercator.transformBoundingBox( metaTile.extent() ) );
+    try
+    {
+      settings.setExtent( mWgs2Mercator.transformBoundingBox( metaTile.extent() ) );
+    }
+    catch ( QgsCsException & )
+    {
+      continue;
+    }
     settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
     settings.setTransformContext( mTransformContext );
     settings.setDestinationCrs( mMercatorCrs );

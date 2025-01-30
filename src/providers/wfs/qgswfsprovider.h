@@ -79,6 +79,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
 
+    QString geometryColumnName() const override;
     QgsFields fields() const override;
 
     QgsCoordinateReferenceSystem crs() const override;
@@ -103,8 +104,6 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
 
     /* new functions */
-
-    QString geometryAttribute() const;
 
     const QString processSQLErrorMsg() const { return mProcessSQLErrorMsg; }
 

@@ -272,7 +272,8 @@ void TestQgsHttpheaders::updateSetDomElement()
   QDomElement element = doc.createElement( "qgs" );
   // === update
   QgsHttpHeaders h( QVariantMap( { { QStringLiteral( "key1" ), "value1" }, { QgsHttpHeaders::KEY_REFERER, "my_ref" } } ) );
-  h.updateDomElement( element );
+  QMap<QString, QString> namespaceDeclarations;
+  h.updateDomElement( element, namespaceDeclarations );
 
   QVERIFY( element.hasAttribute( QgsHttpHeaders::PARAM_PREFIX + "key1" ) );
   QCOMPARE( element.attribute( QgsHttpHeaders::PARAM_PREFIX + "key1" ), "value1" );
@@ -283,6 +284,8 @@ void TestQgsHttpheaders::updateSetDomElement()
   // TODO mandatory or not?
   QVERIFY( element.hasAttribute( QgsHttpHeaders::KEY_REFERER ) );
   QCOMPARE( element.attribute( QgsHttpHeaders::KEY_REFERER ), "my_ref" );
+
+  QCOMPARE( namespaceDeclarations["http-header"], "https://qgis.org/http-header" );
 
   // === setFrom
   QgsHttpHeaders h2;
