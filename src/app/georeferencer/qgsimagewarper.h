@@ -68,28 +68,11 @@ class APP_EXPORT QgsImageWarper
      * \param georefTransform specifies the warp transformation which should be applied to \a input.
      * \param resampling specifies image resampling algorithm to use.
      * \param useZeroAsTrans specifies whether to mark transparent areas with a value of "zero".
-     * \param compression image compression method
-     * \param crs output file CRS
-     * \param feedback optional feedback object
-     * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
-     * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
-     */
-    Result warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX = 0.0, double destResY = 0.0 );
-
-    /**
-     * Warp the file specified by \a input and write the resulting raster to the file \a output.
-     * \param input input file name
-     * \param output output file name
-     * \param georefTransform specifies the warp transformation which should be applied to \a input.
-     * \param resampling specifies image resampling algorithm to use.
-     * \param useZeroAsTrans specifies whether to mark transparent areas with a value of "zero".
      * \param options raster creation options
      * \param crs output file CRS
      * \param feedback optional feedback object
      * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
-     *
-     * \since QGIS 3.42
      */
     Result warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX = 0.0, double destResY = 0.0 );
 
@@ -118,7 +101,6 @@ class APP_EXPORT QgsImageWarper
 
     bool openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling, const GDALTransformerFunc &pfnTransform, gdal::dataset_unique_ptr &hSrcDS, gdal::warp_options_unique_ptr &psWarpOptions ) const;
 
-    bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs );
     bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs );
 
     //! \brief GDAL progress callback, used to display warping progress via a QProgressDialog
