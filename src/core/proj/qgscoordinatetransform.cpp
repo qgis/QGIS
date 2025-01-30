@@ -639,6 +639,23 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   ProjData projData = d->threadLocalProjData();
   PJ_CONTEXT *projContext = QgsProjContext::get();
 
+  QgsProjUtils::proj_pj_unique_ptr srcCrs( proj_get_source_crs( projContext, projData ) );
+  QgsProjUtils::proj_pj_unique_ptr destCrs( proj_get_target_crs( projContext, projData ) );
+
+  QgsProjUtils::proj_pj_unique_ptr srcCrsHorizontal;
+  QgsProjUtils::proj_pj_unique_ptr destCrsHorizontal;
+  QgsProjUtils::proj_pj_unique_ptr transform2D;
+  if ( QgsProjUtils::hasVerticalAxis( srcCrs.get() ) ||
+       QgsProjUtils::hasVerticalAxis( destCrs.get() ) )
+  {
+    // if source or destination crs include vertical components, we need to demote them to
+    // 2d crs first, otherwise proj_trans_bounds fails
+    srcCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( srcCrs.get() );
+    destCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( destCrs.get() );
+    transform2D.reset( proj_create_crs_to_crs_from_pj( projContext, srcCrsHorizontal.get(), destCrsHorizontal.get(), nullptr, nullptr ) );
+    projData = transform2D.get();
+  }
+
   double transXMin = 0;
   double transYMin = 0;
   double transXMax = 0;
@@ -741,7 +758,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   {
 
     // Start at right edge
-    double pointX = rect.xMinimum();
+    double pointX = xMin;
 
     for ( int j = 0; j < nXPoints; j++ )
     {
