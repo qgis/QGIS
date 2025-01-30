@@ -6,7 +6,7 @@ set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.27")
+if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.27")
   # include(Dart) still used, as is the "Experimental" target
   cmake_policy(SET CMP0145 OLD)
 endif()
