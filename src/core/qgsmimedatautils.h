@@ -103,10 +103,16 @@ class CORE_EXPORT QgsMimeDataUtils
        * - "pointcloud": point cloud layers
        * - "vector-tile": vector tile layers
        * - "tiled-scene": tiled scene layers
+       * - "annotation": annotation layers
+       * - "group": group layers
        * - "plugin": plugin layers
        * - "custom": custom types
        * - "project": QGS/QGZ project file
        * - "directory": directory path
+       *
+       * Note: use QgsMapLayerFactory::typeToString() to convert from a
+       * Qgis::LayerType to a string (except for "custom", "project" and
+       * "directory")
        *
        * Mime data from plugins may use additional custom layer types.
        */

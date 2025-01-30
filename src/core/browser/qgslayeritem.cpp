@@ -18,6 +18,7 @@
 #include "qgslayeritem.h"
 #include "moc_qgslayeritem.cpp"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"
 
@@ -243,11 +244,11 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
 QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
+  u.layerType = QgsMapLayerFactory::typeToString( mapLayerType() );
 
   switch ( mapLayerType() )
   {
     case Qgis::LayerType::Vector:
-      u.layerType = QStringLiteral( "vector" );
       switch ( mLayerType )
       {
         case Qgis::BrowserLayerType::Point:
@@ -277,28 +278,13 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
       }
       break;
     case Qgis::LayerType::Raster:
-      u.layerType = QStringLiteral( "raster" );
-      break;
     case Qgis::LayerType::Mesh:
-      u.layerType = QStringLiteral( "mesh" );
-      break;
     case Qgis::LayerType::VectorTile:
-      u.layerType = QStringLiteral( "vector-tile" );
-      break;
     case Qgis::LayerType::PointCloud:
-      u.layerType = QStringLiteral( "pointcloud" );
-      break;
     case Qgis::LayerType::TiledScene:
-      u.layerType = QStringLiteral( "tiled-scene" );
-      break;
     case Qgis::LayerType::Plugin:
-      u.layerType = QStringLiteral( "plugin" );
-      break;
     case Qgis::LayerType::Group:
-      u.layerType = QStringLiteral( "group" );
-      break;
     case Qgis::LayerType::Annotation:
-      u.layerType = QStringLiteral( "annotation" );
       break;
   }
 
