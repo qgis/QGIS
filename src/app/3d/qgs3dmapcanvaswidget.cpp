@@ -81,15 +81,29 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolBar = new QToolBar( this );
   mEditingToolBar->setVisible( false );
 
-  QAction *actionPointCloudChangeAttributeTool = mEditingToolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
+  mPointCloudEditingToolbar = new QToolBar( this );
+
+  mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ), tr( "Toggle editing" ), this );
+  mActionToggleEditing->setCheckable( true );
+  connect( mActionToggleEditing, &QAction::triggered, this, [] { QgisApp::instance()->toggleEditing( QgisApp::instance()->activeLayer() ); } );
+  mActionUndo = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ), tr( "Undo" ), this );
+  mActionRedo = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ), tr( "Redo" ), this );
+
+  mEditingToolBar->addAction( mActionToggleEditing );
+  mEditingToolBar->addAction( mActionUndo );
+  mEditingToolBar->addAction( mActionRedo );
+  mEditingToolBar->addSeparator();
+  mEditingToolBar->addWidget( mPointCloudEditingToolbar );
+
+  QAction *actionPointCloudChangeAttributeTool = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
   actionPointCloudChangeAttributeTool->setCheckable( true );
 
-  mEditingToolBar->addWidget( new QLabel( tr( "Attribute" ) ) );
+  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
   mCboChangeAttribute = new QComboBox();
-  mEditingToolBar->addWidget( mCboChangeAttribute );
+  mPointCloudEditingToolbar->addWidget( mCboChangeAttribute );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
-  mEditingToolBar->addWidget( new QLabel( tr( "Value" ) ) );
-  mEditingToolBar->addWidget( mSpinChangeAttributeValue );
+  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Value" ) ) );
+  mPointCloudEditingToolbar->addWidget( mSpinChangeAttributeValue );
   QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
   actionEditingToolbar->setCheckable( true );
   connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
@@ -418,16 +432,18 @@ void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
   mDockableWidgetHelper->setWindowTitle( name );
 }
 
-void Qgs3DMapCanvasWidget::enableEditingTools( bool enable )
-{
-  mEditingToolBar->setEnabled( enable );
-}
-
 void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
 {
+  mActionUndo->disconnect();
+  mActionRedo->disconnect();
+
   if ( !layer || layer->type() != Qgis::LayerType::PointCloud )
   {
-    enableEditingTools( false );
+    mPointCloudEditingToolbar->setEnabled( false );
+    mActionToggleEditing->setEnabled( false );
+    mActionToggleEditing->setChecked( false );
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
 
     if ( mCanvas->mapTool() == mMapToolPointCloudChangeAttribute )
       mCanvas->setMapTool( nullptr );
@@ -449,7 +465,15 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
   if ( mCboChangeAttribute->findText( previousAttribute ) != -1 )
     mCboChangeAttribute->setCurrentText( previousAttribute );
 
-  enableEditingTools( pcLayer->isEditable() );
+  mActionToggleEditing->setEnabled( pcLayer->supportsEditing() );
+  mActionToggleEditing->setChecked( pcLayer->isEditable() );
+  connect( mActionUndo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::undo );
+  connect( mActionRedo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::redo );
+  mActionUndo->setEnabled( pcLayer->undoStack()->canUndo() );
+  mActionRedo->setEnabled( pcLayer->undoStack()->canRedo() );
+  connect( pcLayer->undoStack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
+  connect( pcLayer->undoStack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
+  mPointCloudEditingToolbar->setEnabled( pcLayer->isEditable() );
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )
