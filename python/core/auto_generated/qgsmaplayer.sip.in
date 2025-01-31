@@ -567,13 +567,14 @@ or other problem. Child classes set this flag when initialized.
 :return: ``True`` if the layer is valid and can be accessed
 %End
 
+
     QString publicSource( bool hidePassword = false ) const;
 %Docstring
 Gets a version of the internal layer definition that has sensitive
 bits removed (for example, the password). This function should
 be used when displaying the source name for general viewing.
 
-:param hidePassword: False, if the password should be removed or replaced by an arbitrary string, since QGIS 3.34
+:param hidePassword: ``True`` to replace the value of credentials with 'xxxxxxxx', ``False`` to completely remove credentials (key and value). Since QGIS 3.34
 
 .. seealso:: :py:func:`source`
 %End
