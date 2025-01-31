@@ -31,8 +31,10 @@ QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVecto
 
 bool QgsRuleBasedLabelProvider::prepare( QgsRenderContext &context, QSet<QString> &attributeNames )
 {
-  for ( QgsVectorLayerLabelProvider *provider : std::as_const( mSubProviders ) )
-    provider->setEngine( mEngine );
+  for ( const auto &subprovider : std::as_const( mSubProviders ) )
+  {
+    subprovider.second->setEngine( mEngine );
+  }
 
   // populate sub-providers
   mRules->rootRule()->prepare( context, attributeNames, mSubProviders );
@@ -48,8 +50,10 @@ QList<QgsLabelFeature *> QgsRuleBasedLabelProvider::registerFeature( const QgsFe
 QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
 {
   QList<QgsAbstractLabelProvider *> lst;
-  for ( QgsVectorLayerLabelProvider *subprovider : std::as_const( mSubProviders ) )
-    lst << subprovider;
+  for ( const auto &subprovider : std::as_const( mSubProviders ) )
+  {
+    lst << subprovider.second;
+  }
   return lst;
 }
 
@@ -318,8 +322,19 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer *layer, QgsR
   {
     // add provider!
     QgsVectorLayerLabelProvider *p = provider->createProvider( layer, mRuleKey, false, mSettings.get() );
-    delete subProviders.value( this, nullptr );
-    subProviders[this] = p;
+    auto it = std::find_if( subProviders.begin(), subProviders.end(),
+                            [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item )
+    {
+      return item.first == this;
+    } );
+
+    if ( it != subProviders.end() )
+    {
+      delete it->second;
+      subProviders.erase( it );
+    }
+
+    subProviders.push_back( {this, p} );
   }
 
   // call recursively
@@ -333,11 +348,20 @@ void QgsRuleBasedLabeling::Rule::prepare( QgsRenderContext &context, QSet<QStrin
 {
   if ( mSettings )
   {
-    QgsVectorLayerLabelProvider *p = subProviders[this];
-    if ( !p->prepare( context, attributeNames ) )
+    auto it = std::find_if( subProviders.begin(), subProviders.end(),
+                            [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item )
     {
-      subProviders.remove( this );
-      delete p;
+      return item.first == this;
+    } );
+
+    if ( it != subProviders.end() )
+    {
+      QgsVectorLayerLabelProvider *p = it->second;
+      if ( !p->prepare( context, attributeNames ) )
+      {
+        subProviders.erase( it );
+        delete p;
+      }
     }
   }
 
@@ -366,9 +390,15 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
   bool registered = false;
 
   // do we have active subprovider for the rule?
-  if ( subProviders.contains( this ) && mIsActive )
+  auto it = std::find_if( subProviders.begin(), subProviders.end(),
+                          [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item )
   {
-    labels.append( subProviders[this]->registerFeature( feature, context, obstacleGeometry, symbol ) );
+    return item.first == this;
+  } );
+
+  if ( it != subProviders.end() && mIsActive )
+  {
+    labels.append( it->second->registerFeature( feature, context, obstacleGeometry, symbol ) );
     registered = true;
   }
 

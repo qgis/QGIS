@@ -43,7 +43,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
   public:
     class Rule;
     typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
-    typedef QMap<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> RuleToProviderMap;
+    typedef std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> RuleToProviderMap;
 
     /**
      * \ingroup core
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
     //! owned copy
     std::unique_ptr<QgsRuleBasedLabeling> mRules;
     //! label providers are owned by labeling engine
-    QgsRuleBasedLabeling::RuleToProviderMap mSubProviders;
+    std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> mSubProviders;
 };
 
 #endif
