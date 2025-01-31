@@ -16,14 +16,12 @@
 #include "qgs3dmapcanvaswidget.h"
 #include "moc_qgs3dmapcanvaswidget.cpp"
 
-#include <QBoxLayout>
-#include <QDialog>
-#include <QDialogButtonBox>
 #include <QProgressBar>
 #include <QToolBar>
-#include <QUrl>
 #include <QAction>
 #include <QShortcut>
+#include <QWidget>
+#include <QActionGroup>
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
@@ -51,7 +49,6 @@
 #include "qgs3dnavigationwidget.h"
 #include "qgs3ddebugwidget.h"
 #include "qgs3dutils.h"
-#include "qgswindow3dengine.h"
 
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
@@ -61,9 +58,6 @@
 #include "qgsrubberband.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
-
-#include <QWidget>
-#include <QActionGroup>
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
