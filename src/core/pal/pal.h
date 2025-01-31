@@ -37,48 +37,13 @@
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgssettingstree.h"
-#include "qgslabelingengine.h"
 
 #include <QList>
 #include <iostream>
 #include <ctime>
 #include <QMutex>
 #include <QStringList>
-
-struct CompareLabelProvider
-{
-  bool operator()( const QgsAbstractLabelProvider *lhs, const QgsAbstractLabelProvider *rhs ) const
-  {
-    if ( !lhs )
-    {
-      return true;
-    }
-    if ( !rhs )
-    {
-      return false;
-    }
-
-    QString lhsProviderId = lhs->providerId();
-    QString rhsProviderId = rhs->providerId();
-
-    if ( !lhsProviderId.isEmpty() && !rhsProviderId.isEmpty() )
-    {
-      return lhsProviderId < rhsProviderId;
-    }
-    else if ( !lhsProviderId.isEmpty() )
-    {
-      return true;
-    }
-    else if ( !rhsProviderId.isEmpty() )
-    {
-      return false;
-    }
-    else
-    {
-      return lhs->layerId() < rhs->layerId();
-    }
-  }
-};
+#include <unordered_map>
 
 class QgsSettingsEntryInteger;
 
