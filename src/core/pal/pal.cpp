@@ -88,11 +88,16 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 {
   mMutex.lock();
 
-  Q_ASSERT( mLayers.find( provider ) == mLayers.end() );
+#ifdef QGISDEBUG
+  for ( const auto &it : mLayers )
+  {
+    Q_ASSERT( it.first != provider );
+  }
+#endif
 
   std::unique_ptr< Layer > layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this );
   Layer *res = layer.get();
-  mLayers.insert( std::pair<QgsAbstractLabelProvider *, std::unique_ptr< Layer >>( provider, std::move( layer ) ) );
+  mLayers.emplace_back( std::make_pair( provider, std::move( layer ) ) );
   mMutex.unlock();
 
   // cppcheck-suppress returnDanglingLifetime
