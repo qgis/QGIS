@@ -45,8 +45,8 @@ void Qgs3DMapToolPaintBrush::processSelection() const
 {
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
-  const QgsGeometry searchSkeleton = QgsGeometry( new QgsPolygon( new QgsLineString( mDragPositions ) ) );
-  const QgsGeometry searchPolygon = searchSkeleton.buffer( mSelectionRubberBand->width(), 37 );
+  const QgsGeometry searchSkeleton = QgsGeometry( new QgsLineString( mDragPositions ) );
+  const QgsGeometry searchPolygon = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 37 );
 
   QgsMapLayer *mapLayer = QgisApp::instance()->activeLayer();
   Q_ASSERT( mapLayer->type() == Qgis::LayerType::PointCloud );
@@ -157,10 +157,8 @@ void Qgs3DMapToolPaintBrush::activate()
   mSelectionRubberBand->setColor( QColorConstants::Transparent );
   mSelectionRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( QCursor::pos(), *mCanvas ) );
   mIsActive = true;
-  mHighlighterRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point ) );
-  mHighlighterRubberBand->setWidth( mSelectionRubberBand->width() );
-  mHighlighterRubberBand->setColor( QColor( 255, 255, 224, 150 ) );
-  mHighlighterRubberBand->setOutlineColor( QColorConstants::Transparent );
+  mHighlighterRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon ) );
+  mHighlighterRubberBand->setMarkerType( QgsRubberBand3D::None );
 }
 
 void Qgs3DMapToolPaintBrush::deactivate()
@@ -191,13 +189,26 @@ void Qgs3DMapToolPaintBrush::setNewValue( double value )
   mNewValue = value;
 }
 
+void Qgs3DMapToolPaintBrush::generateHighlightArea()
+{
+  const QgsGeometry searchSkeleton = QgsGeometry( new QgsLineString( mDragPositions ) );
+  const QgsGeometry searchGeometry = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 37 );
+  QgsPolygon *searchPolygon = qgsgeometry_cast<QgsPolygon *>( searchGeometry.constGet() );
+  Q_ASSERT( searchPolygon );
+  auto transform = [this]( const QgsPoint &point ) -> QgsPoint {
+    return Qgs3DUtils::screenPointToMapCoordinates( QPoint( point.x(), point.y() ), *mCanvas );
+  };
+  searchPolygon->addZValue( 0 );
+  searchPolygon->transformVertices( transform );
+  mHighlighterRubberBand->setPolygon( *searchPolygon );
+}
+
 void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
 {
   if ( event->button() == Qt::LeftButton )
   {
     mIsClicked = true;
     mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
-    mHighlighterRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas ) );
   }
 }
 
@@ -208,6 +219,7 @@ void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
     mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
     mHighlighterRubberBand->reset();
     processSelection();
+    mDragPositions.clear();
   }
   mIsClicked = false;
 }
@@ -222,7 +234,7 @@ void Qgs3DMapToolPaintBrush::mouseMoveEvent( QMouseEvent *event )
     if ( mIsClicked )
     {
       mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
-      mHighlighterRubberBand->addPoint( newPos );
+      generateHighlightArea();
     }
   }
 }
@@ -244,5 +256,4 @@ void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
   mSelectionRubberBand->setWidth( mSelectionRubberBand->width() * zoomFactor );
-  mHighlighterRubberBand->setWidth( mHighlighterRubberBand->width() * zoomFactor );
 }
