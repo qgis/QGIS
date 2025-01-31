@@ -23,6 +23,7 @@
 
 //qgis includes...
 #include <qgsmaplayer.h>
+#include <qgsrasterlayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
@@ -72,6 +73,8 @@ class TestQgsMapLayer : public QObject
     void customEnumFlagProperties();
 
     void readCustomProperties();
+
+    void publicSourceOnGdalWithCredentials();
 
   private:
     QgsVectorLayer *mpLayer = nullptr;
@@ -508,6 +511,16 @@ void TestQgsMapLayer::readCustomProperties()
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 0 ).at( 0 ), "my_property_one" );
   QCOMPARE( spy.at( 1 ).at( 0 ), "my_property_two" );
+}
+
+void TestQgsMapLayer::publicSourceOnGdalWithCredentials()
+{
+  QgsRasterLayer rl(
+    QStringLiteral( "test.tif|option:AN=OPTION|credential:SOMEKEY=AAAAA|credential:ANOTHER=BBB" ), QString(), QStringLiteral( "gdal" )
+  );
+  QCOMPARE( rl.publicSource( true ), QStringLiteral( "test.tif|option:AN=OPTION|credential:ANOTHER=XXXXXXXX|credential:SOMEKEY=XXXXXXXX" ) );
+  QCOMPARE( rl.publicSource( false ), QStringLiteral( "test.tif|option:AN=OPTION" ) );
+  QCOMPARE( rl.publicSource(), QStringLiteral( "test.tif|option:AN=OPTION" ) );
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )
