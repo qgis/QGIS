@@ -1128,8 +1128,6 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
 
     if ( QgsRasterLayer::isValidRasterFileName( uri, errMsg ) )
     {
-      QFileInfo myFileInfo( uri );
-
       // set the layer name to the file base name unless provided explicitly
       QString layerName;
       const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
@@ -1139,7 +1137,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
       }
       else
       {
-        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( uri );
+        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( uriDetails[QStringLiteral( "path" )].toString() );
       }
 
       // try to create the layer
@@ -1157,7 +1155,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
         //only allow one copy of a ai grid file to be loaded at a
         //time to prevent the user selecting all adfs in 1 dir which
         //actually represent 1 coverage,
-
+        const QFileInfo myFileInfo( uriDetails[QStringLiteral( "path" )].toString() );
         if ( myFileInfo.fileName().endsWith( QLatin1String( ".adf" ), Qt::CaseInsensitive ) )
         {
           break;
