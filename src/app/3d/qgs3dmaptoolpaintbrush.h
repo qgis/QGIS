@@ -65,6 +65,7 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
     SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const;
     static QVector<int> selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsChunkNode *ch, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex &pcIndex );
     static QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
+    void generateHighlightArea();
 
     std::unique_ptr<QgsRubberBand3D> mSelectionRubberBand;
     std::unique_ptr<QgsRubberBand3D> mHighlighterRubberBand;
