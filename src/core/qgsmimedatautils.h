@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * - "vector": vector layers
        * - "raster": raster layers
        * - "mesh": mesh layers
-       * - "pointcloud": point cloud layers
+       * - "point-cloud": point cloud layers (spelled with a dash since QGIS 3.42.0. In prior versions, there was no dash)
        * - "vector-tile": vector tile layers
        * - "tiled-scene": tiled scene layers
        * - "annotation": annotation layers
