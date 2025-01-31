@@ -21,7 +21,7 @@ Rule based labeling for a vector layer.
 %End
   public:
     typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
-    typedef std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> RuleToProviderMap;
+    typedef std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> RuleToProviderVec;
 
     class Rule
 {
