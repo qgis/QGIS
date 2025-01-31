@@ -171,8 +171,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     // set editing vertex markers style (main renderer only)
     mRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
-  if ( !mNoSetLayerExpressionContext )
-    renderContext()->expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
   for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
   {
