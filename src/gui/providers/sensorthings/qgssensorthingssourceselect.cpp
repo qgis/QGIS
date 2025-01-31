@@ -282,7 +282,7 @@ void QgsSensorThingsSourceSelect::cmbConnections_currentTextChanged( const QStri
 
 void QgsSensorThingsSourceSelect::buildFilter()
 {
-  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mSourceWidget->currentEntityType() );
+  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mSourceWidget->currentEntityType(), false );
   QgsSensorThingsSubsetEditor subsetEditor( nullptr, fields );
   subsetEditor.setSubsetString( txtSubsetSQL->text() );
   if ( subsetEditor.exec() )
