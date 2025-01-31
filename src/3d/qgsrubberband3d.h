@@ -34,7 +34,12 @@
 //
 
 #include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgstessellator.h"
 
+class QgsPhongMaterialSettings;
+class QgsMaterial;
+class QgsTessellatedPolygonGeometry;
 class QgsWindow3DEngine;
 class QgsLineMaterial;
 class Qgs3DMapSettings;
@@ -79,7 +84,6 @@ class _3D_EXPORT QgsRubberBand3D
     //! Icons
     enum MarkerType
     {
-
       /**
        * A box is used to highlight points (□)
        */
@@ -88,10 +92,15 @@ class _3D_EXPORT QgsRubberBand3D
       /**
        * A circle is used to highlight points (○)
        */
-      Circle
+      Circle,
+
+      /**
+       * Points are not highlighted, neither the edges connecting them
+       */
+      None
     };
 
-    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool isOutlineDashed = false );
     ~QgsRubberBand3D();
 
     //! Returns the rubber band width in pixels
@@ -105,6 +114,18 @@ class _3D_EXPORT QgsRubberBand3D
 
     //! Sets the rubber band color.
     void setColor( QColor color );
+
+    /**
+     * Returns the rubber band outline color
+     * \since QGIS 3.44
+     */
+    QColor outlineColor() const;
+
+    /**
+     * Sets the rubber band outline color
+     * \since QGIS 3.44
+     */
+    void setOutlineColor( QColor color );
 
     /**
      * Sets the \a marker type to highlight point geometries and line vertices.
@@ -122,6 +143,14 @@ class _3D_EXPORT QgsRubberBand3D
 
     void setPoints( const QgsLineString &points );
 
+    /**
+     * Sets the polygon geometry to be shown
+     *
+     * \note Function doesn't set \a GeometryType to Polygon
+     * \since QGIS 3.44
+     */
+    void setPolygon( const QgsPolygon &polygon );
+
     void removeLastPoint();
 
     void moveLastPoint( const QgsPoint &pt );
@@ -134,9 +163,12 @@ class _3D_EXPORT QgsRubberBand3D
   private:
     void updateGeometry();
     void updateMarkerMaterial();
+    void setupMarker( Qt3DCore::QEntity *parentEntity );
+    void setupLine( Qt3DCore::QEntity *parentEntity, QgsWindow3DEngine *engine );
+    void setupPolygon( Qt3DCore::QEntity *parentEntity );
 
-  private:
     QgsLineString mLineString;
+    QgsPolygon mPolygon;
     bool mHideLastMarker = false;
 
     Qgs3DMapSettings *mMapSettings = nullptr; // not owned
@@ -147,18 +179,26 @@ class _3D_EXPORT QgsRubberBand3D
     MarkerType mMarkerType = Circle;
     float mWidth = 3.f;
     QColor mColor = Qt::red;
+    QColor mOutlineColor;
+    bool mIsOutlineDashed = false;
 
-    Qt3DCore::QEntity *mLineEntity = nullptr;   // owned by parentEntity (from constructor)
-    Qt3DCore::QEntity *mMarkerEntity = nullptr; // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mLineEntity = nullptr;    // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
+
+    // all these are owned by mPolygonEntity
+    Qt3DRender::QGeometryRenderer *mPolygonGeometryRenderer = nullptr;
+    QgsTessellatedPolygonGeometry *mPolygonGeometry = nullptr;
+    QgsPhongMaterialSettings *mPolygonMaterial = nullptr;
 
     // all these are owned by mLineEntity
-    Qt3DRender::QGeometryRenderer *mLineGeomRenderer = nullptr;
+    Qt3DRender::QGeometryRenderer *mLineGeometryRenderer = nullptr;
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QGeometry *mGeometry = nullptr;
+    Qt3DRender::QGeometry *mLineGeometry = nullptr;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
 #else
-    Qt3DCore::QGeometry *mGeometry = nullptr;
+    Qt3DCore::QGeometry *mLineGeometry = nullptr;
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mIndexAttribute = nullptr;
 #endif
