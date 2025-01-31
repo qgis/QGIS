@@ -661,10 +661,8 @@ Qgis::GeometryType QgsSensorThingsUtils::geometryTypeForEntity( Qgis::SensorThin
 
     case Qgis::SensorThingsEntity::Location:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
-      return Qgis::GeometryType::Unknown;
-
     case Qgis::SensorThingsEntity::MultiDatastream:
-      return Qgis::GeometryType::Polygon;
+      return Qgis::GeometryType::Unknown;
   }
   BUILTIN_UNREACHABLE
 }
