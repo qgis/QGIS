@@ -279,7 +279,7 @@ namespace pal
 
     private:
 
-      std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
+      std::vector< std::pair< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > > mLayers;
 
       QList< QgsAbstractLabelingEngineRule * > mRules;
 
