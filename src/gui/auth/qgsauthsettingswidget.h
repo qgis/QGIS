@@ -63,6 +63,13 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &configId = QString(), const QString &username = QString(), const QString &password = QString(), const QString &dataprovider = QString() );
 
     /**
+     * Removes the basic authentication tab from the widget.
+     *
+     * \since QGIS 3.42
+     */
+    void removeBasicSettings();
+
+    /**
      * \brief setWarningText set the text of the warning label
      * \param warningText the text of the warning label
      * \see formattedWarning()
