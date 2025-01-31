@@ -774,6 +774,7 @@ QWidget *QgsSensorThingsExpansionsDelegate::createEditor( QWidget *parent, const
                                                                    : index.model()->data( index.model()->index( index.row() - 1, 0 ), Qt::EditRole ).value<Qgis::SensorThingsEntity>();
 
       QList<Qgis::SensorThingsEntity> compatibleEntities = QgsSensorThingsUtils::expandableTargets( entityType );
+      compatibleEntities.removeAll( mBaseEntityType );
       // remove all entities which are already part of the expansion in previous rows -- we don't support "circular" expansion
       for ( int row = index.row() - 1; row >= 0; row-- )
       {
