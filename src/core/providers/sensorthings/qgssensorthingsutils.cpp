@@ -619,7 +619,6 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
     case Qgis::SensorThingsEntity::Invalid:
     case Qgis::SensorThingsEntity::Thing:
     case Qgis::SensorThingsEntity::HistoricalLocation:
-    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
@@ -631,6 +630,7 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       return QStringLiteral( "feature" );
 
+    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::MultiDatastream:
       return QStringLiteral( "observedArea" );
   }
@@ -644,12 +644,12 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
     case Qgis::SensorThingsEntity::Invalid:
     case Qgis::SensorThingsEntity::Thing:
     case Qgis::SensorThingsEntity::HistoricalLocation:
-    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
       return false;
 
+    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Location:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
     case Qgis::SensorThingsEntity::MultiDatastream:
@@ -665,12 +665,12 @@ Qgis::GeometryType QgsSensorThingsUtils::geometryTypeForEntity( Qgis::SensorThin
     case Qgis::SensorThingsEntity::Invalid:
     case Qgis::SensorThingsEntity::Thing:
     case Qgis::SensorThingsEntity::HistoricalLocation:
-    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
       return Qgis::GeometryType::Null;
 
+    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Location:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
     case Qgis::SensorThingsEntity::MultiDatastream:
