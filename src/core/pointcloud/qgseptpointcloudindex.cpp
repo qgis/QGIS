@@ -358,7 +358,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
   mRootBounds = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 
-#ifdef QGIS_DEBUG
+#ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
   QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
   QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
