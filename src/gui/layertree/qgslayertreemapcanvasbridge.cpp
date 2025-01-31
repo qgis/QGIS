@@ -203,6 +203,7 @@ void QgsLayerTreeMapCanvasBridge::layersAdded( const QList<QgsMapLayer *> &layer
           // if we are moving from zero valid layers to non-zero VALID layers, let's zoom to those data
           mCanvas->zoomToProjectExtent();
         }
+        deferredSetCanvasLayers();
       } );
     }
   }
