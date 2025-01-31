@@ -26,12 +26,11 @@
 #include "qgsguiutils.h"
 #include "qgsmultipoint.h"
 #include "qgspointcloudlayer.h"
+#include "qgs3dmaptoolpointcloudchangeattribute.h"
+#include "qgisapp.h"
 
 #include <QCursor>
 #include <QMouseEvent>
-#include <qgisapp.h>
-#include <qgs3dmaptoolpointcloudchangeattribute.h>
-
 
 class QgsPointCloudAttribute;
 Qgs3DMapToolPaintBrush::Qgs3DMapToolPaintBrush( Qgs3DMapCanvas *canvas )
@@ -56,10 +55,12 @@ void Qgs3DMapToolPaintBrush::processSelection() const
   int offset;
   const QgsPointCloudAttribute *attribute = pcLayer->attributes().find( mAttributeName, offset );
 
+  pcLayer->undoStack()->beginMacro( tr( "Change attribute values" ) );
   for ( auto it = sel.begin(); it != sel.end(); ++it )
   {
     pcLayer->changeAttributeValue( it.key(), it.value(), *attribute, mNewValue );
   }
+  pcLayer->undoStack()->endMacro();
 }
 
 SelectedPoints Qgs3DMapToolPaintBrush::searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const
