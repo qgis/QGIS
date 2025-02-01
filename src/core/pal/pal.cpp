@@ -88,11 +88,16 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 {
   mMutex.lock();
 
-  Q_ASSERT( mLayers.find( provider ) == mLayers.end() );
+#ifdef QGISDEBUG
+  for ( const auto &it : mLayers )
+  {
+    Q_ASSERT( it.first != provider );
+  }
+#endif
 
   std::unique_ptr< Layer > layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this );
   Layer *res = layer.get();
-  mLayers.insert( std::pair<QgsAbstractLabelProvider *, std::unique_ptr< Layer >>( provider, std::move( layer ) ) );
+  mLayers.emplace_back( std::make_pair( provider, std::move( layer ) ) );
   mMutex.unlock();
 
   // cppcheck-suppress returnDanglingLifetime
@@ -158,13 +163,13 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     candidateProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Generating label candidates" ), QStringLiteral( "rendering" ) );
   }
 
-  for ( const auto &it : mLayers )
+  for ( auto it = mLayers.rbegin(); it != mLayers.rend(); ++it )
   {
     index++;
     if ( feedback )
       feedback->setProgress( index * step );
 
-    Layer *layer = it.second.get();
+    Layer *layer = it->second.get();
     if ( !layer )
     {
       // invalid layer name
@@ -176,12 +181,12 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       continue;
 
     if ( feedback )
-      feedback->emit candidateCreationAboutToBegin( it.first );
+      feedback->emit candidateCreationAboutToBegin( it->first );
 
     std::unique_ptr< QgsScopedRuntimeProfile > layerProfile;
     if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
     {
-      layerProfile = std::make_unique< QgsScopedRuntimeProfile >( it.first->providerId(), QStringLiteral( "rendering" ) );
+      layerProfile = std::make_unique< QgsScopedRuntimeProfile >( it->first->providerId(), QStringLiteral( "rendering" ) );
     }
 
     // check for connected features with the same label text and join them
@@ -333,7 +338,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     previousObstacleCount = obstacleCount;
 
     if ( feedback )
-      feedback->emit candidateCreationFinished( it.first );
+      feedback->emit candidateCreationFinished( it->first );
   }
 
   candidateProfile.reset();
