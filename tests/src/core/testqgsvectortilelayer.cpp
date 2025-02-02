@@ -67,6 +67,7 @@ class TestQgsVectorTileLayer : public QgsTest
     void testMbtilesProviderMetadata();
     void test_relativePathsMbTiles();
     void test_absoluteRelativeUriMbTiles();
+    void test_mbtilesZoom16();
 
     void test_relativePathsXyz();
     void test_absoluteRelativeUriXyz();
@@ -369,6 +370,17 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUriMbTiles()
   QString relativeUri = dsRel.encodedUri();
   QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+}
+
+void TestQgsVectorTileLayer::test_mbtilesZoom16()
+{
+  const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/z16.mbtiles" ).arg( TEST_DATA_DIR );
+
+  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->providerType(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( layer->sourceMinZoom(), 16 );
+  QCOMPARE( layer->sourceMaxZoom(), 16 );
 }
 
 void TestQgsVectorTileLayer::test_relativePathsXyz()
