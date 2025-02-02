@@ -594,7 +594,6 @@ QgsAnnotationRectangleTextItemWidget::QgsAnnotationRectangleTextItemWidget( QWid
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
 
-
   mBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundSymbolButton->setDialogTitle( tr( "Background" ) );
   mBackgroundSymbolButton->registerExpressionContextGenerator( this );
@@ -753,6 +752,7 @@ bool QgsAnnotationRectangleTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
   mWidthSpinBox->setValue( textItem->fixedSize().width() );
   mHeightSpinBox->setValue( textItem->fixedSize().height() );
+  mSizeUnitWidget->setUnit( textItem->fixedSizeUnit() );
   mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( textItem->placementMode() ) ) );
 
   mBlockChangedSignal = false;
