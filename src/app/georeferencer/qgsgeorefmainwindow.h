@@ -80,6 +80,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
 
+    void showGeoreferencer();
+
   protected:
     void closeEvent( QCloseEvent * ) override;
     void dropEvent( QDropEvent *event ) override;
