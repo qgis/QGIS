@@ -613,6 +613,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const;
 
     /**
+     * Cleans a layer \a uri, e.g. to remove or hide sensitive information from the URI.
+     *
+     * \since QGIS 3.42
+     */
+    virtual QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const;
+
+    /**
      * Returns data item providers. Caller is responsible for ownership of the item providers
      * \see QgsProviderGuiMetadata::dataItemGuiProviders()
      * \note Ownership of created data item providers is passed to the caller.
