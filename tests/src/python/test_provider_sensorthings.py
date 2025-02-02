@@ -2584,7 +2584,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' pageSize=2 type=PointZ entity='Datastream'",
+                f"url='http://{endpoint}' pageSize=2 type=NoGeometry entity='Datastream'",
                 "test",
                 "sensorthings",
             )
