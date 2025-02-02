@@ -148,6 +148,19 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   }
 }
 
+void QgsGeoreferencerMainWindow::showGeoreferencer()
+{
+  if ( mDock )
+  {
+    mDock->setUserVisible( true );
+  }
+  else
+  {
+    show();
+    setFocus();
+  }
+}
+
 void QgsGeoreferencerMainWindow::dockThisWindow( bool dock )
 {
   if ( mDock )
