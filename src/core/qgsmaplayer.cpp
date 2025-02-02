@@ -477,34 +477,16 @@ QString QgsMapLayer::publicSource( bool redactCredentials ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString safeName = mDataSource;
-
-  if ( providerType() == QLatin1String( "gdal" ) )
-  {
-    QVariantMap components = QgsProviderRegistry::instance()->decodeUri( providerType(), safeName );
-    QVariantMap credentialOptions = components.value( QStringLiteral( "credentialOptions" ) ).toMap();
-    if ( !credentialOptions.empty() )
-    {
-      if ( redactCredentials )
-      {
-        for ( auto it = credentialOptions.begin(); it != credentialOptions.end(); ++it )
-        {
-          it.value() = QStringLiteral( "XXXXXXXX" );
-        }
-        components.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
-      }
-      else
-      {
-        components.remove( QStringLiteral( "credentialOptions" ) );
-      }
-    }
-    safeName = QgsProviderRegistry::instance()->encodeUri( providerType(), components );
-  }
-
   // Redo this every time we're asked for it, as we don't know if
   // dataSource has changed.
-  safeName = QgsDataSourceUri::removePassword( safeName, redactCredentials );
-  return safeName;
+  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
+  {
+    return metadata->cleanUri( mDataSource, redactCredentials ? Qgis::UriCleaningFlag::RedactCredentials : Qgis::UriCleaningFlag::RemoveCredentials );
+  }
+  else
+  {
+    return QgsDataSourceUri::removePassword( mDataSource, redactCredentials );
+  }
 }
 
 QString QgsMapLayer::source() const

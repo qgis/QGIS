@@ -2720,6 +2720,29 @@ QString QgsGdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, cons
   return context.pathResolver().readPath( src );
 }
 
+QString QgsGdalProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlags flags ) const
+{
+  QVariantMap components = decodeUri( uri );
+  QVariantMap credentialOptions = components.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  if ( !credentialOptions.empty() )
+  {
+    if ( flags.testFlag( Qgis::UriCleaningFlag::RedactCredentials ) )
+    {
+      for ( auto it = credentialOptions.begin(); it != credentialOptions.end(); ++it )
+      {
+        it.value() = QStringLiteral( "XXXXXXXX" );
+      }
+      components.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
+    }
+    else if ( flags.testFlag( Qgis::UriCleaningFlag::RemoveCredentials ) )
+    {
+      components.remove( QStringLiteral( "credentialOptions" ) );
+    }
+  }
+
+  return encodeUri( components );
+}
+
 bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
