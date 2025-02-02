@@ -782,9 +782,10 @@ void QgisApp::toggleEventTracing()
 void QgisApp::showGeoreferencer()
 {
   if ( !mGeoreferencer )
+  {
     mGeoreferencer = new QgsGeoreferencerMainWindow( this );
-  mGeoreferencer->show();
-  mGeoreferencer->setFocus();
+  }
+  mGeoreferencer->showGeoreferencer();
 }
 #endif
 
