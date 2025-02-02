@@ -2549,6 +2549,22 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterT
 # --
 Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.UriCleaningFlag.RemoveCredentials.__doc__ = "Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag."
+Qgis.UriCleaningFlag.RedactCredentials.__doc__ = "Replace the value of credentials (eg passwords) with 'xxxxxxxx. This flag is not compatible with the RemoveCredentials flag."
+Qgis.UriCleaningFlag.__doc__ = """Flags for cleaning layer URIs.
+
+.. versionadded:: 3.42
+
+* ``RemoveCredentials``: Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag.
+* ``RedactCredentials``: Replace the value of credentials (eg passwords) with 'xxxxxxxx. This flag is not compatible with the RemoveCredentials flag.
+
+"""
+# --
+Qgis.UriCleaningFlag.baseClass = Qgis
+Qgis.UriCleaningFlags = lambda flags=0: Qgis.UriCleaningFlag(flags)
+Qgis.UriCleaningFlags.baseClass = Qgis
+UriCleaningFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
