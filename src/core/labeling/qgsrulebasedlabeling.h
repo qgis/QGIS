@@ -43,7 +43,10 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
   public:
     class Rule;
     typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
+  private:
     typedef std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> RuleToProviderVec;
+
+  public:
 
     /**
      * \ingroup core
@@ -391,8 +394,6 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
   protected:
     std::unique_ptr<Rule> mRootRule;
-
-
 };
 
 #ifndef SIP_RUN
