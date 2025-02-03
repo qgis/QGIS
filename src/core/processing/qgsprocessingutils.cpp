@@ -516,7 +516,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
     return nullptr;
 
   // prefer project layers
-  if ( context.project() && ( typeHint == LayerHint::Annotation || typeHint == LayerHint::UnknownType ) && string.compare( QLatin1String( "main" ), Qt::CaseInsensitive ) == 0 )
+  if ( context.project() && ( typeHint == LayerHint::Annotation ) && string.compare( QLatin1String( "main" ), Qt::CaseInsensitive ) == 0 )
     return context.project()->mainAnnotationLayer();
 
   QgsMapLayer *layer = nullptr;
@@ -530,6 +530,11 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   layer = mapLayerFromStore( string, context.temporaryLayerStore(), typeHint );
   if ( layer )
     return layer;
+
+  // check main annotation layer
+  if ( context.project() && ( typeHint == LayerHint::UnknownType ) && string.compare( QLatin1String( "main" ), Qt::CaseInsensitive ) == 0 )
+    return context.project()->mainAnnotationLayer();
+
 
   if ( !allowLoadingNewLayers )
     return nullptr;
