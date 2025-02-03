@@ -28,19 +28,21 @@
 class QgsMapCanvas;
 class QStandardItemModel;
 class QSortFilterProxyModel;
+class QgsStacController;
 
 class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchParametersDialog
 {
     Q_OBJECT
 
   public:
-    QgsStacSearchParametersDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr );
+    QgsStacSearchParametersDialog( QgsStacController *stac, QgsMapCanvas *canvas, QWidget *parent = nullptr );
     ~QgsStacSearchParametersDialog();
 
     void accept() override;
     void reject() override;
 
     void setMapCanvas( QgsMapCanvas *canvas );
+    void setCollectionsUrl( const QString &url );
 
     bool hasTemporalFilter() const;
     bool hasSpatialFilter() const;
@@ -50,8 +52,10 @@ class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchP
     QgsDateTimeRange temporalRange() const;
     QSet<QString> selectedCollections() const;
 
+    //! clears model, deletes pointers
+    void clearCollections();
     //! takes ownership
-    void setCollections( const QVector<QgsStacCollection *> &collections );
+    void appendCollections( const QVector<QgsStacCollection *> &collections );
 
     //! ownership not transferred
     QVector<QgsStacCollection *> collections() const;
@@ -61,9 +65,11 @@ class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchP
   private:
     void selectAllCollections();
     void deselectAllCollections();
+    void onCollectionsListViewScroll( int value );
 
     void readTemporalExtentsFromProject();
 
+    QString mCollectionsUrl;
     bool mSpatialFilterEnabled = false;
     bool mTemporalFilterEnabled = false;
     bool mCollectionsFilterEnabled = false;
@@ -72,6 +78,8 @@ class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchP
     QDateTime mTemporalFrom;
     QDateTime mTemporalTo;
     QSet<QString> mSelectedCollections;
+
+    QgsStacController *mStac = nullptr;
 
     QMenu *mMenu = nullptr;
     QAction *mTemporalExtentFromProjectAction = nullptr;
