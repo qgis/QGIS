@@ -2550,7 +2550,7 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterT
 Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UriCleaningFlag.RemoveCredentials.__doc__ = "Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag."
-Qgis.UriCleaningFlag.RedactCredentials.__doc__ = "Replace the value of credentials (eg passwords) with 'xxxxxxxx. This flag is not compatible with the RemoveCredentials flag."
+Qgis.UriCleaningFlag.RedactCredentials.__doc__ = "Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag."
 Qgis.UriCleaningFlag.__doc__ = """Flags for cleaning layer URIs.
 
 .. versionadded:: 3.42
