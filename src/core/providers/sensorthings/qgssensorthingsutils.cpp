@@ -863,7 +863,8 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
       return
       {
         Qgis::SensorThingsEntity::HistoricalLocation,
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream,
       };
 
     case Qgis::SensorThingsEntity::Location:
@@ -891,19 +892,22 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
     case Qgis::SensorThingsEntity::Sensor:
       return
       {
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream,
       };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
       return
       {
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream
       };
 
     case Qgis::SensorThingsEntity::Observation:
       return
       {
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream
       };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
