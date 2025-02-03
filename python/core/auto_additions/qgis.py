@@ -2528,7 +2528,7 @@ Qgis.UriCleaningFlag.__doc__ = """Flags for cleaning layer URIs.
 .. versionadded:: 3.42
 
 * ``RemoveCredentials``: Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag.
-* ``RedactCredentials``: Replace the value of credentials (eg passwords) with 'xxxxxxxx. This flag is not compatible with the RemoveCredentials flag.
+* ``RedactCredentials``: Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag.
 
 """
 # --
