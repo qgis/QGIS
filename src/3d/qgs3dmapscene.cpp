@@ -216,7 +216,6 @@ void Qgs3DMapScene::viewZoomFull()
   double d = side / 2 / std::tan( cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
   d += zRange.isInfinite() ? 0. : zRange.upper();
   mCameraController->resetView( static_cast<float>( d ) );
-  return;
 }
 
 void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
