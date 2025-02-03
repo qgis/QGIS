@@ -178,6 +178,8 @@ QCursor Qgs3DMapToolPaintBrush::cursor() const
 void Qgs3DMapToolPaintBrush::reset()
 {
   mDragPositions.clear();
+  mHighlighterRubberBand->reset();
+  mIsClicked = false;
 }
 
 void Qgs3DMapToolPaintBrush::setAttribute( const QString &attribute )
@@ -215,7 +217,7 @@ void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( event->button() == Qt::LeftButton )
+  if ( mIsClicked && event->button() == Qt::LeftButton )
   {
     mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
     mHighlighterRubberBand->reset();
@@ -244,7 +246,7 @@ void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
 {
   // Change the selection circle size. Moving the wheel forward (away) from the user makes
   // the circle smaller
-  if ( event->angleDelta().y() == 0 )
+  if ( event->angleDelta().y() == 0 || !event->modifiers().testFlag( Qt::ControlModifier ) )
   {
     event->accept();
     return;
@@ -257,4 +259,12 @@ void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
   mSelectionRubberBand->setWidth( mSelectionRubberBand->width() * zoomFactor );
+}
+
+void Qgs3DMapToolPaintBrush::keyPressEvent( QKeyEvent *event )
+{
+  if ( mIsClicked && event->key() == Qt::Key_Escape )
+  {
+    reset();
+  }
 }
