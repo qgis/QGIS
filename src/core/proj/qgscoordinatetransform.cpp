@@ -637,6 +637,10 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   ProjData projData = d->threadLocalProjData();
   PJ_CONTEXT *projContext = QgsProjContext::get();
 
+#if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<6)
+  // if source or destination crs include vertical components, we need to demote them to
+  // 2d crs first, otherwise proj_trans_bounds fails on proj < 9.6 (see https://github.com/OSGeo/PROJ/pull/4333)
+
   QgsProjUtils::proj_pj_unique_ptr srcCrs( proj_get_source_crs( projContext, projData ) );
   QgsProjUtils::proj_pj_unique_ptr destCrs( proj_get_target_crs( projContext, projData ) );
 
@@ -646,13 +650,12 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   if ( QgsProjUtils::hasVerticalAxis( srcCrs.get() ) ||
        QgsProjUtils::hasVerticalAxis( destCrs.get() ) )
   {
-    // if source or destination crs include vertical components, we need to demote them to
-    // 2d crs first, otherwise proj_trans_bounds fails
     srcCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( srcCrs.get() );
     destCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( destCrs.get() );
     transform2D.reset( proj_create_crs_to_crs_from_pj( projContext, srcCrsHorizontal.get(), destCrsHorizontal.get(), nullptr, nullptr ) );
     projData = transform2D.get();
   }
+#endif
 
   double transXMin = 0;
   double transYMin = 0;
