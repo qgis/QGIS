@@ -71,7 +71,11 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mExpansionsTable, &QTableView::clicked, this, [this]( const QModelIndex &index ) {
     if ( index.column() == QgsSensorThingsExpansionsModel::Column::Actions )
     {
-      mExpansionsModel->removeRows( index.row(), 1 );
+      // only the bottom expansion (or empty rows) can be removed - otherwise we end up with inconsistent expansions!
+      if ( mExpansionsModel->canRemoveRow( index.row() ) )
+      {
+        mExpansionsModel->removeRows( index.row(), 1 );
+      }
     }
   } );
 
@@ -722,6 +726,25 @@ bool QgsSensorThingsExpansionsModel::insertRows( int position, int rows, const Q
   return true;
 }
 
+bool QgsSensorThingsExpansionsModel::canRemoveRow( int row ) const
+{
+  if ( row >= mExpansions.size() )
+    return true;
+
+  for ( int i = mExpansions.size() - 1; i >= 0; --i )
+  {
+    if ( row == i && mExpansions.at( i ).isValid() )
+      return true;
+
+    // when we hit the first valid expansion from the end of the list, then
+    // any earlier rows CANNOT be removed
+    if ( mExpansions.at( i ).isValid() )
+      return false;
+  }
+
+  return false;
+}
+
 bool QgsSensorThingsExpansionsModel::removeRows( int position, int rows, const QModelIndex &parent )
 {
   Q_UNUSED( parent )
@@ -956,19 +979,25 @@ void QgsSensorThingsRemoveExpansionDelegate::paint( QPainter *painter, const QSt
 {
   QStyledItemDelegate::paint( painter, option, index );
 
-  if ( index == mHoveredIndex )
+  if ( const QgsSensorThingsExpansionsModel *model = qobject_cast< const QgsSensorThingsExpansionsModel * >( index.model() ) )
   {
-    QStyleOptionButton buttonOption;
-    buttonOption.initFrom( option.widget );
-    buttonOption.rect = option.rect;
+    if ( model->canRemoveRow( index.row() ) )
+    {
+      if ( index == mHoveredIndex )
+      {
+        QStyleOptionButton buttonOption;
+        buttonOption.initFrom( option.widget );
+        buttonOption.rect = option.rect;
 
-    option.widget->style()->drawControl( QStyle::CE_PushButton, &buttonOption, painter );
+        option.widget->style()->drawControl( QStyle::CE_PushButton, &buttonOption, painter );
+      }
+
+      const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
+      const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
+
+      icon.paint( painter, iconRect );
+    }
   }
-
-  const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
-  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
-
-  icon.paint( painter, iconRect );
 }
 
 void QgsSensorThingsRemoveExpansionDelegate::setHoveredIndex( const QModelIndex &index )
