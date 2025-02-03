@@ -58,6 +58,7 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseWheelEvent( QWheelEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private:
     //! Process the area selected by user
