@@ -2707,7 +2707,12 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
             if ( gType == wkbTINZ )
               gType = wkbMultiPolygon25D;
             bool hasZ = wkbHasZ( gType );
-            gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+            // Mapinfo tab files can have multi and simple geometry in the same
+            // layer, keep the multi version
+            if ( driverName != QLatin1String( "MapInfo File" ) )
+            {
+              gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+            }
             fCount[gType] = fCount.value( gType ) + pasCounter[i].nCount;
             if ( hasZ )
               fHasZ.insert( gType );
@@ -2728,7 +2733,12 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         if ( gType != wkbNone )
         {
           bool hasZ = wkbHasZ( gType );
-          gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+          // Mapinfo tab files can have multi and simple geometry in the same
+          // layer, keep the multi version
+          if ( driverName != QLatin1String( "MapInfo File" ) )
+          {
+            gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+          }
           fCount[gType] = fCount.value( gType ) + 1;
           if ( hasZ )
             fHasZ.insert( gType );
@@ -2740,6 +2750,26 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
           break;
       }
       layer->ResetReading();
+    }
+
+    // For mapinfo tab files, keep only the multi version if both are present
+    if ( driverName == QLatin1String( "MapInfo File" ) )
+    {
+      if ( fCount.contains( wkbMultiPoint ) && fCount.contains( wkbPoint ) )
+      {
+        fCount[wkbMultiPoint] += fCount.value( wkbPoint );
+        fCount.remove( wkbPoint );
+      }
+      if ( fCount.contains( wkbMultiLineString ) && fCount.contains( wkbLineString ) )
+      {
+        fCount[wkbMultiLineString] += fCount.value( wkbLineString );
+        fCount.remove( wkbLineString );
+      }
+      if ( fCount.contains( wkbMultiPolygon ) && fCount.contains( wkbPolygon ) )
+      {
+        fCount[wkbMultiPolygon] += fCount.value( wkbPolygon );
+        fCount.remove( wkbPolygon );
+      }
     }
 
     if ( fCount.isEmpty() )

@@ -3127,6 +3127,19 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[0].skippedContainerScan())
 
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "mapinfo", "multipoly.tab"),
+            Qgis.SublayerQueryFlag.ResolveGeometryType,
+        )
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.MultiPolygon)
+        layer = res[0].toLayer(options)
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiPolygon)
+        # Check feature geometries
+        for feature in layer.getFeatures():
+            self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.MultiPolygon)
+
     @unittest.skipIf(
         int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 4, 0),
         "GDAL 3.4 required",
