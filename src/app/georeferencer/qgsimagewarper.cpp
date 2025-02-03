@@ -208,6 +208,8 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QSt
   eErr = oOperation.ChunkAndWarpImage( 0, 0, destPixels, destLines );
 
   destroyGeoToPixelTransform( psWarpOptions->pTransformerArg );
+  psWarpOptions.reset();
+
   return feedback->isCanceled() ? QgsImageWarper::Result::Canceled : eErr == CE_None ? QgsImageWarper::Result::Success
                                                                                      : QgsImageWarper::Result::WarpFailure;
 }
