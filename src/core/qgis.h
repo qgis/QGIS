@@ -1301,7 +1301,7 @@ class CORE_EXPORT Qgis
     enum class UriCleaningFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RemoveCredentials = 1 << 0, //!< Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag.
-      RedactCredentials = 1 << 1, //!< Replace the value of credentials (eg passwords) with 'xxxxxxxx. This flag is not compatible with the RemoveCredentials flag.
+      RedactCredentials = 1 << 1, //!< Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag.
     };
     Q_ENUM( UriCleaningFlag )
 
