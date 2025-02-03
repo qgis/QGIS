@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorutils.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
@@ -127,11 +128,28 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
   {
     if ( pcLayer->dataProvider() )
     {
+      double zMin = std::numeric_limits<double>::quiet_NaN();
+      double zMax = std::numeric_limits<double>::quiet_NaN();
       const QgsPointCloudStatistics stats = pcLayer->statistics();
+      if ( !stats.statisticsMap().isEmpty() )
+      {
+        // try to fetch z range from provider metadata
+        zMin = stats.minimum( QStringLiteral( "Z" ) );
+        zMax = stats.maximum( QStringLiteral( "Z" ) );
+      }
+      // try to fetch the elevation properties from virtual point cloud metadata
+      else if ( QgsVirtualPointCloudProvider *virtualProvider = dynamic_cast< QgsVirtualPointCloudProvider * >( pcLayer->dataProvider() ) )
+      {
+        zMin = virtualProvider->subIndexes()[0].zRange().lower();
+        zMax = virtualProvider->subIndexes()[0].zRange().upper();
+        for ( QgsPointCloudSubIndex subIndex : virtualProvider->subIndexes() )
+        {
+          const QgsDoubleRange newRange = subIndex.zRange();
+          zMin = std::min( zMin, newRange.lower() );
+          zMax = std::max( zMax, newRange.upper() );
+        }
+      }
 
-      // try to fetch z range from provider metadata
-      const double zMin = stats.minimum( QStringLiteral( "Z" ) );
-      const double zMax = stats.maximum( QStringLiteral( "Z" ) );
       if ( !std::isnan( zMin ) && !std::isnan( zMax ) )
       {
         return QgsDoubleRange( zMin * mZScale + mZOffset, zMax * mZScale + mZOffset );
