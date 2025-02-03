@@ -636,6 +636,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             [
                 Qgis.SensorThingsEntity.HistoricalLocation,
                 Qgis.SensorThingsEntity.Datastream,
+                Qgis.SensorThingsEntity.MultiDatastream,
             ],
         )
 
