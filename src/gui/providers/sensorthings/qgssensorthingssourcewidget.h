@@ -59,6 +59,7 @@ class QgsSensorThingsExpansionsModel : public QAbstractItemModel
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     bool insertRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
+    bool canRemoveRow( int row ) const;
     bool removeRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
 
     void setExpansions( const QList<QgsSensorThingsExpansionDefinition> &expansions );
