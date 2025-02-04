@@ -44,6 +44,7 @@
 #include "qgssymbollayerreference.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgscurvepolygon.h"
+#include "qgsmasksymbollayer.h"
 
 #include "qmath.h"
 #include <QColor>
@@ -5612,12 +5613,12 @@ void QgsSymbolLayerUtils::clearSymbolLayerMasks( QgsSymbol *symbol )
 
   for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
   {
-    if ( QgsSymbolLayer *sl = symbol->symbolLayer( idx ) )
+    if ( QgsMaskMarkerSymbolLayer *maskSl = dynamic_cast<QgsMaskMarkerSymbolLayer *>( symbol->symbolLayer( idx ) ) )
     {
-      sl->clearMasks();
+      maskSl->clearMasks();
 
       // recurse over sub symbols
-      if ( QgsSymbol *subSymbol = sl->subSymbol() )
+      if ( QgsSymbol *subSymbol = maskSl->subSymbol() )
       {
         clearSymbolLayerMasks( subSymbol );
       }
