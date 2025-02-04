@@ -748,7 +748,7 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   return normalized.trimmed();
 }
 
-QString QgsProcessingUtils::layerToStringIdentifier( const QgsMapLayer *layer )
+QString QgsProcessingUtils::layerToStringIdentifier( const QgsMapLayer *layer, const QString &layerName )
 {
   if ( !layer )
     return QString();
@@ -766,6 +766,12 @@ QString QgsProcessingUtils::layerToStringIdentifier( const QgsMapLayer *layer )
 
     return QStringLiteral( "%1://%2" ).arg( provider, source );
   }
+
+  if ( layer->dataProvider()->name() == QLatin1String( "annotation" ) && layerName.compare( QLatin1String( "main" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return layerName;
+  }
+
   return layer->id();
 }
 
