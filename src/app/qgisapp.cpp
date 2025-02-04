@@ -8157,7 +8157,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
     }
   };
 
-  auto onFailure = []( int error, const QString &errorMessage ) {
+  auto onFailure = []( int error, const QString &errorMessage, const QString & ) {
     if ( error != QgsVectorFileWriter::Canceled )
     {
       QgsMessageViewer *m = new QgsMessageViewer( nullptr );
@@ -8332,12 +8332,12 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     this->visibleMessageBar()->pushMessage( tr( "Layer Exported" ), tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
   };
 
-  auto onFailure = []( int error, const QString &errorMessage ) {
+  auto onFailure = []( int error, const QString &errorMessage, const QString &fileName ) {
     if ( error != QgsVectorFileWriter::Canceled )
     {
       QgsMessageViewer *m = new QgsMessageViewer( nullptr );
       m->setWindowTitle( tr( "Save Error" ) );
-      m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
+      m->setMessageAsPlainText( tr( "Export to vector file %1 failed.\nError: %2" ).arg( fileName, errorMessage ) );
       m->exec();
     }
   };
@@ -8345,7 +8345,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
   return saveAsVectorFileGeneral( vlayer, symbologyOption, onlySelected, defaultToAddToMap, onSuccess, onFailure );
 }
 
-QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess, const std::function<void( int, const QString & )> &onFailure, QgsVectorLayerSaveAsDialog::Options options, const QString &dialogTitle )
+QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess, const std::function<void( int, const QString &, const QString & )> &onFailure, QgsVectorLayerSaveAsDialog::Options options, const QString &dialogTitle )
 {
   QgsCoordinateReferenceSystem destCRS;
 
@@ -8441,8 +8441,8 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     } );
 
     // when an error occurs:
-    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [onFailure]( int error, const QString &errorMessage ) {
-      onFailure( error, errorMessage );
+    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [onFailure, vectorFilename]( int error, const QString &errorMessage ) {
+      onFailure( error, errorMessage, vectorFilename );
     } );
 
     QgsApplication::taskManager()->addTask( writerTask );
