@@ -11470,14 +11470,14 @@ void TestQgsProcessing::parameterAnnotationLayer()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
-  QCOMPARE( def->valueAsJsonObject( QStringLiteral( "main" ), context ), QVariant( context.project()->mainAnnotationLayer()->id() ) );
+  QCOMPARE( def->valueAsJsonObject( QStringLiteral( "main" ), context ), QVariant( QStringLiteral( "main" ) ) );
   QCOMPARE( def->valueAsJsonObject( al->id(), context ), QVariant( al->id() ) );
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( al ), context ), QVariant( al->id() ) );
 
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
   QVERIFY( ok );
-  QCOMPARE( def->valueAsString( QStringLiteral( "main" ), context, ok ), context.project()->mainAnnotationLayer()->id() );
+  QCOMPARE( def->valueAsString( QStringLiteral( "main" ), context, ok ), QStringLiteral( "main" ) );
   QVERIFY( ok );
   QCOMPARE( def->valueAsString( al->id(), context, ok ), al->id() );
   QVERIFY( ok );
