@@ -187,10 +187,8 @@ void QgsCameraController::setViewFromTop( float worldX, float worldY, float dist
   camPose.setHeadingAngle( yaw );
 
   // we force the updateCameraNearFarPlanes() in Qgs3DMapScene to properly set the planes
-  // by making sure the cameraPose is never the same, which will emit cameraChanged()
-  mCameraPose.setDistanceFromCenterPoint( camPose.distanceFromCenterPoint() + 1 );
-
-  setCameraPose( camPose );
+  mCameraPose = camPose;
+  updateCameraFromPose();
 }
 
 QgsVector3D QgsCameraController::lookingAtPoint() const
