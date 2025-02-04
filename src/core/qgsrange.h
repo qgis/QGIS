@@ -189,7 +189,8 @@ class QgsRange
       if ( other.mLower == mUpper )
         return other.mIncludeLower && mIncludeUpper;
 
-      BUILTIN_UNREACHABLE
+      // UNREACHABLE CODE
+      return false;
     }
 
     bool operator==( const QgsRange<T> &other ) const
