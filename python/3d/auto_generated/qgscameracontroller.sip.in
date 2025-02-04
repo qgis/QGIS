@@ -215,6 +215,13 @@ Sets whether the camera controller responds to mouse and keyboard events
 .. versionadded:: 3.42
 %End
 
+    bool inputHandlersEnabled() const;
+%Docstring
+Returns whether the camera controller responds to mouse and keyboard events
+
+.. versionadded:: 3.44
+%End
+
   public slots:
 
     void setCameraNavigationMode( Qgis::NavigationMode navigationMode );

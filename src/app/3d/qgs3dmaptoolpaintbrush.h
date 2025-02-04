@@ -75,6 +75,8 @@ class Qgs3DMapToolPaintBrush : public Qgs3DMapTool
     bool mIsClicked = false;
     //! Check if the tool is selected
     bool mIsActive = false;
+    //! Check if the tool or movement is active
+    bool mIsMoving = false;
     QString mAttributeName;
     double mNewValue = 0;
 };
