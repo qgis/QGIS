@@ -279,6 +279,11 @@ bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
       return false;
     }
 
+    case PJ_TYPE_BOUND_CRS:
+    {
+      return hasVerticalAxis( proj_get_source_crs( context, crs ) );
+    }
+
     // maybe other types to handle like this??
 
     default:
