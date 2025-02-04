@@ -767,7 +767,7 @@ QString QgsProcessingUtils::layerToStringIdentifier( const QgsMapLayer *layer, c
     return QStringLiteral( "%1://%2" ).arg( provider, source );
   }
 
-  if ( layer->dataProvider()->name() == QLatin1String( "annotation" ) && layerName.compare( QLatin1String( "main" ), Qt::CaseInsensitive ) == 0 )
+  if ( layer->type() == Qgis::LayerType::Annotation && layerName.compare( QLatin1String( "main" ), Qt::CaseInsensitive ) == 0 )
   {
     return layerName;
   }
