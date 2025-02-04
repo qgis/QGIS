@@ -40,7 +40,6 @@ alternating segments. AKA "South African" style.
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
     virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 
-
 };
 
 /************************************************************************
