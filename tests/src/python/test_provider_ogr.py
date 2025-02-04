@@ -174,7 +174,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(
             vl.dataProvider().subLayers()[0],
             QgsDataProvider.SUBLAYER_SEPARATOR.join(
-                ["0", "testMixOfPolygonCurvePolygon", "4", "CurvePolygon", "", ""]
+                ["0", "testMixOfPolygonCurvePolygon", "4", "MultiPolygon", "", ""]
             ),
         )
 
@@ -2535,11 +2535,11 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(
             res[0].uri(),
             TEST_DATA_DIR
-            + "/multipatch.shp|geometrytype=Polygon25D|uniqueGeometryType=yes",
+            + "/multipatch.shp|geometrytype=MultiPolygon25D|uniqueGeometryType=yes",
         )
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.MultiPolygonZ)
         self.assertEqual(res[0].geometryColumnName(), "")
         self.assertEqual(res[0].driverName(), "ESRI Shapefile")
 
