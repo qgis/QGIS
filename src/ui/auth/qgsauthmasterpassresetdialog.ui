@@ -61,6 +61,29 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_8">
+     <property name="font">
+      <font>
+       <italic>false</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Re-enter NEW password</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsPasswordLineEdit" name="leMasterPassNew2">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="chkKeepBackup">
      <property name="text">
       <string>Keep backup of current database</string>
@@ -121,6 +144,8 @@ and re-encrypted using new password</string>
  <tabstops>
   <tabstop>leMasterPassCurrent</tabstop>
   <tabstop>leMasterPassNew</tabstop>
+  <tabstop>leMasterPassNew2</tabstop>
+  <tabstop>chkKeepBackup</tabstop>
  </tabstops>
  <resources/>
  <connections>

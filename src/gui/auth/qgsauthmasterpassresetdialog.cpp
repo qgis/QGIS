@@ -41,6 +41,7 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
     setupUi( this );
     connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
     connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
+    connect( leMasterPassNew2, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
 
     if ( QgsApplication::authManager()->sqliteDatabasePath().isEmpty() )
     {
@@ -74,9 +75,11 @@ void QgsMasterPasswordResetDialog::validatePasswords()
 {
   const QString currentPassword = leMasterPassCurrent->text();
   const QString newPassword = leMasterPassNew->text();
+  const QString confirmPassword = leMasterPassNew2->text();
 
   const bool currentPasswordOk = !currentPassword.isEmpty();
   const bool newPasswordOk = !newPassword.isEmpty();
+  const bool confirmPasswordOk = !confirmPassword.isEmpty() && confirmPassword == newPassword;
 
   const QString ss1 = currentPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
                                         : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
@@ -84,5 +87,8 @@ void QgsMasterPasswordResetDialog::validatePasswords()
   const QString ss2 = newPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
                                     : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassNew->setStyleSheet( ss2 );
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( currentPasswordOk && newPasswordOk );
+  const QString ss3 = confirmPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                                        : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+  leMasterPassNew2->setStyleSheet( ss3 );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( currentPasswordOk && newPasswordOk && confirmPasswordOk );
 }
