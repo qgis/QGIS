@@ -79,7 +79,12 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
      */
     QList<QgsSymbolLayerReference> masks() const override;
 
-    void clearMasks() override;
+    /**
+     * Remove masks defined by this symbol layer.
+     * \see masks()
+     * \since QGIS 3.42
+     */
+    void clearMasks();
 
     /**
      * Sets the symbol layers that will be masked by the sub symbol's shape.
