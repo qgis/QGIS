@@ -776,6 +776,30 @@ void QgsAnnotationRectangleTextItemWidget::sizeModeChanged()
       break;
 
     case Qgis::AnnotationPlacementMode::FixedSize:
+      if ( const QgsRenderedAnnotationItemDetails *details = renderedItemDetails() )
+      {
+        const QgsRectangle itemBoundsMapUnits = details->boundingBox();
+        if ( QgsMapCanvas *canvas = context().mapCanvas() )
+        {
+          const QgsPointXY topLeftPixels = canvas->mapSettings().mapToPixel().transform( itemBoundsMapUnits.xMinimum(), itemBoundsMapUnits.yMinimum() );
+          const QgsPointXY bottomRightPixels = canvas->mapSettings().mapToPixel().transform( itemBoundsMapUnits.xMaximum(), itemBoundsMapUnits.yMaximum() );
+          const double widthPixels = std::abs( bottomRightPixels.x() - topLeftPixels.x() );
+          const double heightPixels = std::abs( bottomRightPixels.y() - topLeftPixels.y() );
+
+          // convert width/height in pixels to mm
+          const double pixelsPerMm = canvas->mapSettings().outputDpi() / 25.4;
+          mItem->setFixedSizeUnit( Qgis::RenderUnit::Millimeters );
+          mItem->setFixedSize( QSizeF( widthPixels / pixelsPerMm, heightPixels / pixelsPerMm ) );
+
+          // and update widget UI accordingly
+          whileBlocking( mWidthSpinBox )->setValue( mItem->fixedSize().width() );
+          whileBlocking( mHeightSpinBox )->setValue( mItem->fixedSize().height() );
+          whileBlocking( mSizeUnitWidget )->setUnit( mItem->fixedSizeUnit() );
+
+          mUpdateItemPosition = true;
+        }
+      }
+
       mWidgetFixedSize->show();
       break;
 
