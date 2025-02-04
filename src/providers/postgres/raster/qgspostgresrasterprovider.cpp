@@ -2588,7 +2588,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                   .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                   .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                   .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                  .arg( QStringLiteral( "NULL" ) )
+                  .arg( QLatin1String( "NULL" ) )
                   .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
                   .arg( useAsDefault ? "true" : "false" )
                   .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )

@@ -1716,7 +1716,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       case QMetaType::Type::QVariantMap:
       {
         QVariantMap rotateMap = jsonTextRotate.toMap();
-        if ( rotateMap.contains( QStringLiteral( "property" ) ) && rotateMap[QStringLiteral( "type" )].toString() == QStringLiteral( "identity" ) )
+        if ( rotateMap.contains( QStringLiteral( "property" ) ) && rotateMap[QStringLiteral( "type" )].toString() == QLatin1String( "identity" ) )
         {
           const QgsProperty property = QgsProperty::fromExpression( rotateMap[QStringLiteral( "property" )].toString() );
           ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, property );

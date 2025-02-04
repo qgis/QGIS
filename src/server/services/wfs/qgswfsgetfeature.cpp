@@ -1629,7 +1629,7 @@ namespace QgsWfs
       if ( QgsVariantUtils::isNull( value ) )
         return QString();
 
-      if ( setup.type() == QStringLiteral( "DateTime" ) )
+      if ( setup.type() == QLatin1String( "DateTime" ) )
       {
         // For time fields use const TIME_FORMAT
         if ( value.userType() == QMetaType::Type::QTime )
@@ -1658,7 +1658,7 @@ namespace QgsWfs
         // else provide the value as string
         return value.toString();
       }
-      else if ( setup.type() == QStringLiteral( "Range" ) )
+      else if ( setup.type() == QLatin1String( "Range" ) )
       {
         const QVariantMap config = setup.config();
         if ( config.contains( QStringLiteral( "Precision" ) ) )
