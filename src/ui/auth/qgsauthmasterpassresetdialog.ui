@@ -91,18 +91,9 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_4">
-     <property name="font">
-      <font>
-       <italic>true</italic>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QLabel { color: rgb(128, 128, 128); }</string>
-     </property>
+    <widget class="QLabel" name="lblWarning">
      <property name="text">
-      <string>Your authentication database will be duplicated
-and re-encrypted using new password</string>
+      <string/>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

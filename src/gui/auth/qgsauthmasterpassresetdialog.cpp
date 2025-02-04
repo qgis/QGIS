@@ -22,7 +22,6 @@
 
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
-#include "qgslogger.h"
 #include "qgsapplication.h"
 
 
@@ -48,6 +47,14 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
       chkKeepBackup->hide();
     }
   }
+
+  QString warning = tr( "Your authentication database will be duplicated and re-encrypted using the new password." );
+  if ( QgsApplication::authManager()->passwordHelperEnabled() )
+  {
+    warning += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "Your new password will automatically be stored in the system %1." ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+  }
+
+  lblWarning->setText( warning );
 }
 
 bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup )
