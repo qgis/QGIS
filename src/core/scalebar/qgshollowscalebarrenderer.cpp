@@ -193,6 +193,3 @@ bool QgsHollowScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &setti
 
   return true;
 }
-
-
-
