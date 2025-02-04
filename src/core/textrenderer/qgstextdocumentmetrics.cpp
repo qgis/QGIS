@@ -476,8 +476,6 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
             thisBlockMetrics.isFirstBlock = false;
             remainingWidthInCurrentLine = documentContext.maximumWidth();
           }
-
-          thisBlockMetrics.isFirstBlock = false;
         }
       }
       else
