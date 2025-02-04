@@ -756,12 +756,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool passwordHelperSync();
 
+    // TODO QGIS 4.0 -- remove
+
     /**
      * The display name of the password helper (platform dependent).
      *
-     * \deprecated QGIS 3.42. Use passwordHelperDisplayName() instead.
+     * This is deprecated, use passwordHelperDisplayName() instead.
      */
-    Q_DECL_DEPRECATED static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME SIP_DEPRECATED;
+    static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
 
     /**
      * Returns a translated display name of the password helper (platform dependent).

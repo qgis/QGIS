@@ -810,7 +810,8 @@ Store the password manager into the wallet
    Available in Python bindings since QGIS 3.8.0
 %End
 
- static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME /Deprecated="Since 3.42. Use passwordHelperDisplayName() instead."/;
+
+    static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
 
     static QString passwordHelperDisplayName( bool titleCase = false );
 %Docstring
