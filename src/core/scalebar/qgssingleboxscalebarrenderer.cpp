@@ -20,6 +20,7 @@
 #include "qgstextrenderer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include <QList>
 #include <QPainter>
 
@@ -157,5 +158,23 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   drawDefaultLabels( context, settings, scaleContext );
 }
 
+bool QgsSingleBoxScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &settings ) const
+{
+  // restore the fill symbols by default
+  std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+  fillSymbolLayer->setColor( QColor( 0, 0, 0 ) );
+  fillSymbolLayer->setBrushStyle( Qt::SolidPattern );
+  fillSymbolLayer->setStrokeStyle( Qt::SolidLine );
+  fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+  settings.setFillSymbol( fillSymbol.release() );
 
+  fillSymbol = std::make_unique< QgsFillSymbol >();
+  fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+  fillSymbolLayer->setColor( QColor( 255, 255, 255 ) );
+  fillSymbolLayer->setStrokeStyle( Qt::NoPen );
+  fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+  settings.setAlternateFillSymbol( fillSymbol.release() );
 
+  return true;
+}
