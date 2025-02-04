@@ -587,21 +587,15 @@ cmake .. -DBUILD_WITH_QT6=ON -DWITH_QTWEBKIT=OFF -DWITH_QTWEBENGINE=ON
 With [vcpkg](https://github.com/microsoft/vcpkg/) you can develop QGIS using
 Qt6 on a Linux system.
 
-Install and initialize vcpkg
+First, [Install and initialize vcpkg](https://github.com/microsoft/vcpkg-tool/blob/main/README.md#installuseremove).
 
-```sh
-export VCPKG_ROOT=$HOME/.vcpkg
-wget https://aka.ms/vcpkg-init.sh -O /tmp/vcpkg-init.sh
-. /tmp/vcpkg-init.sh
-```
-
-Get the QGIS source code
+Get the QGIS source code:
 
 ```sh
 git clone git@github.com:qgis/QGIS.git
 ```
 
-Configure
+Configure:
 
 ```sh
 cmake -S . \
@@ -616,14 +610,11 @@ cmake -S . \
       -DVCPKG_HOST_TRIPLET=x64-linux-dynamic-release
 ```
 
-Build
+Build:
 
 ```sh
 cmake --build ./build-x64-linux
 ```
-
-We assume that you have the source code of QGIS ready and created a
-new subdirectory called `build-x64-linux`.
 
 # 4. Building on Windows
 
