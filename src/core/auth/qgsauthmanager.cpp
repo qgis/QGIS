@@ -401,7 +401,7 @@ const QString QgsAuthManager::disabledMessage() const
 }
 
 
-const QString QgsAuthManager::sqliteDatabasePath() const
+QString QgsAuthManager::sqliteDatabasePath() const
 {
   if ( !QgsAuthManager::isFilesystemBasedDatabase( mAuthDatabaseConnectionUri ) )
   {

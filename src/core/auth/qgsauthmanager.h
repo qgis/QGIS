@@ -776,6 +776,12 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! The display name of the Authentication Manager
     static const QString AUTH_MAN_TAG;
 
+    /**
+     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
+     *
+     * \note Not available in Python bindings
+     */
+    QString sqliteDatabasePath() const SIP_SKIP;
 
   signals:
 
@@ -946,11 +952,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Returns the first ready storage with the given \a capability or NULLPTR if none available.
      */
     QgsAuthConfigurationStorage *firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
-
-    /**
-     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
-     */
-    const QString sqliteDatabasePath() const;
 
     static QgsAuthManager *sInstance;
     static const QString AUTH_CONFIG_TABLE;

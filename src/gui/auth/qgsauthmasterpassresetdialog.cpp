@@ -41,6 +41,11 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
     setupUi( this );
     connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged );
     connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassNew_textChanged );
+
+    if ( QgsApplication::authManager()->sqliteDatabasePath().isEmpty() )
+    {
+      chkKeepBackup->hide();
+    }
   }
 }
 
@@ -58,7 +63,7 @@ bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass,
     {
       *newpass = leMasterPassNew->text();
       *oldpass = leMasterPassCurrent->text();
-      *keepbackup = chkKeepBackup->isChecked();
+      *keepbackup = !chkKeepBackup->isHidden() && chkKeepBackup->isChecked();
       return true;
     }
   }
