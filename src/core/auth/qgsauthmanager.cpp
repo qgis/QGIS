@@ -71,6 +71,7 @@ const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_FOLDER_NAME( "QGIS" );
 
 
 
+Q_NOWARN_DEPRECATED_PUSH
 #if defined(Q_OS_MAC)
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Keychain" );
 #elif defined(Q_OS_WIN)
@@ -80,6 +81,7 @@ const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( QStringLiteral(
 #else
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manager" );
 #endif
+Q_NOWARN_DEPRECATED_POP
 
 QgsAuthManager *QgsAuthManager::instance()
 {
@@ -3074,6 +3076,19 @@ bool QgsAuthManager::passwordHelperSync()
   return false;
 }
 
+QString QgsAuthManager::passwordHelperDisplayName( bool titleCase )
+{
+#if defined(Q_OS_MAC)
+  return titleCase ? QObject::tr( "Keychain" ) : QObject::tr( "keychain" );
+#elif defined(Q_OS_WIN)
+  return titleCase ? QObject::tr( "Password Manager" ) : QObject::tr( "password manager" );
+#elif defined(Q_OS_LINUX)
+  return titleCase ? QObject::tr( "Wallet/Key Ring" ) : QObject::tr( "wallet/key ring" );
+#else
+  return titleCase ? QObject::tr( "Password Manager" ) : QObject::tr( "password manager" );
+#endif
+}
+
 
 ////////////////// Certificate calls - end ///////////////////////
 
@@ -3234,7 +3249,7 @@ bool QgsAuthManager::passwordHelperDelete()
 {
   ensureInitialized();
 
-  passwordHelperLog( tr( "Opening %1 for DELETE…" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+  passwordHelperLog( tr( "Opening %1 for DELETE…" ).arg( passwordHelperDisplayName() ) );
   bool result;
   QKeychain::DeletePasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;
@@ -3269,7 +3284,7 @@ QString QgsAuthManager::passwordHelperRead()
 
   // Retrieve it!
   QString password;
-  passwordHelperLog( tr( "Opening %1 for READ…" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+  passwordHelperLog( tr( "Opening %1 for READ…" ).arg( passwordHelperDisplayName() ) );
   QKeychain::ReadPasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;
   job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
@@ -3282,7 +3297,7 @@ QString QgsAuthManager::passwordHelperRead()
   if ( job.error() )
   {
     mPasswordHelperErrorCode = job.error();
-    mPasswordHelperErrorMessage = tr( "Retrieving password from your %1 failed: %2." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, job.errorString() );
+    mPasswordHelperErrorMessage = tr( "Retrieving password from your %1 failed: %2." ).arg( passwordHelperDisplayName(), job.errorString() );
     // Signals used in the tests to exit main application loop
     emit passwordHelperFailure();
   }
@@ -3293,7 +3308,7 @@ QString QgsAuthManager::passwordHelperRead()
     if ( password.isEmpty() )
     {
       mPasswordHelperErrorCode = QKeychain::EntryNotFound;
-      mPasswordHelperErrorMessage = tr( "Empty password retrieved from your %1." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+      mPasswordHelperErrorMessage = tr( "Empty password retrieved from your %1." ).arg( passwordHelperDisplayName( true ) );
       // Signals used in the tests to exit main application loop
       emit passwordHelperFailure();
     }
@@ -3313,7 +3328,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
 
   Q_ASSERT( !password.isEmpty() );
   bool result;
-  passwordHelperLog( tr( "Opening %1 for WRITE…" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+  passwordHelperLog( tr( "Opening %1 for WRITE…" ).arg( passwordHelperDisplayName() ) );
   QKeychain::WritePasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;
   job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
@@ -3327,7 +3342,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
   if ( job.error() )
   {
     mPasswordHelperErrorCode = job.error();
-    mPasswordHelperErrorMessage = tr( "Storing password in your %1 failed: %2." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, job.errorString() );
+    mPasswordHelperErrorMessage = tr( "Storing password in your %1 failed: %2." ).arg( passwordHelperDisplayName(), job.errorString() );
     // Signals used in the tests to exit main application loop
     emit passwordHelperFailure();
     result = false;
@@ -3355,9 +3370,9 @@ void QgsAuthManager::setPasswordHelperEnabled( const bool enabled )
   QgsSettings settings;
   settings.setValue( QStringLiteral( "use_password_helper" ),  enabled, QgsSettings::Section::Auth );
   emit messageLog( enabled ? tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
-                   .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
+                   .arg( passwordHelperDisplayName() ) :
                    tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
-                   .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+                   .arg( passwordHelperDisplayName() ) );
 }
 
 bool QgsAuthManager::passwordHelperLoggingEnabled()
@@ -3395,12 +3410,12 @@ void QgsAuthManager::passwordHelperProcessError()
     mPasswordHelperErrorMessage = tr( "There was an error and integration with your %1 system has been disabled. "
                                       "You can re-enable it at any time through the \"Utilities\" menu "
                                       "in the Authentication pane of the options dialog. %2" )
-                                  .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage );
+                                  .arg( passwordHelperDisplayName(), mPasswordHelperErrorMessage );
   }
   if ( mPasswordHelperErrorCode != QKeychain::NoError )
   {
     // We've got an error from the wallet
-    passwordHelperLog( tr( "Error in %1: %2" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage ) );
+    passwordHelperLog( tr( "Error in %1: %2" ).arg( passwordHelperDisplayName(), mPasswordHelperErrorMessage ) );
     emit passwordHelperMessageLog( mPasswordHelperErrorMessage, authManTag(), Qgis::MessageLevel::Critical );
   }
   passwordHelperClearErrors();
@@ -3429,11 +3444,11 @@ bool QgsAuthManager::masterPasswordInput()
       {
         ok = true;
         storedPasswordIsValid = true;
-        emit passwordHelperMessageLog( tr( "Master password has been successfully read from your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Info );
+        emit passwordHelperMessageLog( tr( "Master password has been successfully read from your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Info );
       }
       else
       {
-        emit passwordHelperMessageLog( tr( "Master password stored in your %1 is not valid" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
+        emit passwordHelperMessageLog( tr( "Master password stored in your %1 is not valid" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
       }
     }
   }
@@ -3451,11 +3466,11 @@ bool QgsAuthManager::masterPasswordInput()
     {
       if ( passwordHelperWrite( pass ) )
       {
-        emit passwordHelperMessageLog( tr( "Master password has been successfully written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Info );
+        emit passwordHelperMessageLog( tr( "Master password has been successfully written to your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Info );
       }
       else
       {
-        emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
+        emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
       }
     }
     return true;

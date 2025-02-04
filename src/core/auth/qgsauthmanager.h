@@ -756,8 +756,22 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool passwordHelperSync();
 
-    //! The display name of the password helper (platform dependent)
-    static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+    /**
+     * The display name of the password helper (platform dependent).
+     *
+     * \deprecated QGIS 3.42. Use passwordHelperDisplayName() instead.
+     */
+    Q_DECL_DEPRECATED static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME SIP_DEPRECATED;
+
+    /**
+     * Returns a translated display name of the password helper (platform dependent).
+     *
+     * If \a titleCase is TRUE then a title case version of the string will be returned. Otherwise
+     * a mid-sentence case version will be returned.
+     *
+     * \since QGIS 3.42
+     */
+    static QString passwordHelperDisplayName( bool titleCase = false );
 
     //! The display name of the Authentication Manager
     static const QString AUTH_MAN_TAG;

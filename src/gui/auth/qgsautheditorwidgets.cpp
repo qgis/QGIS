@@ -164,9 +164,9 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionAutoClearAccessCache->setCheckable( true );
   mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool() );
 
-  mActionPasswordHelperSync = new QAction( tr( "Store/update the Master Password in your %1" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
-  mActionPasswordHelperDelete = new QAction( tr( "Clear the Master Password from your %1…" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
-  mActionPasswordHelperEnable = new QAction( tr( "Integrate Master Password with your %1" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
+  mActionPasswordHelperSync = new QAction( tr( "Store/update the Master Password in your %1" ).arg( QgsAuthManager::passwordHelperDisplayName( true ) ), this );
+  mActionPasswordHelperDelete = new QAction( tr( "Clear the Master Password from your %1…" ).arg( QgsAuthManager::passwordHelperDisplayName( true ) ), this );
+  mActionPasswordHelperEnable = new QAction( tr( "Integrate Master Password with your %1" ).arg( QgsAuthManager::passwordHelperDisplayName( true ) ), this );
   mActionPasswordHelperLoggingEnable = new QAction( tr( "Enable Password Helper Debug Log" ), this );
 
   mActionPasswordHelperEnable->setCheckable( true );
