@@ -140,13 +140,12 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
       // try to fetch the elevation properties from virtual point cloud metadata
       else if ( QgsVirtualPointCloudProvider *virtualProvider = dynamic_cast< QgsVirtualPointCloudProvider * >( pcLayer->dataProvider() ) )
       {
-        zMin = virtualProvider->subIndexes()[0].zRange().lower();
-        zMax = virtualProvider->subIndexes()[0].zRange().upper();
         for ( QgsPointCloudSubIndex subIndex : virtualProvider->subIndexes() )
         {
           const QgsDoubleRange newRange = subIndex.zRange();
-          zMin = std::min( zMin, newRange.lower() );
-          zMax = std::max( zMax, newRange.upper() );
+          if ( newRange.isInfinite() ) continue;
+          zMin = std::isnan( zMin ) ? newRange.lower() : std::min( zMin, newRange.lower() );
+          zMax = std::isnan( zMax ) ? newRange.upper() : std::max( zMax, newRange.upper() );
         }
       }
 

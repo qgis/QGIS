@@ -129,7 +129,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Sets camera pose
      * \since QGIS 3.4
      */
-    void setCameraPose( const QgsCameraPose &camPose );
+    void setCameraPose( const QgsCameraPose &camPose, bool force = false );
 
     /**
      * Returns camera pose

@@ -89,7 +89,7 @@ yaw angle in degrees.
 .. versionadded:: 3.4
 %End
 
-    void setCameraPose( const QgsCameraPose &camPose );
+    void setCameraPose( const QgsCameraPose &camPose, bool force = false );
 %Docstring
 Sets camera pose
 
