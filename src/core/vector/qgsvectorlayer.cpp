@@ -1366,12 +1366,9 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
 
   bool success = mEditBuffer->addFeature( feature );
 
-  if ( success )
+  if ( success && mJoinBuffer->containsJoins() )
   {
-    updateExtents();
-
-    if ( mJoinBuffer->containsJoins() )
-      success = mJoinBuffer->addFeature( feature );
+    success = mJoinBuffer->addFeature( feature );
   }
 
   return success;
@@ -5080,7 +5077,7 @@ void QgsVectorLayer::createEditBuffer()
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::invalidateSymbolCountedFlag );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::layerModified ); // TODO[MD]: necessary?
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
-  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsVectorLayer::featureAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsVectorLayer::onFeatureAdded );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureDeleted, this, &QgsVectorLayer::onFeatureDeleted );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::geometryChanged, this, &QgsVectorLayer::geometryChanged );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeValueChanged, this, &QgsVectorLayer::attributeValueChanged );
@@ -5964,6 +5961,15 @@ void QgsVectorLayer::onJoinedFieldsChanged()
 
   // some of the fields of joined layers have changed -> we need to update this layer's fields too
   updateFields();
+}
+
+void QgsVectorLayer::onFeatureAdded( QgsFeatureId fid )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  updateExtents();
+
+  emit featureAdded( fid );
 }
 
 void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
