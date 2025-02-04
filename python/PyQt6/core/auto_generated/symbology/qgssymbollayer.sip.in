@@ -641,15 +641,6 @@ This is a list of symbol layers of other layers that should be occluded.
 .. versionadded:: 3.12
 %End
 
-    virtual void clearMasks();
-%Docstring
-Remove masks defined by this symbol layer.
-
-.. seealso:: :py:func:`masks`
-
-.. versionadded:: 3.42
-%End
-
     virtual void prepareMasks( const QgsSymbolRenderContext &context );
 %Docstring
 Prepares all mask internal objects according to what is defined in ``context``
