@@ -80,7 +80,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
 
   // will be used for logging and access connection from connection pool by name,
   // so we don't want login/password here
-  mConnInfo = uri.connectionInfo( false );
+  mConnInfo = toPoolName( uri );
 
   uri = QgsDataSourceUri( uri.connectionInfo( true ) );
 
