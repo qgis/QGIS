@@ -436,7 +436,6 @@ bool QgsAuthManager::createAndStoreRandomMasterPasswordInKeyChain()
   const QString newPassword = generatePassword();
   if ( passwordHelperWrite( newPassword ) )
   {
-    emit passwordHelperMessageLog( tr( "Master password has been successfully written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
     mMasterPass = newPassword;
   }
   else
@@ -3506,7 +3505,6 @@ bool QgsAuthManager::masterPasswordInput()
       {
         ok = true;
         storedPasswordIsValid = true;
-        emit passwordHelperMessageLog( tr( "Master password has been successfully read from your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Info );
       }
       else
       {
@@ -3526,11 +3524,7 @@ bool QgsAuthManager::masterPasswordInput()
     mMasterPass = pass;
     if ( passwordHelperEnabled() && ! storedPasswordIsValid )
     {
-      if ( passwordHelperWrite( pass ) )
-      {
-        emit passwordHelperMessageLog( tr( "Master password has been successfully written to your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Info );
-      }
-      else
+      if ( !passwordHelperWrite( pass ) )
       {
         emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
       }
