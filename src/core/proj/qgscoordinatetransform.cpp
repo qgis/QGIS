@@ -601,6 +601,17 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   }
 #endif
 
+  // we can't calculate if transform involves a geocentric CRS. This is silly anyway,
+  // as transformation of a 2d bounding box makes no sense when a geocentric CRS is involved!
+  if ( d->mSourceCRS.type() == Qgis::CrsType::Geocentric )
+  {
+    throw QgsCsException( QObject::tr( "Could not transform bounding box for geocentric CRS %1" ).arg( d->mSourceCRS.authid() ) );
+  }
+  if ( d->mDestCRS.type() == Qgis::CrsType::Geocentric )
+  {
+    throw QgsCsException( QObject::tr( "Could not transform bounding box for geocentric CRS %1" ).arg( d->mDestCRS.authid() ) );
+  }
+
   const double xMin = rect.xMinimum();
   const double xMax = rect.xMaximum();
   double yMin = rect.yMinimum();
