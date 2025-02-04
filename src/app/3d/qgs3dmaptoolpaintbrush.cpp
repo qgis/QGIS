@@ -208,7 +208,7 @@ void Qgs3DMapToolPaintBrush::generateHighlightArea()
 
 void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
 {
-  if ( event->button() == Qt::LeftButton )
+  if ( event->button() == Qt::LeftButton && !mIsMoving )
   {
     mIsClicked = true;
     mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
@@ -217,7 +217,7 @@ void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( mIsClicked && event->button() == Qt::LeftButton )
+  if ( mIsClicked && event->button() == Qt::LeftButton && !mIsMoving )
   {
     mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
     mHighlighterRubberBand->reset();
@@ -234,7 +234,7 @@ void Qgs3DMapToolPaintBrush::mouseMoveEvent( QMouseEvent *event )
     const QgsPoint newPos = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), *mCanvas );
     mSelectionRubberBand->moveLastPoint( newPos );
 
-    if ( mIsClicked )
+    if ( mIsClicked && !mIsMoving )
     {
       mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
       generateHighlightArea();
@@ -244,14 +244,15 @@ void Qgs3DMapToolPaintBrush::mouseMoveEvent( QMouseEvent *event )
 
 void Qgs3DMapToolPaintBrush::mouseWheelEvent( QWheelEvent *event )
 {
-  // Change the selection circle size. Moving the wheel forward (away) from the user makes
-  // the circle smaller
-  if ( event->angleDelta().y() == 0 || !event->modifiers().testFlag( Qt::ControlModifier ) )
+  // Moving horizontally or being in movement mode discards the event
+  if ( event->angleDelta().y() == 0 || mIsMoving )
   {
     event->accept();
     return;
   }
 
+  // Change the selection circle size. Moving the wheel forward (away) from the user makes
+  // the circle smaller
   const QgsSettings settings;
   const bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
   const bool shrink = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
@@ -266,5 +267,12 @@ void Qgs3DMapToolPaintBrush::keyPressEvent( QKeyEvent *event )
   if ( mIsClicked && event->key() == Qt::Key_Escape )
   {
     reset();
+  }
+
+  if ( !mIsClicked && event->key() == Qt::Key_Space )
+  {
+    const bool newState = !mCanvas->cameraController()->inputHandlersEnabled();
+    mCanvas->cameraController()->setInputHandlersEnabled( newState );
+    mIsMoving = newState;
   }
 }
