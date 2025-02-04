@@ -921,10 +921,6 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
   return {};
 }
 
-void QgsSymbolLayer::clearMasks()
-{
-}
-
 double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   double size = mSize;

@@ -87,8 +87,14 @@ Returns a list of references to symbol layers that are masked by the sub symbol'
 .. seealso:: :py:func:`setMasks`
 %End
 
-    virtual void clearMasks();
+    void clearMasks();
+%Docstring
+Remove masks defined by this symbol layer.
 
+.. seealso:: :py:func:`masks`
+
+.. versionadded:: 3.42
+%End
 
     void setMasks( const QList<QgsSymbolLayerReference> &maskedLayers );
 %Docstring
