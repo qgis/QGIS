@@ -5355,6 +5355,30 @@ class PyQgsTextRenderer(QgisTestCase):
             )
         )
 
+    def test_render_with_maximum_width_too_small_one_word(self):
+        """
+        Render where the rect size is too small to fit words when wrapping lines
+        and only one word present (https://github.com/qgis/QGIS/issues/60256)
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setAllowHtmlFormatting(True)
+
+        self.assertTrue(
+            self.checkRender(
+                format,
+                "wrap_small_rect_one_word",
+                None,
+                text=[
+                    """<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;">Text</p>"""
+                ],
+                rect=QRectF(40, 20, 10, 5),
+                flags=Qgis.TextRendererFlag.WrapLines,
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
