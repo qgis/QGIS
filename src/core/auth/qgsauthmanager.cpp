@@ -3083,6 +3083,16 @@ QString QgsAuthManager::passwordHelperDisplayName( bool titleCase )
 #elif defined(Q_OS_WIN)
   return titleCase ? QObject::tr( "Password Manager" ) : QObject::tr( "password manager" );
 #elif defined(Q_OS_LINUX)
+
+  const QString desktopSession = qgetenv( "DESKTOP_SESSION" );
+  const QString currentDesktop = qgetenv( "XDG_CURRENT_DESKTOP" );
+  const QString gdmSession = qgetenv( "GDMSESSION" );
+  // lets use a more precise string if we're running on KDE!
+  if ( desktopSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) || currentDesktop.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) || gdmSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) )
+  {
+    return titleCase ? QObject::tr( "Wallet" ) : QObject::tr( "wallet" );
+  }
+
   return titleCase ? QObject::tr( "Wallet/Key Ring" ) : QObject::tr( "wallet/key ring" );
 #else
   return titleCase ? QObject::tr( "Password Manager" ) : QObject::tr( "password manager" );
