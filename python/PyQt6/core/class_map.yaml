@@ -9599,6 +9599,7 @@ QgsMaskIdProvider.maskId: src/core/qgsmaskidprovider.h#L56
 QgsMaskIdProvider.size: src/core/qgsmaskidprovider.h#L61
 QgsMaskIdProvider: src/core/qgsmaskidprovider.h#L39
 QgsMaskMarkerSymbolLayer.bounds: src/core/symbology/qgsmasksymbollayer.h#L63
+QgsMaskMarkerSymbolLayer.clearMasks: src/core/symbology/qgsmasksymbollayer.h#L87
 QgsMaskMarkerSymbolLayer.clone: src/core/symbology/qgsmasksymbollayer.h#L51
 QgsMaskMarkerSymbolLayer.color: src/core/symbology/qgsmasksymbollayer.h#L66
 QgsMaskMarkerSymbolLayer.create: src/core/symbology/qgsmasksymbollayer.h#L49
@@ -9608,7 +9609,7 @@ QgsMaskMarkerSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsmasksym
 QgsMaskMarkerSymbolLayer.layerType: src/core/symbology/qgsmasksymbollayer.h#L59
 QgsMaskMarkerSymbolLayer.properties: src/core/symbology/qgsmasksymbollayer.h#L57
 QgsMaskMarkerSymbolLayer.renderPoint: src/core/symbology/qgsmasksymbollayer.h#L62
-QgsMaskMarkerSymbolLayer.setMasks: src/core/symbology/qgsmasksymbollayer.h#L87
+QgsMaskMarkerSymbolLayer.setMasks: src/core/symbology/qgsmasksymbollayer.h#L94
 QgsMaskMarkerSymbolLayer.setOutputUnit: src/core/symbology/qgsmasksymbollayer.h#L65
 QgsMaskMarkerSymbolLayer.setSubSymbol: src/core/symbology/qgsmasksymbollayer.h#L53
 QgsMaskMarkerSymbolLayer.startRender: src/core/symbology/qgsmasksymbollayer.h#L60
@@ -16963,6 +16964,7 @@ QgsSymbolLayerUtils.applyScaleDependency: src/core/symbology/qgssymbollayerutils
 QgsSymbolLayerUtils.blurImageInPlace: src/core/symbology/qgssymbollayerutils.h#L711
 QgsSymbolLayerUtils.clearSymbolLayerIds: src/core/symbology/qgssymbollayerutils.h#L932
 QgsSymbolLayerUtils.clearSymbolLayerIds: src/core/symbology/qgssymbollayerutils.h#L938
+QgsSymbolLayerUtils.clearSymbolLayerMasks: src/core/symbology/qgssymbollayerutils.h#L956
 QgsSymbolLayerUtils.clearSymbolMap: src/core/symbology/qgssymbollayerutils.h#L568
 QgsSymbolLayerUtils.colorFromMimeData: src/core/symbology/qgssymbollayerutils.h#L649
 QgsSymbolLayerUtils.colorListFromMimeData: src/core/symbology/qgssymbollayerutils.h#L656
