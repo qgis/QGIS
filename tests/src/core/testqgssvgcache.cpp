@@ -433,5 +433,6 @@ bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mi
   mReport += checker.report();
   return resultFlag;
 }
+
 QGSTEST_MAIN( TestQgsSvgCache )
 #include "testqgssvgcache.moc"
