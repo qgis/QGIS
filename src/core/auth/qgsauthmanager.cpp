@@ -445,7 +445,10 @@ bool QgsAuthManager::createAndStoreRandomMasterPasswordInKeyChain()
   }
 
   if ( !verifyMasterPassword() )
+  {
+    emit passwordHelperMessageLog( tr( "Master password was written to the %1 but could not be verified" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "Master password is set and verified" ), 2 );
   return true;
