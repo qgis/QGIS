@@ -116,17 +116,6 @@ class TestQgsCircularString(QgisTestCase):
 
             radius *= 10
 
-        # Display results table
-        print("\nSegment calculation results:")
-        print(
-            "{:<12} {:<12} {:<12} {:<12} {:<12}".format(
-                "Radius", "Standard", "Adaptive", "Area", "Constant"
-            )
-        )
-        print("-" * 60)
-        for result in results:
-            print("{:<12.2f} {:<12d} {:<12d} {:<12d} {:<12d}".format(*result))
-
 
 if __name__ == "__main__":
     unittest.main()
