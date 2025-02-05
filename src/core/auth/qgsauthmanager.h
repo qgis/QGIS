@@ -903,6 +903,11 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
   private:
 
+    /**
+     * Generates a random, securely seeded password.
+     */
+    static QString generatePassword();
+
     bool initPrivate( const QString &pluginPath );
 
     //////////////////////////////////////////////////////////////////////////////
@@ -931,8 +936,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * access denied or no backend, reset error flags at the end
      */
     void passwordHelperProcessError();
-
-    static QString generatePassword();
 
     bool masterPasswordInput();
 
