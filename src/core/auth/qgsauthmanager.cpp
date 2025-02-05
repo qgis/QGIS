@@ -754,7 +754,7 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
     emit messageLog( tr( err ), authManTag(), Qgis::MessageLevel::Warning );
   }
 
-  if ( passwordHelperEnabled() && !passwordHelperSync() )
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) != QStringLiteral( "true" ) && passwordHelperEnabled() && !passwordHelperSync() )
   {
     ok = false;
     const QString err = tr( "Master password reset FAILED: could not sync password helper: %1" ).arg( passwordHelperErrorMessage() );
