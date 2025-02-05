@@ -466,22 +466,21 @@ QString QgsStacParser::getString( const nlohmann::json &data )
 
 QgsStacItemCollection *QgsStacParser::itemCollection()
 {
+  std::vector< std::unique_ptr<QgsStacItem> > items;
+  QVector< QgsStacLink > links;
+  int numberMatched = -1;
   try
   {
-    QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
+    links = parseLinks( mData.at( "links" ) );
 
-    QVector< QgsStacItem * > items;
-    items.reserve( static_cast<int>( mData.at( "features" ).size() ) );
+    items.reserve( mData.at( "features" ).size() );
     for ( auto &item : mData.at( "features" ) )
     {
-      QgsStacItem *i = parseItem( item );
-      if ( i )
-        items.append( i );
+      items.emplace_back( parseItem( item ) );
     }
 
-    const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
-
-    return new QgsStacItemCollection( items, links, numberMatched );
+    if ( mData.contains( "numberMatched" ) )
+      numberMatched =  mData["numberMatched"].get<int>();
   }
   catch ( nlohmann::json::exception &ex )
   {
@@ -489,26 +488,36 @@ QgsStacItemCollection *QgsStacParser::itemCollection()
     QgsDebugError( QStringLiteral( "Error parsing ItemCollection: %1" ).arg( ex.what() ) );
     return nullptr;
   }
+
+  QVector< QgsStacItem *> rawItems;
+  rawItems.reserve( static_cast<int>( items.size() ) );
+  for ( std::unique_ptr<QgsStacItem> &i : items )
+  {
+    if ( i )
+      rawItems.append( i.release() );
+  }
+
+  return new QgsStacItemCollection( rawItems, links, numberMatched );
 }
 
 QgsStacCollections *QgsStacParser::collections()
 {
+  std::vector< std::unique_ptr<QgsStacCollection> > cols;
+  QVector< QgsStacLink > links;
+  int numberMatched = -1;
+
   try
   {
-    QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
+    links = parseLinks( mData.at( "links" ) );
 
-    QVector< QgsStacCollection * > cols;
-    cols.reserve( static_cast<int>( mData.at( "collections" ).size() ) );
+    cols.reserve( mData.at( "collections" ).size() );
     for ( auto &col : mData.at( "collections" ) )
     {
-      QgsStacCollection *c = parseCollection( col );
-      if ( c )
-        cols.append( c );
+      cols.emplace_back( parseCollection( col ) );
     }
 
-    const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
-
-    return new QgsStacCollections( cols, links, numberMatched );
+    if ( mData.contains( "numberMatched" ) )
+      numberMatched = mData["numberMatched"].get<int>();
   }
   catch ( nlohmann::json::exception &ex )
   {
@@ -516,4 +525,14 @@ QgsStacCollections *QgsStacParser::collections()
     QgsDebugError( QStringLiteral( "Error parsing ItemCollection: %1" ).arg( ex.what() ) );
     return nullptr;
   }
+
+  QVector< QgsStacCollection * > rawCols;
+  rawCols.reserve( static_cast<int>( cols.size() ) );
+  for ( std::unique_ptr<QgsStacCollection> &c : cols )
+  {
+    if ( c )
+      rawCols.append( c.release() );
+  }
+
+  return new QgsStacCollections( rawCols, links, numberMatched );
 }

@@ -75,21 +75,21 @@ class CORE_EXPORT QgsStacController : public QObject
      * An optional \a error parameter will be populated with any network error information.
      * The caller takes ownership of the returned object
      */
-    QgsStacObject *fetchStacObject( const QUrl &url, QString *error = nullptr );
+    std::unique_ptr< QgsStacObject > fetchStacObject( const QUrl &url, QString *error = nullptr );
 
     /**
      * Fetches a feature collection from \a url using a blocking network request.
      * An optional \a error parameter will be populated with any network error information.
      * The caller takes ownership of the returned feature collection
      */
-    QgsStacItemCollection *fetchItemCollection( const QUrl &url, QString *error = nullptr );
+    std::unique_ptr< QgsStacItemCollection > fetchItemCollection( const QUrl &url, QString *error = nullptr );
 
     /**
      * Fetches collections from \a url using a blocking network request.
      * An optional \a error parameter will be populated with any network error information.
      * The caller takes ownership of the returned feature collection
      */
-    QgsStacCollections *fetchCollections( const QUrl &url, QString *error = nullptr );
+    std::unique_ptr< QgsStacCollections > fetchCollections( const QUrl &url, QString *error = nullptr );
 
     /**
      * Initiates an asynchronous request for a STAC object using the \a url
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * \see fetchItemCollectionAsync
      * \see finishedItemCollectionRequest
      */
-    QgsStacItemCollection *takeItemCollection( int requestId );
+    std::unique_ptr< QgsStacItemCollection > takeItemCollection( int requestId );
 
     /**
      * Returns the authentication config id which will be used during the request.
