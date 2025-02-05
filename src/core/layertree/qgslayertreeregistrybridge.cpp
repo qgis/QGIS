@@ -57,13 +57,20 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
   for ( QgsMapLayer *layer : layers )
   {
     QgsLayerTreeLayer *nodeLayer;
-    if ( mInsertionMethod == Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup )
+    switch ( mInsertionMethod )
     {
-      nodeLayer = QgsLayerTreeUtils::insertLayerAtOptimalPlacement( mInsertionPoint.group, layer );
-    }
-    else
-    {
-      nodeLayer = new QgsLayerTreeLayer( layer );
+      case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
+      {
+        nodeLayer = QgsLayerTreeUtils::insertLayerAtOptimalPlacement( mInsertionPoint.group, layer );
+        break;
+      }
+
+      case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
+      case Qgis::LayerTreeInsertionMethod::TopOfTree:
+      {
+        nodeLayer = new QgsLayerTreeLayer( layer );
+        break;
+      }
     }
 
     nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
