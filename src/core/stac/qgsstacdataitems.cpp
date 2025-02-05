@@ -297,7 +297,7 @@ void QgsStacCatalogItem::childrenCreated()
 
 void QgsStacCatalogItem::onControllerFinished( int requestId, const QString &error )
 {
-  for ( auto child : std::as_const( mChildren ) )
+  for ( QgsDataItem *child : std::as_const( mChildren ) )
   {
     if ( child->state() != Qgis::BrowserItemState::NotPopulated )
       continue;
@@ -335,7 +335,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
   bool hasCollectionsEndpoint = false;
   if ( supportsApi )
   {
-    for ( const auto &link : links )
+    for ( const QgsStacLink &link : links )
     {
       if ( link.relation() == QLatin1String( "items" ) )
       {
@@ -351,7 +351,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
     }
   }
 
-  for ( const auto &link : links )
+  for ( const QgsStacLink &link : links )
   {
     // skip hierarchical navigation links
     if ( link.relation() == QLatin1String( "self" ) ||
@@ -586,7 +586,7 @@ QgsStacRootItem::QgsStacRootItem( QgsDataItem *parent, const QString &name, cons
 QVector<QgsDataItem *> QgsStacRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  const auto connectionList = QgsStacConnection::connectionList();
+  const QStringList connectionList = QgsStacConnection::connectionList();
   for ( const QString &connName : connectionList )
   {
     QgsDataItem *conn = new QgsStacConnectionItem( this, connName );
