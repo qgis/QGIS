@@ -17,7 +17,6 @@
 
 #include "qgspainteffect.h"
 #include "qgsimageoperation.h"
-#include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainting.h"
@@ -33,12 +32,8 @@ QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
 
 QgsPaintEffect::~QgsPaintEffect()
 {
-  if ( mOwnsImage )
-  {
-    delete mSourceImage;
-  }
-  delete mEffectPainter;
-  delete mTempPicture;
+  // ensure painter is destroyed before picture it may be drawing on, just in case
+  mEffectPainter.reset();
 }
 
 void QgsPaintEffect::setEnabled( const bool enabled )
@@ -76,12 +71,11 @@ bool QgsPaintEffect::readProperties( const QDomElement &element )
   return true;
 }
 
-void QgsPaintEffect::render( QPicture &picture, QgsRenderContext &context )
+void QgsPaintEffect::render( const QPicture &picture, QgsRenderContext &context )
 {
   //set source picture
-  mPicture = &picture;
-  delete mSourceImage;
-  mSourceImage = nullptr;
+  mPicture = picture;
+  mSourceImage = QImage();
 
   draw( context );
 }
@@ -91,14 +85,12 @@ void QgsPaintEffect::begin( QgsRenderContext &context )
   //temporarily replace painter and direct paint operations for context to a QPicture
   mPrevPainter = context.painter();
 
-  delete mTempPicture;
-  mTempPicture = new QPicture();
+  mTempPicture = std::make_unique< QPicture >();
 
-  delete mEffectPainter;
-  mEffectPainter = new QPainter();
-  mEffectPainter->begin( mTempPicture );
+  mEffectPainter = std::make_unique< QPainter >();
+  mEffectPainter->begin( mTempPicture.get() );
 
-  context.setPainter( mEffectPainter );
+  context.setPainter( mEffectPainter.get() );
 }
 
 void QgsPaintEffect::end( QgsRenderContext &context )
@@ -107,8 +99,7 @@ void QgsPaintEffect::end( QgsRenderContext &context )
     return;
 
   mEffectPainter->end();
-  delete mEffectPainter;
-  mEffectPainter = nullptr;
+  mEffectPainter.reset();
 
   //restore previous painter for context
   context.setPainter( mPrevPainter );
@@ -123,44 +114,42 @@ void QgsPaintEffect::end( QgsRenderContext &context )
   render( *mTempPicture, context );
 
   //clean up
-  delete mTempPicture;
-  mTempPicture = nullptr;
+  mTempPicture.reset();
 }
 
 void QgsPaintEffect::drawSource( QPainter &painter )
 {
   if ( requiresQPainterDpiFix )
   {
-    QgsPainting::drawPicture( &painter, QPointF( 0, 0 ), *mPicture );
+    QgsPainting::drawPicture( &painter, QPointF( 0, 0 ), mPicture );
   }
   else
   {
-    painter.drawPicture( 0, 0, *mPicture );
+    painter.drawPicture( 0, 0, mPicture );
   }
 }
 
-QImage *QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
+QImage QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
 {
   //have we already created a source image? if so, return it
-  if ( mSourceImage )
+  if ( !mSourceImage.isNull() )
   {
     return mSourceImage;
   }
 
-  if ( !mPicture )
-    return nullptr;
+  if ( mPicture.isNull() )
+    return QImage();
 
   //else create it
   //TODO - test with premultiplied image for speed
   const QRectF bounds = imageBoundingRect( context );
-  mSourceImage = new QImage( bounds.width(), bounds.height(), QImage::Format_ARGB32 );
-  mSourceImage->fill( Qt::transparent );
-  QPainter imagePainter( mSourceImage );
+  mSourceImage = QImage( bounds.width(), bounds.height(), QImage::Format_ARGB32 );
+  mSourceImage.fill( Qt::transparent );
+  QPainter imagePainter( &mSourceImage );
   imagePainter.setRenderHint( QPainter::Antialiasing );
   imagePainter.translate( -bounds.left(), -bounds.top() );
-  imagePainter.drawPicture( 0, 0, *mPicture );
+  imagePainter.drawPicture( 0, 0, mPicture );
   imagePainter.end();
-  mOwnsImage = true;
   return mSourceImage;
 }
 
@@ -182,7 +171,7 @@ void QgsPaintEffect::fixQPictureDpi( QPainter *painter ) const
 
 QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) const
 {
-  return boundingRect( mPicture->boundingRect(), context );
+  return boundingRect( mPicture.boundingRect(), context );
 }
 
 
@@ -212,7 +201,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   else
   {
     //rasterize source and apply modifications
-    QImage image = sourceAsImage( context )->copy();
+    QImage image = sourceAsImage( context ).copy();
     QgsImageOperation::multiplyOpacity( image, mOpacity, context.feedback() );
     const QgsScopedQPainterState painterState( painter );
     painter->setCompositionMode( mBlendMode );

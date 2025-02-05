@@ -149,7 +149,7 @@ Restores the effect to the state described by a DOM element.
 .. seealso:: :py:func:`saveProperties`
 %End
 
-    virtual void render( QPicture &picture, QgsRenderContext &context );
+    virtual void render( const QPicture &picture, QgsRenderContext &context );
 %Docstring
 Renders a picture using the effect.
 
@@ -246,7 +246,7 @@ to account for the destination painter's DPI.
 .. seealso:: :py:func:`sourceAsImage`
 %End
 
-    const QPicture *source() const;
+    const QPicture &source() const;
 %Docstring
 Returns the source QPicture. The :py:func:`~QgsPaintEffect.draw` member can utilize this when
 drawing the effect.
@@ -258,14 +258,14 @@ drawing the effect.
 .. seealso:: :py:func:`sourceAsImage`
 %End
 
-    QImage *sourceAsImage( QgsRenderContext &context );
+    QImage sourceAsImage( QgsRenderContext &context );
 %Docstring
 Returns the source QPicture rendered to a new QImage. The :py:func:`~QgsPaintEffect.draw` member can
 utilize this when drawing the effect. The image will be padded or cropped from the original
 source QPicture by the results of the :py:func:`~QgsPaintEffect.boundingRect` method.
 The result is cached to speed up subsequent calls to sourceAsImage.
 
-:return: source QPicture rendered to an image
+:return: source QPicture rendered to an image, or a null image if source could not be rendered
 
 .. seealso:: :py:func:`drawSource`
 
