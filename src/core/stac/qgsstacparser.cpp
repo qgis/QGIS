@@ -484,18 +484,25 @@ QgsStacItemCollection *QgsStacParser::itemCollection()
   {
     QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
 
-    QVector< QgsStacItem * > items;
+    std::vector< std::unique_ptr<QgsStacItem> > items;
     items.reserve( static_cast<int>( mData.at( "features" ).size() ) );
     for ( auto &item : mData.at( "features" ) )
     {
-      QgsStacItem *i = parseItem( item );
+      std::unique_ptr<QgsStacItem> i( parseItem( item ) );
       if ( i )
-        items.append( i );
+        items.emplace_back( i.release() );
     }
 
     const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
 
-    return new QgsStacItemCollection( items, links, numberMatched );
+    QVector< QgsStacItem *> rawItems;
+    rawItems.reserve( items.size() );
+    for ( std::unique_ptr<QgsStacItem> &i : items )
+    {
+      rawItems.append( i.release() );
+    }
+
+    return new QgsStacItemCollection( rawItems, links, numberMatched );
   }
   catch ( nlohmann::json::exception &ex )
   {
@@ -511,18 +518,25 @@ QgsStacCollections *QgsStacParser::collections()
   {
     QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
 
-    QVector< QgsStacCollection * > cols;
+    std::vector< std::unique_ptr<QgsStacCollection> > cols;
     cols.reserve( static_cast<int>( mData.at( "collections" ).size() ) );
     for ( auto &col : mData.at( "collections" ) )
     {
-      QgsStacCollection *c = parseCollection( col );
+      std::unique_ptr<QgsStacCollection> c( parseCollection( col ) );
       if ( c )
-        cols.append( c );
+        cols.emplace_back( c.release() );
     }
 
     const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
 
-    return new QgsStacCollections( cols, links, numberMatched );
+    QVector< QgsStacCollection * > rawCols;
+    rawCols.reserve( cols.size() );
+    for ( std::unique_ptr<QgsStacCollection> &c : cols )
+    {
+      rawCols.append( c.release() );
+    }
+
+    return new QgsStacCollections( rawCols, links, numberMatched );
   }
   catch ( nlohmann::json::exception &ex )
   {

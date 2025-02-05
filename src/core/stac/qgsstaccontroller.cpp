@@ -32,8 +32,10 @@
 QgsStacController::~QgsStacController()
 {
   qDeleteAll( mReplies );
+  qDeleteAll( mFetchedStacObjects );
+  qDeleteAll( mFetchedItemCollections );
+  qDeleteAll( mFetchedCollections );
 }
-
 
 int QgsStacController::fetchStacObjectAsync( const QUrl &url )
 {
@@ -391,8 +393,3 @@ QgsStacItem *QgsStacController::openLocalItem( const QString &fileName ) const
   parser.setBaseUrl( fileName );
   return parser.item();
 }
-
-
-
-
-

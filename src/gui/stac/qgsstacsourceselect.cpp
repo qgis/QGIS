@@ -277,8 +277,8 @@ void QgsStacSourceSelect::cmbConnections_currentTextChanged( const QString &text
 void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished object request %1" ).arg( requestId ), 2 );
-  QgsStacObject *obj = mStac->takeStacObject( requestId );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
+  std::unique_ptr<QgsStacObject> obj( mStac->takeStacObject( requestId ) );
+  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj.get() );
 
   if ( !cat )
   {
@@ -321,7 +321,7 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
 void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished collections request %1" ).arg( requestId ), 2 );
-  QgsStacCollections *cols = mStac->takeCollections( requestId );
+  std::unique_ptr<QgsStacCollections> cols( mStac->takeCollections( requestId ) );
 
   if ( !cols )
   {
@@ -343,7 +343,7 @@ void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString e
 void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished item collection request %1" ).arg( requestId ), 2 );
-  QgsStacItemCollection *col = mStac->takeItemCollection( requestId );
+  std::unique_ptr<QgsStacItemCollection> col( mStac->takeItemCollection( requestId ) );
 
   if ( !col )
   {
