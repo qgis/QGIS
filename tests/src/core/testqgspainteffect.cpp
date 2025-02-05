@@ -276,8 +276,8 @@ void TestQgsPaintEffect::stackSaveRestore()
 void TestQgsPaintEffect::painterFlags()
 {
   QImage image( 100, 100, QImage::Format_ARGB32 );
-  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
-  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterX( static_cast< int >( 96 / 25.4 * 1000 ) );
+  image.setDotsPerMeterY( static_cast< int >( 96 / 25.4 * 1000 ) );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
