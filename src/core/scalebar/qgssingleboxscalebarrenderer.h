@@ -43,13 +43,6 @@ class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
-    /**
-     * Applies any default settings relating to the scalebar to the passed \a settings object.
-     *
-     * Returns TRUE if settings were applied.
-     *
-     * \since QGIS 3.42
-     */
     bool applyDefaultSettings( QgsScaleBarSettings &settings ) const override;
 };
 
