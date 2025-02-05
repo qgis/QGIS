@@ -28,7 +28,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mRegistryRemovingLayers( false )
   , mEnabled( true )
   , mNewLayersVisible( true )
-  , mInsertionPoint( root, 0 )
+  , mInsertionPointGroup( root )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
   connect( mProject, qOverload<const QStringList &>( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
@@ -39,13 +39,14 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index )
 {
-  mInsertionPoint.group = parentGroup;
-  mInsertionPoint.position = index;
+  mInsertionPointGroup = parentGroup;
+  mInsertionPointPosition = index;
 }
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( const InsertionPoint &insertionPoint )
 {
-  mInsertionPoint = insertionPoint;
+  mInsertionPointGroup = insertionPoint.group;
+  mInsertionPointPosition = insertionPoint.position;
 }
 
 void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers )
@@ -61,7 +62,11 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     {
       case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
       {
-        nodeLayer = QgsLayerTreeUtils::insertLayerAtOptimalPlacement( mInsertionPoint.group, layer );
+        QgsLayerTreeGroup *targetGroup = mInsertionPointGroup;
+        if ( !targetGroup )
+          targetGroup = mRoot;
+
+        nodeLayer = QgsLayerTreeUtils::insertLayerAtOptimalPlacement( targetGroup, layer );
         break;
       }
 
@@ -89,8 +94,13 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
   switch ( mInsertionMethod )
   {
     case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
-      mInsertionPoint.group->insertChildNodes( mInsertionPoint.position, nodes );
-      break;
+      if ( QgsLayerTreeGroup *group = mInsertionPointGroup )
+      {
+        group->insertChildNodes( mInsertionPointPosition, nodes );
+        break;
+      }
+      // if no group for the insertion point, then insert into root instead
+      [[fallthrough]];
     case Qgis::LayerTreeInsertionMethod::TopOfTree:
       mRoot->insertChildNodes( 0, nodes );
       break;
