@@ -75,10 +75,10 @@ void TestQgsStac::testParseLocalCatalog()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "catalog.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( url.toString() );
+  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
+  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj.get() );
 
   QVERIFY( cat );
   QCOMPARE( cat->id(), QLatin1String( "examples" ) );
@@ -97,18 +97,16 @@ void TestQgsStac::testParseLocalCatalog()
   QCOMPARE( links.at( 3 ).href(), QStringLiteral( "%1collection-only/collection-with-schemas.json" ).arg( basePath ) );
   QCOMPARE( links.at( 4 ).href(), QStringLiteral( "%1collectionless-item.json" ).arg( basePath ) );
   QCOMPARE( links.at( 5 ).href(), QStringLiteral( "https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/catalog.json" ) );
-
-  delete cat;
 }
 
 void TestQgsStac::testParseLocalCollection()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collection.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( url.toString() );
+  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
-  QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj );
+  QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj.get() );
 
   QVERIFY( col );
   QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );
@@ -147,18 +145,16 @@ void TestQgsStac::testParseLocalCollection()
   QVariantMap sum( col->summaries() );
   QCOMPARE( sum.size(), 9 );
   QCOMPARE( sum.value( QStringLiteral( "platform" ) ).toStringList(), QStringList() << QLatin1String( "cool_sat1" ) << QLatin1String( "cool_sat2" ) );
-
-  delete col;
 }
 
 void TestQgsStac::testParseLocalItem()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "core-item.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( url.toString() );
+  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Item );
-  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj );
+  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj.get() );
 
   QVERIFY( item );
   QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
@@ -180,15 +176,13 @@ void TestQgsStac::testParseLocalItem()
 
   asset = item->assets().value( QStringLiteral( "thumbnail" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
   QCOMPARE( asset.href(), QStringLiteral( "https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.jpg" ) );
-
-  delete item;
 }
 
 void TestQgsStac::testParseLocalItemCollection()
 {
   const QString fileName = mDataDir + QStringLiteral( "itemcollection-sample-full.json" );
   QgsStacController c;
-  QgsStacItemCollection *ic = c.fetchItemCollection( QStringLiteral( "file://%1" ).arg( fileName ) );
+  std::unique_ptr< QgsStacItemCollection > ic = c.fetchItemCollection( QStringLiteral( "file://%1" ).arg( fileName ) );
   QVERIFY( ic );
   QCOMPARE( ic->numberReturned(), 1 );
   QCOMPARE( ic->numberMatched(), 10 );
@@ -201,15 +195,13 @@ void TestQgsStac::testParseLocalItemCollection()
   QCOMPARE( items.first()->links().size(), 3 );
   QCOMPARE( items.first()->stacExtensions().size(), 0 );
   QCOMPARE( items.first()->assets().size(), 2 );
-
-  delete ic;
 }
 
 void TestQgsStac::testParseLocalCollections()
 {
   const QString fileName = mDataDir + QStringLiteral( "collectioncollection-sample-full.json" );
   QgsStacController c;
-  QgsStacCollections *cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
+  std::unique_ptr< QgsStacCollections > cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
   QVERIFY( cols );
   QCOMPARE( cols->numberReturned(), 1 );
   QCOMPARE( cols->numberMatched(), 11 );
@@ -225,8 +217,6 @@ void TestQgsStac::testParseLocalCollections()
   QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( col->links().size(), 3 );
   QCOMPARE( col->stacExtensions().size(), 0 );
-
-  delete cols;
 }
 
 QGSTEST_MAIN( TestQgsStac )
