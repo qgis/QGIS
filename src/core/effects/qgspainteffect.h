@@ -22,6 +22,7 @@
 #include <QPainter>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPicture>
 
 class QgsRenderContext;
 
@@ -165,7 +166,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \param context destination render context
      * \see begin
      */
-    virtual void render( QPicture &picture, QgsRenderContext &context );
+    virtual void render( const QPicture &picture, QgsRenderContext &context );
 
     /**
      * Begins intercepting paint operations to a render context. When the corresponding
@@ -246,20 +247,20 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \see drawSource
      * \see sourceAsImage
      */
-    const QPicture *source() const { return mPicture; }
+    const QPicture &source() const { return mPicture; }
 
     /**
      * Returns the source QPicture rendered to a new QImage. The draw() member can
      * utilize this when drawing the effect. The image will be padded or cropped from the original
      * source QPicture by the results of the boundingRect() method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
-     * \returns source QPicture rendered to an image
+     * \returns source QPicture rendered to an image, or a null image if source could not be rendered
      * \see drawSource
      * \see source
      * \see imageOffset
      * \see boundingRect
      */
-    QImage *sourceAsImage( QgsRenderContext &context );
+    QImage sourceAsImage( QgsRenderContext &context );
 
     /**
      * Returns the offset which should be used when drawing the source image on to a destination
@@ -293,13 +294,12 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
 
   private:
 
-    const QPicture *mPicture = nullptr;
-    QImage *mSourceImage = nullptr;
-    bool mOwnsImage = false;
+    QPicture mPicture;
+    QImage mSourceImage;
 
     QPainter *mPrevPainter = nullptr;
-    QPainter *mEffectPainter = nullptr;
-    QPicture *mTempPicture = nullptr;
+    std::unique_ptr< QPainter > mEffectPainter;
+    std::unique_ptr< QPicture > mTempPicture;
 
     QRectF imageBoundingRect( const QgsRenderContext &context ) const;
 
