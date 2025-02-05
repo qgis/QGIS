@@ -485,7 +485,7 @@ QDomElement QgsCircle::asGml3( QDomDocument &doc, int precision, const QString &
   return elemCircle;
 }
 
-int QgsCircle::calculateSegments( double radius, double parameter, int minSegments, SegmentCalculationMethod method )
+int QgsCircle::calculateSegments( double radius, double parameter, int minSegments, Qgis::SegmentCalculationMethod method )
 {
   if ( radius <= 0.0 )
   {
@@ -504,13 +504,13 @@ int QgsCircle::calculateSegments( double radius, double parameter, int minSegmen
 
   switch ( method )
   {
-    case SegmentCalculationMethod::Standard:
+    case Qgis::SegmentCalculationMethod::Standard:
       return calculateSegmentsStandard( radius, parameter, minSegments );
-    case SegmentCalculationMethod::Adaptive:
+    case Qgis::SegmentCalculationMethod::Adaptive:
       return calculateSegmentsAdaptive( radius, parameter, minSegments );
-    case SegmentCalculationMethod::AreaError:
+    case Qgis::SegmentCalculationMethod::AreaError:
       return calculateSegmentsByAreaError( radius, parameter, minSegments );
-    case SegmentCalculationMethod::ConstantDensity:
+    case Qgis::SegmentCalculationMethod::ConstantDensity:
       return calculateSegmentsByConstant( radius, parameter, minSegments );
     default:
       return calculateSegmentsStandard( radius, parameter, minSegments );

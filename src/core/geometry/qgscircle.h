@@ -357,19 +357,6 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
     /**
-     * \brief Method used to calculate the number of segments for circle approximation
-     * \ingroup core
-     * \since QGIS 3.44
-     */
-    enum class SegmentCalculationMethod
-    {
-      Standard = 0,   //!< Standard sagitta-based calculation
-      Adaptive,       //!< Adaptive calculation based on radius size
-      AreaError,      //!< Calculation based on area error
-      ConstantDensity //!< Simple calculation with constant segment density
-    };
-
-    /**
     * Calculates the number of segments needed to approximate a circle.
     *
     * \param radius Circle radius. Must be positive; if <= 0, `minSegments` is returned.
@@ -385,7 +372,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     *
     * \since QGIS 3.44
     */
-    static int calculateSegments( double radius, double parameter, int minSegments, SegmentCalculationMethod method );
+    static int calculateSegments( double radius, double parameter, int minSegments, Qgis::SegmentCalculationMethod method );
 
 
 #ifdef SIP_RUN
@@ -425,8 +412,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
        * \returns The number of segments needed
        * \note This is a private helper method
        */
-    static int
-    calculateSegmentsStandard( double radius, double tolerance, int minSegments )
+    static int calculateSegmentsStandard( double radius, double tolerance, int minSegments )
     {
       if ( tolerance >= radius )
       {

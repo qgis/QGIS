@@ -5767,6 +5767,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( PointCloudZoomOutRenderBehavior )
 
     /**
+     * brief Method used to calculate the number of segments for circle approximation
+     * \since QGIS 3.44
+     */
+    enum class SegmentCalculationMethod : int
+    {
+      Standard = 0,   //!< Standard sagitta-based calculation
+      Adaptive,       //!< Adaptive calculation based on radius size
+      AreaError,      //!< Calculation based on area error
+      ConstantDensity //!< Simple calculation with constant segment density
+    };
+    Q_ENUM( SegmentCalculationMethod )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
