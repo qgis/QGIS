@@ -202,6 +202,7 @@ void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
   }
   else
   {
+    delete object;
     mIconName = QStringLiteral( "/mIconDelete.svg" );
     mName = error;
   }
