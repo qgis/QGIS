@@ -108,11 +108,12 @@ QgsAbstractCacheIndex.flushFeature: src/core/qgscacheindex.h#L42
 QgsAbstractCacheIndex.getCacheIterator: src/core/qgscacheindex.h#L76
 QgsAbstractCacheIndex.requestCompleted: src/core/qgscacheindex.h#L59
 QgsAbstractCacheIndex: src/core/qgscacheindex.h#L31
-QgsAbstractContentCacheBase.checkReply: src/core/qgsabstractcontentcache.h#L184
-QgsAbstractContentCacheBase.isBase64Data: src/core/qgsabstractcontentcache.h#L164
-QgsAbstractContentCacheBase.onRemoteContentFetched: src/core/qgsabstractcontentcache.h#L194
+QgsAbstractContentCacheBase.checkReply: src/core/qgsabstractcontentcache.h#L201
+QgsAbstractContentCacheBase.isBase64Data: src/core/qgsabstractcontentcache.h#L181
+QgsAbstractContentCacheBase.onRemoteContentFetched: src/core/qgsabstractcontentcache.h#L211
 QgsAbstractContentCacheBase.parseBase64DataUrl: src/core/qgsabstractcontentcache.h#L157
-QgsAbstractContentCacheBase.remoteContentFetched: src/core/qgsabstractcontentcache.h#L171
+QgsAbstractContentCacheBase.parseEmbeddedStringData: src/core/qgsabstractcontentcache.h#L174
+QgsAbstractContentCacheBase.remoteContentFetched: src/core/qgsabstractcontentcache.h#L188
 QgsAbstractContentCacheBase: src/core/qgsabstractcontentcache.h#L132
 QgsAbstractContentCacheEntry.dataSize: src/core/qgsabstractcontentcache.h#L99
 QgsAbstractContentCacheEntry.dump: src/core/qgsabstractcontentcache.h#L104
