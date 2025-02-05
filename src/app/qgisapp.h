@@ -212,7 +212,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Q_OBJECT
   public:
     //! Constructor
-    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false, bool skipVersionCheck = false, const QString &rootProfileLocation = QString(), const QString &activeProfile = QString(), QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
+    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false, bool skipVersionCheck = false, const QString &rootProfileLocation = QString(), const QString &activeProfile = QString(), bool enablePython = true, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
 

@@ -142,6 +142,7 @@ void usage( const QString &appName )
     << QStringLiteral( "\t[-n, --nologo]\thide splash screen\n" )
     << QStringLiteral( "\t[-V, --noversioncheck]\tdon't check for new version of QGIS at startup\n" )
     << QStringLiteral( "\t[-P, --noplugins]\tdon't restore plugins on startup\n" )
+    << QStringLiteral( "\t[--nopython]\tdisable python support\n" )
     << QStringLiteral( "\t[-B, --skipbadlayers]\tdon't prompt for missing layers\n" )
     << QStringLiteral( "\t[-C, --nocustomization]\tdon't apply GUI customization\n" )
     << QStringLiteral( "\t[-z, --customizationfile path]\tuse the given ini file as GUI customization\n" )
@@ -579,6 +580,7 @@ int main( int argc, char *argv[] )
 
   bool myRestoreDefaultWindowState = false;
   bool myRestorePlugins = true;
+  bool myPython = true;
   bool mySkipBadLayers = false;
   bool myCustomization = true;
 
@@ -668,6 +670,10 @@ int main( int argc, char *argv[] )
         else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
         {
           myRestorePlugins = false;
+        }
+        else if ( arg == QLatin1String( "--nopython" ) )
+        {
+          myPython = false;
         }
         else if ( arg == QLatin1String( "--skipbadlayers" ) || arg == QLatin1String( "-B" ) )
         {
@@ -1540,7 +1546,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipBadLayers, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipBadLayers, mySkipVersionCheck, rootProfileFolder, profileName, myPython ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   QgsApplication::connect(
