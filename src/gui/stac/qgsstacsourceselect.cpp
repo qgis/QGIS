@@ -285,16 +285,25 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
     mStatusLabel->setText( error );
     return;
   }
-  QgsDebugMsgLevel( QStringLiteral( "STAC catalog supports API: %1" ).arg( cat->supportsStacApi() ), 2 );
 
-  for ( auto &l : cat->links() )
+  const bool supportsCollections = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/collections" ) );
+  const bool supportsSearch = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/item-search" ) );
+  QgsDebugMsgLevel( QStringLiteral( "STAC catalog supports API: %1" ).arg( supportsCollections && supportsSearch ), 2 );
+
+  if ( supportsCollections && supportsSearch )
   {
-    // collections endpoint should have a "data" relation according to spec but some servers don't
-    // so let's be less strict and only check the href
-    if ( l.href().endsWith( "/collections" ) )
-      mCollectionsUrl = l.href();
-    else if ( l.relation() == "search" )
-      mSearchUrl = l.href();
+    for ( auto &l : cat->links() )
+    {
+      // collections endpoint should have a "data" relation according to spec but some servers don't
+      // so let's be less strict and only check the href
+      if ( l.href().endsWith( "/collections" ) )
+        mCollectionsUrl = l.href();
+      else if ( l.relation() == "search" )
+        mSearchUrl = l.href();
+
+      if ( !mCollectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
+        break;
+    }
   }
 
   if ( mCollectionsUrl.isEmpty() || mSearchUrl.isEmpty() )
