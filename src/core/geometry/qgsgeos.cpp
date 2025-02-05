@@ -3392,6 +3392,15 @@ static geos::unique_ptr _mergeLinestrings( const GEOSGeometry *line1, const GEOS
     GEOSGeometry *geoms[2] = { g1.release(), g2.release() };
     geos::unique_ptr multiGeom( GEOSGeom_createCollection_r( context, GEOS_MULTILINESTRING, geoms, 2 ) );
     geos::unique_ptr res( GEOSLineMerge_r( context, multiGeom.get() ) );
+
+    //keep the original orientation if the result has a start or end point in common with the original line
+    //and this point is not the start or the end point for both lines
+    double x1res, y1res, x2res, y2res;
+    if ( !_linestringEndpoints( res.get(), x1res, y1res, x2res, y2res ) )
+      return nullptr;
+    if ( ( x1res == x2 && y1res == y2 ) || ( x2res == x1 && y2res == y1 ) )
+      res.reset( GEOSReverse_r( context, res.get() ) );
+
     return res;
   }
   else
@@ -3624,6 +3633,33 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
   {
     return nullptr;
   }
+
+  //keep the original orientation
+  bool reverseLine = false;
+  if ( isRing )
+  {
+    //for closed linestring check clockwise/counter-clockwise
+    char isResultCCW = 0, isOriginCCW = 0;
+    if ( GEOSCoordSeq_isCCW_r( context, GEOSGeom_getCoordSeq_r( context, result.get() ), &isResultCCW ) &&
+         GEOSCoordSeq_isCCW_r( context, GEOSGeom_getCoordSeq_r( context, line ), &isOriginCCW )
+       )
+    {
+      //reverse line if orientations are different
+      reverseLine = ( isOriginCCW == 1 && isResultCCW == 0 ) || ( isOriginCCW == 0 && isResultCCW == 1 );
+    }
+  }
+  else
+  {
+    //for linestring, check if the result has a start or end point in common with the original line
+    double x1res, y1res, x2res, y2res;
+    if ( !_linestringEndpoints( result.get(), x1res, y1res, x2res, y2res ) )
+      return nullptr;
+    geos::unique_ptr beginResultLineVertex = createGeosPointXY( x1res, y1res, false, 0, false, 0, 2, precision );
+    geos::unique_ptr endResultLineVertex = createGeosPointXY( x2res, y2res, false, 0, false, 0, 2, precision );
+    reverseLine = GEOSEquals_r( context, beginLineVertex.get(), endResultLineVertex.get() ) == 1 || GEOSEquals_r( context, endLineVertex.get(), beginResultLineVertex.get() ) == 1;
+  }
+  if ( reverseLine )
+    result.reset( GEOSReverse_r( context, result.get() ) );
 
   return result;
 }
