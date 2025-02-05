@@ -961,7 +961,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, bool enablePython, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -1624,14 +1624,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
   }
 
-  mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
-  qApp->processEvents();
-  loadPythonSupport();
+  if ( enablePython )
+  {
+    mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
+    qApp->processEvents();
+    loadPythonSupport();
 
 #ifdef WITH_BINDINGS
-  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
-  registerCustomDropHandler( new QgsPyDropHandler() );
+    QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
+    registerCustomDropHandler( new QgsPyDropHandler() );
 #endif
+  }
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStacDataItemProvider() );
