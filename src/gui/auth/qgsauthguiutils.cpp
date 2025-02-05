@@ -331,7 +331,7 @@ QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title,
 
 void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *parent )
 {
-  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from your %1?" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from your %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -345,7 +345,7 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
   else
   {
     msg = QObject::tr( "Master password was successfully deleted from your %1" )
-            .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+            .arg( QgsAuthManager::passwordHelperDisplayName() );
 
     level = Qgis::MessageLevel::Info;
   }
@@ -360,7 +360,7 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar )
   if ( !QgsApplication::authManager()->masterPasswordIsSet() )
   {
     msg = QObject::tr( "Master password is not set and cannot be stored in your %1." )
-            .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+            .arg( QgsAuthManager::passwordHelperDisplayName() );
     level = Qgis::MessageLevel::Warning;
   }
   else if ( !QgsApplication::authManager()->passwordHelperSync() )
@@ -371,7 +371,7 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar )
   else
   {
     msg = QObject::tr( "Master password has been successfully stored in your %1." )
-            .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+            .arg( QgsAuthManager::passwordHelperDisplayName() );
 
     level = Qgis::MessageLevel::Info;
   }
@@ -383,9 +383,9 @@ void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar 
 {
   QgsApplication::authManager()->setPasswordHelperEnabled( enabled );
   const QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME )
+                                  .arg( QgsAuthManager::passwordHelperDisplayName() )
                               : QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+                                  .arg( QgsAuthManager::passwordHelperDisplayName() );
   msgbar->clearWidgets();
   msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, Qgis::MessageLevel::Info );
 }

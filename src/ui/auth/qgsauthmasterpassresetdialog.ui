@@ -18,7 +18,6 @@
     <widget class="QLabel" name="label_6">
      <property name="font">
       <font>
-       <weight>75</weight>
        <italic>false</italic>
        <bold>true</bold>
       </font>
@@ -42,7 +41,6 @@
     <widget class="QLabel" name="label_7">
      <property name="font">
       <font>
-       <weight>75</weight>
        <italic>false</italic>
        <bold>true</bold>
       </font>
@@ -63,28 +61,34 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>12</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chkKeepBackup">
-       <property name="text">
-        <string>Keep backup of current database</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QLabel" name="label_8">
+     <property name="font">
+      <font>
+       <italic>false</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Re-enter NEW password</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsPasswordLineEdit" name="leMasterPassNew2">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkKeepBackup">
+     <property name="text">
+      <string>Keep backup of current database</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_4">
@@ -140,6 +144,7 @@ and re-encrypted using new password</string>
  <tabstops>
   <tabstop>leMasterPassCurrent</tabstop>
   <tabstop>leMasterPassNew</tabstop>
+  <tabstop>leMasterPassNew2</tabstop>
   <tabstop>chkKeepBackup</tabstop>
  </tabstops>
  <resources/>

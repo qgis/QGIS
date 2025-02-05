@@ -756,12 +756,34 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool passwordHelperSync();
 
-    //! The display name of the password helper (platform dependent)
+    // TODO QGIS 4.0 -- remove
+
+    /**
+     * The display name of the password helper (platform dependent).
+     *
+     * This is deprecated, use passwordHelperDisplayName() instead.
+     */
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+
+    /**
+     * Returns a translated display name of the password helper (platform dependent).
+     *
+     * If \a titleCase is TRUE then a title case version of the string will be returned. Otherwise
+     * a mid-sentence case version will be returned.
+     *
+     * \since QGIS 3.42
+     */
+    static QString passwordHelperDisplayName( bool titleCase = false );
 
     //! The display name of the Authentication Manager
     static const QString AUTH_MAN_TAG;
 
+    /**
+     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
+     *
+     * \note Not available in Python bindings
+     */
+    QString sqliteDatabasePath() const SIP_SKIP;
 
   signals:
 
@@ -932,11 +954,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Returns the first ready storage with the given \a capability or NULLPTR if none available.
      */
     QgsAuthConfigurationStorage *firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
-
-    /**
-     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
-     */
-    const QString sqliteDatabasePath() const;
 
     static QgsAuthManager *sInstance;
     static const QString AUTH_CONFIG_TABLE;

@@ -39,8 +39,14 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   else
   {
     setupUi( this );
-    connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged );
-    connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassNew_textChanged );
+    connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
+    connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
+    connect( leMasterPassNew2, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::validatePasswords );
+
+    if ( QgsApplication::authManager()->sqliteDatabasePath().isEmpty() )
+    {
+      chkKeepBackup->hide();
+    }
   }
 }
 
@@ -58,35 +64,31 @@ bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass,
     {
       *newpass = leMasterPassNew->text();
       *oldpass = leMasterPassCurrent->text();
-      *keepbackup = chkKeepBackup->isChecked();
+      *keepbackup = !chkKeepBackup->isHidden() && chkKeepBackup->isChecked();
       return true;
     }
   }
   return false;
 }
 
-void QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged( const QString &pass )
-{
-  // since this is called on every keystroke, block signals emitted during verification of password
-  QgsApplication::authManager()->blockSignals( true );
-  mPassCurOk = !pass.isEmpty();
-  QgsApplication::authManager()->blockSignals( false );
-  validatePasswords();
-}
-
-void QgsMasterPasswordResetDialog::leMasterPassNew_textChanged( const QString &pass )
-{
-  mPassNewOk = !pass.isEmpty();
-  validatePasswords();
-}
-
 void QgsMasterPasswordResetDialog::validatePasswords()
 {
-  const QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
-                                 : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+  const QString currentPassword = leMasterPassCurrent->text();
+  const QString newPassword = leMasterPassNew->text();
+  const QString confirmPassword = leMasterPassNew2->text();
+
+  const bool currentPasswordOk = !currentPassword.isEmpty();
+  const bool newPasswordOk = !newPassword.isEmpty();
+  const bool confirmPasswordOk = !confirmPassword.isEmpty() && confirmPassword == newPassword;
+
+  const QString ss1 = currentPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                                        : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassCurrent->setStyleSheet( ss1 );
-  const QString ss2 = mPassNewOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
-                                 : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+  const QString ss2 = newPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                                    : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
   leMasterPassNew->setStyleSheet( ss2 );
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mPassCurOk && mPassNewOk );
+  const QString ss3 = confirmPasswordOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )
+                                        : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+  leMasterPassNew2->setStyleSheet( ss3 );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( currentPasswordOk && newPasswordOk && confirmPasswordOk );
 }
