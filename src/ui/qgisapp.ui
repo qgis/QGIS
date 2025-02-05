@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1368</width>
-     <height>30</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -113,6 +113,7 @@
      <addaction name="mActionMeasureArea"/>
      <addaction name="mActionMeasureBearing"/>
      <addaction name="mActionMeasureAngle"/>
+     <addaction name="mActionMeasureRadius"/>
     </widget>
     <widget class="QMenu" name="mMenuDecorations">
      <property name="title">
@@ -904,7 +905,7 @@
     <string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::QuitRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionUndo">
@@ -1896,7 +1897,7 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
     <string>&amp;Options…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
@@ -1917,7 +1918,7 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
     <string>Keyboard Shortcuts…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionLocalHistogramStretch">
@@ -1987,7 +1988,7 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
     <string>About</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::AboutRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionSponsors">
@@ -3381,8 +3382,18 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Add Layer from STAC Catalog…</string>
    </property>
   </action>
+  <action name="mActionMeasureRadius">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasureRadius.svg</normaloff>:/images/themes/default/mActionMeasureRadius.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Radius</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -121,6 +121,8 @@ const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSi
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
 
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsMeasureRadiusCircularRubberbandColor = new QgsSettingsEntryColor( QStringLiteral( "measure-radius-circular-rubberband-color" ), QgsSettingsTree::sTreeMeasure, QColor( 25, 25, 25, 255 ) );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {

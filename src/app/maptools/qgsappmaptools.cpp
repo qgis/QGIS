@@ -65,8 +65,8 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::Pan, new QgsMapToolPan( canvas ) );
   mTools.insert( Tool::Identify, new QgsMapToolIdentifyAction( canvas ) );
   mTools.insert( Tool::FeatureAction, new QgsMapToolFeatureAction( canvas ) );
-  mTools.insert( Tool::MeasureDistance, new QgsMeasureTool( canvas, false /* area */ ) );
-  mTools.insert( Tool::MeasureArea, new QgsMeasureTool( canvas, true /* area */ ) );
+  mTools.insert( Tool::MeasureDistance, new QgsMeasureTool( canvas, false, /* area */ false /* radius */ ) );
+  mTools.insert( Tool::MeasureArea, new QgsMeasureTool( canvas, true, /* area */ false /* radius */ ) );
   mTools.insert( Tool::MeasureAngle, new QgsMapToolMeasureAngle( canvas ) );
   mTools.insert( Tool::MeasureBearing, new QgsMapToolMeasureBearing( canvas ) );
   mTools.insert( Tool::FormAnnotation, new QgsMapToolFormAnnotation( canvas ) );
@@ -103,6 +103,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::ChangeLabelProperties, new QgsMapToolChangeLabelProperties( canvas, cadDock ) );
   mTools.insert( Tool::EditMeshFrame, new QgsMapToolEditMeshFrame( canvas ) );
   mTools.insert( Tool::AnnotationEdit, new QgsMapToolModifyAnnotation( canvas, cadDock ) );
+  mTools.insert( Tool::MeasureRadius, new QgsMeasureTool( canvas, false, /* area */ true /* radius */ ) );
 }
 
 QgsAppMapTools::~QgsAppMapTools()

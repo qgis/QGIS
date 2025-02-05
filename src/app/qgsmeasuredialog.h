@@ -69,6 +69,12 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! When any external settings change
     void updateSettings();
 
+    //! Show the center point X & Y values in line edits when measuring radius
+    void setCenterXY( double x, double y );
+
+    //! Show the exterior point X & Y values in line edits when measuring radius
+    void setExteriorXY( double x, double y );
+
   private slots:
     void unitsChanged( int index );
 
@@ -118,6 +124,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea = false;
 
+    bool mMeasureRadius = false;
+
     //! Indicates whether the user chose "Map units" instead of directly selecting a unit
     bool mUseMapUnits = false;
 
@@ -151,6 +159,12 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsMapCanvas *mCanvas = nullptr;
 
     QgsPointXY mLastMousePoint;
+
+    //! Line edits added when measuring radius
+    QLineEdit *mEditCenterX;
+    QLineEdit *mEditCenterY;
+    QLineEdit *mEditExteriorX;
+    QLineEdit *mEditExteriorY;
 
     void showHelp();
 

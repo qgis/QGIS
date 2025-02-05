@@ -18,6 +18,8 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
+#include "qgspointxy.h"
+#include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_app.h"
 
@@ -33,7 +35,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     Q_OBJECT
 
   public:
-    QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea );
+    QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea, bool measureRadius );
 
     ~QgsMeasureTool() override;
 
@@ -41,6 +43,9 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     //! returns whether measuring distance or area
     bool measureArea() const { return mMeasureArea; }
+
+    //! returns whether measuring radius
+    bool measureRadius() const { return mMeasureRadius; }
 
     //! When we have added our last point, and not following
     bool done() const { return mDone; }
@@ -50,6 +55,9 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     //! Add new point
     void addPoint( const QgsPointXY &point );
+
+    //! Creates the geometry for the circular rubber band
+    QgsGeometry createCircleGeom();
 
     //! Returns reference to array of the points
     QVector<QgsPointXY> points() const;
@@ -76,11 +84,16 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! Rubberband widget tracking the lines being drawn
     QgsRubberBand *mRubberBand = nullptr;
 
+    QgsRubberBand *mRubberBandCircle = nullptr;
+
     //! Rubberband widget tracking the added nodes to line
     QgsRubberBand *mRubberBandPoints = nullptr;
 
-    //! Indicates whether we're measuring distances or areas
+    //! Indicates whether we're measuring areas
     bool mMeasureArea = false;
+
+    //! Indicates whether we're measuring radius
+    bool mMeasureRadius = false;
 
     //! Indicates whether we've just done a right mouse click
     bool mDone = true;

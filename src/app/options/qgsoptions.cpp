@@ -813,6 +813,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   pbnMeasureColor->setContext( QStringLiteral( "gui" ) );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
+  // set the default color for the measure radius tool circular rubber band
+  QColor circularRbColor = QgsSettingsRegistryCore::settingsMeasureRadiusCircularRubberbandColor->value();
+  pbnMeasureRadiusColor->setColor( circularRbColor );
+  pbnMeasureRadiusColor->setColorDialogTitle( tr( "Set Measure Radius Tool Color" ) );
+  pbnMeasureRadiusColor->setContext( QStringLiteral( "gui" ) );
+  pbnMeasureRadiusColor->setDefaultColor( QColor( 25, 25, 25, 255 ) );
+
   int projOpen = mSettings->value( QStringLiteral( "/qgis/projOpenAtLaunch" ), 0 ).toInt();
   mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
   mProjectOnLaunchLineEdit->setText( mSettings->value( QStringLiteral( "/qgis/projOpenAtLaunchPath" ) ).toString() );
@@ -1735,6 +1742,10 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_red" ), myColor.red() );
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_green" ), myColor.green() );
   mSettings->setValue( QStringLiteral( "/qgis/default_measure_color_blue" ), myColor.blue() );
+
+  //set the default color for the measure radius tool circular rubber band
+  myColor = pbnMeasureRadiusColor->color();
+  QgsSettingsRegistryCore::settingsMeasureRadiusCircularRubberbandColor->setValue( myColor );
 
   mSettings->setValue( QStringLiteral( "/qgis/zoom_factor" ), zoomFactorValue() );
   mSettings->setValue( QStringLiteral( "/qgis/reverse_wheel_zoom" ), reverseWheelZoom->isChecked() );

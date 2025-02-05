@@ -175,6 +175,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry autosize columns by default when opening attribute table
     static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
 
+    //! Settings entry measure radius tool circular rubberband color
+    static const QgsSettingsEntryColor *settingsMeasureRadiusCircularRubberbandColor;
+
   private:
     friend class QgsApplication;
 
