@@ -51,7 +51,7 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   QString warning = tr( "Your authentication database will be duplicated and re-encrypted using the new password." );
   if ( QgsApplication::authManager()->passwordHelperEnabled() )
   {
-    warning += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "Your new password will automatically be stored in the system %1." ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+    warning += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "Your new password will automatically be stored in the system %1." ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
   }
 
   lblWarning->setText( warning );
