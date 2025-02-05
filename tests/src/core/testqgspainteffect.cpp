@@ -105,6 +105,7 @@ class TestQgsPaintEffect : public QgsTest
     void cleanup();         // will be called after every testfunction.
     void saveRestore();
     void stackSaveRestore();
+    void painterFlags();
 
     //specific effects
     void drawSource();
@@ -270,6 +271,35 @@ void TestQgsPaintEffect::stackSaveRestore()
 
   delete stack;
   delete restoredStack;
+}
+
+void TestQgsPaintEffect::painterFlags()
+{
+  QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
+  image.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &image );
+  painter.setRenderHint( QPainter::RenderHint::Antialiasing, true );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+  context.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, true );
+  context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, false );
+  QVERIFY( context.painter()->renderHints().testFlag( QPainter::RenderHint::Antialiasing ) );
+
+  QgsDrawSourceEffect effect;
+  effect.begin( context );
+  // context should now be painting to the effect's internal deferred painter
+  QVERIFY( context.painter() != &painter );
+  // which should have all the render hints set from the context correctly
+  QVERIFY( context.painter()->renderHints().testFlag( QPainter::RenderHint::Antialiasing ) );
+  QVERIFY( context.painter()->renderHints().testFlag( QPainter::RenderHint::LosslessImageRendering ) );
+  QVERIFY( !context.painter()->renderHints().testFlag( QPainter::RenderHint::SmoothPixmapTransform ) );
+  effect.end( context );
+
+  // painter should be switched back to the original
+  QCOMPARE( context.painter(), &painter );
+  painter.end();
 }
 
 void TestQgsPaintEffect::drawSource()
