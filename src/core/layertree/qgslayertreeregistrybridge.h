@@ -86,6 +86,12 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     void setLayerInsertionPoint( const InsertionPoint &insertionPoint );
 
     /**
+     * Returns the insertion point used to add layers to the tree
+     * \since QGIS 3.42
+     */
+    InsertionPoint layerInsertionPoint() const;
+
+    /**
      * Sets the insertion \a method used to add layers to the tree
      * \since QGIS 3.30
      */

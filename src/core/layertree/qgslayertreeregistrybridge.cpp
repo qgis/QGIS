@@ -49,6 +49,12 @@ void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( const InsertionPoint &i
   mInsertionPointPosition = insertionPoint.position;
 }
 
+QgsLayerTreeRegistryBridge::InsertionPoint QgsLayerTreeRegistryBridge::layerInsertionPoint() const
+{
+  QgsLayerTreeGroup *group = mInsertionPointGroup.isNull() ? mRoot : mInsertionPointGroup.data();
+  return InsertionPoint( group, mInsertionPointPosition );
+}
+
 void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers )
 {
   if ( !mEnabled )
