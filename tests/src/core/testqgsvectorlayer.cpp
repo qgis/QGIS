@@ -504,6 +504,7 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
   QCOMPARE( layerLine->extent(), QgsRectangle() );
 
   const QSignalSpy spyAdded( layerLine, &QgsVectorLayer::featureAdded );
+  const QSignalSpy spyDeleted( layerLine, &QgsVectorLayer::featureDeleted );
 
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (2 1, 1 1, 1 5, 7 12)" ) ) );
@@ -514,11 +515,26 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
     QCOMPARE( layerLine->extent3D(), QgsBox3D( 1, 1, std::numeric_limits<double>::quiet_NaN(), 7, 12, std::numeric_limits<double>::quiet_NaN() ) );
   } );
 
+  connect( layerLine, &QgsVectorLayer::featureDeleted, this, [&layerLine, &lineF1]( const QgsFeatureId &fid ) {
+    QCOMPARE( fid, lineF1.id() );
+    QCOMPARE( layerLine->extent(), QgsRectangle() );
+    QCOMPARE( layerLine->extent3D(), QgsBox3D() );
+  }
+
+  );
+
   layerLine->startEditing();
   layerLine->addFeature( lineF1 );
   QCOMPARE( spyAdded.count(), 1 );
+  QCOMPARE( spyDeleted.count(), 0 );
   QCOMPARE( layerLine->featureCount(), static_cast<long>( 1 ) );
   QCOMPARE( spyAdded.at( 0 ).at( 0 ), QVariant( lineF1.id() ) );
+
+  layerLine->deleteFeature( lineF1.id() );
+  QCOMPARE( spyAdded.count(), 1 );
+  QCOMPARE( spyDeleted.count(), 1 );
+  QCOMPARE( layerLine->featureCount(), static_cast<long>( 0 ) );
+  QCOMPARE( spyDeleted.at( 0 ).at( 0 ), QVariant( lineF1.id() ) );
 
   delete layerLine;
 }
