@@ -144,7 +144,8 @@ QImage QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
   //else create it
   //TODO - test with premultiplied image for speed
   const QRectF bounds = imageBoundingRect( context );
-  mSourceImage = QImage( bounds.width(), bounds.height(), QImage::Format_ARGB32 );
+  mSourceImage = QImage( static_cast< int >( std::ceil( bounds.width() ) ),
+                         static_cast< int >( std::ceil( bounds.height() ) ), QImage::Format_ARGB32 );
   mSourceImage.fill( Qt::transparent );
   QPainter imagePainter( &mSourceImage );
   imagePainter.setRenderHint( QPainter::Antialiasing );
