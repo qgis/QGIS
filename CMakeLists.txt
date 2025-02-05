@@ -17,7 +17,12 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
-set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
+option (WITH_PYTHON "Determines whether Python should be built" ON)
+if(NOT WITH_PYTHON)
+    set(WITH_BINDINGS OFF CACHE BOOL "Determines whether Python bindings should be built")
+else()
+  set(WITH_BINDINGS ON CACHE BOOL "Determines whether Python bindings should be built")
+endif()
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
@@ -316,9 +321,15 @@ if(WITH_CORE)
   if ( WITH_DESKTOP )
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
-    add_custom_target(qgis_desktop
-      DEPENDS qgis qgispython pycore pygui pyanalysis provider_postgres staged-plugins pyplugin-installer resources svg doc icons
-    )
+    if ( WITH_PYTHON )
+      add_custom_target(qgis_desktop
+        DEPENDS qgis qgispython pycore pygui pyanalysis provider_postgres staged-plugins pyplugin-installer resources svg doc icons
+      )
+    else()
+      add_custom_target(qgis_desktop
+        DEPENDS qgis provider_postgres staged-plugins resources svg doc icons
+      )
+    endif()
   endif()
 
   # try to configure and build MDAL support
@@ -1180,7 +1191,6 @@ if (WITH_CORE AND WITH_BINDINGS)
     set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT_MOD_DIR}/uic/widget-plugins/)
   endif()
 endif()
-
 
 #############################################################
 # create qgsconfig.h
