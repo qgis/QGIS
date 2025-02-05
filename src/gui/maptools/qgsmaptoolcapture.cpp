@@ -642,10 +642,6 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
   {
     if ( ( match.hasVertex() || match.hasLineEndpoint() ) )
     {
-      if ( sourceLayer->crs() != vlayer->crs() )
-      {
-        return 1;
-      }
       QgsFeature f;
       QgsFeatureRequest request;
       request.setFilterFid( match.featureId() );
@@ -657,6 +653,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         {
           return 2;
         }
+
         layerPoint = f.geometry().constGet()->vertexAt( vId );
         if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
           layerPoint.addZValue( defaultZValue() );
@@ -674,6 +671,10 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
           layerPoint.dropMValue();
         }
 
+        if ( sourceLayer->crs() != vlayer->crs() )
+        {
+          layerPoint = toLayerCoordinates( vlayer, layerPoint );
+        }
         return 0;
       }
       return 2;
