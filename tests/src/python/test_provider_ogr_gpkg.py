@@ -1269,6 +1269,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(0 0)"))
         lyr.CreateFeature(f)
         f = None
+        del lyr
+        del ds
 
         vl = QgsVectorLayer(f"{tmpfile}", "layer", "ogr")
         self.assertEqual(1, vl.dataProvider().subLayerCount())
@@ -3699,6 +3701,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(3 4)"))
         lyr.CreateFeature(f)
         f = None
+        del lyr
+        ds.FlushCache()
 
         vl = QgsVectorLayer(filename + "|layername=points")
         self.assertTrue(vl.isValid())
@@ -3714,7 +3718,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         f.SetGeometry(ogr.CreateGeometryFromWkt("LINESTRING(1 2, 3 4)"))
         lyr.CreateFeature(f)
         f = None
-        ds = None
+        ds.FlushCache()
 
         vl = QgsVectorLayer(filename + "|layername=lines")
         self.assertEqual(vl.geometryType(), Qgis.GeometryType.Line)

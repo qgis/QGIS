@@ -2707,6 +2707,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
             if ( gType == wkbTINZ )
               gType = wkbMultiPolygon25D;
             bool hasZ = wkbHasZ( gType );
+            gType = wkbFlatten( gType );
             fCount[gType] = fCount.value( gType ) + pasCounter[i].nCount;
             if ( hasZ )
               fHasZ.insert( gType );
@@ -2727,6 +2728,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         if ( gType != wkbNone )
         {
           bool hasZ = wkbHasZ( gType );
+          gType = wkbFlatten( gType );
           fCount[gType] = fCount.value( gType ) + 1;
           if ( hasZ )
             fHasZ.insert( gType );
@@ -2764,8 +2766,8 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     // Last type in the list is the winner
     const static QList<OGRwkbGeometryType> pointHyerarchy { wkbPoint, wkbMultiPoint };
     // Note: compound curve takes precedence over multilinestring
-    const static QList<OGRwkbGeometryType> lineHyerarchy { wkbLineString, wkbCircularString, wkbMultiCurve, wkbMultiLineString, wkbCompoundCurve };
-    const static QList<OGRwkbGeometryType> polyHyerarchy { wkbPolyhedralSurface, wkbTIN, wkbCurvePolygon, wkbPolygon, wkbMultiSurface, wkbMultiPolygon };
+    const static QList<OGRwkbGeometryType> lineHyerarchy { wkbLineString, wkbCircularString, wkbMultiCurve, wkbMultiLineString, wkbCompoundCurve, wkbMultiCurve };
+    const static QList<OGRwkbGeometryType> polyHyerarchy { wkbPolyhedralSurface, wkbTIN, wkbPolygon, wkbCurvePolygon, wkbMultiSurface, wkbMultiPolygon };
 
     for ( const auto t : std::as_const( pointHyerarchy ) )
     {
