@@ -39,13 +39,6 @@ color for the segments.
 
     virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 
-%Docstring
-Applies any default settings relating to the scalebar to the passed ``settings`` object.
-
-Returns ``True`` if settings were applied.
-
-.. versionadded:: 3.42
-%End
 };
 
 /************************************************************************
