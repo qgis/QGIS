@@ -68,6 +68,13 @@ By default it is root group with zero index.
 .. versionadded:: 3.10
 %End
 
+    InsertionPoint layerInsertionPoint() const;
+%Docstring
+Returns the insertion point used to add layers to the tree
+
+.. versionadded:: 3.42
+%End
+
     void setLayerInsertionMethod( Qgis::LayerTreeInsertionMethod method );
 %Docstring
 Sets the insertion ``method`` used to add layers to the tree
