@@ -3521,6 +3521,7 @@ QgsDistanceArea.sourceCrs: src/core/qgsdistancearea.h#L80
 QgsDistanceArea.splitGeometryAtAntimeridian: src/core/qgsdistancearea.h#L359
 QgsDistanceArea.willUseEllipsoid: src/core/qgsdistancearea.h#L67
 QgsDistanceArea: src/core/qgsdistancearea.h#L52
+QgsDoubleBoxScaleBarRenderer.applyDefaultSettings: src/core/scalebar/qgsdoubleboxscalebarrenderer.h#L45
 QgsDoubleBoxScaleBarRenderer.clone: src/core/scalebar/qgsdoubleboxscalebarrenderer.h#L39
 QgsDoubleBoxScaleBarRenderer.draw: src/core/scalebar/qgsdoubleboxscalebarrenderer.h#L41
 QgsDoubleBoxScaleBarRenderer.flags: src/core/scalebar/qgsdoubleboxscalebarrenderer.h#L37
@@ -16384,6 +16385,7 @@ QgsSingleBandPseudoColorRenderer.shader: src/core/raster/qgssinglebandpseudocolo
 QgsSingleBandPseudoColorRenderer.toSld: src/core/raster/qgssinglebandpseudocolorrenderer.h#L84
 QgsSingleBandPseudoColorRenderer.writeXml: src/core/raster/qgssinglebandpseudocolorrenderer.h#L80
 QgsSingleBandPseudoColorRenderer: src/core/raster/qgssinglebandpseudocolorrenderer.h#L34
+QgsSingleBoxScaleBarRenderer.applyDefaultSettings: src/core/scalebar/qgssingleboxscalebarrenderer.h#L46
 QgsSingleBoxScaleBarRenderer.clone: src/core/scalebar/qgssingleboxscalebarrenderer.h#L40
 QgsSingleBoxScaleBarRenderer.draw: src/core/scalebar/qgssingleboxscalebarrenderer.h#L42
 QgsSingleBoxScaleBarRenderer.flags: src/core/scalebar/qgssingleboxscalebarrenderer.h#L39
