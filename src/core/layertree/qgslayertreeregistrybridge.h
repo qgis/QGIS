@@ -18,12 +18,13 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QPointer>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgslayertreegroup.h"
 
-class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsMapLayer;
 class QgsProject;
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
       InsertionPoint( QgsLayerTreeGroup *group, int position )
         : group( group ), position( position ) {}
 
-      QgsLayerTreeGroup *group = nullptr;
+      QgsLayerTreeGroup *group;
       int position = 0;
     };
 
@@ -120,7 +121,9 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     bool mEnabled;
     bool mNewLayersVisible;
 
-    InsertionPoint mInsertionPoint;
+    QPointer< QgsLayerTreeGroup > mInsertionPointGroup;
+    int mInsertionPointPosition = 0;
+
     Qgis::LayerTreeInsertionMethod mInsertionMethod = Qgis::LayerTreeInsertionMethod::AboveInsertionPoint;
 };
 
