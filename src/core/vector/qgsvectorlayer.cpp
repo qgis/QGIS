@@ -3817,14 +3817,7 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteCont
   if ( !mEditBuffer )
     return false;
 
-  bool res = deleteFeatureCascade( fid, context );
-
-  if ( res )
-  {
-    updateExtents();
-  }
-
-  return res;
+  return deleteFeatureCascade( fid, context );
 }
 
 bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context )
@@ -5972,6 +5965,8 @@ void QgsVectorLayer::onFeatureAdded( QgsFeatureId fid )
 void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  updateExtents();
 
   if ( mEditCommandActive  || mCommitChangesActive )
   {
