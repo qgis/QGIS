@@ -100,6 +100,7 @@ Tell others we have just added layers to the tree (used in QGIS to auto-select f
 
   protected:
 
+
 };
 
 /************************************************************************
