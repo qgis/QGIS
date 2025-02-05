@@ -90,6 +90,7 @@ void QgsPaintEffect::begin( QgsRenderContext &context )
   mEffectPainter = std::make_unique< QPainter >();
   mEffectPainter->begin( mTempPicture.get() );
 
+  context.setPainterFlagsUsingContext( mEffectPainter.get() );
   context.setPainter( mEffectPainter.get() );
 }
 
