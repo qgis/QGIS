@@ -12,7 +12,7 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 
 import qgis  # NOQA
 
-from qgis.core import QgsCircle, QgsPoint
+from qgis.core import Qgis, QgsCircle, QgsPoint
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -55,25 +55,25 @@ class TestQgsCircularString(QgisTestCase):
                 radius,
                 tolerance,
                 min_segments,
-                QgsCircle.SegmentCalculationMethod.Standard,
+                Qgis.SegmentCalculationMethod.Standard,
             )
             adaptive_segments = circle.calculateSegments(
                 radius,
                 tolerance,
                 min_segments,
-                QgsCircle.SegmentCalculationMethod.Adaptive,
+                Qgis.SegmentCalculationMethod.Adaptive,
             )
             area_segments = circle.calculateSegments(
                 radius,
                 tolerance,
                 min_segments,
-                QgsCircle.SegmentCalculationMethod.AreaError,
+                Qgis.SegmentCalculationMethod.AreaError,
             )
             constant_segments = circle.calculateSegments(
                 radius,
                 constant,
                 min_segments,
-                QgsCircle.SegmentCalculationMethod.ConstantDensity,
+                Qgis.SegmentCalculationMethod.ConstantDensity,
             )
 
             # Store current results

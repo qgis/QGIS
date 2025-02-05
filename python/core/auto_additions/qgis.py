@@ -11070,6 +11070,23 @@ Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
 """
 # --
 Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SegmentCalculationMethod.Standard.__doc__ = "Standard sagitta-based calculation"
+Qgis.SegmentCalculationMethod.Adaptive.__doc__ = "Adaptive calculation based on radius size"
+Qgis.SegmentCalculationMethod.AreaError.__doc__ = "Calculation based on area error"
+Qgis.SegmentCalculationMethod.ConstantDensity.__doc__ = "Simple calculation with constant segment density"
+Qgis.SegmentCalculationMethod.__doc__ = """brief Method used to calculate the number of segments for circle approximation
+
+.. versionadded:: 3.44
+
+* ``Standard``: Standard sagitta-based calculation
+* ``Adaptive``: Adaptive calculation based on radius size
+* ``AreaError``: Calculation based on area error
+* ``ConstantDensity``: Simple calculation with constant segment density
+
+"""
+# --
+Qgis.SegmentCalculationMethod.baseClass = Qgis
 from enum import Enum
 
 

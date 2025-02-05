@@ -377,15 +377,7 @@ Coordinates are taken from quadrant North, East and South.
 .. seealso:: :py:func:`asGml2`
 %End
 
-    enum class SegmentCalculationMethod
-    {
-      Standard,
-      Adaptive,
-      AreaError,
-      ConstantDensity
-    };
-
-    static int calculateSegments( double radius, double parameter, int minSegments, SegmentCalculationMethod method );
+    static int calculateSegments( double radius, double parameter, int minSegments, Qgis::SegmentCalculationMethod method );
 %Docstring
 Calculates the number of segments needed to approximate a circle.
 
@@ -414,7 +406,7 @@ Calculates the number of segments needed to approximate a circle.
 
   private :
 
-    static int
+    static int calculateSegmentsStandard( double radius, double tolerance, int minSegments );
 %Docstring
 Calculate the number of segments needed to approximate a circle within a given tolerance.
 
@@ -445,7 +437,6 @@ cos(θ/2) = 1 - tolerance/radius
 
    This is a private helper method
 %End
-    calculateSegmentsStandard( double radius, double tolerance, int minSegments );
 
     static int calculateSegmentsAdaptive( double radius, double tolerance, int minSegments );
 %Docstring
