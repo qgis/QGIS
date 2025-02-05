@@ -485,7 +485,7 @@ QgsStacItemCollection *QgsStacParser::itemCollection()
     QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
 
     std::vector< std::unique_ptr<QgsStacItem> > items;
-    items.reserve( static_cast<int>( mData.at( "features" ).size() ) );
+    items.reserve( mData.at( "features" ).size() );
     for ( auto &item : mData.at( "features" ) )
     {
       std::unique_ptr<QgsStacItem> i( parseItem( item ) );
@@ -496,7 +496,7 @@ QgsStacItemCollection *QgsStacParser::itemCollection()
     const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
 
     QVector< QgsStacItem *> rawItems;
-    rawItems.reserve( items.size() );
+    rawItems.reserve( static_cast<int>( items.size() ) );
     for ( std::unique_ptr<QgsStacItem> &i : items )
     {
       rawItems.append( i.release() );
@@ -519,7 +519,7 @@ QgsStacCollections *QgsStacParser::collections()
     QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
 
     std::vector< std::unique_ptr<QgsStacCollection> > cols;
-    cols.reserve( static_cast<int>( mData.at( "collections" ).size() ) );
+    cols.reserve( mData.at( "collections" ).size() );
     for ( auto &col : mData.at( "collections" ) )
     {
       std::unique_ptr<QgsStacCollection> c( parseCollection( col ) );
@@ -530,7 +530,7 @@ QgsStacCollections *QgsStacParser::collections()
     const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
 
     QVector< QgsStacCollection * > rawCols;
-    rawCols.reserve( cols.size() );
+    rawCols.reserve( static_cast<int>( cols.size() ) );
     for ( std::unique_ptr<QgsStacCollection> &c : cols )
     {
       rawCols.append( c.release() );
