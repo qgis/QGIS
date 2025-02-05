@@ -440,13 +440,13 @@ bool QgsAuthManager::createAndStoreRandomMasterPasswordInKeyChain()
   }
   else
   {
-    emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
+    emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
   }
 
   if ( !verifyMasterPassword() )
   {
-    emit passwordHelperMessageLog( tr( "Master password was written to the %1 but could not be verified" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), Qgis::MessageLevel::Warning );
+    emit passwordHelperMessageLog( tr( "Master password was written to the %1 but could not be verified" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
   }
 
