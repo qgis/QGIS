@@ -42,7 +42,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   QgsInterpolator::LayerData ld = mInterpolator->layerData().at( 0 );
   const QgsCoordinateReferenceSystem crs = ld.source->sourceCrs();
 
-  std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( mOutputFilePath );
+  auto writer = std::make_unique<QgsRasterFileWriter>( mOutputFilePath );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
 

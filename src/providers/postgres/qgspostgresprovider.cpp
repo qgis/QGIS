@@ -4595,7 +4595,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
 
   QgsDataProvider::ProviderOptions providerOptions;
   Qgis::DataProviderReadFlags flags;
-  std::unique_ptr<QgsPostgresProvider> provider = std::make_unique<QgsPostgresProvider>( dsUri.uri( false ), providerOptions, flags );
+  auto provider = std::make_unique<QgsPostgresProvider>( dsUri.uri( false ), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )

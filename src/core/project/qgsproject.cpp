@@ -2855,7 +2855,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   // MUCH cheaper to clone than build
   if ( mProjectScope )
   {
-    std::unique_ptr< QgsExpressionContextScope > projectScope = std::make_unique< QgsExpressionContextScope >( *mProjectScope );
+    auto projectScope = std::make_unique< QgsExpressionContextScope >( *mProjectScope );
 
     // we can't cache these variables
     projectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_distance_units" ), QgsUnitTypes::toString( distanceUnits() ), true, true ) );

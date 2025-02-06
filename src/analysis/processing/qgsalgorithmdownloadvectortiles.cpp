@@ -141,7 +141,7 @@ QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( QObject::tr( "Requested number of tiles %1 exceeds limit of %2 tiles. Please, select a smaller extent, reduce maximum zoom level or increase tile limit." ).arg( tileCount ).arg( mTileLimit ) );
   }
 
-  std::unique_ptr<QgsMbTiles> writer = std::make_unique<QgsMbTiles>( outputFile );
+  auto writer = std::make_unique<QgsMbTiles>( outputFile );
   if ( !writer->create() )
   {
     throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );

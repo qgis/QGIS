@@ -1349,7 +1349,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
 
   if ( !element.firstChildElement( QStringLiteral( "buffer" ) ).isNull() )
   {
-    std::unique_ptr< QgsSymbolBufferSettings > bufferSettings = std::make_unique< QgsSymbolBufferSettings >();
+    auto bufferSettings = std::make_unique< QgsSymbolBufferSettings >();
     bufferSettings->readXml( element, context );
     symbol->setBufferSettings( bufferSettings.release() );
   }

@@ -172,7 +172,7 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   {
     options.transformContext = mDataProvider->transformContext();
   }
-  std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >( source(), name(), mProviderKey, options );
+  auto layer = std::make_unique< QgsRasterLayer >( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer.get() );
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer.get() );
@@ -858,7 +858,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( "Native Raster Raster Attribute Table read failed " + errorMessage, 2 );
     if ( QFile::exists( mDataProvider->dataSourceUri( ) +  ".vat.dbf" ) )
     {
-      std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+      auto rat = std::make_unique<QgsRasterAttributeTable>();
       hasRat = rat->readFromFile( mDataProvider->dataSourceUri( ) +  ".vat.dbf", &errorMessage );
       if ( hasRat )
       {
@@ -1192,7 +1192,7 @@ void QgsRasterLayer::readRasterAttributeTableExternalPaths( const QDomNode &laye
           continue;
         }
 
-        std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+        auto rat = std::make_unique<QgsRasterAttributeTable>();
         QString errorMessage;
         if ( ! rat->readFromFile( path, &errorMessage ) )
         {

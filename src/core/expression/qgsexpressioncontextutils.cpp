@@ -1293,7 +1293,7 @@ class CurrentFaceIndexExpressionFunction: public QgsScopedExpressionFunction
 
 QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
 {
-  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
+  auto scope = std::make_unique<QgsExpressionContextScope>();
 
   switch ( elementType )
   {

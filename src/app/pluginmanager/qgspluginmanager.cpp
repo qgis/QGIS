@@ -405,7 +405,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       QgsDebugMsgLevel( "Examining: " + lib, 2 );
       try
       {
-        std::unique_ptr<QLibrary> myLib = std::make_unique<QLibrary>( lib );
+        auto myLib = std::make_unique<QLibrary>( lib );
         const bool loaded = myLib->load();
         if ( !loaded )
         {

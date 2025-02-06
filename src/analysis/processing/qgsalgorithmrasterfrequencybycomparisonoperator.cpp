@@ -43,11 +43,11 @@ void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMa
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT_RASTERS" ), QObject::tr( "Input raster layers" ), Qgis::ProcessingSourceType::Raster ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), false ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> output_nodata_parameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999, true );
+  auto output_nodata_parameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999, true );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( output_nodata_parameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -119,7 +119,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !createOptions.isEmpty() )
   {
@@ -169,7 +169,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
       }
     }
 
-    std::unique_ptr<QgsRasterBlock> outputBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Int32, iterCols, iterRows );
+    auto outputBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Int32, iterCols, iterRows );
     feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     for ( int row = 0; row < iterRows; row++ )
     {

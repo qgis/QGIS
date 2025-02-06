@@ -690,7 +690,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   }
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
+  auto scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
 
   std::unique_ptr< QgsGeometryEngine > clipEngine;

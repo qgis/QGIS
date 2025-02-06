@@ -100,13 +100,13 @@ void TestQgsMapToolEdit::checkLayers()
   QVERIFY( vl1->isValid() );
   QgsProject::instance()->addMapLayer( vl1 );
 
-  std::unique_ptr<QgsVectorLayer> vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   QVERIFY( vl2->isValid() );
 
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   canvas->setLayers( { vl1, vl2.get() } );
 
-  std::unique_ptr<QgsMapToolEdit> tool = std::make_unique<QgsMapToolEdit>( canvas.get() );
+  auto tool = std::make_unique<QgsMapToolEdit>( canvas.get() );
 
   // retrieving layer by id should work for both layers from the project AND for freestanding layers
   QCOMPARE( tool->layer( vl1->id() ), vl1 );

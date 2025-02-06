@@ -269,7 +269,7 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
     }
   }
 
-  std::unique_ptr<QStandardItem> item = std::make_unique<QStandardItem>( title );
+  auto item = std::make_unique<QStandardItem>( title );
   item->setData( value, Qt::UserRole );
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );

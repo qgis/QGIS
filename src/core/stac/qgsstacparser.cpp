@@ -104,10 +104,10 @@ QgsStacCatalog *QgsStacParser::parseCatalog( const nlohmann::json &data )
 
     QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
 
-    std::unique_ptr< QgsStacCatalog > catalog = std::make_unique< QgsStacCatalog >( id,
-        ver,
-        description,
-        links );
+    auto catalog = std::make_unique< QgsStacCatalog >( id,
+                   ver,
+                   description,
+                   links );
 
     if ( data.contains( "title" ) )
       catalog->setTitle( getString( data["title"] ) );
@@ -218,12 +218,12 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
 
     QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
 
-    std::unique_ptr< QgsStacCollection > collection = std::make_unique< QgsStacCollection >( id,
-        ver,
-        description,
-        links,
-        license,
-        stacExtent );
+    auto collection = std::make_unique< QgsStacCollection >( id,
+                      ver,
+                      description,
+                      links,
+                      license,
+                      stacExtent );
 
     if ( data.contains( "title" ) )
       collection->setTitle( getString( data["title"] ) );
@@ -371,13 +371,13 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
 
     QMap< QString, QgsStacAsset > assets = parseAssets( data.at( "assets" ) );
 
-    std::unique_ptr< QgsStacItem > item = std::make_unique< QgsStacItem >( id,
-                                          ver,
-                                          geom,
-                                          properties,
-                                          links,
-                                          assets,
-                                          bbox );
+    auto item = std::make_unique< QgsStacItem >( id,
+                ver,
+                geom,
+                properties,
+                links,
+                assets,
+                bbox );
 
     if ( data.contains( "stac_extensions" ) )
     {

@@ -216,7 +216,7 @@ void TestQgsCopcProvider::querySublayers()
 void TestQgsCopcProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( !layer->isValid() );
 }
 
@@ -252,7 +252,7 @@ void TestQgsCopcProvider::validLayer()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
@@ -274,7 +274,7 @@ void TestQgsCopcProvider::validLayerWithCopcHierarchy()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/lone-star.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QGSCOMPARENEAR( layer->extent().xMinimum(), 515368.6022, 0.1 );
@@ -292,7 +292,7 @@ void TestQgsCopcProvider::attributes()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
@@ -345,7 +345,7 @@ void TestQgsCopcProvider::calculateZRange()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
@@ -373,7 +373,7 @@ void TestQgsCopcProvider::testIdentify()
 
   const QString datasetPath = copyTestData( srcDatasetPath );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( datasetPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( datasetPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
 
   QVERIFY( layer->isValid() );
 
@@ -567,7 +567,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
   {
     const float maxErrorInMapCoords = 0.0015207174f;
@@ -650,7 +650,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
   {
     const float maxErrorInMapCoords = 0.0015207174f;
@@ -822,7 +822,7 @@ void TestQgsCopcProvider::testPointCloudIndex()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QgsPointCloudIndex index = layer->dataProvider()->index();
@@ -878,7 +878,7 @@ void TestQgsCopcProvider::testStatsCalculator()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QgsPointCloudIndex index = layer->dataProvider()->index();
   QgsPointCloudStatsCalculator calculator( index );
 
@@ -1127,7 +1127,7 @@ void TestQgsCopcProvider::testSaveLoadStats()
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
 
   {
-    std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+    auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
     QVERIFY( layer->isValid() );
 
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
@@ -1138,7 +1138,7 @@ void TestQgsCopcProvider::testSaveLoadStats()
   }
 
   {
-    std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+    auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
     QVERIFY( layer->isValid() );
 
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
@@ -1155,7 +1155,7 @@ void TestQgsCopcProvider::testPointCloudRequest()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QgsPointCloudIndex index = layer->dataProvider()->index();
@@ -1225,7 +1225,7 @@ void TestQgsCopcProvider::testPointCloudRequestIgnoreFilter()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   layer->setSubsetString( QStringLiteral( "Intensity < 1000" ) );

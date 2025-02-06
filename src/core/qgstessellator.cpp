@@ -817,7 +817,7 @@ int QgsTessellator::dataVerticesCount() const
 
 std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
 {
-  std::unique_ptr< QgsMultiPolygon > mp = std::make_unique< QgsMultiPolygon >();
+  auto mp = std::make_unique< QgsMultiPolygon >();
   const auto nVals = mData.size();
   mp->reserve( nVals / 9 );
   for ( auto i = decltype( nVals ) {0}; i + 8 < nVals; i += 9 )

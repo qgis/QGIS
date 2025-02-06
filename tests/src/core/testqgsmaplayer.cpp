@@ -119,7 +119,7 @@ void TestQgsMapLayer::isValid()
 
 void TestQgsMapLayer::testId()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
   QSignalSpy spy( layer.get(), &QgsMapLayer::idChanged );
   QVERIFY( layer->setId( QStringLiteral( "my forced id" ) ) );
   QCOMPARE( layer->id(), QStringLiteral( "my forced id" ) );
@@ -430,7 +430,7 @@ void TestQgsMapLayer::notify()
 
 void TestQgsMapLayer::customEnumFlagProperties()
 {
-  std::unique_ptr<QgsVectorLayer> ml = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  auto ml = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
 
   // assign to inexisting property
   ml->setCustomProperty( QStringLiteral( "my_property_for_units" ), -1 );
@@ -482,7 +482,7 @@ void TestQgsMapLayer::customEnumFlagProperties()
 
 void TestQgsMapLayer::readCustomProperties()
 {
-  std::unique_ptr<QgsVectorLayer> ml = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  auto ml = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
 
   // assign to inexisting property
   ml->setCustomProperty( QStringLiteral( "my_property_one" ), 42 );

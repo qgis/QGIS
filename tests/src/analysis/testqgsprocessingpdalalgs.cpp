@@ -114,7 +114,7 @@ void TestQgsProcessingPdalAlgs::info()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:info" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QgsProcessingFeedback feedback;
@@ -133,7 +133,7 @@ void TestQgsProcessingPdalAlgs::convertFormat()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:convertformat" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -158,7 +158,7 @@ void TestQgsProcessingPdalAlgs::reproject()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:reproject" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -184,7 +184,7 @@ void TestQgsProcessingPdalAlgs::assignProjection()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:assignprojection" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -210,7 +210,7 @@ void TestQgsProcessingPdalAlgs::thinByDecimate()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:thinbydecimate" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -250,7 +250,7 @@ void TestQgsProcessingPdalAlgs::thinByRadius()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:thinbyradius" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -290,7 +290,7 @@ void TestQgsProcessingPdalAlgs::boundary()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:boundary" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -334,7 +334,7 @@ void TestQgsProcessingPdalAlgs::density()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:density" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -395,7 +395,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportrastertin" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -456,7 +456,7 @@ void TestQgsProcessingPdalAlgs::tile()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:tile" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -504,7 +504,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportraster" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -570,7 +570,7 @@ void TestQgsProcessingPdalAlgs::exportVector()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportvector" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -611,7 +611,7 @@ void TestQgsProcessingPdalAlgs::merge()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:merge" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -651,7 +651,7 @@ void TestQgsProcessingPdalAlgs::buildVpc()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:virtualpointcloud" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -697,7 +697,7 @@ void TestQgsProcessingPdalAlgs::clip()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:clip" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 
@@ -734,7 +734,7 @@ void TestQgsProcessingPdalAlgs::filter()
 {
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:filter" ) ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   context->setMaximumThreads( 0 );
 

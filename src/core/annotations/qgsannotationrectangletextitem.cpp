@@ -108,7 +108,7 @@ bool QgsAnnotationRectangleTextItem::readXml( const QDomElement &element, const 
 
 QgsAnnotationRectangleTextItem *QgsAnnotationRectangleTextItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationRectangleTextItem > item = std::make_unique< QgsAnnotationRectangleTextItem >( mText, bounds() );
+  auto item = std::make_unique< QgsAnnotationRectangleTextItem >( mText, bounds() );
 
   item->setFormat( mTextFormat );
   item->setAlignment( mAlignment );

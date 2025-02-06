@@ -94,7 +94,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   {
     // copy simple label settings to first rule
     mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
-    std::unique_ptr<QgsPalLayerSettings> newSettings = std::make_unique<QgsPalLayerSettings>( mLayer->labeling()->settings() );
+    auto newSettings = std::make_unique<QgsPalLayerSettings>( mLayer->labeling()->settings() );
     newSettings->drawLabels = true; // otherwise we may be trying to copy a "blocking" setting to a rule - which is confusing for users!
     mRootRule->appendChild( new QgsRuleBasedLabeling::Rule( newSettings.release() ) );
   }

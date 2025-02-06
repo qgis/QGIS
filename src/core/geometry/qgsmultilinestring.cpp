@@ -226,7 +226,7 @@ bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
 
 QgsMultiLineString *QgsMultiLineString::simplifyByDistance( double tolerance ) const
 {
-  std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+  auto result = std::make_unique< QgsMultiLineString >();
   result->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
@@ -253,7 +253,7 @@ bool QgsMultiLineString::wktOmitChildType() const
 
 QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end ) const
 {
-  std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+  auto result = std::make_unique< QgsMultiLineString >();
   if ( isEmpty() )
   {
     result->convertTo( QgsWkbTypes::addM( mWkbType ) );

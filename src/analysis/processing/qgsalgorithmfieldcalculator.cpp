@@ -89,16 +89,16 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
     icons << QgsFields::iconForFieldType( type.first, type.second );
   }
 
-  std::unique_ptr<QgsProcessingParameterString> fieldName = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
-  std::unique_ptr<QgsProcessingParameterEnum> fieldType = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
+  auto fieldName = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
+  auto fieldType = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
   fieldType->setMetadata(
     { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
     }
   );
 
-  std::unique_ptr<QgsProcessingParameterNumber> fieldLength = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr<QgsProcessingParameterNumber> fieldPrecision = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr<QgsProcessingParameterExpression> expression = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
+  auto fieldLength = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
+  auto fieldPrecision = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), Qgis::ProcessingNumberParameterType::Integer, QVariant( 0 ), false, 0 );
+  auto expression = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
 
   expression->setMetadata( QVariantMap( { { "inlineEditor", true } } ) );
 

@@ -106,8 +106,8 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
 
   const QgsRectangle bounds( xMin, yMin, xMax, yMax );
   const QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
-  std::unique_ptr< QgsLabelPosition > newEntry = std::make_unique< QgsLabelPosition >( featureId, -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(), cornerPoints, bounds,
-      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
+  auto newEntry = std::make_unique< QgsLabelPosition >( featureId, -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(), cornerPoints, bounds,
+                  labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
   newEntry->groupedLabelId = uniqueLinkedId;
   mSpatialIndex.insert( newEntry.get(), bounds );
 
@@ -130,7 +130,7 @@ bool QgsLabelSearchTree::insertCallout( const QgsCalloutPosition &position )
   const QPointF origin = position.origin();
   const QPointF destination = position.destination();
 
-  std::unique_ptr< QgsCalloutPosition > newEntry = std::make_unique< QgsCalloutPosition >( position );
+  auto newEntry = std::make_unique< QgsCalloutPosition >( position );
 
   mCalloutIndex.insert( newEntry.get(), QgsRectangle( origin.x(), origin.y(), origin.x(), origin.y() ) );
   mCalloutIndex.insert( newEntry.get(), QgsRectangle( destination.x(), destination.y(), destination.x(), destination.y() ) );

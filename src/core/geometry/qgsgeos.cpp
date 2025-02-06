@@ -3144,7 +3144,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractG
     return nullptr;
   }
 
-  std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >();
+  auto line = std::make_unique< QgsLineString >();
   line->addVertex( QgsPoint( nx1, ny1 ) );
   line->addVertex( QgsPoint( nx2, ny2 ) );
   return line;

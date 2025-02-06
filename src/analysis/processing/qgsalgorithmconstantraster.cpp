@@ -82,7 +82,7 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -168,7 +168,7 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
   //this prevents output cellsize being calculated too small
   const QgsRectangle rasterExtent = QgsRectangle( extent.xMinimum(), extent.yMaximum() - ( rows * pixelSize ), extent.xMinimum() + ( cols * pixelSize ), extent.yMaximum() );
 
-  std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !createOptions.isEmpty() )
   {

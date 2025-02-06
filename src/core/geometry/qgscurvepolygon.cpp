@@ -598,7 +598,7 @@ QgsCurvePolygon *QgsCurvePolygon::simplifyByDistance( double tolerance ) const
   if ( !qgsgeometry_cast< QgsLineString * >( exterior.get() ) )
     return nullptr;
 
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >( qgis::down_cast< QgsLineString * >( exterior.release() ) );
+  auto polygon = std::make_unique< QgsPolygon >( qgis::down_cast< QgsLineString * >( exterior.release() ) );
 
   //interior rings
   for ( const QgsCurve *interior : mInteriorRings )

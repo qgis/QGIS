@@ -503,7 +503,7 @@ std::unique_ptr< QgsPolygon > parsePolygonFromGeoJson( const json &coords )
     return nullptr;
   }
 
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >( exterior.release() );
+  auto polygon = std::make_unique< QgsPolygon >( exterior.release() );
   for ( std::size_t i = 1; i < coordsSize; ++i )
   {
     std::unique_ptr< QgsLineString > ring = parseLineStringFromGeoJson( coords[i] );
@@ -558,7 +558,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       return nullptr;
     }
 
-    std::unique_ptr< QgsMultiPoint > multiPoint = std::make_unique< QgsMultiPoint >();
+    auto multiPoint = std::make_unique< QgsMultiPoint >();
     multiPoint->reserve( static_cast< int >( coords.size() ) );
     for ( const auto &pointCoords : coords )
     {
@@ -599,7 +599,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       return nullptr;
     }
 
-    std::unique_ptr< QgsMultiLineString > multiLineString = std::make_unique< QgsMultiLineString >();
+    auto multiLineString = std::make_unique< QgsMultiLineString >();
     multiLineString->reserve( static_cast< int >( coords.size() ) );
     for ( const auto &lineCoords : coords )
     {
@@ -646,7 +646,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       return nullptr;
     }
 
-    std::unique_ptr< QgsMultiPolygon > multiPolygon = std::make_unique< QgsMultiPolygon >();
+    auto multiPolygon = std::make_unique< QgsMultiPolygon >();
     multiPolygon->reserve( static_cast< int >( coords.size() ) );
     for ( const auto &polygonCoords : coords )
     {
@@ -676,7 +676,7 @@ std::unique_ptr< QgsAbstractGeometry > parseGeometryFromGeoJson( const json &geo
       return nullptr;
     }
 
-    std::unique_ptr< QgsGeometryCollection > collection = std::make_unique< QgsGeometryCollection >();
+    auto collection = std::make_unique< QgsGeometryCollection >();
     collection->reserve( static_cast< int >( geometries.size() ) );
     for ( const auto &geometry : geometries )
     {

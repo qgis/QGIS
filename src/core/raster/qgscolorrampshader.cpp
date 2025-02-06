@@ -136,7 +136,7 @@ QgsColorRamp *QgsColorRampShader::sourceColorRamp() const
 
 QgsColorRamp *QgsColorRampShader::createColorRamp() const
 {
-  std::unique_ptr<QgsGradientColorRamp> ramp = std::make_unique< QgsGradientColorRamp >();
+  auto ramp = std::make_unique< QgsGradientColorRamp >();
   const int count = mColorRampItemList.size();
   if ( count == 0 )
   {

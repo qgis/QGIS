@@ -78,13 +78,13 @@ QgsExtendLinesAlgorithm *QgsExtendLinesAlgorithm::createInstance() const
 
 void QgsExtendLinesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> startDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_DISTANCE" ), QObject::tr( "Start distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto startDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_DISTANCE" ), QObject::tr( "Start distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   startDistance->setIsDynamic( true );
   startDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Start Distance" ), QObject::tr( "Start distance" ), QgsPropertyDefinition::DoublePositive ) );
   startDistance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( startDistance.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> endDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_DISTANCE" ), QObject::tr( "End distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto endDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_DISTANCE" ), QObject::tr( "End distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   endDistance->setIsDynamic( true );
   endDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "End Distance" ), QObject::tr( "End distance" ), QgsPropertyDefinition::DoublePositive ) );
   endDistance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

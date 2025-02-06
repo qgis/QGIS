@@ -268,7 +268,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   }
 
   // create resulting multipolygon
-  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique<QgsMultiPolygon>();
+  auto multiPolygon = std::make_unique<QgsMultiPolygon>();
   multiPolygon->addGeometries( polygons );
 
   if ( feedback )

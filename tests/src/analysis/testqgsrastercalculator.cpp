@@ -658,7 +658,7 @@ void TestQgsRasterCalculator::calcWithDataType()
   }
 
   // Load 16 bit usigned raster
-  std::unique_ptr<QgsRasterLayer> demRasterLayer = std::make_unique<QgsRasterLayer>( tempInputFilePath, QStringLiteral( "dem" ) );
+  auto demRasterLayer = std::make_unique<QgsRasterLayer>( tempInputFilePath, QStringLiteral( "dem" ) );
 
   QgsRasterCalculatorEntry entry1;
   entry1.bandNumber = 1;
@@ -670,7 +670,7 @@ void TestQgsRasterCalculator::calcWithDataType()
   QgsRasterCalculator rc( QStringLiteral( "\"dem@1\" * 2" ), tempResultFilePath, QStringLiteral( "GTiff" ), extent, crs, 2, 2, entries, QgsProject::instance()->transformContext() );
   QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
 
-  std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tempResultFilePath, QStringLiteral( "result" ) );
+  auto result = std::make_unique<QgsRasterLayer>( tempResultFilePath, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 2 );
   std::unique_ptr<QgsRasterBlock> block;
@@ -1051,7 +1051,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
 
   //open output file and check results
-  std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "result" ) );
+  auto result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
   std::unique_ptr<QgsRasterBlock> block( result->dataProvider()->block( 1, extent, 2, 3 ) );

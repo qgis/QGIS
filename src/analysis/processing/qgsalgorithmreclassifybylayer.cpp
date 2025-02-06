@@ -47,15 +47,15 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addAlgorithmParams();
 
-  std::unique_ptr<QgsProcessingParameterNumber> noDataValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NO_DATA" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
+  auto noDataValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NO_DATA" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
   noDataValueParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( noDataValueParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterEnum> boundsHandling = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "RANGE_BOUNDARIES" ), QObject::tr( "Range boundaries" ), QStringList() << QObject::tr( "min < value <= max" ) << QObject::tr( "min <= value < max" ) << QObject::tr( "min <= value <= max" ) << QObject::tr( "min < value < max" ), false, 0 );
+  auto boundsHandling = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "RANGE_BOUNDARIES" ), QObject::tr( "Range boundaries" ), QStringList() << QObject::tr( "min < value <= max" ) << QObject::tr( "min <= value < max" ) << QObject::tr( "min <= value <= max" ) << QObject::tr( "min < value < max" ), false, 0 );
   boundsHandling->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( boundsHandling.release() );
 
-  std::unique_ptr<QgsProcessingParameterBoolean> missingValuesParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "NODATA_FOR_MISSING" ), QObject::tr( "Use NoData when no range matches value" ), false, false );
+  auto missingValuesParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "NODATA_FOR_MISSING" ), QObject::tr( "Use NoData when no range matches value" ), false, false );
   missingValuesParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( missingValuesParam.release() );
 
@@ -63,7 +63,7 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   typeChoice->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( typeChoice.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -132,7 +132,7 @@ QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &par
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !createOptions.isEmpty() )
   {

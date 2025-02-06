@@ -73,13 +73,13 @@ QgsProjectPointCartesianAlgorithm *QgsProjectPointCartesianAlgorithm::createInst
 
 void QgsProjectPointCartesianAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> bearing = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
+  auto bearing = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
   bearing->setIsDynamic( true );
   bearing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Bearing" ), QObject::tr( "Bearing (degrees from North)" ), QgsPropertyDefinition::Double ) );
   bearing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( bearing.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1, QStringLiteral( "INPUT" ), false );
+  auto distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1, QStringLiteral( "INPUT" ), false );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Projection distance" ), QgsPropertyDefinition::Double ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -122,7 +122,7 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     if ( QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
       const QgsMultiPoint *mp = static_cast<const QgsMultiPoint *>( g.constGet() );
-      std::unique_ptr<QgsMultiPoint> result = std::make_unique<QgsMultiPoint>();
+      auto result = std::make_unique<QgsMultiPoint>();
       result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {

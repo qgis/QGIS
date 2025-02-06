@@ -242,9 +242,9 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   renderContext.setMapToPixel( mapToPixel );
   renderContext.setExtent( extent );
 
-  std::unique_ptr<QgsMesh> nativeMesh = std::make_unique<QgsMesh>();
+  auto nativeMesh = std::make_unique<QgsMesh>();
   layer.dataProvider()->populateMesh( nativeMesh.get() );
-  std::unique_ptr<QgsTriangularMesh> triangularMesh = std::make_unique<QgsTriangularMesh>();
+  auto triangularMesh = std::make_unique<QgsTriangularMesh>();
   triangularMesh->update( nativeMesh.get(), transform );
 
   const QgsMeshDatasetGroupMetadata metadata = layer.datasetGroupMetadata( datasetIndex );

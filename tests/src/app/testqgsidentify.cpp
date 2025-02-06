@@ -669,7 +669,7 @@ void TestQgsIdentify::identifyRasterTemporal()
 {
   //create a temporary layer
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
-  std::unique_ptr<QgsRasterLayer> tempLayer = std::make_unique<QgsRasterLayer>( raster );
+  auto tempLayer = std::make_unique<QgsRasterLayer>( raster );
   QVERIFY( tempLayer->isValid() );
 
   // activate temporal properties
@@ -1059,7 +1059,7 @@ void TestQgsIdentify::testRelations()
     relationManager->addRelation( relation );
   }
 
-  std::unique_ptr<QgsIdentifyResultsDialog> dialog = std::make_unique<QgsIdentifyResultsDialog>( canvas );
+  auto dialog = std::make_unique<QgsIdentifyResultsDialog>( canvas );
   dialog->addFeature( layerA, featureA, QMap<QString, QString>() );
 
   QCOMPARE( dialog->lstResults->topLevelItemCount(), 1 );
@@ -1271,7 +1271,7 @@ void TestQgsIdentify::testPolygonZ()
 void TestQgsIdentify::identifyPointCloud()
 {
 #ifdef HAVE_EPT
-  std::unique_ptr<QgsPointCloudLayer> pointCloud = std::make_unique<QgsPointCloudLayer>( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/rgb16/ept.json", QStringLiteral( "pointcloud" ), QStringLiteral( "ept" ) );
+  auto pointCloud = std::make_unique<QgsPointCloudLayer>( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/rgb16/ept.json", QStringLiteral( "pointcloud" ), QStringLiteral( "ept" ) );
   QVERIFY( pointCloud->isValid() );
   pointCloud->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ) );
   QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:4979" ) );
@@ -1301,7 +1301,7 @@ void TestQgsIdentify::identifyPointCloud()
 void TestQgsIdentify::identifyVirtualPointCloud()
 {
 #ifdef HAVE_COPC
-  std::unique_ptr<QgsPointCloudLayer> pointCloud = std::make_unique<QgsPointCloudLayer>( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc", QStringLiteral( "pointcloud" ), QStringLiteral( "vpc" ) );
+  auto pointCloud = std::make_unique<QgsPointCloudLayer>( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc", QStringLiteral( "pointcloud" ), QStringLiteral( "vpc" ) );
   QVERIFY( pointCloud->isValid() );
   pointCloud->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
   QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:28356" ) );

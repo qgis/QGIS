@@ -54,11 +54,11 @@ void QgsImportPhotosAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "FOLDER" ), QObject::tr( "Input folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "RECURSIVE" ), QObject::tr( "Scan recursively" ), false ) );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> output = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Photos" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
+  auto output = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Photos" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
   output->setCreateByDefault( true );
   addParameter( output.release() );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> invalid = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "INVALID" ), QObject::tr( "Invalid photos table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true );
+  auto invalid = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "INVALID" ), QObject::tr( "Invalid photos table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true );
   invalid->setCreateByDefault( false );
   addParameter( invalid.release() );
 }

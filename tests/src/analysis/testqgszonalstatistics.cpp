@@ -263,8 +263,8 @@ void TestQgsZonalStatistics::testNoData()
   const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // test that zonal stats respects no data and user set no data values
-  std::unique_ptr<QgsRasterLayer> rasterLayer = std::make_unique<QgsRasterLayer>( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr<QgsVectorLayer> vectorLayer = std::make_unique<QgsVectorLayer>( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  auto rasterLayer = std::make_unique<QgsRasterLayer>( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  auto vectorLayer = std::make_unique<QgsVectorLayer>( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, Qgis::ZonalStatistic::All );
   zs.calculateStatistics( nullptr );
@@ -317,7 +317,7 @@ void TestQgsZonalStatistics::testSmallPolygons()
 
   // test that zonal stats works ok with polygons much smaller than pixel size
   const std::unique_ptr<QgsRasterLayer> rasterLayer = std::make_unique<QgsRasterLayer>( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr<QgsVectorLayer> vectorLayer = std::make_unique<QgsVectorLayer>( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  auto vectorLayer = std::make_unique<QgsVectorLayer>( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, Qgis::ZonalStatistic::All );
   zs.calculateStatistics( nullptr );

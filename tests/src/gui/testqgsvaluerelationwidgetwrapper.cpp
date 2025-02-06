@@ -1885,14 +1885,14 @@ void TestQgsValueRelationWidgetWrapper::testGroup()
 
 void TestQgsValueRelationWidgetWrapper::testMultiEditMode()
 {
-  std::unique_ptr<QgsVectorLayer> people = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=firstname:string&field=fullname:string" ), QStringLiteral( "people" ), QStringLiteral( "memory" ) );
+  auto people = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=firstname:string&field=fullname:string" ), QStringLiteral( "people" ), QStringLiteral( "memory" ) );
 
   QgsFeature ft( people->dataProvider()->fields(), 1 );
   ft.setAttribute( QStringLiteral( "firstname" ), QStringLiteral( "Jhon" ) );
   ft.setAttribute( QStringLiteral( "fullname" ), QStringLiteral( "Jhon Carpenter" ) );
   people->dataProvider()->addFeature( ft );
 
-  std::unique_ptr<QgsVectorLayer> famous = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=name:string" ), QStringLiteral( "famous" ), QStringLiteral( "memory" ) );
+  auto famous = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=name:string" ), QStringLiteral( "famous" ), QStringLiteral( "memory" ) );
 
   const QStringList famousNames { QStringLiteral( "Jhon Carpenter" ), QStringLiteral( "Jhon F. Kennedy" ), QStringLiteral( "Jhon Lennon" ), QStringLiteral( "Paul Mc Cartney" ) };
   for ( const QString &name : famousNames )

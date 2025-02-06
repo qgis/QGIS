@@ -171,7 +171,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
 QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 {
   QVariantMap vm;
-  std::unique_ptr<QgsPoint3DSymbol> sym = std::make_unique<QgsPoint3DSymbol>();
+  auto sym = std::make_unique<QgsPoint3DSymbol>();
   sym->setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
   switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {

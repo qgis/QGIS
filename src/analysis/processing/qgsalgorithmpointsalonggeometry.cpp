@@ -106,19 +106,19 @@ QgsPointsAlongGeometryAlgorithm *QgsPointsAlongGeometryAlgorithm::createInstance
 
 void QgsPointsAlongGeometryAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0 );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( distance.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> startOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_OFFSET" ), QObject::tr( "Start offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto startOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_OFFSET" ), QObject::tr( "Start offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   startOffset->setIsDynamic( true );
   startOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "START_OFFSET" ), QObject::tr( "Start offset" ), QgsPropertyDefinition::DoublePositive ) );
   startOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( startOffset.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> endOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_OFFSET" ), QObject::tr( "End offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto endOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_OFFSET" ), QObject::tr( "End offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   endOffset->setIsDynamic( true );
   endOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "END_OFFSET" ), QObject::tr( "End offset" ), QgsPropertyDefinition::DoublePositive ) );
   endOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

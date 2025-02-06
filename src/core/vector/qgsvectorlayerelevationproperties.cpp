@@ -162,7 +162,7 @@ void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer
 
 QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsVectorLayerElevationProperties > res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
+  auto res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
   res->setClamping( mClamping );
   res->setBinding( mBinding );
   res->setType( mType );
@@ -426,13 +426,13 @@ void QgsVectorLayerElevationProperties::setShowMarkerSymbolInSurfacePlots( bool 
 
 void QgsVectorLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
+  auto profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
   mProfileLineSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
 }
 
 void QgsVectorLayerElevationProperties::setDefaultProfileMarkerSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > profileMarkerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Diamond, 3 );
+  auto profileMarkerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Diamond, 3 );
   profileMarkerLayer->setColor( color );
   profileMarkerLayer->setStrokeWidth( 0.2 );
   profileMarkerLayer->setStrokeColor( color.darker( 140 ) );
@@ -441,7 +441,7 @@ void QgsVectorLayerElevationProperties::setDefaultProfileMarkerSymbol( const QCo
 
 void QgsVectorLayerElevationProperties::setDefaultProfileFillSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleFillSymbolLayer > profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
+  auto profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
   profileFillLayer->setStrokeWidth( 0.2 );
   profileFillLayer->setStrokeColor( color.darker( 140 ) );
   mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );

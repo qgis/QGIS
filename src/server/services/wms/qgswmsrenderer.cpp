@@ -1171,7 +1171,7 @@ namespace QgsWms
 
 
     // add layers to dxf
-    std::unique_ptr<QgsDxfExport> dxf = std::make_unique<QgsDxfExport>();
+    auto dxf = std::make_unique<QgsDxfExport>();
     dxf->setExtent( mapExtent );
     dxf->setDestinationCrs( outputCRS );
     dxf->addLayers( dxfLayers );
@@ -1219,7 +1219,7 @@ namespace QgsWms
     }
     pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
     const bool geospatialPdf = mWmsParameters.pdfAppendGeoreference();
-    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geospatialPdf, pdfExportDetails );
+    auto pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geospatialPdf, pdfExportDetails );
     if ( mWmsParameters.pdfAppendGeoreference() )
     {
       pdf->setSaveWorldFile( true );
@@ -3304,7 +3304,7 @@ namespace QgsWms
 
       // create vector layer
       const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( url, param.mName, QLatin1String( "memory" ), options );
+      auto layer = std::make_unique<QgsVectorLayer>( url, param.mName, QLatin1String( "memory" ), options );
       if ( !layer->isValid() )
       {
         continue;

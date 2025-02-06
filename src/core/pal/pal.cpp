@@ -95,7 +95,7 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
   }
 #endif
 
-  std::unique_ptr< Layer > layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this );
+  auto layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this );
   Layer *res = layer.get();
   mLayers.emplace_back( std::make_pair( provider, std::move( layer ) ) );
   mMutex.unlock();
@@ -126,7 +126,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
   PalRtree< FeaturePart > obstacles( maxCoordinateExtentForSpatialIndices );
   PalRtree< LabelPosition > allCandidatesFirstRound( maxCoordinateExtentForSpatialIndices );
   std::vector< FeaturePart * > allObstacleParts;
-  std::unique_ptr< Problem > prob = std::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
+  auto prob = std::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
 
   double bbx[4];
   double bby[4];
@@ -274,7 +274,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
         std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
 
         // valid features are added to fFeats
-        std::unique_ptr< Feats > ft = std::make_unique< Feats >();
+        auto ft = std::make_unique< Feats >();
         ft->feature = featurePart.get();
         ft->shape = nullptr;
         ft->candidates = std::move( candidates );
@@ -296,7 +296,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
           candidates.emplace_back( std::move( unplacedPosition ) );
 
           // valid features are added to fFeats
-          std::unique_ptr< Feats > ft = std::make_unique< Feats >();
+          auto ft = std::make_unique< Feats >();
           ft->feature = featurePart.get();
           ft->shape = nullptr;
           ft->candidates = std::move( candidates );

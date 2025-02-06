@@ -128,7 +128,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       throw InternalException::UnknownGeometry();
     }
 
-    std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom );
+    auto fpart = std::make_unique<FeaturePart>( lf, geom );
 
     // ignore invalid geometries
     if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -218,7 +218,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
         throw InternalException::UnknownGeometry();
       }
 
-      std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom.get() );
+      auto fpart = std::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
       if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -458,7 +458,7 @@ void Layer::chopFeaturesAtRepeatDistance()
             GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
           }
           GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
-          std::unique_ptr< FeaturePart > newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
+          auto newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
           repeatParts.push_back( newfpart.get() );
           newFeatureParts.emplace_back( std::move( newfpart ) );
           break;
@@ -475,7 +475,7 @@ void Layer::chopFeaturesAtRepeatDistance()
         }
 
         GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
-        std::unique_ptr< FeaturePart > newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
+        auto newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
         repeatParts.push_back( newfpart.get() );
         newFeatureParts.emplace_back( std::move( newfpart ) );
         part.clear();
