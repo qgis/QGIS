@@ -375,7 +375,7 @@ double QgsPolyhedralSurface::perimeter() const
 
 QgsAbstractGeometry *QgsPolyhedralSurface::boundary() const
 {
-  std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
+  auto multiLine = std::make_unique<QgsMultiLineString>();
   multiLine->reserve( mPatches.size() );
   for ( QgsPolygon *polygon : mPatches )
   {

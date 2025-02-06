@@ -46,7 +46,7 @@ QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
 
 QgsFormAnnotation *QgsFormAnnotation::clone() const
 {
-  std::unique_ptr<QgsFormAnnotation> c( new QgsFormAnnotation() );
+  auto c = std::make_unique<QgsFormAnnotation>();
   copyCommonProperties( c.get() );
   c->setDesignerForm( mDesignerForm );
   return c.release();

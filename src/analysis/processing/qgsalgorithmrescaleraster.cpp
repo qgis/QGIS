@@ -168,7 +168,7 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   std::unique_ptr<QgsRasterBlock> inputBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
-    std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock( destProvider->dataType( 1 ), iterCols, iterRows ) );
+    auto outputBlock = std::make_unique<QgsRasterBlock>( destProvider->dataType( 1 ), iterCols, iterRows );
     feedback->setProgress( 100 * ( ( iterTop / blockHeight * numBlocksX ) + iterLeft / blockWidth ) / numBlocks );
 
     for ( int row = 0; row < iterRows; row++ )

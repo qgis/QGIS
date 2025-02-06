@@ -72,7 +72,7 @@ void TestQgsLayoutShapes::rectangle()
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol( new QgsFillSymbol() );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
   simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );
@@ -97,7 +97,7 @@ void TestQgsLayoutShapes::triangle()
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol( new QgsFillSymbol() );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
   simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );
@@ -122,7 +122,7 @@ void TestQgsLayoutShapes::ellipse()
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol( new QgsFillSymbol() );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
   simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );
@@ -146,7 +146,7 @@ void TestQgsLayoutShapes::roundedRectangle()
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol( new QgsFillSymbol() );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
   simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );

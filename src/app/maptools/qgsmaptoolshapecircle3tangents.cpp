@@ -145,7 +145,7 @@ void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
     }
     else
     {
-      std::unique_ptr<QgsLineString> line( new QgsLineString() );
+      auto line = std::make_unique<QgsLineString>();
 
       line->addVertex( mParentTool->mapPoint( p1 ) );
       line->addVertex( mParentTool->mapPoint( p2 ) );

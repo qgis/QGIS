@@ -173,7 +173,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     feedback->setProgressText( QObject::tr( "Parsing mesh edges." ) );
   }
 
-  std::unique_ptr<QgsMultiLineString> multiLineString( new QgsMultiLineString() );
+  auto multiLineString = std::make_unique<QgsMultiLineString>();
 
   int i = 0;
   for ( auto it = edges.begin(); it != edges.end(); it++ )
@@ -187,7 +187,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     // only consider edges with count 1 which are on the edge of mesh surface
     if ( it.value() == 1 )
     {
-      std::unique_ptr<QgsLineString> line( new QgsLineString( mNativeMesh.vertex( it.key().first ), mNativeMesh.vertex( it.key().second ) ) );
+      auto line = std::make_unique<QgsLineString>( mNativeMesh.vertex( it.key().first ), mNativeMesh.vertex( it.key().second ) );
       multiLineString->addGeometry( line.release() );
     }
 

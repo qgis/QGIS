@@ -60,7 +60,7 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &ex
 {
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput || mInputBand == -1 )
   {
     return outputBlock.release();

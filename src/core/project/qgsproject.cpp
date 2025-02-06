@@ -1991,7 +1991,7 @@ bool QgsProject::read( Qgis::ProjectReadFlags flags )
       const QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
       if ( QFile( attachmentsZip ).exists() )
       {
-        std::unique_ptr<QgsArchive> archive( new QgsArchive() );
+        auto archive = std::make_unique<QgsArchive>();
         if ( archive->unzip( attachmentsZip ) )
         {
           releaseHandlesToProjectArchive();
@@ -2040,7 +2040,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   }
 
   profile.switchTask( tr( "Reading project file" ) );
-  std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
+  auto doc = std::make_unique<QDomDocument>( QStringLiteral( "qgis" ) );
 
   if ( !projectFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
@@ -3248,7 +3248,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   const QDomDocumentType documentType =
     QDomImplementation().createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ),
         QStringLiteral( "SYSTEM" ) );
-  std::unique_ptr<QDomDocument> doc( new QDomDocument( documentType ) );
+  auto doc = std::make_unique<QDomDocument>( documentType );
 
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
@@ -4596,7 +4596,7 @@ bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   clearError();
-  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+  auto archive = std::make_unique<QgsProjectArchive>();
 
   // unzip the archive
   if ( !archive->unzip( filename ) )
@@ -4648,7 +4648,7 @@ bool QgsProject::zip( const QString &filename )
   clearError();
 
   // save the current project in a temporary .qgs file
-  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+  auto archive = std::make_unique<QgsProjectArchive>();
   const QString baseName = QFileInfo( filename ).baseName();
   const QString qgsFileName = QStringLiteral( "%1.qgs" ).arg( baseName );
   QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );

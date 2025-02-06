@@ -119,10 +119,10 @@ class TestQgsSpatialIndexKdBush : public QObject
       for ( QgsFeature f : _pointFeatures() )
         vl->dataProvider()->addFeature( f );
 
-      std::unique_ptr<QgsSpatialIndexKDBush> index( new QgsSpatialIndexKDBush( *vl->dataProvider() ) );
+      auto index = std::make_unique<QgsSpatialIndexKDBush>( *vl->dataProvider() );
 
       // create copy of the index
-      std::unique_ptr<QgsSpatialIndexKDBush> indexCopy( new QgsSpatialIndexKDBush( *index ) );
+      auto indexCopy = std::make_unique<QgsSpatialIndexKDBush>( *index );
 
       QVERIFY( index->d == indexCopy->d );
       QVERIFY( index->d->ref == 2 );

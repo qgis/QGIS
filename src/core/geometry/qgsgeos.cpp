@@ -1600,7 +1600,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTIPOINT:
     {
-      std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
+      auto multiPoint = std::make_unique<QgsMultiPoint>();
       int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPoint->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
@@ -1618,7 +1618,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTILINESTRING:
     {
-      std::unique_ptr< QgsMultiLineString > multiLineString( new QgsMultiLineString() );
+      auto multiLineString = std::make_unique<QgsMultiLineString>();
       int nParts = GEOSGetNumGeometries_r( context, geos );
       multiLineString->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
@@ -1633,7 +1633,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTIPOLYGON:
     {
-      std::unique_ptr< QgsMultiPolygon > multiPolygon( new QgsMultiPolygon() );
+      auto multiPolygon = std::make_unique<QgsMultiPolygon>();
 
       int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPolygon->reserve( nParts );
@@ -1649,7 +1649,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_GEOMETRYCOLLECTION:
     {
-      std::unique_ptr< QgsGeometryCollection > geomCollection( new QgsGeometryCollection() );
+      auto geomCollection = std::make_unique<QgsGeometryCollection>();
       int nParts = GEOSGetNumGeometries_r( context, geos );
       geomCollection->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
@@ -1679,7 +1679,7 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
 
-  std::unique_ptr< QgsPolygon > polygon( new QgsPolygon() );
+  auto polygon = std::make_unique<QgsPolygon>();
 
   const GEOSGeometry *ring = GEOSGetExteriorRing_r( context, geos );
   if ( ring )
@@ -1740,7 +1740,7 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
     }
   }
 #endif
-  std::unique_ptr< QgsLineString > line( new QgsLineString( xOut, yOut, zOut, mOut ) );
+  auto line = std::make_unique<QgsLineString>( xOut, yOut, zOut, mOut );
   return line;
 }
 

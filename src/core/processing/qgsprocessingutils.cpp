@@ -1011,7 +1011,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     destination = layer->id();
 
     // this is a factory, so we need to return a proxy
-    std::unique_ptr< QgsProcessingFeatureSink > sink( new QgsProcessingFeatureSink( layer->dataProvider(), destination, context ) );
+    auto sink = std::make_unique<QgsProcessingFeatureSink>( layer->dataProvider(), destination, context );
     context.temporaryLayerStore()->addMapLayer( layer.release() );
 
     return sink.release();

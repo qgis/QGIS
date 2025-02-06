@@ -841,7 +841,7 @@ void TestQgsExpressionContext::layerScope()
   layerScope = nullptr;
 
   //create a map layer
-  std::unique_ptr<QgsVectorLayer> vectorLayer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) ) );
+  auto vectorLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) );
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::layerScope( vectorLayer.get() );

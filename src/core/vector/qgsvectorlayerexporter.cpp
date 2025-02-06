@@ -537,7 +537,7 @@ QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, c
 
 QgsVectorLayerExporterTask *QgsVectorLayerExporterTask::withLayerOwnership( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, const QMap<QString, QVariant> &options )
 {
-  std::unique_ptr< QgsVectorLayerExporterTask > newTask( new QgsVectorLayerExporterTask( layer, uri, providerKey, destinationCrs, options ) );
+  auto newTask = std::make_unique<QgsVectorLayerExporterTask>( layer, uri, providerKey, destinationCrs, options );
   newTask->mOwnsLayer = true;
   return newTask.release();
 }

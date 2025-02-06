@@ -1098,7 +1098,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setActiveHillshading( true );
   shadingRenderer.setActiveEyeDomeLighting( false );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  std::unique_ptr<QgsMapRendererSequentialJob> renderJob( new QgsMapRendererSequentialJob( mapSettings ) );
+  auto renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   QImage img = renderJob->renderedImage();

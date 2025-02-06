@@ -260,7 +260,7 @@ QgsMultiSurface *QgsMultiPolygon::toCurveType() const
 
 QgsAbstractGeometry *QgsMultiPolygon::boundary() const
 {
-  std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
+  auto multiLine = std::make_unique<QgsMultiLineString>();
   multiLine->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {

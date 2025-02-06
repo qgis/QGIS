@@ -3526,7 +3526,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorF
   // we are exploiting the fact that our function names are the same as the XML tag names
   const int opIdx = QgsExpression::functionIndex( element.tagName().toLower() );
 
-  std::unique_ptr<QgsExpressionNode::NodeList> gml2Args( new QgsExpressionNode::NodeList() );
+  auto gml2Args = std::make_unique<QgsExpressionNode::NodeList>();
   QDomElement childElem = element.firstChildElement();
   QString gml2Str;
   while ( !childElem.isNull() && gml2Str.isEmpty() )
@@ -3548,7 +3548,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorF
     return nullptr;
   }
 
-  std::unique_ptr<QgsExpressionNode::NodeList> opArgs( new QgsExpressionNode::NodeList() );
+  auto opArgs = std::make_unique<QgsExpressionNode::NodeList>();
   opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "$geometry" ) ), new QgsExpressionNode::NodeList() ) );
   opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "geomFromGML" ) ), gml2Args.release() ) );
 
@@ -3706,7 +3706,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcF
     if ( element.attribute( QStringLiteral( "name" ) ) != funcDef->name() )
       continue;
 
-    std::unique_ptr<QgsExpressionNode::NodeList> args( new QgsExpressionNode::NodeList() );
+    auto args = std::make_unique<QgsExpressionNode::NodeList>();
 
     QDomElement operandElem = element.firstChildElement();
     while ( !operandElem.isNull() )

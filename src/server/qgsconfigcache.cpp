@@ -103,7 +103,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
   if ( !mProjectCache[path] )
   {
     // disable the project style database -- this incurs unwanted cost and is not required
-    std::unique_ptr<QgsProject> prj( new QgsProject( nullptr, Qgis::ProjectCapabilities() ) );
+    auto prj = std::make_unique<QgsProject>( nullptr, Qgis::ProjectCapabilities() );
 
     // This is required by virtual layers that call QgsProject::instance() inside the constructor :(
     QgsProject::setInstance( prj.get() );

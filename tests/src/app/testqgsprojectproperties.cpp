@@ -76,7 +76,7 @@ void TestQgsProjectProperties::cleanupTestCase()
 void TestQgsProjectProperties::testProjectPropertiesDirty()
 {
   // create a temporary layer
-  std::unique_ptr<QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto tempLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( tempLayer->isValid() );
 
   // add layer to project, to insure presence of layer-related project settings

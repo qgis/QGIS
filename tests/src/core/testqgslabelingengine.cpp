@@ -914,7 +914,7 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
   settings.isExpression = true;
   settings.fitInPolygonOnly = true;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl2->fields(), 1 );
 
@@ -957,7 +957,7 @@ void TestQgsLabelingEngine::testRotateHidePartial()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
@@ -1033,7 +1033,7 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::Line;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
@@ -1102,7 +1102,7 @@ void TestQgsLabelingEngine::testAllowDegradedPlacements()
   // start without degraded placement -- no label should be shown
   settings.placementSettings().setAllowDegradedPlacement( false );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
@@ -1180,7 +1180,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   settings.placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
   settings.priority = 5;
 
-  std::unique_ptr<QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl1.get(), QStringLiteral( "test" ), true, &settings );
@@ -1197,7 +1197,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
   settings.priority = 10;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
 
   QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
@@ -1343,7 +1343,7 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
   settings.priority = 2;
 
-  std::unique_ptr<QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl1.get(), QStringLiteral( "test" ), true, &settings );
@@ -1360,7 +1360,7 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   settings.obstacleSettings().setIsObstacle( true );
   settings.obstacleSettings().setFactor( 10 );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0 }, { QStringLiteral( "outline_style" ), QStringLiteral( "no" ) } } ) ) );
 
   QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
@@ -1447,7 +1447,7 @@ void TestQgsLabelingEngine::testAdjacentParts()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = true;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -1502,7 +1502,7 @@ void TestQgsLabelingEngine::testTouchingParts()
 
   // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true,
   // because the parts should be merged into a single linestring
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -1558,7 +1558,7 @@ void TestQgsLabelingEngine::testMergingLinesWithForks()
   settings.lineSettings().setMergeLines( true );
 
   // if treated individually, none of these parts are long enough for the label to fit -- but the label should be rendered if the mergeLines setting is true
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -1625,7 +1625,7 @@ void TestQgsLabelingEngine::testMergingLinesWithMinimumSize()
   settings.thinningSettings().setMinimumFeatureSize( 90.0 );
 
   // if treated individually, none of these parts exceed the minimum feature size set above -- but the label should be rendered if the mergeLines setting is true
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -1688,7 +1688,7 @@ void TestQgsLabelingEngine::testPointLabelTabs()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -1742,7 +1742,7 @@ void TestQgsLabelingEngine::testPointLabelTabsHtml()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -1795,7 +1795,7 @@ void TestQgsLabelingEngine::testPointLabelHtmlFormatting()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -1849,7 +1849,7 @@ void TestQgsLabelingEngine::testPointLabelHtmlFormattingDataDefinedSize()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -1902,7 +1902,7 @@ void TestQgsLabelingEngine::testPointLabelHtmlImages()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -1959,7 +1959,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlSuperSubscript()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2015,7 +2015,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlWordSpacing()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2072,7 +2072,7 @@ void TestQgsLabelingEngine::testCurvedLabelsTabs()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2129,7 +2129,7 @@ void TestQgsLabelingEngine::testCurvedLabelsTabPositions()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2185,7 +2185,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2240,7 +2240,7 @@ void TestQgsLabelingEngine::testCurvedPerimeterLabelsHtmlFormatting()
   settings.maxCurvedCharAngleOut = 45;
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2290,7 +2290,7 @@ void TestQgsLabelingEngine::testCurvedLabelsWithTinySegments()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::Curved;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2349,7 +2349,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
   settings.maxCurvedCharAngleIn = 99;
   settings.maxCurvedCharAngleOut = 99;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2415,7 +2415,7 @@ void TestQgsLabelingEngine::testCurvedLabelNegativeDistance()
   settings.labelPerPart = false;
   settings.dist = -5;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2468,7 +2468,7 @@ void TestQgsLabelingEngine::testCurvedLabelOnSmallLineNearCenter()
   settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2520,7 +2520,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationAbove()
   settings.labelPerPart = false;
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2585,7 +2585,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationBelow()
   settings.labelPerPart = false;
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2654,7 +2654,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2722,7 +2722,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2791,7 +2791,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbovePositiveOffset()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2859,7 +2859,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAboveNegativeOffset()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2926,7 +2926,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftPositiveOffset()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -2994,7 +2994,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftNegativeOffset()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3061,7 +3061,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightPositiveOffset()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3129,7 +3129,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightNegativeOffset()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3195,7 +3195,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbove()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3261,7 +3261,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintBelow()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3328,7 +3328,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbovePositiveOffse
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3396,7 +3396,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAboveNegativeOffse
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3463,7 +3463,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftPositiveOffset
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3531,7 +3531,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftNegativeOffset
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3598,7 +3598,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightPositiveOffse
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3666,7 +3666,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightNegativeOffse
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3730,7 +3730,7 @@ void TestQgsLabelingEngine::testRepeatDistanceWithSmallLine()
   settings.labelPerPart = false;
   settings.repeatDistance = 55;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3784,7 +3784,7 @@ void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -3835,7 +3835,7 @@ void TestQgsLabelingEngine::testLabelBoundary()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f( vl2->fields(), 1 );
@@ -3904,7 +3904,7 @@ void TestQgsLabelingEngine::testLabelBlockingRegion()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f( vl2->fields(), 1 );
@@ -3988,7 +3988,7 @@ void TestQgsLabelingEngine::testLabelRotationWithReprojection()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -4094,7 +4094,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   settings.priority = 3;
   settings.obstacleSettings().setFactor( 0 );
 
-  std::unique_ptr<QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl1->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -4114,7 +4114,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   format.setSize( 90 );
   settings.setFormat( format );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
@@ -4122,7 +4122,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   vl2->setLabelsEnabled( true );
 
   // test a label with 0 candidates (line is too short for label)
-  std::unique_ptr<QgsVectorLayer> vl3( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl3->setRenderer( new QgsNullSymbolRenderer() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(-6.250851540391068 60.6, -6.250851640391068 60.6 )" ) ) );
   QVERIFY( vl3->dataProvider()->addFeature( f ) );
@@ -4175,7 +4175,7 @@ void TestQgsLabelingEngine::labelingResults()
   settings.priority = 10;
   settings.angleOffset = 3;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -4382,7 +4382,7 @@ void TestQgsLabelingEngine::labelingResultsCurved()
   settings.placement = Qgis::LabelPlacement::Curved;
   settings.priority = 10;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -4496,7 +4496,7 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
 
   settings.callout()->setDataDefinedProperties( calloutProps );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&field=labelx:double&field=labely:double&field=calloutoriginx:double&field=calloutoriginy:double&field=calloutdestx:double&field=calloutdesty:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&field=labelx:double&field=labely:double&field=calloutoriginx:double&field=calloutoriginy:double&field=calloutdestx:double&field=calloutdesty:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << -20.173 << 58.624 << -11.160 << 58.001 << -3.814 << 56.046 );
@@ -4512,7 +4512,7 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   vl2->setLabelsEnabled( true );
 
   // another layer
-  std::unique_ptr<QgsVectorLayer> vl3( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3857&field=id:integer&field=labelx:double&field=labely:double&field=calloutoriginx:double&field=calloutoriginy:double&field=calloutdestx:double&field=calloutdesty:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3857&field=id:integer&field=labelx:double&field=labely:double&field=calloutoriginx:double&field=calloutoriginy:double&field=calloutdestx:double&field=calloutdesty:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
   f.setAttributes( QgsAttributes() << 2 << -3424024 << 7849709 << -2713442 << 7628322 << -2567040 << 6974872 );
   f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -2995532, 7242679 ) ) );
@@ -4953,7 +4953,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   settings.labelPerPart = false;
   settings.lineSettings().setOverrunDistance( 0 );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -5028,7 +5028,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   settings.labelPerPart = false;
   settings.lineSettings().setOverrunDistance( 0 );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -5101,7 +5101,7 @@ void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = false;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -5209,7 +5209,7 @@ void TestQgsLabelingEngine::testDataDefinedLabelTabs()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -5506,7 +5506,7 @@ void TestQgsLabelingEngine::testMapUnitLetterSpacing()
   format.setFont( font );
   settings.setFormat( format );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -5560,7 +5560,7 @@ void TestQgsLabelingEngine::testMapUnitWordSpacing()
   format.setFont( font );
   settings.setFormat( format );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -5613,7 +5613,7 @@ void TestQgsLabelingEngine::testLineHeightAbsolute()
   settings.placement = Qgis::LabelPlacement::Horizontal;
   settings.setFormat( format );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -5680,7 +5680,7 @@ void TestQgsLabelingEngine::testClipping()
   settings.placement = Qgis::LabelPlacement::Line;
 
   const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
 
   QVariantMap props;
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
@@ -5750,7 +5750,7 @@ void TestQgsLabelingEngine::testLineAnchorParallel()
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -5814,7 +5814,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6012,7 +6012,7 @@ void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'strict'" ) ) );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6079,7 +6079,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6163,7 +6163,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6364,7 +6364,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6434,7 +6434,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictAllUpsideDown()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6489,7 +6489,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6554,7 +6554,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6646,7 +6646,7 @@ void TestQgsLabelingEngine::testLineAnchorClipping()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setAnchorClipping( QgsLabelLineSettings::AnchorClipping::UseEntireLine );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6702,7 +6702,7 @@ void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
   settings.obstacleSettings().setFactor( 10 );
   settings.lineSettings().setOverrunDistance( 50 );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:23700&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:23700&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6885,7 +6885,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolRight()
   settings.lineSettings().setAddDirectionSymbol( true );
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6939,7 +6939,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolLeft()
   settings.lineSettings().setAddDirectionSymbol( true );
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -6993,7 +6993,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolAbove()
   settings.lineSettings().setAddDirectionSymbol( true );
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;
@@ -7047,7 +7047,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolBelow()
   settings.lineSettings().setAddDirectionSymbol( true );
   settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow );
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ) ) );
 
   QgsFeature f;

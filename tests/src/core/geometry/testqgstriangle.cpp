@@ -220,7 +220,7 @@ void TestQgsTriangle::exteriorRing()
   QVERIFY( !tr.interiorRing( 0 ) );
   QCOMPARE( tr.wkbType(), Qgis::WkbType::Triangle );
 
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 0, 0 ) );
 
   QVERIFY( ext->isClosed() );
@@ -340,7 +340,7 @@ void TestQgsTriangle::invalidExteriorRing()
   QgsTriangle tr;
 
   // invalid exterior ring
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 5, 10 ) );
   tr.setExteriorRing( ext.release() );
 
@@ -374,7 +374,7 @@ void TestQgsTriangle::invalidNumberOfPoints()
 {
   QgsTriangle tr;
 
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) );
   tr.setExteriorRing( ext.release() );
 
@@ -393,7 +393,7 @@ void TestQgsTriangle::nonClosedRing()
   QgsTriangle tr;
 
   // a non closed exterior ring will be automatically closed
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) );
 
   QVERIFY( !ext->isClosed() );
@@ -418,7 +418,7 @@ void TestQgsTriangle::conversion()
 {
   QgsTriangle tr;
 
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) );
   tr.setExteriorRing( ext.release() );
 
@@ -463,7 +463,7 @@ void TestQgsTriangle::toFromWkt()
 {
   QgsTriangle tr;
 
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) );
   tr.setExteriorRing( ext.release() );
 
@@ -541,7 +541,7 @@ void TestQgsTriangle::toFromWkb()
 
   // WKB M
   // tWKB=QgsTriangle (QgsPoint(0,0, 5), QgsPoint(0, 10, 6), QgsPoint(10, 10, 7)); will produce a TriangleZ
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 0, 10, 0, 6 ) << QgsPoint( Qgis::WkbType::PointM, 10, 10, 0, 7 ) );
   tWKB.setExteriorRing( ext.release() );
 
@@ -736,7 +736,7 @@ void TestQgsTriangle::deleteVertex()
 {
   QgsTriangle tr( QgsPoint( 0, 0 ), QgsPoint( 100, 100 ), QgsPoint( 0, 200 ) );
 
-  std::unique_ptr<QgsLineString> ring( new QgsLineString() );
+  auto ring = std::make_unique<QgsLineString>();
   ring->setPoints( QgsPointSequence() << QgsPoint( 5, 5 ) << QgsPoint( 50, 50 ) << QgsPoint( 0, 25 ) << QgsPoint( 5, 5 ) );
 
   tr.addInteriorRing( ring.release() );

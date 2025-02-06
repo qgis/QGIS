@@ -528,7 +528,7 @@ namespace QgsWms
     configureLayers( layers, &mapSettings );
 
     // configure map settings (background, DPI, ...)
-    std::unique_ptr<QImage> image( new QImage() );
+    auto image = std::make_unique<QImage>();
     configureMapSettings( image.get(), mapSettings );
 
     // add layers to map settings
@@ -3606,7 +3606,7 @@ namespace QgsWms
       }
       if ( !exp.isEmpty() )
       {
-        std::unique_ptr<QgsExpression> expression( new QgsExpression( exp ) );
+        auto expression = std::make_unique<QgsExpression>( exp );
         if ( expression )
         {
           mFeatureFilter.setFilter( filteredLayer, *expression );

@@ -515,7 +515,7 @@ double QgsCurvePolygon::roundness() const
 
 QgsPolygon *QgsCurvePolygon::surfaceToPolygon() const
 {
-  std::unique_ptr< QgsPolygon > polygon( new QgsPolygon() );
+  auto polygon = std::make_unique<QgsPolygon>();
   if ( !mExteriorRing )
     return polygon.release();
 
@@ -685,7 +685,7 @@ bool QgsCurvePolygon::boundingBoxIntersects( const QgsBox3D &box3d ) const
 
 QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  std::unique_ptr< QgsPolygon > poly( new QgsPolygon() );
+  auto poly = std::make_unique<QgsPolygon>();
   if ( !mExteriorRing )
   {
     return poly.release();

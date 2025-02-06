@@ -680,7 +680,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mNoZ ? nullptr : &z );
     polylinesToDelete << polyline;
 
-    std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( polyline ) );
+    auto cdt = std::make_unique<p2t::CDT>( polyline );
 
     // polygon holes
     for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )

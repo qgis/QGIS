@@ -1785,7 +1785,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
 
 void TestQgsCallout::calloutNoDrawToAllParts()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -1853,7 +1853,7 @@ void TestQgsCallout::calloutNoDrawToAllParts()
 
 void TestQgsCallout::calloutDrawToAllParts()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -1922,7 +1922,7 @@ void TestQgsCallout::calloutDrawToAllParts()
 
 void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -1991,7 +1991,7 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 
 void TestQgsCallout::calloutPointOnExterior()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
@@ -2054,7 +2054,7 @@ void TestQgsCallout::calloutPointOnExterior()
 
 void TestQgsCallout::calloutDataDefinedAnchorPoint()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
@@ -2117,7 +2117,7 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
 
 void TestQgsCallout::calloutDataDefinedDestination()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
@@ -2182,7 +2182,7 @@ void TestQgsCallout::calloutDataDefinedDestination()
 
 void TestQgsCallout::calloutDataDefinedOrigin()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
@@ -2352,7 +2352,7 @@ void TestQgsCallout::manhattanRotated()
 
 void TestQgsCallout::manhattanNoDrawToAllParts()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -2420,7 +2420,7 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
 
 void TestQgsCallout::manhattanDrawToAllParts()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -2489,7 +2489,7 @@ void TestQgsCallout::manhattanDrawToAllParts()
 
 void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -2558,7 +2558,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 
 void TestQgsCallout::manhattanDataDefinedDestination()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
@@ -2623,7 +2623,7 @@ void TestQgsCallout::manhattanDataDefinedDestination()
 
 void TestQgsCallout::manhattanDataDefinedOrigin()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
@@ -2688,7 +2688,7 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2788,7 +2788,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2888,7 +2888,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2988,7 +2988,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3088,7 +3088,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3188,7 +3188,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3288,7 +3288,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3388,7 +3388,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3488,7 +3488,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
 
 void TestQgsCallout::curvedAutoHorizontalLines()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3557,7 +3557,7 @@ void TestQgsCallout::curvedAutoHorizontalLines()
 
 void TestQgsCallout::curvedAutoVerticalLines()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3626,7 +3626,7 @@ void TestQgsCallout::curvedAutoVerticalLines()
 
 void TestQgsCallout::curvedClockwise()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3726,7 +3726,7 @@ void TestQgsCallout::curvedClockwise()
 
 void TestQgsCallout::curvedCounterClockwise()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3826,7 +3826,7 @@ void TestQgsCallout::curvedCounterClockwise()
 
 void TestQgsCallout::curvedCurvature()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;

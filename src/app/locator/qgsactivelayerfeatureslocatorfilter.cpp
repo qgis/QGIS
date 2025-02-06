@@ -327,7 +327,7 @@ void QgsActiveLayerFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
 {
   QString key = "locator_filters/active_layer_features";
   QgsSettings settings;
-  std::unique_ptr<QDialog> dlg( new QDialog( parent ) );
+  auto dlg = std::make_unique<QDialog>( parent );
   dlg->restoreGeometry( settings.value( QStringLiteral( "Windows/%1/geometry" ).arg( key ) ).toByteArray() );
   dlg->setWindowTitle( "All layers features locator filter" );
   QFormLayout *formLayout = new QFormLayout;

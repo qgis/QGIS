@@ -165,7 +165,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
       proj.setInput( it->raster->dataProvider() );
       proj.setPrecision( QgsRasterProjector::Exact );
 
-      std::unique_ptr<QgsRasterBlockFeedback> rasterBlockFeedback( new QgsRasterBlockFeedback() );
+      auto rasterBlockFeedback = std::make_unique<QgsRasterBlockFeedback>();
       QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback.get(), &QgsRasterBlockFeedback::cancel );
       block.reset( proj.block( it->bandNumber, extent, width, height, rasterBlockFeedback.get() ) );
       if ( rasterBlockFeedback->isCanceled() )
