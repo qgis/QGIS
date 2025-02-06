@@ -364,7 +364,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
 #ifndef __clang_analyzer__
     // Let the results appear, then fetch more if there's no scrollbar
     QTimer::singleShot( 100, this, [=] {
-      if ( !mItemsView->verticalScrollBar()->isVisible() )
+      if ( isVisible() && !mItemsView->verticalScrollBar()->isVisible() )
       {
         fetchNextResultPage();
       }
