@@ -1351,7 +1351,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( feedback && feedback->isCanceled() )
     return QgsAbstractDatabaseProviderConnection::QueryResult();
 
-  std::shared_ptr<QgsPoolOracleConn> pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri { uri() }.connectionInfo( false ) );
+  auto pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri { uri() }.connectionInfo( false ) );
   if ( !pconn->get() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );

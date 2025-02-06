@@ -91,7 +91,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
   QVERIFY( block->isNoData( 10, 10 ) );
 
   auto virtualGroup = std::make_unique<QgsMeshMemoryDatasetGroup>( QStringLiteral( "on face" ), QgsMeshDatasetGroupMetadata::DataOnFaces );
-  std::shared_ptr<QgsMeshMemoryDataset> dataset = std::make_shared<QgsMeshMemoryDataset>();
+  auto dataset = std::make_shared<QgsMeshMemoryDataset>();
   dataset->values.resize( 2 );
   dataset->values[0] = 12;
   dataset->values[1] = 36;

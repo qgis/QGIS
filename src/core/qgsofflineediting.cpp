@@ -180,7 +180,7 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
       remoteName.chop( remoteNameSuffix.size() );
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() }; // skip-keyword-check
 
-    std::shared_ptr<QgsVectorLayer> remoteLayer = std::make_shared<QgsVectorLayer>( remoteSource, remoteName, remoteProvider, options );
+    auto remoteLayer = std::make_shared<QgsVectorLayer>( remoteSource, remoteName, remoteProvider, options );
 
     if ( ! remoteLayer->isValid() )
     {

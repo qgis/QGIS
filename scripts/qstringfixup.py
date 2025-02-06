@@ -93,11 +93,11 @@ qlatin1str_single_char = re.compile(
     r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|\+=) QLatin1String\( ("[^"]") \)(.*)"""
 )
 
-make_unique = re.compile(
-    r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(\s*.*?\s*=\s*std::make_unique<\s*(.*?)\s*>.*)$"""
+make_unique_shared = re.compile(
+    r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>(\s*.*?\s*=\s*std::make_(?:unique|shared)<\s*(.*?)\s*>.*)$"""
 )
-make_unique2 = re.compile(
-    r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*(std::make_unique<\s*(.*?)\s*>.*?)\s*\)\s*;$"""
+make_unique_shared2 = re.compile(
+    r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*(std::make_(?:unique|shared)<\s*(.*?)\s*>.*?)\s*\)\s*;$"""
 )
 make_unique3 = re.compile(
     r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*new\s*(.*?)\s*(\(.*\s*\))\s*\)\s*;"""
@@ -235,11 +235,11 @@ while i < len(lines):
         else:
             break
 
-    m = make_unique.match(line)
+    m = make_unique_shared.match(line)
     if m and m.group(2) == m.group(4):
         line = m.group(1) + "auto" + m.group(3)
 
-    m = make_unique2.match(line)
+    m = make_unique_shared2.match(line)
     if m and m.group(2) == m.group(5):
         line = m.group(1) + "auto " + m.group(3) + " = " + m.group(4) + ";"
 

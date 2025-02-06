@@ -183,7 +183,7 @@ std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( con
 {
   Q_ASSERT( type != QgsMeshDatasetGroupMetadata::DataOnVolumes );
 
-  std::shared_ptr<QgsMeshMemoryDataset> ds = std::make_shared<QgsMeshMemoryDataset>();
+  auto ds = std::make_shared<QgsMeshMemoryDataset>();
   if ( type == QgsMeshDatasetGroupMetadata::DataOnVertices )
   {
     ds->values.resize( mMeshLayer->dataProvider()->vertexCount() );
@@ -562,7 +562,7 @@ std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::copy(
   Q_ASSERT( isValid() );
   Q_ASSERT( dataset0 );
 
-  std::shared_ptr<QgsMeshMemoryDataset> output = std::make_shared<QgsMeshMemoryDataset>();
+  auto output = std::make_shared<QgsMeshMemoryDataset>();
   output->values = dataset0->values; //deep copy
   output->active = dataset0->active; //deep copy
   output->time = dataset0->time;
