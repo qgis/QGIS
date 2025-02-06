@@ -211,8 +211,27 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
+    /**
+     * Options to configure the QGIS application behavior at startup.
+     *
+     * This enumeration defines flags that control various aspects of QGIS
+     * initialization.
+     *
+         * \since QGIS 3.44
+     */
+    enum AppOption
+    {
+      NoOption = 0x00,         //! No Option
+      RestorePlugins = 0x01,   //! Automatically restore and load previously enabled plugins.
+      SkipBadLayers = 0x02,    //! Skip loading layers that are detected as problematic.
+      SkipVersionCheck = 0x04, //! Bypass the version compatibility check during startup.
+      EnablePython = 0x08      //! Enable the Python interface for scripting and plugins.
+    };
+    Q_DECLARE_FLAGS( AppOptions, AppOption )
+    static const AppOptions DEFAULT_OPTIONS;
+
     //! Constructor
-    QgisApp( QSplashScreen *splash, bool restorePlugins = true, bool skipBadLayers = false, bool skipVersionCheck = false, const QString &rootProfileLocation = QString(), const QString &activeProfile = QString(), bool enablePython = true, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
+    QgisApp( QSplashScreen *splash, AppOptions options = DEFAULT_OPTIONS, const QString &rootProfileLocation = QString(), const QString &activeProfile = QString(), QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
 
@@ -2774,6 +2793,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgisApp::AppOptions )
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32
