@@ -517,7 +517,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     if ( QgsMapCanvas *map = mapCanvas() )
     {
       const QgsRectangle bbox = geom.boundingBox();
-      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
       QgsRectangle extent = ct.transformBoundingBox( bbox );
       map->zoomToFeatureExtent( extent );
     }
@@ -529,7 +529,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     if ( QgsMapCanvas *map = mapCanvas() )
     {
       const QgsRectangle bbox = geom.boundingBox();
-      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
       const QgsRectangle extent = ct.transformBoundingBox( bbox );
       map->setCenter( extent.center() );
     }
