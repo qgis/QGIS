@@ -75,6 +75,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
   public:
 
     static const QgsSettingsEntryBool *settingsGenerateRandomPasswordForPasswordHelper SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsUsingGeneratedRandomPassword SIP_SKIP;
 
     //! Message log level (mirrors that of QgsMessageLog, so it can also output there)
     enum MessageLevel
