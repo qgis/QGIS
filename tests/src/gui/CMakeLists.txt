@@ -78,6 +78,7 @@ set(TESTS
   testqgscompoundcolorwidget.cpp
   testqgsmaskingwidget.cpp
   testqgssvgselectorwidget.cpp
+  testqgslabelingwidget.cpp
 )
 
 foreach(TESTSRC ${TESTS})

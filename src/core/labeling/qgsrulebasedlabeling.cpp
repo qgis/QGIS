@@ -229,14 +229,18 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QSt
   return nullptr;
 }
 
-QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone() const
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone( bool resetRuleKey ) const
 {
   QgsPalLayerSettings *s = mSettings.get() ? new QgsPalLayerSettings( *mSettings ) : nullptr;
   Rule *newrule = new Rule( s, mMaximumScale, mMinimumScale, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
+  if ( !resetRuleKey )
+    newrule->setRuleKey( ruleKey() );
+
   // clone children
   for ( Rule *rule : mChildren )
-    newrule->appendChild( rule->clone() );
+    newrule->appendChild( rule->clone( resetRuleKey ) );
+
   return newrule;
 }
 
@@ -609,4 +613,3 @@ void QgsRuleBasedLabeling::multiplyOpacity( double opacityFactor )
 
   }
 }
-
