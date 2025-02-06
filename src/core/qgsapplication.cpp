@@ -160,6 +160,11 @@ const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = ne
 #include <sys/sysinfo.h>
 #endif
 
+#if defined(Q_OS_FREEBSD) || defined(Q_OS_OPENBSD) || defined(Q_OS_NETBSD)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
 QObject *ABISYM( QgsApplication::mFileOpenEventReceiver ) = nullptr;
@@ -1422,8 +1427,9 @@ QString QgsApplication::osName()
 #endif
 }
 
-int QgsApplication::systemMemorySizeMb()
+unsigned long QgsApplication::systemMemorySizeMb()
 {
+  constexpr unsigned long megabyte = 1024 * 1024;
 #if defined(Q_OS_ANDROID)
   return -1;
 #elif defined(Q_OS_MAC)
@@ -1434,22 +1440,33 @@ int QgsApplication::systemMemorySizeMb()
   memoryStatus.dwLength = sizeof( MEMORYSTATUSEX );
   if ( GlobalMemoryStatusEx( &memoryStatus ) )
   {
-    return memoryStatus.ullTotalPhys / ( 1024 * 1024 );
+    return memoryStatus.ullTotalPhys / megabyte;
   }
   else
   {
     return -1;
   }
 #elif defined(Q_OS_LINUX)
-  constexpr int megabyte = 1024 * 1024;
   struct sysinfo si;
   sysinfo( &si );
   return si.totalram / megabyte;
-#elif defined(Q_OS_FREEBSD)
-  return -1;
-#elif defined(Q_OS_OPENBSD)
-  return -1;
-#elif defined(Q_OS_NETBSD)
+#elif defined(Q_OS_FREEBSD) || defined(Q_OS_OPENBSD) || defined(Q_OS_NETBSD)
+  unsigned long physmem;
+  size_t size = sizeof( physmem );
+#ifdef HW_PHYSMEM64
+  // NetBSD and OpenBSD have HW_PHYSMEM and HW_PHYSMEM64
+  // Use 64 bit version
+  int mib[2] = {CTL_HW, HW_PHYSMEM64};
+#else
+  // For FreeBSD
+  int mib[2] = {CTL_HW, HW_PHYSMEM};
+#endif
+
+  if ( sysctl( mib, 2, &physmem, &size, nullptr, 0 ) == 0 )
+  {
+    return physmem / megabyte;
+  }
+
   return -1;
 #elif defined(Q_OS_UNIX)
   return -1;
