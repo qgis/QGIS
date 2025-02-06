@@ -2583,6 +2583,28 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
   return functionResult;
 }
 
+static QVariant fcnGetCrsAuthid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsCoordinateReferenceSystem crs = QgsExpressionUtils::getCrs( values.at( 0 ), parent );
+  if ( !crs.isValid() )
+    return QVariant();
+  return crs.authid();
+}
+
+static QVariant fcnCrs( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString definition = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  QgsCoordinateReferenceSystem crs( definition );
+
+  if ( !crs.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to cordinate reference system" ).arg( definition ) );
+    crs = QgsCoordinateReferenceSystem();
+  }
+
+  return QVariant::fromValue( crs );
+}
+
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString concat;
@@ -9383,6 +9405,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           fcnSqliteFetchAndIncrement,
           QStringLiteral( "Record and Attributes" )
         );
+
+    // **CRS** functions
+    functions
+        << new QgsStaticExpressionFunction( QStringLiteral( "crs_authid" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "crs" ) ), fcnGetCrsAuthid, QStringLiteral( "CRS" ), QString(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "crs" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "definition" ) ), fcnCrs, QStringLiteral( "CRS" ) );
+
 
     // **Fields and Values** functions
     QgsStaticExpressionFunction *representValueFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "attribute" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "field_name" ), true ), fcnRepresentValue, QStringLiteral( "Record and Attributes" ) );

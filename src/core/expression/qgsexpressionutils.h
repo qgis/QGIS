@@ -24,6 +24,7 @@
 #include "qgsvariantutils.h"
 #include "qgsfeaturerequest.h"
 #include "qgsreferencedgeometry.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QDate>
 #include <QDateTime>
@@ -363,6 +364,16 @@ class CORE_EXPORT QgsExpressionUtils
       if ( parent )
         parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );
       return 0;
+    }
+
+    static QgsCoordinateReferenceSystem getCrs( const QVariant &value, QgsExpression *parent )
+    {
+      if ( value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
+        return value.value<QgsCoordinateReferenceSystem>();
+
+      if ( parent )
+        parent->setEvalErrorString( QStringLiteral( "Cannot convert to coordinate reference system" ) );
+      return QgsCoordinateReferenceSystem();
     }
 
     static QgsExpressionNode *getNode( const QVariant &value, QgsExpression *parent )
