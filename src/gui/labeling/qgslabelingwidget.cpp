@@ -132,8 +132,7 @@ void QgsLabelingWidget::writeSettingsToLayer()
     case ModeRuleBased:
     {
       const QgsRuleBasedLabeling::Rule *rootRule = qobject_cast<QgsRuleBasedLabelingWidget *>( mWidget )->rootRule();
-
-      mLayer->setLabeling( new QgsRuleBasedLabeling( rootRule->clone() ) );
+      mLayer->setLabeling( new QgsRuleBasedLabeling( rootRule->clone( false ) ) );
       mLayer->setLabelsEnabled( true );
       break;
     }
