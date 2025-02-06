@@ -971,7 +971,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, bool enablePython, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -1108,7 +1108,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   endProfile();
 
   startProfile( tr( "Welcome page" ) );
-  mWelcomePage = new QgsWelcomePage( skipVersionCheck );
+  mWelcomePage = new QgsWelcomePage( options.testFlag( SkipVersionCheck ) );
   connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [this]( int row ) {
     mRecentProjects.removeAt( row );
     saveRecentProjects();
@@ -1318,7 +1318,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   // initialize the plugin manager
   startProfile( tr( "Plugin manager" ) );
-  mPluginManager = new QgsPluginManager( this, restorePlugins );
+  mPluginManager = new QgsPluginManager( this, options.testFlag( RestorePlugins ) );
   endProfile();
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
@@ -1626,14 +1626,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsHtmlDataItemProvider() );
 
   // set handler for missing layers (will be owned by QgsProject)
-  if ( !skipBadLayers )
+  if ( !options.testFlag( SkipBadLayers ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Creating bad layers handler" ), 2 );
     mAppBadLayersHandler = new QgsHandleBadLayersHandler();
     QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
   }
 
-  if ( enablePython )
+  if ( options.testFlag( EnablePython ) )
   {
     mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
     qApp->processEvents();
@@ -1669,7 +1669,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   qApp->processEvents();
   QgsPluginRegistry::instance()->setQgisInterface( mQgisInterface );
 
-  if ( restorePlugins )
+  if ( options.testFlag( RestorePlugins ) )
   {
     // Restoring of plugins can be disabled with --noplugins command line option
     // because some plugins may cause QGIS to crash during startup
