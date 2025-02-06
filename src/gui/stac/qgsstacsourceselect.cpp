@@ -173,6 +173,7 @@ void QgsStacSourceSelect::btnConnect_clicked()
   mStac->fetchStacObjectAsync( connection.url );
   mFiltersLabel->clear();
   mFiltersButton->setEnabled( false );
+  emit enableButtons( false );
 }
 
 void QgsStacSourceSelect::btnNew_clicked()
