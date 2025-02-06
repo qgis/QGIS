@@ -450,21 +450,21 @@ Mathematical approach:
 1. Compute adaptive tolerance that varies with radius:
 adaptive_tolerance = base_tolerance * sqrt(radius) / log10(radius + 1)
 
-- For small radii: tolerance decreases → more segments for better detail
-- For large radii: tolerance increases gradually → fewer segments needed
-- sqrt(radius) provides basic scaling
-- log10(radius + 1) dampens the scaling for large radii
+For small radii: tolerance decreases → more segments for better detail
+For large radii: tolerance increases gradually → fewer segments needed
+sqrt(radius) provides basic scaling
+log10(radius + 1) dampens the scaling for large radii
 
 2. Apply sagitta-based calculation:
 
-- Calculate angle = 2 * arccos(1 - adaptive_tolerance/radius)
-- Number of segments = ceil(2π/angle)
+Calculate angle = 2 * arccos(1 - adaptive_tolerance/radius)
+Number of segments = ceil(2π/angle)
 
 This adaptation ensures:
 
-- Small circles get more segments for better visual quality
-- Large circles don't get excessive segments
-- Smooth transition between different scales
+Small circles get more segments for better visual quality
+Large circles don't get excessive segments
+Smooth transition between different scales
 
 :param radius: The radius of the circle to approximate
 :param tolerance: Base tolerance value that will be scaled
@@ -487,10 +487,9 @@ the polygonal approximation and the actual circle is less than the specified tol
 
 Mathematical derivation:
 1. Area ratio between a regular n-sided polygon and a circle:
-
-- Circle area: Ac = πr²
-- Regular polygon area: Ap = (nr²/2) * sin(2π/n)
-- Ratio = Ap / Ac = (n / 2π) * sin(2π/n)
+Circle area: Ac = πr²
+Regular polygon area: Ap = (nr²/2) * sin(2π/n)
+Ratio = Ap / Ac = (n / 2π) * sin(2π/n)
 
 2. For relative error E:
 E = |1 - Ap / Ac| = |1 - (n / 2π) * sin(2π/n)|
@@ -506,17 +505,16 @@ E ≈ |1 - (1 - (2π² / 3n²))|
 E ≈ 2π² / 3n²
 
 5. Rearranging to find the minimum n for a given tolerance:
-
-- Start with the inequality: E ≤ tolerance
-- Substitute the expression for E:
-  2π² / 3n² ≤ tolerance
-- Rearrange to isolate n²:
-  n² ≥ 2π² / (3 * tolerance)
-- Taking the square root:
-  n ≥ π * sqrt(2 / (3 * tolerance))
+Start with the inequality: E ≤ tolerance
+Substitute the expression for E:
+2π² / 3n² ≤ tolerance
+Rearrange to isolate n²:
+n² ≥ 2π² / (3 * tolerance)
+Taking the square root:
+n ≥ π * sqrt(2 / (3 * tolerance))
 
 :param radius: The radius of the circle to approximate
-:param tolerance: Maximum acceptable area error in percentage
+:param baseTolerance: Maximum acceptable area error in percentage
 :param minSegments: The minimum number of segments to use
 
 :return: The number of segments needed
@@ -538,8 +536,8 @@ intuitive approximation that can be useful when exact error bounds aren't requir
 Mathematical approach:
 1. Linear scaling: segments = constant * radius
 
-- Larger constant = more segments = better approximation
-- Smaller constant = fewer segments = coarser approximation
+Larger constant = more segments = better approximation
+Smaller constant = fewer segments = coarser approximation
 
 :param radius: The radius of the circle to approximate
 :param constant: Multiplier that determines the density of segments

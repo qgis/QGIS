@@ -387,31 +387,31 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
   private :
 
     /**
-       * Calculate the number of segments needed to approximate a circle within a given tolerance.
-       *
-       * This function uses the sagitta (geometric chord height) to determine the number of segments
-       * required to approximate a circle such that the maximum deviation between the circle and its
-       * polygonal approximation is less than the specified tolerance.
-       *
-       * Mathematical approach:
-       *     1. Using the sagitta formula: s = r(1 - cos(θ/2))
-       *        where s is the sagitta, r is the radius, and θ is the segment angle
-       *     2. Substituting tolerance for s:
-       *        tolerance = radius(1 - cos(θ/2))
-       *     3. Solving for θ:
-       *        tolerance/radius = 1 - cos(θ/2)
-       *        cos(θ/2) = 1 - tolerance/radius
-       *        θ/2 = arccos(1 - tolerance/radius)
-       *        θ = 2 * arccos(1 - tolerance/radius)
-       *     4. Number of segments = ceil(2π / θ)
-       *                          = ceil(π / arccos(1 - tolerance/radius))
-       *
-       * \param radius The radius of the circle to approximate
-       * \param tolerance Maximum allowed deviation between the circle and its polygonal approximation
-       * \param minSegments Minimum number of segments to use, regardless of the calculated value
-       * \returns The number of segments needed
-       * \note This is a private helper method
-       */
+     * Calculate the number of segments needed to approximate a circle within a given tolerance.
+     *
+     * This function uses the sagitta (geometric chord height) to determine the number of segments
+     * required to approximate a circle such that the maximum deviation between the circle and its
+     * polygonal approximation is less than the specified tolerance.
+     *
+     * Mathematical approach:
+     *     1. Using the sagitta formula: s = r(1 - cos(θ/2))
+     *        where s is the sagitta, r is the radius, and θ is the segment angle
+     *     2. Substituting tolerance for s:
+     *        tolerance = radius(1 - cos(θ/2))
+     *     3. Solving for θ:
+     *        tolerance/radius = 1 - cos(θ/2)
+     *        cos(θ/2) = 1 - tolerance/radius
+     *        θ/2 = arccos(1 - tolerance/radius)
+     *        θ = 2 * arccos(1 - tolerance/radius)
+     *     4. Number of segments = ceil(2π / θ)
+     *                          = ceil(π / arccos(1 - tolerance/radius))
+     *
+     * \param radius The radius of the circle to approximate
+     * \param tolerance Maximum allowed deviation between the circle and its polygonal approximation
+     * \param minSegments Minimum number of segments to use, regardless of the calculated value
+     * \returns The number of segments needed
+     * \note This is a private helper method
+     */
     static int calculateSegmentsStandard( double radius, double tolerance, int minSegments )
     {
       if ( tolerance >= radius )
@@ -427,38 +427,38 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     }
 
     /**
-         * Calculate the number of segments with adaptive tolerance based on radius.
-         *
-         * This method extends calculateSegments() by using an adaptive tolerance that scales
-         * with the radius to maintain better visual quality. While calculateSegments() uses
-         * a fixed tolerance, this version adjusts the tolerance based on the radius size.
-         *
-         * Mathematical approach:
-         *     1. Compute adaptive tolerance that varies with radius:
-         *        adaptive_tolerance = base_tolerance * sqrt(radius) / log10(radius + 1)
-         *
-         * - For small radii: tolerance decreases → more segments for better detail
-         * - For large radii: tolerance increases gradually → fewer segments needed
-         * - sqrt(radius) provides basic scaling
-         * - log10(radius + 1) dampens the scaling for large radii
-         *
-         *     2. Apply sagitta-based calculation:
-         *
-         * - Calculate angle = 2 * arccos(1 - adaptive_tolerance/radius)
-         * - Number of segments = ceil(2π/angle)
-         *
-         * This adaptation ensures:
-         *
-         * - Small circles get more segments for better visual quality
-         * - Large circles don't get excessive segments
-         * - Smooth transition between different scales
-         *
-         * \param radius The radius of the circle to approximate
-         * \param tolerance Base tolerance value that will be scaled
-         * \param minSegments Minimum number of segments to use
-         * \returns The number of segments needed
-         * \note This is a private helper method
-         */
+     * Calculate the number of segments with adaptive tolerance based on radius.
+     *
+     * This method extends calculateSegments() by using an adaptive tolerance that scales
+     * with the radius to maintain better visual quality. While calculateSegments() uses
+     * a fixed tolerance, this version adjusts the tolerance based on the radius size.
+     *
+     * Mathematical approach:
+     *     1. Compute adaptive tolerance that varies with radius:
+     *        adaptive_tolerance = base_tolerance * sqrt(radius) / log10(radius + 1)
+     *
+     * For small radii: tolerance decreases → more segments for better detail
+     * For large radii: tolerance increases gradually → fewer segments needed
+     * sqrt(radius) provides basic scaling
+     * log10(radius + 1) dampens the scaling for large radii
+     *
+     *     2. Apply sagitta-based calculation:
+     *
+     * Calculate angle = 2 * arccos(1 - adaptive_tolerance/radius)
+     * Number of segments = ceil(2π/angle)
+     *
+     * This adaptation ensures:
+     *
+     * Small circles get more segments for better visual quality
+     * Large circles don't get excessive segments
+     * Smooth transition between different scales
+     *
+     * \param radius The radius of the circle to approximate
+     * \param tolerance Base tolerance value that will be scaled
+     * \param minSegments Minimum number of segments to use
+     * \returns The number of segments needed
+     * \note This is a private helper method
+     */
     static int calculateSegmentsAdaptive( double radius, double tolerance, int minSegments )
     {
       // Compute adaptive tolerance that varies with radius
@@ -476,48 +476,46 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     }
 
     /**
-         * Calculate the number of segments based on the maximum allowed area error.
-         *
-         * This function computes the minimum number of segments needed to approximate
-         * a circle with a regular polygon such that the relative area error between
-         * the polygonal approximation and the actual circle is less than the specified tolerance.
-         *
-         * Mathematical derivation:
-         *     1. Area ratio between a regular n-sided polygon and a circle:
-         *
-         * - Circle area: Ac = πr²
-         * - Regular polygon area: Ap = (nr²/2) * sin(2π/n)
-         * - Ratio = Ap / Ac = (n / 2π) * sin(2π/n)
-         *
-         *     2. For relative error E:
-         *        E = |1 - Ap / Ac| = |1 - (n / 2π) * sin(2π/n)|
-         *
-         *     3. Using Taylor series approximation for sin(x) when x is small:
-         *        sin(x) ≈ x - x³ / 6
-         *        With x = 2π / n:
-         *            sin(2π / n) ≈ (2π / n) - (2π / n)³ / 6
-         *
-         *     4. Substituting and simplifying:
-         *        E ≈ |1 - (n / 2π) * ((2π / n) - (2π / n)³ / 6)|
-         *        E ≈ |1 - (1 - (2π² / 3n²))|
-         *        E ≈ 2π² / 3n²
-         *
-         *     5. Rearranging to find the minimum n for a given tolerance:
-         *
-         * - Start with the inequality: E ≤ tolerance
-         * - Substitute the expression for E:
-         *   2π² / 3n² ≤ tolerance
-         * - Rearrange to isolate n²:
-         *   n² ≥ 2π² / (3 * tolerance)
-         * - Taking the square root:
-         *   n ≥ π * sqrt(2 / (3 * tolerance))
-         *
-         * \param radius The radius of the circle to approximate
-         * \param tolerance Maximum acceptable area error in percentage
-         * \param minSegments The minimum number of segments to use
-         * \returns The number of segments needed
-         * \note This is a private helper method
-         */
+     * Calculate the number of segments based on the maximum allowed area error.
+     *
+     * This function computes the minimum number of segments needed to approximate
+     * a circle with a regular polygon such that the relative area error between
+     * the polygonal approximation and the actual circle is less than the specified tolerance.
+     *
+     * Mathematical derivation:
+     *     1. Area ratio between a regular n-sided polygon and a circle:
+     *        Circle area: Ac = πr²
+     *        Regular polygon area: Ap = (nr²/2) * sin(2π/n)
+     *        Ratio = Ap / Ac = (n / 2π) * sin(2π/n)
+     *
+     *     2. For relative error E:
+     *        E = |1 - Ap / Ac| = |1 - (n / 2π) * sin(2π/n)|
+     *
+     *     3. Using Taylor series approximation for sin(x) when x is small:
+     *        sin(x) ≈ x - x³ / 6
+     *        With x = 2π / n:
+     *            sin(2π / n) ≈ (2π / n) - (2π / n)³ / 6
+     *
+     *     4. Substituting and simplifying:
+     *        E ≈ |1 - (n / 2π) * ((2π / n) - (2π / n)³ / 6)|
+     *        E ≈ |1 - (1 - (2π² / 3n²))|
+     *        E ≈ 2π² / 3n²
+     *
+     *     5. Rearranging to find the minimum n for a given tolerance:
+     *        Start with the inequality: E ≤ tolerance
+     *        Substitute the expression for E:
+     *          2π² / 3n² ≤ tolerance
+     *        Rearrange to isolate n²:
+     *          n² ≥ 2π² / (3 * tolerance)
+     *        Taking the square root:
+     *          n ≥ π * sqrt(2 / (3 * tolerance))
+     *
+     * \param radius The radius of the circle to approximate
+     * \param baseTolerance Maximum acceptable area error in percentage
+     * \param minSegments The minimum number of segments to use
+     * \returns The number of segments needed
+     * \note This is a private helper method
+     */
     static int calculateSegmentsByAreaError( double radius, double baseTolerance, int minSegments )
     {
       Q_UNUSED( radius );
@@ -534,25 +532,25 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     }
 
     /**
-       * Calculate the number of segments using a simple linear relationship with radius.
-       *
-       * This function implements the simplest approach to circle discretization by using
-       * a direct linear relationship between the radius and the number of segments.
-       * While not mathematically precise for error control, it provides a quick and
-       * intuitive approximation that can be useful when exact error bounds aren't required.
-       *
-       * Mathematical approach:
-       *     1. Linear scaling: segments = constant * radius
-       *
-       * - Larger constant = more segments = better approximation
-       * - Smaller constant = fewer segments = coarser approximation
-       *
-       * \param radius The radius of the circle to approximate
-       * \param constant Multiplier that determines the density of segments
-       * \param minSegments The minimum number of segments to use
-       * \returns The number of segments needed
-       * \note This is a private helper method
-       */
+     * Calculate the number of segments using a simple linear relationship with radius.
+     *
+     * This function implements the simplest approach to circle discretization by using
+     * a direct linear relationship between the radius and the number of segments.
+     * While not mathematically precise for error control, it provides a quick and
+     * intuitive approximation that can be useful when exact error bounds aren't required.
+     *
+     * Mathematical approach:
+     *     1. Linear scaling: segments = constant * radius
+     *
+     * Larger constant = more segments = better approximation
+     * Smaller constant = fewer segments = coarser approximation
+     *
+     * \param radius The radius of the circle to approximate
+     * \param constant Multiplier that determines the density of segments
+     * \param minSegments The minimum number of segments to use
+     * \returns The number of segments needed
+     * \note This is a private helper method
+     */
     static int calculateSegmentsByConstant( double radius, double constant, int minSegments )
     {
       return std::max( minSegments, static_cast<int>( std::ceil( constant * radius ) ) );
