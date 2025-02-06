@@ -2764,12 +2764,11 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     OGRwkbGeometryType pointBaseType { wkbPoint };
 
     // Last type in the list is the winner
-    const static QList<OGRwkbGeometryType> pointHyerarchy { wkbPoint, wkbMultiPoint };
-    // Note: compound curve takes precedence over multilinestring
-    const static QList<OGRwkbGeometryType> lineHyerarchy { wkbLineString, wkbCircularString, wkbMultiCurve, wkbMultiLineString, wkbCompoundCurve, wkbMultiCurve };
-    const static QList<OGRwkbGeometryType> polyHyerarchy { wkbPolyhedralSurface, wkbTIN, wkbPolygon, wkbCurvePolygon, wkbMultiSurface, wkbMultiPolygon };
+    const static QList<OGRwkbGeometryType> pointHierarchy { wkbPoint, wkbMultiPoint };
+    const static QList<OGRwkbGeometryType> lineHierarchy { wkbLineString, wkbCircularString, wkbMultiLineString, wkbCompoundCurve, wkbMultiCurve };
+    const static QList<OGRwkbGeometryType> polyHierarchy { wkbPolyhedralSurface, wkbTIN, wkbPolygon, wkbCurvePolygon, wkbMultiPolygon, wkbMultiSurface };
 
-    for ( const auto t : std::as_const( pointHyerarchy ) )
+    for ( const auto t : std::as_const( pointHierarchy ) )
     {
       if ( fCount.contains( t ) )
       {
@@ -2779,7 +2778,39 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       }
     }
 
-    for ( const auto t : std::as_const( lineHyerarchy ) )
+    // For lines use a three-step approach
+    // 1. First collapse linestring and circularstring into compoundcurve
+    if ( fCount.contains( wkbLineString ) && fCount.contains( wkbCircularString ) )
+    {
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbLineString );
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbCircularString );
+      lineBaseType = wkbCompoundCurve;
+      if ( ! fCount.contains( wkbCompoundCurve ) )
+      {
+        fCount[wkbCompoundCurve] = baseTypeCount[Qgis::GeometryType::Line];
+        baseTypeCount[Qgis::GeometryType::Line] = 0;
+      }
+      fCount.remove( wkbLineString );
+      fCount.remove( wkbCircularString );
+    }
+
+    // 2. Then collapse multilinestring and compoundcurve into multicurve
+    if ( fCount.contains( wkbMultiLineString ) && fCount.contains( wkbCompoundCurve ) )
+    {
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbMultiLineString );
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbCompoundCurve );
+      lineBaseType = wkbMultiCurve;
+      if ( ! fCount.contains( wkbMultiCurve ) )
+      {
+        fCount[wkbMultiCurve] = baseTypeCount[Qgis::GeometryType::Line];
+        baseTypeCount[Qgis::GeometryType::Line] = 0;
+      }
+      fCount.remove( wkbMultiLineString );
+      fCount.remove( wkbCompoundCurve );
+    }
+
+    // 3. Then follow the hierarchy
+    for ( const auto t : std::as_const( lineHierarchy ) )
     {
       if ( fCount.contains( t ) )
       {
@@ -2789,7 +2820,25 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       }
     }
 
-    for ( const auto t : std::as_const( polyHyerarchy ) )
+
+    // For polygons use a two-step approach:
+    // 1. First collapse multipolygon and curvepolygon into multisurface
+    if ( fCount.contains( wkbMultiPolygon ) && fCount.contains( wkbCurvePolygon ) )
+    {
+      baseTypeCount[Qgis::GeometryType::Polygon] += fCount.value( wkbMultiPolygon );
+      baseTypeCount[Qgis::GeometryType::Polygon] += fCount.value( wkbMultiSurface );
+      polyBaseType = wkbMultiSurface;
+      if ( ! fCount.contains( wkbMultiSurface ) )
+      {
+        fCount[wkbMultiSurface] = baseTypeCount[Qgis::GeometryType::Polygon];
+        baseTypeCount[Qgis::GeometryType::Polygon] = 0;
+      }
+      fCount.remove( wkbMultiPolygon );
+      fCount.remove( wkbCurvePolygon );
+    }
+
+    // 2. Then collapse following the hierarchy
+    for ( const auto t : std::as_const( polyHierarchy ) )
     {
       if ( fCount.contains( t ) )
       {
