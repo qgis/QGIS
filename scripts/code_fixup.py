@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###########################################################################
-#    qstringfixup.py
+#    code_fixup.py
 #    ---------------
 #    Date                 : October 2020
 #    Copyright            : (C) 2020 by Even Rouault
@@ -26,14 +26,15 @@
 # DEALINGS IN THE SOFTWARE.
 ###########################################################################
 
-# This script fixes several suboptimal uses of QStringLiteral where QLatin1String would be better
+# This script fixes several suboptimal uses of QStringLiteral where QLatin1String would be better,
+# and other auto code-cleaning operations (such as use of auto with std::make_unique)
 # It is not automatically run yet.
 
 # Run it on whole code base with:
-# ../scripts/qstringfixup.sh --all
+# ../scripts/code_fixup.sh --all
 
 # or on modified files only with:
-# ../scripts/qstringfixup.sh
+# ../scripts/code_fixup.sh
 
 import re
 import sys
