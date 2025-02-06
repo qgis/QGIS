@@ -493,7 +493,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   if ( QgsDataSourceManagerDialog *dsm = qobject_cast<QgsDataSourceManagerDialog *>( window() ) )
     bar = dsm->messageBar();
 
-  QMenu *assetsMenu = menu->addMenu( tr( "Add Layer" ) );
+  QMenu *assetsMenu = new QMenu( tr( "Add Layer" ), menu );
   if ( const QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() ) )
   {
     const QMap<QString, QgsStacAsset> assets = item->assets();
