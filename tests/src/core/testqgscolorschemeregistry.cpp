@@ -204,7 +204,7 @@ void TestQgsColorSchemeRegistry::matchingSchemes()
 
 void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
 {
-  std::unique_ptr<QgsColorSchemeRegistry> registry = std::make_unique<QgsColorSchemeRegistry>();
+  auto registry = std::make_unique<QgsColorSchemeRegistry>();
 
   // no randomStyleColorScheme set - test lots of colors to make sure their valid
   for ( int i = 0; i < 10000; ++i )

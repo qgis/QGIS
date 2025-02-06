@@ -36,7 +36,7 @@ QString QgsPointCloudAttributeByRampRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > res = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  auto res = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
   res->mAttribute = mAttribute;
   res->mColorRampShader = mColorRampShader;
   res->mMin = mMin;
@@ -151,7 +151,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
 QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > r = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  auto r = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
 
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Intensity" ) ) );
 
@@ -269,7 +269,7 @@ void QgsPointCloudAttributeByRampRenderer::setMaximum( double value )
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudAttributeByRampRenderer::prepare()
 {
-  std::unique_ptr< QgsPointCloudAttributeByRampRendererPreparedData> data = std::make_unique< QgsPointCloudAttributeByRampRendererPreparedData >();
+  auto data = std::make_unique< QgsPointCloudAttributeByRampRendererPreparedData >();
   data->attributeName = mAttribute;
   data->colorRampShader = mColorRampShader;
 

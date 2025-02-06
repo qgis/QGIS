@@ -6341,7 +6341,7 @@ bool QgisApp::addProject( const QString &projectFile )
   QWidgetUpdateBlocker layerTreeViewUpdateBlocker( mLayerTreeView );
 
   bool returnCode = false;
-  std::unique_ptr<QgsProjectDirtyBlocker> dirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
+  auto dirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
   QObject connectionScope; // manually control scope of layersChanged lambda connection - we need the connection automatically destroyed when this function finishes
 
   bool badLayersHandled = false;
@@ -6807,7 +6807,7 @@ void QgisApp::openTemplate( const QString &fileName )
   }
 
   //create new layout object
-  std::unique_ptr<QgsPrintLayout> layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
+  auto layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
   bool loadedOk = false;
   layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOk );
   if ( loadedOk )
@@ -8885,7 +8885,7 @@ QgsLayoutDesignerDialog *QgisApp::createNewReport( QString title )
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
   //create new report
-  std::unique_ptr<QgsReport> report = std::make_unique<QgsReport>( QgsProject::instance() );
+  auto report = std::make_unique<QgsReport>( QgsProject::instance() );
   report->setName( title );
   QgsMasterLayoutInterface *layout = report.get();
   QgsProject::instance()->layoutManager()->addLayout( report.release() );
@@ -13159,7 +13159,7 @@ void QgisApp::initLayouts()
   auto createRubberBand = ( []( QgsLayoutView *view ) -> QgsLayoutViewRubberBand * {
     return new QgsLayoutViewRectangularRubberBand( view );
   } );
-  std::unique_ptr<QgsLayoutItemGuiMetadata> map3dMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
+  auto map3dMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
     QgsLayoutItemRegistry::Layout3DMap, tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
     [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
       return new QgsLayout3DMapWidget( qobject_cast<QgsLayoutItem3DMap *>( item ) );

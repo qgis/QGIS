@@ -409,16 +409,16 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   crs3857.createFromString( "EPSG:3857" );
 
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
 
   QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
-  std::unique_ptr<QgsRasterLayer> terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  auto terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
   terrainLayer->setCrs( crs3857 );
   QVERIFY( terrainLayer->isValid() );
 
-  std::unique_ptr<QgsRasterDemTerrainProvider> terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
   terrain->setLayer( terrainLayer.get() );
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
@@ -628,16 +628,16 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
   crs3857.createFromString( "EPSG:3857" );
 
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
 
   QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
-  std::unique_ptr<QgsRasterLayer> terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  auto terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
   terrainLayer->setCrs( crs3857 );
   QVERIFY( terrainLayer->isValid() );
 
-  std::unique_ptr<QgsRasterDemTerrainProvider> terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
   terrain->setLayer( terrainLayer.get() );
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
@@ -692,7 +692,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
 void TestQgsMapToolEditMesh::selectElements()
 {
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
   QVERIFY( layer->isValid() );
 
   const QgsCoordinateTransform transform;
@@ -753,7 +753,7 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
 
   const QString copyDataPath1 = copyTestData( originalDataPath ); // copy of data to be edited
 
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( copyDataPath1, "not delaunay", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( copyDataPath1, "not delaunay", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
 

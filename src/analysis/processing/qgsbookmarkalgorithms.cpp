@@ -26,7 +26,7 @@
 
 void QgsBookmarksToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterEnum> sourceParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "SOURCE" ), QObject::tr( "Bookmark source" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), true, QVariantList() << 0 << 1 );
+  auto sourceParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "SOURCE" ), QObject::tr( "Bookmark source" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), true, QVariantList() << 0 << 1 );
   QVariantMap wrapperMetadata;
   wrapperMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
   QVariantMap metadata;
@@ -169,7 +169,7 @@ void QgsLayerToBookmarksAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
-  std::unique_ptr<QgsProcessingParameterEnum> sourceParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "DESTINATION" ), QObject::tr( "Bookmark destination" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), false, 0 );
+  auto sourceParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "DESTINATION" ), QObject::tr( "Bookmark destination" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), false, 0 );
   addParameter( sourceParam.release() );
 
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "NAME_EXPRESSION" ), QObject::tr( "Name field" ), QVariant(), QStringLiteral( "INPUT" ) ) );

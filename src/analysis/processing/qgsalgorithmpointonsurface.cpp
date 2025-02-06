@@ -75,7 +75,7 @@ QgsPointOnSurfaceAlgorithm *QgsPointOnSurfaceAlgorithm::createInstance() const
 
 void QgsPointOnSurfaceAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterBoolean> allParts = std::make_unique<QgsProcessingParameterBoolean>(
+  auto allParts = std::make_unique<QgsProcessingParameterBoolean>(
     QStringLiteral( "ALL_PARTS" ),
     QObject::tr( "Create point on surface for each part" ),
     false

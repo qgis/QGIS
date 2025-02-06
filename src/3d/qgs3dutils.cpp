@@ -813,7 +813,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
 
   if ( symbol3D )
   {
-    std::unique_ptr<QgsPointCloudLayer3DRenderer> renderer3D = std::make_unique<QgsPointCloudLayer3DRenderer>();
+    auto renderer3D = std::make_unique<QgsPointCloudLayer3DRenderer>();
     renderer3D->setSymbol( symbol3D.release() );
     return renderer3D;
   }

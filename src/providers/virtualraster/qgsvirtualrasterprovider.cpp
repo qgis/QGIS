@@ -147,7 +147,7 @@ QgsVirtualRasterProvider::~QgsVirtualRasterProvider()
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
-  std::unique_ptr<QgsRasterBlock> tblock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float64, width, height );
+  auto tblock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float64, width, height );
 
   double *outputData = ( double * ) ( tblock->bits() );
 

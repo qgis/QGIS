@@ -441,7 +441,7 @@ void TestQgsCallout::calloutsInLayout()
 {
   //test rendering callouts inside a layout (tests DPI scaling of callouts)
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &l );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 50, 50 ) );
   l.pageCollection()->addPage( page.release() );
 
@@ -4200,7 +4200,7 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
 
 void TestQgsCallout::blendMode()
 {
-  std::unique_ptr<QgsManhattanLineCallout> callout = std::make_unique<QgsManhattanLineCallout>();
+  auto callout = std::make_unique<QgsManhattanLineCallout>();
   QCOMPARE( callout->containsAdvancedEffects(), false );
 
   callout->setBlendMode( QPainter::CompositionMode_Multiply );

@@ -1010,7 +1010,7 @@ void TestQgsExpressionContext::layerStores()
   QVERIFY( scope1->layerStores().isEmpty() );
 
   QgsMapLayerStore store1;
-  std::unique_ptr<QgsMapLayerStore> store2 = std::make_unique<QgsMapLayerStore>();
+  auto store2 = std::make_unique<QgsMapLayerStore>();
   scope1->addLayerStore( &store1 );
   scope1->addLayerStore( store2.get() );
   QCOMPARE( scope1->layerStores(), QList<QgsMapLayerStore *>( { &store1, store2.get() } ) );

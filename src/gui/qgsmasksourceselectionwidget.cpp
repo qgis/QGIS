@@ -229,7 +229,7 @@ void QgsMaskSourceSelectionWidget::update()
     if ( !vl->renderer() )
       continue;
 
-    std::unique_ptr<QTreeWidgetItem> layerItem = std::make_unique<QTreeWidgetItem>( mTree, QStringList() << layer->name() );
+    auto layerItem = std::make_unique<QTreeWidgetItem>( mTree, QStringList() << layer->name() );
     layerItem->setData( 0, Qt::UserRole, QVariant::fromValue( vl ) );
 
     if ( vl->labeling() )

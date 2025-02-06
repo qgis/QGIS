@@ -260,7 +260,7 @@ void TestQgs3DRendering::testLights()
   map.setLightSources( { dsLight } );
   QCOMPARE( lightSourceChangedSpy.size(), 2 );
   // different light type
-  std::unique_ptr<QgsPointLightSettings> pointLight = std::make_unique<QgsPointLightSettings>();
+  auto pointLight = std::make_unique<QgsPointLightSettings>();
   pointLight->setColor( QColor( 255, 0, 0 ) );
   map.setLightSources( { pointLight->clone() } );
   QCOMPARE( lightSourceChangedSpy.size(), 3 );
@@ -492,7 +492,7 @@ void TestQgs3DRendering::testPhongShading()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
 
-  std::unique_ptr<QgsVectorLayer> buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
   QVERIFY( buildings->isValid() );
 
   QgsPhongMaterialSettings materialSettings;
@@ -875,7 +875,7 @@ void TestQgs3DRendering::testExtrudedPolygonsMetalRoughShading()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
 
-  std::unique_ptr<QgsVectorLayer> buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
   QVERIFY( buildings->isValid() );
 
   QgsMetalRoughMaterialSettings materialSettings;
@@ -937,8 +937,8 @@ void TestQgs3DRendering::testPolygonsEdges()
 
   std::unique_ptr<QgsVectorLayer> layer( mLayerBuildings->clone() );
 
-  std::unique_ptr<QgsSimpleFillSymbolLayer> simpleFill = std::make_unique<QgsSimpleFillSymbolLayer>( QColor( 0, 0, 0 ), Qt::SolidPattern, QColor( 0, 0, 0 ), Qt::NoPen );
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList() << simpleFill.release() );
+  auto simpleFill = std::make_unique<QgsSimpleFillSymbolLayer>( QColor( 0, 0, 0 ), Qt::SolidPattern, QColor( 0, 0, 0 ), Qt::NoPen );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList() << simpleFill.release() );
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol.release() ) );
 
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
@@ -1099,7 +1099,7 @@ void TestQgs3DRendering::testLineRenderingCurved()
 
   QVector<QgsPoint> pts;
   pts << QgsPoint( 0, 0, 10 ) << QgsPoint( 0, 1000, 10 ) << QgsPoint( 1000, 1000, 10 ) << QgsPoint( 1000, 0, 10 );
-  std::unique_ptr<QgsCompoundCurve> curve = std::make_unique<QgsCompoundCurve>();
+  auto curve = std::make_unique<QgsCompoundCurve>();
   curve->addCurve( new QgsLineString( pts ) );
   pts.clear();
   pts << QgsPoint( 1000, 0, 10 ) << QgsPoint( 1000, 0, 500 ) << QgsPoint( 1000, 1000, 500 ) << QgsPoint( 0, 1000, 500 ) << QgsPoint( 0, 0, 500 );

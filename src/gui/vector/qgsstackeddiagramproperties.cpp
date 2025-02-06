@@ -73,7 +73,7 @@ void QgsStackedDiagramProperties::addSubDiagramRenderer()
 {
   // Create a single category renderer by default
   std::unique_ptr<QgsDiagramRenderer> renderer;
-  std::unique_ptr<QgsSingleCategoryDiagramRenderer> dr = std::make_unique<QgsSingleCategoryDiagramRenderer>();
+  auto dr = std::make_unique<QgsSingleCategoryDiagramRenderer>();
   renderer = std::move( dr );
 
   QItemSelectionModel *sel = mSubDiagramsView->selectionModel();
@@ -201,7 +201,7 @@ void QgsStackedDiagramProperties::syncToLayer()
 
 void QgsStackedDiagramProperties::apply()
 {
-  std::unique_ptr<QgsDiagramSettings> ds = std::make_unique<QgsDiagramSettings>();
+  auto ds = std::make_unique<QgsDiagramSettings>();
   ds->stackedDiagramMode = static_cast<QgsDiagramSettings::StackedDiagramMode>( mStackedDiagramModeComboBox->currentData().toInt() );
   ds->setStackedDiagramSpacingUnit( mStackedDiagramSpacingUnitComboBox->unit() );
   ds->setStackedDiagramSpacing( mStackedDiagramSpacingSpinBox->value() );

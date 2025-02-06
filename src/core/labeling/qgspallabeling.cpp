@@ -2926,7 +2926,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   //  feature to the layer
-  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), labelSize );
+  auto labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), labelSize );
   labelFeature->setAnchorPosition( anchorPosition );
   labelFeature->setFeature( feature );
   labelFeature->setSymbol( symbol );
@@ -3211,7 +3211,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerObstacleFeature( c
     return nullptr; // invalid geometry
 
   //  feature to the layer
-  std::unique_ptr< QgsLabelFeature > obstacleFeature = std::make_unique< QgsLabelFeature >( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
+  auto obstacleFeature = std::make_unique< QgsLabelFeature >( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
   obstacleFeature->setFeature( f );
 
   QgsLabelObstacleSettings os = mObstacleSettings;

@@ -334,7 +334,7 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
 
   if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
   {
-    std::unique_ptr<_DownloaderThread> downloaderThread = std::make_unique<_DownloaderThread>( downloaderFunction );
+    auto downloaderThread = std::make_unique<_DownloaderThread>( downloaderFunction );
     downloaderThread->start();
 
     while ( true )

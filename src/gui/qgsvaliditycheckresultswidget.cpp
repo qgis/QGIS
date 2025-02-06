@@ -128,8 +128,8 @@ void QgsValidityCheckResultsWidget::setDescription( const QString &description )
 
 bool QgsValidityCheckResultsWidget::runChecks( int type, const QgsValidityCheckContext *context, const QString &title, const QString &description, QWidget *parent )
 {
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Running Checks…" ), tr( "Abort" ), 0, 100, parent );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Running Checks…" ), tr( "Abort" ), 0, 100, parent );
   progressDialog->setWindowTitle( title );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Running Checks" ) );

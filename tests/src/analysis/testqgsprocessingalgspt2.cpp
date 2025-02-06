@@ -125,7 +125,7 @@ std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> TestQgsProcessingAlgsPt2::fe
 QgsFeature TestQgsProcessingAlgsPt2::runForFeature( const std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> &alg, QgsFeature feature, const QString &layerType, QVariantMap parameters )
 {
   Q_ASSERT( alg.get() );
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
@@ -219,7 +219,7 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
 {
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QgsProcessingFeedback feedback;
@@ -253,7 +253,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPdf()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -297,7 +297,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputPng );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -357,7 +357,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdf()
   parameters.insert( QStringLiteral( "DPI" ), 96 );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -402,7 +402,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdfMultiple()
   parameters.insert( QStringLiteral( "DPI" ), 96 );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -453,7 +453,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
   parameters.insert( QStringLiteral( "DPI" ), 96 );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -503,7 +503,7 @@ void TestQgsProcessingAlgsPt2::tinMeshCreation()
   parameters.insert( QStringLiteral( "OUTPUT_MESH" ), QString( QDir::tempPath() + "/meshLayer.2dm" ) );
   parameters.insert( QStringLiteral( "MESH_FORMAT" ), 0 );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -545,7 +545,7 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -627,7 +627,7 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -688,7 +688,7 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -763,7 +763,7 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -823,7 +823,7 @@ void TestQgsProcessingAlgsPt2::rasterizeMesh()
 
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -831,7 +831,7 @@ void TestQgsProcessingAlgsPt2::rasterizeMesh()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   QVERIFY( outputRaster );
   QVERIFY( outputRaster->isValid() );
   QgsRasterDataProvider *outputProvider = outputRaster->dataProvider();
@@ -846,7 +846,7 @@ void TestQgsProcessingAlgsPt2::rasterizeMesh()
 
   // load expected result
   const QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  std::unique_ptr<QgsRasterLayer> expectedRaster = std::make_unique<QgsRasterLayer>( dataDir + "/mesh/rasterized_mesh.tif", "expected", "gdal" );
+  auto expectedRaster = std::make_unique<QgsRasterLayer>( dataDir + "/mesh/rasterized_mesh.tif", "expected", "gdal" );
   QVERIFY( expectedRaster );
   QVERIFY( expectedRaster->isValid() );
   QgsRasterDataProvider *expectedProvider = outputRaster->dataProvider();
@@ -890,7 +890,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   parameters.insert( QStringLiteral( "OUTPUT_LINES" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "OUTPUT_POLYGONS" ), QgsProcessing::TEMPORARY_OUTPUT );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -1049,7 +1049,7 @@ void TestQgsProcessingAlgsPt2::exportMeshCrossSection()
 
   QgsVectorLayer *layerLine = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "lines_for_xs" ), QStringLiteral( "memory" ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -1135,7 +1135,7 @@ void TestQgsProcessingAlgsPt2::fileDownloader()
   parameters.insert( QStringLiteral( "URL" ), QStringLiteral( "https://version.qgis.org/version.txt" ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   bool ok = false;
@@ -1175,7 +1175,7 @@ void TestQgsProcessingAlgsPt2::rasterize()
   QVERIFY( nodePolygons );
   nodePolygons->setItemVisibilityChecked( false );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &project );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -1255,7 +1255,7 @@ void TestQgsProcessingAlgsPt2::convertGpsData()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1319,7 +1319,7 @@ void TestQgsProcessingAlgsPt2::downloadGpsData()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1353,7 +1353,7 @@ void TestQgsProcessingAlgsPt2::uploadGpsData()
   parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "%1/layers.gpx" ).arg( TEST_DATA_DIR ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1381,7 +1381,7 @@ void TestQgsProcessingAlgsPt2::transferMainAnnotationLayer()
   QgsProject p;
   p.mainAnnotationLayer()->addItem( new QgsAnnotationMarkerItem( QgsPoint( 1, 2 ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -1429,7 +1429,7 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
 
   QgsVectorLayer *layerPoints = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "points_for_ts" ), QStringLiteral( "memory" ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -1554,7 +1554,7 @@ void TestQgsProcessingAlgsPt2::extractLabels()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &project );
   QgsProcessingFeedback feedback;
 
@@ -1601,7 +1601,7 @@ void TestQgsProcessingAlgsPt2::dxfExport()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &project );
 
   TestProcessingFeedback feedback;
@@ -1609,7 +1609,7 @@ void TestQgsProcessingAlgsPt2::dxfExport()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> resultLayer = std::make_unique<QgsVectorLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "dxf" );
+  auto resultLayer = std::make_unique<QgsVectorLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "dxf" );
   QVERIFY( resultLayer->isValid() );
   QCOMPARE( resultLayer->featureCount(), 1L );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::LineString );
@@ -1617,7 +1617,7 @@ void TestQgsProcessingAlgsPt2::dxfExport()
 
 void TestQgsProcessingAlgsPt2::splitVectorLayer()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   QgsFeature f;
@@ -1645,7 +1645,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputDir.absolutePath() );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1659,7 +1659,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
 
 void TestQgsProcessingAlgsPt2::buffer()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:buffer" ) ) );
@@ -1677,7 +1677,7 @@ void TestQgsProcessingAlgsPt2::buffer()
   parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1706,25 +1706,25 @@ void TestQgsProcessingAlgsPt2::buffer()
 void TestQgsProcessingAlgsPt2::splitWithLines()
 {
   QgsFeature l1_1, l1_2, l2_1, l2_2, p1_1, p1_2, p2_1, p2_2;
-  std::unique_ptr<QgsVectorLayer> lineLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  auto lineLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
   QVERIFY( lineLayer1->isValid() );
   l1_1.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((19 40, 26 40),(20 39, 25 39))" ) );
   l1_2.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((19 35, 26 35))" ) );
   lineLayer1->dataProvider()->addFeature( l1_1 );
   lineLayer1->dataProvider()->addFeature( l1_2 );
-  std::unique_ptr<QgsVectorLayer> lineLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l2" ), QStringLiteral( "memory" ) );
+  auto lineLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l2" ), QStringLiteral( "memory" ) );
   QVERIFY( lineLayer2->isValid() );
   l2_1.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((20 42, 20 34, 23 42))" ) );
   l2_2.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((21 42, 21 34),(23 42, 23 34, 25 42))" ) );
   lineLayer2->dataProvider()->addFeature( l2_1 );
   lineLayer2->dataProvider()->addFeature( l2_2 );
-  std::unique_ptr<QgsVectorLayer> polygonLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p1" ), QStringLiteral( "memory" ) );
+  auto polygonLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p1" ), QStringLiteral( "memory" ) );
   QVERIFY( polygonLayer1->isValid() );
   p1_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((25 41, 25 38, 18 38, 18 41, 25 41),(19 39, 24 39, 24 40, 19 40, 19 39)))" ) );
   p1_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((18 37, 21 37, 21 35, 18 35, 18 37),(19.5 36.5, 19.5 35.5, 20.5 35.5, 20.5 36.5, 19.5 36.5)),((22 37, 25 37, 25 35, 22 35, 22 37),(24 36, 24 35.5, 24.5 35.5, 24.5 36, 24 36),(23.5 35.5, 23.5 36.5, 22.5 36.5, 22.5 35.5, 23.5 35.5)))" ) );
   polygonLayer1->dataProvider()->addFeature( p1_1 );
   polygonLayer1->dataProvider()->addFeature( p1_2 );
-  std::unique_ptr<QgsVectorLayer> polygonLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p2" ), QStringLiteral( "memory" ) );
+  auto polygonLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p2" ), QStringLiteral( "memory" ) );
   QVERIFY( polygonLayer2->isValid() );
   p2_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 42, 20 34, 20 42, 23 42),(20.5 38.5, 21 38.5, 21.5 40.5, 20.5 40.5, 20.5 38.5)))" ) );
   p2_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 34, 23 42, 25 42, 23 34),(24 40.5, 23.5 40.5, 23.5 39.5, 24 40.5)),((19.5 34.5, 17.5 34.5, 17.5 42, 18.5 42, 19.5 34.5),(18.5 37.5, 18 37.5, 18.5 36.5, 18.5 37.5)))" ) );
@@ -1741,7 +1741,7 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1831,7 +1831,7 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
   QVERIFY( alg != nullptr );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1845,7 +1845,7 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
 
 void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
 {
-  std::unique_ptr<QgsVectorLayer> lineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3857" ), QStringLiteral( "lines" ), QStringLiteral( "memory" ) );
+  auto lineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3857" ), QStringLiteral( "lines" ), QStringLiteral( "memory" ) );
   QVERIFY( lineLayer->isValid() );
   QgsFeature feature;
   feature.setGeometry( QgsGeometry::fromWkt( "LineStringZ (0 0 0, 10 10 10)" ) );
@@ -1874,7 +1874,7 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputImage );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1885,10 +1885,10 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
 
 void TestQgsProcessingAlgsPt2::copyMetadata()
 {
-  std::unique_ptr<QgsVectorLayer> sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
   QVERIFY( sourceLayer->isValid() );
 
-  std::unique_ptr<QgsVectorLayer> targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
+  auto targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
   QVERIFY( targetLayer->isValid() );
 
   QgsLayerMetadata md;
@@ -1904,7 +1904,7 @@ void TestQgsProcessingAlgsPt2::copyMetadata()
   parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1919,7 +1919,7 @@ void TestQgsProcessingAlgsPt2::copyMetadata()
 
 void TestQgsProcessingAlgsPt2::applyMetadata()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setlayermetadata" ) ) );
@@ -1933,7 +1933,7 @@ void TestQgsProcessingAlgsPt2::applyMetadata()
   parameters.insert( QStringLiteral( "METADATA" ), metadataFileName );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1948,7 +1948,7 @@ void TestQgsProcessingAlgsPt2::applyMetadata()
 
 void TestQgsProcessingAlgsPt2::exportMetadata()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   QgsLayerMetadata md;
@@ -1964,7 +1964,7 @@ void TestQgsProcessingAlgsPt2::exportMetadata()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1993,7 +1993,7 @@ void TestQgsProcessingAlgsPt2::exportMetadata()
 
 void TestQgsProcessingAlgsPt2::addHistoryMetadata()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   QgsLayerMetadata md;
@@ -2009,7 +2009,7 @@ void TestQgsProcessingAlgsPt2::addHistoryMetadata()
   parameters.insert( QStringLiteral( "HISTORY" ), QStringLiteral( "do something" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -2037,10 +2037,10 @@ void TestQgsProcessingAlgsPt2::addHistoryMetadata()
 
 void TestQgsProcessingAlgsPt2::updateMetadata()
 {
-  std::unique_ptr<QgsVectorLayer> sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
   QVERIFY( sourceLayer->isValid() );
 
-  std::unique_ptr<QgsVectorLayer> targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
+  auto targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
   QVERIFY( targetLayer->isValid() );
 
   QgsLayerMetadata mdInput;
@@ -2063,7 +2063,7 @@ void TestQgsProcessingAlgsPt2::updateMetadata()
   parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -2080,7 +2080,7 @@ void TestQgsProcessingAlgsPt2::updateMetadata()
 
 void TestQgsProcessingAlgsPt2::setMetadataFields()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setmetadatafields" ) ) );
@@ -2091,7 +2091,7 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   parameters.insert( QStringLiteral( "TITLE" ), QStringLiteral( "Title" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );

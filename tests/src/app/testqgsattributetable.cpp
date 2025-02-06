@@ -492,7 +492,7 @@ void TestQgsAttributeTable::testSortNumbers()
 
 void TestQgsAttributeTable::testStartMultiEditNoChanges()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   QgsFeature ft1( layer->dataProvider()->fields() );
@@ -539,7 +539,7 @@ void TestQgsAttributeTable::testStartMultiEditNoChanges()
 
 void TestQgsAttributeTable::testMultiEditMakeUncommittedChanges()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   QgsFeature ft1( layer->dataProvider()->fields() );
@@ -849,7 +849,7 @@ void TestQgsAttributeTable::testInvalidView()
 
 void TestQgsAttributeTable::testEnsureEditSelection()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
 
   QgsFeature ft1( layer->dataProvider()->fields(), 1 );
@@ -912,7 +912,7 @@ void TestQgsAttributeTable::testEnsureEditSelection()
 void TestQgsAttributeTable::testFetchAllAttributes()
 {
   QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( pointFileName );
+  auto layer = std::make_unique<QgsVectorLayer>( pointFileName );
   QVERIFY( layer->isValid() );
 
   QgsAttributeTableConfig config { layer->attributeTableConfig() };

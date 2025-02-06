@@ -211,7 +211,7 @@ bool QgsMultiCurve::insertGeometry( QgsAbstractGeometry *g, int index )
 
 QgsMultiCurve *QgsMultiCurve::simplifyByDistance( double tolerance ) const
 {
-  std::unique_ptr< QgsMultiCurve > res = std::make_unique< QgsMultiCurve >();
+  auto res = std::make_unique< QgsMultiCurve >();
   res->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {

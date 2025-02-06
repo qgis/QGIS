@@ -5634,7 +5634,7 @@ class TestQgsExpression : public QObject
 
       // prepare the expression using static variables
       QgsExpressionContext context;
-      std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
+      auto scope = std::make_unique<QgsExpressionContextScope>();
       scope->setVariable( QStringLiteral( "field_name_part_var" ), QStringLiteral( "field" ), true );
 
       // this feature gets added as a static variable, to emulate eg the @atlas_feature variable

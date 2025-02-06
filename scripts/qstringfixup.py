@@ -93,6 +93,10 @@ qlatin1str_single_char = re.compile(
     r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|\+=) QLatin1String\( ("[^"]") \)(.*)"""
 )
 
+make_unique = re.compile(
+    r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(\s*.*?\s*=\s*std::make_unique<\s*(.*?)\s*>.*)$"""
+)
+
 
 def qlatin1char_or_string(x):
     """x is a double quoted string"""
@@ -224,6 +228,10 @@ while i < len(lines):
             line = newline
         else:
             break
+
+    m = make_unique.match(line)
+    if m and m.group(2) == m.group(4):
+        line = m.group(1) + "auto" + m.group(3)
 
     print(line)
     i += 1

@@ -569,7 +569,7 @@ void TestQgsWmsProvider::testResampling()
   QVERIFY( layer.dataProvider()->setZoomedInResamplingMethod( Qgis::RasterResamplingMethod::Cubic ) );
   QVERIFY( layer.dataProvider()->setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod::Cubic ) );
   layer.setResamplingStage( Qgis::RasterResamplingStage::Provider );
-  std::unique_ptr<QgsHillshadeRenderer> hillshade = std::make_unique<QgsHillshadeRenderer>( layer.dataProvider(), 1, 315, 45 );
+  auto hillshade = std::make_unique<QgsHillshadeRenderer>( layer.dataProvider(), 1, 315, 45 );
   hillshade->setZFactor( 0.0005 );
   layer.setRenderer( hillshade.release() );
 

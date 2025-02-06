@@ -98,7 +98,7 @@ QgsLayout *QgsLayout::clone() const
   QDomElement elem = writeXml( currentDoc, context );
   currentDoc.appendChild( elem );
 
-  std::unique_ptr< QgsLayout > newLayout = std::make_unique< QgsLayout >( mProject );
+  auto newLayout = std::make_unique< QgsLayout >( mProject );
   bool ok = false;
   newLayout->loadFromTemplate( currentDoc, context, true, &ok );
   if ( !ok )

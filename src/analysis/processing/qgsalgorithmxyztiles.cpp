@@ -297,13 +297,13 @@ void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_HEIGHT" ), QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "TMS_CONVENTION" ), QObject::tr( "Use inverted tile Y axis (TMS convention)" ), false ) );
 
-  std::unique_ptr<QgsProcessingParameterString> titleParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_TITLE" ), QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
+  auto titleParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_TITLE" ), QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
   titleParam->setFlags( titleParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( titleParam.release() );
-  std::unique_ptr<QgsProcessingParameterString> attributionParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_ATTRIBUTION" ), QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
+  auto attributionParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_ATTRIBUTION" ), QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
   attributionParam->setFlags( attributionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( attributionParam.release() );
-  std::unique_ptr<QgsProcessingParameterBoolean> osmParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "HTML_OSM" ), QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false );
+  auto osmParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "HTML_OSM" ), QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false );
   osmParam->setFlags( osmParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( osmParam.release() );
 

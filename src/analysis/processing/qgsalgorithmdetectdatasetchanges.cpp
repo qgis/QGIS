@@ -51,7 +51,7 @@ void QgsDetectVectorChangesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ORIGINAL" ), QObject::tr( "Original layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REVISED" ), QObject::tr( "Revised layer" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterField> compareAttributesParam = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "COMPARE_ATTRIBUTES" ), QObject::tr( "Attributes to consider for match (or none to compare geometry only)" ), QVariant(), QStringLiteral( "ORIGINAL" ), Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  auto compareAttributesParam = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "COMPARE_ATTRIBUTES" ), QObject::tr( "Attributes to consider for match (or none to compare geometry only)" ), QVariant(), QStringLiteral( "ORIGINAL" ), Qgis::ProcessingFieldParameterDataType::Any, true, true );
   compareAttributesParam->setDefaultToAllFields( true );
   addParameter( compareAttributesParam.release() );
 

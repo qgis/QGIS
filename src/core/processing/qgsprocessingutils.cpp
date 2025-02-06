@@ -579,7 +579,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
 
   if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
   {
-    std::unique_ptr< QgsProcessingFeatureSource> source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
+    auto source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
     if ( overrideGeometryCheck )
       source->setInvalidGeometryCheck( geometryCheck );
     return source.release();
@@ -595,7 +595,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     // fall back to default
     if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( fallbackValue ) ) )
     {
-      std::unique_ptr< QgsProcessingFeatureSource> source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
+      auto source = std::make_unique< QgsProcessingFeatureSource >( layer, context, false, featureLimit, filterExpression );
       if ( overrideGeometryCheck )
         source->setInvalidGeometryCheck( geometryCheck );
       return source.release();
@@ -1044,7 +1044,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       {
         saveOptions.actionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
         // sniff destination file to get correct wkb type and crs
-        std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( destination );
+        auto vl = std::make_unique< QgsVectorLayer >( destination );
         if ( vl->isValid() )
         {
           remappingDefinition->setDestinationWkbType( vl->wkbType() );
@@ -1081,7 +1081,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
 
       if ( remappingDefinition )
       {
-        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );
+        auto remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );
         remapSink->setExpressionContext( context.expressionContext() );
         remapSink->setTransformContext( context.transformContext() );
         return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
@@ -1104,7 +1104,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
         }
 
-        std::unique_ptr< QgsVectorLayer > layer = std::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
+        auto layer = std::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
         // update destination to layer ID
         destination = layer->id();
         if ( layer->isValid() )
@@ -1126,7 +1126,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
           }
         }
 
-        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
+        auto remapSink = std::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
         context.temporaryLayerStore()->addMapLayer( layer.release() );
         remapSink->setExpressionContext( context.expressionContext() );
         remapSink->setTransformContext( context.transformContext() );
@@ -1136,7 +1136,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       else
       {
         //create empty layer
-        std::unique_ptr< QgsVectorLayerExporter > exporter = std::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
+        auto exporter = std::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
         if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
         {
           throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
@@ -1275,7 +1275,7 @@ QString QgsProcessingUtils::tempFolder( const QgsProcessingContext *context )
     if ( sTempFolders.empty() )
     {
       const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( QDir::tempPath() );
-      std::unique_ptr< QTemporaryDir > tempFolder = std::make_unique< QTemporaryDir >( templatePath );
+      auto tempFolder = std::make_unique< QTemporaryDir >( templatePath );
       sFolder = tempFolder->path();
       sTempFolders.emplace_back( std::move( tempFolder ) );
     }
@@ -1286,7 +1286,7 @@ QString QgsProcessingUtils::tempFolder( const QgsProcessingContext *context )
       QDir().mkpath( basePath );
 
     const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( basePath );
-    std::unique_ptr< QTemporaryDir > tempFolder = std::make_unique< QTemporaryDir >( templatePath );
+    auto tempFolder = std::make_unique< QTemporaryDir >( templatePath );
     sFolder = tempFolder->path();
     sTempFolders.emplace_back( std::move( tempFolder ) );
   }

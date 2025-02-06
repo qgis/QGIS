@@ -614,7 +614,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       else
       {
         // Lets assume it's an expression
-        std::unique_ptr< QgsExpression > expression = std::make_unique< QgsExpression >( column.attribute() );
+        auto expression = std::make_unique< QgsExpression >( column.attribute() );
         context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );

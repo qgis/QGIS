@@ -73,7 +73,7 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
 
 QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
 {
-  std::unique_ptr<QgsLine3DSymbol> sym = std::make_unique<QgsLine3DSymbol>();
+  auto sym = std::make_unique<QgsLine3DSymbol>();
   sym->setWidth( spinWidth->value() );
   sym->setOffset( static_cast<float>( spinOffset->value() ) );
   sym->setExtrusionHeight( spinExtrusion->value() );

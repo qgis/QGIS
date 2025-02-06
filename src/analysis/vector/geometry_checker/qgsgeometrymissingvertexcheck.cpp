@@ -129,7 +129,7 @@ QString QgsGeometryMissingVertexCheck::description() const
 void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polygon, QgsFeaturePool *featurePool, QList<QgsGeometryCheckError *> &errors, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, QgsFeedback *feedback ) const
 {
   const QgsFeature &currentFeature = layerFeature.feature();
-  std::unique_ptr<QgsMultiPolygon> boundaries = std::make_unique<QgsMultiPolygon>();
+  auto boundaries = std::make_unique<QgsMultiPolygon>();
 
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( polygon->exteriorRing()->clone(), mContext->tolerance ) );
   boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
@@ -181,7 +181,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
             }
             if ( !alreadyReported )
             {
-              std::unique_ptr<QgsGeometryMissingVertexCheckError> error = std::make_unique<QgsGeometryMissingVertexCheckError>( this, layerFeature, QgsPointXY( pt ) );
+              auto error = std::make_unique<QgsGeometryMissingVertexCheckError>( this, layerFeature, QgsPointXY( pt ) );
               error->setAffectedAreaBBox( contextBoundingBox( polygon, vertexId, pt ) );
               QMap<QString, QgsFeatureIds> involvedFeatures;
               involvedFeatures[layerFeature.layerId()].insert( layerFeature.feature().id() );

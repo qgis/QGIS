@@ -191,7 +191,7 @@ bool TestQgsClipper::checkBoundingBox( const QPolygonF &polygon, const QgsRectan
 
 void TestQgsClipper::epsg4978LineRendering()
 {
-  std::unique_ptr<QgsVectorLayer> layerLines = std::make_unique<QgsVectorLayer>( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
+  auto layerLines = std::make_unique<QgsVectorLayer>( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
 
   QgsLineSymbol *fillSymbol = new QgsLineSymbol();
   fillSymbol->setWidth( 0.5 );

@@ -4397,7 +4397,7 @@ void QgsVectorLayer::destroyEditCommand()
   // and delete, so we add a dummy obsolete command to force this to occur.
   // Pushing the new command deletes the destroyed one, and since the new
   // command is obsolete it's automatically deleted by the undo stack.
-  std::unique_ptr< QUndoCommand > command = std::make_unique< QUndoCommand >();
+  auto command = std::make_unique< QUndoCommand >();
   command->setObsolete( true );
   undoStack()->push( command.release() );
 

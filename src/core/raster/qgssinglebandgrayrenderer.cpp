@@ -82,7 +82,7 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
     r->setContrastEnhancement( ce );
   }
 
-  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
+  auto legendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
   legendSettings->readXml( elem, QgsReadWriteContext() );
   r->setLegendSettings( legendSettings.release() );
 

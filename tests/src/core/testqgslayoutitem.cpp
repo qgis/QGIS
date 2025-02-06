@@ -1395,8 +1395,8 @@ void TestQgsLayoutItem::itemVariablesFunction()
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
 
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<QgsVectorLayer> layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  auto layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() );
   QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layer_ids' )" ) );
   r = e5.evaluate( &c );
@@ -1410,7 +1410,7 @@ void TestQgsLayoutItem::variables()
 {
   QgsLayout l( QgsProject::instance() );
 
-  std::unique_ptr<QgsLayoutItemMap> map = std::make_unique<QgsLayoutItemMap>( &l );
+  auto map = std::make_unique<QgsLayoutItemMap>( &l );
   std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   const int before = scope->variableCount();
 
@@ -1459,14 +1459,14 @@ void TestQgsLayoutItem::mapCreditsFunction()
   QCOMPARE( r.toString(), QString() );
 
   // with layers
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsLayerMetadata metadata;
   metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
   layer->setMetadata( metadata );
-  std::unique_ptr<QgsVectorLayer> layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  auto layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   metadata.setRights( QStringList() << QStringLiteral( "CC NC" ) );
   layer2->setMetadata( metadata );
-  std::unique_ptr<QgsVectorLayer> layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
+  auto layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
   metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
   layer3->setMetadata( metadata );
   const std::unique_ptr<QgsVectorLayer> layer4 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
@@ -2106,7 +2106,7 @@ std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *l
   original->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  std::unique_ptr<TestItem> copy = std::make_unique<TestItem>( layout );
+  auto copy = std::make_unique<TestItem>( layout );
   copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() );
 
   return std::move( copy );

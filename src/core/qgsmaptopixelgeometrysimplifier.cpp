@@ -94,22 +94,22 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
   }
   else
   {
-    std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
-        QVector< double >() << x1
-        << x2
-        << x2
-        << x1
-        << x1,
-        QVector< double >() << y1
-        << y1
-        << y2
-        << y2
-        << y1 );
+    auto ext = std::make_unique< QgsLineString >(
+                 QVector< double >() << x1
+                 << x2
+                 << x2
+                 << x1
+                 << x1,
+                 QVector< double >() << y1
+                 << y1
+                 << y2
+                 << y2
+                 << y1 );
     if ( geometryType == Qgis::WkbType::LineString )
       return std::move( ext );
     else
     {
-      std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+      auto polygon = std::make_unique< QgsPolygon >();
       polygon->setExteriorRing( ext.release() );
       return std::move( polygon );
     }

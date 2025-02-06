@@ -3043,7 +3043,7 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "scale_method" ) ) )
     scaleMethod = QgsSymbolLayerUtils::decodeScaleMethod( props[QStringLiteral( "scale_method" )].toString() );
 
-  std::unique_ptr< QgsRasterMarkerSymbolLayer > m = std::make_unique< QgsRasterMarkerSymbolLayer >( path, size, angle, scaleMethod );
+  auto m = std::make_unique< QgsRasterMarkerSymbolLayer >( path, size, angle, scaleMethod );
   m->setCommonProperties( props );
   return m.release();
 }
@@ -3365,7 +3365,7 @@ QVariantMap QgsRasterMarkerSymbolLayer::properties() const
 
 QgsRasterMarkerSymbolLayer *QgsRasterMarkerSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsRasterMarkerSymbolLayer > m = std::make_unique< QgsRasterMarkerSymbolLayer >( mPath, mSize, mAngle );
+  auto m = std::make_unique< QgsRasterMarkerSymbolLayer >( mPath, mSize, mAngle );
   copyCommonProperties( m.get() );
   return m.release();
 }
@@ -4051,7 +4051,7 @@ QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &propert
   if ( properties.contains( QStringLiteral( "angle" ) ) )
     angle = properties[QStringLiteral( "angle" )].toDouble();
 
-  std::unique_ptr< QgsAnimatedMarkerSymbolLayer > m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( path, size, angle );
+  auto m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( path, size, angle );
   m->setFrameRate( properties.value( QStringLiteral( "frameRate" ), QStringLiteral( "10" ) ).toDouble() );
 
   m->setCommonProperties( properties );
@@ -4072,7 +4072,7 @@ QVariantMap QgsAnimatedMarkerSymbolLayer::properties() const
 
 QgsAnimatedMarkerSymbolLayer *QgsAnimatedMarkerSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsAnimatedMarkerSymbolLayer > m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( mPath, mSize, mAngle );
+  auto m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( mPath, mSize, mAngle );
   m->setFrameRate( mFrameRateFps );
   copyCommonProperties( m.get() );
   return m.release();

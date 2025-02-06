@@ -352,7 +352,7 @@ std::unique_ptr<QgsPoint> QgsMssqlGeometryParser::readPoint( int iFigure )
 
 std::unique_ptr<QgsMultiPoint> QgsMssqlGeometryParser::readMultiPoint( int iShape )
 {
-  std::unique_ptr<QgsMultiPoint> poMultiPoint = std::make_unique<QgsMultiPoint>();
+  auto poMultiPoint = std::make_unique<QgsMultiPoint>();
   poMultiPoint->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
@@ -393,7 +393,7 @@ std::unique_ptr<QgsLineString> QgsMssqlGeometryParser::readLineString( int iFigu
 
 std::unique_ptr<QgsCircularString> QgsMssqlGeometryParser::readCircularString( int iPoint, int iNextPoint )
 {
-  std::unique_ptr<QgsCircularString> poCircularString = std::make_unique<QgsCircularString>();
+  auto poCircularString = std::make_unique<QgsCircularString>();
   poCircularString->setPoints( readPointSequence( iPoint, iNextPoint ) );
   return poCircularString;
 }
@@ -405,7 +405,7 @@ std::unique_ptr<QgsCircularString> QgsMssqlGeometryParser::readCircularString( i
 
 std::unique_ptr<QgsMultiLineString> QgsMssqlGeometryParser::readMultiLineString( int iShape )
 {
-  std::unique_ptr<QgsMultiLineString> poMultiLineString = std::make_unique<QgsMultiLineString>();
+  auto poMultiLineString = std::make_unique<QgsMultiLineString>();
   poMultiLineString->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
@@ -425,7 +425,7 @@ std::unique_ptr<QgsPolygon> QgsMssqlGeometryParser::readPolygon( int iShape )
   int iRingCount = 0;
   const int iNextFigure = NextFigureOffset( iShape );
 
-  std::unique_ptr<QgsPolygon> poPoly = std::make_unique<QgsPolygon>();
+  auto poPoly = std::make_unique<QgsPolygon>();
   for ( iFigure = FigureOffset( iShape ); iFigure < iNextFigure; iFigure++ )
   {
     if ( iRingCount == 0 )
@@ -440,7 +440,7 @@ std::unique_ptr<QgsPolygon> QgsMssqlGeometryParser::readPolygon( int iShape )
 
 std::unique_ptr<QgsMultiPolygon> QgsMssqlGeometryParser::readMultiPolygon( int iShape )
 {
-  std::unique_ptr<QgsMultiPolygon> poMultiPolygon = std::make_unique<QgsMultiPolygon>();
+  auto poMultiPolygon = std::make_unique<QgsMultiPolygon>();
   poMultiPolygon->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {
@@ -457,7 +457,7 @@ std::unique_ptr<QgsMultiPolygon> QgsMssqlGeometryParser::readMultiPolygon( int i
 std::unique_ptr<QgsCompoundCurve> QgsMssqlGeometryParser::readCompoundCurve( int iFigure )
 {
   int iPoint, iNextPoint, nPointsPrepared;
-  std::unique_ptr<QgsCompoundCurve> poCompoundCurve = std::make_unique<QgsCompoundCurve>();
+  auto poCompoundCurve = std::make_unique<QgsCompoundCurve>();
   iPoint = PointOffset( iFigure );
   iNextPoint = NextPointOffset( iFigure ) - 1;
 
@@ -523,7 +523,7 @@ std::unique_ptr<QgsCurvePolygon> QgsMssqlGeometryParser::readCurvePolygon( int i
   int iRingCount = 0;
   const int iNextFigure = NextFigureOffset( iShape );
 
-  std::unique_ptr<QgsCurvePolygon> poPoly = std::make_unique<QgsCurvePolygon>();
+  auto poPoly = std::make_unique<QgsCurvePolygon>();
   for ( iFigure = FigureOffset( iShape ); iFigure < iNextFigure; iFigure++ )
   {
     switch ( FigureAttribute( iFigure ) )
@@ -554,7 +554,7 @@ std::unique_ptr<QgsCurvePolygon> QgsMssqlGeometryParser::readCurvePolygon( int i
 
 std::unique_ptr<QgsGeometryCollection> QgsMssqlGeometryParser::readGeometryCollection( int iShape )
 {
-  std::unique_ptr<QgsGeometryCollection> poGeomColl = std::make_unique<QgsGeometryCollection>();
+  auto poGeomColl = std::make_unique<QgsGeometryCollection>();
   poGeomColl->reserve( mNumShapes );
   for ( int i = iShape + 1; i < mNumShapes; i++ )
   {

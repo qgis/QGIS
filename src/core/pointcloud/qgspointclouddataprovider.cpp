@@ -236,7 +236,7 @@ struct MapIndexedPointCloudNode
     const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
     const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
     const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
-    std::unique_ptr< QgsGeos > extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
+    auto extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
     extentEngine->prepareGeometry();
 
     std::optional<bool> copcTimeFlag = std::nullopt;

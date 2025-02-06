@@ -49,31 +49,31 @@ void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector layer representing network" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STRATEGY" ), QObject::tr( "Path type to calculate" ), QStringList() << QObject::tr( "Shortest" ) << QObject::tr( "Fastest" ), false, 0 ) );
 
-  std::unique_ptr<QgsProcessingParameterField> directionField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "DIRECTION_FIELD" ), QObject::tr( "Direction field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  auto directionField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "DIRECTION_FIELD" ), QObject::tr( "Direction field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true );
   directionField->setFlags( directionField->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( directionField.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> forwardValue = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "VALUE_FORWARD" ), QObject::tr( "Value for forward direction" ), QVariant(), false, true );
+  auto forwardValue = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "VALUE_FORWARD" ), QObject::tr( "Value for forward direction" ), QVariant(), false, true );
   forwardValue->setFlags( forwardValue->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( forwardValue.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> backwardValue = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "VALUE_BACKWARD" ), QObject::tr( "Value for backward direction" ), QVariant(), false, true );
+  auto backwardValue = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "VALUE_BACKWARD" ), QObject::tr( "Value for backward direction" ), QVariant(), false, true );
   backwardValue->setFlags( backwardValue->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( backwardValue.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> bothValue = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "VALUE_BOTH" ), QObject::tr( "Value for both directions" ), QVariant(), false, true );
+  auto bothValue = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "VALUE_BOTH" ), QObject::tr( "Value for both directions" ), QVariant(), false, true );
   bothValue->setFlags( bothValue->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( bothValue.release() );
 
-  std::unique_ptr<QgsProcessingParameterEnum> directionValue = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "DEFAULT_DIRECTION" ), QObject::tr( "Default direction" ), QStringList() << QObject::tr( "Forward direction" ) << QObject::tr( "Backward direction" ) << QObject::tr( "Both directions" ), false, 2 );
+  auto directionValue = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "DEFAULT_DIRECTION" ), QObject::tr( "Default direction" ), QStringList() << QObject::tr( "Forward direction" ) << QObject::tr( "Backward direction" ) << QObject::tr( "Both directions" ), false, 2 );
   directionValue->setFlags( directionValue->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( directionValue.release() );
 
-  std::unique_ptr<QgsProcessingParameterField> speedField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "SPEED_FIELD" ), QObject::tr( "Speed field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Numeric, false, true );
+  auto speedField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "SPEED_FIELD" ), QObject::tr( "Speed field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Numeric, false, true );
   speedField->setFlags( speedField->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( speedField.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> speed = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DEFAULT_SPEED" ), QObject::tr( "Default speed (km/h)" ), Qgis::ProcessingNumberParameterType::Double, 50, false, 0 );
+  auto speed = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DEFAULT_SPEED" ), QObject::tr( "Default speed (km/h)" ), Qgis::ProcessingNumberParameterType::Double, 50, false, 0 );
   speed->setFlags( speed->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( speed.release() );
 

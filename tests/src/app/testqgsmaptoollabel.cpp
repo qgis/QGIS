@@ -53,7 +53,7 @@ class TestQgsMapToolLabel : public QObject
 
     void testSelectLabel()
     {
-      std::unique_ptr<QgsVectorLayer> vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      auto vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QVERIFY( vl1->isValid() );
       QgsFeature f1;
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
@@ -63,7 +63,7 @@ class TestQgsMapToolLabel : public QObject
       f1.setAttributes( QgsAttributes() << QStringLiteral( "l" ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
-      std::unique_ptr<QgsVectorLayer> vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QVERIFY( vl2->isValid() );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 1 ) ) );
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
@@ -75,7 +75,7 @@ class TestQgsMapToolLabel : public QObject
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label3" ) );
       QVERIFY( vl2->dataProvider()->addFeature( f1 ) );
 
-      std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+      auto canvas = std::make_unique<QgsMapCanvas>();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
@@ -241,7 +241,7 @@ class TestQgsMapToolLabel : public QObject
       f1.setAttributes( QgsAttributes() << QStringLiteral( "center" ) << QStringLiteral( "base" ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
-      std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+      auto canvas = std::make_unique<QgsMapCanvas>();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
@@ -385,7 +385,7 @@ class TestQgsMapToolLabel : public QObject
       f1.setAttributes( QgsAttributes() << QStringLiteral( "center" ) << QStringLiteral( "base" ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
-      std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+      auto canvas = std::make_unique<QgsMapCanvas>();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
@@ -480,7 +480,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( vl1->isValid() );
       QgsProject::instance()->addMapLayer( vl1 );
 
-      std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+      auto canvas = std::make_unique<QgsMapCanvas>();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );

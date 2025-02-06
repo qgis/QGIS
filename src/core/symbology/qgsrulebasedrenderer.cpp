@@ -1496,14 +1496,14 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       attr = QgsExpression::quotedColumnRef( attr );
     }
 
-    std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+    auto rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
     QString expression;
     QString value;
     QgsRendererCategory category;
     for ( const QgsRendererCategory &category : categorizedRenderer->categories() )
     {
-      std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+      auto rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
       rule->setLabel( category.label() );
 
@@ -1600,14 +1600,14 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       attr = QStringLiteral( "(%1)" ).arg( attr );
     }
 
-    std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+    auto rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
     QString expression;
     QgsRendererRange range;
     for ( int i = 0; i < graduatedRenderer->ranges().size(); ++i )
     {
       range = graduatedRenderer->ranges().value( i );
-      std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+      auto rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
       rule->setLabel( range.label() );
       if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
       {
@@ -1652,7 +1652,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
   {
     const QgsEmbeddedSymbolRenderer *embeddedRenderer = dynamic_cast<const QgsEmbeddedSymbolRenderer *>( renderer );
 
-    std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+    auto rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
     QgsFeatureRequest req;
     req.setFlags( Qgis::FeatureRequestFlag::EmbeddedSymbols | Qgis::FeatureRequestFlag::NoGeometry );
@@ -1663,7 +1663,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
     {
       if ( feature.embeddedSymbol() )
       {
-        std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+        auto rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
         rule->setFilterExpression( QStringLiteral( "$id=%1" ).arg( feature.id() ) );
         rule->setLabel( QString::number( feature.id() ) );
         rule->setSymbol( feature.embeddedSymbol()->clone() );
@@ -1671,7 +1671,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       }
     }
 
-    std::unique_ptr< QgsRuleBasedRenderer::Rule > rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+    auto rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
     rule->setFilterExpression( QStringLiteral( "ELSE" ) );
     rule->setLabel( QObject::tr( "All other features" ) );
     rule->setSymbol( embeddedRenderer->defaultSymbol()->clone() );

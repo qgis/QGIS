@@ -665,7 +665,7 @@ QString QgsGdalProvider::bandDescription( int bandNumber )
 
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+  auto block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
   if ( !initIfNeeded() )
     return block.release();
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
@@ -3427,7 +3427,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           usages.append( usage );
         }
 
-        std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+        auto rat = std::make_unique<QgsRasterAttributeTable>();
 
         for ( const auto &field : std::as_const( ratFields ) )
         {
@@ -3467,7 +3467,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         // Try to cope with invalid rats due to generic fields
         if ( ! rat->isValid( ) )
         {
-          std::unique_ptr<QgsRasterAttributeTable> ratCopy = std::make_unique<QgsRasterAttributeTable>( *rat );
+          auto ratCopy = std::make_unique<QgsRasterAttributeTable>( *rat );
           bool changed { false };
           for ( int fieldIdx = 0; fieldIdx < ratCopy->fields().count( ); ++fieldIdx )
           {

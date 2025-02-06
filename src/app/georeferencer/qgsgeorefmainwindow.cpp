@@ -1616,7 +1616,7 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
     mUserResY
   );
 
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
   connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
     progressDialog->setValue( static_cast<int>( progress ) );
@@ -1676,7 +1676,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
 {
   QgsVectorWarperTask *task = new QgsVectorWarperTask( mTransformMethod, mPoints.asPoints(), mTargetCrs, qobject_cast<QgsVectorLayer *>( mLayer.get() ), mModifiedFileName );
 
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
   connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
     progressDialog->setValue( static_cast<int>( progress ) );
@@ -1852,7 +1852,7 @@ bool QgsGeoreferencerMainWindow::writePDFMapFile( const QString &fileName, const
 
   //create layout
   QgsLayout layout( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page = std::make_unique<QgsLayoutItemPage>( &layout );
 
   double leftMargin = 8;
   double topMargin = 8;
@@ -1919,10 +1919,10 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   //create layout A4 with 300 dpi
   QgsLayout layout( QgsProject::instance() );
 
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page = std::make_unique<QgsLayoutItemPage>( &layout );
   page->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page.release() );
-  std::unique_ptr<QgsLayoutItemPage> page2 = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page2 = std::make_unique<QgsLayoutItemPage>( &layout );
   page2->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page2.release() );
 

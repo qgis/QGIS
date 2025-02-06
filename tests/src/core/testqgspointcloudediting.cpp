@@ -71,7 +71,7 @@ void TestQgsPointCloudEditing::testQgsPointCloudEditingIndex()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   auto i = layer->index();
@@ -98,7 +98,7 @@ void TestQgsPointCloudEditing::testStartStopEditing()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
@@ -163,7 +163,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
@@ -235,7 +235,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
@@ -441,7 +441,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueFiltered()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
@@ -488,7 +488,7 @@ void TestQgsPointCloudEditing::testCommitChanges()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
@@ -539,7 +539,7 @@ void TestQgsPointCloudEditing::testCommitChanges()
   QCOMPARE( block2Data[14], 1 );
 
   // try to open the file as a new layer and check saved values
-  std::unique_ptr<QgsPointCloudLayer> layerNew = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layerNew = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
 
   // check values in the new layer
   std::unique_ptr<QgsPointCloudBlock> block3 = layerNew->index().nodeData( n, request );

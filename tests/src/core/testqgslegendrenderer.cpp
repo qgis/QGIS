@@ -615,13 +615,13 @@ void TestQgsLegendRenderer::testOverrideSymbol()
 
   QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL2 );
 
-  std::unique_ptr<QgsFillSymbol> sym2 = std::make_unique<QgsFillSymbol>();
+  auto sym2 = std::make_unique<QgsFillSymbol>();
   sym2->setColor( Qt::red );
 
   QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
   qgis::down_cast<QgsSymbolLegendNode *>( embeddedNode )->setCustomSymbol( sym2.release() );
 
-  std::unique_ptr<QgsMarkerSymbol> sym3 = std::make_unique<QgsMarkerSymbol>();
+  auto sym3 = std::make_unique<QgsMarkerSymbol>();
   sym3->setColor( QColor( 0, 150, 0 ) );
   sym3->setSize( 6 );
 
@@ -1392,7 +1392,7 @@ void TestQgsLegendRenderer::testFilterByExpressionWithContext()
 {
   const QString testName = QStringLiteral( "legend_filter_by_expression_context" );
 
-  std::unique_ptr<QgsLayerTree> root = std::make_unique<QgsLayerTree>();
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( mVL3 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1405,7 +1405,7 @@ void TestQgsLegendRenderer::testFilterByExpressionWithContext()
 
 
   QgsExpressionContext context;
-  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "test_scope" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "test_scope" ) );
   scope->setVariable( QStringLiteral( "test_var" ), QStringLiteral( "test_value" ) );
   context.appendScope( scope.release() );
 

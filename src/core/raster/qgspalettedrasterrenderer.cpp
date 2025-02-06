@@ -82,7 +82,7 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
 QgsPalettedRasterRenderer *QgsPalettedRasterRenderer::clone() const
 {
 
-  std::unique_ptr< QgsPalettedRasterRenderer > renderer = std::make_unique< QgsPalettedRasterRenderer >( nullptr, mBand, mMultiValueClassData );
+  auto renderer = std::make_unique< QgsPalettedRasterRenderer >( nullptr, mBand, mMultiValueClassData );
 
   if ( mSourceColorRamp )
     renderer->setSourceColorRamp( mSourceColorRamp->clone() );

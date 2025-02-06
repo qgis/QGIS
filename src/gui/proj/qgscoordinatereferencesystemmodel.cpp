@@ -286,7 +286,7 @@ void QgsCoordinateReferenceSystemModel::userCrsAdded( const QString &id )
       QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "USER" ) );
       if ( !group )
       {
-        std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
+        auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
           tr( "User-defined" ),
           QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "USER" )
         );
@@ -358,7 +358,7 @@ void QgsCoordinateReferenceSystemModel::userCrsChanged( const QString &id )
 QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::addRecord( const QgsCrsDbRecord &record )
 {
   QgsCoordinateReferenceSystemModelGroupNode *parentNode = mRootNode.get();
-  std::unique_ptr<QgsCoordinateReferenceSystemModelCrsNode> crsNode = std::make_unique<QgsCoordinateReferenceSystemModelCrsNode>( record );
+  auto crsNode = std::make_unique<QgsCoordinateReferenceSystemModelCrsNode>( record );
 
   QString groupName;
   QString groupId;
@@ -438,7 +438,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
   }
   else
   {
-    std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( groupName, groupIcon, groupId );
+    auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( groupName, groupIcon, groupId );
     parentNode->addChildNode( newGroup.get() );
     parentNode = newGroup.release();
   }
@@ -457,7 +457,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     }
     else
     {
-      std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( projectionName, QIcon(), record.projectionAcronym );
+      auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( projectionName, QIcon(), record.projectionAcronym );
       parentNode->addChildNode( newGroup.get() );
       parentNode = newGroup.release();
     }
@@ -477,7 +477,7 @@ QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinate
   QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "CUSTOM" ) );
   if ( !group )
   {
-    std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
+    auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
       tr( "Custom" ),
       QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "CUSTOM" )
     );

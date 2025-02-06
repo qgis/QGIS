@@ -257,7 +257,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
     QVector< double > bY;
     bY << bounds.top() << bounds.top() << bounds.bottom() << bounds.bottom();
-    std::unique_ptr< QgsLineString > boundLineString = std::make_unique< QgsLineString >( bX, bY );
+    auto boundLineString = std::make_unique< QgsLineString >( bX, bY );
 
     //then transform back to map units
     //TODO - remove when labeling is refactored to use screen units
@@ -292,7 +292,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
         return QgsGeometry();
     }
 
-    std::unique_ptr< QgsPolygon > obstaclePolygon = std::make_unique< QgsPolygon >();
+    auto obstaclePolygon = std::make_unique< QgsPolygon >();
     obstaclePolygon->setExteriorRing( boundLineString.release() );
 
     if ( isMultiPoint )

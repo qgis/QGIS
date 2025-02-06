@@ -6746,7 +6746,7 @@ void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
 void TestQgsLabelingEngine::testSymbologyScalingFactor()
 {
   // test rendering labels with a layer with a reference scale set (with callout)
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( vl->isValid() );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
@@ -6809,7 +6809,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor()
 void TestQgsLabelingEngine::testSymbologyScalingFactor2()
 {
   // test rendering labels with a layer with a reference scale set (with label background)
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( vl->isValid() );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );

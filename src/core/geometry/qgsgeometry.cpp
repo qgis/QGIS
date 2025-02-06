@@ -240,18 +240,18 @@ QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
   if ( rect.isNull() )
     return QgsGeometry();
 
-  std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
-      QVector< double >() << rect.xMinimum()
-      << rect.xMaximum()
-      << rect.xMaximum()
-      << rect.xMinimum()
-      << rect.xMinimum(),
-      QVector< double >() << rect.yMinimum()
-      << rect.yMinimum()
-      << rect.yMaximum()
-      << rect.yMaximum()
-      << rect.yMinimum() );
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  auto ext = std::make_unique< QgsLineString >(
+               QVector< double >() << rect.xMinimum()
+               << rect.xMaximum()
+               << rect.xMaximum()
+               << rect.xMinimum()
+               << rect.xMinimum(),
+               QVector< double >() << rect.yMinimum()
+               << rect.yMinimum()
+               << rect.yMaximum()
+               << rect.yMaximum()
+               << rect.yMinimum() );
+  auto polygon = std::make_unique< QgsPolygon >();
   polygon->setExteriorRing( ext.release() );
   return QgsGeometry( std::move( polygon ) );
 }
@@ -263,120 +263,120 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
     return fromRect( box.toRectangle() );
   }
 
-  std::unique_ptr< QgsPolyhedralSurface > polyhedralSurface = std::make_unique< QgsPolyhedralSurface >();
+  auto polyhedralSurface = std::make_unique< QgsPolyhedralSurface >();
 
-  std::unique_ptr< QgsLineString > ext1 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMinimum()
-      << box.xMinimum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum(),
-      QVector< double >() << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum(),
-      QVector< double >() << box.zMinimum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMinimum() );
-  std::unique_ptr< QgsPolygon > polygon1 = std::make_unique< QgsPolygon >( ext1.release() );
+  auto ext1 = std::make_unique< QgsLineString >(
+                QVector< double >() << box.xMinimum()
+                << box.xMinimum()
+                << box.xMaximum()
+                << box.xMaximum()
+                << box.xMinimum(),
+                QVector< double >() << box.yMinimum()
+                << box.yMaximum()
+                << box.yMaximum()
+                << box.yMinimum()
+                << box.yMinimum(),
+                QVector< double >() << box.zMinimum()
+                << box.zMinimum()
+                << box.zMinimum()
+                << box.zMinimum()
+                << box.zMinimum() );
+  auto polygon1 = std::make_unique< QgsPolygon >( ext1.release() );
   polyhedralSurface->addPatch( polygon1.release() );
 
-  std::unique_ptr< QgsLineString > ext2 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMinimum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMinimum(),
-      QVector< double >() << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum(),
-      QVector< double >() << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMinimum() );
-  std::unique_ptr< QgsPolygon > polygon2 = std::make_unique< QgsPolygon >( ext2.release() );
+  auto ext2 = std::make_unique< QgsLineString >(
+                QVector< double >() << box.xMinimum()
+                << box.xMinimum()
+                << box.xMinimum()
+                << box.xMinimum()
+                << box.xMinimum(),
+                QVector< double >() << box.yMinimum()
+                << box.yMaximum()
+                << box.yMaximum()
+                << box.yMinimum()
+                << box.yMinimum(),
+                QVector< double >() << box.zMinimum()
+                << box.zMinimum()
+                << box.zMaximum()
+                << box.zMaximum()
+                << box.zMinimum() );
+  auto polygon2 = std::make_unique< QgsPolygon >( ext2.release() );
   polyhedralSurface->addPatch( polygon2.release() );
 
-  std::unique_ptr< QgsLineString > ext3 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMinimum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum()
-      << box.xMinimum(),
-      QVector< double >() << box.yMinimum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMinimum(),
-      QVector< double >() << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMinimum() );
-  std::unique_ptr< QgsPolygon > polygon3 = std::make_unique< QgsPolygon >( ext3.release() );
+  auto ext3 = std::make_unique< QgsLineString >(
+                QVector< double >() << box.xMinimum()
+                << box.xMaximum()
+                << box.xMaximum()
+                << box.xMinimum()
+                << box.xMinimum(),
+                QVector< double >() << box.yMinimum()
+                << box.yMinimum()
+                << box.yMinimum()
+                << box.yMinimum()
+                << box.yMinimum(),
+                QVector< double >() << box.zMinimum()
+                << box.zMinimum()
+                << box.zMaximum()
+                << box.zMaximum()
+                << box.zMinimum() );
+  auto polygon3 = std::make_unique< QgsPolygon >( ext3.release() );
   polyhedralSurface->addPatch( polygon3.release() );
 
-  std::unique_ptr< QgsLineString > ext4 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMaximum(),
-      QVector< double >() << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum(),
-      QVector< double >() << box.zMaximum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMaximum() );
-  std::unique_ptr< QgsPolygon > polygon4 = std::make_unique< QgsPolygon >( ext4.release() );
+  auto ext4 = std::make_unique< QgsLineString >(
+                QVector< double >() << box.xMaximum()
+                << box.xMaximum()
+                << box.xMinimum()
+                << box.xMinimum()
+                << box.xMaximum(),
+                QVector< double >() << box.yMaximum()
+                << box.yMinimum()
+                << box.yMinimum()
+                << box.yMaximum()
+                << box.yMaximum(),
+                QVector< double >() << box.zMaximum()
+                << box.zMaximum()
+                << box.zMaximum()
+                << box.zMaximum()
+                << box.zMaximum() );
+  auto polygon4 = std::make_unique< QgsPolygon >( ext4.release() );
   polyhedralSurface->addPatch( polygon4.release() );
 
-  std::unique_ptr< QgsLineString > ext5 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMaximum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMaximum(),
-      QVector< double >() << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum(),
-      QVector< double >() << box.zMaximum()
-      << box.zMaximum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum() );
-  std::unique_ptr< QgsPolygon > polygon5 = std::make_unique< QgsPolygon >( ext5.release() );
+  auto ext5 = std::make_unique< QgsLineString >(
+                QVector< double >() << box.xMaximum()
+                << box.xMaximum()
+                << box.xMaximum()
+                << box.xMaximum()
+                << box.xMaximum(),
+                QVector< double >() << box.yMaximum()
+                << box.yMinimum()
+                << box.yMinimum()
+                << box.yMaximum()
+                << box.yMaximum(),
+                QVector< double >() << box.zMaximum()
+                << box.zMaximum()
+                << box.zMinimum()
+                << box.zMinimum()
+                << box.zMaximum() );
+  auto polygon5 = std::make_unique< QgsPolygon >( ext5.release() );
   polyhedralSurface->addPatch( polygon5.release() );
 
-  std::unique_ptr< QgsLineString > ext6 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMaximum(),
-      QVector< double >() << box.yMaximum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMaximum(),
-      QVector< double >() << box.zMaximum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum()
-      << box.zMaximum() );
-  std::unique_ptr< QgsPolygon > polygon6 = std::make_unique< QgsPolygon >( ext6.release() );
+  auto ext6 = std::make_unique< QgsLineString >(
+                QVector< double >() << box.xMaximum()
+                << box.xMaximum()
+                << box.xMinimum()
+                << box.xMinimum()
+                << box.xMaximum(),
+                QVector< double >() << box.yMaximum()
+                << box.yMaximum()
+                << box.yMaximum()
+                << box.yMaximum()
+                << box.yMaximum(),
+                QVector< double >() << box.zMaximum()
+                << box.zMinimum()
+                << box.zMinimum()
+                << box.zMaximum()
+                << box.zMaximum() );
+  auto polygon6 = std::make_unique< QgsPolygon >( ext6.release() );
   polyhedralSurface->addPatch( polygon6.release() );
 
   return QgsGeometry( std::move( polyhedralSurface ) );
@@ -421,7 +421,7 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
 
 QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius )
 {
-  std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
+  auto wedge = std::make_unique< QgsCompoundCurve >();
 
   const double DEG_TO_RAD = M_PI / 180.0;
   const double RAD_TO_DEG = 180.0 / M_PI;
@@ -431,17 +431,17 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
 
   if ( std::abs( angularWidth ) >= 360.0 )
   {
-    std::unique_ptr< QgsCompoundCurve > outerCc = std::make_unique< QgsCompoundCurve >();
+    auto outerCc = std::make_unique< QgsCompoundCurve >();
 
     QgsCircle outerCircle = QgsCircle( center, outerRadius );
     outerCc->addCurve( outerCircle.toCircularString() );
 
-    std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
+    auto cp = std::make_unique< QgsCurvePolygon >();
     cp->setExteriorRing( outerCc.release() );
 
     if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
     {
-      std::unique_ptr< QgsCompoundCurve > innerCc = std::make_unique< QgsCompoundCurve >();
+      auto innerCc = std::make_unique< QgsCompoundCurve >();
 
       QgsCircle innerCircle = QgsCircle( center, innerRadius );
       innerCc->addCurve( innerCircle.toCircularString() );
@@ -471,7 +471,7 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
     wedge->addCurve( new QgsLineString( center, outerP1 ) );
   }
 
-  std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
+  auto cp = std::make_unique< QgsCurvePolygon >();
   cp->setExteriorRing( wedge.release() );
   return QgsGeometry( std::move( cp ) );
 }
@@ -724,7 +724,7 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
   {
     // TODO : move this block before the above, so we call toggleCircularAtVertex only in one place
     // If the geom is a linestring or cirularstring, we create a compound curve
-    std::unique_ptr<QgsCompoundCurve> cpdCurve = std::make_unique<QgsCompoundCurve>();
+    auto cpdCurve = std::make_unique<QgsCompoundCurve>();
     cpdCurve->addCurve( curve->clone() );
     success = cpdCurve->toggleCircularAtVertex( QgsVertexId( -1, -1, id.vertex ) );
 
@@ -938,7 +938,7 @@ double QgsGeometry::closestSegmentWithContext( const QgsPointXY &point,
 
 Qgis::GeometryOperationResult QgsGeometry::addRing( const QVector<QgsPointXY> &ring )
 {
-  std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >( ring );
+  auto ringLine = std::make_unique< QgsLineString >( ring );
   return addRing( ringLine.release() );
 }
 
@@ -980,7 +980,7 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &poin
   }
   else if ( points.size() > 1 )
   {
-    std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >();
+    auto ringLine = std::make_unique< QgsLineString >();
     ringLine->setPoints( points );
     partGeom = std::move( ringLine );
   }
@@ -998,7 +998,7 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QgsPointSequence &po
   }
   else if ( points.size() > 1 )
   {
-    std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >();
+    auto ringLine = std::make_unique< QgsLineString >();
     ringLine->setPoints( points );
     partGeom = std::move( ringLine );
   }
@@ -1740,14 +1740,14 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
       {
         if ( QgsWkbTypes::isCurvedType( type ) )
         {
-          std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
+          auto cp = std::make_unique< QgsCurvePolygon >();
           cp->setExteriorRing( curve );
           ( void )exterior.release();
           gc->addGeometry( cp.release() );
         }
         else
         {
-          std::unique_ptr< QgsPolygon > p = std::make_unique< QgsPolygon  >();
+          auto p = std::make_unique< QgsPolygon  >();
           p->setExteriorRing( qgsgeometry_cast< QgsLineString * >( curve ) );
           ( void )exterior.release();
           gc->addGeometry( p.release() );
@@ -1763,7 +1763,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
          newGeom.type() == Qgis::GeometryType::Polygon ) )
   {
     // lines/polygons to a point layer, extract all vertices
-    std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >();
+    auto mp = std::make_unique< QgsMultiPoint >();
     const QgsGeometry source = newGeom;
     QSet< QgsPoint > added;
     for ( auto vertex = source.vertices_begin(); vertex != source.vertices_end(); ++vertex )
@@ -1780,7 +1780,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::PolyhedralSurface &&
        QgsWkbTypes::flatType( QgsWkbTypes::singleType( newGeom.wkbType() ) ) == Qgis::WkbType::Polygon )
   {
-    std::unique_ptr< QgsPolyhedralSurface > polySurface = std::make_unique< QgsPolyhedralSurface >();
+    auto polySurface = std::make_unique< QgsPolyhedralSurface >();
     const QgsGeometry source = newGeom;
     for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
     {
@@ -1796,7 +1796,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::Triangle &&
        QgsWkbTypes::flatType( newGeom.wkbType() ) == Qgis::WkbType::Polygon )
   {
-    std::unique_ptr< QgsTriangle > triangle = std::make_unique< QgsTriangle >();
+    auto triangle = std::make_unique< QgsTriangle >();
     const QgsGeometry source = newGeom;
     if ( QgsPolygon *polygon = qgsgeometry_cast< QgsPolygon * >( newGeom.constGet() ) )
     {
@@ -3910,7 +3910,7 @@ QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
 
   if ( polygon.isClosed() )
   {
-    std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
+    auto poly = std::make_unique< QgsPolygon >();
     poly->setExteriorRing( ring.release() );
     return QgsGeometry( std::move( poly ) );
   }
@@ -4006,7 +4006,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
     {
       const QgsMultiLineString *multiLine = qgsgeometry_cast< const QgsMultiLineString * >( geom.constGet() );
 
-      std::unique_ptr< QgsMultiLineString > resultMultiline = std::make_unique< QgsMultiLineString> ();
+      auto resultMultiline = std::make_unique< QgsMultiLineString> ();
       resultMultiline->reserve( multiLine->numGeometries() );
       for ( int i = 0; i < multiLine->numGeometries(); ++i )
       {
@@ -4025,7 +4025,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
     {
       const QgsMultiPolygon *multiPoly = qgsgeometry_cast< const QgsMultiPolygon * >( geom.constGet() );
 
-      std::unique_ptr< QgsMultiPolygon > resultMultiPoly = std::make_unique< QgsMultiPolygon >();
+      auto resultMultiPoly = std::make_unique< QgsMultiPolygon >();
       resultMultiPoly->reserve( multiPoly->numGeometries() );
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
@@ -4044,7 +4044,7 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
     const double offset, double squareDistThreshold, double maxAngleRads,
     bool isRing )
 {
-  std::unique_ptr< QgsLineString > result = std::make_unique< QgsLineString >( line );
+  auto result = std::make_unique< QgsLineString >( line );
   QgsPointSequence outputLine;
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
@@ -4137,7 +4137,7 @@ std::unique_ptr<QgsPolygon> QgsGeometry::smoothPolygon( const QgsPolygon &polygo
 {
   double maxAngleRads = maxAngle * M_PI / 180.0;
   double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
-  std::unique_ptr< QgsPolygon > resultPoly = std::make_unique< QgsPolygon >();
+  auto resultPoly = std::make_unique< QgsPolygon >();
 
   resultPoly->setExteriorRing( smoothCurve( *( static_cast< const QgsLineString *>( polygon.exteriorRing() ) ), iterations, offset,
                                squareDistThreshold, maxAngleRads, true ).release() );

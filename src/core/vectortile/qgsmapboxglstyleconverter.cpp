@@ -4045,7 +4045,7 @@ void QgsMapBoxGlStyleConverter::parseRasterSource( const QVariantMap &source, co
     context = tmpContext.get();
   }
 
-  std::unique_ptr< QgsMapBoxGlStyleRasterSource > raster = std::make_unique< QgsMapBoxGlStyleRasterSource >( name );
+  auto raster = std::make_unique< QgsMapBoxGlStyleRasterSource >( name );
   if ( raster->setFromJson( source, context ) )
     mSources.append( raster.release() );
 }
@@ -4194,7 +4194,7 @@ QgsRasterLayer *QgsMapBoxGlStyleRasterSource::toRasterLayer() const
   parts.insert( QStringLiteral( "zmax" ), QString::number( mMaxZoom ) );
   parts.insert( QStringLiteral( "zmin" ), QString::number( mMinZoom ) );
 
-  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts ), name(), QStringLiteral( "wms" ) );
+  auto rl = std::make_unique< QgsRasterLayer >( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts ), name(), QStringLiteral( "wms" ) );
   return rl.release();
 }
 

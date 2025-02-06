@@ -460,7 +460,7 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
       {
         if ( currentX.size() > 1 )
         {
-          std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
+          auto line = std::make_unique< QgsLineString >( currentX, currentY );
           if ( mUsePathStroker )
           {
             addStrokedLine( line.get(), penWidth, endCapStyle, joinStyle, miterLimit, transformIsIdentity ? nullptr : &matrix );
@@ -547,7 +547,7 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
 
   if ( currentX.size() > 1 )
   {
-    std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
+    auto line = std::make_unique< QgsLineString >( currentX, currentY );
     if ( mUsePathStroker )
     {
       addStrokedLine( line.get(), penWidth, endCapStyle, joinStyle, miterLimit, transformIsIdentity ? nullptr : &matrix );

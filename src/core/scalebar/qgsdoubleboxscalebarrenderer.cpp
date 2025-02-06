@@ -199,8 +199,8 @@ bool QgsDoubleBoxScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &se
   // restore the fill symbols by default
   if ( fill && fill->brushStyle() == Qt::NoBrush )
   {
-    std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
-    std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+    auto fillSymbol = std::make_unique< QgsFillSymbol >();
+    auto fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
     fillSymbolLayer->setColor( QColor( 0, 0, 0 ) );
     fillSymbolLayer->setBrushStyle( Qt::SolidPattern );
     fillSymbolLayer->setStrokeStyle( Qt::SolidLine );
