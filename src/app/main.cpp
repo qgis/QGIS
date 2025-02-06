@@ -571,7 +571,6 @@ int main( int argc, char *argv[] )
 
   bool myHideSplash = false;
   bool settingsMigrationForce = false;
-  bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined( ANDROID )
   QgsDebugMsgLevel( QStringLiteral( "Android: Splash hidden" ), 2 );
@@ -579,9 +578,6 @@ int main( int argc, char *argv[] )
 #endif
 
   bool myRestoreDefaultWindowState = false;
-  bool myRestorePlugins = true;
-  bool myPython = true;
-  bool mySkipBadLayers = false;
   bool myCustomization = true;
 
   QString dxfOutputFile;
@@ -630,6 +626,7 @@ int main( int argc, char *argv[] )
 #endif
 
   QStringList args;
+  QgisApp::AppOptions qgisAppOptions = QgisApp::AppOption::RestorePlugins | QgisApp::AppOption::EnablePython;
 
   {
     QCoreApplication coreApp( argc, argv );
@@ -665,20 +662,20 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
         {
-          mySkipVersionCheck = true;
+          qgisAppOptions |= QgisApp::AppOption::SkipVersionCheck;
         }
         else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
         {
-          myRestorePlugins = false;
+          qgisAppOptions &= ~QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins );
         }
         else if ( arg == QLatin1String( "--nopython" ) )
         {
-          myPython = false;
+          qgisAppOptions &= ~QgisApp::AppOptions( QgisApp::AppOption::EnablePython );
         }
         else if ( arg == QLatin1String( "--skipbadlayers" ) || arg == QLatin1String( "-B" ) )
         {
           QgsDebugMsgLevel( QStringLiteral( "Skipping bad layers" ), 2 );
-          mySkipBadLayers = true;
+          qgisAppOptions |= QgisApp::AppOption::SkipBadLayers;
         }
         else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
         {
@@ -1546,7 +1543,7 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipBadLayers, mySkipVersionCheck, rootProfileFolder, profileName, myPython ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   QgsApplication::connect(
