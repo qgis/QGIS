@@ -132,7 +132,7 @@ QgsFeature TestQgsProcessingAlgsPt2::runForFeature( const std::unique_ptr<QgsPro
   QgsProcessingFeedback feedback;
   context->setFeedback( &feedback );
 
-  std::unique_ptr<QgsVectorLayer> inputLayer( std::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  auto inputLayer = std::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   inputLayer->dataProvider()->addFeature( feature );
 
   parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue<QgsMapLayer *>( inputLayer.get() ) );
