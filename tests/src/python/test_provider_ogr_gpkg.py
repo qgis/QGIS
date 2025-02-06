@@ -3235,10 +3235,10 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             vl.dataProvider().subLayers(),
             [
                 QgsDataProvider.SUBLAYER_SEPARATOR.join(
-                    ["0", "test", "4", "CompoundCurve", "geom", ""]
+                    ["0", "test", "2", "CurvePolygon", "geom", ""]
                 ),
                 QgsDataProvider.SUBLAYER_SEPARATOR.join(
-                    ["0", "test", "2", "CurvePolygon", "geom", ""]
+                    ["0", "test", "4", "MultiCurve", "geom", ""]
                 ),
             ],
         )
