@@ -29,11 +29,12 @@
 #include <nlohmann/json.hpp>
 #include "qgsjsonutils.h"
 
-class TestQgsTextEditWrapper : public QObject
+class TestQgsTextEditWrapper : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsTextEditWrapper() = default;
+    TestQgsTextEditWrapper()
+      : QgsTest( QStringLiteral( "Text Edit Wrapper" ) ) {};
 
   private:
     QTemporaryDir tempDir;
@@ -44,6 +45,7 @@ class TestQgsTextEditWrapper : public QObject
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
 
+    void defaultValueClause();
     void testWithJsonInPostgres();
     void testWithJsonBInPostgres();
 };
@@ -67,6 +69,51 @@ void TestQgsTextEditWrapper::init()
 
 void TestQgsTextEditWrapper::cleanup()
 {
+}
+
+void TestQgsTextEditWrapper::defaultValueClause()
+{
+  QgsVectorLayer vl( copyTestData( QStringLiteral( "points_gpkg.gpkg" ) ) + QStringLiteral( "|layername=points_gpkg" ) );
+  QVERIFY( vl.isValid() );
+
+  QgsTextEditWrapper wrapper( &vl, vl.fields().indexOf( QLatin1String( "fid" ) ), nullptr, nullptr );
+  QLineEdit *widget = qobject_cast<QLineEdit *>( wrapper.widget() );
+  wrapper.setEnabled( true );
+  QCOMPARE( wrapper.defaultValue().toString(), QStringLiteral( "Autogenerate" ) );
+  QCOMPARE( widget->placeholderText(), QStringLiteral( "Autogenerate" ) );
+
+  wrapper.setValues( QgsUnsetAttributeValue( QStringLiteral( "Autogenerate" ) ), {} );
+  QCOMPARE( widget->text(), QStringLiteral( "Autogenerate" ) );
+  QCOMPARE( wrapper.value().userType(), qMetaTypeId< QgsUnsetAttributeValue >() );
+
+  // set explicit text
+  widget->setText( QStringLiteral( "11" ) );
+  QCOMPARE( wrapper.value().userType(), qMetaTypeId< long long >() );
+  QCOMPARE( wrapper.value().toInt(), 11 );
+
+  // reset to unset value (this time without the default value clause, should still work)
+  wrapper.setValues( QgsUnsetAttributeValue(), {} );
+  QCOMPARE( widget->text(), QStringLiteral( "Autogenerate" ) );
+  QCOMPARE( wrapper.value().userType(), qMetaTypeId< QgsUnsetAttributeValue >() );
+
+  // set to null
+  widget->clear();
+  QVERIFY( QgsVariantUtils::isNull( wrapper.value() ) );
+
+  // reset to unset value (this time without the default value clause, should still work)
+  wrapper.setValues( QgsUnsetAttributeValue(), {} );
+  QCOMPARE( widget->text(), QStringLiteral( "Autogenerate" ) );
+  QCOMPARE( wrapper.value().userType(), qMetaTypeId< QgsUnsetAttributeValue >() );
+
+  // null -> valid value
+  widget->clear();
+  QVERIFY( QgsVariantUtils::isNull( wrapper.value() ) );
+  widget->setText( QStringLiteral( "11" ) );
+  QCOMPARE( wrapper.value().userType(), qMetaTypeId< long long >() );
+  QCOMPARE( wrapper.value().toInt(), 11 );
+  // back to null
+  widget->clear();
+  QVERIFY( QgsVariantUtils::isNull( wrapper.value() ) );
 }
 
 void TestQgsTextEditWrapper::testWithJsonInPostgres()
