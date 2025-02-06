@@ -1037,7 +1037,7 @@ QString QgsSensorThingsFilterWidget::filter() const
 
 void QgsSensorThingsFilterWidget::setQuery()
 {
-  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mEntity );
+  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mEntity, false );
   QgsSensorThingsSubsetEditor editor( nullptr, fields, this );
   editor.setSubsetString( mFilter );
   if ( editor.exec() )
