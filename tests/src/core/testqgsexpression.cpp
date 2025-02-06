@@ -2287,6 +2287,10 @@ class TestQgsExpression : public QObject
       // Test NULL -> FALSE
       QTest::newRow( "between nulls FALSE" ) << QStringLiteral( "'c' between NULL AND 'b'" ) << false << QVariant( false );
       QTest::newRow( "between nulls FALSE 2" ) << QStringLiteral( "'a' between 'b' AND NULL" ) << false << QVariant( false );
+
+      // CRS functions
+      QTest::newRow( "crs epsg id" ) << "crs('EPSG:4326')" << false << QVariant( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+      QTest::newRow( "crs_authid" ) << "crs_authid(crs('EPSG:3857'))" << false << QVariant( "EPSG:3857" );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
@@ -2400,6 +2404,12 @@ class TestQgsExpression : public QObject
             QgsInterval inter = result.value<QgsInterval>();
             QgsInterval gotinter = expected.value<QgsInterval>();
             QCOMPARE( inter.seconds(), gotinter.seconds() );
+          }
+          else if ( result.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
+          {
+            QgsCoordinateReferenceSystem crs = result.value<QgsCoordinateReferenceSystem>();
+            QgsCoordinateReferenceSystem expectedCrs = expected.value<QgsCoordinateReferenceSystem>();
+            QCOMPARE( crs.authid(), expectedCrs.authid() );
           }
           else if ( result.userType() >= QMetaType::Type::User )
           {
@@ -5278,6 +5288,9 @@ class TestQgsExpression : public QObject
 
       color = QColor::fromHsvF( 0.90, 0.5f, 0.25f, 0.1f );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "HSVA: 0.90,0.50,0.25,0.10" );
+
+      QgsCoordinateReferenceSystem crs( "EPSG:4326" );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()
