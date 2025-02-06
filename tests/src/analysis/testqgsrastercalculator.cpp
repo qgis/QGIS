@@ -573,9 +573,9 @@ void TestQgsRasterCalculator::calcWithDataType_data()
 void TestQgsRasterCalculator::calcWithDataType()
 {
   QFETCH( int, dataType );
-  QFETCH( bool, useOpenCL );
 
 #ifdef HAVE_OPENCL
+  QFETCH( bool, useOpenCL );
   if ( QgsOpenClUtils::available() && useOpenCL )
     QgsOpenClUtils::setEnabled( useOpenCL );
   else
