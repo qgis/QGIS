@@ -73,5 +73,6 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
     QgsPointCloudAttribute mAttribute;
     int mAttributeOffset;
     double mNewValue;
+    bool mFirstEditForNode = false;
 };
 #endif // QGSPOINTCLOUDLAYERUNDOCOMMAND_H
