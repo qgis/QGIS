@@ -54,7 +54,7 @@ void TestQgsLabelingWidget::cleanup()
 
 void TestQgsLabelingWidget::testRuleKeyPreserved()
 {
-  // test that rule keys are preserved and not resetted when editing labels with a rule based rendering
+  // test that rule keys are preserved and not reset when editing labels with a rule based rendering
   QgsVectorLayer layer( QStringLiteral( "Point?field=pk:int" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
 
   QgsFeature ft1( layer.fields() );
