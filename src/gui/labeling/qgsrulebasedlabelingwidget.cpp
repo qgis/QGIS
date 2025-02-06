@@ -88,7 +88,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
     const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
-    mRootRule = rl->rootRule()->clone();
+    mRootRule = rl->rootRule()->clone( false );
   }
   else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
   {

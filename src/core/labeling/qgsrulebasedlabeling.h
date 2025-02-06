@@ -241,8 +241,12 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
 
-        //! clone this rule, return new instance
-        QgsRuleBasedLabeling::Rule *clone() const SIP_FACTORY;
+        /**
+         * clone this rule
+         * \param resetRuleKey TRUE if this rule and its children rule key need to be reset to new unique ones.
+         * \returns new instance
+         */
+        QgsRuleBasedLabeling::Rule *clone( bool resetRuleKey = true ) const SIP_FACTORY;
 
         // load / save
 
