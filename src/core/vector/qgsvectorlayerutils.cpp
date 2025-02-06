@@ -576,7 +576,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
         QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
         if ( !providerDefault.isEmpty() )
         {
-          v = providerDefault;
+          v = QgsUnsetAttributeValue( providerDefault );
           checkUnique = false;
         }
       }

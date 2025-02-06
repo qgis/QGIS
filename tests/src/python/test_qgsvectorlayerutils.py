@@ -12,6 +12,7 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import shutil
 import tempfile
+import os
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
@@ -994,6 +995,45 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         self.assertTrue(vl.startEditing())
         vl.addFeatures(features)
         self.assertTrue(vl.commitChanges())
+
+    def test_create_feature_provider_default_value_clause(self):
+        """Test create feature with a provider side defaultValueClause"""
+        src = unitTestDataPath("points_gpkg.gpkg")
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest = os.path.join(temp_dir, "points.gpkg")
+            shutil.copy(src, dest)
+            vl = QgsVectorLayer(dest, "vl", "ogr")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.dataProvider().defaultValueClause(0), "Autogenerate")
+            context = vl.createExpressionContext()
+            feature = QgsVectorLayerUtils.createFeature(
+                vl, QgsGeometry.fromPointXY(QgsPointXY(1, 2)), {1: "aaa"}, context
+            )
+            # result should be a QgsUnsetValueAttribute for fid field
+            self.assertTrue(feature.isUnsetValue(0))
+            self.assertEqual(feature[1], "aaa")
+            self.assertTrue(vl.startEditing())
+            vl.addFeature(feature)
+            self.assertTrue(vl.commitChanges())
+            # with explicit fid
+            feature = QgsVectorLayerUtils.createFeature(
+                vl,
+                QgsGeometry.fromPointXY(QgsPointXY(1, 2)),
+                {0: 111, 1: "bbb"},
+                context,
+            )
+            self.assertFalse(feature.isUnsetValue(0))
+            self.assertEqual(feature[0], 111)
+            self.assertEqual(feature[1], "bbb")
+            self.assertTrue(vl.startEditing())
+            vl.addFeature(feature)
+            self.assertTrue(vl.commitChanges())
+
+            res = [f.attributes() for f in vl.getFeatures() if f[1] == "aaa"][0]
+            self.assertEqual(res, [18, "aaa", NULL, NULL, NULL, NULL, NULL])
+            res = [f.attributes() for f in vl.getFeatures() if f[1] == "bbb"][0]
+            self.assertEqual(res, [111, "bbb", NULL, NULL, NULL, NULL, NULL])
 
     def testGuessFriendlyIdentifierField(self):
         """
