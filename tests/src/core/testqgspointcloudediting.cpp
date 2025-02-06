@@ -214,10 +214,27 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QCOMPARE( layer->undoStack()->index(), 1 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
 
-  // Redo edit
-  layer->undoStack()->redo();
+  // Undo second edit
+  layer->undoStack()->undo();
+  QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 4 );
   QCOMPARE( spyChunkChanged.size(), 4 );
+  QCOMPARE( layer->undoStack()->index(), 0 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
+
+  // Redo first edit
+  layer->undoStack()->redo();
+  QVERIFY( layer->isModified() );
+  QCOMPARE( spy.size(), 5 );
+  QCOMPARE( spyChunkChanged.size(), 5 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
+
+  // Redo second edit
+  layer->undoStack()->redo();
+  QVERIFY( layer->isModified() );
+  QCOMPARE( spy.size(), 6 );
+  QCOMPARE( spyChunkChanged.size(), 6 );
   QCOMPARE( layer->undoStack()->index(), 2 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_2", "classified_render_edit_2", mapSettings );
 
@@ -225,8 +242,8 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QVERIFY( layer->rollBack() );
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
-  QCOMPARE( spy.size(), 5 );
-  QCOMPARE( spyChunkChanged.size(), 5 );
+  QCOMPARE( spy.size(), 7 );
+  QCOMPARE( spyChunkChanged.size(), 7 );
   QCOMPARE( layer->undoStack()->index(), 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
 }
