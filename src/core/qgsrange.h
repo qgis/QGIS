@@ -561,31 +561,47 @@ class QgsTemporalRange
 
     /**
      * Returns TRUE if this range overlaps another range.
+     * \see contains()
      */
     bool overlaps( const QgsTemporalRange<T> &other ) const
     {
-      if ( !mUpper.isValid() && ( ( mIncludeLower && other.mIncludeUpper && mLower <= other.mUpper ) || ( ( !mIncludeLower || !other.mIncludeUpper ) && mLower < other.mUpper ) ) )
+      // one of both range is infinite
+      if ( isInfinite() || other.isInfinite() )
         return true;
 
-      if ( ( ( mIncludeLower && other.mIncludeLower && mLower <= other.mLower ) || ( ( !mIncludeLower || !other.mIncludeLower ) && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && other.mIncludeUpper && mUpper >= other.mUpper ) || ( ( !mIncludeUpper || !other.mIncludeUpper ) && mUpper > other.mUpper ) ) )
-        return true;
+      // all bounds are fixed
+      if ( mLower.isValid() && mUpper.isValid() && other.mLower.isValid() && other.mUpper.isValid() )
+      {
+        // other range is completely before or completely after self range
+        if ( other.mUpper < mLower || other.mLower > mUpper )
+          return false;
 
-      if ( ( ( mIncludeLower && other.mIncludeLower && mLower <= other.mLower ) || ( ( !mIncludeLower || other.mIncludeLower ) && mLower < other.mLower ) )
-           && ( ( mIncludeUpper && other.mIncludeLower && mUpper >= other.mLower ) || ( ( !mIncludeUpper || !other.mIncludeLower ) && mUpper > other.mLower ) ) )
-        return true;
+        // other overlaps self for sure
+        if ( other.mUpper > mLower && other.mLower < mUpper )
+          return true;
+      }
 
-      if ( ( ( mIncludeLower && other.mIncludeUpper && mLower <= other.mUpper ) || ( ( !mIncludeLower || other.mIncludeUpper ) && mLower < other.mUpper ) )
-           && ( ( mIncludeUpper && other.mIncludeUpper && mUpper >= other.mUpper ) || ( ( !mIncludeUpper || !other.mIncludeUpper ) && mUpper > other.mUpper ) ) )
-        return true;
+      // other is just before and has a bound in common
+      if ( other.mUpper == mLower && mLower.isValid() )
+        return other.mIncludeUpper && mIncludeLower;
 
-      if ( ( ( mIncludeLower && other.mIncludeLower && mLower >= other.mLower ) || ( ( !mIncludeLower || !other.mIncludeLower ) && mLower > other.mLower ) )
-           && ( ( mIncludeLower && other.mIncludeUpper && mLower <= other.mUpper ) || ( ( !mIncludeLower || !other.mIncludeUpper ) && mLower < other.mUpper ) ) )
-        return true;
+      // other is just after and has a bound in common
+      if ( other.mLower == mUpper && mUpper.isValid() )
+        return other.mIncludeLower && mIncludeUpper;
 
-      if ( mIncludeLower && other.mIncludeLower && mIncludeUpper && other.mIncludeUpper && mLower == other.mLower && mUpper == other.mUpper )
-        return true;
+      if ( !mLower.isValid() )
+        return other.mLower < mUpper || !other.mLower.isValid();
 
+      if ( !mUpper.isValid() )
+        return other.mUpper > mLower || !other.mUpper.isValid();
+
+      if ( !other.mLower.isValid() )
+        return other.mUpper > mLower || !mLower.isValid();
+
+      if ( !other.mUpper.isValid() )
+        return other.mLower < mUpper || !mUpper.isValid();
+
+      // UNREACHABLE CODE
       return false;
     }
 
