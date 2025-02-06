@@ -5,11 +5,11 @@
   "description": "Converts a number to string.",
   "arguments": [{
     "arg": "number",
-    "description": "Integer or real value. The number to convert to string."
+    "description": "Integer or real value. The number to convert to string. The conversion is not locale-aware, see 'format_number' for a locale-aware alternative."
   }],
   "examples": [{
-    "expression": "to_string(123)",
-    "returns": "'123'"
+    "expression": "to_string(1.23)",
+    "returns": "'1.23'"
   }],
   "tags": ["converts", "number"]
 }
