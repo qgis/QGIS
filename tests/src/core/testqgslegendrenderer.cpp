@@ -1515,9 +1515,9 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
   layer->setRendererSettings( rendererSettings );
 
-  std::unique_ptr<QgsLayerTree> root( std::make_unique<QgsLayerTree>() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( layer );
-  std::unique_ptr<QgsLayerTreeModel> legendModel( std::make_unique<QgsLayerTreeModel>( root.get() ) );
+  auto legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
 
   QgsLegendSettings settings;
 

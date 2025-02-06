@@ -191,7 +191,7 @@ QgsFeature TestQgsProcessingAlgsPt1::runForFeature( const std::unique_ptr<QgsPro
   QgsProcessingFeedback feedback;
   context->setFeedback( &feedback );
 
-  std::unique_ptr<QgsVectorLayer> inputLayer( std::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  auto inputLayer = std::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   inputLayer->dataProvider()->addFeature( feature );
 
   parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue<QgsMapLayer *>( inputLayer.get() ) );
@@ -4479,7 +4479,7 @@ void TestQgsProcessingAlgsPt1::bookmarksToLayer()
 
 void TestQgsProcessingAlgsPt1::layerToBookmarks()
 {
-  std::unique_ptr<QgsVectorLayer> inputLayer( std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=province:string&field=municipality:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  auto inputLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=province:string&field=municipality:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   QVERIFY( inputLayer->isValid() );
 
   QgsFeature f;
