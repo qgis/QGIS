@@ -202,8 +202,11 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, QWidget *paren
   QgsMasterPasswordResetDialog dlg( parent );
 
   QString backuppath;
+  // if password helper enabled and user is using the default random generated password, then
+  // just fill this in automatically (the user will have NO idea what this is!)
   if ( QgsApplication::authManager()->verifyStoredPasswordHelperPassword()
-       && ( QgsApplication::authManager()->masterPasswordIsSet() || QgsApplication::authManager()->setMasterPassword( true ) ) )
+       && ( QgsApplication::authManager()->masterPasswordIsSet() || QgsApplication::authManager()->setMasterPassword( true ) )
+       && QgsAuthManager::settingsUsingGeneratedRandomPassword->value() )
   {
     dlg.oldPasswordLineEdit()->setText( QStringLiteral( "***************" ) );
     dlg.oldPasswordLineEdit()->setEnabled( false );
