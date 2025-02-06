@@ -553,8 +553,11 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   } );
 
 
-  menu->addAction( zoomToAction );
-  menu->addAction( panToAction );
+  if ( mapCanvas() )
+  {
+    menu->addAction( zoomToAction );
+    menu->addAction( panToAction );
+  }
   if ( !assetsMenu->isEmpty() )
     menu->addMenu( assetsMenu );
   menu->addAction( downloadAction );
