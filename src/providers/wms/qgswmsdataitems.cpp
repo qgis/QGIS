@@ -23,6 +23,7 @@
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgsxyzconnection.h"
+#include "qgsproject.h"
 
 
 // ---------------------------------------------------------------------------
@@ -455,22 +456,28 @@ QString QgsWMSItemBase::createUri( bool withStyle )
   }
   mDataSourceUri.setParam( QStringLiteral( "format" ), format );
 
+  const QString projectCrs = QgsProject::instance()->crs().authid();
   QString crs;
-  // get first known if possible
-  QgsCoordinateReferenceSystem testCrs;
-  for ( const QString &c : std::as_const( mLayerProperty.crs ) )
+  // if project CRS is supported then use it, otherwise use first available CRS
+  if ( !mLayerProperty.crs.isEmpty() )
   {
-    testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
-    if ( testCrs.isValid() )
+    QgsCoordinateReferenceSystem testCrs;
+    for ( const QString &c : std::as_const( mLayerProperty.crs ) )
     {
-      crs = c;
-      break;
+      testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
+      if ( testCrs.authid().compare( projectCrs, Qt::CaseInsensitive ) == 0 )
+      {
+        crs = projectCrs;
+        break;
+      }
+    }
+
+    if ( crs.isEmpty() )
+    {
+      crs = mLayerProperty.crs[0];
     }
   }
-  if ( crs.isEmpty() && !mLayerProperty.crs.isEmpty() )
-  {
-    crs = mLayerProperty.crs[0];
-  }
+
   mDataSourceUri.setParam( QStringLiteral( "crs" ), crs );
 
   // Set default featureCount to 10, old connections might miss this
