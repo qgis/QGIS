@@ -381,7 +381,7 @@ void TestQgsMapToolReshape::testWithTracing()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo );
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerTopo );
 
-  std::unique_ptr<QgsMapCanvasTracer> tracer( new QgsMapCanvasTracer( mCanvas, nullptr ) );
+  auto tracer = std::make_unique<QgsMapCanvasTracer>( mCanvas, nullptr );
 
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );

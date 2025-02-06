@@ -59,7 +59,7 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
 {
   Q_UNUSED( bandNo )
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput )
   {
     return outputBlock.release();

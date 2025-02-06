@@ -208,7 +208,7 @@ bool QgsPalettedRasterRenderer::setInputBand( int band )
 
 QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput || mMultiValueClassData.isEmpty() )
   {
     return outputBlock.release();

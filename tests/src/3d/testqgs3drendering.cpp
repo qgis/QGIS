@@ -207,9 +207,9 @@ void TestQgs3DRendering::initTestCase()
   QColor cMin = Qt::red, cMax = Qt::yellow;
 
   // change renderer for the new style
-  std::unique_ptr<QgsColorRampShader> colorRampShader( new QgsColorRampShader( vMin, vMax ) );
+  auto colorRampShader = std::make_unique<QgsColorRampShader>( vMin, vMax );
   colorRampShader->setColorRampItemList( QList<QgsColorRampShader::ColorRampItem>() << QgsColorRampShader::ColorRampItem( vMin, cMin ) << QgsColorRampShader::ColorRampItem( vMax, cMax ) );
-  std::unique_ptr<QgsRasterShader> shader( new QgsRasterShader( vMin, vMax ) );
+  auto shader = std::make_unique<QgsRasterShader>( vMin, vMax );
   shader->setRasterShaderFunction( colorRampShader.release() );
   QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( mLayerDtm->renderer()->input(), 1, shader.release() );
   mLayerDtm->setRenderer( r );
@@ -1545,7 +1545,7 @@ void TestQgs3DRendering::testInstancedRendering()
 {
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
@@ -1620,7 +1620,7 @@ void TestQgs3DRendering::testInstancedRenderingClipping()
 {
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
@@ -1720,7 +1720,7 @@ void TestQgs3DRendering::testBillboardRendering()
 {
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );

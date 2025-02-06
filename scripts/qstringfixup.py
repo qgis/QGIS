@@ -99,6 +99,9 @@ make_unique = re.compile(
 make_unique2 = re.compile(
     r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*(std::make_unique<\s*(.*?)\s*>.*?)\s*\)\s*;$"""
 )
+make_unique3 = re.compile(
+    r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*new\s*(.*?)\s*(\(.*\s*\))\s*\)\s*;"""
+)
 
 
 def qlatin1char_or_string(x):
@@ -239,6 +242,19 @@ while i < len(lines):
     m = make_unique2.match(line)
     if m and m.group(2) == m.group(5):
         line = m.group(1) + "auto " + m.group(3) + " = " + m.group(4) + ";"
+
+    m = make_unique3.match(line)
+    if m and m.group(2) == m.group(4):
+        line = (
+            m.group(1)
+            + "auto "
+            + m.group(3)
+            + " = std::make_unique<"
+            + m.group(4)
+            + ">"
+            + m.group(5)
+            + ";"
+        )
 
     print(line)
     i += 1

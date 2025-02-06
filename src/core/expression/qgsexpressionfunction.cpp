@@ -3871,8 +3871,8 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  std::unique_ptr<QgsTriangle> tr( new QgsTriangle() );
-  std::unique_ptr<QgsLineString> lineString( new QgsLineString() );
+  auto tr = std::make_unique<QgsTriangle>();
+  auto lineString = std::make_unique<QgsLineString>();
   lineString->clear();
 
   for ( const QVariant &value : values )

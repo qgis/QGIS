@@ -649,7 +649,7 @@ void TestQgsPaintEffect::glow()
 void TestQgsPaintEffect::transform()
 {
   //create
-  std::unique_ptr<QgsTransformEffect> effect( new QgsTransformEffect() );
+  auto effect = std::make_unique<QgsTransformEffect>();
   QVERIFY( effect.get() );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
@@ -680,7 +680,7 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( effect->drawMode(), QgsPaintEffect::Modifier );
 
   //copy constructor
-  std::unique_ptr<QgsTransformEffect> copy( new QgsTransformEffect( *effect ) );
+  auto copy = std::make_unique<QgsTransformEffect>( *effect );
   QVERIFY( copy.get() );
   QCOMPARE( copy->enabled(), false );
   QCOMPARE( copy->translateX(), 6.0 );

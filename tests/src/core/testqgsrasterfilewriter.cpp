@@ -114,7 +114,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
     return false;
   }
 
-  std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( copiedSrc, rasterFileInfo.completeBaseName() ) );
+  auto mpRasterLayer = std::make_unique<QgsRasterLayer>( copiedSrc, rasterFileInfo.completeBaseName() );
 
   if ( !mpRasterLayer->isValid() )
     return false;

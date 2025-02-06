@@ -5006,7 +5006,7 @@ QgsSymbolLayer *QgsCentroidFillSymbolLayer::createFromSld( QDomElement &element 
 
   QgsSymbolLayerList layers;
   layers.append( l );
-  std::unique_ptr< QgsMarkerSymbol > marker( new QgsMarkerSymbol( layers ) );
+  auto marker = std::make_unique<QgsMarkerSymbol>( layers );
 
   auto sl = std::make_unique< QgsCentroidFillSymbolLayer >();
   sl->setSubSymbol( marker.release() );

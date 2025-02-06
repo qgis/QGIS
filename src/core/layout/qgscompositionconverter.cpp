@@ -936,7 +936,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   for ( int i = 0; i < mapOverviewNodeList.size(); ++i )
   {
     const QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
-    std::unique_ptr<QgsLayoutItemMapOverview> mapOverview( new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), layoutItem ) );
+    auto mapOverview = std::make_unique<QgsLayoutItemMapOverview>( mapOverviewElem.attribute( QStringLiteral( "name" ) ), layoutItem );
     mapOverview->readXml( mapOverviewElem, doc, context );
     const QString frameMapId = mapOverviewElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) );
     if ( frameMapId != QLatin1String( "-1" ) && mapId2Uuid.contains( frameMapId ) )

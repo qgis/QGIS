@@ -201,7 +201,7 @@ void TestQgsZonalStatistics::testReprojection()
   const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // create a reprojected version of the layer
-  std::unique_ptr<QgsVectorLayer> vectorLayer( new QgsVectorLayer( myTestDataPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) ) );
+  auto vectorLayer = std::make_unique<QgsVectorLayer>( myTestDataPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
   std::unique_ptr<QgsVectorLayer> reprojected( vectorLayer->materialize( QgsFeatureRequest().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3785" ) ), QgsProject::instance()->transformContext() ) ) );
 
   QCOMPARE( reprojected->featureCount(), vectorLayer->featureCount() );

@@ -99,7 +99,7 @@ void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem 
 QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput )
   {
     QgsDebugError( QStringLiteral( "No input raster!" ) );

@@ -268,7 +268,7 @@ QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index, doub
 
 QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
 {
-  std::unique_ptr<QgsMultiLineString> multiLineString( new QgsMultiLineString() );
+  auto multiLineString = std::make_unique<QgsMultiLineString>();
   QSet<QPair<int, int>> exactEdges;
 
   // STEP 1: Get Data
@@ -337,7 +337,7 @@ QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
         else
         {
           exactEdges.insert( { indices[i], indices[j] } );
-          std::unique_ptr<QgsLineString> line( new QgsLineString( coords[i], coords[j] ) );
+          auto line = std::make_unique<QgsLineString>( coords[i], coords[j] );
           multiLineString->addGeometry( line.release() );
           break;
         }
@@ -361,7 +361,7 @@ QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
       else
       {
         // we have found the end point of the contour line, we are done
-        std::unique_ptr<QgsLineString> line( new QgsLineString( tmp, xy ) );
+        auto line = std::make_unique<QgsLineString>( tmp, xy );
         multiLineString->addGeometry( line.release() );
         break;
       }

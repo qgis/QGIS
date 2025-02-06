@@ -95,7 +95,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( canvas->mapSettings().outputSize(), QSize( 500, 500 ) );
       QCOMPARE( canvas->mapSettings().visibleExtent(), QgsRectangle( -1, -1, 4, 4 ) );
 
-      std::unique_ptr<QgsMapToolLabel> tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
+      auto tool = std::make_unique<QgsMapToolLabel>( canvas.get(), advancedDigitizingDockWidget.get() );
 
       // no labels yet
       QgsPointXY pt;
@@ -261,7 +261,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( canvas->mapSettings().outputSize(), QSize( 500, 500 ) );
       QCOMPARE( canvas->mapSettings().visibleExtent(), QgsRectangle( -1, -1, 4, 4 ) );
 
-      std::unique_ptr<QgsMapToolLabel> tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
+      auto tool = std::make_unique<QgsMapToolLabel>( canvas.get(), advancedDigitizingDockWidget.get() );
 
       // add some labels
       QgsPalLayerSettings pls1;
@@ -405,7 +405,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( canvas->mapSettings().outputSize(), QSize( 500, 500 ) );
       QCOMPARE( canvas->mapSettings().visibleExtent(), QgsRectangle( -1, -1, 4, 4 ) );
 
-      std::unique_ptr<QgsMapToolLabel> tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
+      auto tool = std::make_unique<QgsMapToolLabel>( canvas.get(), advancedDigitizingDockWidget.get() );
 
       // add some labels
       QgsPalLayerSettings pls1;
@@ -485,7 +485,7 @@ class TestQgsMapToolLabel : public QObject
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
 
-      std::unique_ptr<QgsMapToolLabel> tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
+      auto tool = std::make_unique<QgsMapToolLabel>( canvas.get(), advancedDigitizingDockWidget.get() );
 
       QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "1" ) );
 

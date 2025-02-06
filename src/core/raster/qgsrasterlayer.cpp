@@ -1419,7 +1419,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     if ( myBand != -1 )
     {
       const Qgis::DataType myType = static_cast< Qgis::DataType >( mDataProvider->dataType( myBand ) );
-      std::unique_ptr<QgsContrastEnhancement> myEnhancement( new QgsContrastEnhancement( static_cast< Qgis::DataType >( myType ) ) );
+      auto myEnhancement = std::make_unique<QgsContrastEnhancement>( static_cast< Qgis::DataType >( myType ) );
       myEnhancement->setContrastEnhancementAlgorithm( algorithm, generateLookupTableFlag );
 
       double min;

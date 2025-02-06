@@ -57,7 +57,7 @@ QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
 
 QgsHtmlAnnotation *QgsHtmlAnnotation::clone() const
 {
-  std::unique_ptr< QgsHtmlAnnotation > c( new QgsHtmlAnnotation() );
+  auto c = std::make_unique<QgsHtmlAnnotation>();
   copyCommonProperties( c.get() );
   c->setSourceFile( mHtmlFile );
   return c.release();

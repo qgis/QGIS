@@ -321,7 +321,7 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
   }
 
   // create a query builder object
-  std::unique_ptr<QgsQueryBuilder> gb( new QgsQueryBuilder( vlayer.get(), this ) );
+  auto gb = std::make_unique<QgsQueryBuilder>( vlayer.get(), this );
 
   if ( gb->exec() )
   {

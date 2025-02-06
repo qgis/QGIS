@@ -236,7 +236,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
 
 QgsAbstractGeometry *QgsMultiCurve::boundary() const
 {
-  std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
+  auto multiPoint = std::make_unique<QgsMultiPoint>();
   multiPoint->reserve( mGeometries.size() * 2 );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {

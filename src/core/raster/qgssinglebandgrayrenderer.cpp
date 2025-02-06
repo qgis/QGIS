@@ -99,7 +99,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
   Q_UNUSED( bandNo )
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput )
   {
     return outputBlock.release();

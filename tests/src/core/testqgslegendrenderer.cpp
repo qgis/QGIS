@@ -307,7 +307,7 @@ void TestQgsLegendRenderer::init()
 
   mRL = new QgsRasterLayer( QString( tempFileName ), QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
 
-  std::unique_ptr<TestRasterRenderer> rasterRenderer( new TestRasterRenderer( mRL->dataProvider(), 1, { QgsPalettedRasterRenderer::Class( 1, QColor( 0, 0, 0 ), QStringLiteral( "1" ) ), QgsPalettedRasterRenderer::Class( 2, QColor( 255, 255, 255 ), QStringLiteral( "2" ) ) } ) );
+  auto rasterRenderer = std::make_unique<TestRasterRenderer>( mRL->dataProvider(), 1, QgsPalettedRasterRenderer::ClassData { QgsPalettedRasterRenderer::Class( 1, QColor( 0, 0, 0 ), QStringLiteral( "1" ) ), QgsPalettedRasterRenderer::Class( 2, QColor( 255, 255, 255 ), QStringLiteral( "2" ) ) } );
   mRL->setRenderer( rasterRenderer.release() );
 
   QgsProject::instance()->addMapLayer( mRL );
@@ -912,7 +912,7 @@ void TestQgsLegendRenderer::testMapUnits()
   sym->setSizeUnit( Qgis::RenderUnit::Millimeters );
   catRenderer->updateCategorySymbol( 2, sym );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( mVL3 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1074,7 +1074,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
 
   const QString testName = QStringLiteral( "legend_filter_by_map_dupe" );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1101,7 +1101,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsFillSymbol *sym = new QgsFillSymbol();
   sym->setColor( Qt::cyan );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
 
   QList<QgsVectorLayer *> layers;
   for ( int i = 1; i <= itemCount; ++i )
@@ -1305,7 +1305,7 @@ void TestQgsLegendRenderer::testRasterStroke()
 {
   const QString testName = QStringLiteral( "legend_raster_border" );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( mRL );
 
   QgsLayerTreeModel legendModel( root.get() );
@@ -1480,7 +1480,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1598,7 +1598,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1925,7 +1925,7 @@ void TestQgsLegendRenderer::testColumnsMixedSymbolSize()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::cyan );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
 
   QList<QgsVectorLayer *> layers;
   for ( double size : { 4, 5, 16 } )
@@ -2140,7 +2140,7 @@ void TestQgsLegendRenderer::testLabelLegend()
 
 void TestQgsLegendRenderer::testHeatmap()
 {
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
 
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Points" ), QStringLiteral( "Points" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( vl );

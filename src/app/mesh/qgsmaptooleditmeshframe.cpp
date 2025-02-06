@@ -2064,7 +2064,7 @@ void QgsMapToolEditMeshFrame::selectTouchedByGeometry( const QgsGeometry &geomet
   for ( const int faceIndex : nativeFaceIndexes )
   {
     const QgsMeshFace &face = nativeFace( faceIndex );
-    std::unique_ptr<QgsPolygon> faceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
+    auto faceGeom = std::make_unique<QgsPolygon>( new QgsLineString( nativeFaceGeometry( faceIndex ) ) );
     if ( engine->intersects( faceGeom.get() ) )
     {
       QSet<int> faceToAdd = qgis::listToSet( face.toList() );

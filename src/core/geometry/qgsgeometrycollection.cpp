@@ -1057,7 +1057,7 @@ void QgsGeometryCollection::swapXy()
 
 QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
 {
-  std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );
+  auto newCollection = std::make_unique<QgsGeometryCollection>();
   newCollection->reserve( mGeometries.size() );
   for ( QgsAbstractGeometry *geom : mGeometries )
   {

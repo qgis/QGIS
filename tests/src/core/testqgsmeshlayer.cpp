@@ -1473,7 +1473,7 @@ void TestQgsMeshLayer::test_dataset_group_item_tree_item()
   const QgsReadWriteContext context;
   const QDomElement rootElement = rootItem->writeXml( doc, context );
 
-  std::unique_ptr<QgsMeshDatasetGroupTreeItem> otherRoot( new QgsMeshDatasetGroupTreeItem( rootElement, context ) );
+  auto otherRoot = std::make_unique<QgsMeshDatasetGroupTreeItem>( rootElement, context );
 
   for ( int i = 0; i < rootItem->totalChildCount(); ++i )
     QCOMPARE( otherRoot->childFromDatasetGroupIndex( i )->name(), names.at( i ) );
