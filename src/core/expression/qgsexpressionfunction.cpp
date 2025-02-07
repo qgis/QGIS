@@ -9409,7 +9409,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     // **CRS** functions
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "crs_authid" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "crs" ) ), fcnGetCrsAuthid, QStringLiteral( "CRS" ), QString(), true )
-        << new QgsStaticExpressionFunction( QStringLiteral( "crs" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "definition" ) ), fcnCrs, QStringLiteral( "CRS" ) );
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_crs" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "definition" ) ), fcnCrs, QStringLiteral( "CRS" ) );
 
 
     // **Fields and Values** functions
