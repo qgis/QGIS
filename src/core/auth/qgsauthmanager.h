@@ -945,7 +945,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void passwordHelperLog( const QString &msg ) const;
 
     //! Read Master password from the wallet
-    QString passwordHelperRead();
+    QString passwordHelperRead( bool &ok );
 
     //! Store Master password in the wallet
     bool passwordHelperWrite( const QString &password );
