@@ -17,7 +17,7 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
-option (WITH_PYTHON "Determines whether Python should be built" ON)
+option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
 if(NOT WITH_PYTHON)
     set(WITH_BINDINGS OFF CACHE BOOL "Determines whether Python bindings should be built")
 else()
