@@ -814,7 +814,9 @@ bool QgsAuthManager::resetMasterPasswordUsingStoredPasswordHelper( const QString
     return false;
   }
 
-  return resetMasterPassword( newPassword, passwordHelperRead(), keepBackup, backupPath );
+  bool readOk = false;
+  const QString existingPassword = passwordHelperRead( readOk );
+  return resetMasterPassword( newPassword, existingPassword, keepBackup, backupPath );
 }
 
 void QgsAuthManager::setScheduledAuthDatabaseErase( bool scheduleErase )
@@ -3157,7 +3159,11 @@ bool QgsAuthManager::verifyStoredPasswordHelperPassword()
   if ( !passwordHelperEnabled() )
     return false;
 
-  const QString currentPass = passwordHelperRead();
+  bool readOk = false;
+  const QString currentPass = passwordHelperRead( readOk );
+  if ( !readOk )
+    return false;
+
   if ( !currentPass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
   {
     return verifyMasterPassword( currentPass );
@@ -3377,8 +3383,9 @@ bool QgsAuthManager::passwordHelperDelete()
   return result;
 }
 
-QString QgsAuthManager::passwordHelperRead()
+QString QgsAuthManager::passwordHelperRead( bool &ok )
 {
+  ok = false;
   ensureInitialized();
 
   // Retrieve it!
@@ -3413,6 +3420,7 @@ QString QgsAuthManager::passwordHelperRead()
     }
     else
     {
+      ok = true;
       // Signals used in the tests to exit main application loop
       emit passwordHelperSuccess();
     }
@@ -3535,8 +3543,9 @@ bool QgsAuthManager::masterPasswordInput()
   // Read the password from the wallet
   if ( passwordHelperEnabled() )
   {
-    pass = passwordHelperRead();
-    if ( ! pass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
+    bool readOk = false;
+    pass = passwordHelperRead( readOk );
+    if ( readOk && ! pass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
     {
       // Let's check the password!
       if ( verifyMasterPassword( pass ) )
