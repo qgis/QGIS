@@ -430,7 +430,7 @@ void QgsAuthAuthoritiesEditor::btnAddCa_clicked()
     const QList<QSslCertificate> &certs( dlg->certificatesToImport() );
     if ( !QgsApplication::authManager()->storeCertAuthorities( certs ) )
     {
-      messageBar()->pushMessage( tr( "ERROR storing CA(s) in authentication database" ), Qgis::MessageLevel::Critical );
+      messageBar()->pushMessage( tr( "ERROR storing CA(s) in authentication storage" ), Qgis::MessageLevel::Critical );
     }
 
     QgsApplication::authManager()->rebuildCaCertsCache();
@@ -501,19 +501,19 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
   if ( cert.isNull() )
   {
-    messageBar()->pushMessage( tr( "Certificate could not be found in database for id %1:" ).arg( digest ), Qgis::MessageLevel::Warning );
+    messageBar()->pushMessage( tr( "Certificate could not be found in the authentication storage for id %1:" ).arg( digest ), Qgis::MessageLevel::Warning );
     return;
   }
 
   if ( !QgsApplication::authManager()->removeCertAuthority( cert ) )
   {
-    messageBar()->pushMessage( tr( "ERROR removing CA from authentication database for id %1:" ).arg( digest ), Qgis::MessageLevel::Critical );
+    messageBar()->pushMessage( tr( "ERROR removing CA from the authentication storage for id %1:" ).arg( digest ), Qgis::MessageLevel::Critical );
     return;
   }
 
   if ( !QgsApplication::authManager()->removeCertTrustPolicy( cert ) )
   {
-    messageBar()->pushMessage( tr( "ERROR removing cert trust policy from authentication database for id %1:" ).arg( digest ), Qgis::MessageLevel::Critical );
+    messageBar()->pushMessage( tr( "ERROR removing cert trust policy from the authentication storage for id %1:" ).arg( digest ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -646,11 +646,11 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 
     if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
     {
-      logMessage( QObject::tr( "Could not store 'CA file path' in authentication database." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
+      logMessage( QObject::tr( "Could not store 'CA file path' in authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     }
     if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ), QVariant( dlg->allowInvalidCerts() ) ) )
     {
-      logMessage( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
+      logMessage( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     }
 
     QgsApplication::authManager()->rebuildCaCertsCache();
@@ -682,12 +682,12 @@ void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
 {
   if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
   {
-    logMessage( QObject::tr( "Could not remove 'CA file path' from authentication database." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
+    logMessage( QObject::tr( "Could not remove 'CA file path' from authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     return;
   }
   if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafileallowinvalid" ) ) )
   {
-    logMessage( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
+    logMessage( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -702,7 +702,7 @@ void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
     {
       if ( !QgsApplication::authManager()->removeCertTrustPolicies( certs ) )
       {
-        messageBar()->pushMessage( tr( "ERROR removing cert(s) trust policy from authentication database." ), Qgis::MessageLevel::Critical );
+        messageBar()->pushMessage( tr( "ERROR removing cert(s) trust policy from authentication storage." ), Qgis::MessageLevel::Critical );
         return;
       }
       QgsApplication::authManager()->rebuildCertTrustCache();

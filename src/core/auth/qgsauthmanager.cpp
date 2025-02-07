@@ -440,7 +440,7 @@ bool QgsAuthManager::createAndStoreRandomMasterPasswordInKeyChain()
   }
   else
   {
-    emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
+    emit passwordHelperMessageLog( tr( "Master password could not be written to the %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -1518,7 +1518,7 @@ bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
 
   if ( sqliteDatabasePath().isEmpty() )
   {
-    const char *err = QT_TR_NOOP( "The authentication database is not filesystem-based" );
+    const char *err = QT_TR_NOOP( "The authentication storage is not filesystem-based" );
     QgsDebugError( err );
     emit messageLog( tr( err ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
@@ -1526,7 +1526,7 @@ bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
 
   if ( !QFile::exists( sqliteDatabasePath() ) )
   {
-    const char *err = QT_TR_NOOP( "No authentication database found" );
+    const char *err = QT_TR_NOOP( "No authentication database file found" );
     QgsDebugError( err );
     emit messageLog( tr( err ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
@@ -3368,7 +3368,7 @@ QString QgsAuthManager::passwordHelperRead()
   if ( job.error() )
   {
     mPasswordHelperErrorCode = job.error();
-    mPasswordHelperErrorMessage = tr( "Retrieving password from your %1 failed: %2." ).arg( passwordHelperDisplayName(), job.errorString() );
+    mPasswordHelperErrorMessage = tr( "Retrieving password from the %1 failed: %2." ).arg( passwordHelperDisplayName(), job.errorString() );
     // Signals used in the tests to exit main application loop
     emit passwordHelperFailure();
   }
@@ -3379,7 +3379,7 @@ QString QgsAuthManager::passwordHelperRead()
     if ( password.isEmpty() )
     {
       mPasswordHelperErrorCode = QKeychain::EntryNotFound;
-      mPasswordHelperErrorMessage = tr( "Empty password retrieved from your %1." ).arg( passwordHelperDisplayName( true ) );
+      mPasswordHelperErrorMessage = tr( "Empty password retrieved from the %1." ).arg( passwordHelperDisplayName( true ) );
       // Signals used in the tests to exit main application loop
       emit passwordHelperFailure();
     }
@@ -3413,7 +3413,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
   if ( job.error() )
   {
     mPasswordHelperErrorCode = job.error();
-    mPasswordHelperErrorMessage = tr( "Storing password in your %1 failed: %2." ).arg( passwordHelperDisplayName(), job.errorString() );
+    mPasswordHelperErrorMessage = tr( "Storing password in the %1 failed: %2." ).arg( passwordHelperDisplayName(), job.errorString() );
     // Signals used in the tests to exit main application loop
     emit passwordHelperFailure();
     result = false;
@@ -3478,7 +3478,7 @@ void QgsAuthManager::passwordHelperProcessError()
     // we also want to disable the wallet system to prevent annoying
     // notification on each subsequent access.
     setPasswordHelperEnabled( false );
-    mPasswordHelperErrorMessage = tr( "There was an error and integration with your %1 system has been disabled. "
+    mPasswordHelperErrorMessage = tr( "There was an error and integration with your %1 has been disabled. "
                                       "You can re-enable it at any time through the \"Utilities\" menu "
                                       "in the Authentication pane of the options dialog. %2" )
                                   .arg( passwordHelperDisplayName(), mPasswordHelperErrorMessage );
@@ -3518,7 +3518,7 @@ bool QgsAuthManager::masterPasswordInput()
       }
       else
       {
-        emit passwordHelperMessageLog( tr( "Master password stored in your %1 is not valid" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
+        emit passwordHelperMessageLog( tr( "Master password stored in the %1 is not valid" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
       }
     }
   }
@@ -3536,7 +3536,7 @@ bool QgsAuthManager::masterPasswordInput()
     {
       if ( !passwordHelperWrite( pass ) )
       {
-        emit passwordHelperMessageLog( tr( "Master password could not be written to your %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
+        emit passwordHelperMessageLog( tr( "Master password could not be written to the %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
       }
     }
     return true;
