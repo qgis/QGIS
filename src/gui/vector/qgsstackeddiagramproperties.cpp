@@ -399,15 +399,13 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  const auto constIndexes = indexes;
-  for ( const QModelIndex &index : constIndexes )
+  for ( const QModelIndex &index : indexes )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )
       continue;
 
-    QgsDiagramRenderer *diagram = mRenderers.at( index.row() );
-    if ( diagram )
+    if ( QgsDiagramRenderer *diagram = mRenderers.at( index.row() ) )
     {
       QDomDocument doc;
 
