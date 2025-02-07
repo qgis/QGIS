@@ -682,6 +682,9 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         continue;
 
       QVariant attrValue = it2.value();
+      if ( attrValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
+
       // Check attribute conversion
       const bool conversionError { ! QgsVariantUtils::isNull( attrValue )
                                    && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
