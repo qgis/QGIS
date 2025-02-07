@@ -48,10 +48,10 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
     }
   }
 
-  QString warning = tr( "Your authentication database will be duplicated and re-encrypted using the new password." );
+  QString warning = tr( "The authentication store will be re-encrypted using the new password." );
   if ( QgsApplication::authManager()->passwordHelperEnabled() )
   {
-    warning += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "Your new password will automatically be stored in the system %1." ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
+    warning += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "The new password will automatically be stored in the system %1." ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
   }
 
   lblWarning->setText( warning );

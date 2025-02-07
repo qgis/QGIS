@@ -331,7 +331,7 @@ QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title,
 
 void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *parent )
 {
-  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from your %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from the %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -344,7 +344,7 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
   }
   else
   {
-    msg = QObject::tr( "Master password was successfully deleted from your %1" )
+    msg = QObject::tr( "Master password was successfully deleted from the %1" )
             .arg( QgsAuthManager::passwordHelperDisplayName() );
 
     level = Qgis::MessageLevel::Info;
