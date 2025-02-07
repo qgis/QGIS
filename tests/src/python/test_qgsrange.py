@@ -178,8 +178,12 @@ class TestQgsIntRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsIntRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsIntRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsIntRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsIntRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertFalse(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -207,8 +211,12 @@ class TestQgsIntRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsIntRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsIntRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsIntRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsIntRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertTrue(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -259,8 +267,12 @@ class TestQgsIntRange(unittest.TestCase):
             [10, 14, False, False, False, False, False],
         ]:
             refRange = QgsIntRange(refLower, refUpper, refIncLower, refIncUpper)
-            otherRange = QgsIntRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
-            self.assertEqual(refRange.overlaps(otherRange), expected, f"{refRange=} {otherRange=}")
+            otherRange = QgsIntRange(
+                otherLower, otherUpper, otherIncLower, otherIncUpper
+            )
+            self.assertEqual(
+                refRange.overlaps(otherRange), expected, f"{refRange=} {otherRange=}"
+            )
 
 
 class TestQgsDoubleRange(unittest.TestCase):
@@ -367,34 +379,70 @@ class TestQgsDateRange(unittest.TestCase):
     def testContains(self):
         # includes both ends
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 4, 5))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 6, 2))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 4, 5))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2))))
-        self.assertFalse(range.contains(QgsDateRange(QDate(2009, 4, 1), QDate(2010, 4, 5))))
-        self.assertFalse(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2017, 4, 5))))
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 4, 5)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 6, 2)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 4, 5)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)))
+        )
+        self.assertFalse(
+            range.contains(QgsDateRange(QDate(2009, 4, 1), QDate(2010, 4, 5)))
+        )
+        self.assertFalse(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2017, 4, 5)))
+        )
         self.assertFalse(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate())))
         self.assertFalse(range.contains(QgsDateRange(QDate(), QDate(2010, 4, 1))))
 
         # infinite left end
         range = QgsDateRange(QDate(), QDate(2010, 6, 2))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 4, 5))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 6, 2))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 4, 5))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2009, 4, 1), QDate(2010, 4, 5))))
-        self.assertFalse(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2017, 4, 5))))
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 4, 5)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 6, 2)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 4, 5)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2009, 4, 1), QDate(2010, 4, 5)))
+        )
+        self.assertFalse(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2017, 4, 5)))
+        )
         self.assertFalse(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate())))
         self.assertTrue(range.contains(QgsDateRange(QDate(), QDate(2010, 4, 1))))
 
         # infinite right end
         range = QgsDateRange(QDate(2010, 3, 1), QDate())
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 4, 5))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 6, 2))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 4, 5))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2))))
-        self.assertFalse(range.contains(QgsDateRange(QDate(2009, 4, 1), QDate(2010, 4, 5))))
-        self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2017, 4, 5))))
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 4, 5)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2010, 6, 2)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 4, 5)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)))
+        )
+        self.assertFalse(
+            range.contains(QgsDateRange(QDate(2009, 4, 1), QDate(2010, 4, 5)))
+        )
+        self.assertTrue(
+            range.contains(QgsDateRange(QDate(2010, 4, 1), QDate(2017, 4, 5)))
+        )
         self.assertTrue(range.contains(QgsDateRange(QDate(2010, 4, 1), QDate())))
         self.assertFalse(range.contains(QgsDateRange(QDate(), QDate(2010, 4, 1))))
 
@@ -447,8 +495,12 @@ class TestQgsDateRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsDateRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsDateRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertFalse(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -483,8 +535,12 @@ class TestQgsDateRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsDateRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsDateRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertTrue(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -518,8 +574,14 @@ class TestQgsDateRange(unittest.TestCase):
                 [False, False, False, False, False],
             ]:
                 refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
-                self.assertEqual(refRange.overlaps(otherRange), expectedOverlaps, f"{refRange=} {otherRange=}")
+                otherRange = QgsDateRange(
+                    otherLower, otherUpper, otherIncLower, otherIncUpper
+                )
+                self.assertEqual(
+                    refRange.overlaps(otherRange),
+                    expectedOverlaps,
+                    f"{refRange=} {otherRange=}",
+                )
 
         # reference range and other range are contiguous
         otherLower = QDate(2013, 3, 2)
@@ -549,8 +611,14 @@ class TestQgsDateRange(unittest.TestCase):
                 [False, False, False, False, False],
             ]:
                 refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
-                self.assertEqual(refRange.overlaps(otherRange), expectedOverlaps, f"{refRange=} {otherRange=}")
+                otherRange = QgsDateRange(
+                    otherLower, otherUpper, otherIncLower, otherIncUpper
+                )
+                self.assertEqual(
+                    refRange.overlaps(otherRange),
+                    expectedOverlaps,
+                    f"{refRange=} {otherRange=}",
+                )
 
         # -----------------------------------------------------------
         # reference range has a left infinite bound
@@ -565,8 +633,12 @@ class TestQgsDateRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsDateRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsDateRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertFalse(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -593,8 +665,12 @@ class TestQgsDateRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsDateRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsDateRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertTrue(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -603,7 +679,13 @@ class TestQgsDateRange(unittest.TestCase):
         # reference range and other range are contiguous
         otherLower = QDate(2013, 3, 2)
         for otherUpper in [QDate(2025, 2, 13), QDate()]:
-            for otherIncLower, otherIncUpper, refIncLower, refIncUpper, expectedOverlaps in [
+            for (
+                otherIncLower,
+                otherIncUpper,
+                refIncLower,
+                refIncUpper,
+                expectedOverlaps,
+            ) in [
                 [True, True, True, True, True],
                 [True, True, True, False, False],
                 [True, True, False, True, True],
@@ -622,8 +704,14 @@ class TestQgsDateRange(unittest.TestCase):
                 [False, False, False, False, False],
             ]:
                 refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
-                self.assertEqual(refRange.overlaps(otherRange), expectedOverlaps, f"{refRange=} {otherRange=}")
+                otherRange = QgsDateRange(
+                    otherLower, otherUpper, otherIncLower, otherIncUpper
+                )
+                self.assertEqual(
+                    refRange.overlaps(otherRange),
+                    expectedOverlaps,
+                    f"{refRange=} {otherRange=}",
+                )
 
         # -----------------------------------------------------------
         # reference range has a right infinite bound
@@ -638,8 +726,12 @@ class TestQgsDateRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsDateRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsDateRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertFalse(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -666,8 +758,12 @@ class TestQgsDateRange(unittest.TestCase):
                 for refIncUpper in [True, False]:
                     for otherIncLower in [True, False]:
                         for otherIncUpper in [True, False]:
-                            refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                            otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
+                            refRange = QgsDateRange(
+                                refLower, refUpper, refIncLower, refIncUpper
+                            )
+                            otherRange = QgsDateRange(
+                                otherLower, otherUpper, otherIncLower, otherIncUpper
+                            )
                             self.assertTrue(
                                 refRange.overlaps(otherRange),
                                 f"{refRange=} {otherRange=}",
@@ -676,7 +772,13 @@ class TestQgsDateRange(unittest.TestCase):
         # other range and reference range are contiguous
         otherUpper = QDate(2013, 3, 2)
         for otherLower in [QDate(), QDate(1998, 4, 8)]:
-            for otherIncLower, otherIncUpper, refIncLower, refIncUpper, expectedOverlaps in [
+            for (
+                otherIncLower,
+                otherIncUpper,
+                refIncLower,
+                refIncUpper,
+                expectedOverlaps,
+            ) in [
                 [True, True, True, True, True],
                 [True, True, True, False, True],
                 [True, True, False, True, False],
@@ -695,28 +797,54 @@ class TestQgsDateRange(unittest.TestCase):
                 [False, False, False, False, False],
             ]:
                 refRange = QgsDateRange(refLower, refUpper, refIncLower, refIncUpper)
-                otherRange = QgsDateRange(otherLower, otherUpper, otherIncLower, otherIncUpper)
-                self.assertEqual(refRange.overlaps(otherRange), expectedOverlaps, f"{refRange=} {otherRange=}")
+                otherRange = QgsDateRange(
+                    otherLower, otherUpper, otherIncLower, otherIncUpper
+                )
+                self.assertEqual(
+                    refRange.overlaps(otherRange),
+                    expectedOverlaps,
+                    f"{refRange=} {otherRange=}",
+                )
 
     def testIsInstant(self):
         self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)).isInstant())
         self.assertTrue(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1)).isInstant())
-        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isInstant())
+        self.assertFalse(
+            QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isInstant()
+        )
         self.assertFalse(QgsDateRange(QDate(), QDate()).isInstant())
 
     def testIsInfinite(self):
-        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)).isInfinite())
-        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1)).isInfinite())
-        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isInfinite())
+        self.assertFalse(
+            QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)).isInfinite()
+        )
+        self.assertFalse(
+            QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1)).isInfinite()
+        )
+        self.assertFalse(
+            QgsDateRange(
+                QDate(2010, 3, 1), QDate(2010, 3, 1), False, False
+            ).isInfinite()
+        )
         self.assertTrue(QgsDateRange(QDate(), QDate()).isInfinite())
 
     def testEquality(self):
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
-        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False))
-        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True))
-        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), True, False))
-        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 3), False, False))
-        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 2), QDate(2010, 6, 2), False, False))
+        self.assertEqual(
+            range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        )
+        self.assertNotEqual(
+            range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True)
+        )
+        self.assertNotEqual(
+            range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), True, False)
+        )
+        self.assertNotEqual(
+            range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 3), False, False)
+        )
+        self.assertNotEqual(
+            range, QgsDateRange(QDate(2010, 3, 2), QDate(2010, 6, 2), False, False)
+        )
 
     def testExtend(self):
         range_empty = QgsDateRange(QDate(2010, 6, 2), QDate(2010, 3, 1))
@@ -726,48 +854,106 @@ class TestQgsDateRange(unittest.TestCase):
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
         self.assertFalse(range.extend(range_empty))
         range = QgsDateRange(QDate(2010, 6, 2), QDate(2010, 3, 1))
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)))
-        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+            )
+        )
+        self.assertEqual(
+            range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        )
 
         # Extend low
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), False, False)))
-        self.assertEqual(range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), False, False))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), False, False)
+            )
+        )
+        self.assertEqual(
+            range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), False, False)
+        )
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 2, 1), QDate(2010, 5, 2), True, False)))
-        self.assertEqual(range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), True, False))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 2, 1), QDate(2010, 5, 2), True, False)
+            )
+        )
+        self.assertEqual(
+            range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), True, False)
+        )
 
         # Extend high
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 7, 2), False, False)))
-        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 7, 2), False, False))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 3, 1), QDate(2010, 7, 2), False, False)
+            )
+        )
+        self.assertEqual(
+            range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 7, 2), False, False)
+        )
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True)))
-        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True)
+            )
+        )
+        self.assertEqual(
+            range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True)
+        )
 
         # Extend both
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 2, 1), QDate(2010, 7, 2), False, False)))
-        self.assertEqual(range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 7, 2), False, False))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 2, 1), QDate(2010, 7, 2), False, False)
+            )
+        )
+        self.assertEqual(
+            range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 7, 2), False, False)
+        )
 
         # Extend none
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
-        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+        self.assertFalse(
+            range.extend(
+                QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)
+            )
+        )
 
         # Test infinity
         range = QgsDateRange(QDate(), QDate())
-        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+        self.assertFalse(
+            range.extend(
+                QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)
+            )
+        )
         range = QgsDateRange(QDate(), QDate(2010, 5, 2))
-        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+        self.assertFalse(
+            range.extend(
+                QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)
+            )
+        )
         self.assertEqual(range, QgsDateRange(QDate(), QDate(2010, 5, 2), True, True))
         range = QgsDateRange(QDate(2010, 4, 6), QDate())
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 6), QDate(2010, 5, 2), False, False)))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 3, 6), QDate(2010, 5, 2), False, False)
+            )
+        )
         self.assertEqual(range, QgsDateRange(QDate(2010, 3, 6), QDate(), False, True))
         range = QgsDateRange(QDate(), QDate(2010, 5, 2))
-        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 6), QDate(2010, 6, 2), False, False)))
+        self.assertTrue(
+            range.extend(
+                QgsDateRange(QDate(2010, 3, 6), QDate(2010, 6, 2), False, False)
+            )
+        )
         self.assertEqual(range, QgsDateRange(QDate(), QDate(2010, 6, 2), True, False))
         range = QgsDateRange(QDate(2010, 4, 6), QDate())
-        self.assertTrue(range.extend(QgsDateRange(QDate(), QDate(2010, 5, 2), True, False)))
+        self.assertTrue(
+            range.extend(QgsDateRange(QDate(), QDate(2010, 5, 2), True, False))
+        )
         self.assertEqual(range, QgsDateRange(QDate(), QDate(), True, True))
         range = QgsDateRange(QDate(), QDate(2010, 4, 6))
         self.assertTrue(range.extend(QgsDateRange(QDate(), QDate(), True, True)))
