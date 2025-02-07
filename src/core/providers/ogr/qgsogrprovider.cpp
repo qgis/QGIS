@@ -2763,7 +2763,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     {
       useUpdate = false;
     }
-    if ( useUpdate )
+    if ( useUpdate && val.userType() != qMetaTypeId<QgsUnsetAttributeValue >() )
     {
       QString sql = QStringLiteral( "UPDATE %1 SET %2 = %3" )
                     .arg( QString::fromUtf8( QgsOgrProviderUtils::quotedIdentifier( mOgrLayer->name(), mGDALDriverName ) ) )
@@ -2838,6 +2838,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
       int f = it2.key();
+      if ( it2->userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
+
       if ( mFirstFieldIsFid )
       {
         if ( f == 0 )
