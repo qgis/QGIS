@@ -4131,7 +4131,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       for ( int i = 0; i < attributevec.count(); ++i )
       {
-        if ( mDefaultValues.contains( i ) && ( mDefaultValues.value( i ) == attributevec.at( i ).toString() || !attributevec.at( i ).isValid() ) )
+        if (
+          ( mDefaultValues.contains( i ) && ( mDefaultValues.value( i ) == attributevec.at( i ).toString() || !attributevec.at( i ).isValid() ) )
+          || ( attributevec.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        )
         {
           defaultIndexes.push_back( i );
           continue;
@@ -4597,6 +4600,8 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
       {
         QgsField fld = field( siter.key() );
         const QVariant &val = siter.value();
+        if ( val.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          continue;
 
         if ( !first )
           sql += ',';
