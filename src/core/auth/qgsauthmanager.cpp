@@ -816,6 +816,12 @@ bool QgsAuthManager::resetMasterPasswordUsingStoredPasswordHelper( const QString
 
   bool readOk = false;
   const QString existingPassword = passwordHelperRead( readOk );
+  if ( !readOk )
+  {
+    emit passwordHelperMessageLog( tr( "Master password could not be read from the %1" ).arg( passwordHelperDisplayName() ), authManTag(), Qgis::MessageLevel::Warning );
+    return false;
+  }
+
   return resetMasterPassword( newPassword, existingPassword, keepBackup, backupPath );
 }
 
