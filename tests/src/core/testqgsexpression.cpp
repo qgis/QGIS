@@ -2289,8 +2289,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "between nulls FALSE 2" ) << QStringLiteral( "'a' between 'b' AND NULL" ) << false << QVariant( false );
 
       // CRS functions
-      QTest::newRow( "crs epsg id" ) << "crs('EPSG:4326')" << false << QVariant( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-      QTest::newRow( "crs_authid" ) << "crs_authid(crs('EPSG:3857'))" << false << QVariant( "EPSG:3857" );
+      QTest::newRow( "make_crs epsg id" ) << "make_crs('EPSG:4326')" << false << QVariant( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+      QTest::newRow( "crs_authid" ) << "crs_authid(make_crs('EPSG:3857'))" << false << QVariant( "EPSG:3857" );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
@@ -5290,7 +5290,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "HSVA: 0.90,0.50,0.25,0.10" );
 
       QgsCoordinateReferenceSystem crs( "EPSG:4326" );
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326&gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326 - WGS 84&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()
