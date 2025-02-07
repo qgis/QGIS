@@ -1049,8 +1049,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else if ( value.userType() == qMetaTypeId< QgsCoordinateReferenceSystem>() )
   {
-    QgsCoordinateReferenceSystem crs = value.value<QgsCoordinateReferenceSystem>();
-    return startToken + tr( "crs: %1" ).arg( crs.authid() ) + endToken;
+    const QgsCoordinateReferenceSystem crs = value.value<QgsCoordinateReferenceSystem>();
+    return startToken + tr( "crs: %1" ).arg( crs.userFriendlyIdentifier() ) + endToken;
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {
