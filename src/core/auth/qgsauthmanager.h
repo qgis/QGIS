@@ -240,23 +240,24 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool masterPasswordSame( const QString &password ) const;
 
     /**
-     * Reset the master password to a new one, then re-encrypt all previous
-     * configs in a new database file, optionally backup current database
+     * Reset the master password to a new one, then re-encrypts all previous
+     * configs with the new password.
+     *
      * \param newpass New master password to replace existing
      * \param oldpass Current master password to replace existing
-     * \param keepbackup Whether to keep the generated backup of current database
+     * \param keepbackup Whether to keep the generated backup of current database (if using file-based storage)
      * \param backuppath Where the backup is located, if kept
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath SIP_INOUT = nullptr );
 
     /**
-     * Reset the master password to a new one, then re-encrypt all previous
-     * configs in a new database file, optionally backup current database.
+     * Reset the master password to a new one, hen re-encrypts all previous
+     * configs with the new password.
      *
      * The old password will automatically be retrieved from the password helper.
      *
      * \param newPassword New master password to replace existing
-     * \param keepBackup Whether to keep the generated backup of current database
+     * \param keepBackup Whether to keep the generated backup of current database (if using file-based storage)
      * \param backupPath Where the backup is located, if kept
      *
      * \note Not available in Python bindings
