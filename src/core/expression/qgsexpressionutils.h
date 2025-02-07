@@ -366,6 +366,11 @@ class CORE_EXPORT QgsExpressionUtils
       return 0;
     }
 
+    /**
+     * Tries to convert a \a value to a coordinate reference system.
+     *
+     * \since QGIS 3.42
+     */
     static QgsCoordinateReferenceSystem getCrs( const QVariant &value, QgsExpression *parent )
     {
       if ( value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
