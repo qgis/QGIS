@@ -398,6 +398,7 @@ void QgsVectorLayerCache::invalidate()
     mCacheOrderedKeys.clear();
     mCacheUnorderedKeys.clear();
     mFullCache = false;
+    mCacheRequestCompleted = false;
     emit invalidated();
   }
 }
