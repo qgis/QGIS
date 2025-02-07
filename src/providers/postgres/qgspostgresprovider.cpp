@@ -2287,7 +2287,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           QVariant v2 = attrs2.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
           // a PK field with a sequence val is auto populate by QGIS with this default
           // we are only interested in non default values
-          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue )
+          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue && v2.userType() != qMetaTypeId< QgsUnsetAttributeValue >() )
           {
             foundNonEmptyPK = true;
             break;
@@ -2298,7 +2298,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( !skipSinglePKField )
       {
-        for ( int idx : mPrimaryKeyAttrs )
+        for ( int idx : std::as_const( mPrimaryKeyAttrs ) )
         {
           if ( mIdentityFields[idx] == 'a' )
             overrideIdentity = true;
@@ -2327,7 +2327,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         continue;
 
       QString fieldname = mAttributeFields.at( idx ).name();
-
       if ( !mGeneratedValues.value( idx, QString() ).isEmpty() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldname, QString::number( idx ) ), 2 );
@@ -2469,7 +2468,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
 
         QString v;
-        if ( QgsVariantUtils::isNull( value ) )
+        if ( QgsVariantUtils::isNull( value ) || value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
         {
           QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[i], defaultValues[i] );
@@ -2949,6 +2948,10 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       {
         try
         {
+          const QVariant attributeValue = siter.value();
+          if ( attributeValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+            continue;
+
           QgsField fld = field( siter.key() );
 
           pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
@@ -2965,13 +2968,13 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           delim = ',';
 
           QString defVal = defaultValueClause( siter.key() );
-          if ( qgsVariantEqual( *siter, defVal ) )
+          if ( qgsVariantEqual( attributeValue, defVal ) )
           {
             sql += defVal.isNull() ? "NULL" : defVal;
           }
           else if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
-            QString val = geomAttrToString( siter.value(), connectionRO() );
+            QString val = geomAttrToString( attributeValue, connectionRO() );
 
             sql += QStringLiteral( "%1(%2)" )
                      .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt", quotedValue( val ) );
@@ -2979,25 +2982,25 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
             sql += QStringLiteral( "st_geographyfromtext(%1)" )
-                     .arg( quotedValue( siter->toString() ) );
+                     .arg( quotedValue( attributeValue.toString() ) );
           }
           else if ( fld.typeName() == QLatin1String( "jsonb" ) )
           {
             sql += QStringLiteral( "%1::jsonb" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( attributeValue ) );
           }
           else if ( fld.typeName() == QLatin1String( "json" ) )
           {
             sql += QStringLiteral( "%1::json" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( attributeValue ) );
           }
           else if ( fld.typeName() == QLatin1String( "bytea" ) )
           {
-            sql += quotedByteaValue( siter.value() );
+            sql += quotedByteaValue( attributeValue );
           }
           else
           {
-            sql += quotedValue( *siter );
+            sql += quotedValue( attributeValue );
           }
         }
         catch ( PGFieldNotFound )
@@ -3328,6 +3331,12 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
             continue;
           }
 
+          const QVariant value = siter.value();
+          if ( value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          {
+            continue;
+          }
+
           numChangedFields++;
 
           sql += delim + QStringLiteral( "%1=" ).arg( quotedIdentifier( fld.name() ) );
@@ -3335,32 +3344,32 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
           if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
-            QString val = geomAttrToString( siter.value(), connectionRO() );
+            QString val = geomAttrToString( value, connectionRO() );
             sql += QStringLiteral( "%1(%2)" )
                      .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt", quotedValue( val ) );
           }
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
             sql += QStringLiteral( "st_geographyfromtext(%1)" )
-                     .arg( quotedValue( siter->toString() ) );
+                     .arg( quotedValue( value.toString() ) );
           }
           else if ( fld.typeName() == QLatin1String( "jsonb" ) )
           {
             sql += QStringLiteral( "%1::jsonb" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( value ) );
           }
           else if ( fld.typeName() == QLatin1String( "json" ) )
           {
             sql += QStringLiteral( "%1::json" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( value ) );
           }
           else if ( fld.typeName() == QLatin1String( "bytea" ) )
           {
-            sql += quotedByteaValue( siter.value() );
+            sql += quotedByteaValue( value );
           }
           else
           {
-            sql += quotedValue( *siter );
+            sql += quotedValue( value );
           }
         }
         catch ( PGFieldNotFound )
