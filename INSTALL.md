@@ -361,7 +361,7 @@ QGIS build is tunable according to your needs. Many flags are available to activ
 * `WITH_ORACLE`: Determines whether Oracle support should be built
 * `WITH_PDAL`: Determines whether PDAL support should be built
 * `WITH_POSTGRESQL`: Determines whether POSTGRESQL support should be built
-* `WITH_PYTHON`: Determines whether Python should be built
+* `WITH_PYTHON`: Determines whether Python support should be built (disabling it will in particular disable processing)
 * `WITH_QGIS_PROCESS`: Determines whether the standalone \"qgis_process\" tool should be built
 * `WITH_QSPATIALITE`: Determines whether QSPATIALITE sql driver should be built
 * `WITH_SERVER`: Determines whether QGIS server should be built
