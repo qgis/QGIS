@@ -67,6 +67,8 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
     QgsSettingsTree,
+    QgsUnsetAttributeValue,
+    QgsFeatureSink,
 )
 from qgis.gui import QgsAttributeForm, QgsGui
 import unittest
@@ -4920,6 +4922,85 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
             [7, -230, "qgis", "String", "15"],
             "The PostgreSQL provider doesn't truncate extra attributes.",
         )
+
+    def testAddFeatureUnsetAttributes(self):
+        # changed from ProviderTestBase.testAddFeatureMissingAttributes: this
+        # layer differs from the standard source definition because
+        # of the 'qgis' default value set on the text fields
+
+        if not getattr(self, "getEditableLayer", None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes(
+            [
+                6,
+                -220,
+                QgsUnsetAttributeValue(),
+                "String",
+                "15",
+                NULL,
+                NULL,
+                NULL,
+            ]
+        )
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-72.345 71.987)"))
+
+        f2 = QgsFeature()
+        f2.setAttributes(
+            [
+                7,
+                QgsUnsetAttributeValue(),
+                "Coconut",
+                "CoCoNut",
+                "13",
+                NULL,
+                NULL,
+                NULL,
+            ]
+        )
+
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.AddFeatures
+        ):
+            # expect success
+            result, added = l.dataProvider().addFeatures(
+                [f1, f2], QgsFeatureSink.Flag.FastInsert
+            )
+            self.assertTrue(
+                result,
+                "Provider reported AddFeatures capability, but returned False to addFeatures using QgsUnsetAttributeValues",
+            )
+            self.assertEqual(l.dataProvider().featureCount(), 7)
+
+            features = [f for f in l.dataProvider().getFeatures()]
+            self.assertEqual(len(features), 7)
+            f6 = [f for f in features if f[0] == 6][0]
+            f7 = [f for f in features if f[0] == 7][0]
+            self.assertEqual(f6[1], -220)
+            self.assertEqual(f6[2], "qgis")
+            self.assertEqual(f6[3], "String")
+            self.assertEqual(f6[4], "15")
+            self.assertEqual(f6[5], NULL)
+            self.assertEqual(f6[6], NULL)
+            self.assertEqual(f6[7], NULL)
+
+            self.assertTrue(
+                isinstance(f7[1], QgsUnsetAttributeValue)
+                or f7[1] == NULL
+                or str(f7[1]) == "",
+                f"Expected null/unset value, got {f7[1]}",
+            )
+            self.assertEqual(f7[2], "Coconut")
+            self.assertEqual(f7[3], "CoCoNut")
+            self.assertEqual(f7[4], "13")
+            self.assertEqual(f7[5], NULL)
+            self.assertEqual(f7[6], NULL)
+            self.assertEqual(f7[7], NULL)
 
     def testAddFeatureMissingAttributes(self):
         if not getattr(self, "getEditableLayer", None):
