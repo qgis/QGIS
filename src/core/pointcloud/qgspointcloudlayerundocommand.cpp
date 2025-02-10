@@ -54,6 +54,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   else
   {
     // If this is the first time this node is edited, we don't need the previous values, we will just discard the node from the edit index when undoing
+    // we still need the keys in mPointValues though as they are the points to be modified in the Redo stage, so we populate them with some NaNs
     mFirstEditForNode = true;
     for ( const int point : points )
     {
