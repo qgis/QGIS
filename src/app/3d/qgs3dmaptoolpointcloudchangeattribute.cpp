@@ -202,15 +202,49 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   mapToPixel3D.origin = mCanvas->mapSettings()->origin();
   mapToPixel3D.canvasSize = mCanvas->size();
 
-  const QVector<const QgsChunkNode *> chunks = mCanvas->scene()->getLayerActiveChunkNodes( layer );
-  for ( const QgsChunkNode *chunk : chunks )
-  {
-    // check whether the hull intersects the search polygon
-    const QgsGeometry hull = box3DToPolygonInScreenSpace( chunk->box3D(), mapToPixel3D );
-    if ( !searchPolygon.intersects( hull.constGet() ) )
-      continue;
+  QgsCoordinateTransform ct( layer->crs(), mCanvas->mapSettings()->crs(), mCanvas->mapSettings()->transformContext() );
+  ct.setBallparkTransformsAreAppropriate( true );
+  const double zValueScale = layer->elevationProperties()->zScale();
+  const double zValueOffset = layer->elevationProperties()->zOffset();
 
-    const QgsPointCloudNodeId n( chunk->tileId().d, chunk->tileId().x, chunk->tileId().y, chunk->tileId().z );
+  QgsPointCloudIndex index = layer->index();
+  QVector<QgsPointCloudNodeId> nodes;
+  QQueue<QgsPointCloudNodeId> queue;
+  queue.append( index.root() );
+  while ( !queue.empty() )
+  {
+    const QgsPointCloudNode node = index.getNode( queue.constFirst() );
+    queue.removeFirst();
+
+    const QgsBox3D bounds = node.bounds();
+    QgsVector3D extentMin3D( bounds.xMinimum(), bounds.yMinimum(), bounds.zMinimum() * zValueScale + zValueOffset );
+    QgsVector3D extentMax3D( bounds.xMaximum(), bounds.yMaximum(), bounds.zMaximum() * zValueScale + zValueOffset );
+    try
+    {
+      extentMin3D = ct.transform( extentMin3D );
+      extentMax3D = ct.transform( extentMax3D );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
+      continue;
+    }
+
+    const QgsBox3D box( extentMin3D.x(), extentMin3D.y(), extentMin3D.z(), extentMax3D.x(), extentMax3D.y(), extentMax3D.z() );
+    // check whether the hull intersects the search polygon
+    const QgsGeometry hull = box3DToPolygonInScreenSpace( box, mapToPixel3D );
+    if ( searchPolygon.intersects( hull.constGet() ) )
+    {
+      nodes.append( node.id() );
+      for ( const QgsPointCloudNodeId &child : node.children() )
+      {
+        queue.append( child );
+      }
+    }
+  }
+
+  for ( const QgsPointCloudNodeId &n : nodes )
+  {
     const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, layer );
     if ( !pts.isEmpty() )
     {
