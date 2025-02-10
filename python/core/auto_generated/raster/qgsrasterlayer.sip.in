@@ -309,11 +309,6 @@ Returns a 100x100 pixmap of the color palette. If the layer has no palette a whi
 :param bandNumber: the number of the band to use for generating a pixmap of the associated palette
 %End
 
-    QString providerType() const;
-%Docstring
-[ data provider interface ] Which provider is being used for this Raster Layer?
-%End
-
     double rasterUnitsPerPixelX() const;
 %Docstring
 Returns the number of raster units per each raster pixel in X axis.

@@ -197,9 +197,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool supportsEditing() const override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
 
-    //! Returns the provider type for this layer
-    QString providerType() const;
-
     /**
      * Adds datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
      *
