@@ -125,7 +125,7 @@ void TestQgsFeatureListComboBox::cleanup()
 
 void TestQgsFeatureListComboBox::testSetGetLayer()
 {
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  auto cb = std::make_unique<QgsFeatureListComboBox>();
 
   QVERIFY( cb->sourceLayer() == nullptr );
   cb->setSourceLayer( mLayer.get() );
@@ -156,7 +156,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
 void TestQgsFeatureListComboBox::testMultipleForeignKeys()
 {
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  auto cb = std::make_unique<QgsFeatureListComboBox>();
 
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
 
@@ -213,7 +213,7 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
   QFETCH( bool, allowNull );
 
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  auto cb = std::make_unique<QgsFeatureListComboBox>();
 
   QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
 
@@ -251,7 +251,7 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
 void TestQgsFeatureListComboBox::nullRepresentation()
 {
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  auto cb = std::make_unique<QgsFeatureListComboBox>();
 
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
   QEventLoop loop;
@@ -271,7 +271,7 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
   // test behavior when feature list combo box identifier values references a
   // not existing yet feature (created but not saved for instance)
 
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  auto cb = std::make_unique<QgsFeatureListComboBox>();
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
   QEventLoop loop;
   connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
@@ -293,7 +293,7 @@ void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
 {
   const int fetchLimit = 20;
   QVERIFY( fetchLimit < mLayer->featureCount() );
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  auto cb = std::make_unique<QgsFeatureListComboBox>();
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
   QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
   model->setFetchLimit( 20 );

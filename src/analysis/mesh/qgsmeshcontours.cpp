@@ -137,8 +137,8 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
     {
       QVector<QgsMeshVertex> ring = coords;
       ring.push_back( coords[0] );
-      std::unique_ptr<QgsLineString> ext = std::make_unique<QgsLineString>( coords );
-      std::unique_ptr<QgsPolygon> poly = std::make_unique<QgsPolygon>();
+      auto ext = std::make_unique<QgsLineString>( coords );
+      auto poly = std::make_unique<QgsPolygon>();
       poly->setExteriorRing( ext.release() );
       multiPolygon.push_back( QgsGeometry( std::move( poly ) ) );
       continue;
@@ -236,8 +236,8 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
     // add if the polygon is not degraded
     if ( ring.size() > 2 )
     {
-      std::unique_ptr<QgsLineString> ext = std::make_unique<QgsLineString>( ring );
-      std::unique_ptr<QgsPolygon> poly = std::make_unique<QgsPolygon>();
+      auto ext = std::make_unique<QgsLineString>( ring );
+      auto poly = std::make_unique<QgsPolygon>();
       poly->setExteriorRing( ext.release() );
       multiPolygon.push_back( QgsGeometry( std::move( poly ) ) );
     }
@@ -268,7 +268,7 @@ QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index, doub
 
 QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
 {
-  std::unique_ptr<QgsMultiLineString> multiLineString( new QgsMultiLineString() );
+  auto multiLineString = std::make_unique<QgsMultiLineString>();
   QSet<QPair<int, int>> exactEdges;
 
   // STEP 1: Get Data
@@ -337,7 +337,7 @@ QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
         else
         {
           exactEdges.insert( { indices[i], indices[j] } );
-          std::unique_ptr<QgsLineString> line( new QgsLineString( coords[i], coords[j] ) );
+          auto line = std::make_unique<QgsLineString>( coords[i], coords[j] );
           multiLineString->addGeometry( line.release() );
           break;
         }
@@ -361,7 +361,7 @@ QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
       else
       {
         // we have found the end point of the contour line, we are done
-        std::unique_ptr<QgsLineString> line( new QgsLineString( tmp, xy ) );
+        auto line = std::make_unique<QgsLineString>( tmp, xy );
         multiLineString->addGeometry( line.release() );
         break;
       }

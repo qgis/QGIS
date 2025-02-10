@@ -136,7 +136,7 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 
-  std::unique_ptr<QsciAPIs> apis = std::make_unique<QsciAPIs>( pyLexer );
+  auto apis = std::make_unique<QsciAPIs>( pyLexer );
 
   QgsSettings settings;
   if ( mAPISFilesList.isEmpty() )

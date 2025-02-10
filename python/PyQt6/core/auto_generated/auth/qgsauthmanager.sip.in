@@ -27,6 +27,7 @@ and to utilize configurations through various authentication method plugins
 %End
   public:
 
+
     enum MessageLevel /BaseType=IntEnum/
     {
       INFO,
@@ -161,6 +162,7 @@ Returns the authentication database connection URI with the password stripped.
 .. versionadded:: 3.40
 %End
 
+
     bool setMasterPassword( bool verify = false );
 %Docstring
 Main call to initially set or continually check master password is set
@@ -223,14 +225,15 @@ Check whether supplied password is the same as the one already set
 
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath /In,Out/ = 0 );
 %Docstring
-Reset the master password to a new one, then re-encrypt all previous
-configs in a new database file, optionally backup current database
+Reset the master password to a new one, then re-encrypts all previous
+configs with the new password.
 
 :param newpass: New master password to replace existing
 :param oldpass: Current master password to replace existing
-:param keepbackup: Whether to keep the generated backup of current database
+:param keepbackup: Whether to keep the generated backup of current database (if using file-based storage)
 :param backuppath: Where the backup is located, if kept
 %End
+
 
 
 
@@ -810,7 +813,19 @@ Store the password manager into the wallet
    Available in Python bindings since QGIS 3.8.0
 %End
 
+
+
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+
+    static QString passwordHelperDisplayName( bool titleCase = false );
+%Docstring
+Returns a translated display name of the password helper (platform dependent).
+
+If ``titleCase`` is ``True`` then a title case version of the string will be returned. Otherwise
+a mid-sentence case version will be returned.
+
+.. versionadded:: 3.42
+%End
 
     static const QString AUTH_MAN_TAG;
 

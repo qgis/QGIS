@@ -3498,7 +3498,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -te -1.000000001857055 -2.9999999963940835 10.000000000604244 5.99999999960471 -ot Float32 -of JPEG "
+                    "-l polys2 -a id -ts 0.0 0.0 -te -1.000000001857055 -2.9999999963940835 10.000000000604246 5.999999999604708 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir

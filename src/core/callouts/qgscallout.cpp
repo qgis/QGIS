@@ -555,7 +555,7 @@ QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
 
 QgsCallout *QgsSimpleLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsSimpleLineCallout > callout = std::make_unique< QgsSimpleLineCallout >();
+  auto callout = std::make_unique< QgsSimpleLineCallout >();
   callout->readProperties( properties, context );
   return callout.release();
 }
@@ -764,7 +764,7 @@ QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout 
 
 QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
-  std::unique_ptr< QgsManhattanLineCallout > callout = std::make_unique< QgsManhattanLineCallout >();
+  auto callout = std::make_unique< QgsManhattanLineCallout >();
   callout->readProperties( properties, context );
   return callout.release();
 }
@@ -804,7 +804,7 @@ QgsCurvedLineCallout::QgsCurvedLineCallout( const QgsCurvedLineCallout &other )
 
 QgsCallout *QgsCurvedLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
-  std::unique_ptr< QgsCurvedLineCallout > callout = std::make_unique< QgsCurvedLineCallout >();
+  auto callout = std::make_unique< QgsCurvedLineCallout >();
   callout->readProperties( properties, context );
 
   callout->setCurvature( properties.value( QStringLiteral( "curvature" ), 0.1 ).toDouble() );
@@ -1061,7 +1061,7 @@ QgsBalloonCallout::QgsBalloonCallout( const QgsBalloonCallout &other )
 
 QgsCallout *QgsBalloonCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsBalloonCallout > callout = std::make_unique< QgsBalloonCallout >();
+  auto callout = std::make_unique< QgsBalloonCallout >();
   callout->readProperties( properties, context );
   return callout.release();
 }

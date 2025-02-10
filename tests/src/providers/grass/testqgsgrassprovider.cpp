@@ -487,7 +487,7 @@ void TestQgsGrassProvider::vectorLayers()
 
 void TestQgsGrassProvider::invalidLayer()
 {
-  std::unique_ptr<QgsVectorLayer> brokenLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "/not/valid" ), QStringLiteral( "test" ), QStringLiteral( "grass" ) );
+  auto brokenLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "/not/valid" ), QStringLiteral( "test" ), QStringLiteral( "grass" ) );
   QVERIFY( !brokenLayer->isValid() );
   QgsVectorDataProvider *provider = brokenLayer->dataProvider();
   QVERIFY( provider );

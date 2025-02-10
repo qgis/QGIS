@@ -42,7 +42,7 @@ void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "RASTER" ) ) );
 
   // nodata value
-  std::unique_ptr<QgsProcessingParameterNumber> nodata = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto nodata = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   nodata->setIsDynamic( true );
   nodata->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), QgsPropertyDefinition::Double ) );
   nodata->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

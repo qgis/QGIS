@@ -36,7 +36,11 @@ Qgis::LayerType QgsMapLayerFactory::typeFromString( const QString &string, bool 
     return Qgis::LayerType::Mesh;
   else if ( string.compare( QLatin1String( "vector-tile" ), Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::VectorTile;
-  else if ( string.compare( QLatin1String( "point-cloud" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( QLatin1String( "point-cloud" ), Qt::CaseInsensitive ) == 0 ||
+            // We accept "pointcloud" for backward compatibility with the
+            // MIME related code, which spelled it that way before 3.42.0 where
+            // we have delegated to QgsMapLayerFactory::typeToString()
+            string.compare( QLatin1String( "pointcloud" ), Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::PointCloud;
   else if ( string.compare( QLatin1String( "plugin" ), Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Plugin;

@@ -319,7 +319,7 @@ class TestQgsSnappingUtils : public QObject
     void testSnapOnIntersectionCurveZ()
     {
       // testing with a layer with curve and Z
-      std::unique_ptr<QgsVectorLayer> vCurveZ( new QgsVectorLayer( QStringLiteral( "CircularStringZ" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
+      auto vCurveZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "CircularStringZ" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" );
       f1.setGeometry( f1g );
@@ -362,7 +362,7 @@ class TestQgsSnappingUtils : public QObject
     }
     void testSnapOnIntersectionMultiGeom()
     {
-      std::unique_ptr<QgsVectorLayer> vMulti( new QgsVectorLayer( QStringLiteral( "MultiLineStringZ" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vMulti = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineStringZ" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineStringZ ((0 0 0, 0 5 5), (5 0 10, 5 5 10))" );
       f1.setGeometry( f1g );
@@ -403,7 +403,7 @@ class TestQgsSnappingUtils : public QObject
     }
     void testSnapOnCentroidAndMiddleSegment()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" );
       f1.setGeometry( f1g );
@@ -440,7 +440,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnLineEndpoints()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0)" );
       f1.setGeometry( f1g );
@@ -489,7 +489,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnLineEndpointsMultiLine()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "MultiLineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineString ((0 0, 0 5, 5 5, 5 0), (0 -0.1, 0 -5, 5 -0.5))" );
       f1.setGeometry( f1g );
@@ -557,7 +557,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnPolygonEndpoints()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "Polygon ((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2))" );
       f1.setGeometry( f1g );
@@ -608,7 +608,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnMultiPolygonEndpoints()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "MultiPolygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiPolygon (((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2)), ((10 0, 10 5, 15 5, 15 0, 10 0),(13 2, 13.5 2, 13.5 3, 13 2)) )" );
       f1.setGeometry( f1g );

@@ -67,6 +67,7 @@ class TestQgsVectorTileLayer : public QgsTest
     void testMbtilesProviderMetadata();
     void test_relativePathsMbTiles();
     void test_absoluteRelativeUriMbTiles();
+    void test_mbtilesZoom16();
 
     void test_relativePathsXyz();
     void test_absoluteRelativeUriXyz();
@@ -331,7 +332,7 @@ void TestQgsVectorTileLayer::test_relativePathsMbTiles()
 
   const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR );
 
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
+  auto layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->providerType(), QStringLiteral( "mbtilesvectortiles" ) );
 
@@ -371,6 +372,17 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUriMbTiles()
   QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
+void TestQgsVectorTileLayer::test_mbtilesZoom16()
+{
+  const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/z16.mbtiles" ).arg( TEST_DATA_DIR );
+
+  auto layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->providerType(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( layer->sourceMinZoom(), 16 );
+  QCOMPARE( layer->sourceMaxZoom(), 16 );
+}
+
 void TestQgsVectorTileLayer::test_relativePathsXyz()
 {
   QgsReadWriteContext contextRel;
@@ -380,7 +392,7 @@ void TestQgsVectorTileLayer::test_relativePathsXyz()
   const QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
   const QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
 
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( srcXyzLocal );
+  auto layer = std::make_unique<QgsVectorTileLayer>( srcXyzLocal );
   QCOMPARE( layer->providerType(), QStringLiteral( "xyzvectortiles" ) );
 
   // encode source: converting absolute paths to relative
@@ -487,7 +499,7 @@ void TestQgsVectorTileLayer::test_relativePathsVtpk()
 
   const QString srcVtpk = QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR );
 
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( srcVtpk );
+  auto layer = std::make_unique<QgsVectorTileLayer>( srcVtpk );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->providerType(), QStringLiteral( "vtpkvectortiles" ) );
 
@@ -534,7 +546,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   ds.setParam( "type", "xyz" );
   ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( mDataDir ) );
   ds.setParam( "zmax", "1" );
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
+  auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
@@ -574,7 +586,7 @@ void TestQgsVectorTileLayer::test_polygonWithMarker()
   ds.setParam( "type", "xyz" );
   ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( mDataDir ) );
   ds.setParam( "zmax", "1" );
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
+  auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
@@ -612,7 +624,7 @@ void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
   ds.setParam( "type", "xyz" );
   ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( mDataDir ) );
   ds.setParam( "zmax", "1" );
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
+  auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
@@ -652,7 +664,7 @@ void TestQgsVectorTileLayer::test_filterRuleAllLayers()
   QgsDataSourceUri ds;
   ds.setParam( "type", "mbtiles" );
   ds.setParam( "url", QString( "/%1/mbtiles_vt.mbtiles" ).arg( mDataDir ) );
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
+  auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );

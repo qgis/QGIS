@@ -792,7 +792,7 @@ QgsProcessingParameterDefinition *QgsProcessingMeshDatasetGroupsParameterDefinit
   supportedDataType.insert( QgsMeshDatasetGroupMetadata::DataOnVertices );
   supportedDataType.insert( QgsMeshDatasetGroupMetadata::DataOnFaces );
   supportedDataType.insert( QgsMeshDatasetGroupMetadata::DataOnVolumes );
-  std::unique_ptr<QgsProcessingParameterMeshDatasetGroups> param = std::make_unique<QgsProcessingParameterMeshDatasetGroups>( name, description, mParentLayerComboBox->currentData().toString(), supportedDataType );
+  auto param = std::make_unique<QgsProcessingParameterMeshDatasetGroups>( name, description, mParentLayerComboBox->currentData().toString(), supportedDataType );
   param->setFlags( flags );
   return param.release();
 }
@@ -864,7 +864,7 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
 
 QgsProcessingParameterDefinition *QgsProcessingMeshDatasetTimeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
-  std::unique_ptr<QgsProcessingParameterMeshDatasetTime> param = std::make_unique<QgsProcessingParameterMeshDatasetTime>(
+  auto param = std::make_unique<QgsProcessingParameterMeshDatasetTime>(
     name, description, mMeshLayerParameterName, mParentDatasetComboBox->currentData().toString()
   );
 

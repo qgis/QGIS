@@ -129,7 +129,7 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
 
   const QDomElement parentElement = composerElement.parentNode().toElement();
 
-  std::unique_ptr< QgsPrintLayout > layout = std::make_unique< QgsPrintLayout >( project );
+  auto layout = std::make_unique< QgsPrintLayout >( project );
   layout->undoStack()->blockCommands( true );
 
   layout->mCustomProperties.readXml( composerElement );
@@ -170,7 +170,7 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
       // Not necessary: double y2 = snapLineElem.attribute( QStringLiteral( "y2" ) ).toDouble();
       const Qt::Orientation orientation( x1 == x2 ? Qt::Orientation::Vertical : Qt::Orientation::Horizontal );
       const QgsLayoutMeasurement position( x1 == x2 ? x1 : y1 );
-      std::unique_ptr< QgsLayoutGuide > guide = std::make_unique< QgsLayoutGuide >( orientation, position, page );
+      auto guide = std::make_unique< QgsLayoutGuide >( orientation, position, page );
       layout->guides().addGuide( guide.release() );
     }
   }
@@ -936,7 +936,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   for ( int i = 0; i < mapOverviewNodeList.size(); ++i )
   {
     const QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
-    std::unique_ptr<QgsLayoutItemMapOverview> mapOverview( new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), layoutItem ) );
+    auto mapOverview = std::make_unique<QgsLayoutItemMapOverview>( mapOverviewElem.attribute( QStringLiteral( "name" ) ), layoutItem );
     mapOverview->readXml( mapOverviewElem, doc, context );
     const QString frameMapId = mapOverviewElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) );
     if ( frameMapId != QLatin1String( "-1" ) && mapId2Uuid.contains( frameMapId ) )
@@ -1128,8 +1128,8 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
     layoutItem->alternateFillSymbol()->setColor( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
   }
 
-  std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
+  auto lineSymbol = std::make_unique< QgsLineSymbol >();
+  auto lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
   lineSymbolLayer->setWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );

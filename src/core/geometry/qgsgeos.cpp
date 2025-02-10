@@ -1600,7 +1600,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTIPOINT:
     {
-      std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
+      auto multiPoint = std::make_unique<QgsMultiPoint>();
       int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPoint->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
@@ -1618,7 +1618,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTILINESTRING:
     {
-      std::unique_ptr< QgsMultiLineString > multiLineString( new QgsMultiLineString() );
+      auto multiLineString = std::make_unique<QgsMultiLineString>();
       int nParts = GEOSGetNumGeometries_r( context, geos );
       multiLineString->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
@@ -1633,7 +1633,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTIPOLYGON:
     {
-      std::unique_ptr< QgsMultiPolygon > multiPolygon( new QgsMultiPolygon() );
+      auto multiPolygon = std::make_unique<QgsMultiPolygon>();
 
       int nParts = GEOSGetNumGeometries_r( context, geos );
       multiPolygon->reserve( nParts );
@@ -1649,7 +1649,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_GEOMETRYCOLLECTION:
     {
-      std::unique_ptr< QgsGeometryCollection > geomCollection( new QgsGeometryCollection() );
+      auto geomCollection = std::make_unique<QgsGeometryCollection>();
       int nParts = GEOSGetNumGeometries_r( context, geos );
       geomCollection->reserve( nParts );
       for ( int i = 0; i < nParts; ++i )
@@ -1679,7 +1679,7 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
 
-  std::unique_ptr< QgsPolygon > polygon( new QgsPolygon() );
+  auto polygon = std::make_unique<QgsPolygon>();
 
   const GEOSGeometry *ring = GEOSGetExteriorRing_r( context, geos );
   if ( ring )
@@ -1740,7 +1740,7 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
     }
   }
 #endif
-  std::unique_ptr< QgsLineString > line( new QgsLineString( xOut, yOut, zOut, mOut ) );
+  auto line = std::make_unique<QgsLineString>( xOut, yOut, zOut, mOut );
   return line;
 }
 
@@ -3144,7 +3144,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractG
     return nullptr;
   }
 
-  std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >();
+  auto line = std::make_unique< QgsLineString >();
   line->addVertex( QgsPoint( nx1, ny1 ) );
   line->addVertex( QgsPoint( nx2, ny2 ) );
   return line;
@@ -3392,6 +3392,15 @@ static geos::unique_ptr _mergeLinestrings( const GEOSGeometry *line1, const GEOS
     GEOSGeometry *geoms[2] = { g1.release(), g2.release() };
     geos::unique_ptr multiGeom( GEOSGeom_createCollection_r( context, GEOS_MULTILINESTRING, geoms, 2 ) );
     geos::unique_ptr res( GEOSLineMerge_r( context, multiGeom.get() ) );
+
+    //keep the original orientation if the result has a start or end point in common with the original line
+    //and this point is not the start or the end point for both lines
+    double x1res, y1res, x2res, y2res;
+    if ( !_linestringEndpoints( res.get(), x1res, y1res, x2res, y2res ) )
+      return nullptr;
+    if ( ( x1res == x2 && y1res == y2 ) || ( x2res == x1 && y2res == y1 ) )
+      res.reset( GEOSReverse_r( context, res.get() ) );
+
     return res;
   }
   else
@@ -3624,6 +3633,33 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
   {
     return nullptr;
   }
+
+  //keep the original orientation
+  bool reverseLine = false;
+  if ( isRing )
+  {
+    //for closed linestring check clockwise/counter-clockwise
+    char isResultCCW = 0, isOriginCCW = 0;
+    if ( GEOSCoordSeq_isCCW_r( context, GEOSGeom_getCoordSeq_r( context, result.get() ), &isResultCCW ) &&
+         GEOSCoordSeq_isCCW_r( context, GEOSGeom_getCoordSeq_r( context, line ), &isOriginCCW )
+       )
+    {
+      //reverse line if orientations are different
+      reverseLine = ( isOriginCCW == 1 && isResultCCW == 0 ) || ( isOriginCCW == 0 && isResultCCW == 1 );
+    }
+  }
+  else
+  {
+    //for linestring, check if the result has a start or end point in common with the original line
+    double x1res, y1res, x2res, y2res;
+    if ( !_linestringEndpoints( result.get(), x1res, y1res, x2res, y2res ) )
+      return nullptr;
+    geos::unique_ptr beginResultLineVertex = createGeosPointXY( x1res, y1res, false, 0, false, 0, 2, precision );
+    geos::unique_ptr endResultLineVertex = createGeosPointXY( x2res, y2res, false, 0, false, 0, 2, precision );
+    reverseLine = GEOSEquals_r( context, beginLineVertex.get(), endResultLineVertex.get() ) == 1 || GEOSEquals_r( context, endLineVertex.get(), beginResultLineVertex.get() ) == 1;
+  }
+  if ( reverseLine )
+    result.reset( GEOSReverse_r( context, result.get() ) );
 
   return result;
 }

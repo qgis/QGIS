@@ -29,6 +29,7 @@ from qgis.core import (
     QgsLineSymbol,
     QgsMapSettings,
     QgsMarkerSymbol,
+    QgsMaskMarkerSymbolLayer,
     QgsProject,
     QgsProperty,
     QgsReadWriteContext,
@@ -36,9 +37,11 @@ from qgis.core import (
     QgsRenderContext,
     QgsRendererCategory,
     QgsSimpleMarkerSymbolLayer,
+    QgsSingleSymbolRenderer,
     QgsStyle,
     QgsSymbol,
     QgsSymbolLayer,
+    QgsSymbolLayerReference,
     QgsVectorLayer,
 )
 import unittest
@@ -814,6 +817,36 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         self.assertEqual(cc.value(), None)
         self.assertEqual(cc.label(), "")
         self.assertEqual(cc.symbol().color().name(), "#ff00ff")
+
+    def testConvertNoMasks(self):
+        """
+        Test converting an embedded symbol renderer to a categorized renderer
+        """
+        points_layer = QgsVectorLayer("Point", "Polys", "memory")
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt("Point(-100 30)"))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt("Point(-110 40)"))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt("Point(-90 50)"))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+
+        p = QgsMarkerSymbol.createSimple({"color": "#fdbf6f", "size": "7"})
+        points_layer.setRenderer(QgsSingleSymbolRenderer(p))
+
+        circle_symbol = QgsMarkerSymbol.createSimple({"size": "10"})
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(circle_symbol)
+        mask_layer.setMasks(
+            [QgsSymbolLayerReference("test_layer_id", "test_symbollayer_id")]
+        )
+        points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
+
+        categorized = QgsCategorizedSymbolRenderer.convertFromRenderer(
+            points_layer.renderer(), points_layer
+        )
+
+        self.assertFalse(categorized.sourceSymbol().symbolLayers()[1].masks())
 
     def test_displayString(self):
         """Test the displayString method"""

@@ -249,7 +249,7 @@ namespace QgsWfs
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+    auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
 
     // get layers
     QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );

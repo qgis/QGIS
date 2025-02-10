@@ -48,7 +48,7 @@ QgsBearingNumericFormat *QgsLocalDefaultSettings::bearingFormat()
   }
   s.endGroup();
 
-  std::unique_ptr< QgsBearingNumericFormat > res = std::make_unique< QgsBearingNumericFormat >();
+  auto res = std::make_unique< QgsBearingNumericFormat >();
   res->setConfiguration( config, QgsReadWriteContext() );
   return res.release();
 }
@@ -79,7 +79,7 @@ QgsGeographicCoordinateNumericFormat *QgsLocalDefaultSettings::geographicCoordin
   }
   s.endGroup();
 
-  std::unique_ptr< QgsGeographicCoordinateNumericFormat > res = std::make_unique< QgsGeographicCoordinateNumericFormat >();
+  auto res = std::make_unique< QgsGeographicCoordinateNumericFormat >();
   res->setConfiguration( config, QgsReadWriteContext() );
   return res.release();
 }

@@ -222,7 +222,7 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps );
     mTool->modelPressEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -249,7 +249,7 @@ void QgsModelGraphicsView::mouseReleaseEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps );
     mTool->modelReleaseEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -268,7 +268,7 @@ void QgsModelGraphicsView::mouseMoveEvent( QMouseEvent *event )
   QPointF cursorPos = mapToScene( mMouseCurrentXY );
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, false ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, false );
     if ( mTool->flags() & QgsModelViewTool::FlagSnaps )
     {
       me->snapPoint();
@@ -305,7 +305,7 @@ void QgsModelGraphicsView::mouseDoubleClickEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps );
     mTool->modelDoubleClickEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }

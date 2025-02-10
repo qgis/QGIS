@@ -153,7 +153,7 @@ QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) 
     {
       QgsGeometry g;
 
-      std::unique_ptr<QgsLineString> ringWgs84( new QgsLineString( captureListWgs84 ) );
+      auto ringWgs84 = std::make_unique<QgsLineString>( captureListWgs84 );
       if ( !is3D )
         ringWgs84->dropZValue();
       if ( !isMeasure )
@@ -168,7 +168,7 @@ QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) 
       else if ( geometryType == Qgis::GeometryType::Polygon )
       {
         ringWgs84->close();
-        std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+        auto polygon = std::make_unique<QgsPolygon>();
         polygon->setExteriorRing( ringWgs84.release() );
 
         g = QgsGeometry( polygon.release() );

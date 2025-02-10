@@ -69,32 +69,32 @@ void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> radiusParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "RADIUS" ), QObject::tr( "Kernel radius (pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1, 1000 );
+  auto radiusParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "RADIUS" ), QObject::tr( "Kernel radius (pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1, 1000 );
   radiusParam->setHelp( QObject::tr( "The radius of the filter kernel (in pixels). Must be large enough to reach ground cells next to non-ground objects." ) );
   addParameter( radiusParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> terrainSlopeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TERRAIN_SLOPE" ), QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), Qgis::ProcessingNumberParameterType::Double, 30, false, 0, 1000 );
+  auto terrainSlopeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TERRAIN_SLOPE" ), QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), Qgis::ProcessingNumberParameterType::Double, 30, false, 0, 1000 );
   terrainSlopeParam->setHelp( QObject::tr( "The approximate terrain slope in %. The terrain slope must be adjusted to account for the ratio of height units vs raster pixel dimensions. Used to relax the filter criterium in steeper terrain." ) );
   addParameter( terrainSlopeParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterEnum> filterModificationParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FILTER_MODIFICATION" ), QObject::tr( "Filter modification" ), QStringList { QObject::tr( "None" ), QObject::tr( "Relax filter" ), QObject::tr( "Amplify" ) }, false, 0 );
+  auto filterModificationParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FILTER_MODIFICATION" ), QObject::tr( "Filter modification" ), QStringList { QObject::tr( "None" ), QObject::tr( "Relax filter" ), QObject::tr( "Amplify" ) }, false, 0 );
   filterModificationParam->setHelp( QObject::tr( "Choose whether to apply the filter kernel without modification or to use a confidence interval to relax or amplify the height criterium." ) );
   addParameter( filterModificationParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> stDevParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "STANDARD_DEVIATION" ), QObject::tr( "Standard deviation" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0, 1000 );
+  auto stDevParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "STANDARD_DEVIATION" ), QObject::tr( "Standard deviation" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0, 1000 );
   stDevParam->setHelp( QObject::tr( "The standard deviation used to calculate a 5% confidence interval applied to the height threshold." ) );
   addParameter( stDevParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterRasterDestination> outputLayerGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_GROUND" ), QObject::tr( "Output layer (ground)" ), QVariant(), true, true );
+  auto outputLayerGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_GROUND" ), QObject::tr( "Output layer (ground)" ), QVariant(), true, true );
   outputLayerGroundParam->setHelp( QObject::tr( "The filtered DEM containing only cells classified as ground." ) );
   addParameter( outputLayerGroundParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterRasterDestination> outputLayerNonGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_NONGROUND" ), QObject::tr( "Output layer (non-ground objects)" ), QVariant(), true, false );
+  auto outputLayerNonGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_NONGROUND" ), QObject::tr( "Output layer (non-ground objects)" ), QVariant(), true, false );
   outputLayerNonGroundParam->setHelp( QObject::tr( "The non-ground objects removed by the filter." ) );
   addParameter( outputLayerNonGroundParam.release() );
 }

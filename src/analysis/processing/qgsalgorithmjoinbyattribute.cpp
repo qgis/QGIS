@@ -66,7 +66,7 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> nonMatchingSink = std::make_unique<QgsProcessingParameterFeatureSink>(
+  auto nonMatchingSink = std::make_unique<QgsProcessingParameterFeatureSink>(
     QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   );
   // TODO GUI doesn't support advanced outputs yet

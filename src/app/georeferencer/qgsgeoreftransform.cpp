@@ -76,7 +76,7 @@ bool QgsGeorefTransform::parametersInitialized() const
 
 QgsGcpTransformerInterface *QgsGeorefTransform::clone() const
 {
-  std::unique_ptr<QgsGeorefTransform> res( new QgsGeorefTransform( *this ) );
+  auto res = std::make_unique<QgsGeorefTransform>( *this );
   res->updateParametersFromGcps( mSourceCoordinates, mDestinationCoordinates, mInvertYAxis );
   return res.release();
 }

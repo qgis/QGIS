@@ -193,10 +193,8 @@ bool QgsCoordinateTransform::isTransformationPossible( const QgsCoordinateRefere
   if ( !source.isValid() || !destination.isValid() )
     return false;
 
-#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
   if ( source.celestialBodyName() != destination.celestialBodyName() )
     return false;
-#endif
 
   return true;
 }
@@ -594,6 +592,26 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     return QgsRectangle( p, p );
   }
 
+#ifdef QGISDEBUG
+  if ( !mHasContext )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+  }
+#endif
+
+  // we can't calculate if transform involves a geocentric CRS. This is silly anyway,
+  // as transformation of a 2d bounding box makes no sense when a geocentric CRS is involved!
+  if ( d->mSourceCRS.type() == Qgis::CrsType::Geocentric )
+  {
+    throw QgsCsException( QObject::tr( "Could not transform bounding box for geocentric CRS %1" ).arg( d->mSourceCRS.authid() ) );
+  }
+  if ( d->mDestCRS.type() == Qgis::CrsType::Geocentric )
+  {
+    throw QgsCsException( QObject::tr( "Could not transform bounding box for geocentric CRS %1" ).arg( d->mDestCRS.authid() ) );
+  }
+
+  const double xMin = rect.xMinimum();
+  const double xMax = rect.xMaximum();
   double yMin = rect.yMinimum();
   double yMax = rect.yMaximum();
   if ( d->mGeographicToWebMercator &&
@@ -619,6 +637,109 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
       yMax = 90 - EPS;
     }
   }
+
+  // delegate logic to proj if version >= 8.2 available
+#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=2)
+
+  QgsScopedProjSilentLogger errorLogger;
+
+  QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
+
+  ProjData projData = d->threadLocalProjData();
+  PJ_CONTEXT *projContext = QgsProjContext::get();
+
+#if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<6)
+  // if source or destination crs include vertical components, we need to demote them to
+  // 2d crs first, otherwise proj_trans_bounds fails on proj < 9.6 (see https://github.com/OSGeo/PROJ/pull/4333)
+
+  QgsProjUtils::proj_pj_unique_ptr srcCrs( proj_get_source_crs( projContext, projData ) );
+  QgsProjUtils::proj_pj_unique_ptr destCrs( proj_get_target_crs( projContext, projData ) );
+
+  QgsProjUtils::proj_pj_unique_ptr srcCrsHorizontal;
+  QgsProjUtils::proj_pj_unique_ptr destCrsHorizontal;
+  QgsProjUtils::proj_pj_unique_ptr transform2D;
+  if ( QgsProjUtils::hasVerticalAxis( srcCrs.get() ) ||
+       QgsProjUtils::hasVerticalAxis( destCrs.get() ) )
+  {
+    srcCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( srcCrs.get() );
+    destCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( destCrs.get() );
+    transform2D.reset( proj_create_crs_to_crs_from_pj( projContext, srcCrsHorizontal.get(), destCrsHorizontal.get(), nullptr, nullptr ) );
+    projData = transform2D.get();
+  }
+#endif
+
+  double transXMin = 0;
+  double transYMin = 0;
+  double transXMax = 0;
+  double transYMax = 0;
+
+  proj_errno_reset( projData );
+  // proj documentation recommends 21 points for densification
+  constexpr int DENSIFY_POINTS = 21;
+  const int projResult = proj_trans_bounds( projContext, projData, ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ? PJ_FWD : PJ_INV,
+                         xMin, yMin, xMax, yMax,
+                         &transXMin, &transYMin, &transXMax, &transYMax, DENSIFY_POINTS );
+  if ( projResult != 1
+       || !std::isfinite( transXMin )
+       || !std::isfinite( transXMax )
+       || !std::isfinite( transYMin )
+       || !std::isfinite( transYMax ) )
+  {
+    const QString projErr = QString::fromUtf8( proj_context_errno_string( projContext, proj_errno( projData ) ) );
+    const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
+    const QString msg = QObject::tr( "%1 (%2 to %3) of bounding box failed: %4" )
+                        .arg( dir,
+                              ( direction == Qgis::TransformDirection::Forward ) ? d->mSourceCRS.authid() : d->mDestCRS.authid(),
+                              ( direction == Qgis::TransformDirection::Forward ) ? d->mDestCRS.authid() : d->mSourceCRS.authid(),
+                              projErr );
+    QgsDebugError( msg );
+
+    throw QgsCsException( msg );
+  }
+
+  // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
+  bool doHandle180Crossover = false;
+
+  if ( handle180Crossover
+       && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+            ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
+       && ( transXMax < transXMin ) )
+  {
+    //if crossing the date line, temporarily add 360 degrees to -ve longitudes
+    std::swap( transXMax, transXMin );
+    if ( transXMin < 0 )
+      transXMin += 360;
+    if ( transXMax < 0 )
+      transXMax += 360;
+    doHandle180Crossover = true;
+  }
+
+  QgsRectangle boundingBoxRect{ transXMin, transYMin, transXMax, transYMax };
+  if ( boundingBoxRect.isNull() )
+  {
+    // something bad happened when reprojecting the filter rect... no finite points were left!
+    throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
+  }
+
+  if ( doHandle180Crossover )
+  {
+    //subtract temporary addition of 360 degrees from longitudes
+    if ( boundingBoxRect.xMinimum() > 180.0 )
+      boundingBoxRect.setXMinimum( boundingBoxRect.xMinimum() - 360.0 );
+    if ( boundingBoxRect.xMaximum() > 180.0 )
+      boundingBoxRect.setXMaximum( boundingBoxRect.xMaximum() - 360.0 );
+  }
+
+  QgsDebugMsgLevel( "Projected extent: " + boundingBoxRect.toString(), 4 );
+
+  if ( boundingBoxRect.isEmpty() )
+  {
+    QgsDebugMsgLevel( "Original extent: " + rect.toString(), 4 );
+  }
+
+  return boundingBoxRect;
+#else
+  // this logic is buggy! See https://github.com/qgis/QGIS/issues/59821
 
   // 64 points (<=2.12) is not enough, see #13665, for EPSG:4326 -> EPSG:3574 (say that it is a hard one),
   // are decent result from about 500 points and more. This method is called quite often, but
@@ -649,7 +770,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   {
 
     // Start at right edge
-    double pointX = rect.xMinimum();
+    double pointX = xMin;
 
     for ( int j = 0; j < nXPoints; j++ )
     {
@@ -733,6 +854,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   }
 
   return bb_rect;
+#endif
 }
 
 void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *y, double *z, Qgis::TransformDirection direction ) const
@@ -788,9 +910,6 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #endif
 
   // use proj4 to do the transform
-
-  // if the source/destination projection is lat/long, convert the points to radians
-  // prior to transforming
   ProjData projData = d->threadLocalProjData();
 
   int projResult = 0;
@@ -902,12 +1021,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
 
-#if PROJ_VERSION_MAJOR>=8
     PJ_CONTEXT *projContext = QgsProjContext::get();
     const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_context_errno_string( projContext, projResult ) ) : QObject::tr( "Fallback transform failed" );
-#else
-    const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" );
-#endif
 
     const QString msg = QObject::tr( "%1 (%2 to %3) of%4%5Error: %6" )
                         .arg( dir,

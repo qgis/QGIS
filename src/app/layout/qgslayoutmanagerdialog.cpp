@@ -258,7 +258,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
       title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
     }
 
-    std::unique_ptr<QgsPrintLayout> layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
+    auto layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
     if ( loadingTemplate )
     {
       bool loadedOK = false;
@@ -319,10 +319,10 @@ void QgsLayoutManagerDialog::createReport()
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
 
-  std::unique_ptr<QgsReport> report = std::make_unique<QgsReport>( QgsProject::instance() );
+  auto report = std::make_unique<QgsReport>( QgsProject::instance() );
   report->setName( title );
 
-  std::unique_ptr<QgsLayout> header = std::make_unique<QgsLayout>( QgsProject::instance() );
+  auto header = std::make_unique<QgsLayout>( QgsProject::instance() );
   header->initializeDefaults();
   report->setHeader( header.release() );
   report->setHeaderEnabled( true );

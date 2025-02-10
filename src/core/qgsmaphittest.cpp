@@ -89,7 +89,7 @@ void QgsMapHitTest::run()
     if ( mapSettings.layerStyleOverrides().contains( vl->id() ) )
       styleOverride.setOverrideStyle( mapSettings.layerStyleOverrides().value( vl->id() ) );
 
-    std::unique_ptr< QgsVectorLayerFeatureSource > source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
+    auto source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
     runHitTestFeatureSource( source.get(),
                              vl->id(), vl->fields(), vl->renderer(),
                              usedSymbols, usedSymbolsRuleKey, context,
@@ -367,7 +367,7 @@ bool QgsMapHitTestTask::run()
   mFeedback = std::make_unique< QgsFeedback >();
   connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsTask::progressChanged );
 
-  std::unique_ptr< QgsMapHitTest > hitTest = std::make_unique< QgsMapHitTest >( mSettings );
+  auto hitTest = std::make_unique< QgsMapHitTest >( mSettings );
 
   // TODO: do we need this temp image?
   const QgsMapSettings &mapSettings = mSettings.mapSettings();

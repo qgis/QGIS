@@ -558,7 +558,7 @@ void TestQgisAppClipboard::testVectorTileLayer()
   ds.setParam( "type", "xyz" );
   ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( dataDir ) );
   ds.setParam( "zmax", "1" );
-  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
+  auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
   QgsGeometry selectionGeometry = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((13934091.75684908032417297 -1102962.40819426625967026, 11360512.80439674854278564 -2500048.12523981928825378, 12316413.55816475301980972 -5661873.69539554417133331, 16948855.67257896065711975 -6617774.44916355609893799, 18125348.90798573195934296 -2058863.16196227818727493, 15257646.64668171107769012 -735308.27212964743375778, 13934091.75684908032417297 -1102962.40819426625967026))" ) );

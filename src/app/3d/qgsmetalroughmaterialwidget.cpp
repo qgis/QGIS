@@ -65,7 +65,7 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
 
 QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
 {
-  std::unique_ptr<QgsMetalRoughMaterialSettings> m = std::make_unique<QgsMetalRoughMaterialSettings>();
+  auto m = std::make_unique<QgsMetalRoughMaterialSettings>();
   m->setBaseColor( mButtonBaseColor->color() );
   m->setMetalness( static_cast<float>( mSpinMetalness->value() ) );
   m->setRoughness( static_cast<float>( mSpinRoughness->value() ) );

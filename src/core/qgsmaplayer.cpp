@@ -473,14 +473,20 @@ QString QgsMapLayer::metadataUrlFormat() const
   }
 }
 
-QString QgsMapLayer::publicSource( bool hidePassword ) const
+QString QgsMapLayer::publicSource( bool redactCredentials ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // Redo this every time we're asked for it, as we don't know if
   // dataSource has changed.
-  QString safeName = QgsDataSourceUri::removePassword( mDataSource, hidePassword );
-  return safeName;
+  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
+  {
+    return metadata->cleanUri( mDataSource, redactCredentials ? Qgis::UriCleaningFlag::RedactCredentials : Qgis::UriCleaningFlag::RemoveCredentials );
+  }
+  else
+  {
+    return QgsDataSourceUri::removePassword( mDataSource, redactCredentials );
+  }
 }
 
 QString QgsMapLayer::source() const
@@ -3228,12 +3234,14 @@ QString QgsMapLayer::generalHtmlMetadata() const
   // name
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
 
+  const QString lPublicSource = publicSource();
+
   QString path;
   bool isLocalPath = false;
   if ( dataProvider() )
   {
     // local path
-    QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( dataProvider()->name(), publicSource() );
+    QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( dataProvider()->name(), lPublicSource );
     if ( uriComponents.contains( QStringLiteral( "path" ) ) )
     {
       path = uriComponents[QStringLiteral( "path" )].toString();
@@ -3279,8 +3287,8 @@ QString QgsMapLayer::generalHtmlMetadata() const
   }
 
   // data source
-  if ( publicSource() != path || !isLocalPath )
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
+  if ( lPublicSource != path || !isLocalPath )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( lPublicSource != path ? lPublicSource : path ) + QStringLiteral( "</td></tr>\n" );
 
   // provider
   if ( dataProvider() )

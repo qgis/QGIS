@@ -182,7 +182,7 @@ QgsPointSequence QgsRegularPolygon::points() const
 
 QgsPolygon *QgsRegularPolygon::toPolygon() const
 {
-  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+  auto polygon = std::make_unique<QgsPolygon>();
   if ( isEmpty() )
   {
     return polygon.release();
@@ -195,7 +195,7 @@ QgsPolygon *QgsRegularPolygon::toPolygon() const
 
 QgsLineString *QgsRegularPolygon::toLineString() const
 {
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   if ( isEmpty() )
   {
     return ext.release();

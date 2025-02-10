@@ -1120,7 +1120,7 @@ class TestQgsDiagram : public QgsTest
     void testClipping()
     {
       const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
-      std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
+      auto vl2 = std::make_unique<QgsVectorLayer>( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
 
       QVariantMap props;
       props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );

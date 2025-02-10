@@ -186,7 +186,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
-  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
+  auto d = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options );
   if ( d && d->isValid() )
   {
     const int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
@@ -227,7 +227,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
+  auto l = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=layers" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options );
   if ( l && l->isValid() )
   {
     const int idxName = l->fields().lookupField( QStringLiteral( "name" ) );

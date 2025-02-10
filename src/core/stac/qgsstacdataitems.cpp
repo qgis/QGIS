@@ -315,8 +315,6 @@ void QgsStacCatalogItem::onControllerFinished( int requestId, const QString &err
 
 QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
 {
-  QgsStacCatalog *root = rootCatalog();
-  const bool supportsApi = root ? root->supportsStacApi() : false;
 
   QgsStacController *controller = stacController();
   QString error;
@@ -327,27 +325,33 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
   if ( !mStacCatalog )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
 
+  QgsStacCatalog *root = rootCatalog();
+
+  const bool supportsCollections = root && root->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/collections" ) );
+  const bool supportsItems = root && root->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/ogcapi-features" ) );
+
   int itemsCount = 0;
   QVector<QgsDataItem *> contents;
   const QVector< QgsStacLink > links = mStacCatalog->links();
 
   // treat catalog/collection as static if it does not have a /items endpoint
-  bool hasItemsEndpoint = false;
-  bool hasCollectionsEndpoint = false;
-  if ( supportsApi )
+  bool useItemsEndpoint = false;
+  bool useCollectionsEndpoint = false;
+  if ( supportsCollections || supportsItems )
   {
     for ( const QgsStacLink &link : links )
     {
       if ( link.relation() == QLatin1String( "items" ) )
       {
-        hasItemsEndpoint = true;
+        useItemsEndpoint = true;
       }
       else if ( link.relation() == QLatin1String( "data" ) &&
                 link.href().endsWith( QLatin1String( "/collections" ) ) )
       {
-        hasCollectionsEndpoint = true;
+        useCollectionsEndpoint = true;
       }
-      if ( hasItemsEndpoint && hasCollectionsEndpoint )
+      // if we found what we need we can stop looking
+      if ( supportsItems == useItemsEndpoint && supportsCollections == useCollectionsEndpoint )
         break;
     }
   }
@@ -362,7 +366,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       continue;
 
     if ( link.relation() == QLatin1String( "child" ) &&
-         !hasCollectionsEndpoint )
+         !useCollectionsEndpoint )
     {
       // may be either catalog or collection
       QgsStacCatalogItem *c = new QgsStacCatalogItem( this, link.title(), link.href() );
@@ -386,7 +390,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       }
     }
     else if ( link.relation() == QLatin1String( "item" ) &&
-              !hasItemsEndpoint )
+              !useItemsEndpoint )
     {
       itemsCount++;
 
@@ -396,7 +400,8 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       QgsStacItemItem *i = new QgsStacItemItem( this, link.title(), link.href() );
       contents.append( i );
     }
-    else if ( link.relation() == QLatin1String( "items" ) )
+    else if ( link.relation() == QLatin1String( "items" ) &&
+              useItemsEndpoint )
     {
       // stac api items (ogcapi features)
       QString error;

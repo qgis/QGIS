@@ -199,7 +199,7 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
 
 std::unique_ptr<QgsVectorLayer> TestQgsVectorLayerFeaturePool::createPopulatedLayer()
 {
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon" ), QStringLiteral( "Polygons" ), QStringLiteral( "memory" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon" ), QStringLiteral( "Polygons" ), QStringLiteral( "memory" ) );
 
   QgsFeature feature;
   feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 10 0, 10 10, 0 10, 0 0))" ) ) );

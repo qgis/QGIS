@@ -111,7 +111,10 @@ void QgsStacController::handleStacObjectReply()
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    emit finishedStacObjectRequest( requestId, reply->errorString() );
+    const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    const QString errorMessage = contentType.startsWith( QLatin1String( "text/plain" ) ) ? reply->readAll() : reply->errorString();
+
+    emit finishedStacObjectRequest( requestId, errorMessage );
     reply->deleteLater();
     mReplies.removeOne( reply );
     return;
@@ -157,7 +160,10 @@ void QgsStacController::handleItemCollectionReply()
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    emit finishedItemCollectionRequest( requestId, reply->errorString() );
+    const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    const QString errorMessage = contentType.startsWith( QLatin1String( "text/plain" ) ) ? reply->readAll() : reply->errorString();
+
+    emit finishedItemCollectionRequest( requestId, errorMessage );
     reply->deleteLater();
     mReplies.removeOne( reply );
     return;
@@ -186,7 +192,10 @@ void QgsStacController::handleCollectionsReply()
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    emit finishedCollectionsRequest( requestId, reply->errorString() );
+    const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    const QString errorMessage = contentType.startsWith( QLatin1String( "text/plain" ) ) ? reply->readAll() : reply->errorString();
+
+    emit finishedCollectionsRequest( requestId, errorMessage );
     reply->deleteLater();
     mReplies.removeOne( reply );
     return;

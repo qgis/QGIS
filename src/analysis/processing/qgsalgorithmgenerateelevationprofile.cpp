@@ -189,13 +189,13 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
   {
     if ( QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( terrainLayer ) )
     {
-      std::unique_ptr<QgsRasterDemTerrainProvider> terrainProvider = std::make_unique<QgsRasterDemTerrainProvider>();
+      auto terrainProvider = std::make_unique<QgsRasterDemTerrainProvider>();
       terrainProvider->setLayer( rasterLayer );
       request.setTerrainProvider( terrainProvider.release() );
     }
     else if ( QgsMeshLayer *meshLayer = dynamic_cast<QgsMeshLayer *>( terrainLayer ) )
     {
-      std::unique_ptr<QgsMeshTerrainProvider> terrainProvider = std::make_unique<QgsMeshTerrainProvider>();
+      auto terrainProvider = std::make_unique<QgsMeshTerrainProvider>();
       terrainProvider->setLayer( meshLayer );
       request.setTerrainProvider( terrainProvider.release() );
     }
@@ -244,7 +244,7 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
 
   if ( borderColor.isValid() )
   {
-    std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( borderColor, 0.1 );
+    auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( borderColor, 0.1 );
     lineSymbolLayer->setPenCapStyle( Qt::FlatCap );
     plotItem.xAxis().setGridMinorSymbol( new QgsLineSymbol( QgsSymbolLayerList( { lineSymbolLayer->clone() } ) ) );
     plotItem.yAxis().setGridMinorSymbol( new QgsLineSymbol( QgsSymbolLayerList( { lineSymbolLayer->clone() } ) ) );
@@ -255,7 +255,7 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
 
   if ( backgroundColor.isValid() )
   {
-    std::unique_ptr<QgsSimpleFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsSimpleFillSymbolLayer>( backgroundColor, Qt::SolidPattern, backgroundColor );
+    auto fillSymbolLayer = std::make_unique<QgsSimpleFillSymbolLayer>( backgroundColor, Qt::SolidPattern, backgroundColor );
     plotItem.setChartBackgroundSymbol( new QgsFillSymbol( QgsSymbolLayerList( { fillSymbolLayer.release() } ) ) );
   }
 

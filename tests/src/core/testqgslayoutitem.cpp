@@ -358,7 +358,7 @@ void TestQgsLayoutItem::positionWithUnits()
   QgsProject p;
   QgsLayout l( &p );
 
-  std::unique_ptr<TestItem> item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   item->attemptMove( QgsLayoutPoint( 60.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 60.0 );
   QCOMPARE( item->positionWithUnits().y(), 15.0 );
@@ -690,7 +690,7 @@ void TestQgsLayoutItem::resize()
 
   //resize test item (no restrictions), same units as layout
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr<TestItem> item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->setRect( 0, 0, 55, 45 );
@@ -760,7 +760,7 @@ void TestQgsLayoutItem::referencePoint()
   QgsLayout l( &p );
 
   //test setting/getting reference point
-  std::unique_ptr<TestItem> item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   item->setReferencePoint( QgsLayoutItem::LowerMiddle );
   QCOMPARE( item->referencePoint(), QgsLayoutItem::LowerMiddle );
 
@@ -940,7 +940,7 @@ void TestQgsLayoutItem::adjustPointForReference()
   QgsProject p;
   QgsLayout l( &p );
 
-  std::unique_ptr<TestItem> item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   QPointF result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::UpperLeft );
   QCOMPARE( result.x(), 5.0 );
   QCOMPARE( result.y(), 7.0 );
@@ -1045,7 +1045,7 @@ void TestQgsLayoutItem::fixedSize()
   QgsLayout l( &p );
 
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr<FixedSizedItem> item( new FixedSizedItem( &l ) );
+  auto item = std::make_unique<FixedSizedItem>( &l );
   QCOMPARE( item->fixedSize().width(), 2.0 );
   QCOMPARE( item->fixedSize().height(), 4.0 );
   QCOMPARE( item->fixedSize().units(), Qgis::LayoutUnit::Inches );
@@ -1073,7 +1073,7 @@ void TestQgsLayoutItem::minSize()
   QgsLayout l( &p );
 
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr<MinSizedItem> item( new MinSizedItem( &l ) );
+  auto item = std::make_unique<MinSizedItem>( &l );
   QCOMPARE( item->minimumSize().width(), 5.0 );
   QCOMPARE( item->minimumSize().height(), 10.0 );
   QCOMPARE( item->minimumSize().units(), Qgis::LayoutUnit::Centimeters );
@@ -1096,7 +1096,7 @@ void TestQgsLayoutItem::minSize()
   QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * std::numeric_limits<double>::epsilon() );
 
   //also need check that fixed size trumps min size
-  std::unique_ptr<FixedMinSizedItem> fixedMinItem( new FixedMinSizedItem( &l ) );
+  auto fixedMinItem = std::make_unique<FixedMinSizedItem>( &l );
   QCOMPARE( fixedMinItem->minimumSize().width(), 5.0 );
   QCOMPARE( fixedMinItem->minimumSize().height(), 9.0 );
   QCOMPARE( fixedMinItem->minimumSize().units(), Qgis::LayoutUnit::Centimeters );
@@ -1117,7 +1117,7 @@ void TestQgsLayoutItem::move()
 
   //move test item, same units as layout
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr<TestItem> item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   item->setRect( 0, 0, 55, 45 );
   item->setPos( 27, 29 );
   item->attemptMove( QgsLayoutPoint( 60.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
@@ -1218,7 +1218,7 @@ void TestQgsLayoutItem::setSceneRect()
 
   //resize test item (no restrictions), same units as layout
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr<TestItem> item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->attemptSetSceneRect( QRectF( 27.0, 29.0, 100, 200 ) );
@@ -1274,7 +1274,7 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 5 ) );
 
   // add pages
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 500, 100, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 0 );
@@ -1395,8 +1395,8 @@ void TestQgsLayoutItem::itemVariablesFunction()
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
 
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<QgsVectorLayer> layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  auto layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() );
   QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layer_ids' )" ) );
   r = e5.evaluate( &c );
@@ -1410,7 +1410,7 @@ void TestQgsLayoutItem::variables()
 {
   QgsLayout l( QgsProject::instance() );
 
-  std::unique_ptr<QgsLayoutItemMap> map = std::make_unique<QgsLayoutItemMap>( &l );
+  auto map = std::make_unique<QgsLayoutItemMap>( &l );
   std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   const int before = scope->variableCount();
 
@@ -1459,14 +1459,14 @@ void TestQgsLayoutItem::mapCreditsFunction()
   QCOMPARE( r.toString(), QString() );
 
   // with layers
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsLayerMetadata metadata;
   metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
   layer->setMetadata( metadata );
-  std::unique_ptr<QgsVectorLayer> layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  auto layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   metadata.setRights( QStringList() << QStringLiteral( "CC NC" ) );
   layer2->setMetadata( metadata );
-  std::unique_ptr<QgsVectorLayer> layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
+  auto layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
   metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
   layer3->setMetadata( metadata );
   const std::unique_ptr<QgsVectorLayer> layer4 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
@@ -1570,7 +1570,7 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item->sceneBoundingRect().bottom(), 18.0 );
 
   // set rotation, using top left
-  std::unique_ptr<TestItem> item2( new TestItem( &l ) );
+  auto item2 = std::make_unique<TestItem>( &l );
   item2->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item2->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
   item2->setItemRotation( 90, false );
@@ -2061,12 +2061,12 @@ void TestQgsLayoutItem::excludeFromExports()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol( new QgsFillSymbol() );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::transparent );
   simpleFill->setStrokeColor( Qt::transparent );
@@ -2106,7 +2106,7 @@ std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *l
   original->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  std::unique_ptr<TestItem> copy = std::make_unique<TestItem>( layout );
+  auto copy = std::make_unique<TestItem>( layout );
   copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() );
 
   return std::move( copy );

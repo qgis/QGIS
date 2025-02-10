@@ -23,6 +23,7 @@ Building QGIS from source - step by step
       + [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
       + [3.11.3. Additional tools for QGIS development](#3113-additional-tools-for-qgis-development)
       + [3.11.4. QT6 experimental builds with Fedora Rawhide](#3114-qt6-experimental-builds-with-fedora-rawhide)
+   * [3.12. Building on Linux with vcpkg](#312-building-on-linux-with-vcpkg)
 - [4. Building on Windows](#4-building-on-windows)
    * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
       + [4.1.1. Visual Studio 2022 Community Edition](#411-visual-studio-2022-community-edition)
@@ -106,7 +107,7 @@ Required build tools:
 Required build dependencies:
 
 * Qt >= 5.15.2
-* Proj >= 7.2.0
+* Proj >= 8.1.0
 * GEOS >= 3.9
 * Sqlite3 >= 3.0.0
 * SpatiaLite >= 4.2.0
@@ -579,6 +580,40 @@ To build,
 
 ```bash
 cmake .. -DBUILD_WITH_QT6=ON -DWITH_QTWEBKIT=OFF -DWITH_QTWEBENGINE=ON
+```
+
+## 3.12. Building on Linux with vcpkg
+
+With [vcpkg](https://github.com/microsoft/vcpkg/) you can develop QGIS using
+Qt6 on a Linux system.
+
+First, [Install and initialize vcpkg](https://github.com/microsoft/vcpkg-tool/blob/main/README.md#installuseremove).
+
+Get the QGIS source code:
+
+```sh
+git clone git@github.com:qgis/QGIS.git
+```
+
+Configure:
+
+```sh
+cmake -S . \
+      -B ./build-x64-linux \
+      -GNinja \
+      -DCMAKE_BUILD_TYPE=Debug \
+      -DWITH_VCPKG=ON \
+      -DBUILD_WITH_QT6=ON \
+      -DWITH_QTWEBKIT=OFF \
+      -DWITH_BINDINGS=ON \
+      -DVCPKG_TARGET_TRIPLET=x64-linux-dynamic-release \
+      -DVCPKG_HOST_TRIPLET=x64-linux-dynamic-release
+```
+
+Build:
+
+```sh
+cmake --build ./build-x64-linux
 ```
 
 # 4. Building on Windows

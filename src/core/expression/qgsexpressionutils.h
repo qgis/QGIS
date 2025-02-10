@@ -201,7 +201,7 @@ class CORE_EXPORT QgsExpressionUtils
       return v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QStringList;
     }
 
-// implicit conversion to string
+    // implicit conversion to string
     static QString getStringValue( const QVariant &value, QgsExpression * )
     {
       return value.toString();

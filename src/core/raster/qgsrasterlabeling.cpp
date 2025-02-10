@@ -65,10 +65,10 @@ void QgsRasterLayerLabelProvider::addLabel( const QgsPoint &mapPoint, const QStr
   }
 
   const double uPP = m2p.mapUnitsPerPixel();
-  std::unique_ptr< QgsTextLabelFeature > feature = std::make_unique< QgsTextLabelFeature >( mLabels.size(),
-      QgsGeos::asGeos( &geom ),
-      QSizeF( size.width() * uPP,
-              size.height() * uPP ) );
+  auto feature = std::make_unique< QgsTextLabelFeature >( mLabels.size(),
+                 QgsGeos::asGeos( &geom ),
+                 QSizeF( size.width() * uPP,
+                         size.height() * uPP ) );
 
   feature->setDocument( doc, documentMetrics );
   feature->setFixedAngle( 0 );
@@ -368,7 +368,7 @@ QString QgsRasterLayerSimpleLabeling::type() const
 
 QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::clone() const
 {
-  std::unique_ptr< QgsRasterLayerSimpleLabeling > res = std::make_unique< QgsRasterLayerSimpleLabeling >();
+  auto res = std::make_unique< QgsRasterLayerSimpleLabeling >();
   res->setTextFormat( mTextFormat );
 
   if ( mNumericFormat )
@@ -390,7 +390,7 @@ QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::clone() const
 
 std::unique_ptr< QgsRasterLayerLabelProvider > QgsRasterLayerSimpleLabeling::provider( QgsRasterLayer *layer ) const
 {
-  std::unique_ptr< QgsRasterLayerLabelProvider > res = std::make_unique< QgsRasterLayerLabelProvider >( layer );
+  auto res = std::make_unique< QgsRasterLayerLabelProvider >( layer );
   res->setTextFormat( mTextFormat );
   res->setBand( mBandNumber );
   res->setPriority( mPriority );
@@ -474,7 +474,7 @@ bool QgsRasterLayerSimpleLabeling::requiresAdvancedEffects() const
 
 QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsRasterLayerSimpleLabeling > res = std::make_unique< QgsRasterLayerSimpleLabeling >();
+  auto res = std::make_unique< QgsRasterLayerSimpleLabeling >();
   res->setBand( element.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt() );
   res->setPriority( element.attribute( QStringLiteral( "priority" ), QStringLiteral( "0.5" ) ).toDouble() );
   res->setZIndex( element.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0" ) ).toDouble() );
@@ -612,7 +612,7 @@ void QgsRasterLayerSimpleLabeling::multiplyOpacity( double opacityFactor )
 
 QgsAbstractRasterLayerLabeling *QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( QgsRasterLayer *layer )
 {
-  std::unique_ptr< QgsRasterLayerSimpleLabeling > res = std::make_unique< QgsRasterLayerSimpleLabeling >();
+  auto res = std::make_unique< QgsRasterLayerSimpleLabeling >();
   res->setTextFormat( QgsStyle::defaultTextFormatForProject( layer->project() ) );
   res->setBand( 1 );
   return res.release();

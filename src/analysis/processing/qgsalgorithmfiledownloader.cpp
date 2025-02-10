@@ -73,7 +73,7 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL" ), QVariant(), false, false ) );
 
-  std::unique_ptr<QgsProcessingParameterEnum> methodParam = std::make_unique<QgsProcessingParameterEnum>(
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>(
     QStringLiteral( "METHOD" ),
     QObject::tr( "Method" ),
     QStringList()
@@ -86,7 +86,7 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
   methodParam->setFlags( methodParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( methodParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> dataParam = std::make_unique<QgsProcessingParameterString>(
+  auto dataParam = std::make_unique<QgsProcessingParameterString>(
     QStringLiteral( "DATA" ), tr( "Data" ), QVariant(), false, true
   );
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );

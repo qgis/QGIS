@@ -584,7 +584,7 @@ void TestQgsCompositionConverter::convertCompositionTemplate()
   //qDebug() << layoutDoc;
   QCOMPARE( layoutDoc.elementsByTagName( QStringLiteral( "Layout" ) ).count(), 1 );
 
-  std::unique_ptr<QgsLayout> layout = std::make_unique<QgsLayout>( &project );
+  auto layout = std::make_unique<QgsLayout>( &project );
   QgsReadWriteContext context;
   context.setPathResolver( project.pathResolver() );
   layout->readXml( layoutDoc.elementsByTagName( QStringLiteral( "Layout" ) ).at( 0 ).toElement(), layoutDoc, context );

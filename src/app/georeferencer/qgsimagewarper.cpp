@@ -61,7 +61,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMet
   return true;
 }
 
-bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs )
+bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs )
 {
   // create the output file
   GDALDriverH driver = GDALGetDriverByName( "GTiff" );
@@ -70,7 +70,11 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     return false;
   }
   char **papszOptions = nullptr;
-  papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toLatin1() );
+  for ( const QString &option : options )
+  {
+    QStringList tokens = option.split( '=', Qt::SkipEmptyParts );
+    papszOptions = CSLSetNameValue( papszOptions, tokens.at( 0 ).toUtf8().constData(), tokens.at( 1 ).toUtf8().constData() );
+  }
   hDstDS.reset( GDALCreate( driver, outputName.toUtf8().constData(), resX, resY, GDALGetRasterCount( hSrcDS ), GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) ), papszOptions ) );
   if ( !hDstDS )
   {
@@ -123,7 +127,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   return true;
 }
 
-QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX, double destResY )
+QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX, double destResY )
 {
   if ( !georefTransform.parametersInitialized() )
     return QgsImageWarper::Result::InvalidParameters;
@@ -181,7 +185,7 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QSt
     adfGeoTransform[5] = destResY;
   }
 
-  if ( !createDestinationDataset( output, hSrcDS.get(), hDstDS, destPixels, destLines, adfGeoTransform, useZeroAsTrans, compression, crs ) )
+  if ( !createDestinationDataset( output, hSrcDS.get(), hDstDS, destPixels, destLines, adfGeoTransform, useZeroAsTrans, options, crs ) )
   {
     return QgsImageWarper::Result::DestinationCreationError;
   }
@@ -204,6 +208,8 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QSt
   eErr = oOperation.ChunkAndWarpImage( 0, 0, destPixels, destLines );
 
   destroyGeoToPixelTransform( psWarpOptions->pTransformerArg );
+  psWarpOptions.reset();
+
   return feedback->isCanceled() ? QgsImageWarper::Result::Canceled : eErr == CE_None ? QgsImageWarper::Result::Success
                                                                                      : QgsImageWarper::Result::WarpFailure;
 }
@@ -311,14 +317,14 @@ GDALResampleAlg QgsImageWarper::toGDALResampleAlg( const QgsImageWarper::Resampl
 // QgsImageWarperTask
 //
 
-QgsImageWarperTask::QgsImageWarperTask( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, QgsImageWarper::ResamplingMethod resampling, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs, double destResX, double destResY )
+QgsImageWarperTask::QgsImageWarperTask( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, QgsImageWarper::ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, double destResX, double destResY )
   : QgsTask( tr( "Warping %1" ).arg( input ), QgsTask::CanCancel )
   , mInput( input )
   , mOutput( output )
   , mTransform( qgis::down_cast<QgsGeorefTransform *>( georefTransform.clone() ) )
   , mResamplingMethod( resampling )
   , mUseZeroAsTrans( useZeroAsTrans )
-  , mCompression( compression )
+  , mCreationOptions( options )
   , mDestinationCrs( crs )
   , mDestinationResX( destResX )
   , mDestinationResY( destResY )
@@ -345,7 +351,7 @@ bool QgsImageWarperTask::run()
     *mTransform.get(),
     mResamplingMethod,
     mUseZeroAsTrans,
-    mCompression,
+    mCreationOptions,
     mDestinationCrs,
     mFeedback.get(),
     mDestinationResX,

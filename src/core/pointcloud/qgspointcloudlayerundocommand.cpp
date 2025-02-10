@@ -31,18 +31,35 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   , mNewValue( value )
 {
   QgsPointCloudIndex index = mLayer->index();
-  const QgsPointCloudAttributeCollection allAttributes = index.attributes();
-  QgsPointCloudRequest req;
-  req.setAttributes( allAttributes );
-  std::unique_ptr<QgsPointCloudBlock> block = index.nodeData( n, req );
-  const char *ptr = block->data();
-  block->attributes().find( attribute.name(), mAttributeOffset );
-  const int size = block->pointRecordSize();
-  for ( const int point : points )
+  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );
+
+  if ( editIndex->mEditedNodeData.contains( n ) )
   {
-    const int offset = point * size + mAttributeOffset;
-    const double oldValue = attribute.convertValueToDouble( ptr + offset );
-    mPointValues[point] = oldValue;
+    const QgsPointCloudAttributeCollection allAttributes = index.attributes();
+    QgsPointCloudRequest req;
+    req.setAttributes( allAttributes );
+    // we want to iterate all points so we have the correct point indexes within the node
+    req.setIgnoreIndexFilterEnabled( true );
+    std::unique_ptr<QgsPointCloudBlock> block = index.nodeData( n, req );
+    const char *ptr = block->data();
+    block->attributes().find( attribute.name(), mAttributeOffset );
+    const int size = block->pointRecordSize();
+    for ( const int point : points )
+    {
+      const int offset = point * size + mAttributeOffset;
+      const double oldValue = attribute.convertValueToDouble( ptr + offset );
+      mPointValues[point] = oldValue;
+    }
+  }
+  else
+  {
+    // If this is the first time this node is edited, we don't need the previous values, we will just discard the node from the edit index when undoing
+    // we still need the keys in mPointValues though as they are the points to be modified in the Redo stage, so we populate them with some NaNs
+    mFirstEditForNode = true;
+    for ( const int point : points )
+    {
+      mPointValues[point] = std::numeric_limits<double>::quiet_NaN();
+    }
   }
 }
 
@@ -73,16 +90,20 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
   }
 
   QByteArray data;
-  if ( isUndo )
+  if ( isUndo && mFirstEditForNode )
+  {
+    editIndex->mEditedNodeData.remove( mNode );
+  }
+  else if ( isUndo )
   {
     data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, mAttribute, mNode, mPointValues );
+    mLayer->index().updateNodeData( {{mNode, data}} );
   }
   else
   {
     data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, mAttribute, mNode, mPointValues, mNewValue );
+    mLayer->index().updateNodeData( {{mNode, data}} );
   }
-
-  mLayer->index().updateNodeData( {{mNode, data}} );
 
   emit mLayer->chunkAttributeValuesChanged( mNode );
 }

@@ -154,14 +154,14 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
       {
         const QgsPoint ptA = line->pointN( i );
         const QgsPoint ptB = line->pointN( i + 1 );
-        std::unique_ptr<QgsLineString> ls = std::make_unique<QgsLineString>( QVector<QgsPoint>() << ptA << ptB );
+        auto ls = std::make_unique<QgsLineString>( QVector<QgsPoint>() << ptA << ptB );
         if ( !useCompoundCurves )
         {
           parts.emplace_back( QgsGeometry( std::move( ls ) ) );
         }
         else
         {
-          std::unique_ptr<QgsCompoundCurve> cc = std::make_unique<QgsCompoundCurve>();
+          auto cc = std::make_unique<QgsCompoundCurve>();
           cc->addCurve( ls.release() );
           parts.emplace_back( QgsGeometry( std::move( cc ) ) );
         }
@@ -177,7 +177,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
         const QgsPoint ptA = string->pointN( i );
         const QgsPoint ptB = string->pointN( i + 1 );
         const QgsPoint ptC = string->pointN( i + 2 );
-        std::unique_ptr<QgsCircularString> cs = std::make_unique<QgsCircularString>();
+        auto cs = std::make_unique<QgsCircularString>();
         cs->setPoints( QgsPointSequence() << ptA << ptB << ptC );
         if ( !useCompoundCurves )
         {
@@ -185,7 +185,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
         }
         else
         {
-          std::unique_ptr<QgsCompoundCurve> cc = std::make_unique<QgsCompoundCurve>();
+          auto cc = std::make_unique<QgsCompoundCurve>();
           cc->addCurve( cs.release() );
           parts.emplace_back( QgsGeometry( std::move( cc ) ) );
         }

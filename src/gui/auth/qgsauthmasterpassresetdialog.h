@@ -42,17 +42,17 @@ class GUI_EXPORT QgsMasterPasswordResetDialog : public QDialog, private Ui::QgsM
   public:
     explicit QgsMasterPasswordResetDialog( QWidget *parent = nullptr );
 
+    /**
+     * Returns the old password line edit widget.
+     */
+    QgsPasswordLineEdit *oldPasswordLineEdit();
+
     bool requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup );
 
   private slots:
-    void leMasterPassCurrent_textChanged( const QString &pass );
-    void leMasterPassNew_textChanged( const QString &pass );
-
-  private:
     void validatePasswords();
 
-    bool mPassCurOk = false;
-    bool mPassNewOk = false;
+  private:
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

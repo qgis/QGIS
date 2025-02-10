@@ -128,12 +128,6 @@ The map keys correspond to PROJ operation IDs.
 %Docstring
 Returns a list of all known celestial bodies.
 
-.. warning::
-
-   This method requires PROJ 8.1 or later
-
-:raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
-
 .. versionadded:: 3.20
 %End
 

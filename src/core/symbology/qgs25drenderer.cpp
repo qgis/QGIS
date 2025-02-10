@@ -287,7 +287,7 @@ Qgs25DRenderer *Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer *rendere
   }
   else
   {
-    std::unique_ptr< Qgs25DRenderer > res = std::make_unique< Qgs25DRenderer >();
+    auto res = std::make_unique< Qgs25DRenderer >();
     renderer->copyRendererData( res.get() );
     return res.release();
   }

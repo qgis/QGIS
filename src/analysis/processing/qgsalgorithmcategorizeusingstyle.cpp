@@ -38,12 +38,12 @@ void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
 
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Categorized layer" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> failCategories = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "NON_MATCHING_CATEGORIES" ), QObject::tr( "Non-matching categories" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
+  auto failCategories = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "NON_MATCHING_CATEGORIES" ), QObject::tr( "Non-matching categories" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
   // not supported for outputs yet!
   //failCategories->setFlags( failCategories->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( failCategories.release() );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> failSymbols = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "NON_MATCHING_SYMBOLS" ), QObject::tr( "Non-matching symbol names" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
+  auto failSymbols = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "NON_MATCHING_SYMBOLS" ), QObject::tr( "Non-matching symbol names" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
   //failSymbols->setFlags( failSymbols->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( failSymbols.release() );
 }

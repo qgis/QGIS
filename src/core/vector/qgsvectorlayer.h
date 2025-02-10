@@ -2797,6 +2797,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onFeatureCounterCompleted();
     void onFeatureCounterTerminated();
     void onJoinedFieldsChanged();
+    void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
     void onSymbolsCounted();

@@ -196,7 +196,7 @@ namespace QgsWfs
     QgsAccessControl *accessControl = serverIface->accessControls();
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+    auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
 #else
     ( void ) serverIface;
 #endif
@@ -1629,7 +1629,7 @@ namespace QgsWfs
       if ( QgsVariantUtils::isNull( value ) )
         return QString();
 
-      if ( setup.type() == QStringLiteral( "DateTime" ) )
+      if ( setup.type() == QLatin1String( "DateTime" ) )
       {
         // For time fields use const TIME_FORMAT
         if ( value.userType() == QMetaType::Type::QTime )
@@ -1658,7 +1658,7 @@ namespace QgsWfs
         // else provide the value as string
         return value.toString();
       }
-      else if ( setup.type() == QStringLiteral( "Range" ) )
+      else if ( setup.type() == QLatin1String( "Range" ) )
       {
         const QVariantMap config = setup.config();
         if ( config.contains( QStringLiteral( "Precision" ) ) )

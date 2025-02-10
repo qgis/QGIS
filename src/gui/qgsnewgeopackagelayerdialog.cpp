@@ -566,7 +566,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   const QString uri( QStringLiteral( "%1|layername=%2" ).arg( fileName, tableName ) );
   const QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
   const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( uri, userVisiblelayerName, QStringLiteral( "ogr" ), layerOptions );
+  auto layer = std::make_unique<QgsVectorLayer>( uri, userVisiblelayerName, QStringLiteral( "ogr" ), layerOptions );
   if ( layer->isValid() )
   {
     if ( mAddToProject )

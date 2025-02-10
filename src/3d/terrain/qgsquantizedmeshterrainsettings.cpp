@@ -74,7 +74,7 @@ bool QgsQuantizedMeshTerrainSettings::equals( const QgsAbstractTerrainSettings *
 
 std::unique_ptr<QgsTerrainGenerator> QgsQuantizedMeshTerrainSettings::createTerrainGenerator( const Qgs3DRenderContext &context ) const
 {
-  std::unique_ptr<QgsQuantizedMeshTerrainGenerator> generator = std::make_unique<QgsQuantizedMeshTerrainGenerator>();
+  auto generator = std::make_unique<QgsQuantizedMeshTerrainGenerator>();
   generator->setLayer( layer() );
   generator->setCrs( context.crs(), context.transformContext() );
   generator->setExtent( context.extent() );

@@ -198,6 +198,15 @@ QString QgsProviderMetadata::relativeToAbsoluteUri( const QString &uri, const Qg
   return context.pathResolver().readPath( uri );
 }
 
+QString QgsProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlags flags ) const
+{
+  if ( flags.testFlag( Qgis::UriCleaningFlag::RemoveCredentials ) )
+    return QgsDataSourceUri::removePassword( uri );
+  else if ( flags.testFlag( Qgis::UriCleaningFlag::RedactCredentials ) )
+    return QgsDataSourceUri::removePassword( uri, true );
+  return uri;
+}
+
 Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,
     Qgis::WkbType, const QgsCoordinateReferenceSystem &,
     bool, QMap<int, int> &,

@@ -80,32 +80,6 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="textLabelLayerName">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Layer name</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="txtLayerName">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>Name to display in the map legend</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QLabel" name="lblEncoding">
           <property name="text">
            <string>Encoding</string>
@@ -121,7 +95,7 @@
            <string>Select the file encoding</string>
           </property>
           <property name="insertPolicy">
-           <enum>QComboBox::InsertAtTop</enum>
+           <enum>QComboBox::InsertPolicy::InsertAtTop</enum>
           </property>
          </widget>
         </item>
@@ -145,7 +119,7 @@
       </size>
      </property>
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -155,8 +129,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>703</width>
-        <height>647</height>
+        <width>698</width>
+        <height>655</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -179,14 +153,14 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="fileFormatGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="fileFormatGroupBox" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
+         <property name="title" stdset="0">
           <string>File Format</string>
          </property>
          <property name="collapsed" stdset="0">
@@ -297,10 +271,10 @@
                  </sizepolicy>
                 </property>
                 <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
+                 <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
+                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_3">
                  <property name="spacing">
@@ -332,7 +306,7 @@
                       <string>Escape</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                      </property>
                      <property name="buddy">
                       <cstring>txtEscapeChars</cstring>
@@ -348,10 +322,10 @@
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>Quote</string>
+                      <string>&amp;Quote</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+                      <set>Qt::AlignmentFlag::AlignJustify|Qt::AlignmentFlag::AlignVCenter</set>
                      </property>
                      <property name="buddy">
                       <cstring>txtQuoteChars</cstring>
@@ -497,7 +471,7 @@
                       <string>Others</string>
                      </property>
                      <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                      </property>
                      <property name="buddy">
                       <cstring>txtDelimiterOther</cstring>
@@ -544,10 +518,10 @@
               <item>
                <widget class="QFrame" name="frame">
                 <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
+                 <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
+                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
@@ -603,14 +577,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="recordOptionsGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="recordOptionsGroupBox" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
+         <property name="title" stdset="0">
           <string>Record and Fields Options</string>
          </property>
          <property name="collapsed" stdset="0">
@@ -791,14 +765,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="geometryDefinitionGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="geometryDefinitionGroupBox" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
+         <property name="title" stdset="0">
           <string>Geometry Definition</string>
          </property>
          <property name="collapsed" stdset="0">
@@ -942,7 +916,7 @@
                      <string>X field</string>
                     </property>
                     <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
                     </property>
                     <property name="buddy">
                      <cstring>cmbXField</cstring>
@@ -1246,7 +1220,7 @@
             <item>
              <spacer name="verticalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -1262,14 +1236,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBox" name="layerSettingsGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="layerSettingsGroupBox" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title">
+         <property name="title" stdset="0">
           <string>Layer Settings</string>
          </property>
          <property name="collapsed" stdset="0">
@@ -1370,7 +1344,7 @@
                <item>
                 <spacer name="horizontalSpacer">
                  <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <enum>Qt::Orientation::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -1411,7 +1385,7 @@
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -1441,10 +1415,10 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::StandardButton::Help</set>
      </property>
     </widget>
    </item>
@@ -1453,8 +1427,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
+   <extends>QWidget</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
@@ -1468,20 +1454,8 @@
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>txtLayerName</tabstop>
   <tabstop>cmbEncoding</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>delimiterCSV</tabstop>

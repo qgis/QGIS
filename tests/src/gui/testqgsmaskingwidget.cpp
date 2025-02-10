@@ -102,7 +102,7 @@ void TestQgsMaskingWidget::testTreeWidget()
   QCOMPARE( maskLayer->masks().count(), 0 );
 
   // update masking widget
-  std::unique_ptr<QgsMaskingWidget> mw = std::make_unique<QgsMaskingWidget>();
+  auto mw = std::make_unique<QgsMaskingWidget>();
   QElapsedTimer timer;
   timer.start();
   mw->setLayer( linesWithLabels );

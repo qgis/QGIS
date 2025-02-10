@@ -224,7 +224,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock *> &rasterData, 
     std::vector<std::unique_ptr<QgsRasterMatrix>> matrixContainer;
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
     {
-      std::unique_ptr<QgsRasterMatrix> singleMatrix = std::make_unique<QgsRasterMatrix>( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
+      auto singleMatrix = std::make_unique<QgsRasterMatrix>( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
       if ( !mFunctionArgs.at( i ) || !mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix, row ) )
       {
         return false;
@@ -472,7 +472,7 @@ QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const std::vector<std::uniq
     int nCols = matrixVector.at( 0 )->nColumns();
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
-    std::unique_ptr<double[]> dataResult = std::make_unique<double[]>( nEntries );
+    auto dataResult = std::make_unique<double[]>( nEntries );
     double *dataResultRawPtr = dataResult.get();
 
     double *condition = matrixVector.at( 0 )->data();

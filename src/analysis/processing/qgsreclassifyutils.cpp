@@ -80,7 +80,7 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     if ( feedback && feedback->isCanceled() )
       break;
-    std::unique_ptr<QgsRasterBlock> reclassifiedBlock = std::make_unique<QgsRasterBlock>( destinationRaster->dataType( 1 ), iterCols, iterRows );
+    auto reclassifiedBlock = std::make_unique<QgsRasterBlock>( destinationRaster->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {

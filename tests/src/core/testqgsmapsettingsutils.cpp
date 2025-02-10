@@ -80,7 +80,7 @@ void TestQgsMapSettingsUtils::containsAdvancedEffects()
 {
   QgsMapSettings mapSettings = mMapSettings;
 
-  std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   layer->setBlendMode( QPainter::CompositionMode_Multiply );
 
   QList<QgsMapLayer *> layers;

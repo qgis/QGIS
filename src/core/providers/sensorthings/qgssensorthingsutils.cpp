@@ -478,7 +478,7 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
   return {};
 }
 
-QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity type )
+QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity type, bool includeRangeFieldProxies )
 {
   QgsFields fields;
 
@@ -517,10 +517,13 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       fields.append( QgsField( QStringLiteral( "unitOfMeasurement" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
       fields.append( QgsField( QStringLiteral( "observationType" ), QMetaType::Type::QString ) );
       fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QMetaType::Type::QDateTime ) );
+      if ( includeRangeFieldProxies )
+      {
+        fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QMetaType::Type::QDateTime ) );
+      }
       break;
 
     case Qgis::SensorThingsEntity::Sensor:
@@ -541,16 +544,22 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
 
     case Qgis::SensorThingsEntity::Observation:
       // https://docs.ogc.org/is/18-088/18-088.html#observation
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
+      if ( includeRangeFieldProxies )
+      {
+        fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
+      }
 
       // TODO -- handle type correctly
       fields.append( QgsField( QStringLiteral( "result" ), QMetaType::Type::QString ) );
 
       fields.append( QgsField( QStringLiteral( "resultTime" ), QMetaType::Type::QDateTime ) );
       fields.append( QgsField( QStringLiteral( "resultQuality" ), QMetaType::Type::QStringList, QString(), 0, 0, QString(), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "validTimeStart" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "validTimeEnd" ), QMetaType::Type::QDateTime ) );
+      if ( includeRangeFieldProxies )
+      {
+        fields.append( QgsField( QStringLiteral( "validTimeStart" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "validTimeEnd" ), QMetaType::Type::QDateTime ) );
+      }
       fields.append( QgsField( QStringLiteral( "parameters" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
@@ -569,10 +578,13 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
       fields.append( QgsField( QStringLiteral( "observationType" ), QMetaType::Type::QString ) );
       fields.append( QgsField( QStringLiteral( "multiObservationDataTypes" ), QMetaType::Type::QStringList, QString(), 0, 0, QString(), QMetaType::Type::QString ) );
       fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QMetaType::Type::QDateTime ) );
+      if ( includeRangeFieldProxies )
+      {
+        fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QMetaType::Type::QDateTime ) );
+      }
       break;
   }
 
@@ -607,7 +619,6 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
     case Qgis::SensorThingsEntity::Invalid:
     case Qgis::SensorThingsEntity::Thing:
     case Qgis::SensorThingsEntity::HistoricalLocation:
-    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
@@ -619,6 +630,7 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       return QStringLiteral( "feature" );
 
+    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::MultiDatastream:
       return QStringLiteral( "observedArea" );
   }
@@ -632,12 +644,12 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
     case Qgis::SensorThingsEntity::Invalid:
     case Qgis::SensorThingsEntity::Thing:
     case Qgis::SensorThingsEntity::HistoricalLocation:
-    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
       return false;
 
+    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Location:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
     case Qgis::SensorThingsEntity::MultiDatastream:
@@ -653,18 +665,16 @@ Qgis::GeometryType QgsSensorThingsUtils::geometryTypeForEntity( Qgis::SensorThin
     case Qgis::SensorThingsEntity::Invalid:
     case Qgis::SensorThingsEntity::Thing:
     case Qgis::SensorThingsEntity::HistoricalLocation:
-    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Sensor:
     case Qgis::SensorThingsEntity::Observation:
     case Qgis::SensorThingsEntity::ObservedProperty:
       return Qgis::GeometryType::Null;
 
+    case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::Location:
     case Qgis::SensorThingsEntity::FeatureOfInterest:
-      return Qgis::GeometryType::Unknown;
-
     case Qgis::SensorThingsEntity::MultiDatastream:
-      return Qgis::GeometryType::Polygon;
+      return Qgis::GeometryType::Unknown;
   }
   BUILTIN_UNREACHABLE
 }
@@ -863,7 +873,8 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
       return
       {
         Qgis::SensorThingsEntity::HistoricalLocation,
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream,
       };
 
     case Qgis::SensorThingsEntity::Location:
@@ -891,19 +902,22 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
     case Qgis::SensorThingsEntity::Sensor:
       return
       {
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream,
       };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
       return
       {
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream
       };
 
     case Qgis::SensorThingsEntity::Observation:
       return
       {
-        Qgis::SensorThingsEntity::Datastream
+        Qgis::SensorThingsEntity::Datastream,
+        Qgis::SensorThingsEntity::MultiDatastream
       };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:

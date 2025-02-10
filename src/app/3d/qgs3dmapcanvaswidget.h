@@ -74,8 +74,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void showAnimationWidget() { mActionAnim->trigger(); }
 
-    void enableEditingTools( bool enable );
-
     void updateLayerRelatedActions( QgsMapLayer *layer );
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
@@ -147,6 +145,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionCamera = nullptr;
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
+    QAction *mActionToggleEditing = nullptr;
+    QAction *mActionUndo = nullptr;
+    QAction *mActionRedo = nullptr;
+    QToolBar *mPointCloudEditingToolbar = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
     QObjectUniquePtr<QgsRubberBand> mViewExtentHighlight;

@@ -2704,7 +2704,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
       p.insert( name(), value );
       if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
       {
-        return QgsProcessingUtils::layerToStringIdentifier( layer );
+        return QgsProcessingUtils::layerToStringIdentifier( layer, value.toString() );
       }
     }
 
@@ -2882,7 +2882,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     p.insert( name(), value );
     if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
     {
-      return QgsProcessingUtils::layerToStringIdentifier( layer );
+      return QgsProcessingUtils::layerToStringIdentifier( layer, value.toString() );
     }
   }
 

@@ -240,7 +240,7 @@ void QgsArcGisRestDataItemGuiProvider::addFilteredLayer( const QgsMimeDataUtils:
     const QString sql = w->expressionText();
     ds.setSql( sql );
 
-    std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( ds.uri( false ), uri.name, QStringLiteral( "arcgisfeatureserver" ) );
+    auto layer = std::make_unique<QgsVectorLayer>( ds.uri( false ), uri.name, QStringLiteral( "arcgisfeatureserver" ) );
     QgsProject::instance()->addMapLayer( layer.release() );
   }
 }

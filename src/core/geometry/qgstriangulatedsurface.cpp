@@ -227,7 +227,7 @@ QgsTriangulatedSurface *QgsTriangulatedSurface::snappedToGrid( double hSpacing, 
       return nullptr;
     }
 
-    std::unique_ptr<QgsTriangle> gridifiedTriangle = std::make_unique<QgsTriangle>();
+    auto gridifiedTriangle = std::make_unique<QgsTriangle>();
     gridifiedTriangle->setExteriorRing( exteriorRing.release() );
     surface->addPatch( gridifiedTriangle.release() );
   }

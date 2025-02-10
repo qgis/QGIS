@@ -515,7 +515,7 @@ bool QgsMapLayerModel::canDropMimeData( const QMimeData *data, Qt::DropAction ac
 
 QMimeData *QgsMapLayerModel::mimeData( const QModelIndexList &indexes ) const
 {
-  std::unique_ptr< QMimeData > mimeData = std::make_unique< QMimeData >();
+  auto mimeData = std::make_unique< QMimeData >();
 
   QByteArray encodedData;
   QDataStream stream( &encodedData, QIODevice::WriteOnly );

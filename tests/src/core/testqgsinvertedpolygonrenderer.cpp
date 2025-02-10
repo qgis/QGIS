@@ -141,7 +141,7 @@ void TestQgsInvertedPolygon::projectionTest()
 
 void TestQgsInvertedPolygon::projectionWithSimplificationTest()
 {
-  std::unique_ptr<QgsVectorLayer> polyLayer = std::make_unique<QgsVectorLayer>( testDataPath( "polys.shp" ), QStringLiteral( "polys" ) );
+  auto polyLayer = std::make_unique<QgsVectorLayer>( testDataPath( "polys.shp" ), QStringLiteral( "polys" ) );
   QVERIFY( polyLayer->isValid() );
   QgsMapSettings mapSettings;
   mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );

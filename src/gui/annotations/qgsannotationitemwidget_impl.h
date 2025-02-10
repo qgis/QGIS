@@ -121,7 +121,6 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
     ~QgsAnnotationPointTextItemWidget() override;
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
-    void setDockMode( bool dockMode ) override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
@@ -134,7 +133,6 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
   private:
     void mInsertExpressionButton_clicked();
 
-    QgsTextFormatWidget *mTextFormatWidget = nullptr;
     bool mBlockChangedSignal = false;
     std::unique_ptr<QgsAnnotationPointTextItem> mItem;
 };
@@ -149,7 +147,6 @@ class QgsAnnotationRectangleTextItemWidget : public QgsAnnotationItemBaseWidget,
     ~QgsAnnotationRectangleTextItemWidget() override;
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
-    void setDockMode( bool dockMode ) override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
     QgsExpressionContext createExpressionContext() const override;
 
@@ -170,7 +167,6 @@ class QgsAnnotationRectangleTextItemWidget : public QgsAnnotationItemBaseWidget,
   private:
     void mInsertExpressionButton_clicked();
 
-    QgsTextFormatWidget *mTextFormatWidget = nullptr;
     bool mBlockChangedSignal = false;
     bool mUpdateItemPosition = false;
 
@@ -186,7 +182,6 @@ class QgsAnnotationLineTextItemWidget : public QgsAnnotationItemBaseWidget, priv
     ~QgsAnnotationLineTextItemWidget() override;
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
-    void setDockMode( bool dockMode ) override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
@@ -199,7 +194,6 @@ class QgsAnnotationLineTextItemWidget : public QgsAnnotationItemBaseWidget, priv
   private:
     void mInsertExpressionButton_clicked();
 
-    QgsTextFormatWidget *mTextFormatWidget = nullptr;
     bool mBlockChangedSignal = false;
     std::unique_ptr<QgsAnnotationLineTextItem> mItem;
 };
