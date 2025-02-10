@@ -50,16 +50,15 @@ bool QgsGpsInformation::isValid() const
   {
     valid = false;
   }
-  else if ( status == 'A'
+  else if ( status == 'A' || status == 'D'
             || bestFix == Qgis::GpsFixStatus::Fix2D
             || bestFix == Qgis::GpsFixStatus::Fix3D
-            || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good
+            || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good - D=Differential for UM98x
   {
     valid = true;
   }
 
   valid &= longitude >= -180.0 && longitude <= 180.0 && latitude >= -90.0 && latitude <= 90.0;
-
   return valid;
 }
 
