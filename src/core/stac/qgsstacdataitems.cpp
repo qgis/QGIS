@@ -178,7 +178,10 @@ void QgsStacItemItem::setStacItem( std::unique_ptr< QgsStacObject > &object )
 {
   QgsStacItem *item = dynamic_cast<QgsStacItem *>( object.get() );
   if ( item )
-    object.release();
+  {
+    // release object, mStacItem will take ownership of the successfully cast item
+    ( void )object.release();
+  }
 
   mStacItem.reset( item );
   updateToolTip();
@@ -463,7 +466,10 @@ void QgsStacCatalogItem::setStacCatalog( std::unique_ptr< QgsStacObject > &objec
 {
   QgsStacCatalog *catalog = dynamic_cast<QgsStacCatalog *>( object.get() );
   if ( catalog )
-    object.release();
+  {
+    // release object, mStacCatalog will take ownership of the successfully cast catalog
+    ( void )object.release();
+  }
 
   mStacCatalog.reset( catalog );
   if ( mStacCatalog )
