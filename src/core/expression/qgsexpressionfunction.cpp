@@ -1753,8 +1753,7 @@ static QVariant fcnSubstr( const QVariantList &values, const QgsExpressionContex
 static QVariant fcnFeatureId( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   FEAT_FROM_CONTEXT( context, f )
-  // TODO: handling of 64-bit feature ids?
-  return QVariant( static_cast< int >( f.id() ) );
+  return QVariant( f.id() );
 }
 
 static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
