@@ -263,37 +263,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
 QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction, bool allowRequestCredentials )
 {
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction, allowRequestCredentials );
-  if ( !conn )
-  {
-    return conn;
-  }
-
-  const QString sessionRoleKey = QStringLiteral( "session_role" );
-  if ( uri.hasParam( sessionRoleKey ) )
-  {
-    const QString sessionRole = uri.param( sessionRoleKey );
-    if ( !sessionRole.isEmpty() )
-    {
-      if ( !conn->setSessionRole( sessionRole ) )
-      {
-        QgsDebugMsgLevel(
-          QStringLiteral(
-            "Set session role failed for ROLE %1"
-          )
-            .arg( quotedValue( sessionRole ) ),
-          2
-        );
-        conn->unref();
-        return nullptr;
-      }
-    }
-  }
-  else
-  {
-    conn->resetSessionRole();
-  }
-  return conn;
+  return QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), readonly, shared, transaction, allowRequestCredentials );
 }
 
 static void noticeProcessor( void *arg, const char *message )
@@ -411,8 +381,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       if ( !password.isEmpty() )
         mUri.setPassword( password );
 
-      QgsDebugMsgLevel( "Connecting to " + mUri.connectionInfo( false ), 2 );
-      QString connectString = mUri.connectionInfo();
+      QgsDebugMsgLevel( "Connecting to " + QgsPostgresConn::connectionInfo( mUri, false ), 2 );
+      QString connectString = QgsPostgresConn::connectionInfo( mUri );
       addDefaultTimeoutAndClientEncoding( connectString );
       // use conninfo for log, connectString - can contain clear text username & password
       logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "libpq::PQconnectdb()" ), conninfo, QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
@@ -433,6 +403,28 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     QgsMessageLog::logMessage( tr( "Connection to database failed" ) + '\n' + errorMsg, tr( "PostGIS" ) );
     mRef = 0;
     return;
+  }
+
+  const QString sessionRoleKey = QStringLiteral( "session_role" );
+  if ( mUri.hasParam( sessionRoleKey ) )
+  {
+    const QString sessionRole = mUri.param( sessionRoleKey );
+    if ( !sessionRole.isEmpty() )
+    {
+      if ( !setSessionRole( sessionRole ) )
+      {
+        QgsDebugMsgLevel(
+          QStringLiteral(
+            "Set session role failed for ROLE %1"
+          )
+            .arg( quotedValue( sessionRole ) ),
+          2
+        );
+
+        mRef = 0;
+        return;
+      }
+    }
   }
 
   logWrapper = nullptr;
@@ -1330,49 +1322,9 @@ QString QgsPostgresConn::postgisVersion() const
   return mPostgisVersionInfo;
 }
 
-/* Functions for determining available features in postGIS */
 bool QgsPostgresConn::setSessionRole( const QString &sessionRole )
 {
-  if ( sessionRole.isEmpty() )
-    return resetSessionRole();
-  else
-  {
-    if ( sessionRole == mCurrentSessionRole )
-    {
-      return true;
-    }
-    else
-    {
-      if ( !LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET ROLE %1" ).arg( quotedValue( sessionRole ) ) ) )
-      {
-        return false;
-      }
-      else
-      {
-        mCurrentSessionRole = sessionRole;
-        return true;
-      }
-    }
-  }
-}
-bool QgsPostgresConn::resetSessionRole()
-{
-  if ( mCurrentSessionRole.isEmpty() )
-  {
-    return true;
-  }
-  else
-  {
-    if ( !LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "RESET ROLE" ) ) )
-    {
-      return false;
-    }
-    else
-    {
-      mCurrentSessionRole.clear();
-      return true;
-    }
-  }
+  return LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET ROLE %1" ).arg( quotedValue( sessionRole ) ) );
 }
 
 QString QgsPostgresConn::quotedIdentifier( const QString &ident )
@@ -2751,6 +2703,12 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
   }
   uri.setUseEstimatedMetadata( estimatedMetadata );
 
+  const QString sessionRole = QgsPostgresConn::sessionRole( connName );
+  if ( !sessionRole.isEmpty() )
+  {
+    uri.setParam( "session_role", sessionRole );
+  }
+
   return uri;
 }
 
@@ -2781,7 +2739,6 @@ bool QgsPostgresConn::useEstimatedMetadata( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/estimatedMetadata", false ).toBool();
 }
 
-
 bool QgsPostgresConn::allowGeometrylessTables( const QString &connName )
 {
   QgsSettings settings;
@@ -2798,6 +2755,12 @@ bool QgsPostgresConn::allowRasterOverviewTables( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/PostgreSQL/connections/" + connName + "/allowRasterOverviewTables", true ).toBool();
+}
+
+QString QgsPostgresConn::sessionRole( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/session_role" ).toString();
 }
 
 void QgsPostgresConn::deleteConnection( const QString &connName )
@@ -2962,4 +2925,15 @@ int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs )
   }
 
   return -1;
+}
+
+QString QgsPostgresConn::connectionInfo( const QgsDataSourceUri &uri, const bool expandAuthCfg )
+{
+  QString strUri = uri.connectionInfo( expandAuthCfg );
+  if ( uri.hasParam( "session_role" ) )
+  {
+    strUri += " session_role=" + uri.param( "session_role" );
+  }
+
+  return strUri;
 }
