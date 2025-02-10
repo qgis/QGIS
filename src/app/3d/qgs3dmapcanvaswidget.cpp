@@ -106,8 +106,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCboChangeAttribute = new QComboBox();
   mPointCloudEditingToolbar->addWidget( mCboChangeAttribute );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
+  mSpinChangeAttributeValue->setShowClearButton( false );
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Value" ) ) );
   mPointCloudEditingToolbar->addWidget( mSpinChangeAttributeValue );
+
   QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
   actionEditingToolbar->setCheckable( true );
   connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
@@ -875,47 +877,26 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
 {
   const QString attributeName = mCboChangeAttribute->currentText();
 
-  if ( attributeName == QLatin1String( "Intensity" ) )
+  mSpinChangeAttributeValue->setSuffix( QString() );
+
+  if ( attributeName == QLatin1String( "Intensity" ) || attributeName == QLatin1String( "PointSourceId" ) || attributeName == QLatin1String( "Red" ) || attributeName == QLatin1String( "Green" ) || attributeName == QLatin1String( "Blue" ) || attributeName == QLatin1String( "Infrared" ) )
   {
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( 65535 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
-  else if ( attributeName == QLatin1String( "ReturnNumber" ) )
+  else if ( attributeName == QLatin1String( "ReturnNumber" ) || attributeName == QLatin1String( "NumberOfReturns" ) )
   {
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( 15 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
-  else if ( attributeName == QLatin1String( "NumberOfReturns" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 15 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Synthetic" ) )
+  else if ( attributeName == QLatin1String( "Synthetic" ) || attributeName == QLatin1String( "KeyPoint" ) || attributeName == QLatin1String( "Withheld" ) || attributeName == QLatin1String( "Overlap" ) || attributeName == QLatin1String( "ScanDirectionFlag" ) || attributeName == QLatin1String( "EdgeOfFlightLine" ) )
   {
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( 1 );
     mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "KeyPoint" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Withheld" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Overlap" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
+    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " (%1)" ).arg( mSpinChangeAttributeValue->value() ? tr( "True" ) : tr( "False" ) ) );
   }
   else if ( attributeName == QLatin1String( "ScannerChannel" ) )
   {
@@ -923,23 +904,13 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setMaximum( 3 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
-  else if ( attributeName == QLatin1String( "ScanDirectionFlag" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "EdgeOfFlightLine" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
   else if ( attributeName == QLatin1String( "Classification" ) )
   {
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( 255 );
     mSpinChangeAttributeValue->setDecimals( 0 );
+    const QMap<int, QString> codes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
+    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " (%1)" ).arg( codes.value( mSpinChangeAttributeValue->value() ) ) );
   }
   else if ( attributeName == QLatin1String( "UserData" ) )
   {
@@ -952,11 +923,6 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setMinimum( -30'000 );
     mSpinChangeAttributeValue->setMaximum( 30'000 );
     mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "PointSourceId" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
   else if ( attributeName == QLatin1String( "GpsTime" ) )
@@ -964,30 +930,6 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( std::numeric_limits<double>::max() );
     mSpinChangeAttributeValue->setDecimals( 42 );
-  }
-  else if ( attributeName == QLatin1String( "Red" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Green" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Blue" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Infrared" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
   }
 
   mMapToolPointCloudChangeAttribute->setAttribute( attributeName );
