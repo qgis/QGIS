@@ -249,10 +249,12 @@ class rasterize(GdalAlgorithm):
         units = self.parameterAsEnum(parameters, self.UNITS, context)
         if units == 0:
             arguments.append("-ts")
+            arguments.append(self.parameterAsInt(parameters, self.WIDTH, context))
+            arguments.append(self.parameterAsInt(parameters, self.HEIGHT, context))
         else:
             arguments.append("-tr")
-        arguments.append(self.parameterAsDouble(parameters, self.WIDTH, context))
-        arguments.append(self.parameterAsDouble(parameters, self.HEIGHT, context))
+            arguments.append(self.parameterAsDouble(parameters, self.WIDTH, context))
+            arguments.append(self.parameterAsDouble(parameters, self.HEIGHT, context))
 
         if self.INIT in parameters and parameters[self.INIT] is not None:
             initValue = self.parameterAsDouble(parameters, self.INIT, context)
