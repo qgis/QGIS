@@ -2461,6 +2461,7 @@ The development version
     enum class MapLayerActionFlag
     {
       EnabledOnlyWhenEditable,
+      EnableOnlyIfHasGeometry,
     };
 
     typedef QFlags<Qgis::MapLayerActionFlag> MapLayerActionFlags;
