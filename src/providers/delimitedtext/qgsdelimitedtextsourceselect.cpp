@@ -67,7 +67,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   mBooleanFalse->setEnabled( !mBooleanTrue->text().isEmpty() );
   updateFieldsAndEnable();
 
-  connect( txtLayerName, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::enableAccept );
   connect( cmbEncoding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
   connect( delimiterCSV, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
@@ -119,12 +118,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 void QgsDelimitedTextSourceSelect::addButtonClicked()
 {
   // The following conditions should not be hit! OK will not be enabled...
-  if ( txtLayerName->text().isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "No layer name" ), tr( "Please enter a layer name before adding the layer to the map" ) );
-    txtLayerName->setFocus();
-    return;
-  }
   if ( delimiterChars->isChecked() )
   {
     if ( selectedChars().isEmpty() )
@@ -159,17 +152,17 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   saveSettings();
   saveSettingsForFile( mFileWidget->filePath() );
 
+  const QString layerName = QFileInfo( mFileWidget->filePath() ).completeBaseName();
 
   // add the layer to the map
   Q_NOWARN_DEPRECATED_PUSH
-  emit addVectorLayer( datasourceUrl, txtLayerName->text() );
+  emit addVectorLayer( datasourceUrl, layerName );
   Q_NOWARN_DEPRECATED_POP
-  emit addLayer( Qgis::LayerType::Vector, datasourceUrl, txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
+  emit addLayer( Qgis::LayerType::Vector, datasourceUrl, layerName, QStringLiteral( "delimitedtext" ) );
 
   // clear the file and layer name show something has happened, ready for another file
 
   mFileWidget->setFilePath( QString() );
-  txtLayerName->setText( QString() );
 
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
   {
@@ -722,7 +715,6 @@ void QgsDelimitedTextSourceSelect::updateFileName()
     settings.setValue( mSettingsKey + "/text_path", finfo.path() );
   }
 
-  txtLayerName->setText( finfo.completeBaseName() );
   loadSettingsForFile( filename );
   updateFieldsAndEnable();
 }
@@ -747,10 +739,6 @@ bool QgsDelimitedTextSourceSelect::validate()
   else if ( !QFileInfo::exists( mFileWidget->filePath() ) )
   {
     message = tr( "File %1 does not exist" ).arg( mFileWidget->filePath() );
-  }
-  else if ( txtLayerName->text().isEmpty() )
-  {
-    message = tr( "Please enter a layer name" );
   }
   else if ( delimiterChars->isChecked() && selectedChars().isEmpty() )
   {

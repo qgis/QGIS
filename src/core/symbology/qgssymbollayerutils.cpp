@@ -44,6 +44,7 @@
 #include "qgssymbollayerreference.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgscurvepolygon.h"
+#include "qgsmasksymbollayer.h"
 
 #include "qmath.h"
 #include <QColor>
@@ -1348,7 +1349,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
 
   if ( !element.firstChildElement( QStringLiteral( "buffer" ) ).isNull() )
   {
-    std::unique_ptr< QgsSymbolBufferSettings > bufferSettings = std::make_unique< QgsSymbolBufferSettings >();
+    auto bufferSettings = std::make_unique< QgsSymbolBufferSettings >();
     bufferSettings->readXml( element, context );
     symbol->setBufferSettings( bufferSettings.release() );
   }
@@ -5603,6 +5604,26 @@ void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbolLayer *symbolLayer )
 void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbolLayer *symbolLayer )
 {
   changeSymbolLayerIds( symbolLayer, []() { return QUuid::createUuid().toString(); } );
+}
+
+void QgsSymbolLayerUtils::clearSymbolLayerMasks( QgsSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+  {
+    if ( QgsMaskMarkerSymbolLayer *maskSl = dynamic_cast<QgsMaskMarkerSymbolLayer *>( symbol->symbolLayer( idx ) ) )
+    {
+      maskSl->clearMasks();
+
+      // recurse over sub symbols
+      if ( QgsSymbol *subSymbol = maskSl->subSymbol() )
+      {
+        clearSymbolLayerMasks( subSymbol );
+      }
+    }
+  }
 }
 
 QVector<QgsGeometry> QgsSymbolLayerUtils::collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds )

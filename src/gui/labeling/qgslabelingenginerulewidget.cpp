@@ -97,7 +97,7 @@ void QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget::setRule( const Qgs
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget::rule()
 {
-  std::unique_ptr<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature> res = std::make_unique<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature>();
+  auto res = std::make_unique<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
   res->setTargetLayer( qobject_cast<QgsVectorLayer *>( mComboTargetLayer->currentLayer() ) );
@@ -158,7 +158,7 @@ void QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::setRule( const Qg
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::rule()
 {
-  std::unique_ptr<QgsLabelingEngineRuleMinimumDistanceLabelToFeature> res = std::make_unique<QgsLabelingEngineRuleMinimumDistanceLabelToFeature>();
+  auto res = std::make_unique<QgsLabelingEngineRuleMinimumDistanceLabelToFeature>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
   res->setTargetLayer( qobject_cast<QgsVectorLayer *>( mComboTargetLayer->currentLayer() ) );
@@ -226,7 +226,7 @@ void QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::setRule( const Qg
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::rule()
 {
-  std::unique_ptr<QgsLabelingEngineRuleMaximumDistanceLabelToFeature> res = std::make_unique<QgsLabelingEngineRuleMaximumDistanceLabelToFeature>();
+  auto res = std::make_unique<QgsLabelingEngineRuleMaximumDistanceLabelToFeature>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
   res->setTargetLayer( qobject_cast<QgsVectorLayer *>( mComboTargetLayer->currentLayer() ) );
@@ -292,7 +292,7 @@ void QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::setRule( const QgsA
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::rule()
 {
-  std::unique_ptr<QgsLabelingEngineRuleMinimumDistanceLabelToLabel> res = std::make_unique<QgsLabelingEngineRuleMinimumDistanceLabelToLabel>();
+  auto res = std::make_unique<QgsLabelingEngineRuleMinimumDistanceLabelToLabel>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
   res->setTargetLayer( mComboTargetLayer->currentLayer() );

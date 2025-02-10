@@ -66,7 +66,7 @@ void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-  std::unique_ptr<QgsProcessingParameterBoolean> prefixFieldParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "PREFIX_FIELD" ), QObject::tr( "Add field prefix to file names" ), true );
+  auto prefixFieldParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "PREFIX_FIELD" ), QObject::tr( "Add field prefix to file names" ), true );
   addParameter( prefixFieldParam.release() );
 
   const QStringList options = QgsVectorFileWriter::supportedFormatExtensions();

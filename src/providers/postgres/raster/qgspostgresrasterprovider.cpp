@@ -2491,13 +2491,13 @@ bool QgsPostgresRasterProviderMetadata::styleExists( const QString &uri, const Q
                                       " AND f_geometry_column IS NULL"
                                       " AND (type=%4 OR type IS NULL)"
                                       " AND styleName=%5"
-                                      " AND r_raster_column=%6" )
+                                      " AND r_raster_column %6" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                                .arg( QgsPostgresConn::quotedValue( mType ) )
                                .arg( QgsPostgresConn::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) )
-                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                               .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) );
 
   QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), checkQuery ) );
   if ( res.PQresultStatus() == PGRES_TUPLES_OK )
@@ -2588,7 +2588,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                   .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                   .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                   .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                  .arg( QStringLiteral( "NULL" ) )
+                  .arg( QLatin1String( "NULL" ) )
                   .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
                   .arg( useAsDefault ? "true" : "false" )
                   .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
@@ -2609,13 +2609,13 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                                 " AND f_geometry_column IS NULL"
                                 " AND (type=%4 OR type IS NULL)"
                                 " AND styleName=%5"
-                                " AND r_raster_column=%6" )
+                                " AND r_raster_column %6" )
                          .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                          .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                          .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                          .arg( QgsPostgresConn::quotedValue( mType ) )
                          .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
-                         .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                         .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) );
 
   QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresRasterProviderMetadata", checkQuery ) );
   if ( res.PQntuples() > 0 )
@@ -2633,7 +2633,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                    " AND f_geometry_column IS NULL"
                    " AND styleName=%9"
                    " AND (type=%2 OR type IS NULL)"
-                   " AND r_raster_column=%14" )
+                   " AND r_raster_column %14" )
             .arg( useAsDefault ? "true" : "false" )
             .arg( QgsPostgresConn::quotedValue( mType ) )
             .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
@@ -2644,7 +2644,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
             .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
             // Must be the final .arg replacement - see above
             .arg( QgsPostgresConn::quotedValue( qmlStyle ), QgsPostgresConn::quotedValue( sldStyle ) )
-            .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+            .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) );
   }
 
   if ( useAsDefault )
@@ -2656,12 +2656,12 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
                                         " AND f_table_name=%3"
                                         " AND f_geometry_column IS NULL"
                                         " AND (type=%4 OR type IS NULL)"
-                                        " AND r_raster_column=%5" )
+                                        " AND r_raster_column %5" )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                                  .arg( QgsPostgresConn::quotedValue( mType ) )
-                                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                                 .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) );
 
     sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
@@ -2720,13 +2720,13 @@ QString QgsPostgresRasterProviderMetadata::loadStoredStyle( const QString &uri, 
                               " AND f_table_schema=%2"
                               " AND f_table_name=%3"
                               " AND f_geometry_column IS NULL"
-                              " AND r_raster_column=%4"
+                              " AND r_raster_column %4"
                               " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
                               ",update_time DESC LIMIT 1" )
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                       .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) );
   }
   else
   {
@@ -2737,14 +2737,14 @@ QString QgsPostgresRasterProviderMetadata::loadStoredStyle( const QString &uri, 
                               " AND f_table_name=%3"
                               " AND f_geometry_column IS NULL"
                               " AND (type=%4 OR type IS NULL)"
-                              " AND r_raster_column=%5"
+                              " AND r_raster_column %5"
                               " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
                               ",update_time DESC LIMIT 1" )
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                        .arg( QgsPostgresConn::quotedValue( mType ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                       .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) );
   }
 
   QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectQmlQuery ) );
@@ -2792,13 +2792,13 @@ int QgsPostgresRasterProviderMetadata::listStyles( const QString &uri, QStringLi
                                         " AND f_table_name=%3"
                                         " AND f_geometry_column is NULL"
                                         " AND (type=%4 OR type IS NULL)"
-                                        " AND r_raster_column=%5"
+                                        " AND r_raster_column %5"
                                         " ORDER BY useasdefault DESC, update_time DESC" )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                  .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                                  .arg( QgsPostgresConn::quotedValue( mType ) )
-                                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                                 .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) );
 
   QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), selectRelatedQuery ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )

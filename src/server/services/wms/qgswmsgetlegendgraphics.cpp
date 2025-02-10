@@ -243,7 +243,7 @@ namespace QgsWms
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree )
   {
     const QgsWmsParameters parameters = context.parameters();
-    std::unique_ptr<QgsLayerTreeModel> model( new QgsLayerTreeModel( &tree ) );
+    auto model = std::make_unique<QgsLayerTreeModel>( &tree );
     std::unique_ptr<QgsMapSettings> mapSettings;
 
     if ( context.scaleDenominator() > 0 )
@@ -320,7 +320,7 @@ namespace QgsWms
 
   QgsLayerTree *layerTree( const QgsWmsRenderContext &context )
   {
-    std::unique_ptr<QgsLayerTree> tree( new QgsLayerTree() );
+    auto tree = std::make_unique<QgsLayerTree>();
 
     QList<QgsVectorLayerFeatureCounter *> counters;
     for ( QgsMapLayer *ml : context.layersToRender() )
@@ -363,7 +363,7 @@ namespace QgsWms
       return 0;
     }
 
-    std::unique_ptr<QgsLayerTree> tree( new QgsLayerTree() );
+    auto tree = std::make_unique<QgsLayerTree>();
 
     QgsWmsParameters wmsParams = context.parameters();
     QStringList layerNicknames = wmsParams.allLayersNickname();

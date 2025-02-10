@@ -161,32 +161,6 @@ QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudInde
   return QByteArray( ( const char * ) data.data(), ( int ) data.size() ); // QByteArray makes a deep copy
 }
 
-
-QByteArray QgsPointCloudLayerEditUtils::dataForAttributes( const QgsPointCloudAttributeCollection &allAttributes, const QByteArray &data, const QgsPointCloudRequest &request )
-{
-  const QVector<QgsPointCloudAttribute> attributes = allAttributes.attributes();
-  const int nPoints = data.size() / allAttributes.pointRecordSize();
-  const char *ptr = data.data();
-
-  QByteArray outData;
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    for ( const QgsPointCloudAttribute &attr : attributes )
-    {
-      if ( request.attributes().indexOf( attr.name() ) >= 0 )
-      {
-        outData.append( ptr, attr.size() );
-      }
-      ptr += attr.size();
-    }
-  }
-
-  //
-  Q_ASSERT( nPoints == outData.size() / request.attributes().pointRecordSize() );
-
-  return outData;
-}
-
 bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttribute &attribute, double value )
 {
   const QString name = attribute.name().toUpper();

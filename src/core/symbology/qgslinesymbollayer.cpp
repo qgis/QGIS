@@ -2451,7 +2451,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "rotate" ) ) )
     rotate = ( props[QStringLiteral( "rotate" )].toString() == QLatin1String( "1" ) );
 
-  std::unique_ptr< QgsMarkerLineSymbolLayer > x = std::make_unique< QgsMarkerLineSymbolLayer >( rotate, interval );
+  auto x = std::make_unique< QgsMarkerLineSymbolLayer >( rotate, interval );
   setCommonProperties( x.get(), props );
   return x.release();
 }
@@ -2491,7 +2491,7 @@ void QgsMarkerLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 QgsMarkerLineSymbolLayer *QgsMarkerLineSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsMarkerLineSymbolLayer > x = std::make_unique< QgsMarkerLineSymbolLayer >( rotateSymbols(), interval() );
+  auto x = std::make_unique< QgsMarkerLineSymbolLayer >( rotateSymbols(), interval() );
   copyTemplateSymbolProperties( x.get() );
   return x.release();
 }
@@ -2774,7 +2774,7 @@ QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "rotate" ) ) )
     rotate = ( props[QStringLiteral( "rotate" )] == QLatin1String( "1" ) );
 
-  std::unique_ptr< QgsHashedLineSymbolLayer > x = std::make_unique< QgsHashedLineSymbolLayer >( rotate, interval );
+  auto x = std::make_unique< QgsHashedLineSymbolLayer >( rotate, interval );
   setCommonProperties( x.get(), props );
   if ( props.contains( QStringLiteral( "hash_angle" ) ) )
   {
@@ -2828,7 +2828,7 @@ QVariantMap QgsHashedLineSymbolLayer::properties() const
 
 QgsHashedLineSymbolLayer *QgsHashedLineSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsHashedLineSymbolLayer > x = std::make_unique< QgsHashedLineSymbolLayer >( rotateSymbols(), interval() );
+  auto x = std::make_unique< QgsHashedLineSymbolLayer >( rotateSymbols(), interval() );
   copyTemplateSymbolProperties( x.get() );
   x->setHashAngle( mHashAngle );
   x->setHashLength( mHashLength );
@@ -3338,7 +3338,7 @@ QgsRasterLineSymbolLayer::~QgsRasterLineSymbolLayer() = default;
 
 QgsSymbolLayer *QgsRasterLineSymbolLayer::create( const QVariantMap &properties )
 {
-  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique<QgsRasterLineSymbolLayer>();
+  auto res = std::make_unique<QgsRasterLineSymbolLayer>();
 
   if ( properties.contains( QStringLiteral( "line_width" ) ) )
   {
@@ -3406,7 +3406,7 @@ QVariantMap QgsRasterLineSymbolLayer::properties() const
 
 QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsRasterLineSymbolLayer > res = std::make_unique< QgsRasterLineSymbolLayer >( mPath );
+  auto res = std::make_unique< QgsRasterLineSymbolLayer >( mPath );
   res->setWidth( mWidth );
   res->setWidthUnit( mWidthUnit );
   res->setWidthMapUnitScale( mWidthMapUnitScale );
@@ -3583,7 +3583,7 @@ QgsLineburstSymbolLayer::~QgsLineburstSymbolLayer() = default;
 
 QgsSymbolLayer *QgsLineburstSymbolLayer::create( const QVariantMap &properties )
 {
-  std::unique_ptr< QgsLineburstSymbolLayer > res = std::make_unique<QgsLineburstSymbolLayer>();
+  auto res = std::make_unique<QgsLineburstSymbolLayer>();
 
   if ( properties.contains( QStringLiteral( "line_width" ) ) )
   {
@@ -3669,7 +3669,7 @@ QVariantMap QgsLineburstSymbolLayer::properties() const
 
 QgsLineburstSymbolLayer *QgsLineburstSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsLineburstSymbolLayer > res = std::make_unique< QgsLineburstSymbolLayer >();
+  auto res = std::make_unique< QgsLineburstSymbolLayer >();
   res->setWidth( mWidth );
   res->setWidthUnit( mWidthUnit );
   res->setWidthMapUnitScale( mWidthMapUnitScale );
@@ -3849,7 +3849,7 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
     width = props[QStringLiteral( "width" )].toDouble();
   }
 
-  std::unique_ptr<QgsFilledLineSymbolLayer > l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ) );
+  auto l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ) );
 
   if ( props.contains( QStringLiteral( "line_width_unit" ) ) )
   {

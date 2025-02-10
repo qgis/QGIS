@@ -755,7 +755,7 @@ void TestQgsLineString::gettersSetters()
 void TestQgsLineString::appendWithZM()
 {
   QgsLineString ls;
-  std::unique_ptr<QgsLineString> toAppend( new QgsLineString() );
+  auto toAppend = std::make_unique<QgsLineString>();
 
   //check dimensionality is inherited from append line if initially empty
   toAppend.reset( new QgsLineString() );
@@ -840,7 +840,7 @@ void TestQgsLineString::append()
   QVERIFY( ls.isEmpty() );
   QCOMPARE( ls.numPoints(), 0 );
 
-  std::unique_ptr<QgsLineString> toAppend( new QgsLineString() );
+  auto toAppend = std::make_unique<QgsLineString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
   ls.append( toAppend.get() );
 
@@ -2151,7 +2151,7 @@ void TestQgsLineString::boundingBox()
   QCOMPARE( ls.boundingBox(), QgsRectangle( -6, -15, -4, -9 ) );
 
   //append
-  std::unique_ptr<QgsLineString> toAppend( new QgsLineString() );
+  auto toAppend = std::make_unique<QgsLineString>();
 
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 4, 0 ) );
   ls.append( toAppend.get() );

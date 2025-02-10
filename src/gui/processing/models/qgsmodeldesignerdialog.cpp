@@ -453,7 +453,7 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
 void QgsModelDesignerDialog::loadModel( const QString &path )
 {
-  std::unique_ptr<QgsProcessingModelAlgorithm> alg = std::make_unique<QgsProcessingModelAlgorithm>();
+  auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
   if ( alg->fromFile( path ) )
   {
     alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
@@ -515,7 +515,7 @@ void QgsModelDesignerDialog::updateVariablesGui()
 {
   mBlockUndoCommands++;
 
-  std::unique_ptr<QgsExpressionContextScope> variablesScope = std::make_unique<QgsExpressionContextScope>( tr( "Model Variables" ) );
+  auto variablesScope = std::make_unique<QgsExpressionContextScope>( tr( "Model Variables" ) );
   const QVariantMap modelVars = mModel->variables();
   for ( auto it = modelVars.constBegin(); it != modelVars.constEnd(); ++it )
   {
@@ -628,7 +628,7 @@ void QgsModelDesignerDialog::newModel()
   if ( !checkForUnsavedChanges() )
     return;
 
-  std::unique_ptr<QgsProcessingModelAlgorithm> alg = std::make_unique<QgsProcessingModelAlgorithm>();
+  auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
   alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
   setModel( alg.release() );
 }
@@ -1048,7 +1048,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     if ( !childAlgorithmSubset.empty() )
     {
       // start from previous state
-      std::unique_ptr<QgsProcessingModelInitialRunConfig> modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
+      auto modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
       modelConfig->setChildAlgorithmSubset( childAlgorithmSubset );
       modelConfig->setPreviouslyExecutedChildAlgorithms( mLastResult.executedChildIds() );
       modelConfig->setInitialChildInputs( mLastResult.rawChildInputs() );
@@ -1057,7 +1057,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       // add copies of layers from previous runs to context's layer store, so that they can be used
       // when running the subset
       const QMap<QString, QgsMapLayer *> previousOutputLayers = mLayerStore.temporaryLayerStore()->mapLayers();
-      std::unique_ptr<QgsMapLayerStore> previousResultStore = std::make_unique<QgsMapLayerStore>();
+      auto previousResultStore = std::make_unique<QgsMapLayerStore>();
       for ( auto it = previousOutputLayers.constBegin(); it != previousOutputLayers.constEnd(); ++it )
       {
         std::unique_ptr<QgsMapLayer> clone( it.value()->clone() );
@@ -1247,7 +1247,7 @@ bool QgsModelDesignerDialog::isDirty() const
 void QgsModelDesignerDialog::fillInputsTree()
 {
   const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconModelInput.svg" ) );
-  std::unique_ptr<QTreeWidgetItem> parametersItem = std::make_unique<QTreeWidgetItem>();
+  auto parametersItem = std::make_unique<QTreeWidgetItem>();
   parametersItem->setText( 0, tr( "Parameters" ) );
   QList<QgsProcessingParameterType *> available = QgsApplication::processingRegistry()->parameterTypes();
   std::sort( available.begin(), available.end(), []( const QgsProcessingParameterType *a, const QgsProcessingParameterType *b ) -> bool {
@@ -1258,7 +1258,7 @@ void QgsModelDesignerDialog::fillInputsTree()
   {
     if ( param->flags() & Qgis::ProcessingParameterTypeFlag::ExposeToModeler )
     {
-      std::unique_ptr<QTreeWidgetItem> paramItem = std::make_unique<QTreeWidgetItem>();
+      auto paramItem = std::make_unique<QTreeWidgetItem>();
       paramItem->setText( 0, param->name() );
       paramItem->setData( 0, Qt::UserRole, param->id() );
       paramItem->setIcon( 0, icon );

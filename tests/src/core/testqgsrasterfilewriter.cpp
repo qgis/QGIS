@@ -114,7 +114,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
     return false;
   }
 
-  std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( copiedSrc, rasterFileInfo.completeBaseName() ) );
+  auto mpRasterLayer = std::make_unique<QgsRasterLayer>( copiedSrc, rasterFileInfo.completeBaseName() );
 
   if ( !mpRasterLayer->isValid() )
     return false;
@@ -128,7 +128,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
   mReport += "temporary output file: " + tmpName + "<br>";
 
   QgsRasterFileWriter fileWriter( tmpName );
-  std::unique_ptr<QgsRasterPipe> pipe = std::make_unique<QgsRasterPipe>();
+  auto pipe = std::make_unique<QgsRasterPipe>();
   if ( !pipe->set( provider->clone() ) )
   {
     appendToReport( QStringLiteral( "Write test" ), QStringLiteral( "Cannot set pipe provider" ) );
@@ -199,7 +199,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   QVERIFY( dp->isEditable() );
   dp.reset();
 
-  std::unique_ptr<QgsRasterLayer> rlayer = std::make_unique<QgsRasterLayer>( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
+  auto rlayer = std::make_unique<QgsRasterLayer>( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -228,7 +228,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   QVERIFY( dp->isEditable() );
   dp.reset();
 
-  std::unique_ptr<QgsRasterLayer> rlayer = std::make_unique<QgsRasterLayer>( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
+  auto rlayer = std::make_unique<QgsRasterLayer>( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -268,10 +268,10 @@ void TestQgsRasterFileWriter::testVrtCreation()
   //create a raster layer that will be used in all tests...
   const QString srcFileName = mTestDataDir + QStringLiteral( "ALLINGES_RGF93_CC46_1_1.tif" );
   const QFileInfo rasterFileInfo( srcFileName );
-  std::unique_ptr<QgsRasterLayer> srcRasterLayer = std::make_unique<QgsRasterLayer>( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
+  auto srcRasterLayer = std::make_unique<QgsRasterLayer>( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
 
   const QTemporaryDir dir;
-  std::unique_ptr<QgsRasterFileWriter> rasterFileWriter = std::make_unique<QgsRasterFileWriter>( dir.path() + '/' + rasterFileInfo.completeBaseName() );
+  auto rasterFileWriter = std::make_unique<QgsRasterFileWriter>( dir.path() + '/' + rasterFileInfo.completeBaseName() );
 
   //2. Definition of the pyramid levels
   QList<int> levelList;
@@ -297,7 +297,7 @@ void TestQgsRasterFileWriter::testVrtCreation()
   QCOMPARE( res, Qgis::RasterFileWriterResult::Success );
 
   // Now let's compare the georef of the original raster with the georef of the generated vrt file
-  std::unique_ptr<QgsRasterLayer> vrtRasterLayer = std::make_unique<QgsRasterLayer>( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
+  auto vrtRasterLayer = std::make_unique<QgsRasterLayer>( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
 
   const double xminVrt = vrtRasterLayer->extent().xMinimum();
   const double yminVrt = vrtRasterLayer->extent().yMaximum();

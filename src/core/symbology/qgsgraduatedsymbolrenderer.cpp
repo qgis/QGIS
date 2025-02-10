@@ -412,7 +412,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   Q_UNUSED( listForCboPrettyBreaks )
 
   QgsRangeList ranges;
-  std::unique_ptr< QgsGraduatedSymbolRenderer > r = std::make_unique< QgsGraduatedSymbolRenderer >( attrName, ranges );
+  auto r = std::make_unique< QgsGraduatedSymbolRenderer >( attrName, ranges );
   r->setSourceSymbol( symbol->clone() );
   r->setSourceColorRamp( ramp->clone() );
 
@@ -513,7 +513,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
 
   QString attrName = element.attribute( QStringLiteral( "attr" ) );
 
-  std::unique_ptr< QgsGraduatedSymbolRenderer > r = std::make_unique< QgsGraduatedSymbolRenderer >( attrName, ranges );
+  auto r = std::make_unique< QgsGraduatedSymbolRenderer >( attrName, ranges );
 
   QString attrMethod = element.attribute( QStringLiteral( "graduatedMethod" ) );
   if ( !attrMethod.isEmpty() )

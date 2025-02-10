@@ -221,7 +221,7 @@ bool QgsMultiSurface::insertGeometry( QgsAbstractGeometry *g, int index )
 
 QgsAbstractGeometry *QgsMultiSurface::boundary() const
 {
-  std::unique_ptr< QgsMultiCurve > multiCurve( new QgsMultiCurve() );
+  auto multiCurve = std::make_unique<QgsMultiCurve>();
   multiCurve->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
@@ -239,7 +239,7 @@ QgsAbstractGeometry *QgsMultiSurface::boundary() const
 
 QgsMultiSurface *QgsMultiSurface::simplifyByDistance( double tolerance ) const
 {
-  std::unique_ptr< QgsMultiSurface > res = std::make_unique< QgsMultiSurface >();
+  auto res = std::make_unique< QgsMultiSurface >();
   res->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {

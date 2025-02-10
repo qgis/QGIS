@@ -78,9 +78,6 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( mLayersFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterLayers );
   connect( mTilesetsFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterTiles );
-  connect( mLoadLayersIndividuallyCheckBox, &QCheckBox::toggled, leLayerName, &QLineEdit::setDisabled );
-
-  leLayerName->setDisabled( mLoadLayersIndividuallyCheckBox->isChecked() );
 
   // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
@@ -651,9 +648,9 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "styles" ), styles );
 
     Q_NOWARN_DEPRECATED_PUSH
-    emit addRasterLayer( uri.encodedUri(), leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(), QStringLiteral( "wms" ) );
+    emit addRasterLayer( uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), QStringLiteral( "wms" ) );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(), QStringLiteral( "wms" ) );
+    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), QStringLiteral( "wms" ) );
   }
 }
 
@@ -1043,18 +1040,12 @@ void QgsWMSSourceSelect::updateButtons()
       QString tileLayerName = item->data( Qt::UserRole + 5 ).toString();
       if ( tileLayerName.isEmpty() )
         tileLayerName = item->data( Qt::UserRole + 0 ).toString();
-      leLayerName->setText( tileLayerName );
     }
     else
     {
       QStringList layers, styles, titles;
       collectSelectedLayers( layers, styles, titles );
-      leLayerName->setText( titles.join( QLatin1Char( '/' ) ) );
     }
-  }
-  else
-  {
-    leLayerName->setText( "" );
   }
 }
 

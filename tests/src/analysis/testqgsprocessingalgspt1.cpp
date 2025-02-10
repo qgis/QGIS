@@ -184,14 +184,14 @@ std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> TestQgsProcessingAlgsPt1::fe
 QgsFeature TestQgsProcessingAlgsPt1::runForFeature( const std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> &alg, QgsFeature feature, const QString &layerType, QVariantMap parameters )
 {
   Q_ASSERT( alg.get() );
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
   QgsProcessingFeedback feedback;
   context->setFeedback( &feedback );
 
-  std::unique_ptr<QgsVectorLayer> inputLayer( std::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  auto inputLayer = std::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   inputLayer->dataProvider()->addFeature( feature );
 
   parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue<QgsMapLayer *>( inputLayer.get() ) );
@@ -286,7 +286,7 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
 {
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QgsProcessingFeedback feedback;
@@ -317,7 +317,7 @@ void TestQgsProcessingAlgsPt1::saveFeaturesAlg()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputGeoJson );
 
   const QgsProcessingAlgorithm *saveFeatures( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:savefeatures" ) ) );
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QgsProcessingFeedback feedback;
@@ -328,7 +328,7 @@ void TestQgsProcessingAlgsPt1::saveFeaturesAlg()
   QCOMPARE( outputs.value( QStringLiteral( "FILE_PATH" ) ).toString(), outputGeoJson );
   QCOMPARE( outputs.value( QStringLiteral( "LAYER_NAME" ) ).toString(), layerName );
 
-  std::unique_ptr<QgsVectorLayer> savedLayer = std::make_unique<QgsVectorLayer>( outputs.value( QStringLiteral( "OUTPUT" ) ).toString(), "points", "ogr" );
+  auto savedLayer = std::make_unique<QgsVectorLayer>( outputs.value( QStringLiteral( "OUTPUT" ) ).toString(), "points", "ogr" );
   QVERIFY( savedLayer->isValid() );
   QCOMPARE( savedLayer->getFeature( 1 ).geometry().asPoint().x(), -83.3 );
 }
@@ -386,18 +386,18 @@ void TestQgsProcessingAlgsPt1::packageAlg()
   QVERIFY( ok );
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr<QgsVectorLayer> pointLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=points", "points", "ogr" );
+  auto pointLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=points", "points", "ogr" );
   QVERIFY( pointLayer->isValid() );
   QCOMPARE( pointLayer->wkbType(), mPointsLayer->wkbType() );
   QCOMPARE( pointLayer->featureCount(), mPointsLayer->featureCount() );
   pointLayer.reset();
-  std::unique_ptr<QgsVectorLayer> polygonLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=polygons", "polygons", "ogr" );
+  auto polygonLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=polygons", "polygons", "ogr" );
   QVERIFY( polygonLayer->isValid() );
   QCOMPARE( polygonLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( polygonLayer->featureCount(), mPolygonLayer->featureCount() );
   polygonLayer.reset();
 
-  std::unique_ptr<QgsVectorLayer> rectangles = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp", QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+  auto rectangles = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp", QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
   QgsLayerMetadata metadata;
   metadata.setFees( QStringLiteral( "lots of dogecoin" ) );
@@ -408,7 +408,7 @@ void TestQgsProcessingAlgsPt1::packageAlg()
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr<QgsVectorLayer> rectanglesPackagedLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=rectangles", "points", "ogr" );
+  auto rectanglesPackagedLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=rectangles", "points", "ogr" );
   QVERIFY( rectanglesPackagedLayer->isValid() );
   QCOMPARE( rectanglesPackagedLayer->wkbType(), rectanglesPackagedLayer->wkbType() );
   QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
@@ -449,7 +449,7 @@ void TestQgsProcessingAlgsPt1::packageAlg()
   QVERIFY( ok );
 
   QVERIFY( !results4.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr<QgsVectorLayer> selectedPolygonsPackagedLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=polygons", "polygons", "ogr" );
+  auto selectedPolygonsPackagedLayer = std::make_unique<QgsVectorLayer>( outputGpkg + "|layername=polygons", "polygons", "ogr" );
   QVERIFY( selectedPolygonsPackagedLayer->isValid() );
   QCOMPARE( selectedPolygonsPackagedLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 3 );
@@ -472,7 +472,7 @@ void TestQgsProcessingAlgsPt1::rasterLayerProperties()
 
   const QString myDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap parameters;
 
@@ -550,7 +550,7 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheetOptions()
 
   const QgsProcessingAlgorithm *alg( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:exporttospreadsheet" ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QgsProcessingFeedback feedback;
@@ -563,7 +563,7 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheetOptions()
   QVERIFY( ok );
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr<QgsVectorLayer> pointLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=points", "points", "ogr" );
+  auto pointLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=points", "points", "ogr" );
   QCOMPARE( pointLayer->fields().at( 0 ).name(), QStringLiteral( "Class" ) );
   QCOMPARE( pointLayer->fields().at( 1 ).name(), QStringLiteral( "Heading" ) );
   QCOMPARE( pointLayer->fields().at( 2 ).name(), QStringLiteral( "Importance" ) );
@@ -631,7 +631,7 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheet( const QString &outputPath )
 
   const QgsProcessingAlgorithm *alg( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:exporttospreadsheet" ) ) );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QgsProcessingFeedback feedback;
@@ -643,16 +643,16 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheet( const QString &outputPath )
   QVERIFY( ok );
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr<QgsVectorLayer> pointLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=points", "points", "ogr" );
+  auto pointLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=points", "points", "ogr" );
   QVERIFY( pointLayer->isValid() );
   QCOMPARE( pointLayer->featureCount(), mPointsLayer->featureCount() );
   pointLayer.reset();
-  std::unique_ptr<QgsVectorLayer> polygonLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=polygons", "polygons", "ogr" );
+  auto polygonLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=polygons", "polygons", "ogr" );
   QVERIFY( polygonLayer->isValid() );
   QCOMPARE( polygonLayer->featureCount(), mPolygonLayer->featureCount() );
   polygonLayer.reset();
 
-  std::unique_ptr<QgsVectorLayer> rectangles = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp", QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+  auto rectangles = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp", QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
 
   // Test adding an additional layer (overwrite disabled)
@@ -661,7 +661,7 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheet( const QString &outputPath )
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr<QgsVectorLayer> rectanglesPackagedLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=rectangles", "points", "ogr" );
+  auto rectanglesPackagedLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=rectangles", "points", "ogr" );
   QVERIFY( rectanglesPackagedLayer->isValid() );
   QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
   rectanglesPackagedLayer.reset();
@@ -690,7 +690,7 @@ void TestQgsProcessingAlgsPt1::renameLayerAlg()
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:renamelayer" ) ) );
   QVERIFY( package );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
@@ -742,7 +742,7 @@ void TestQgsProcessingAlgsPt1::loadLayerAlg()
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:loadlayer" ) ) );
   QVERIFY( package );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
@@ -975,7 +975,7 @@ void TestQgsProcessingAlgsPt1::transformAlg()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:reprojectlayer" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
@@ -1062,7 +1062,7 @@ void TestQgsProcessingAlgsPt1::categorizeByStyle()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:categorizeusingstyle" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
@@ -1190,7 +1190,7 @@ void TestQgsProcessingAlgsPt1::extractBinary()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:extractbinary" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
@@ -1240,7 +1240,7 @@ void TestQgsProcessingAlgsPt1::createDirectory()
   parameters.insert( QStringLiteral( "PATH" ), outputPath );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -1272,7 +1272,7 @@ void TestQgsProcessingAlgsPt1::flattenRelations()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:flattenrelationships" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
@@ -1820,7 +1820,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster()
   p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -1845,7 +1845,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster()
   else
   {
     //prepare expectedRaster
-    std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_constantRaster" + expectedRaster, "expectedDataset", "gdal" );
+    auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_constantRaster" + expectedRaster, "expectedDataset", "gdal" );
     std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
     QgsRasterIterator expectedIter( expectedInterface.get() );
     expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -1855,7 +1855,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster()
     QVERIFY( ok );
 
     //...and check results with expected datasets
-    std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+    auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
     std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
     QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
@@ -2037,13 +2037,13 @@ void TestQgsProcessingAlgsPt1::fillNoData()
 
   const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + inputRaster, "inputDataset", "gdal" );
+  auto inputRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + inputRaster, "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -2054,7 +2054,7 @@ void TestQgsProcessingAlgsPt1::fillNoData()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/fillNoData/" + expectedRaster, "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/fillNoData/" + expectedRaster, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -2069,7 +2069,7 @@ void TestQgsProcessingAlgsPt1::fillNoData()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
@@ -2162,7 +2162,7 @@ void TestQgsProcessingAlgsPt1::lineDensity()
   p.setCrs( layer->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -2174,7 +2174,7 @@ void TestQgsProcessingAlgsPt1::lineDensity()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRaster = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_raster_linedensity" + expectedDataset, "expectedDataset", "gdal" );
+  auto expectedRaster = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_raster_linedensity" + expectedDataset, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRaster->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRaster->width(), expectedRaster->height(), expectedInterface->extent() );
@@ -2189,7 +2189,7 @@ void TestQgsProcessingAlgsPt1::lineDensity()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputRaster->width(), expectedRaster->width() );
@@ -2377,7 +2377,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
     // create a GeoTIFF - this will create data provider in editable mode
     const QString filename = tmpFile.fileName();
 
-    std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( filename );
+    auto writer = std::make_unique<QgsRasterFileWriter>( filename );
     writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
     writer->setOutputFormat( QStringLiteral( "GTiff" ) );
     std::unique_ptr<QgsRasterDataProvider> dp( writer->createOneBandRaster( Qgis::DataType::Float32, nCols, nRows, input[ii].empty() ? badExtent : extent, crs ) );
@@ -2730,13 +2730,13 @@ void TestQgsProcessingAlgsPt1::cellStatistics()
     inputDatasetPaths << myDataPath + raster;
   }
 
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+  auto inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer1->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -2748,7 +2748,7 @@ void TestQgsProcessingAlgsPt1::cellStatistics()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStatistics/" + expectedRaster, "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStatistics/" + expectedRaster, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -2763,7 +2763,7 @@ void TestQgsProcessingAlgsPt1::cellStatistics()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -2984,13 +2984,13 @@ void TestQgsProcessingAlgsPt1::percentileRaster()
     inputDatasetPaths << myDataPath + raster;
   }
 
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+  auto inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer1->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -3003,7 +3003,7 @@ void TestQgsProcessingAlgsPt1::percentileRaster()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStackPercentile/" + expectedRaster, "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStackPercentile/" + expectedRaster, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -3017,7 +3017,7 @@ void TestQgsProcessingAlgsPt1::percentileRaster()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -3223,13 +3223,13 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster()
     inputDatasetPaths << myDataPath + raster;
   }
 
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+  auto inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer1->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -3244,7 +3244,7 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStackPercentrankFromRaster/" + expectedRaster, "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStackPercentrankFromRaster/" + expectedRaster, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -3258,7 +3258,7 @@ void TestQgsProcessingAlgsPt1::percentrankByRaster()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -3396,13 +3396,13 @@ void TestQgsProcessingAlgsPt1::percentrankByValue()
     inputDatasetPaths << myDataPath + raster;
   }
 
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+  auto inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer1->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -3416,7 +3416,7 @@ void TestQgsProcessingAlgsPt1::percentrankByValue()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStackPercentrankFromValue/" + expectedRaster, "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images/expected_cellStackPercentrankFromValue/" + expectedRaster, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -3430,7 +3430,7 @@ void TestQgsProcessingAlgsPt1::percentrankByValue()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -3640,13 +3640,13 @@ void TestQgsProcessingAlgsPt1::rasterFrequencyByComparisonOperator()
     inputDatasetPaths << myDataPath + raster;
   }
 
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+  auto inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer1->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -3658,7 +3658,7 @@ void TestQgsProcessingAlgsPt1::rasterFrequencyByComparisonOperator()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images" + expectedRaster, "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images" + expectedRaster, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -3673,7 +3673,7 @@ void TestQgsProcessingAlgsPt1::rasterFrequencyByComparisonOperator()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -3784,13 +3784,13 @@ void TestQgsProcessingAlgsPt1::rasterLocalPosition()
     inputDatasetPaths << myDataPath + raster;
   }
 
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+  auto inputRasterLayer1 = std::make_unique<QgsRasterLayer>( myDataPath + inputRasters[0], "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer1->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -3801,7 +3801,7 @@ void TestQgsProcessingAlgsPt1::rasterLocalPosition()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images" + expectedRaster, "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( myDataPath + "/control_images" + expectedRaster, "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -3815,7 +3815,7 @@ void TestQgsProcessingAlgsPt1::rasterLocalPosition()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
@@ -4004,13 +4004,13 @@ void TestQgsProcessingAlgsPt1::roundRasterValues()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:roundrastervalues" ) ) );
 
   const QString rasterSource = copyTestData( inputRaster );
-  std::unique_ptr<QgsRasterLayer> inputRasterLayer = std::make_unique<QgsRasterLayer>( rasterSource, "inputDataset", "gdal" );
+  auto inputRasterLayer = std::make_unique<QgsRasterLayer>( rasterSource, "inputDataset", "gdal" );
 
   //set project crs and ellipsoid from input layer
   p.setCrs( inputRasterLayer->crs(), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -4023,7 +4023,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
-  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = std::make_unique<QgsRasterLayer>( testDataPath( "/control_images/roundRasterValues/" + expectedRaster ), "expectedDataset", "gdal" );
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( testDataPath( "/control_images/roundRasterValues/" + expectedRaster ), "expectedDataset", "gdal" );
   std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
   QgsRasterIterator expectedIter( expectedInterface.get() );
   expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
@@ -4038,7 +4038,7 @@ void TestQgsProcessingAlgsPt1::roundRasterValues()
   QVERIFY( ok );
 
   //...and check results with expected datasets
-  std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
   QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
@@ -4077,7 +4077,7 @@ void TestQgsProcessingAlgsPt1::layoutMapExtent()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayoutmapextenttolayer" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
 
@@ -4263,7 +4263,7 @@ void TestQgsProcessingAlgsPt1::styleFromProject()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:stylefromproject" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -4353,7 +4353,7 @@ void TestQgsProcessingAlgsPt1::combineStyles()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:combinestyles" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), QStringList() << tmpFile.fileName() << tmpFile2.fileName() );
@@ -4412,7 +4412,7 @@ void TestQgsProcessingAlgsPt1::bookmarksToLayer()
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:bookmarkstolayer" ) ) );
   QVERIFY( alg != nullptr );
 
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -4479,7 +4479,7 @@ void TestQgsProcessingAlgsPt1::bookmarksToLayer()
 
 void TestQgsProcessingAlgsPt1::layerToBookmarks()
 {
-  std::unique_ptr<QgsVectorLayer> inputLayer( std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=province:string&field=municipality:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  auto inputLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=province:string&field=municipality:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   QVERIFY( inputLayer->isValid() );
 
   QgsFeature f;
@@ -4497,7 +4497,7 @@ void TestQgsProcessingAlgsPt1::layerToBookmarks()
   QVERIFY( alg != nullptr );
 
   QgsProject p;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -4555,7 +4555,7 @@ void TestQgsProcessingAlgsPt1::repairShapefile()
   QFile::copy( dataDir + "/points.shp", tmpPath.filePath( QStringLiteral( "points.dbf" ) ) );
   // no shx!!
 
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+  auto layer = std::make_unique<QgsVectorLayer>( tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
   QVERIFY( !layer->isValid() );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:repairshapefile" ) ) );
@@ -4566,7 +4566,7 @@ void TestQgsProcessingAlgsPt1::repairShapefile()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -4599,7 +4599,7 @@ void TestQgsProcessingAlgsPt1::renameField()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -4648,7 +4648,7 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -4819,7 +4819,7 @@ void TestQgsProcessingAlgsPt1::shapefileEncoding()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -4863,7 +4863,7 @@ void TestQgsProcessingAlgsPt1::setLayerEncoding()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap results;
@@ -4910,7 +4910,7 @@ void TestQgsProcessingAlgsPt1::raiseException()
   parameters.insert( QStringLiteral( "MESSAGE" ), QStringLiteral( "you done screwed up boy" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -4944,7 +4944,7 @@ void TestQgsProcessingAlgsPt1::raiseWarning()
   parameters.insert( QStringLiteral( "MESSAGE" ), QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -4978,7 +4978,7 @@ void TestQgsProcessingAlgsPt1::raiseMessage()
   parameters.insert( QStringLiteral( "MESSAGE" ), QStringLiteral( "nothing screwed up boy, congrats" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -5055,7 +5055,7 @@ void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster()
 
     std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( algname ) );
     //set project after layer has been added so that transform context/ellipsoid from crs is also set
-    std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+    auto context = std::make_unique<QgsProcessingContext>();
     context->setProject( &p );
 
     QVariantMap parameters;
@@ -5083,7 +5083,7 @@ void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster()
       QVERIFY( ok );
 
       //...and check results with expected datasets
-      std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+      auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
       std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
       QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -5180,7 +5180,7 @@ void TestQgsProcessingAlgsPt1::randomIntegerDistributionRaster()
 
     std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( algname ) );
     //set project after layer has been added so that transform context/ellipsoid from crs is also set
-    std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+    auto context = std::make_unique<QgsProcessingContext>();
     context->setProject( &p );
 
     QVariantMap parameters;
@@ -5208,7 +5208,7 @@ void TestQgsProcessingAlgsPt1::randomIntegerDistributionRaster()
       QVERIFY( ok );
 
       //...and check results with expected datasets
-      std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+      auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
       std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
       QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -5464,7 +5464,7 @@ void TestQgsProcessingAlgsPt1::randomRaster()
   p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
 
   //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
 
   QVariantMap parameters;
@@ -5494,7 +5494,7 @@ void TestQgsProcessingAlgsPt1::randomRaster()
     QVERIFY( ok );
 
     //...and check results with expected datasets
-    std::unique_ptr<QgsRasterLayer> outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+    auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
     std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
 
     QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
@@ -5543,7 +5543,7 @@ void TestQgsProcessingAlgsPt1::filterByLayerType()
   parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "vl" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap results;
@@ -5587,7 +5587,7 @@ void TestQgsProcessingAlgsPt1::conditionalBranch()
   parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "vl" ) );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok, config );
@@ -5605,7 +5605,7 @@ void TestQgsProcessingAlgsPt1::saveLog()
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
   feedback.reportError( QStringLiteral( "test" ) );
   QVariantMap results;
@@ -5636,7 +5636,7 @@ void TestQgsProcessingAlgsPt1::setProjectVariable()
   parameters.insert( QStringLiteral( "VALUE" ), 11 );
 
   bool ok = false;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
   QgsProject p;
   context->setProject( &p );
   QgsProcessingFeedback feedback;

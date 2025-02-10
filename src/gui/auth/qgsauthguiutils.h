@@ -99,9 +99,6 @@ class GUI_EXPORT QgsAuthGuiUtils
     //! Remove master password from wallet
     static void passwordHelperDelete( QgsMessageBar *msgbar, QWidget *parent = nullptr );
 
-    //! Store master password into the wallet
-    static void passwordHelperSync( QgsMessageBar *msgbar );
-
     //! Sets password helper enabled (enable/disable)
     static void passwordHelperEnable( bool enabled, QgsMessageBar *msgbar );
 

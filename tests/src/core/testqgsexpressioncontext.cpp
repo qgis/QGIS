@@ -841,7 +841,7 @@ void TestQgsExpressionContext::layerScope()
   layerScope = nullptr;
 
   //create a map layer
-  std::unique_ptr<QgsVectorLayer> vectorLayer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) ) );
+  auto vectorLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) );
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::layerScope( vectorLayer.get() );
@@ -1010,7 +1010,7 @@ void TestQgsExpressionContext::layerStores()
   QVERIFY( scope1->layerStores().isEmpty() );
 
   QgsMapLayerStore store1;
-  std::unique_ptr<QgsMapLayerStore> store2 = std::make_unique<QgsMapLayerStore>();
+  auto store2 = std::make_unique<QgsMapLayerStore>();
   scope1->addLayerStore( &store1 );
   scope1->addLayerStore( store2.get() );
   QCOMPARE( scope1->layerStores(), QList<QgsMapLayerStore *>( { &store1, store2.get() } ) );

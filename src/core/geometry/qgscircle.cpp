@@ -429,7 +429,7 @@ QVector<QgsPoint> QgsCircle::northQuadrant() const
 
 QgsCircularString *QgsCircle::toCircularString( bool oriented ) const
 {
-  std::unique_ptr<QgsCircularString> circString( new QgsCircularString() );
+  auto circString = std::make_unique<QgsCircularString>();
   QgsPointSequence points;
   QVector<QgsPoint> quad;
   if ( oriented )

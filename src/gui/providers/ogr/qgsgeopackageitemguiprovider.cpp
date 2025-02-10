@@ -435,7 +435,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
   bool hasError = false;
 
   // Main task
-  std::unique_ptr<QgsTaskWithSerialSubTasks> mainTask( new QgsTaskWithSerialSubTasks( tr( "GeoPackage import" ) ) );
+  auto mainTask = std::make_unique<QgsTaskWithSerialSubTasks>( tr( "GeoPackage import" ) );
   bool hasSubTasks = false;
 
   const auto lst = QgsMimeDataUtils::decodeUriList( data );

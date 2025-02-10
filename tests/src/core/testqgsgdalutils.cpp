@@ -154,7 +154,7 @@ void TestQgsGdalUtils::testCreateSingleBandTiffDataset()
 
   QVERIFY( QFile::exists( filename ) );
 
-  std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( filename, "test", "gdal" ) );
+  auto layer = std::make_unique<QgsRasterLayer>( filename, "test", "gdal" );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->extent(), QgsRectangle( 1, 1, 21, 11 ) );
   QCOMPARE( layer->width(), 40 );
@@ -178,7 +178,7 @@ void TestQgsGdalUtils::testResampleSingleBandRaster()
   QgsGdalUtils::resampleSingleBandRaster( srcDS.get(), dstDS.get(), GRA_NearestNeighbour, nullptr );
   dstDS.reset();
 
-  std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( outputFilename, "test", "gdal" ) );
+  auto layer = std::make_unique<QgsRasterLayer>( outputFilename, "test", "gdal" );
   QVERIFY( layer );
   std::unique_ptr<QgsRasterBlock> block( layer->dataProvider()->block( 1, outputExtent, 2, 2 ) );
   QVERIFY( block );

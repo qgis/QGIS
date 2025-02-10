@@ -1230,7 +1230,7 @@ void QgsAbstractDatabaseProviderConnection::addField( const QgsField &field, con
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  std::unique_ptr<QgsVectorLayer> vl( std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) );
+  auto vl = std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) ;
   if ( ! vl->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
@@ -1255,7 +1255,7 @@ void QgsAbstractDatabaseProviderConnection::renameField( const QString &schema, 
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  std::unique_ptr<QgsVectorLayer> vl( std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) );
+  auto vl = std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) ;
   if ( ! vl->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )

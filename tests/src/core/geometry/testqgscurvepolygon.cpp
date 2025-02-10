@@ -1189,7 +1189,7 @@ void TestQgsCurvePolygon::testBoundingBoxIntersects()
   QgsCurvePolygon poly1;
   QVERIFY( !poly1.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
 
-  std::unique_ptr<QgsCircularString> ext1( new QgsCircularString() );
+  auto ext1 = std::make_unique<QgsCircularString>();
   ext1->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 10, 2 ) << QgsPoint( 0, 18, 3 ) << QgsPoint( -1, 4, 4 ) << QgsPoint( 0, 0, 1 ) );
   poly1.setExteriorRing( ext1.release() );
 
@@ -1200,7 +1200,7 @@ void TestQgsCurvePolygon::testBoundingBoxIntersects()
   QgsCurvePolygon poly2;
   QVERIFY( !poly2.boundingBoxIntersects( QgsBox3D( 1, 3, 1, 6, 9, 2 ) ) );
 
-  std::unique_ptr<QgsCircularString> ext2( new QgsCircularString() );
+  auto ext2 = std::make_unique<QgsCircularString>();
   ext2->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 10, 2 ) << QgsPoint( 0, 18, 3 ) << QgsPoint( -1, 4, 4 ) << QgsPoint( 0, 0, 1 ) );
   poly2.setExteriorRing( ext2.release() );
 

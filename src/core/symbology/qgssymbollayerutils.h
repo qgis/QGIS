@@ -950,6 +950,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
 
     /**
+     * Remove recursively masks from all \a symbol symbol layers
+     * \since QGIS 3.42
+     */
+    static void clearSymbolLayerMasks( QgsSymbol *symbol );
+
+    /**
      * Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified
      * ID.
      *

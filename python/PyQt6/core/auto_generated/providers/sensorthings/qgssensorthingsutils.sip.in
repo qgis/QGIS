@@ -56,9 +56,12 @@ Returns the SensorThings properties which correspond to a specified entity ``typ
 .. versionadded:: 3.38
 %End
 
-    static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
+    static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type, bool includeRangeFieldProxies = true );
 %Docstring
 Returns the fields which correspond to a specified entity ``type``.
+
+Since QGIS 3.42 the ``includeRangeFieldProxies`` argument can be used to hide the "start"/"end" fields
+which are proxies for the date time range field types which are not natively supported in QGIS.
 %End
 
     static QgsFields fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList< Qgis::SensorThingsEntity > &expandedTypes );

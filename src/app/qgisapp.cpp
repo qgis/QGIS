@@ -95,6 +95,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsvectortileutils.h"
 #include "qgsscaleutils.h"
+#include "qgsmaplayerfactory.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -781,9 +782,10 @@ void QgisApp::toggleEventTracing()
 void QgisApp::showGeoreferencer()
 {
   if ( !mGeoreferencer )
+  {
     mGeoreferencer = new QgsGeoreferencerMainWindow( this );
-  mGeoreferencer->show();
-  mGeoreferencer->setFocus();
+  }
+  mGeoreferencer->showGeoreferencer();
 }
 #endif
 
@@ -2447,6 +2449,8 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
     const QgsMimeDataUtils::Uri &u = lst.at( i );
 
     QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
+    bool ok = false;
+    Qgis::LayerType layerType = QgsMapLayerFactory::typeFromString( u.layerType, ok );
 
     if ( u.layerType == QLatin1String( "collection" ) )
     {
@@ -2455,7 +2459,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
       if ( ok )
         addedLayers.append( collectionLayers );
     }
-    else if ( u.layerType == QLatin1String( "vector" ) )
+    else if ( ok && layerType == Qgis::LayerType::Vector )
     {
       const QList<QgsVectorLayer *> layerList { QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey, addToLegend ) };
       for ( QgsVectorLayer *layer : std::as_const( layerList ) )
@@ -2463,7 +2467,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "raster" ) )
+    else if ( ok && layerType == Qgis::LayerType::Raster )
     {
       const QList<QgsRasterLayer *> layerList { QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey, addToLegend ) };
       for ( QgsRasterLayer *layer : std::as_const( layerList ) )
@@ -2471,7 +2475,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "mesh" ) )
+    else if ( ok && layerType == Qgis::LayerType::Mesh )
     {
       const QList<QgsMeshLayer *> layerList { QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey, addToLegend ) };
       for ( QgsMeshLayer *layer : std::as_const( layerList ) )
@@ -2479,17 +2483,17 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "pointcloud" ) )
+    else if ( ok && layerType == Qgis::LayerType::PointCloud )
     {
       if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
-    else if ( u.layerType == QLatin1String( "tiled-scene" ) )
+    else if ( ok && layerType == Qgis::LayerType::TiledScene )
     {
       if ( QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsTiledSceneLayer>( uri, u.name, u.providerKey, addToLegend ) )
         addedLayers << layer;
     }
-    else if ( u.layerType == QLatin1String( "vector-tile" ) )
+    else if ( ok && layerType == Qgis::LayerType::VectorTile )
     {
       QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
@@ -2587,7 +2591,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
         addedLayers << layer;
       }
     }
-    else if ( u.layerType == QLatin1String( "plugin" ) )
+    else if ( ok && layerType == Qgis::LayerType::Plugin )
     {
       QgsMapLayer *layer = QgsAppLayerHandling::addLayer<QgsPluginLayer>( uri, u.name, u.providerKey, addToLegend, false );
       if ( layer )
@@ -2667,7 +2671,7 @@ void QgisApp::dataSourceManager( const QString &pageName, const QString &layerUr
   if ( !mDataSourceManagerDialog )
   {
     mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mBrowserModel, this, mapCanvas() );
-    connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
+    connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh, Qt::ConnectionType::QueuedConnection );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
 
 
@@ -6337,7 +6341,7 @@ bool QgisApp::addProject( const QString &projectFile )
   QWidgetUpdateBlocker layerTreeViewUpdateBlocker( mLayerTreeView );
 
   bool returnCode = false;
-  std::unique_ptr<QgsProjectDirtyBlocker> dirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
+  auto dirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
   QObject connectionScope; // manually control scope of layersChanged lambda connection - we need the connection automatically destroyed when this function finishes
 
   bool badLayersHandled = false;
@@ -6803,7 +6807,7 @@ void QgisApp::openTemplate( const QString &fileName )
   }
 
   //create new layout object
-  std::unique_ptr<QgsPrintLayout> layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
+  auto layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
   bool loadedOk = false;
   layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOk );
   if ( loadedOk )
@@ -8153,7 +8157,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
     }
   };
 
-  auto onFailure = []( int error, const QString &errorMessage ) {
+  auto onFailure = []( int error, const QString &errorMessage, const QString & ) {
     if ( error != QgsVectorFileWriter::Canceled )
     {
       QgsMessageViewer *m = new QgsMessageViewer( nullptr );
@@ -8328,12 +8332,12 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     this->visibleMessageBar()->pushMessage( tr( "Layer Exported" ), tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
   };
 
-  auto onFailure = []( int error, const QString &errorMessage ) {
+  auto onFailure = []( int error, const QString &errorMessage, const QString &fileName ) {
     if ( error != QgsVectorFileWriter::Canceled )
     {
       QgsMessageViewer *m = new QgsMessageViewer( nullptr );
       m->setWindowTitle( tr( "Save Error" ) );
-      m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
+      m->setMessageAsPlainText( tr( "Export to vector file %1 failed.\nError: %2" ).arg( fileName, errorMessage ) );
       m->exec();
     }
   };
@@ -8341,7 +8345,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
   return saveAsVectorFileGeneral( vlayer, symbologyOption, onlySelected, defaultToAddToMap, onSuccess, onFailure );
 }
 
-QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess, const std::function<void( int, const QString & )> &onFailure, QgsVectorLayerSaveAsDialog::Options options, const QString &dialogTitle )
+QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess, const std::function<void( int, const QString &, const QString & )> &onFailure, QgsVectorLayerSaveAsDialog::Options options, const QString &dialogTitle )
 {
   QgsCoordinateReferenceSystem destCRS;
 
@@ -8437,8 +8441,8 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     } );
 
     // when an error occurs:
-    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [onFailure]( int error, const QString &errorMessage ) {
-      onFailure( error, errorMessage );
+    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [onFailure, vectorFilename]( int error, const QString &errorMessage ) {
+      onFailure( error, errorMessage, vectorFilename );
     } );
 
     QgsApplication::taskManager()->addTask( writerTask );
@@ -8881,7 +8885,7 @@ QgsLayoutDesignerDialog *QgisApp::createNewReport( QString title )
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
   //create new report
-  std::unique_ptr<QgsReport> report = std::make_unique<QgsReport>( QgsProject::instance() );
+  auto report = std::make_unique<QgsReport>( QgsProject::instance() );
   report->setName( title );
   QgsMasterLayoutInterface *layout = report.get();
   QgsProject::instance()->layoutManager()->addLayout( report.release() );
@@ -10386,10 +10390,10 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
     for ( int idx = 0; idx < layer->fields().count() && idx < it->attributeCount(); ++idx )
     {
       QVariant attr = it->attribute( idx );
-      if ( layer->fields().at( idx ).convertCompatible( attr ) )
-      {
-        it->setAttribute( idx, attr );
-      }
+      //if convertCompatible fails, it will replace attr with an appropriate null QVariant
+      //so we're calling setAttribute regardless, covering cases like 'Autogenerate' or 'nextVal()' on int fields.
+      layer->fields().at( idx ).convertCompatible( attr );
+      it->setAttribute( idx, attr );
     }
   }
 
@@ -13155,7 +13159,7 @@ void QgisApp::initLayouts()
   auto createRubberBand = ( []( QgsLayoutView *view ) -> QgsLayoutViewRubberBand * {
     return new QgsLayoutViewRectangularRubberBand( view );
   } );
-  std::unique_ptr<QgsLayoutItemGuiMetadata> map3dMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
+  auto map3dMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
     QgsLayoutItemRegistry::Layout3DMap, tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
     [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
       return new QgsLayout3DMapWidget( qobject_cast<QgsLayoutItem3DMap *>( item ) );
@@ -16685,6 +16689,13 @@ void QgisApp::masterPasswordSetup()
   connect( QgsApplication::authManager(), &QgsAuthManager::messageLog, this, &QgisApp::authMessageLog );
   connect( QgsApplication::authManager(), &QgsAuthManager::passwordHelperMessageLog, this, &QgisApp::authMessageLog );
   connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseEraseRequested, this, &QgisApp::eraseAuthenticationDatabase );
+
+  if ( QgsAuthManager::settingsGenerateRandomPasswordForPasswordHelper->value()
+       && !QgsApplication::authManager()->masterPasswordHashInDatabase() && QgsApplication::authManager()->passwordHelperEnabled() )
+  {
+    // if no master password set by user yet, just generate a new one and store it in the system keychain
+    QgsApplication::authManager()->createAndStoreRandomMasterPasswordInKeyChain();
+  }
 }
 
 void QgisApp::eraseAuthenticationDatabase()

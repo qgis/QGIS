@@ -46,7 +46,7 @@ QgsTiledSceneRendererWidget *QgsTiledSceneTextureRendererWidget::create( QgsTile
 
 QgsTiledSceneRenderer *QgsTiledSceneTextureRendererWidget::renderer()
 {
-  std::unique_ptr<QgsTiledSceneTextureRenderer> renderer = std::make_unique<QgsTiledSceneTextureRenderer>();
+  auto renderer = std::make_unique<QgsTiledSceneTextureRenderer>();
   renderer->setFillSymbol( mFillSymbolButton->clonedSymbol<QgsFillSymbol>() );
 
   return renderer.release();

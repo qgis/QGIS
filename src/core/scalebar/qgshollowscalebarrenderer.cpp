@@ -178,8 +178,8 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
 bool QgsHollowScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &settings ) const
 {
   // null the fill symbols by default
-  std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
-  std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+  auto fillSymbol = std::make_unique< QgsFillSymbol >();
+  auto fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
   fillSymbolLayer->setColor( QColor( 0, 0, 0 ) );
   fillSymbolLayer->setBrushStyle( Qt::NoBrush );
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
@@ -193,6 +193,3 @@ bool QgsHollowScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &setti
 
   return true;
 }
-
-
-

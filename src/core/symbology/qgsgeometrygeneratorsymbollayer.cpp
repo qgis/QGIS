@@ -416,7 +416,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       case Qgis::GeometryType::Polygon:
       {
         std::unique_ptr < QgsLineString > exterior( QgsLineString::fromQPolygonF( *points ) );
-        std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+        auto polygon = std::make_unique< QgsPolygon >();
         polygon->setExteriorRing( exterior.release() );
         if ( rings )
         {

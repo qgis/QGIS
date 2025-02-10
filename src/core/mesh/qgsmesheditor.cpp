@@ -170,7 +170,7 @@ bool QgsMeshEditor::isFaceGeometricallyCompatible( const QList<int> &vertexIndex
     const QgsPoint &vertex = vertices[i];
     ring.append( vertex );
   }
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  auto polygon = std::make_unique< QgsPolygon >();
   polygon->setExteriorRing( new QgsLineString( ring ) );
   const QgsGeometry newFaceGeom( polygon.release() );
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( newFaceGeom.constGet() ) );

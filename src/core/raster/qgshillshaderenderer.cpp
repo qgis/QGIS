@@ -99,7 +99,7 @@ void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem 
 QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput )
   {
     QgsDebugError( QStringLiteral( "No input raster!" ) );
@@ -238,7 +238,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       // Buffer scanlines, 1px height, 2px wider
       // Data type for input is Float32 (4 bytes)
       // keep only three scanlines in memory at a time, make room for initial and final nodata
-      std::unique_ptr<QgsRasterBlock> scanLine = std::make_unique<QgsRasterBlock>( inputBlock->dataType(), scanLineWidth, 1 );
+      auto scanLine = std::make_unique<QgsRasterBlock>( inputBlock->dataType(), scanLineWidth, 1 );
       // Note: output block is not 2px wider and it is an image
       // Prepare context and queue
       cl::Context ctx = QgsOpenClUtils::context();

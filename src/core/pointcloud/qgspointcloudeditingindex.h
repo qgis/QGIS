@@ -50,6 +50,9 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     bool hasNode( const QgsPointCloudNodeId &n ) const override;
     QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
 
+    bool setSubsetString( const QString &subset ) override;
+    QString subsetString() const override;
+
     std::unique_ptr< QgsPointCloudBlock > nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
 

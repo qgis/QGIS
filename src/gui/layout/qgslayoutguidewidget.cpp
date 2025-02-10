@@ -68,13 +68,13 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
 {
-  std::unique_ptr<QgsLayoutGuide> newGuide( new QgsLayoutGuide( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  auto newGuide = std::make_unique<QgsLayoutGuide>( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 
 void QgsLayoutGuideWidget::addVerticalGuide()
 {
-  std::unique_ptr<QgsLayoutGuide> newGuide( new QgsLayoutGuide( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  auto newGuide = std::make_unique<QgsLayoutGuide>( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 

@@ -6,7 +6,7 @@ set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.27")
+if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.27")
   # include(Dart) still used, as is the "Experimental" target
   cmake_policy(SET CMP0145 OLD)
 endif()
@@ -435,6 +435,10 @@ if(WITH_CORE)
   # required
   find_package(Proj REQUIRED)
   message(STATUS "Found Proj: ${PROJ_VERSION} ${PROJ_DIR}")
+  if(PROJ_VERSION VERSION_LESS "8.1")
+    message(FATAL_ERROR "Cannot build QGIS using Proj older than 8.1")
+  endif()
+
   find_package(GEOS REQUIRED)
   message(STATUS "Found Geos: ${GEOS_VERSION} ${GEOS_DIR}")
   find_package(GDAL REQUIRED)
@@ -691,8 +695,10 @@ if (ENABLE_TESTS)
   set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
   set(QT_USE_QTTEST TRUE)
   enable_testing()
-  # Adds some testing specific build targets e.g. make Experimental
-  include(Dart)
+  if (PUSH_TO_CDASH)
+    # Adds some testing specific build targets e.g. make Experimental
+    include(Dart)
+  endif()
   # Additional test configuration options e.g. max upload size of test report
   configure_file(
     "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"

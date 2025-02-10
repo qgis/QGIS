@@ -567,6 +567,47 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             "$expand=Things($orderby=id;$top=3;$expand=Datastreams($orderby=description;$top=30;$expand=ObservedProperty($orderby=name)))",
         )
 
+    def test_fields_for_entity_type(self):
+        """
+        Test calculating fields for an entity type.
+        """
+        fields = QgsSensorThingsUtils.fieldsForEntityType(
+            Qgis.SensorThingsEntity.Datastream
+        )
+        self.assertEqual(
+            [field.name() for field in fields],
+            [
+                "id",
+                "selfLink",
+                "name",
+                "description",
+                "unitOfMeasurement",
+                "observationType",
+                "properties",
+                "phenomenonTimeStart",
+                "phenomenonTimeEnd",
+                "resultTimeStart",
+                "resultTimeEnd",
+            ],
+        )
+
+        # hide proxy fields for missing interval field type
+        fields = QgsSensorThingsUtils.fieldsForEntityType(
+            Qgis.SensorThingsEntity.Datastream, False
+        )
+        self.assertEqual(
+            [field.name() for field in fields],
+            [
+                "id",
+                "selfLink",
+                "name",
+                "description",
+                "unitOfMeasurement",
+                "observationType",
+                "properties",
+            ],
+        )
+
     def test_fields_for_expanded_entity(self):
         """
         Test calculating fields for an expanded entity
@@ -636,6 +677,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             [
                 Qgis.SensorThingsEntity.HistoricalLocation,
                 Qgis.SensorThingsEntity.Datastream,
+                Qgis.SensorThingsEntity.MultiDatastream,
             ],
         )
 
@@ -2584,7 +2626,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
                     )
 
             vl = QgsVectorLayer(
-                f"url='http://{endpoint}' pageSize=2 type=PointZ entity='Datastream'",
+                f"url='http://{endpoint}' pageSize=2 type=NoGeometry entity='Datastream'",
                 "test",
                 "sensorthings",
             )

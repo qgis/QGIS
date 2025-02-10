@@ -729,7 +729,7 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
   QgsChunkNode *node = job->chunk();
   disconnect( job, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
 
-  if ( qobject_cast<QgsChunkLoader *>( job ) )
+  if ( node->state() == QgsChunkNode::Loading )
   {
     // return node back to skeleton
     node->cancelLoading();
@@ -737,12 +737,16 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
     QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
     QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
   }
-  else
+  else if ( node->state() == QgsChunkNode::Updating )
   {
     // return node back to loaded state
     node->cancelUpdating();
 
     QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
+  }
+  else
+  {
+    Q_ASSERT( false );
   }
 
   job->cancel();

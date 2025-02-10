@@ -631,7 +631,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   if ( fi.suffix().compare( QLatin1String( "dxf" ), Qt::CaseInsensitive ) == 0 )
   {
     //loads dxf
-    std::unique_ptr<dxfRW> dxf( new dxfRW( drawing.toLocal8Bit() ) );
+    auto dxf = std::make_unique<dxfRW>( drawing.toLocal8Bit() );
     if ( !dxf->read( this, true ) )
     {
       result = DRW::BAD_UNKNOWN;
@@ -640,7 +640,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   else if ( fi.suffix().compare( QLatin1String( "dwg" ), Qt::CaseInsensitive ) == 0 )
   {
     //loads dwg
-    std::unique_ptr<dwgR> dwg( new dwgR( drawing.toLocal8Bit() ) );
+    auto dwg = std::make_unique<dwgR>( drawing.toLocal8Bit() );
     if ( !dwg->read( this, true ) )
     {
       result = dwg->getError();

@@ -291,7 +291,7 @@ void TestQgsInterpolator::dualEdge()
 
 void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
 {
-  std::unique_ptr<QgsVectorLayer> mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
+  auto mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
 
   const QString wkt1 = "PointZ (0.0 0.0 1.0)";
   const QString wkt2 = "PointZ (2.0 0.0 2.0)";
@@ -360,7 +360,7 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
 
 void TestQgsInterpolator::TIN_IDW_Interpolator_with_attribute()
 {
-  std::unique_ptr<QgsVectorLayer> mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=ZValue:real" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
+  auto mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=ZValue:real" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
 
   QVERIFY( mLayerPoint->fields().field( "ZValue" ).type() == QMetaType::Type::Double );
 

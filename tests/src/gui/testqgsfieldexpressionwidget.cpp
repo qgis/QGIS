@@ -139,7 +139,7 @@ void TestQgsFieldExpressionWidget::asExpression()
   layer->updateFields();
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  auto widget = std::make_unique<QgsFieldExpressionWidget>();
   widget->setLayer( layer );
 
   const QSignalSpy spy( widget.get(), static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ) );
@@ -230,7 +230,7 @@ void TestQgsFieldExpressionWidget::testIsValid()
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=name%20with%20space:string" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  auto widget = std::make_unique<QgsFieldExpressionWidget>();
   widget->setLayer( layer );
 
   // also check the fieldChanged signal to ensure that the emitted bool isValid value is correct
@@ -287,7 +287,7 @@ void TestQgsFieldExpressionWidget::testFilters()
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  auto widget = std::make_unique<QgsFieldExpressionWidget>();
   widget->setLayer( layer );
 
   QCOMPARE( widget->mCombo->count(), 10 );
@@ -355,7 +355,7 @@ void TestQgsFieldExpressionWidget::setNull()
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  auto widget = std::make_unique<QgsFieldExpressionWidget>();
   widget->setLayer( layer );
 
   widget->setField( QString() );

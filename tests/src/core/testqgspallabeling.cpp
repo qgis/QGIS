@@ -209,7 +209,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   settings.geometryGeneratorType = Qgis::GeometryType::Point;
   settings.geometryGenerator = "translate($geometry, 1, 0)";
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
@@ -280,7 +280,7 @@ void TestQgsPalLabeling::testPolygonWithEmptyRing()
 
   settings.placement = Qgis::LabelPlacement::OverPoint;
 
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 

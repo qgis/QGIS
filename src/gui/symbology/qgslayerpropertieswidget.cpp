@@ -350,21 +350,21 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
       {
         case Qgis::SymbolType::Marker:
         {
-          std::unique_ptr<QgsMarkerSymbol> markerSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
+          auto markerSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Marker );
           generator->setSubSymbol( markerSymbol.release() );
           break;
         }
         case Qgis::SymbolType::Line:
         {
-          std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
+          auto lineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Line );
           generator->setSubSymbol( lineSymbol.release() );
           break;
         }
         case Qgis::SymbolType::Fill:
         {
-          std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
+          auto fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Fill );
           generator->setSubSymbol( fillSymbol.release() );
           break;

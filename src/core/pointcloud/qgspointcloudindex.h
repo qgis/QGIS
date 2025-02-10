@@ -119,7 +119,7 @@ class CORE_EXPORT QgsPointCloudCacheKey
 {
   public:
     //! Ctor
-    QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri );
+    QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QString &subset, const QString &uri );
 
     bool operator==( const QgsPointCloudCacheKey &other ) const;
 
@@ -132,14 +132,14 @@ class CORE_EXPORT QgsPointCloudCacheKey
     //! Returns the key's QgsPointCloudRequest
     QgsPointCloudRequest request() const { return mRequest; }
 
-    //! Returns the key's QgsPointCloudExpression
-    QgsPointCloudExpression filterExpression() const { return mFilterExpression; }
+    //! Returns the key's subset string. This is used in the point cloud index as a filter expression
+    QString subsetString() const { return mSubsetString; }
 
   private:
     QgsPointCloudNodeId mNode;
     QString mUri;
     QgsPointCloudRequest mRequest;
-    QgsPointCloudExpression mFilterExpression;
+    QString mSubsetString;
 };
 
 //! Hash function for QgsPointCloudCacheKey
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      * \returns true if the expression is parsed with no errors, false otherwise
      * \since QGIS 3.26
      */
-    bool setSubsetString( const QString &subset );
+    virtual bool setSubsetString( const QString &subset );
 
     /**
      * Returns the string used to define a subset of the point cloud.
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      *
      * \since QGIS 3.26
      */
-    QString subsetString() const;
+    virtual QString subsetString() const;
 
     /**
      * Copies common properties to the \a destination index

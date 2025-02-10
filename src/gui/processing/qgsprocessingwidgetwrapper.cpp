@@ -234,7 +234,7 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
       QString description = mParameterDefinition->description();
       if ( parameterDefinition()->flags() & Qgis::ProcessingParameterFlag::Optional )
         description = QObject::tr( "%1 [optional]" ).arg( description );
-      std::unique_ptr<QLabel> label = std::make_unique<QLabel>( description );
+      auto label = std::make_unique<QLabel>( description );
       label->setToolTip( mParameterDefinition->toolTip() );
       label->setWordWrap( true );
       return label.release();
@@ -287,7 +287,7 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
   QgsExpressionContext context = QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
   if ( mParameterDefinition && !mParameterDefinition->additionalExpressionContextVariables().isEmpty() )
   {
-    std::unique_ptr<QgsExpressionContextScope> paramScope = std::make_unique<QgsExpressionContextScope>();
+    auto paramScope = std::make_unique<QgsExpressionContextScope>();
     const QStringList additional = mParameterDefinition->additionalExpressionContextVariables();
     for ( const QString &var : additional )
     {
@@ -365,7 +365,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
 
 QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
 {
-  std::unique_ptr<QgsProcessingModelerParameterWidget> widget = std::make_unique<QgsProcessingModelerParameterWidget>( model, childId, parameter, context );
+  auto widget = std::make_unique<QgsProcessingModelerParameterWidget>( model, childId, parameter, context );
   widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes( parameter ) );
   widget->setExpressionHelpText( modelerExpressionFormatString() );
 

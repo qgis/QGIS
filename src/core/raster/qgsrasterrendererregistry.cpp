@@ -250,7 +250,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       return nullptr;
   }
 
-  std::unique_ptr< QgsRasterTransparency > tr = std::make_unique< QgsRasterTransparency >();
+  auto tr = std::make_unique< QgsRasterTransparency >();
   const int bandCount = renderer->usesBands().size();
   if ( bandCount == 1 )
   {

@@ -1012,15 +1012,15 @@ void QgsVectorLayerProfileGenerator::processIntersectionCurve( const QgsLineStri
   // create geometries from vector data
   if ( mExtrusionEnabled )
   {
-    std::unique_ptr< QgsLineString > ring = std::make_unique< QgsLineString >( newX, newY, newZ );
-    std::unique_ptr< QgsLineString > extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
+    auto ring = std::make_unique< QgsLineString >( newX, newY, newZ );
+    auto extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
     std::unique_ptr< QgsLineString > reversedExtrusion( extrudedRing->reversed() );
     ring->append( reversedExtrusion.get() );
     ring->close();
     resultFeature.geometry = QgsGeometry( new QgsPolygon( ring.release() ) );
 
-    std::unique_ptr< QgsLineString > distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
-    std::unique_ptr< QgsLineString > extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
+    auto distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
+    auto extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
     std::unique_ptr< QgsLineString > reversedDistanceVHeightExtrusion( extrudedDistanceVHeightRing->reversed() );
     distanceVHeightRing->append( reversedDistanceVHeightExtrusion.get() );
     distanceVHeightRing->close();
@@ -1227,15 +1227,15 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsP
 
   if ( mExtrusionEnabled )
   {
-    std::unique_ptr< QgsLineString > ring = std::make_unique< QgsLineString >( newX, newY, newZ );
-    std::unique_ptr< QgsLineString > extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
+    auto ring = std::make_unique< QgsLineString >( newX, newY, newZ );
+    auto extrudedRing = std::make_unique< QgsLineString >( newX, newY, extrudedZ );
     std::unique_ptr< QgsLineString > reversedExtrusion( extrudedRing->reversed() );
     ring->append( reversedExtrusion.get() );
     ring->close();
     transformedParts.append( QgsGeometry( new QgsPolygon( ring.release() ) ) );
 
-    std::unique_ptr< QgsLineString > distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
-    std::unique_ptr< QgsLineString > extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
+    auto distanceVHeightRing = std::make_unique< QgsLineString >( newDistance, newZ );
+    auto extrudedDistanceVHeightRing = std::make_unique< QgsLineString >( newDistance, extrudedZ );
     std::unique_ptr< QgsLineString > reversedDistanceVHeightExtrusion( extrudedDistanceVHeightRing->reversed() );
     distanceVHeightRing->append( reversedDistanceVHeightExtrusion.get() );
     distanceVHeightRing->close();
@@ -1461,7 +1461,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
       if ( clampedPolygon->numInteriorRings() == 0 && clampedPolygon->exteriorRing() && clampedPolygon->exteriorRing()->numPoints() == 4 && clampedPolygon->exteriorRing()->isClosed() )
       {
         // special case -- polygon is already a triangle, so no need to tessellate
-        std::unique_ptr< QgsMultiPolygon > multiPolygon = std::make_unique< QgsMultiPolygon >();
+        auto multiPolygon = std::make_unique< QgsMultiPolygon >();
         multiPolygon->addGeometry( clampedPolygon.release() );
         tessellation = QgsGeometry( std::move( multiPolygon ) );
       }

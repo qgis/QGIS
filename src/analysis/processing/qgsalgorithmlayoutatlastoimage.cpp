@@ -79,7 +79,7 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "FOLDER" ), QObject::tr( "Output folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );
 
 
-  std::unique_ptr<QgsProcessingParameterMultipleLayers> layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
+  auto layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
@@ -91,23 +91,23 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
       continue;
     imageFormats << QString( format );
   }
-  std::unique_ptr<QgsProcessingParameterEnum> extensionParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( QLatin1String( "png" ) ) );
+  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( QLatin1String( "png" ) ) );
   extensionParam->setFlags( extensionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extensionParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> dpiParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterBoolean> appendGeorefParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Generate world file" ), true );
+  auto appendGeorefParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Generate world file" ), true );
   appendGeorefParam->setFlags( appendGeorefParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( appendGeorefParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterBoolean> exportRDFParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
+  auto exportRDFParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
   exportRDFParam->setFlags( exportRDFParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( exportRDFParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterBoolean> antialias = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true );
+  auto antialias = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true );
   antialias->setFlags( antialias->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( antialias.release() );
 }

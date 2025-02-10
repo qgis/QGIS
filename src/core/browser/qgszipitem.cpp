@@ -179,7 +179,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   if ( !QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     return nullptr;
 
-  std::unique_ptr< QgsZipItem > zipItem = std::make_unique< QgsZipItem >( parent, name, filePath, path );
+  auto zipItem = std::make_unique< QgsZipItem >( parent, name, filePath, path );
   // force populate zipItem if it has less than 10 items and is not a .tgz or .tar.gz file (slow loading)
   // for other items populating will be delayed until item is opened
   // this might be polluting the tree with empty items but is necessary for performance reasons

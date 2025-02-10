@@ -66,7 +66,7 @@ QgsBox3D QgsTiledSceneBoundingVolume::bounds( const QgsCoordinateTransform &tran
 
 QgsAbstractGeometry *QgsTiledSceneBoundingVolume::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  auto polygon = std::make_unique< QgsPolygon >();
 
   const QVector< QgsVector3D > corners = mBox.corners();
   QVector< double > x;
@@ -88,7 +88,7 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolume::as2DGeometry( const QgsCoordin
     transform.transformInPlace( x, y, z, direction );
   }
 
-  std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
+  auto mp = std::make_unique< QgsMultiPoint >( x, y );
   QgsGeos geosMp( mp.get() );
   return geosMp.convexHull();
 }

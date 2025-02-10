@@ -224,6 +224,15 @@ bool QgsVectorTileLayerRenderer::render()
       mErrors.append( asyncLoader->error() );
   }
 
+  // Register labels features when all tiles are fetched to ensure consistent labeling
+  if ( mLabelProvider )
+  {
+    for ( const auto &tile : mTileDataMap )
+    {
+      mLabelProvider->registerTileFeatures( tile, ctx );
+    }
+  }
+
   if ( ctx.flags() & Qgis::RenderContextFlag::DrawSelection )
     mRenderer->renderSelectedFeatures( mSelectedFeatures, ctx );
 
@@ -309,8 +318,9 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     mTotalDrawTime += tDraw.elapsed();
   }
 
+  // Store tile for later use
   if ( mLabelProvider )
-    mLabelProvider->registerTileFeatures( tile, ctx );
+    mTileDataMap.insert( tile.id().toString(), tile );
 
   if ( mDrawTileBoundaries )
   {

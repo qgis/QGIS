@@ -71,7 +71,11 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mExpansionsTable, &QTableView::clicked, this, [this]( const QModelIndex &index ) {
     if ( index.column() == QgsSensorThingsExpansionsModel::Column::Actions )
     {
-      mExpansionsModel->removeRows( index.row(), 1 );
+      // only the bottom expansion (or empty rows) can be removed - otherwise we end up with inconsistent expansions!
+      if ( mExpansionsModel->canRemoveRow( index.row() ) )
+      {
+        mExpansionsModel->removeRows( index.row(), 1 );
+      }
     }
   } );
 
@@ -380,6 +384,7 @@ void QgsSensorThingsSourceWidget::setCurrentEntityType( Qgis::SensorThingsEntity
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPoint ), tr( "Multipoint" ), QVariant::fromValue( Qgis::WkbType::MultiPoint ) );
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiLineString ), tr( "Line" ), QVariant::fromValue( Qgis::WkbType::MultiLineString ) );
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "Polygon" ), QVariant::fromValue( Qgis::WkbType::MultiPolygon ) );
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::NoGeometry ), tr( "No Geometry" ), QVariant::fromValue( Qgis::WkbType::NoGeometry ) );
     setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
   }
   else if ( geometryTypeForEntity == Qgis::GeometryType::Null && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::NoGeometry ) ) < 0 )
@@ -722,6 +727,25 @@ bool QgsSensorThingsExpansionsModel::insertRows( int position, int rows, const Q
   return true;
 }
 
+bool QgsSensorThingsExpansionsModel::canRemoveRow( int row ) const
+{
+  if ( row >= mExpansions.size() )
+    return true;
+
+  for ( int i = mExpansions.size() - 1; i >= 0; --i )
+  {
+    if ( row == i && mExpansions.at( i ).isValid() )
+      return true;
+
+    // when we hit the first valid expansion from the end of the list, then
+    // any earlier rows CANNOT be removed
+    if ( mExpansions.at( i ).isValid() )
+      return false;
+  }
+
+  return false;
+}
+
 bool QgsSensorThingsExpansionsModel::removeRows( int position, int rows, const QModelIndex &parent )
 {
   Q_UNUSED( parent )
@@ -774,6 +798,7 @@ QWidget *QgsSensorThingsExpansionsDelegate::createEditor( QWidget *parent, const
                                                                    : index.model()->data( index.model()->index( index.row() - 1, 0 ), Qt::EditRole ).value<Qgis::SensorThingsEntity>();
 
       QList<Qgis::SensorThingsEntity> compatibleEntities = QgsSensorThingsUtils::expandableTargets( entityType );
+      compatibleEntities.removeAll( mBaseEntityType );
       // remove all entities which are already part of the expansion in previous rows -- we don't support "circular" expansion
       for ( int row = index.row() - 1; row >= 0; row-- )
       {
@@ -956,19 +981,25 @@ void QgsSensorThingsRemoveExpansionDelegate::paint( QPainter *painter, const QSt
 {
   QStyledItemDelegate::paint( painter, option, index );
 
-  if ( index == mHoveredIndex )
+  if ( const QgsSensorThingsExpansionsModel *model = qobject_cast< const QgsSensorThingsExpansionsModel * >( index.model() ) )
   {
-    QStyleOptionButton buttonOption;
-    buttonOption.initFrom( option.widget );
-    buttonOption.rect = option.rect;
+    if ( model->canRemoveRow( index.row() ) )
+    {
+      if ( index == mHoveredIndex )
+      {
+        QStyleOptionButton buttonOption;
+        buttonOption.initFrom( option.widget );
+        buttonOption.rect = option.rect;
 
-    option.widget->style()->drawControl( QStyle::CE_PushButton, &buttonOption, painter );
+        option.widget->style()->drawControl( QStyle::CE_PushButton, &buttonOption, painter );
+      }
+
+      const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
+      const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
+
+      icon.paint( painter, iconRect );
+    }
   }
-
-  const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
-  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
-
-  icon.paint( painter, iconRect );
 }
 
 void QgsSensorThingsRemoveExpansionDelegate::setHoveredIndex( const QModelIndex &index )
@@ -1007,7 +1038,7 @@ QString QgsSensorThingsFilterWidget::filter() const
 
 void QgsSensorThingsFilterWidget::setQuery()
 {
-  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mEntity );
+  const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mEntity, false );
   QgsSensorThingsSubsetEditor editor( nullptr, fields, this );
   editor.setSubsetString( mFilter );
   if ( editor.exec() )

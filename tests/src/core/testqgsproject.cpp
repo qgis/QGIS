@@ -991,7 +991,7 @@ void TestQgsProject::testEmbeddedGroupWithJoins()
 
 void TestQgsProject::testAsynchronousLayerLoading()
 {
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
+  auto project = std::make_unique<QgsProject>();
 
   QStringList meshFilters;
   meshFilters << QStringLiteral( "*.nc" ) << QStringLiteral( "*.2dm" );
@@ -1185,8 +1185,8 @@ void TestQgsProject::testSymlinks1LayerRasterChange()
   QVERIFY( QFile::link( dataDir + "/" + rasters[0], projectDir + "/latest.tif" ) );
 
   // Create project with layer pointing to symlink
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
-  std::unique_ptr<QgsRasterLayer> layer = std::make_unique<QgsRasterLayer>( "./latest.tif", QStringLiteral( "Latest" ), QStringLiteral( "gdal" ) );
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsRasterLayer>( "./latest.tif", QStringLiteral( "Latest" ), QStringLiteral( "gdal" ) );
   project->addMapLayer( layer.release() );
   project->write( projectPath );
   project.reset();
@@ -1244,8 +1244,8 @@ void TestQgsProject::testSymlinks2LayerFolder()
   QVERIFY( QFile::link( dataDir, projectDir + "/data" ) );
 
   // Create project with relative layer
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( "./data/points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./data/points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
   project->addMapLayer( layer.release() );
   project->write( projectPath );
   project.reset();
@@ -1287,8 +1287,8 @@ void TestQgsProject::testSymlinks3LayerShapefile()
   }
 
   // Create project with relative layer
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
   project->addMapLayer( layer.release() );
   project->write( projectPath );
   project.reset();
@@ -1360,7 +1360,7 @@ void TestQgsProject::testSymlinks4LayerShapefileBroken()
 
   // ++Verify that layer creation follows the (broken) symlink++
   // Create memory layer with single point
-  std::unique_ptr<QgsVectorLayer> memLayer = std::make_unique<QgsVectorLayer>( "Point", QStringLiteral( "Points" ), QStringLiteral( "memory" ) );
+  auto memLayer = std::make_unique<QgsVectorLayer>( "Point", QStringLiteral( "Points" ), QStringLiteral( "memory" ) );
   QgsFeature feat( memLayer->fields() );
   feat.setGeometry( QgsGeometry::fromWkt( "POINT(1 2)" ) );
   memLayer->startEditing();
@@ -1373,8 +1373,8 @@ void TestQgsProject::testSymlinks4LayerShapefileBroken()
   QgsVectorFileWriter::writeAsVectorFormatV3( memLayer.get(), projectDir + "/points.shp", QgsCoordinateTransformContext(), options );
 
   // Create project with the layer
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
   project->addMapLayer( layer.release() );
   project->write( projectPath );
   project.reset();
@@ -1424,8 +1424,8 @@ void TestQgsProject::testSymlinks5ProjectFile()
   // Create initial project in project dir
   const QString originalPath = projectDir + "/project.qgs";
   const QString originalAttachPath = projectDir + "/project_attachments.zip";
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
   project->addMapLayer( layer.release() );
   project->write( originalPath );
   project.reset();
@@ -1507,8 +1507,8 @@ void TestQgsProject::testSymlinks6ProjectFolder()
 
   // Create initial project in project dir
   const QString originalPath = projectDir + "/project.qgs";
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
   project->addMapLayer( layer.release() );
   project->write( originalPath );
   project.reset();
@@ -1576,10 +1576,10 @@ void TestQgsProject::regression60100()
 
   // Create a new/empty project in PROJDIR
   const QString projectPath = projDirPath + QStringLiteral( "/project.qgs" );
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
+  auto project = std::make_unique<QgsProject>();
 
   // Add the local points.geojson (in PROJDIR) as a layer
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>(
+  auto layer = std::make_unique<QgsVectorLayer>(
     projDirPath + QStringLiteral( "/points.geojson" ),
     QStringLiteral( "Test Points" ),
     QStringLiteral( "ogr" )

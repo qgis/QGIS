@@ -34,7 +34,7 @@ QString QgsClassificationQuantile::id() const
 
 std::unique_ptr<QgsClassificationMethod> QgsClassificationQuantile::clone() const
 {
-  std::unique_ptr<QgsClassificationQuantile > c = std::make_unique< QgsClassificationQuantile >();
+  auto c = std::make_unique< QgsClassificationQuantile >();
   copyBase( c.get() );
   return c;
 }

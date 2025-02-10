@@ -134,7 +134,7 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   // TODO: Rounding?
   mSpan = mRootBounds.width() / mCopcInfoVlr.spacing;
 
-#ifdef QGIS_DEBUG
+#ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
   QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
   QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
@@ -166,7 +166,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
     // we need to create a copy of the expression to pass to the decoder
     // as the same QgsPointCloudExpression object mighgt be concurrently
     // used on another thread, for example in a 3d view
-    QgsPointCloudExpression filterExpression = mFilterExpression;
+    QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
     QgsPointCloudAttributeCollection requestAttributes = request.attributes();
     requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
@@ -221,7 +221,7 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object might be concurrently
   // used on another thread, for example in a 3d view
-  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
   auto [ blockOffset, blockSize ] = mHierarchyNodePos.value( n );

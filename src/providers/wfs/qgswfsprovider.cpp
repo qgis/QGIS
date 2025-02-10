@@ -1732,7 +1732,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     CSLDestroy( papszOpenOptions );
   };
 
-  std::unique_ptr<_DownloaderThread> downloaderThread = std::make_unique<_DownloaderThread>( downloaderLambda );
+  auto downloaderThread = std::make_unique<_DownloaderThread>( downloaderLambda );
   downloaderThread->start();
 
   QTimer timerForHits;

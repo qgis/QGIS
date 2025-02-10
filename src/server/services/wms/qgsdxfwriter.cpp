@@ -37,7 +37,7 @@ namespace QgsWms
     QgsRenderer renderer( context );
 
     //Layer settings need to be kept until QgsDxfExport::writeToFile has finished
-    std::unique_ptr<QgsWmsRestorer> restorer = std::make_unique<QgsWmsRestorer>( context );
+    auto restorer = std::make_unique<QgsWmsRestorer>( context );
     restorer.reset( new QgsWmsRestorer( context ) );
 
     std::unique_ptr<QgsDxfExport> dxf = renderer.getDxf();

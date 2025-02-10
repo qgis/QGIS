@@ -193,7 +193,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
 
 std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, CurvedTextFlags flags, double maxConcaveAngle, double maxConvexAngle, bool isSecondAttempt )
 {
-  std::unique_ptr< CurvePlacementProperties > output = std::make_unique< CurvePlacementProperties >();
+  auto output = std::make_unique< CurvePlacementProperties >();
   output->graphemePlacement.reserve( metrics.count() );
 
   double offsetAlongSegment = offsetAlongLine;

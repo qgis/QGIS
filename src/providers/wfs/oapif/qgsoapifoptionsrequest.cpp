@@ -17,7 +17,7 @@
 #include "moc_qgsoapifoptionsrequest.cpp"
 
 QgsOapifOptionsRequest::QgsOapifOptionsRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
 {
 }
 

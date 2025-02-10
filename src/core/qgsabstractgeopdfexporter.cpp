@@ -408,7 +408,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
 
   auto createGroup = [&details, &groupNameToTreeNode]( const QString & groupName ) -> std::unique_ptr< TreeNode >
   {
-    std::unique_ptr< TreeNode > group = std::make_unique< TreeNode >();
+    auto group = std::make_unique< TreeNode >();
     const QString id = QUuid::createUuid().toString();
     group->id = id;
     groupNameToTreeNode[ groupName ] = group.get();
@@ -426,7 +426,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     {
       const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
 
-      std::unique_ptr< TreeNode > layer = std::make_unique< TreeNode >();
+      auto layer = std::make_unique< TreeNode >();
       layer->id = destinationGroup.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( destinationGroup, component.mapLayerId );
       layer->name = details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name;
       layer->initiallyVisible = details.initialLayerVisibility.value( component.mapLayerId, true );

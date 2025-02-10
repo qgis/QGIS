@@ -201,7 +201,7 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+  auto vl = std::make_unique<QgsVectorLayer>( tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 
   // Try to guess the geometry and srid
   if ( !vl->isValid() )
@@ -1351,7 +1351,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( feedback && feedback->isCanceled() )
     return QgsAbstractDatabaseProviderConnection::QueryResult();
 
-  std::shared_ptr<QgsPoolOracleConn> pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri { uri() }.connectionInfo( false ) );
+  auto pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri { uri() }.connectionInfo( false ) );
   if ( !pconn->get() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
@@ -1360,7 +1360,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( feedback && feedback->isCanceled() )
     return QgsAbstractDatabaseProviderConnection::QueryResult();
 
-  std::unique_ptr<QgsOracleQuery> qry = std::make_unique<QgsOracleQuery>( pconn );
+  auto qry = std::make_unique<QgsOracleQuery>( pconn );
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
   QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), QStringLiteral( "QgsAbstractDatabaseProviderConnection" ), QGS_QUERY_LOG_ORIGIN };

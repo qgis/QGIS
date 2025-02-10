@@ -37,6 +37,8 @@ color for the segments.
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
+    virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
+
 };
 
 /************************************************************************

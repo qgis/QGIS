@@ -37,13 +37,13 @@ QgsColorEffect::QgsColorEffect()
 
 void QgsColorEffect::draw( QgsRenderContext &context )
 {
-  if ( !source() || !enabled() || !context.painter() )
+  if ( !enabled() || !context.painter() || source().isNull() )
     return;
 
   QPainter *painter = context.painter();
 
   //rasterize source and apply modifications
-  QImage image = sourceAsImage( context )->copy();
+  QImage image = sourceAsImage( context ).copy();
 
   QgsImageOperation::adjustBrightnessContrast( image, mBrightness, mContrast / 100.0 + 1, context.feedback() );
 

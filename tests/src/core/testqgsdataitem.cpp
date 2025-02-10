@@ -119,7 +119,7 @@ void TestQgsDataItem::testValid()
 
 void TestQgsDataItem::testDirItem()
 {
-  std::unique_ptr<QgsDirectoryItem> dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
   QCOMPARE( dirItem->dirPath(), QStringLiteral( TEST_DATA_DIR ) );
   QCOMPARE( dirItem->name(), QStringLiteral( "Test" ) );
 
@@ -215,7 +215,7 @@ void TestQgsDataItem::testDirItemMonitoring()
   QVERIFY( QDir().mkpath( child1 ) );
   QVERIFY( QDir().mkpath( child2 ) );
 
-  std::unique_ptr<QgsDirectoryItem> dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, parentDir + '/' );
+  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, parentDir + '/' );
   QCOMPARE( dirItem->path(), parentDir + '/' );
   QCOMPARE( dirItem->dirPath(), parentDir );
 
@@ -383,7 +383,7 @@ void TestQgsDataItem::testDirItemMonitoringSlowDrive()
   QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2 ) );
   QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2child ) );
 
-  std::unique_ptr<QgsDirectoryItem> dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, QStringLiteral( "/" ) + parentDir );
+  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, QStringLiteral( "/" ) + parentDir );
   // user has not explicitly set the path to be monitored or not, so Default should be returned here:
   QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
   // but directory should NOT be monitored

@@ -1771,8 +1771,7 @@ static QVariant fcnSubstr( const QVariantList &values, const QgsExpressionContex
 static QVariant fcnFeatureId( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   FEAT_FROM_CONTEXT( context, f )
-  // TODO: handling of 64-bit feature ids?
-  return QVariant( static_cast< int >( f.id() ) );
+  return QVariant( f.id() );
 }
 
 static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -3819,7 +3818,7 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   if ( outerRing.type() != Qgis::GeometryType::Line || outerRing.isNull() )
     return QVariant();
 
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  auto polygon = std::make_unique< QgsPolygon >();
 
   const QgsCurve *exteriorRing = qgsgeometry_cast< QgsCurve * >( outerRing.constGet() );
   if ( !exteriorRing && outerRing.isMultipart() )
@@ -3871,8 +3870,8 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  std::unique_ptr<QgsTriangle> tr( new QgsTriangle() );
-  std::unique_ptr<QgsLineString> lineString( new QgsLineString() );
+  auto tr = std::make_unique<QgsTriangle>();
+  auto lineString = std::make_unique<QgsLineString>();
   lineString->clear();
 
   for ( const QVariant &value : values )

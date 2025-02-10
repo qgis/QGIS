@@ -87,7 +87,7 @@ void QgsMapToolShapeEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *
     {
       case 1:
       {
-        std::unique_ptr<QgsLineString> line( new QgsLineString() );
+        auto line = std::make_unique<QgsLineString>();
         line->addVertex( mPoints.at( 0 ) );
         line->addVertex( point );
         mTempRubberBand->setGeometry( line.release() );

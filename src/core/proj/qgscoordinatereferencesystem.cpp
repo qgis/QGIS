@@ -1431,13 +1431,9 @@ QString QgsCoordinateReferenceSystem::celestialBodyName() const
   if ( !pj )
     return QString();
 
-#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
   PJ_CONTEXT *context = QgsProjContext::get();
 
   return QString( proj_get_celestial_body_name( context, pj ) );
-#else
-  throw QgsNotSupportedException( QObject::tr( "Retrieving celestial body requires a QGIS build based on PROJ 8.1 or later" ) );
-#endif
 }
 
 void QgsCoordinateReferenceSystem::setCoordinateEpoch( double epoch )
@@ -1466,7 +1462,6 @@ QgsDatumEnsemble QgsCoordinateReferenceSystem::datumEnsemble() const
   if ( !pj )
     return res;
 
-#if PROJ_VERSION_MAJOR>=8
   PJ_CONTEXT *context = QgsProjContext::get();
 
   QgsProjUtils::proj_pj_unique_ptr ensemble = QgsProjUtils::crsToDatumEnsemble( pj );
@@ -1498,9 +1493,6 @@ QgsDatumEnsemble QgsCoordinateReferenceSystem::datumEnsemble() const
     res.mMembers << details;
   }
   return res;
-#else
-  throw QgsNotSupportedException( QObject::tr( "Calculating datum ensembles requires a QGIS build based on PROJ 8.0 or later" ) );
-#endif
 }
 
 QgsProjectionFactors QgsCoordinateReferenceSystem::factors( const QgsPoint &point ) const
@@ -1688,11 +1680,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   {
 #ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
-#if PROJ_VERSION_MAJOR>=8
     QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_context_errno_string( ctx, errNo ) ) );
-#else
-    QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
-#endif
 #endif
     d->mIsValid = false;
   }

@@ -3255,7 +3255,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
   dsUri.setWkbType( wkbType );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  std::unique_ptr<QgsOracleProvider> provider( new QgsOracleProvider( dsUri.uri( false ), providerOptions ) );
+  auto provider = std::make_unique<QgsOracleProvider>( dsUri.uri( false ), providerOptions );
   if ( !provider->isValid() )
   {
     errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );

@@ -52,6 +52,7 @@ class QgsMapLayer;
 class QgsScreenHelper;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryString;
+class QgsSettingsEntryStringList;
 template<class T> class QgsSettingsEntryEnumFlag;
 
 
@@ -70,7 +71,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
 
     static const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *settingResamplingMethod;
-    static const QgsSettingsEntryString *settingCompressionMethod;
+    static const QgsSettingsEntryStringList *settingCreationOptions;
     static const QgsSettingsEntryBool *settingUseZeroForTransparent;
     static const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *settingTransformMethod;
     static const QgsSettingsEntryBool *settingSaveGcps;
@@ -83,6 +84,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
 
     QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
+
+    void showGeoreferencer();
 
   protected:
     void closeEvent( QCloseEvent * ) override;
@@ -208,7 +211,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
      * a value of -1 indicates that thin plate spline interpolation should be used for warping.
     */
-    QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order, double targetResX, double targetResY );
+    QString generateGDALwarpCommand( const QString &resampling, const QStringList &options, bool useZeroForTrans, int order, double targetResX, double targetResY );
 
     // utils
     bool validate();
@@ -268,7 +271,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QgsGcpTransformerInterface::TransformMethod mTransformMethod = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
-    QString mCompressionMethod = QStringLiteral( "NONE" );
+    QStringList mCreationOptions;
     bool mCreateWorldFileOnly = false;
 
     QgsGCPList mPoints;

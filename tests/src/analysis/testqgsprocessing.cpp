@@ -2141,7 +2141,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   context.setProject( &p );
 
   // destination vector with "." in it's name
-  std::unique_ptr<QgsProcessingParameterVectorDestination> def( new QgsProcessingParameterVectorDestination( "with.inside", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterVectorDestination>( "with.inside", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), false );
 
   // check that temporary destination does not have dot at the end when there is no extension
   QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
@@ -2152,7 +2152,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
 
   // destination raster with "." in it's name
-  std::unique_ptr<QgsProcessingParameterRasterDestination> def2( new QgsProcessingParameterRasterDestination( "with.inside", QString(), QString(), false ) );
+  auto def2 = std::make_unique<QgsProcessingParameterRasterDestination>( "with.inside", QString(), QString(), false );
 
   // check that temporary destination does not have dot at the end when there is no extension
   QVERIFY( !def2->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
@@ -2163,7 +2163,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   QCOMPARE( f.completeSuffix(), QString( "tif" ) );
 
   // destination vector without "." in it's name
-  std::unique_ptr<QgsProcessingParameterVectorDestination> def3( new QgsProcessingParameterVectorDestination( "without_inside", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), false ) );
+  auto def3 = std::make_unique<QgsProcessingParameterVectorDestination>( "without_inside", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), false );
 
   // check that temporary destination does not have dot at the end when there is no extension
   QVERIFY( !def3->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
@@ -2176,9 +2176,9 @@ void TestQgsProcessing::generateTemporaryDestination()
 
 void TestQgsProcessing::removePointerValuesFromMap()
 {
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( "Point?crs=epsg:3111", "v1", "memory" );
+  auto vl = std::make_unique<QgsVectorLayer>( "Point?crs=epsg:3111", "v1", "memory" );
   const QString raster1 = QStringLiteral( TEST_DATA_DIR ) + '/' + "landsat_4326.tif";
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( raster1, "R1" );
+  auto rl = std::make_unique<QgsRasterLayer>( raster1, "R1" );
   QPointer<QgsMapLayer> rl1Pointer( rl.get() );
 
   const QVariantMap source { { QStringLiteral( "k1" ), 5 }, { QStringLiteral( "k2" ), QStringLiteral( "aa" ) }, { QStringLiteral( "k3" ), QVariantList() << QStringLiteral( "aa" ) << 3 << QVariant::fromValue( vl.get() ) }, { QStringLiteral( "k4" ), QVariantMap { { QStringLiteral( "kk1" ), 5 }, { QStringLiteral( "kk2" ), QVariant::fromValue( rl1Pointer ) } } } };
@@ -2815,13 +2815,13 @@ void TestQgsProcessing::parameters()
 
   // setting layer name to match...
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( nullptr );
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QString(), QStringLiteral( "memory" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QString(), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
   // temporary layer, must use output name as layer name
   QCOMPARE( vl->name(), QStringLiteral( "my_dest" ) );
   // otherwise expect to use path
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", QString() );
+  auto rl = std::make_unique<QgsRasterLayer>( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", QString() );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
   QCOMPARE( rl->name(), QStringLiteral( "landsat" ) );
   // unless setting prohibits it...
@@ -3186,7 +3186,7 @@ void TestQgsProcessing::parameterCrs()
   context.setProject( &p );
 
   // not optional, with default value
-  std::unique_ptr<QgsProcessingParameterCrs> def( new QgsProcessingParameterCrs( "non_optional", QString(), QString( "EPSG:3113" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterCrs>( "non_optional", QString(), QString( "EPSG:3113" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3376,7 +3376,7 @@ void TestQgsProcessing::parameterMapLayer()
   context.setProject( &p );
 
   // not optional, no default value
-  std::unique_ptr<QgsProcessingParameterMapLayer> def( new QgsProcessingParameterMapLayer( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterMapLayer>( "non_optional", QString(), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3591,7 +3591,7 @@ void TestQgsProcessing::parameterExtent()
   context.setProject( &p );
 
   // not optional, with default value
-  std::unique_ptr<QgsProcessingParameterExtent> def( new QgsProcessingParameterExtent( "non_optional", QString(), QString( "1,2,3,4" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterExtent>( "non_optional", QString(), QString( "1,2,3,4" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -3962,7 +3962,7 @@ void TestQgsProcessing::parameterPoint()
   QgsProcessingContext context;
 
   // not optional, with default value
-  std::unique_ptr<QgsProcessingParameterPoint> def( new QgsProcessingParameterPoint( "non_optional", QString(), QString( "1,2" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterPoint>( "non_optional", QString(), QString( "1,2" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -4199,7 +4199,7 @@ void TestQgsProcessing::parameterGeometry()
   QgsProcessingContext context;
 
   // not optional, default value
-  std::unique_ptr<QgsProcessingParameterGeometry> def( new QgsProcessingParameterGeometry( "non_optional", QString(), QString( "Point(1 2)" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterGeometry>( "non_optional", QString(), QString( "Point(1 2)" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -4447,7 +4447,7 @@ void TestQgsProcessing::parameterFile()
   QgsProcessingContext context;
 
   // not optional, with default value
-  std::unique_ptr<QgsProcessingParameterFile> def( new QgsProcessingParameterFile( "non_optional", QString(), Qgis::ProcessingFileParameterBehavior::File, QString(), QString( "abc.bmp" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterFile>( "non_optional", QString(), Qgis::ProcessingFileParameterBehavior::File, QString(), QString( "abc.bmp" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -4673,7 +4673,7 @@ void TestQgsProcessing::parameterMatrix()
   QgsProcessingContext context;
 
   // not optional, no default value
-  std::unique_ptr<QgsProcessingParameterMatrix> def( new QgsProcessingParameterMatrix( "non_optional", QString(), 3, false, QStringList(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterMatrix>( "non_optional", QString(), 3, false, QStringList(), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( def->checkValueIsAcceptable( 5 ) );
@@ -4837,7 +4837,7 @@ void TestQgsProcessing::parameterLayerList()
   context.setProject( &p );
 
   // not optional, no default value
-  std::unique_ptr<QgsProcessingParameterMultipleLayers> def( new QgsProcessingParameterMultipleLayers( "non_optional", QString(), Qgis::ProcessingSourceType::MapLayer, QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterMultipleLayers>( "non_optional", QString(), Qgis::ProcessingSourceType::MapLayer, QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -5190,7 +5190,7 @@ void TestQgsProcessing::parameterDistance()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterDistance> def( new QgsProcessingParameterDistance( "non_optional", QString(), 5, QStringLiteral( "parent" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterDistance>( "non_optional", QString(), 5, QStringLiteral( "parent" ), false );
   QCOMPARE( def->parentParameterName(), QStringLiteral( "parent" ) );
   def->setParentParameterName( QStringLiteral( "parent2" ) );
   QCOMPARE( def->defaultUnit(), Qgis::DistanceUnit::Unknown );
@@ -5306,7 +5306,7 @@ void TestQgsProcessing::parameterArea()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterArea> def( new QgsProcessingParameterArea( "non_optional", QString(), 5, QStringLiteral( "parent" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterArea>( "non_optional", QString(), 5, QStringLiteral( "parent" ), false );
   QCOMPARE( def->parentParameterName(), QStringLiteral( "parent" ) );
   def->setParentParameterName( QStringLiteral( "parent2" ) );
   QCOMPARE( def->defaultUnit(), Qgis::AreaUnit::Unknown );
@@ -5422,7 +5422,7 @@ void TestQgsProcessing::parameterVolume()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterVolume> def( new QgsProcessingParameterVolume( "non_optional", QString(), 5, QStringLiteral( "parent" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterVolume>( "non_optional", QString(), 5, QStringLiteral( "parent" ), false );
   QCOMPARE( def->parentParameterName(), QStringLiteral( "parent" ) );
   def->setParentParameterName( QStringLiteral( "parent2" ) );
   QCOMPARE( def->defaultUnit(), Qgis::VolumeUnit::Unknown );
@@ -5538,7 +5538,7 @@ void TestQgsProcessing::parameterDuration()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterDuration> def( new QgsProcessingParameterDuration( "non_optional", QString(), 5, false ) );
+  auto def = std::make_unique<QgsProcessingParameterDuration>( "non_optional", QString(), 5, false );
   QCOMPARE( def->defaultUnit(), Qgis::TemporalUnit::Milliseconds );
   def->setDefaultUnit( Qgis::TemporalUnit::Days );
   QCOMPARE( def->defaultUnit(), Qgis::TemporalUnit::Days );
@@ -5646,7 +5646,7 @@ void TestQgsProcessing::parameterScale()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterScale> def( new QgsProcessingParameterScale( "non_optional", QString(), 5, false ) );
+  auto def = std::make_unique<QgsProcessingParameterScale>( "non_optional", QString(), 5, false );
 
   QVERIFY( def->checkValueIsAcceptable( 5 ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1" ) );
@@ -5757,7 +5757,7 @@ void TestQgsProcessing::parameterNumber()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterNumber> def( new QgsProcessingParameterNumber( "non_optional", QString(), Qgis::ProcessingNumberParameterType::Double, 5, false ) );
+  auto def = std::make_unique<QgsProcessingParameterNumber>( "non_optional", QString(), Qgis::ProcessingNumberParameterType::Double, 5, false );
   QVERIFY( def->checkValueIsAcceptable( 5 ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1" ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1,2" ) );
@@ -5903,7 +5903,7 @@ void TestQgsProcessing::parameterRange()
   QgsProcessingContext context;
 
   // not optional, with default value
-  std::unique_ptr<QgsProcessingParameterRange> def( new QgsProcessingParameterRange( "non_optional", QString(), Qgis::ProcessingNumberParameterType::Double, QString( "5,6" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterRange>( "non_optional", QString(), Qgis::ProcessingNumberParameterType::Double, QString( "5,6" ), false );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
   QVERIFY( def->checkValueIsAcceptable( "1.1,2" ) );
@@ -6089,7 +6089,7 @@ void TestQgsProcessing::parameterRasterLayer()
   context.setProject( &p );
 
   // not optional, no default value
-  std::unique_ptr<QgsProcessingParameterRasterLayer> def( new QgsProcessingParameterRasterLayer( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterRasterLayer>( "non_optional", QString(), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -6242,7 +6242,7 @@ void TestQgsProcessing::parameterEnum()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterEnum> def( new QgsProcessingParameterEnum( "non_optional", QString(), QStringList() << "A" << "B" << "C", false, 2, false ) );
+  auto def = std::make_unique<QgsProcessingParameterEnum>( "non_optional", QString(), QStringList() << "A" << "B" << "C", false, 2, false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
@@ -6617,7 +6617,7 @@ void TestQgsProcessing::parameterString()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterString> def( new QgsProcessingParameterString( "non_optional", QString(), QString(), false, false ) );
+  auto def = std::make_unique<QgsProcessingParameterString>( "non_optional", QString(), QString(), false, false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -6797,7 +6797,7 @@ void TestQgsProcessing::parameterAuthConfig()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterAuthConfig> def( new QgsProcessingParameterAuthConfig( "non_optional", QString(), QString(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterAuthConfig>( "non_optional", QString(), QString(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -6934,7 +6934,7 @@ void TestQgsProcessing::parameterExpression()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterExpression> def( new QgsProcessingParameterExpression( "non_optional", QString(), QString( "1+1" ), QString(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterExpression>( "non_optional", QString(), QString( "1+1" ), QString(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -7044,7 +7044,7 @@ void TestQgsProcessing::parameterField()
   QgsProcessingContext context;
 
   // not optional, no default value
-  std::unique_ptr<QgsProcessingParameterField> def( new QgsProcessingParameterField( "non_optional", QString(), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, false ) );
+  auto def = std::make_unique<QgsProcessingParameterField>( "non_optional", QString(), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
@@ -7352,7 +7352,7 @@ void TestQgsProcessing::parameterVectorLayer()
   context.setProject( &p );
 
   // not optional, with default value
-  std::unique_ptr<QgsProcessingParameterVectorLayer> def( new QgsProcessingParameterVectorLayer( "non_optional", QString(), QList<int>(), QString( "somelayer" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterVectorLayer>( "non_optional", QString(), QList<int>(), QString( "somelayer" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -7514,7 +7514,7 @@ void TestQgsProcessing::parameterMeshLayer()
   context.setProject( &p );
 
   // not optional, with default value
-  std::unique_ptr<QgsProcessingParameterMeshLayer> def( new QgsProcessingParameterMeshLayer( "non_optional", QString(), QString( "somelayer" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterMeshLayer>( "non_optional", QString(), QString( "somelayer" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -7674,7 +7674,7 @@ void TestQgsProcessing::parameterFeatureSource()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterFeatureSource> def( new QgsProcessingParameterFeatureSource( "non_optional", QString(), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterFeatureSource>( "non_optional", QString(), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -7929,7 +7929,7 @@ void TestQgsProcessing::parameterFeatureSink()
   context.setProject( &p );
 
   // not optional, no default value
-  std::unique_ptr<QgsProcessingParameterFeatureSink> def( new QgsProcessingParameterFeatureSink( "non_optional", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterFeatureSink>( "non_optional", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -8135,7 +8135,7 @@ void TestQgsProcessing::parameterVectorOut()
   context.setProject( &p );
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterVectorDestination> def( new QgsProcessingParameterVectorDestination( "non_optional", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterVectorDestination>( "non_optional", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -8373,7 +8373,7 @@ void TestQgsProcessing::parameterRasterOut()
   context.setProject( &p );
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterRasterDestination> def( new QgsProcessingParameterRasterDestination( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterRasterDestination>( "non_optional", QString(), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -8540,7 +8540,7 @@ void TestQgsProcessing::parameterPointCloudOut()
   context.setProject( &p );
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterPointCloudDestination> def( new QgsProcessingParameterPointCloudDestination( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterPointCloudDestination>( "non_optional", QString(), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -8709,7 +8709,7 @@ void TestQgsProcessing::parameterFileOut()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterFileDestination> def( new QgsProcessingParameterFileDestination( "non_optional", QString(), QStringLiteral( "BMP files (*.bmp)" ), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterFileDestination>( "non_optional", QString(), QStringLiteral( "BMP files (*.bmp)" ), QVariant(), false );
   QCOMPARE( def->fileFilter(), QStringLiteral( "BMP files (*.bmp)" ) );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "bmp" ) );
   QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".bmp" ) ) );
@@ -8874,7 +8874,7 @@ void TestQgsProcessing::parameterFolderOut()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterFolderDestination> def( new QgsProcessingParameterFolderDestination( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterFolderDestination>( "non_optional", QString(), QVariant(), false );
 
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
@@ -8990,7 +8990,7 @@ void TestQgsProcessing::parameterVectorTileOut()
   context.setProject( &p );
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterVectorTileDestination> def( new QgsProcessingParameterVectorTileDestination( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterVectorTileDestination>( "non_optional", QString(), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -9155,7 +9155,7 @@ void TestQgsProcessing::parameterBand()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterBand> def( new QgsProcessingParameterBand( "non_optional", QString(), QVariant(), QString(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterBand>( "non_optional", QString(), QVariant(), QString(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "1" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -9315,7 +9315,7 @@ void TestQgsProcessing::parameterLayout()
   p.layoutManager()->addLayout( l2 );
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterLayout> def( new QgsProcessingParameterLayout( "non_optional", QString(), QString(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterLayout>( "non_optional", QString(), QString(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -9474,7 +9474,7 @@ void TestQgsProcessing::parameterLayoutItem()
   QgsPrintLayout *l2 = new QgsPrintLayout( &p );
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterLayoutItem> def( new QgsProcessingParameterLayoutItem( "non_optional", QString(), QVariant(), QString(), -1, false ) );
+  auto def = std::make_unique<QgsProcessingParameterLayoutItem>( "non_optional", QString(), QVariant(), QString(), -1, false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -9621,7 +9621,7 @@ void TestQgsProcessing::parameterColor()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterColor> def( new QgsProcessingParameterColor( "non_optional", QString(), QVariant(), true, false ) );
+  auto def = std::make_unique<QgsProcessingParameterColor>( "non_optional", QString(), QVariant(), true, false );
   QVERIFY( def->opacityEnabled() );
   def->setOpacityEnabled( false );
   QVERIFY( !def->opacityEnabled() );
@@ -9798,7 +9798,7 @@ void TestQgsProcessing::parameterCoordinateOperation()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterCoordinateOperation> def( new QgsProcessingParameterCoordinateOperation( "non_optional", QString(), QString(), QString(), QString(), QVariant(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterCoordinateOperation>( "non_optional", QString(), QString(), QString(), QString(), QVariant(), QVariant(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -9949,7 +9949,7 @@ void TestQgsProcessing::parameterMapTheme()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterMapTheme> def( new QgsProcessingParameterMapTheme( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterMapTheme>( "non_optional", QString(), QVariant(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -10093,7 +10093,7 @@ void TestQgsProcessing::parameterProviderConnection()
   QgsProcessingContext context;
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterProviderConnection> def( new QgsProcessingParameterProviderConnection( "non_optional", QString(), QStringLiteral( "ogr" ), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterProviderConnection>( "non_optional", QString(), QStringLiteral( "ogr" ), QVariant(), false );
   QCOMPARE( def->providerId(), QStringLiteral( "ogr" ) );
   def->setProviderId( QStringLiteral( "postgres" ) );
   QCOMPARE( def->providerId(), QStringLiteral( "postgres" ) );
@@ -10251,7 +10251,7 @@ void TestQgsProcessing::parameterDatabaseSchema()
   QgsProcessingContext context;
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterDatabaseSchema> def( new QgsProcessingParameterDatabaseSchema( "non_optional", QString(), QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterDatabaseSchema>( "non_optional", QString(), QString(), QVariant(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -10349,7 +10349,7 @@ void TestQgsProcessing::parameterDatabaseTable()
   QgsProcessingContext context;
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterDatabaseTable> def( new QgsProcessingParameterDatabaseTable( "non_optional", QString(), QString(), QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterDatabaseTable>( "non_optional", QString(), QString(), QString(), QVariant(), false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -10463,7 +10463,7 @@ void TestQgsProcessing::parameterFieldMapping()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterFieldMapping> def( new QgsProcessingParameterFieldMapping( "non_optional", QString(), QStringLiteral( "parent" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterFieldMapping>( "non_optional", QString(), QStringLiteral( "parent" ), false );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -10530,7 +10530,7 @@ void TestQgsProcessing::parameterAggregate()
   QgsProcessingContext context;
 
   // not optional!
-  std::unique_ptr<QgsProcessingParameterAggregate> def( new QgsProcessingParameterAggregate( "non_optional", QString(), QStringLiteral( "parent" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterAggregate>( "non_optional", QString(), QStringLiteral( "parent" ), false );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -10624,7 +10624,7 @@ void TestQgsProcessing::parameterTinInputLayers()
   QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "PointLayerForTin" ), QStringLiteral( "memory" ) );
   project.addMapLayer( vectorLayer );
 
-  std::unique_ptr<QgsProcessingParameterTinInputLayers> def( new QgsProcessingParameterTinInputLayers( "tin input layer" ) );
+  auto def = std::make_unique<QgsProcessingParameterTinInputLayers>( "tin input layer" );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -10778,7 +10778,7 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QgsProject project;
   context.setProject( &project );
 
-  std::unique_ptr<QgsProcessingParameterMeshDatasetTime> def( new QgsProcessingParameterMeshDatasetTime( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ) ) );
+  auto def = std::make_unique<QgsProcessingParameterMeshDatasetTime>( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ) );
   QVERIFY( def->type() == QLatin1String( "meshdatasettime" ) );
   QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ).toString() ) );
@@ -10890,7 +10890,7 @@ void TestQgsProcessing::parameterDateTime()
   QgsProcessingContext context;
 
   // not optional, with default
-  std::unique_ptr<QgsProcessingParameterDateTime> def( new QgsProcessingParameterDateTime( "non_optional", QString(), Qgis::ProcessingDateTimeParameterDataType::DateTime, QDateTime( QDate( 2010, 4, 3 ), QTime( 12, 11, 10 ) ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterDateTime>( "non_optional", QString(), Qgis::ProcessingDateTimeParameterDataType::DateTime, QDateTime( QDate( 2010, 4, 3 ), QTime( 12, 11, 10 ) ), false );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
   QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ), QTime( 0, 0, 0 ) ) ) );
@@ -11280,7 +11280,7 @@ void TestQgsProcessing::parameterDxfLayers()
   QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "PointLayer" ), QStringLiteral( "memory" ) );
   project.addMapLayer( vectorLayer );
 
-  std::unique_ptr<QgsProcessingParameterDxfLayers> def( new QgsProcessingParameterDxfLayers( "dxf input layer" ) );
+  auto def = std::make_unique<QgsProcessingParameterDxfLayers>( "dxf input layer" );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -11418,7 +11418,7 @@ void TestQgsProcessing::parameterAnnotationLayer()
   context.setProject( &p );
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterAnnotationLayer> def( new QgsProcessingParameterAnnotationLayer( "non_optional", QString(), QVariant(), false ) );
+  auto def = std::make_unique<QgsProcessingParameterAnnotationLayer>( "non_optional", QString(), QVariant(), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -11598,7 +11598,7 @@ void TestQgsProcessing::parameterPointCloudLayer()
   context.setProject( &p );
 
   // not optional, with default
-  std::unique_ptr<QgsProcessingParameterPointCloudLayer> def( new QgsProcessingParameterPointCloudLayer( "non_optional", QString(), QString( "somelayer" ), false ) );
+  auto def = std::make_unique<QgsProcessingParameterPointCloudLayer>( "non_optional", QString(), QString( "somelayer" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -11748,7 +11748,7 @@ void TestQgsProcessing::parameterPointCloudAttribute()
   QgsProcessingContext context;
 
   // not optional, no default
-  std::unique_ptr<QgsProcessingParameterPointCloudAttribute> def( new QgsProcessingParameterPointCloudAttribute( "non_optional", QString(), QVariant(), QString(), false, false ) );
+  auto def = std::make_unique<QgsProcessingParameterPointCloudAttribute>( "non_optional", QString(), QVariant(), QString(), false, false );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
@@ -11982,7 +11982,7 @@ void TestQgsProcessing::parameterAlignRasterLayers()
   QgsRasterLayer *rasterLayer = new QgsRasterLayer( fi.filePath(), "R1" );
   project.addMapLayer( rasterLayer );
 
-  std::unique_ptr<QgsProcessingParameterAlignRasterLayers> def( new QgsProcessingParameterAlignRasterLayers( "align raster layer" ) );
+  auto def = std::make_unique<QgsProcessingParameterAlignRasterLayers>( "align raster layer" );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -12051,7 +12051,7 @@ void TestQgsProcessing::checkParamValues()
 
 void TestQgsProcessing::runAlgorithm()
 {
-  std::unique_ptr<DummyAlgorithm> a = std::make_unique<DummyAlgorithm>( "asd" );
+  auto a = std::make_unique<DummyAlgorithm>( "asd" );
   a->mRaiseProcessException = false;
   a->mPrepared = false;
   a->mProcessed = false;
@@ -12257,7 +12257,7 @@ void TestQgsProcessing::processingFeatureSink()
   context.setProject( &p );
 
   // first using static string definition
-  std::unique_ptr<QgsProcessingParameterFeatureSink> def( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ) ) );
+  auto def = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "layer" ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( "memory:test", nullptr ) );
   QString dest;
@@ -12456,7 +12456,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( tempFile3.startsWith( tempFolder ) );
 
   // change temp folder in the settings
-  std::unique_ptr<QTemporaryDir> dir = std::make_unique<QTemporaryDir>();
+  auto dir = std::make_unique<QTemporaryDir>();
   const QString tempDirPath = dir->path();
   dir.reset();
 
@@ -12527,7 +12527,7 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
 
   // make sure all features are copied
-  std::unique_ptr<QgsVectorLayer> t = std::make_unique<QgsVectorLayer>( out, "vl2" );
+  auto t = std::make_unique<QgsVectorLayer>( out, "vl2" );
   QCOMPARE( layer->featureCount(), t->featureCount() );
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:4326" ) );
 
@@ -12618,7 +12618,7 @@ void TestQgsProcessing::convertCompatible()
   QCOMPARE( layerName, QString() );
 
   // non-OGR source -- must be translated, regardless of extension. (e.g. delimited text provider handles CSV very different to OGR!)
-  std::unique_ptr<QgsVectorLayer> memLayer = std::make_unique<QgsVectorLayer>( "Point", "v1", "memory" );
+  auto memLayer = std::make_unique<QgsVectorLayer>( "Point", "v1", "memory" );
   for ( int i = 1; i < 6; ++i )
   {
     QgsFeature f( i );
@@ -12642,7 +12642,7 @@ void TestQgsProcessing::convertCompatible()
 
   //delimited text -- must be translated, regardless of extension. (delimited text provider handles CSV very different to OGR!)
   const QString csvPath = "file://" + testDataDir + "delimitedtext/testpt.csv?type=csv&useHeader=No&detectTypes=yes&xyDms=yes&geomType=none&subsetIndex=no&watchFile=no";
-  std::unique_ptr<QgsVectorLayer> csvLayer = std::make_unique<QgsVectorLayer>( csvPath, "vl", "delimitedtext" );
+  auto csvLayer = std::make_unique<QgsVectorLayer>( csvPath, "vl", "delimitedtext" );
   QVERIFY( csvLayer->isValid() );
   out = QgsProcessingUtils::convertToCompatibleFormat( csvLayer.get(), false, QStringLiteral( "test" ), QStringList() << "csv", QString( "csv" ), context, &feedback );
   QVERIFY( out != csvLayer->source() );
@@ -12661,7 +12661,7 @@ void TestQgsProcessing::convertCompatible()
 
   // geopackage with layer
   QString gpkgPath = testDataDir + "points_gpkg.gpkg|layername=points_gpkg";
-  std::unique_ptr<QgsVectorLayer> gpkgLayer = std::make_unique<QgsVectorLayer>( gpkgPath, "vl" );
+  auto gpkgLayer = std::make_unique<QgsVectorLayer>( gpkgPath, "vl" );
   QVERIFY( gpkgLayer->isValid() );
   out = QgsProcessingUtils::convertToCompatibleFormat( gpkgLayer.get(), false, QStringLiteral( "test" ), QStringList() << "gpkg" << "shp", QString( "shp" ), context, &feedback );
   // layer must be translated -- we do not know if external tool can handle picking the correct layer automatically

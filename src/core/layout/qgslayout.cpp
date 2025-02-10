@@ -98,7 +98,7 @@ QgsLayout *QgsLayout::clone() const
   QDomElement elem = writeXml( currentDoc, context );
   currentDoc.appendChild( elem );
 
-  std::unique_ptr< QgsLayout > newLayout = std::make_unique< QgsLayout >( mProject );
+  auto newLayout = std::make_unique< QgsLayout >( mProject );
   bool ok = false;
   newLayout->loadFromTemplate( currentDoc, context, true, &ok );
   if ( !ok )
@@ -768,7 +768,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   }
 
   mUndoStack->beginMacro( tr( "Group Items" ) );
-  std::unique_ptr< QgsLayoutItemGroup > itemGroup( new QgsLayoutItemGroup( this ) );
+  auto itemGroup = std::make_unique<QgsLayoutItemGroup>( this );
   for ( QgsLayoutItem *item : items )
   {
     itemGroup->addItem( item );
@@ -776,7 +776,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   QgsLayoutItemGroup *returnGroup = itemGroup.get();
   addLayoutItem( itemGroup.release() );
 
-  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Group Items" ) ) );
+  auto c = std::make_unique<QgsLayoutItemGroupUndoCommand>( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Group Items" ) );
   mUndoStack->push( c.release() );
   mProject->setDirty( true );
 
@@ -797,7 +797,7 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   mUndoStack->beginMacro( tr( "Ungroup Items" ) );
   // Call this before removing group items so it can keep note
   // of contents
-  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Ungroup Items" ) ) );
+  auto c = std::make_unique<QgsLayoutItemGroupUndoCommand>( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Ungroup Items" ) );
   mUndoStack->push( c.release() );
 
   mProject->setDirty( true );

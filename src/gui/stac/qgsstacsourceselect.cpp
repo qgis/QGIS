@@ -174,6 +174,7 @@ void QgsStacSourceSelect::btnConnect_clicked()
   mStac->fetchStacObjectAsync( connection.url );
   mFiltersLabel->clear();
   mFiltersButton->setEnabled( false );
+  emit enableButtons( false );
 }
 
 void QgsStacSourceSelect::btnNew_clicked()
@@ -285,18 +286,26 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
     mStatusLabel->setText( error );
     return;
   }
-  QgsDebugMsgLevel( QStringLiteral( "STAC catalog supports API: %1" ).arg( cat->supportsStacApi() ), 2 );
 
+  const bool supportsCollections = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/collections" ) );
+  const bool supportsSearch = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/item-search" ) );
+  QgsDebugMsgLevel( QStringLiteral( "STAC catalog supports API: %1" ).arg( supportsCollections && supportsSearch ), 2 );
   QString collectionsUrl;
 
-  for ( auto &l : cat->links() )
+  if ( supportsCollections && supportsSearch )
   {
-    // collections endpoint should have a "data" relation according to spec but some servers don't
-    // so let's be less strict and only check the href
-    if ( l.href().endsWith( "/collections" ) )
-      collectionsUrl = l.href();
-    else if ( l.relation() == "search" )
-      mSearchUrl = l.href();
+    for ( auto &l : cat->links() )
+    {
+      // collections endpoint should have a "data" relation according to spec but some servers don't
+      // so let's be less strict and only check the href
+      if ( l.href().endsWith( "/collections" ) )
+        collectionsUrl = l.href();
+      else if ( l.relation() == "search" )
+        mSearchUrl = l.href();
+
+      if ( !collectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
+        break;
+    }
   }
 
   if ( collectionsUrl.isEmpty() || mSearchUrl.isEmpty() )
@@ -377,7 +386,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
 #ifndef __clang_analyzer__
     // Let the results appear, then fetch more if there's no scrollbar
     QTimer::singleShot( 100, this, [=] {
-      if ( !mItemsView->verticalScrollBar()->isVisible() )
+      if ( isVisible() && !mItemsView->verticalScrollBar()->isVisible() )
       {
         fetchNextResultPage();
       }
@@ -497,7 +506,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   if ( QgsDataSourceManagerDialog *dsm = qobject_cast<QgsDataSourceManagerDialog *>( window() ) )
     bar = dsm->messageBar();
 
-  QMenu *assetsMenu = menu->addMenu( tr( "Add Layer" ) );
+  QMenu *assetsMenu = new QMenu( tr( "Add Layer" ), menu );
   if ( const QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() ) )
   {
     const QMap<QString, QgsStacAsset> assets = item->assets();
@@ -516,28 +525,27 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   }
 
   QAction *zoomToAction = new QAction( tr( "Zoom to Item" ), menu );
-  connect( zoomToAction, &QAction::triggered, this, [index, this] {
-    QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
+  const QgsRectangle bbox = index.data( QgsStacItemListModel::Role::Extent ).value<QgsBox3D>().toRectangle();
+  connect( zoomToAction, &QAction::triggered, this, [bbox, this] {
     if ( QgsMapCanvas *map = mapCanvas() )
     {
-      const QgsRectangle bbox = geom.boundingBox();
-      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
       QgsRectangle extent = ct.transformBoundingBox( bbox );
       map->zoomToFeatureExtent( extent );
     }
   } );
+  zoomToAction->setEnabled( !bbox.isNull() );
 
   QAction *panToAction = new QAction( tr( "Pan to Item" ), menu );
-  connect( panToAction, &QAction::triggered, this, [index, this] {
-    QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
+  connect( panToAction, &QAction::triggered, this, [bbox, this] {
     if ( QgsMapCanvas *map = mapCanvas() )
     {
-      const QgsRectangle bbox = geom.boundingBox();
-      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
       const QgsRectangle extent = ct.transformBoundingBox( bbox );
       map->setCenter( extent.center() );
     }
   } );
+  panToAction->setEnabled( !bbox.isNull() );
 
   QAction *downloadAction = new QAction( tr( "Download Assets…" ), menu );
   connect( downloadAction, &QAction::triggered, this, [index, bar, authCfg = mStac->authCfg()] {
@@ -557,8 +565,11 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   } );
 
 
-  menu->addAction( zoomToAction );
-  menu->addAction( panToAction );
+  if ( mapCanvas() )
+  {
+    menu->addAction( zoomToAction );
+    menu->addAction( panToAction );
+  }
   if ( !assetsMenu->isEmpty() )
     menu->addMenu( assetsMenu );
   menu->addAction( downloadAction );
