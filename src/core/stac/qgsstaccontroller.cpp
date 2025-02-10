@@ -17,6 +17,7 @@
 #include "moc_qgsstaccontroller.cpp"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
+#include "qgsstaccollections.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 #include "qgsstacparser.h"
@@ -213,22 +214,25 @@ void QgsStacController::handleCollectionsReply()
   mReplies.removeOne( reply );
 }
 
-QgsStacObject *QgsStacController::takeStacObject( int requestId )
+std::unique_ptr< QgsStacObject > QgsStacController::takeStacObject( int requestId )
 {
-  return mFetchedStacObjects.take( requestId );
+  std::unique_ptr< QgsStacObject > obj( mFetchedStacObjects.take( requestId ) );
+  return obj;
 }
 
-QgsStacItemCollection *QgsStacController::takeItemCollection( int requestId )
+std::unique_ptr< QgsStacItemCollection > QgsStacController::takeItemCollection( int requestId )
 {
-  return mFetchedItemCollections.take( requestId );
+  std::unique_ptr< QgsStacItemCollection > col( mFetchedItemCollections.take( requestId ) );
+  return col;
 }
 
-QgsStacCollections *QgsStacController::takeCollections( int requestId )
+std::unique_ptr< QgsStacCollections > QgsStacController::takeCollections( int requestId )
 {
-  return mFetchedCollections.take( requestId );
+  std::unique_ptr< QgsStacCollections > cols( mFetchedCollections.take( requestId ) );
+  return cols;
 }
 
-QgsStacObject *QgsStacController::fetchStacObject( const QUrl &url, QString *error )
+std::unique_ptr< QgsStacObject > QgsStacController::fetchStacObject( const QUrl &url, QString *error )
 {
   QgsNetworkReplyContent content = fetchBlocking( url );
 
@@ -245,20 +249,19 @@ QgsStacObject *QgsStacController::fetchStacObject( const QUrl &url, QString *err
   QgsStacParser parser;
   parser.setData( data );
   parser.setBaseUrl( url );
-  QgsStacObject *object = nullptr;
+  std::unique_ptr< QgsStacObject > object;
   switch ( parser.type() )
   {
     case QgsStacObject::Type::Catalog:
-      object = parser.catalog();
+      object.reset( parser.catalog() );
       break;
     case QgsStacObject::Type::Collection:
-      object = parser.collection();
+      object.reset( parser.collection() );
       break;
     case QgsStacObject::Type::Item:
-      object = parser.item();
+      object.reset( parser.item() );
       break;
     case QgsStacObject::Type::Unknown:
-      object = nullptr;
       break;
   }
 
@@ -268,7 +271,7 @@ QgsStacObject *QgsStacController::fetchStacObject( const QUrl &url, QString *err
   return object;
 }
 
-QgsStacItemCollection *QgsStacController::fetchItemCollection( const QUrl &url, QString *error )
+std::unique_ptr< QgsStacItemCollection > QgsStacController::fetchItemCollection( const QUrl &url, QString *error )
 {
   QgsNetworkReplyContent content = fetchBlocking( url );
 
@@ -285,7 +288,7 @@ QgsStacItemCollection *QgsStacController::fetchItemCollection( const QUrl &url, 
   QgsStacParser parser;
   parser.setData( data );
   parser.setBaseUrl( url );
-  QgsStacItemCollection *ic = parser.itemCollection();
+  std::unique_ptr< QgsStacItemCollection > ic( parser.itemCollection() );
 
   if ( error )
     *error = parser.error();
@@ -293,7 +296,7 @@ QgsStacItemCollection *QgsStacController::fetchItemCollection( const QUrl &url, 
   return ic;
 }
 
-QgsStacCollections *QgsStacController::fetchCollections( const QUrl &url, QString *error )
+std::unique_ptr< QgsStacCollections > QgsStacController::fetchCollections( const QUrl &url, QString *error )
 {
   QgsNetworkReplyContent content = fetchBlocking( url );
 
@@ -309,7 +312,7 @@ QgsStacCollections *QgsStacController::fetchCollections( const QUrl &url, QStrin
 
   QgsStacParser parser;
   parser.setData( data );
-  QgsStacCollections *col = parser.collections();
+  std::unique_ptr< QgsStacCollections > col( parser.collections() );
 
   if ( error )
     *error = parser.error();

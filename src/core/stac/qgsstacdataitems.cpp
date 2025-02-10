@@ -69,9 +69,8 @@ QVector<QgsDataItem *> QgsStacItemItem::createChildren()
 {
   QgsStacController *controller = stacController();
   QString error;
-  QgsStacObject *obj = controller->fetchStacObject( mPath, &error );
-  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj );
-  setStacItem( item );
+  std::unique_ptr< QgsStacObject > obj = controller->fetchStacObject( mPath, &error );
+  setStacItem( obj );
 
   if ( !mStacItem )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
@@ -175,8 +174,12 @@ QgsStacController *QgsStacItemItem::stacController()
   return nullptr;
 }
 
-void QgsStacItemItem::setStacItem( QgsStacItem *item )
+void QgsStacItemItem::setStacItem( std::unique_ptr< QgsStacObject > &object )
 {
+  QgsStacItem *item = dynamic_cast<QgsStacItem *>( object.get() );
+  if ( item )
+    object.release();
+
   mStacItem.reset( item );
   updateToolTip();
 }
@@ -189,20 +192,18 @@ QgsStacItem *QgsStacItemItem::stacItem() const
 void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
 {
   QgsStacController *controller = stacController();
-  QgsStacObject *object = controller->takeStacObject( requestId );
-  QgsStacItem *item = dynamic_cast< QgsStacItem * >( object );
-  setStacItem( item );
-  if ( item )
+  std::unique_ptr< QgsStacObject > object = controller->takeStacObject( requestId );
+  setStacItem( object );
+  if ( mStacItem )
   {
     mIconName = QStringLiteral( "mActionPropertiesWidget.svg" );
-    QString name = item->properties().value( QStringLiteral( "title" ), QString() ).toString();
+    QString name = mStacItem->properties().value( QStringLiteral( "title" ), QString() ).toString();
     if ( name.isEmpty() )
-      name = item->id();
+      name = mStacItem->id();
     mName = name;
   }
   else
   {
-    delete object;
     mIconName = QStringLiteral( "/mIconDelete.svg" );
     mName = error;
   }
@@ -318,9 +319,8 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
 
   QgsStacController *controller = stacController();
   QString error;
-  QgsStacObject *obj = controller->fetchStacObject( mPath, &error );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
-  setStacCatalog( cat );
+  std::unique_ptr< QgsStacObject > obj = controller->fetchStacObject( mPath, &error );
+  setStacCatalog( obj );
 
   if ( !mStacCatalog )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
@@ -459,8 +459,12 @@ void QgsStacCatalogItem::updateToolTip()
   }
 }
 
-void QgsStacCatalogItem::setStacCatalog( QgsStacCatalog *catalog )
+void QgsStacCatalogItem::setStacCatalog( std::unique_ptr< QgsStacObject > &object )
 {
+  QgsStacCatalog *catalog = dynamic_cast<QgsStacCatalog *>( object.get() );
+  if ( catalog )
+    object.release();
+
   mStacCatalog.reset( catalog );
   if ( mStacCatalog )
   {
@@ -490,10 +494,12 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
     if ( !item )
       continue;
 
+    std::unique_ptr< QgsStacObject > object( item );
+
     const QString name = item->properties().value( QStringLiteral( "title" ), item->id() ).toString();
 
     QgsStacItemItem *i = new QgsStacItemItem( this, name, item->url() );
-    i->setStacItem( item );
+    i->setStacItem( object );
     i->setState( Qgis::BrowserItemState::Populated );
     contents.append( i );
   }
@@ -509,10 +515,12 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createCollections( const QVector<QgsS
     if ( !col )
       continue;
 
+    std::unique_ptr< QgsStacObject > object( col );
+
     const QString name = col->title().isEmpty() ? col->id() : col->title();
 
     QgsStacCatalogItem *i = new QgsStacCatalogItem( this, name, col->url() );
-    i->setStacCatalog( col );
+    i->setStacCatalog( object );
     contents.append( i );
   }
   return contents;
