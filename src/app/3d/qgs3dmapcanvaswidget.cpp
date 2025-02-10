@@ -896,7 +896,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( 1 );
     mSpinChangeAttributeValue->setDecimals( 0 );
-    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " (%1)" ).arg( mSpinChangeAttributeValue->value() ? tr( "True" ) : tr( "False" ) ) );
+    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " (%1)" ).arg( mSpinChangeAttributeValue->value() == 0. ? tr( "False" ) : tr( "True" ) ) );
   }
   else if ( attributeName == QLatin1String( "ScannerChannel" ) )
   {
