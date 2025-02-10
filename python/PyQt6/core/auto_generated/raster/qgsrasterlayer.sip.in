@@ -316,6 +316,11 @@ Returns the number of raster units per each raster pixel in X axis.
 In a world file, this is normally the first row (without the sign). (E.g.
 the value reported by the GDAL geotransform[1]).
 
+.. note::
+
+   If the :py:func:`~QgsRasterLayer.dataProvider` does not have native size/resolution then 1 will be returned. :py:func:`QgsRasterDataProvider.capabilities()` can be
+   used to test for the :py:class:`Qgis`.RasterInterfaceCapability.Size capability in order to determine whether the data provider has a native size/resolution.
+
 .. seealso:: :py:func:`rasterUnitsPerPixelY`
 %End
 
@@ -324,6 +329,11 @@ the value reported by the GDAL geotransform[1]).
 Returns the number of raster units per each raster pixel in Y axis.
 
 In a world file, this is normally the first row (without the sign).
+
+.. note::
+
+   If the :py:func:`~QgsRasterLayer.dataProvider` does not have native size/resolution then 1 will be returned. :py:func:`QgsRasterDataProvider.capabilities()` can be
+   used to test for the :py:class:`Qgis`.RasterInterfaceCapability.Size capability in order to determine whether the data provider has a native size/resolution.
 
 .. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End

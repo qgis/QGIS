@@ -364,6 +364,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * In a world file, this is normally the first row (without the sign). (E.g.
      * the value reported by the GDAL geotransform[1]).
      *
+     * \note If the dataProvider() does not have native size/resolution then 1 will be returned. QgsRasterDataProvider::capabilities() can be
+     * used to test for the Qgis.RasterInterfaceCapability.Size capability in order to determine whether the data provider has a native size/resolution.
+     *
      * \see rasterUnitsPerPixelY()
      */
     double rasterUnitsPerPixelX() const;
@@ -372,6 +375,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * Returns the number of raster units per each raster pixel in Y axis.
      *
      * In a world file, this is normally the first row (without the sign).
+     *
+     * \note If the dataProvider() does not have native size/resolution then 1 will be returned. QgsRasterDataProvider::capabilities() can be
+     * used to test for the Qgis.RasterInterfaceCapability.Size capability in order to determine whether the data provider has a native size/resolution.
      *
      * \see rasterUnitsPerPixelX()
      */
