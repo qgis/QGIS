@@ -920,10 +920,10 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
   }
   else if ( attributeName == QLatin1String( "ScanAngleRank" ) )
   {
-    mSpinChangeAttributeValue->setMinimum( -30'000 );
-    mSpinChangeAttributeValue->setMaximum( 30'000 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
+    mSpinChangeAttributeValue->setMinimum( -180 );
+    mSpinChangeAttributeValue->setMaximum( 180 );
+    mSpinChangeAttributeValue->setDecimals( 3 );
+    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " (%1)" ).arg( tr( "degrees" ) ) );
   }
   else if ( attributeName == QLatin1String( "GpsTime" ) )
   {

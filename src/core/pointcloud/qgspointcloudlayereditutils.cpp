@@ -83,7 +83,7 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
   }
   else if ( attributeName == QLatin1String( "ScanAngleRank" ) )  // short
   {
-    qint16 newValueShort = static_cast<qint16>( newValue );
+    qint16 newValueShort = static_cast<qint16>( std::round( newValue / 0.006 ) );  // copc stores angle in 0.006deg increments
     memcpy( pointBuffer + 18, &newValueShort, sizeof( qint16 ) );
   }
   else if ( attributeName == QLatin1String( "PointSourceId" ) )  // unsigned short
@@ -182,7 +182,7 @@ bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttr
   if ( name == QLatin1String( "USERDATA" ) )
     return value >= 0 && value <= 255;
   if ( name == QLatin1String( "SCANANGLERANK" ) )
-    return value >= -30'000 && value <= 30'000;
+    return value >= -180 && value <= 180;
   if ( name == QLatin1String( "POINTSOURCEID" ) )
     return value >= 0 && value <= 65535;
   if ( name == QLatin1String( "GPSTIME" ) )
