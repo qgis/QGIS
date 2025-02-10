@@ -358,9 +358,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 
-    //! \brief [ data provider interface ] Which provider is being used for this Raster Layer?
-    QString providerType() const;
-
     /**
      * Returns the number of raster units per each raster pixel in X axis.
      *

@@ -637,13 +637,6 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
   }
 }
 
-QString QgsRasterLayer::providerType() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mProviderKey;
-}
-
 double QgsRasterLayer::rasterUnitsPerPixelX() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
