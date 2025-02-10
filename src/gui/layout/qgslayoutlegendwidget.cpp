@@ -726,9 +726,10 @@ void QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
   }
 }
 
-static void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int offset )
+static void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int destLegendNodeIndex )
 {
   QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+  const int offset = destLegendNodeIndex - legendNodeIndex;
 
   if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
     return;
@@ -770,8 +771,14 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), 1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    // get the next index, the one that will have to be above our index,
+    const QModelIndex nextIndex = index.siblingAtRow( index.row() + 1 );
+    QgsLayerTreeModelLegendNode *nextLegendNode = nextIndex.isValid() ? mItemTreeView->index2legendNode( nextIndex ) : nullptr;
+    if ( nextLegendNode )
+    {
+      _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), _unfilteredLegendNodeIndex( nextLegendNode ) );
+      mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    }
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() + 1, 0, parentIndex ) ) );
@@ -808,8 +815,14 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), -1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    // get the previous index, the one that will have to be below our index,
+    const QModelIndex prevIndex = index.siblingAtRow( index.row() - 1 );
+    QgsLayerTreeModelLegendNode *prevLegendNode = prevIndex.isValid() ? mItemTreeView->index2legendNode( prevIndex ) : nullptr;
+    if ( prevLegendNode )
+    {
+      _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), _unfilteredLegendNodeIndex( prevLegendNode ) );
+      mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    }
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() - 1, 0, parentIndex ) ) );
