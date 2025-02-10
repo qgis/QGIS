@@ -565,7 +565,7 @@ class QgsTemporalRange
      */
     bool overlaps( const QgsTemporalRange<T> &other ) const
     {
-      // one of both range is infinite
+      // one or both range is infinite
       if ( isInfinite() || other.isInfinite() )
         return true;
 
