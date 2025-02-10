@@ -7730,7 +7730,7 @@ Qgis.MapLayerActionTargets.baseClass = Qgis
 MapLayerActionTargets = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
-Qgis.MapLayerActionFlag.EnableOnlyIfHasGeometry.__doc__ = "Action should be shown only for layers with geometry, \n.. versionadded:: 3.42"
+Qgis.MapLayerActionFlag.EnableOnlyWhenHasGeometry.__doc__ = "Action should be shown only for layers with geometry, \n.. versionadded:: 3.42"
 Qgis.MapLayerActionFlag.__doc__ = """Map layer action flags.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
@@ -7738,7 +7738,7 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
 .. versionadded:: 3.30
 
 * ``EnabledOnlyWhenEditable``: Action should be shown only for editable layers
-* ``EnableOnlyIfHasGeometry``: Action should be shown only for layers with geometry,
+* ``EnableOnlyWhenHasGeometry``: Action should be shown only for layers with geometry,
 
   .. versionadded:: 3.42
 

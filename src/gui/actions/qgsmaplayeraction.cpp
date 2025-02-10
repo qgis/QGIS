@@ -75,7 +75,7 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerA
       return false;
   }
 
-  if ( mFlags & Qgis::MapLayerActionFlag::EnableOnlyIfHasGeometry )
+  if ( mFlags & Qgis::MapLayerActionFlag::EnableOnlyWhenHasGeometry )
   {
     // action is only enabled for layers with geometry
     if ( !layer )

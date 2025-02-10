@@ -4398,7 +4398,7 @@ class CORE_EXPORT Qgis
     enum class MapLayerActionFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
-      EnableOnlyIfHasGeometry = 1 << 2, //!< Action should be shown only for layers with geometry, \since QGIS 3.42
+      EnableOnlyWhenHasGeometry = 1 << 2, //!< Action should be shown only for layers with geometry, \since QGIS 3.42
     };
     Q_ENUM( MapLayerActionFlag )
 
