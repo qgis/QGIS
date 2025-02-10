@@ -59,7 +59,7 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     QgsStacController *stacController();
 
     //! takes ownership
-    void setStacItem( QgsStacItem *item );
+    void setStacItem( std::unique_ptr< QgsStacObject > &object );
 
     //! does not transfer ownership
     QgsStacItem *stacItem() const;
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
     void updateToolTip();
 
     //! takes ownership
-    void setStacCatalog( QgsStacCatalog *catalog );
+    void setStacCatalog( std::unique_ptr< QgsStacObject > &object );
 
     //! does not transfer ownership
     QgsStacCatalog *stacCatalog() const;
