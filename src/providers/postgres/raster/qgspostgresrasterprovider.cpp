@@ -76,7 +76,7 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   // TODO: for now always true
   // mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( QgsPostgresConn::connectionInfo( mUri, false ) ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "Query is: %1" ).arg( mQuery ), 4 );
