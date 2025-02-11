@@ -72,6 +72,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     );
     mOverviewEntity->setParent( this );
     connect( mOverviewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
+    connect( mOverviewEntity, &QgsChunkedEntity::newEntityCreated, this, &Qgs3DMapSceneEntity::newEntityCreated );
     emit newEntityCreated( mOverviewEntity );
   }
 
@@ -119,6 +120,7 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   mChunkedEntitiesMap.insert( i, newChunkedEntity );
   newChunkedEntity->setParent( this );
   connect( newChunkedEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapSceneEntity::pendingJobsCountChanged );
+  connect( newChunkedEntity, &QgsChunkedEntity::newEntityCreated, this, &Qgs3DMapSceneEntity::newEntityCreated );
   emit newEntityCreated( newChunkedEntity );
 }
 
