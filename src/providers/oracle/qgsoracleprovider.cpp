@@ -1394,9 +1394,15 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         QVariant value = attributevec.value( fieldId[i], QVariant() );
 
         QgsField fld = field( fieldId[i] );
-        if ( ( value.isNull() && mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() ) || ( value.toString() == defaultValues[i] ) )
+        if ( ( QgsVariantUtils::isNull( value ) && mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() ) || ( value.toString() == defaultValues[i] ) )
         {
           value = evaluateDefaultExpression( defaultValues[i], fld.type() );
+        }
+        else if ( QgsVariantUtils::isNull( value ) )
+        {
+          // don't use typed null variants, always use invalid variants. Otherwise the connection
+          // may incorrectly try to coerce a null value to the variant type
+          value = QVariant();
         }
         features->setAttribute( fieldId[i], value );
 
