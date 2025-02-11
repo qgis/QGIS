@@ -779,6 +779,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
       Top, //!< Align to top of symbol
       VCenter, //!< Align to vertical center of symbol
       Bottom, //!< Align to bottom of symbol
+      Baseline, //!< Align font markers bottom to baseline
     };
 
     QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;

@@ -3559,10 +3559,7 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   //anchor points
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  int verticalAnchorIndex = mLayer->verticalAnchorPoint();
-  if ( mLayer->verticalAnchorMode() == QgsFontMarkerSymbolLayer::VerticalAnchorMode::Baseline )
-    verticalAnchorIndex = 3;
-  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( verticalAnchorIndex );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
   registerDataDefinedButton( mFontFamilyDDBtn, QgsSymbolLayer::Property::FontFamily );
   registerDataDefinedButton( mFontStyleDDBtn, QgsSymbolLayer::Property::FontStyle );
@@ -3772,17 +3769,7 @@ void QgsFontMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged
 {
   if ( mLayer )
   {
-    if ( index >= 3 )
-    {
-      // Bottom on Baseline is selected
-      mLayer->setVerticalAnchorMode( QgsFontMarkerSymbolLayer::VerticalAnchorMode::Baseline );
-      mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Bottom );
-    }
-    else
-    {
-      mLayer->setVerticalAnchorMode( QgsFontMarkerSymbolLayer::VerticalAnchorMode::Legacy );
-      mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
-    }
+    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
     emit changed();
   }
 }

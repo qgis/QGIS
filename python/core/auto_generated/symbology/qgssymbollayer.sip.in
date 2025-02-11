@@ -771,6 +771,7 @@ Abstract base class for marker symbol layers.
       Top,
       VCenter,
       Bottom,
+      Baseline,
     };
 
 
