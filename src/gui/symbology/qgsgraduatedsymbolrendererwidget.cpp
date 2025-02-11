@@ -139,7 +139,7 @@ Qt::ItemFlags QgsGraduatedSymbolRendererModel::flags( const QModelIndex &index )
     return Qt::ItemIsDropEnabled;
   }
 
-  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
+  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable;
 
   if ( index.column() == 2 )
   {
@@ -306,8 +306,8 @@ QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &ind
 
 bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row )
   Q_UNUSED( column )
+  Q_UNUSED( parent )
   if ( action != Qt::MoveAction )
     return true;
 
@@ -325,7 +325,8 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
     rows.append( r );
   }
 
-  int to = parent.row();
+  int to = row;
+
   // to is -1 if dragged outside items, i.e. below any item,
   // then move to the last position
   if ( to == -1 )
