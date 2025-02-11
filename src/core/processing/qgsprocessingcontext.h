@@ -601,7 +601,7 @@ class CORE_EXPORT QgsProcessingContext
     void setPreferredVectorFormat( const QString &format ) SIP_HOLDGIL { mPreferredVectorFormat = format; }
 
     /**
-     * Returns the preferred raster format to use for vector outputs.
+     * Returns the preferred raster format to use for raster outputs.
      *
      * This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
      * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
@@ -621,7 +621,7 @@ class CORE_EXPORT QgsProcessingContext
     QString preferredRasterFormat() const SIP_HOLDGIL { return mPreferredRasterFormat; }
 
     /**
-     * Sets the preferred raster \a format to use for vector outputs.
+     * Sets the preferred raster \a format to use for raster outputs.
      *
      * This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
      * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
