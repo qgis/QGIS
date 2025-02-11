@@ -1,5 +1,5 @@
 {
-  "name": "crs_authid",
+  "name": "crs_to_authid",
   "type": "function",
   "groups": ["CRS"],
   "description": "Returns a user-friendly identifier for the CRS",
@@ -8,7 +8,7 @@
     "description": "crs value"
   }],
   "examples": [{
-    "expression": "crs_authid(make_crs('EPSG:3857'))",
+    "expression": "crs_to_authid(crs_from_text('EPSG:3857'))",
     "returns": "'EPSG:3857'"
   }],
   "tags": ["crs", "epsg", "authid"]

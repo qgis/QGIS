@@ -1,5 +1,5 @@
 {
-  "name": "make_crs",
+  "name": "crs_from_text",
   "type": "function",
   "groups": ["CRS"],
   "description": "Creates a coordinate reference system from a string definition",
@@ -8,7 +8,7 @@
     "description": "CRS definition"
   }],
   "examples": [{
-    "expression": "make_crs('EPSG:3857')",
+    "expression": "crs_from_text('EPSG:3857')",
     "returns": "crs value 'EPSG:3857 - WGS 84 / Pseudo-Mercator'"
   }],
   "tags": ["crs", "epsg"]
