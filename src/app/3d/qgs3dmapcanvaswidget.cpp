@@ -59,6 +59,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsrubberband.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 
 #include <QWidget>
 #include <QActionGroup>
@@ -108,12 +109,16 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
   mSpinChangeAttributeValue->setShowClearButton( false );
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Value" ) ) );
-  mPointCloudEditingToolbar->addWidget( mSpinChangeAttributeValue );
+  mSpinChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mSpinChangeAttributeValue );
+  mCboChangeAttributeValue = new QComboBox();
+  mCboChangeAttributeValue->setMaxVisibleItems( 15 );
+  mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
 
   QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
   actionEditingToolbar->setCheckable( true );
   connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
-  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { onPointCloudChangeAttributeSettingsChanged(); } );
+  connect( mCboChangeAttributeValue, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { mMapToolPointCloudChangeAttribute->setNewValue( mCboChangeAttributeValue->currentData().toDouble() ); } );
+  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { mMapToolPointCloudChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() ); } );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction(
     QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
@@ -474,6 +479,7 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
     return;
   }
 
+
   QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
   const QVector<QgsPointCloudAttribute> attributes = pcLayer->attributes().attributes();
   const QString previousAttribute = mCboChangeAttribute->currentText();
@@ -500,6 +506,8 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
   connect( pcLayer->undoStack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
   connect( pcLayer->undoStack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
   mPointCloudEditingToolbar->setEnabled( pcLayer->isEditable() );
+  // Re-parse the class values when the renderer changes - renderer3DChanged() is not fired when only the renderer symbol is changed
+  connect( pcLayer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged );
 }
 
 bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
@@ -878,6 +886,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
   const QString attributeName = mCboChangeAttribute->currentText();
 
   mSpinChangeAttributeValue->setSuffix( QString() );
+  bool useComboBox = false;
 
   if ( attributeName == QLatin1String( "Intensity" ) || attributeName == QLatin1String( "PointSourceId" ) || attributeName == QLatin1String( "Red" ) || attributeName == QLatin1String( "Green" ) || attributeName == QLatin1String( "Blue" ) || attributeName == QLatin1String( "Infrared" ) )
   {
@@ -893,10 +902,11 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
   }
   else if ( attributeName == QLatin1String( "Synthetic" ) || attributeName == QLatin1String( "KeyPoint" ) || attributeName == QLatin1String( "Withheld" ) || attributeName == QLatin1String( "Overlap" ) || attributeName == QLatin1String( "ScanDirectionFlag" ) || attributeName == QLatin1String( "EdgeOfFlightLine" ) )
   {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " (%1)" ).arg( mSpinChangeAttributeValue->value() == 0. ? tr( "False" ) : tr( "True" ) ) );
+    useComboBox = true;
+    QgsSignalBlocker< QComboBox > blocker( mCboChangeAttributeValue );
+    mCboChangeAttributeValue->clear();
+    mCboChangeAttributeValue->addItem( tr( "False" ), 0 );
+    mCboChangeAttributeValue->addItem( tr( "True" ), 1 );
   }
   else if ( attributeName == QLatin1String( "ScannerChannel" ) )
   {
@@ -906,11 +916,65 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
   }
   else if ( attributeName == QLatin1String( "Classification" ) )
   {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 255 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-    const QMap<int, QString> codes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
-    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " (%1)" ).arg( codes.value( mSpinChangeAttributeValue->value() ) ) );
+    useComboBox = true;
+    const double oldValue = mCboChangeAttributeValue->currentData().toDouble();
+
+    whileBlocking( mCboChangeAttributeValue )->clear();
+    // Instead of showing a list of all available las codes, we are going to build a list of "most popular" and display it on top,
+    // consisting of Classification renderer classes and used classes in the data from the layer's stats
+    // Then the full list will go on after a separator.
+    const QMap<int, QString> lasCodes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
+    QMap<int, QString> classes;
+
+    QgsPointCloudLayer *layer = qobject_cast<QgsPointCloudLayer *>( QgisApp::instance()->activeLayer() );
+    if ( layer )
+    {
+      QgsAbstract3DRenderer *r = layer->renderer3D();
+      // if there's a clsasification renderer, let's use the classes' labels
+      if ( QgsPointCloudLayer3DRenderer *cr = dynamic_cast<QgsPointCloudLayer3DRenderer *>( r ) )
+      {
+        const QgsPointCloud3DSymbol *s = cr->symbol();
+        if ( const QgsClassificationPointCloud3DSymbol *cs = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( s ) )
+        {
+          if ( cs->attribute() == QLatin1String( "Classification" ) )
+          {
+            for ( const QgsPointCloudCategory &c : cs->categoriesList() )
+            {
+              classes[c.value()] = c.label();
+            }
+          }
+        }
+      }
+
+      // then add missing classes from the layer stats too
+      const QMap<int, int> statisticsClasses = layer->statistics().availableClasses( QStringLiteral( "Classification" ) );
+      for ( auto it = statisticsClasses.constBegin(); it != statisticsClasses.constEnd(); ++it )
+      {
+        if ( !classes.contains( it.key() ) )
+          classes[it.key()] = lasCodes[it.key()];
+      }
+      for ( auto it = classes.constBegin(); it != classes.constEnd(); ++it )
+      {
+        whileBlocking( mCboChangeAttributeValue )->addItem( QStringLiteral( "%1 (%2)" ).arg( it.key() ).arg( it.value() ), it.key() );
+      }
+    }
+    // after a separator, we add all the standard las classification codes 0-255 but we are keeping the classification renderer's labels
+    mCboChangeAttributeValue->insertSeparator( mCboChangeAttributeValue->count() );
+    for ( auto it = lasCodes.constBegin(); it != lasCodes.constEnd(); ++it )
+    {
+      whileBlocking( mCboChangeAttributeValue )->addItem( QStringLiteral( "%1 (%2)" ).arg( it.key() ).arg( classes.value( it.key(), it.value() ) ), it.key() );
+    }
+
+    // Try to reselect last selected value
+    for ( int i = 0; i < mCboChangeAttributeValue->count(); ++i )
+    {
+      bool ok = false;
+      if ( mCboChangeAttributeValue->itemData( i ).toDouble( &ok ) == oldValue && ok )
+      {
+        mCboChangeAttributeValue->setCurrentIndex( i );
+        break;
+      }
+    }
   }
   else if ( attributeName == QLatin1String( "UserData" ) )
   {
@@ -933,7 +997,13 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
   }
 
   mMapToolPointCloudChangeAttribute->setAttribute( attributeName );
-  mMapToolPointCloudChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() );
+  mMapToolPointCloudChangeAttribute->setNewValue( useComboBox ? mCboChangeAttributeValue->currentData().toDouble() : mSpinChangeAttributeValue->value() );
+
+  mCboChangeAttributeValueAction->setVisible( useComboBox );
+  mSpinChangeAttributeValueAction->setVisible( !useComboBox );
+
+  mCboChangeAttributeValue->setEditable( true );
+  mCboChangeAttributeValue->lineEdit()->setReadOnly( true );
 }
 
 void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()

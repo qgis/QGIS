@@ -165,7 +165,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     QToolBar *mEditingToolBar = nullptr;
     QComboBox *mCboChangeAttribute = nullptr;
+    QComboBox *mCboChangeAttributeValue = nullptr;
     QgsDoubleSpinBox *mSpinChangeAttributeValue = nullptr;
+    QAction *mCboChangeAttributeValueAction = nullptr;
+    QAction *mSpinChangeAttributeValueAction = nullptr;
 
     QMenu *mToolbarMenu = nullptr;
 };
