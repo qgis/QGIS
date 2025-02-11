@@ -63,6 +63,8 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   mModel = new QgsStackedDiagramPropertiesModel();
   mSubDiagramsView->setModel( mModel );
 
+  mSubDiagramsView->setStyle( new QgsStackedDiagramsViewStyle( mSubDiagramsView ) );
+
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsStackedDiagramProperties::widgetChanged );
@@ -372,12 +374,12 @@ QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
 
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
 {
-  const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 
-  // allow drop only at first column
-  const Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
+  if ( index.column() == 0 )
+    flags |= Qt::ItemIsUserCheckable;
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | drop | checkable;
+  return flags;
 }
 
 Qt::DropActions QgsStackedDiagramPropertiesModel::supportedDropActions() const
@@ -680,4 +682,25 @@ void QgsStackedDiagramPropertiesModel::updateDiagramLayerSettings( QgsDiagramLay
 QgsDiagramLayerSettings QgsStackedDiagramPropertiesModel::diagramLayerSettings() const
 {
   return mDiagramLayerSettings;
+}
+
+// ------------------------------ View style --------------------------------
+QgsStackedDiagramsViewStyle::QgsStackedDiagramsViewStyle( QWidget *parent )
+  : QgsProxyStyle( parent )
+{}
+
+void QgsStackedDiagramsViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
+{
+  if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
+  {
+    QStyleOption opt( *option );
+    opt.rect.setLeft( 0 );
+    // draw always as line above, because we move item to that index
+    opt.rect.setHeight( 0 );
+    if ( widget )
+      opt.rect.setRight( widget->width() );
+    QProxyStyle::drawPrimitive( element, &opt, painter, widget );
+    return;
+  }
+  QProxyStyle::drawPrimitive( element, option, painter, widget );
 }
