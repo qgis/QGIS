@@ -547,6 +547,7 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheetOptions()
   bool ok = false;
 
   mPointsLayer->setFieldAlias( 1, QStringLiteral( "my heading" ) );
+  mPointsLayer->setFieldAlias( 2, QStringLiteral( "my importance" ) );
 
   const QgsProcessingAlgorithm *alg( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:exporttospreadsheet" ) ) );
 
@@ -572,7 +573,6 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheetOptions()
 
   pointLayer.reset();
 
-
   mPointsLayer->setEditorWidgetSetup( 2, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), QVariantMap { { "map", QVariantMap { { "High", "1" }, { "Medium", "10" }, { "Low", "20" }, { "VLow", "3" }, { "VHigh", "4" } } } } ) );
 
   parameters.insert( QStringLiteral( "USE_ALIAS" ), true );
@@ -584,7 +584,7 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheetOptions()
   pointLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=points", "points", "ogr" );
   QCOMPARE( pointLayer->fields().at( 0 ).name(), QStringLiteral( "Class" ) );
   QCOMPARE( pointLayer->fields().at( 1 ).name(), QStringLiteral( "my heading" ) );
-  QCOMPARE( pointLayer->fields().at( 2 ).name(), QStringLiteral( "Importance" ) );
+  QCOMPARE( pointLayer->fields().at( 2 ).name(), QStringLiteral( "my importance" ) );
   QCOMPARE( pointLayer->fields().at( 3 ).name(), QStringLiteral( "Pilots" ) );
   QCOMPARE( pointLayer->fields().at( 4 ).name(), QStringLiteral( "Cabin Crew" ) );
 
@@ -592,7 +592,7 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheetOptions()
   QgsFeature f;
   QgsFeatureIterator it = pointLayer->getFeatures();
   while ( it.nextFeature( f ) )
-    values.insert( f.attribute( QStringLiteral( "Importance" ) ).toString() );
+    values.insert( f.attribute( QStringLiteral( "my importance" ) ).toString() );
 
   QCOMPARE( values.size(), 5 );
   QVERIFY( values.contains( "1" ) );
@@ -607,10 +607,16 @@ void TestQgsProcessingAlgsPt1::exportToSpreadsheetOptions()
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
   pointLayer = std::make_unique<QgsVectorLayer>( outputPath + "|layername=points", "points", "ogr" );
+  QCOMPARE( pointLayer->fields().at( 0 ).name(), QStringLiteral( "Class" ) );
+  QCOMPARE( pointLayer->fields().at( 1 ).name(), QStringLiteral( "my heading" ) );
+  QCOMPARE( pointLayer->fields().at( 2 ).name(), QStringLiteral( "my importance" ) );
+  QCOMPARE( pointLayer->fields().at( 3 ).name(), QStringLiteral( "Pilots" ) );
+  QCOMPARE( pointLayer->fields().at( 4 ).name(), QStringLiteral( "Cabin Crew" ) );
+
   values.clear();
   it = pointLayer->getFeatures();
   while ( it.nextFeature( f ) )
-    values.insert( f.attribute( QStringLiteral( "Importance" ) ).toString() );
+    values.insert( f.attribute( QStringLiteral( "my importance" ) ).toString() );
 
   QCOMPARE( values.size(), 5 );
   QVERIFY( values.contains( "High" ) );
