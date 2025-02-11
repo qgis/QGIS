@@ -22,7 +22,7 @@ class RasterProviderTestCase:
         Test property values for a provider which does not have the
         fixed size capability
         """
-        l = self.get_layer("fixed_size")
+        l = self.get_layer("not_fixed_size")
         if l.dataProvider().capabilities() & Qgis.RasterInterfaceCapability.Size:
             return
 
@@ -32,6 +32,23 @@ class RasterProviderTestCase:
         # and 1 for raster units per pixel
         self.assertEqual(l.rasterUnitsPerPixelX(), 1)
         self.assertEqual(l.rasterUnitsPerPixelY(), 1)
+
+    def test_fixed_size_provider(self):
+        """
+        Test property values for a provider which does has the
+        fixed size capability
+        """
+        l = self.get_layer("fixed_size")
+        if not l.dataProvider().capabilities() & Qgis.RasterInterfaceCapability.Size:
+            return
+
+        # TODO -- adjust these values after we've got a generic "reference" fixed size
+        # raster which is appropriate for these tests
+        self.assertEqual(l.width(), 3)
+        self.assertEqual(l.height(), 4)
+        # and 1 for raster units per pixel
+        self.assertAlmostEqual(l.rasterUnitsPerPixelX(), 0.000642531091049392, 8)
+        self.assertAlmostEqual(l.rasterUnitsPerPixelY(), 0.00048366498497820487, 8)
 
     def test_provider_clone(self):
         """
