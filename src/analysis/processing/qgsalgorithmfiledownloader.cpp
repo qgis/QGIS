@@ -141,7 +141,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   url = downloadedUrl.toDisplayString();
   feedback->pushInfo( QObject::tr( "Successfully downloaded %1" ).arg( url ) );
 
-  if ( outputFile.startsWith( QgsProcessingUtils::tempFolder( &context ) ) )
+  if ( parameters.value( QStringLiteral( "OUTPUT" ) ) == QgsProcessing::TEMPORARY_OUTPUT )
   {
     // the output is temporary and its file name automatically generated, try to add a file extension
     const int length = url.size();
