@@ -170,6 +170,9 @@ Returns a cleansed ``key``
     QVariant &operator[]( const QString &key );
 
 
+    bool operator==( const QgsHttpHeaders &other ) const;
+    bool operator!=( const QgsHttpHeaders &other ) const;
+
     void insert( const QString &key, const QVariant &value );
 %Docstring
 insert a ``key`` with the specific ``value``

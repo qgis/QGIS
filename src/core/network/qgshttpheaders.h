@@ -195,6 +195,9 @@ class CORE_EXPORT QgsHttpHeaders
 
     QgsHttpHeaders &operator = ( const QMap<QString, QVariant> &headers ) SIP_SKIP;
 
+    bool operator==( const QgsHttpHeaders &other ) const;
+    bool operator!=( const QgsHttpHeaders &other ) const;
+
     /**
      * \brief insert a \a key with the specific \a value
      * \param key a key to add
