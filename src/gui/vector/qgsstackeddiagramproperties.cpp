@@ -374,7 +374,11 @@ QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
 
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+  // Flat list, to ease drop handling valid indexes are not dropEnabled
+  if ( !index.isValid() )
+    return Qt::ItemIsDropEnabled;
+
+  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
   if ( index.column() == 0 )
     flags |= Qt::ItemIsUserCheckable;
@@ -425,6 +429,7 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
 bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
+  Q_UNUSED( parent )
 
   if ( action == Qt::IgnoreAction )
     return true;
@@ -432,17 +437,14 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
   if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
     return false;
 
-  if ( parent.column() > 0 )
-    return false;
-
   QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
+  // the item was dropped at parent, we may decide where to put the items
   if ( row == -1 )
   {
-    // the item was dropped at a parent - we may decide where to put the items - let's append them
-    row = rowCount( parent );
+    row = mRenderers.count(); // let's append them (e.g., drop in empty space)
   }
 
   while ( !stream.atEnd() )
