@@ -12,43 +12,19 @@ __author__ = "Nyall Dawson"
 __date__ = "2025-02-10"
 __copyright__ = "Copyright 2025, Nyall Dawson"
 
-import hashlib
 import shutil
 import tempfile
 import unittest
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QObject,
-)
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
-    QgsApplication,
     QgsSettings,
     QgsRasterLayer,
 )
 from qgis.testing import start_app, QgisTestCase
 from raster_provider_test_base import RasterProviderTestCase
-
-
-def sanitize(endpoint, x):
-    if x.startswith("/query"):
-        x = x[len("/query") :]
-        endpoint = endpoint + "_query"
-
-    if len(endpoint + x) > 150:
-        ret = endpoint + hashlib.md5(x.encode()).hexdigest()
-        # print('Before: ' + endpoint + x)
-        # print('After:  ' + ret)
-        return ret
-    return endpoint + x.replace("?", "_").replace("&", "_").replace("<", "_").replace(
-        ">", "_"
-    ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
 
 
 class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
@@ -80,7 +56,7 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
 
     def get_layer(self, test_id: str) -> QgsRasterLayer:
         endpoint = self.basetestpath + f"/{test_id}_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {
@@ -219,7 +195,7 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
         Test basic provider capabilities
         """
         endpoint = self.basetestpath + "/basic_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {
@@ -382,7 +358,7 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
         Test basic provider capabilities
         """
         endpoint = self.basetestpath + "/basic_layer_1_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {
@@ -510,7 +486,7 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
  "supportedExtensions": "WMSServer"
 }"""
             )
-        with open(sanitize(endpoint, "/1?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "/1?f=json"), "wb") as f:
             f.write(
                 b"""
                 {
@@ -658,7 +634,7 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
         Test non-consecutive layer IDs
         """
         endpoint = self.basetestpath + "/basic_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {
