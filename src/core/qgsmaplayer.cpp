@@ -3442,7 +3442,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
 
   metadata += QStringLiteral( "<h1>" ) + tr( "Coordinate Reference System (CRS)" ) + QStringLiteral( "</h1>\n<hr>\n" );
   metadata += QLatin1String( "<table class=\"list-view\">\n" );
-  addCrsInfo( crs(), true, true, true );
+  addCrsInfo( crs().horizontalCrs(), true, true, true );
   metadata += QLatin1String( "</table>\n<br><br>\n" );
 
   if ( verticalCrs().isValid() )
