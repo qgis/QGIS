@@ -2289,8 +2289,9 @@ class TestQgsExpression : public QObject
       QTest::newRow( "between nulls FALSE 2" ) << QStringLiteral( "'a' between 'b' AND NULL" ) << false << QVariant( false );
 
       // CRS functions
-      QTest::newRow( "make_crs epsg id" ) << "make_crs('EPSG:4326')" << false << QVariant( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-      QTest::newRow( "crs_authid" ) << "crs_authid(make_crs('EPSG:3857'))" << false << QVariant( "EPSG:3857" );
+      QTest::newRow( "crs_from_text epsg id" ) << "crs_from_text('EPSG:4326')" << false << QVariant( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+      QTest::newRow( "crs_from_text invalid def" ) << "crs_from_text('my crs')" << true << QVariant();
+      QTest::newRow( "crs_to_authid" ) << "crs_to_authid(crs_from_text('EPSG:3857'))" << false << QVariant( "EPSG:3857" );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )

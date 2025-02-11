@@ -2583,7 +2583,7 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
   return functionResult;
 }
 
-static QVariant fcnGetCrsAuthid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnCrsToAuthid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QgsCoordinateReferenceSystem crs = QgsExpressionUtils::getCrs( values.at( 0 ), parent );
   if ( !crs.isValid() )
@@ -2591,7 +2591,7 @@ static QVariant fcnGetCrsAuthid( const QVariantList &values, const QgsExpression
   return crs.authid();
 }
 
-static QVariant fcnCrs( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnCrsFromText( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString definition = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   QgsCoordinateReferenceSystem crs( definition );
@@ -9408,8 +9408,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     // **CRS** functions
     functions
-        << new QgsStaticExpressionFunction( QStringLiteral( "crs_authid" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "crs" ) ), fcnGetCrsAuthid, QStringLiteral( "CRS" ), QString(), true )
-        << new QgsStaticExpressionFunction( QStringLiteral( "make_crs" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "definition" ) ), fcnCrs, QStringLiteral( "CRS" ) );
+        << new QgsStaticExpressionFunction( QStringLiteral( "crs_to_authid" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "crs" ) ), fcnCrsToAuthid, QStringLiteral( "CRS" ), QString(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "crs_from_text" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "definition" ) ), fcnCrsFromText, QStringLiteral( "CRS" ) );
 
 
     // **Fields and Values** functions
