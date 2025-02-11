@@ -615,6 +615,7 @@ QgsMarkerSymbolLayer.Right = QgsMarkerSymbolLayer.HorizontalAnchorPoint.Right
 QgsMarkerSymbolLayer.Top = QgsMarkerSymbolLayer.VerticalAnchorPoint.Top
 QgsMarkerSymbolLayer.VCenter = QgsMarkerSymbolLayer.VerticalAnchorPoint.VCenter
 QgsMarkerSymbolLayer.Bottom = QgsMarkerSymbolLayer.VerticalAnchorPoint.Bottom
+QgsMarkerSymbolLayer.Baseline = QgsMarkerSymbolLayer.VerticalAnchorPoint.Baseline
 QgsLineSymbolLayer.AllRings = QgsLineSymbolLayer.RenderRingFilter.AllRings
 QgsLineSymbolLayer.ExteriorRingOnly = QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly
 QgsLineSymbolLayer.InteriorRingsOnly = QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly

@@ -854,13 +854,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
 
-    //! Vertical anchor modes
-    enum class VerticalAnchorMode : int
-    {
-      Legacy = 0, //!< Calculate anchor points with different offsets
-      Baseline = 1, //!< Calculate anchor points with fix baseline
-    };
-
     //! Constructs a font marker symbol layer.
     QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
                               QString chr = DEFAULT_FONTMARKER_CHR,
@@ -1033,21 +1026,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
-    /**
-     * Sets the vertical anchor mode whether it should considers the baseline as fix point
-     * \param verticalAnchorMode the mode how to handle the anchor point
-     * \see verticalAnchorMode()
-     * \since QGIS 3.42
-     */
-    void setVerticalAnchorMode( VerticalAnchorMode verticalAnchorMode ) { mVerticalAnchorMode = verticalAnchorMode;}
-
-    /**
-     * Returns whether it should considers the baseline as fix point
-     * \see setVerticalAnchorMode()
-     * \since QGIS 3.42
-     */
-    VerticalAnchorMode verticalAnchorMode() const { return mVerticalAnchorMode; }
-
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
   private:
@@ -1061,8 +1039,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     double mChrWidth = 0;
     QPointF mChrOffset;
-    VerticalAnchorMode mVerticalAnchorMode = VerticalAnchorMode::Legacy;
-
     //! Scaling for font sizes, used if font size grows too large
     double mFontSizeScale = 1.0;
     double mOrigSize;
