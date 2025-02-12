@@ -271,6 +271,24 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
      */
     void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy );
 
+    /**
+     * Returns the field's merge policy.
+     *
+     * \see setMergePolicy()
+     *
+     * \since QGIS 3.42
+     */
+    Qgis::FieldDomainMergePolicy mergePolicy() const;
+
+    /**
+     * Sets the field's merge policy.
+     *
+     * \see mergePolicy()
+     *
+     * \since QGIS 3.42
+     */
+    void setMergePolicy( Qgis::FieldDomainMergePolicy policy );
+
   private slots:
 
     /**
@@ -284,6 +302,8 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     void updateSplitPolicyLabel();
 
     void updateDuplicatePolicyLabel();
+
+    void updateMergePolicyLabel();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
