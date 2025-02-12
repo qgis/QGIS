@@ -518,6 +518,9 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
         parent = QWidget()
         w = QgsCheckboxSearchWidgetWrapper(layer, 2)
         w.initWidget(parent)
+        # boolean fields should ignore CheckedState/UncheckedState config
+        config = {"CheckedState": 5, "UncheckedState": 9}
+        w.setConfig(config)
         c = w.widget()
         c.setChecked(True)
         self.assertEqual(
