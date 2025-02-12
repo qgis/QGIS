@@ -1144,6 +1144,14 @@ void TestQgsProcessingAlgsPt2::fileDownloader()
   QVERIFY( ok );
   // verify that temporary outputs have the URL file extension appended
   QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().endsWith( QLatin1String( ".txt" ) ) );
+
+  const QString outputFileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "qgis_version.txt" ), *context );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputFileName );
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  // compare result filename is the same as provided
+  QCOMPARE( outputFileName, results.value( QStringLiteral( "OUTPUT" ) ).toString() );
 }
 
 void TestQgsProcessingAlgsPt2::rasterize()
