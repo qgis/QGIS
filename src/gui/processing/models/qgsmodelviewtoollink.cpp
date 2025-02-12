@@ -102,7 +102,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   // ReOrder in out socket
   // always fix on the input end receiving
-  if( mTo->edge() == Qt::TopEdge ) {
+  if( mTo->isInput() ) {
     component_from = mFrom->component();
     child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mTo->component() );
   }
@@ -217,7 +217,7 @@ void QgsModelViewToolLink::deactivate()
 void QgsModelViewToolLink::setFromSocket(QgsModelDesignerSocketGraphicItem *socket) { 
   mFrom = socket;
 
-  if (mFrom->edge() == Qt::TopEdge)
+  if (mFrom->isInput() )
   {
     QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFrom->component() );
     const QgsProcessingParameterDefinition* param = child_from->algorithm()->parameterDefinitions().at(mFrom->index());
@@ -238,17 +238,14 @@ void QgsModelViewToolLink::setFromSocket(QgsModelDesignerSocketGraphicItem *sock
           // source.outputName();
           // source.outputChildId();
 
-          QgsProcessingModelChildAlgorithm source_alg = scene()->model()->childAlgorithm(source.outputChildId());
-          
-          // This is not so nice to have the UI tangled gotta think of a better abstraction later
+                    // This is not so nice to have the UI tangled gotta think of a better abstraction later
           // Loop trought all items to get the output socket 
           for ( QGraphicsItem *item : items )
           {
             if ( QgsModelDesignerSocketGraphicItem *output_socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
             {
               if ( QgsProcessingModelChildAlgorithm *_alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( output_socket->component() ) ){
-                if (source.outputChildId() != _alg->childId() || 
-                    output_socket->edge() == Qt::TopEdge ){
+                if (source.outputChildId() != _alg->childId() || output_socket->isInput() ){
                   continue;
                 }
                 if (output_socket->index() == _alg->algorithm()->outputDefinitionIndex(source.outputName()) ){

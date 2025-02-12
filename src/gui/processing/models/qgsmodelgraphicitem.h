@@ -179,6 +179,8 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     int index( ) {return mIndex; };
     Qt::Edge edge( ) {return mEdge; };
 
+    bool isInput() { return mEdge== Qt::TopEdge; }
+
     /** Return the component associated to the socket */ 
     QgsProcessingModelComponent* component() {return mComponent;};
 
