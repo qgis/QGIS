@@ -32,7 +32,8 @@
 #include "qgscolorrampimpl.h"
 #include "qgsfillsymbol.h"
 #include "qgscolorutils.h"
-
+#include "qgsgeos.h"
+#include "qgspolygon.h"
 #include <algorithm>
 #include <QPainter>
 #include <QDomDocument>
@@ -3952,44 +3953,67 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
 
-  // stroke out the path using the correct line cap/join style. We'll then use this as the fill polygon
-  QPainterPathStroker stroker;
-  stroker.setWidth( scaledWidth );
-  stroker.setCapStyle( cap );
-  stroker.setJoinStyle( join );
-
-  QPolygonF polygon;
-  if ( qgsDoubleNear( offset, 0 ) )
+  if ( points.count() >= 2 )
   {
-    QPainterPath path;
-    path.addPolygon( points );
-    const QPainterPath stroke = stroker.createStroke( path ).simplified();
-    const QPolygonF polygon = stroke.toFillPolygon();
-    if ( !polygon.isEmpty() )
-    {
-      mFill->renderPolygon( polygon, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
-    }
-  }
-  else
-  {
-    double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
-    {
-      // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
-      // and clamp it to a reasonable range. It's the best we can do in this situation!
-      scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 );
-    }
+    std::unique_ptr< QgsAbstractGeometry > ls = QgsLineString::fromQPolygonF( points );
+    geos::unique_ptr lineGeom;
 
-    const QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
-    for ( const QPolygonF &part : mline )
+    if ( !qgsDoubleNear( offset, 0 ) )
     {
-      QPainterPath path;
-      path.addPolygon( part );
-      const QPainterPath stroke = stroker.createStroke( path ).simplified();
-      const QPolygonF polygon = stroke.toFillPolygon();
-      if ( !polygon.isEmpty() )
+      double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
       {
-        mFill->renderPolygon( polygon, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
+        // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
+        // and clamp it to a reasonable range. It's the best we can do in this situation!
+        scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 );
+      }
+
+      const Qgis::GeometryType geometryType = context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line;
+      if ( geometryType == Qgis::GeometryType::Polygon )
+      {
+        auto inputPoly = std::make_unique< QgsPolygon >( static_cast< QgsLineString * >( ls.release() ) );
+        geos::unique_ptr g( QgsGeos::asGeos( inputPoly.get() ) );
+        lineGeom = QgsGeos::buffer( g.get(), -scaledOffset, 0, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Miter, 2 );
+        // the result is a polygon => extract line work
+        QgsGeometry polygon( QgsGeos::fromGeos( lineGeom.get() ) );
+        QVector<QgsGeometry> parts = polygon.coerceToType( Qgis::WkbType::MultiLineString );
+        if ( !parts.empty() )
+        {
+          lineGeom = QgsGeos::asGeos( parts.at( 0 ).constGet() );
+        }
+        else
+        {
+          lineGeom.reset();
+        }
+      }
+      else
+      {
+        geos::unique_ptr g( QgsGeos::asGeos( ls.get() ) );
+        lineGeom = QgsGeos::offsetCurve( g.get(), scaledOffset, 0, Qgis::JoinStyle::Miter, 8.0 );
+      }
+    }
+    else
+    {
+      lineGeom = QgsGeos::asGeos( ls.get() );
+    }
+
+    if ( lineGeom )
+    {
+      geos::unique_ptr buffered = QgsGeos::buffer( lineGeom.get(), scaledWidth / 2, 8,
+                                  QgsSymbolLayerUtils::penCapStyleToEndCapStyle( cap ),
+                                  QgsSymbolLayerUtils::penJoinStyleToJoinStyle( join ), 8 );
+      if ( buffered )
+      {
+        // convert to rings
+        std::unique_ptr< QgsAbstractGeometry > bufferedGeom = QgsGeos::fromGeos( buffered.get() );
+        const QList< QList< QPolygonF > > parts = QgsSymbolLayerUtils::toQPolygonF( bufferedGeom.get(), Qgis::SymbolType::Fill );
+        for ( const QList< QPolygonF > &polygon : parts )
+        {
+          QVector< QPolygonF > rings;
+          for ( int i = 1; i < polygon.size(); ++i )
+            rings << polygon.at( i );
+          mFill->renderPolygon( polygon.value( 0 ), &rings, context.feature(), context.renderContext(), -1, useSelectedColor );
+        }
       }
     }
   }
