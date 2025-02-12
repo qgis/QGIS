@@ -4498,15 +4498,23 @@ QPolygonF curveToPolygonF( const QgsCurve *curve )
 
 QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type )
 {
+  return toQPolygonF( geometry.constGet(), type );
+}
+
+QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type )
+{
+  if ( !geometry )
+    return {};
+
   switch ( type )
   {
     case Qgis::SymbolType::Marker:
     {
       QPolygonF points;
 
-      if ( QgsWkbTypes::flatType( geometry.wkbType() ) == Qgis::WkbType::MultiPoint )
+      if ( QgsWkbTypes::flatType( geometry->wkbType() ) == Qgis::WkbType::MultiPoint )
       {
-        for ( auto it = geometry.vertices_begin(); it != geometry.vertices_end(); ++it )
+        for ( auto it = geometry->vertices_begin(); it != geometry->vertices_end(); ++it )
           points << QPointF( ( *it ).x(), ( *it ).y() );
       }
       else
@@ -4519,9 +4527,9 @@ QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &ge
     case Qgis::SymbolType::Line:
     {
       QList< QList<QPolygonF> > res;
-      if ( QgsWkbTypes::geometryType( geometry.wkbType() ) == Qgis::GeometryType::Line )
+      if ( QgsWkbTypes::geometryType( geometry->wkbType() ) == Qgis::GeometryType::Line )
       {
-        for ( auto it = geometry.const_parts_begin(); it != geometry.const_parts_end(); ++it )
+        for ( auto it = geometry->const_parts_begin(); it != geometry->const_parts_end(); ++it )
         {
           res << ( QList< QPolygonF >() << curveToPolygonF( qgsgeometry_cast< const QgsCurve * >( *it ) ) );
         }
@@ -4533,7 +4541,7 @@ QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &ge
     {
       QList< QList<QPolygonF> > res;
 
-      for ( auto it = geometry.const_parts_begin(); it != geometry.const_parts_end(); ++it )
+      for ( auto it = geometry->const_parts_begin(); it != geometry->const_parts_end(); ++it )
       {
         QList<QPolygonF> thisPart;
         const QgsCurvePolygon *surface = qgsgeometry_cast< const QgsCurvePolygon * >( *it );

@@ -763,6 +763,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QList< QList< QPolygonF > > toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
 
+    /**
+     * Converts a \a geometry to a set of QPolygonF objects representing
+     * how the geometry should be drawn for a symbol of the given \a type,
+     * as a list of geometry parts and rings.
+     *
+     * \since QGIS 3.42
+     */
+    static QList< QList< QPolygonF > > toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type );
+
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
 
