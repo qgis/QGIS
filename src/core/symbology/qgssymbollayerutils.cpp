@@ -392,6 +392,42 @@ Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
   return Qt::NoBrush;
 }
 
+Qgis::EndCapStyle QgsSymbolLayerUtils::penCapStyleToEndCapStyle( Qt::PenCapStyle style )
+{
+  switch ( style )
+  {
+    case Qt::FlatCap:
+      return Qgis::EndCapStyle::Flat;
+    case Qt::SquareCap:
+      return Qgis::EndCapStyle::Square;
+    case Qt::RoundCap:
+      return Qgis::EndCapStyle::Round;
+    case Qt::MPenCapStyle:
+      // undocumented?
+      break;
+  }
+
+  return Qgis::EndCapStyle::Round;
+}
+
+Qgis::JoinStyle QgsSymbolLayerUtils::penJoinStyleToJoinStyle( Qt::PenJoinStyle style )
+{
+  switch ( style )
+  {
+    case Qt::MiterJoin:
+    case Qt::SvgMiterJoin:
+      return Qgis::JoinStyle::Miter;
+    case Qt::BevelJoin:
+      return Qgis::JoinStyle::Bevel;
+    case Qt::RoundJoin:
+      return Qgis::JoinStyle::Round;
+    case Qt::MPenJoinStyle:
+      // undocumented?
+      break;
+  }
+  return Qgis::JoinStyle::Round;
+}
+
 bool QgsSymbolLayerUtils::hasSldSymbolizer( const QDomElement &element )
 {
   const QDomNodeList children = element.childNodes();
