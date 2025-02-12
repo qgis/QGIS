@@ -46,15 +46,15 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
     {
       chkKeepBackup->hide();
     }
-  }
 
-  QString warning = tr( "The authentication store will be re-encrypted using the new password." );
-  if ( QgsApplication::authManager()->passwordHelperEnabled() )
-  {
-    warning += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "The new password will automatically be stored in the system %1." ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
-  }
+    QString warning = tr( "The authentication store will be re-encrypted using the new password." );
+    if ( QgsApplication::authManager()->passwordHelperEnabled() )
+    {
+      warning += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "The new password will automatically be stored in the system %1." ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
+    }
 
-  lblWarning->setText( warning );
+    lblWarning->setText( warning );
+  }
 }
 
 QgsPasswordLineEdit *QgsMasterPasswordResetDialog::oldPasswordLineEdit()
