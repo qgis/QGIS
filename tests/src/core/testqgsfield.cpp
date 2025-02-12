@@ -208,6 +208,9 @@ void TestQgsField::gettersSetters()
   field.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
   QCOMPARE( field.duplicatePolicy(), Qgis::FieldDuplicatePolicy::UnsetField );
 
+  field.setMergePolicy( Qgis::FieldDomainMergePolicy::GeometryWeighted );
+  QCOMPARE( field.mergePolicy(), Qgis::FieldDomainMergePolicy::GeometryWeighted );
+
   field.setMetadata( { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } } );
   QMap<int, QVariant> expected { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } };
   QCOMPARE( field.metadata(), expected );

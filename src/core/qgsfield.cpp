@@ -772,6 +772,16 @@ void QgsField::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy )
   d->duplicatePolicy = policy;
 }
 
+Qgis::FieldDomainMergePolicy QgsField::mergePolicy() const
+{
+  return d->mergePolicy;
+}
+
+void QgsField::setMergePolicy( Qgis::FieldDomainMergePolicy policy )
+{
+  d->mergePolicy = policy;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.

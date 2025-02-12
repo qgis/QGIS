@@ -1953,6 +1953,27 @@ Sets a duplicate ``policy`` for the field with the specified index.
     }
 %End
 
+    void setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
+%Docstring
+Sets a merge ``policy`` for the field with the specified index.
+
+:raises KeyError: if no field with the specified index exists
+
+.. versionadded:: 3.44
+%End
+
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldMergePolicy( a0, a1 );
+    }
+%End
+
  QSet<QString> excludeAttributesWms() const /Deprecated="Since 3.16. Use fields().configurationFlags() instead."/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
