@@ -15,6 +15,7 @@
 #include "qgsgeoreftransform.h"
 
 #include "qgsgcplist.h"
+#include "qgsgcppoint.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
@@ -187,6 +188,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     // gcp points
     bool loadGCPs( QString &error );
     void saveGCPs();
+    QgsGeorefDataPoint *findPoint( QgsPointXY &p, QgsGcpPoint::PointType pointType );
+
     QgsGeoreferencerMainWindow::SaveGCPs checkNeedGCPSave();
 
     // georeference
@@ -296,6 +299,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
     QgsGeorefDataPoint *mNewlyAddedPoint = nullptr;
+    QgsGeorefDataPoint *mHoveredPoint = nullptr;
+
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
     bool mUseZeroForTrans = false;

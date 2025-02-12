@@ -130,6 +130,20 @@ void QgsGeorefDataPoint::updateCoords()
   }
 }
 
+void QgsGeorefDataPoint::setHovered( bool hovered )
+{
+  mHovered = hovered;
+
+  if ( mGCPSourceItem )
+  {
+    mGCPSourceItem->update();
+  }
+  if ( mGCPDestinationItem )
+  {
+    mGCPDestinationItem->update();
+  }
+}
+
 bool QgsGeorefDataPoint::contains( QgsPointXY p, QgsGcpPoint::PointType type, double &distance )
 {
   const double searchRadiusMM = QgsMapTool::searchRadiusMM();

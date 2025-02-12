@@ -48,13 +48,14 @@ bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas )
 
 void QgsGeorefToolMovePoint::canvasMoveEvent( QgsMapMouseEvent *e )
 {
+  QgsPointLocator::Match match;
   if ( !mStartPointMapCoords.isEmpty() )
   {
     const QgsPointXY pnt = toMapCoordinates( e->pos() );
-    QgsPointLocator::Match match = canvas()->snappingUtils()->snapToMap( pnt );
+    match = canvas()->snappingUtils()->snapToMap( pnt );
     mSnapIndicator->setMatch( match );
-    emit pointMoved( match.isValid() ? match.point() : toMapCoordinates( e->pos() ) );
   }
+  emit pointMoved( match.isValid() ? match.point() : toMapCoordinates( e->pos() ) );
 }
 
 void QgsGeorefToolMovePoint::canvasReleaseEvent( QgsMapMouseEvent *e )

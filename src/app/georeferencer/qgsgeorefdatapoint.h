@@ -103,6 +103,10 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
      */
     void setEnabled( bool enabled );
 
+    bool isHovered() const { return mHovered; }
+
+    void setHovered( bool hovered );
+
     int id() const { return mId; }
     void setId( int id );
 
@@ -132,6 +136,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     QgsMapCanvas *mDstCanvas = nullptr;
     QgsGCPCanvasItem *mGCPSourceItem = nullptr;
     QgsGCPCanvasItem *mGCPDestinationItem = nullptr;
+    bool mHovered = false;
 
     QgsGcpPoint mGcpPoint;
 
