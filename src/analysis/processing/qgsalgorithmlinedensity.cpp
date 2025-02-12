@@ -136,8 +136,10 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  const int rows = std::max( std::ceil( mExtent.height() / mPixelSize ), 1.0 );
-  const int cols = std::max( std::ceil( mExtent.width() / mPixelSize ), 1.0 );
+  // round up width and height to the nearest integer as GDAL does (e.g. in gdal_rasterize)
+  // see https://github.com/qgis/QGIS/issues/43547
+  const int rows = static_cast<int>( 0.5 + mExtent.height() / mPixelSize );
+  const int cols = static_cast<int>( 0.5 + mExtent.width() / mPixelSize );
 
   //build new raster extent based on number of columns and cellsize
   //this prevents output cellsize being calculated too small
