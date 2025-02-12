@@ -49,9 +49,24 @@ class QgsMessageBar;
 class QgsRubberBand;
 class QgsDoubleSpinBox;
 
+//! Helper validator for classification classes
+class ClassValidator : public QValidator
+{
+  public:
+    ClassValidator( QWidget *parent );
+    QValidator::State validate( QString &input, int &pos ) const override;
+    void fixup( QString &input ) const override;
+    void setClasses( const QMap<int, QString> &classes ) { mClasses = classes; }
+
+  private:
+    QMap<int, QString> mClasses;
+    QRegularExpression mRx;
+};
+
 class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 {
     Q_OBJECT
+
   public:
     Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
     ~Qgs3DMapCanvasWidget();
@@ -166,6 +181,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QToolBar *mEditingToolBar = nullptr;
     QComboBox *mCboChangeAttribute = nullptr;
     QComboBox *mCboChangeAttributeValue = nullptr;
+    ClassValidator *mClassValidator = nullptr;
     QgsDoubleSpinBox *mSpinChangeAttributeValue = nullptr;
     QAction *mCboChangeAttributeValueAction = nullptr;
     QAction *mSpinChangeAttributeValueAction = nullptr;
