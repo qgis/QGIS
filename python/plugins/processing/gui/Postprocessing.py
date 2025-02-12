@@ -285,7 +285,7 @@ def handleAlgorithmResults(
         if not project:
             project = context.project()
 
-        # store the current intersection point to restore it later
+        # store the current insertion point to restore it later
         previous_insertion_point = None
         if project:
             previous_insertion_point = (
