@@ -83,7 +83,7 @@ Qt::ItemFlags QgsPointCloudClassifiedRendererModel::flags( const QModelIndex &in
     return Qt::ItemIsDropEnabled;
   }
 
-  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
+  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable;
   if ( index.column() == 1 || index.column() == 2 || index.column() == 3 )
   {
     flags |= Qt::ItemIsEditable;
@@ -292,8 +292,8 @@ QMimeData *QgsPointCloudClassifiedRendererModel::mimeData( const QModelIndexList
 
 bool QgsPointCloudClassifiedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row )
   Q_UNUSED( column )
+  Q_UNUSED( parent ) // Unused because only valid indexes have Qt::ItemIsDropEnabled
   if ( action != Qt::MoveAction )
     return true;
 
@@ -311,7 +311,7 @@ bool QgsPointCloudClassifiedRendererModel::dropMimeData( const QMimeData *data, 
     rows.append( r );
   }
 
-  int to = parent.row();
+  int to = row;
   // to is -1 if dragged outside items, i.e. below any item,
   // then move to the last position
   if ( to == -1 )
