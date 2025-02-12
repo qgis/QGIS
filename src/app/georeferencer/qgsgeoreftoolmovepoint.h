@@ -27,22 +27,23 @@ class QgsGeorefToolMovePoint : public QgsMapTool
   public:
     explicit QgsGeorefToolMovePoint( QgsMapCanvas *canvas );
 
-    void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     bool isCanvas( QgsMapCanvas * );
 
+    QgsPointXY startPoint() const { return mStartPointMapCoords; }
+    void setStartPoint( const QgsPointXY &startPoint ) { mStartPointMapCoords = startPoint; }
+
   signals:
-    void pointPressed( QgsPointXY p );
-    void pointMoved( QgsPointXY p );
-    void pointReleased( QgsPointXY p );
-    void pointCanceled( QgsPointXY p );
+    void pointBeginMove( const QgsPointXY &p );
+    void pointMoving( const QgsPointXY &p );
+    void pointEndMove( const QgsPointXY &p );
+    void pointCancelMove( const QgsPointXY &p );
 
   private:
     //! Start point of the move in map coordinates
     QgsPointXY mStartPointMapCoords;
-
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };
 

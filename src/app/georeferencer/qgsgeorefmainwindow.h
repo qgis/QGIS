@@ -131,10 +131,10 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPointXY &sourceCoordinates );
 
-    void selectPoint( QgsPointXY p );
-    void movePoint( QgsPointXY p );
-    void releasePoint( QgsPointXY p );
-    void cancelPoint( QgsPointXY p );
+    void selectPoint( const QgsPointXY &p );
+    void movePoint( const QgsPointXY &p );
+    void releasePoint( const QgsPointXY &p );
+    void cancelPoint( const QgsPointXY &p );
 
     void loadGCPsDialog();
     void saveGCPsDialog();
@@ -189,7 +189,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     // gcp points
     bool loadGCPs( QString &error );
     void saveGCPs();
-    QgsGeorefDataPoint *findPoint( QgsPointXY &p, QgsGcpPoint::PointType pointType );
+    QgsGeorefDataPoint *findPoint( const QgsPointXY &p, QgsGcpPoint::PointType pointType );
 
     QgsGeoreferencerMainWindow::SaveGCPs checkNeedGCPSave();
 
@@ -299,8 +299,6 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
 
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
-    QgsPointXY mMovingPointLastPosition;
-
     QgsGeorefDataPoint *mNewlyAddedPoint = nullptr;
     QgsGeorefDataPoint *mHoveredPoint = nullptr;
 
