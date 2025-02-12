@@ -126,10 +126,11 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
      * \param finalize
      */
     void addPoint( const QgsPointXY &sourceCoords, const QgsPointXY &destinationMapCoords, const QgsCoordinateReferenceSystem &destinationCrs, bool enable = true, bool finalize = true );
-
-    void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPointXY &sourceCoordinates );
+
+    void deletePoint( const QgsPointXY &p );
+    void hoverPoint( const QgsPointXY &p );
 
     void selectPoint( const QgsPointXY &p );
     void movePoint( const QgsPointXY &p );

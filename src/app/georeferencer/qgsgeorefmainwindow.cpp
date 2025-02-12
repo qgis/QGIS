@@ -691,28 +691,16 @@ void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &sourceCoords, const
   }
 }
 
-void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
+void QgsGeoreferencerMainWindow::deletePoint( const QgsPointXY &p )
 {
-  QgsGeorefDataPoint *dataPoint = nullptr;
-  double lastPickedDistance = -1.0;
-  for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
+  QgsGeorefDataPoint *point = findPoint( p, QgsGcpPoint::PointType::Source );
+  if ( point )
   {
-    QgsGeorefDataPoint *pt = *it;
-    double distance = 0.0;
-    if ( pt->contains( coords, QgsGcpPoint::PointType::Source, distance ) ) // first operand for removing from GCP table
-    {
-      if ( lastPickedDistance < 0 || lastPickedDistance > distance )
-      {
-        dataPoint = *it;
-        lastPickedDistance = distance;
-      }
-    }
-  }
+    // At this stage, the hovered point will be the one being deleted
+    mHoveredPoint = nullptr;
 
-  if ( dataPoint )
-  {
-    mPoints.removeAll( dataPoint );
-    delete dataPoint;
+    mPoints.removeAll( point );
+    delete point;
     mGCPListWidget->setGCPList( &mPoints );
     mCanvas->refresh();
     updateGeorefTransform();
@@ -765,6 +753,20 @@ void QgsGeoreferencerMainWindow::selectPoint( const QgsPointXY &p )
       mToolMovePointQgis->setStartPoint( mvPoint->destinationPoint() );
     }
   }
+}
+
+void QgsGeoreferencerMainWindow::hoverPoint( const QgsPointXY &p )
+{
+  QgsGeorefDataPoint *point = findPoint( p, QgsGcpPoint::PointType::Source );
+  if ( point )
+  {
+    point->setHovered( true );
+  }
+  if ( mHoveredPoint && point != mHoveredPoint )
+  {
+    mHoveredPoint->setHovered( false );
+  }
+  mHoveredPoint = point;
 }
 
 void QgsGeoreferencerMainWindow::movePoint( const QgsPointXY &p )
@@ -1264,7 +1266,15 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mToolDeletePoint = new QgsGeorefToolDeletePoint( mCanvas );
   mToolDeletePoint->setAction( mActionDeletePoint );
-  connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::deleteDataPoint, this, static_cast<void ( QgsGeoreferencerMainWindow::* )( QPoint )>( &QgsGeoreferencerMainWindow::deleteDataPoint ) );
+  connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::hoverPoint, this, &QgsGeoreferencerMainWindow::hoverPoint );
+  connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::deletePoint, this, &QgsGeoreferencerMainWindow::deletePoint );
+  connect( mToolDeletePoint, &QgsMapTool::deactivated, this, [=] {
+    if ( mHoveredPoint )
+    {
+      mHoveredPoint->setHovered( false );
+      mHoveredPoint = nullptr;
+    }
+  } );
 
   mToolMovePoint = new QgsGeorefToolMovePoint( mCanvas );
   mToolMovePoint->setAction( mActionMoveGCPPoint );
@@ -1354,7 +1364,7 @@ void QgsGeoreferencerMainWindow::createDockWidgets()
   dockWidgetGCPpoints->setWidget( mGCPListWidget );
 
   connect( mGCPListWidget, &QgsGCPListWidget::jumpToGCP, this, &QgsGeoreferencerMainWindow::recenterOnPoint );
-  connect( mGCPListWidget, static_cast<void ( QgsGCPListWidget::* )( int )>( &QgsGCPListWidget::deleteDataPoint ), this, static_cast<void ( QgsGeoreferencerMainWindow::* )( int )>( &QgsGeoreferencerMainWindow::deleteDataPoint ) );
+  connect( mGCPListWidget, static_cast<void ( QgsGCPListWidget::* )( int )>( &QgsGCPListWidget::deleteDataPoint ), this, &QgsGeoreferencerMainWindow::deleteDataPoint );
   connect( mGCPListWidget, &QgsGCPListWidget::pointEnabled, this, &QgsGeoreferencerMainWindow::updateGeorefTransform );
 }
 
