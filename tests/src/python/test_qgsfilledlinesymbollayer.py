@@ -19,8 +19,6 @@ __author__ = "Nyall Dawson"
 __date__ = "November 2023"
 __copyright__ = "(C) 2023, Nyall Dawson"
 
-from typing import Optional
-
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
@@ -30,6 +28,7 @@ from qgis.core import (
     QgsMapSettings,
     QgsRenderContext,
     QgsFilledLineSymbolLayer,
+    QgsFillSymbol,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -128,6 +127,42 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
         self.assertTrue(
             self.image_check("render_offset", "render_offset", rendered_image)
         )
+
+    def testLineOffsetPolygon(self):
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        line = QgsFilledLineSymbolLayer()
+        line.setColor(QColor(255, 0, 0))
+        line.setWidth(5)
+        line.setOffset(5)
+
+        s.appendSymbolLayer(line.clone())
+
+        g = QgsGeometry.fromWkt("Polygon((2 2, 10 10, 10 0, 2 2))")
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "render_offset_polygon", "render_offset_polygon", rendered_image
+            )
+        )
+
+    def testRenderLooped(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        line = QgsFilledLineSymbolLayer()
+        line.setColor(QColor(255, 0, 0))
+        line.setWidth(8)
+        line.setPenCapStyle(Qt.PenCapStyle.FlatCap)
+
+        s.appendSymbolLayer(line.clone())
+
+        g = QgsGeometry.fromWkt(
+            "LineString (13.07373737373737299 8.51161616161616053, 0.69292929292929273 5.93585858585858439, 11.32222222222222285 2.15808080808080582, 0 0, 10 10, 10 0)"
+        )
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.image_check("loop", "loop", rendered_image))
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
