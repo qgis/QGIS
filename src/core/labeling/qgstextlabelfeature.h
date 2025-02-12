@@ -83,7 +83,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \see setTextMetrics()
      * \since QGIS 3.20
      */
-    const QgsPrecalculatedTextMetrics *textMetrics() const { return mTextMetrics.has_value() ? &mTextMetrics.value() : nullptr; }
+    const QgsPrecalculatedTextMetrics *textMetrics() const { return mTextMetrics.has_value() ? &( *mTextMetrics ) : nullptr; }
 
     /**
      * Sets additional text \a metrics required for curved label placement.
