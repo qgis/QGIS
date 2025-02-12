@@ -3506,6 +3506,30 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ],
             )
 
+            # truncate HEIGHT and WIDTH floats
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "FIELD": "id",
+                        "UNITS": 0,
+                        "WIDTH": 100.4,
+                        "HEIGHT": 200.6,
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_rasterize",
+                    "-l polys2 -a id -ts 100 200 -ot Float32 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+
             if GdalUtils.version() >= 3070000:
                 self.assertEqual(
                     alg.getConsoleCommands(
