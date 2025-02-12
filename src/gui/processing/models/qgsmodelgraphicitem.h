@@ -167,7 +167,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      *
      * The sockets will be rendered at the specified \a position
      */
-    QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge,
+    QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge,
                                            const QSizeF &size = QSizeF( 11, 11 ));
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
@@ -184,13 +184,16 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     /** Return the component associated to the socket */ 
     QgsProcessingModelComponent* component() {return mComponent;};
 
+    /** Return the parent GraphicItem (QgsModelComponentGraphicItem) associated to the socket */ 
+    QgsModelComponentGraphicItem* componentItem() {return mComponentItem;};
+
   signals:
 
     
 
   private:
 
-    // QgsModelComponentGraphicItem *component = nullptr;
+    QgsModelComponentGraphicItem *mComponentItem;
     int mIndex;
     QgsProcessingModelComponent* mComponent;
     Qt::Edge mEdge;

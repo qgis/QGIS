@@ -169,9 +169,9 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
 }
 
 
-QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QGraphicsItem *parent, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
+QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
   : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
-  , mComponent(component), mIndex( index ), mEdge ( edge )
+  , mComponentItem(parent), mComponent(component), mIndex( index ), mEdge ( edge )
 {
 
 }
