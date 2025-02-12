@@ -821,6 +821,60 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m5.isValid() );
       QVERIFY( !m6.isValid() );
     }
+
+
+    void testLocatorsCleaning()
+    {
+      auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      const int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+      QVERIFY( idx != -1 );
+      f1.initAttributes( 1 );
+      f2.initAttributes( 1 );
+
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
+      polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
+      polygon << polyline;
+      const QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
+      f1.setGeometry( polygonGeom );
+      f1.setAttribute( idx, QVariant( 2 ) );
+      QgsFeatureList flist;
+      flist << f1;
+
+      vl->dataProvider()->addFeatures( flist );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      u.setCurrentLayer( vl.get() );
+
+      // first try with no snapping enabled
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( false );
+      snappingConfig.setTolerance( 10 );
+      snappingConfig.setUnits( Qgis::MapToolUnit::Pixels );
+      snappingConfig.setMode( Qgis::SnappingMode::ActiveLayer );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setTypeFlag( Qgis::SnappingType::Vertex );
+      u.setConfig( snappingConfig );
+
+      QCOMPARE( u.mLocators.count(), 0 );
+
+      const QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
+
+      QCOMPARE( u.mLocators.count(), 1 );
+
+      vl.reset();
+
+      QCOMPARE( u.mLocators.count(), 0 );
+    }
 };
 
 QGSTEST_MAIN( TestQgsSnappingUtils )
