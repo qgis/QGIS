@@ -371,15 +371,7 @@ class CORE_EXPORT QgsExpressionUtils
      *
      * \since QGIS 3.42
      */
-    static QgsCoordinateReferenceSystem getCrs( const QVariant &value, QgsExpression *parent )
-    {
-      if ( value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
-        return value.value<QgsCoordinateReferenceSystem>();
-
-      if ( parent )
-        parent->setEvalErrorString( QStringLiteral( "Cannot convert to coordinate reference system" ) );
-      return QgsCoordinateReferenceSystem();
-    }
+    static QgsCoordinateReferenceSystem getCrsValue( const QVariant &value, QgsExpression *parent );
 
     static QgsExpressionNode *getNode( const QVariant &value, QgsExpression *parent )
     {
