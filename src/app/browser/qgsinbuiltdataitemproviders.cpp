@@ -2244,6 +2244,9 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
     case Qgis::FieldDomainMergePolicy::GeometryWeighted:
       metadata += tr( "Use geometry weighted value" );
       break;
+    case Qgis::FieldDomainMergePolicy::UnsetField:
+      metadata += tr( "Unset field" );
+      break;
   }
 
   metadata += QLatin1String( "</table>\n<br><br>" );
