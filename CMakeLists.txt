@@ -18,11 +18,8 @@ endif()
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
-if(NOT WITH_PYTHON)
-    set(WITH_BINDINGS OFF CACHE BOOL "Determines whether Python bindings should be built")
-else()
-  set(WITH_BINDINGS ON CACHE BOOL "Determines whether Python bindings should be built")
-endif()
+set(WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
+
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
@@ -321,14 +318,11 @@ if(WITH_CORE)
   if ( WITH_DESKTOP )
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
+    add_custom_target(qgis_desktop
+      DEPENDS qgis provider_postgres staged-plugins resources svg doc icons
+    )
     if ( WITH_PYTHON )
-      add_custom_target(qgis_desktop
-        DEPENDS qgis qgispython pycore pygui pyanalysis provider_postgres staged-plugins pyplugin-installer resources svg doc icons
-      )
-    else()
-      add_custom_target(qgis_desktop
-        DEPENDS qgis provider_postgres staged-plugins resources svg doc icons
-      )
+      add_dependencies(qgis_desktop qgispython pycore pygui pyanalysis staged-plugins pyplugin-installer )
     endif()
   endif()
 
