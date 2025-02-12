@@ -816,6 +816,15 @@ as a list of geometry parts and rings.
 .. versionadded:: 3.40
 %End
 
+    static QList< QList< QPolygonF > > toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type );
+%Docstring
+Converts a ``geometry`` to a set of QPolygonF objects representing
+how the geometry should be drawn for a symbol of the given ``type``,
+as a list of geometry parts and rings.
+
+.. versionadded:: 3.42
+%End
+
     static QPointF polygonCentroid( const QPolygonF &points );
 %Docstring
 Calculate the centroid point of a QPolygonF
