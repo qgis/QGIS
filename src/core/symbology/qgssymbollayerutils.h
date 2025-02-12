@@ -95,6 +95,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
     /**
+     * Converts a Qt pen cap style to a QGIS end cap style.
+     *
+     * \since QGIS 3.42
+     */
+    static Qgis::EndCapStyle penCapStyleToEndCapStyle( Qt::PenCapStyle style );
+
+    /**
+     * Converts a Qt pen joinstyle to a QGIS join style.
+     *
+     * \since QGIS 3.42
+     */
+    static Qgis::JoinStyle penJoinStyleToJoinStyle( Qt::PenJoinStyle style );
+
+    /**
      * Returns TRUE if a DOM \a element contains an SLD Symbolizer element.
      *
      * \since QGIS 3.42
