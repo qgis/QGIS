@@ -60,6 +60,20 @@ Contains utility functions for working with symbols and symbol layers.
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
+    static Qgis::EndCapStyle penCapStyleToEndCapStyle( Qt::PenCapStyle style );
+%Docstring
+Converts a Qt pen cap style to a QGIS end cap style.
+
+.. versionadded:: 3.42
+%End
+
+    static Qgis::JoinStyle penJoinStyleToJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Converts a Qt pen joinstyle to a QGIS join style.
+
+.. versionadded:: 3.42
+%End
+
     static bool hasSldSymbolizer( const QDomElement &element );
 %Docstring
 Returns ``True`` if a DOM ``element`` contains an SLD Symbolizer element.
