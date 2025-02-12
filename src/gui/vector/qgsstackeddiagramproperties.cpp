@@ -374,7 +374,10 @@ QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
 
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+  if ( !index.isValid() )
+    return Qt::ItemIsDropEnabled;
+
+  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
   if ( index.column() == 0 )
     flags |= Qt::ItemIsUserCheckable;
@@ -425,6 +428,7 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
 bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
+  Q_UNUSED( parent )
 
   if ( action == Qt::IgnoreAction )
     return true;
@@ -439,14 +443,7 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
   // the item was dropped at parent, we may decide where to put the items
   if ( row == -1 )
   {
-    if ( parent.row() == -1 )
-    {
-      row = rowCount( parent ); // let's append them (e.g., drop in empty space)
-    }
-    else
-    {
-      row = parent.row(); // use parent's row, our items will go just before
-    }
+    row = mRenderers.count(); // let's append them (e.g., drop in empty space)
   }
 
   while ( !stream.atEnd() )
