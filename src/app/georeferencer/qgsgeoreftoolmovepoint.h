@@ -37,6 +37,7 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     void pointPressed( QgsPointXY p );
     void pointMoved( QgsPointXY p );
     void pointReleased( QgsPointXY p );
+    void pointCanceled( QgsPointXY p );
 
   private:
     //! Start point of the move in map coordinates

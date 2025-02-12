@@ -134,6 +134,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     void selectPoint( QgsPointXY p );
     void movePoint( QgsPointXY p );
     void releasePoint( QgsPointXY p );
+    void cancelPoint( QgsPointXY p );
 
     void loadGCPsDialog();
     void saveGCPsDialog();
@@ -298,6 +299,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
 
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
+    QgsPointXY mMovingPointLastPosition;
+
     QgsGeorefDataPoint *mNewlyAddedPoint = nullptr;
     QgsGeorefDataPoint *mHoveredPoint = nullptr;
 

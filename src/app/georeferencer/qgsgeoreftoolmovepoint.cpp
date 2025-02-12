@@ -39,6 +39,10 @@ void QgsGeorefToolMovePoint::canvasPressEvent( QgsMapMouseEvent *e )
       mStartPointMapCoords = QgsPointXY();
     }
   }
+  else if ( e->button() & Qt::RightButton )
+  {
+    mStartPointMapCoords = QgsPointXY();
+  }
 }
 
 bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas )
@@ -62,7 +66,14 @@ void QgsGeorefToolMovePoint::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( mStartPointMapCoords.isEmpty() )
   {
-    mSnapIndicator->setMatch( QgsPointLocator::Match() );
-    emit pointReleased( toMapCoordinates( e->pos() ) );
+    if ( e->button() & Qt::LeftButton )
+    {
+      mSnapIndicator->setMatch( QgsPointLocator::Match() );
+      emit pointReleased( toMapCoordinates( e->pos() ) );
+    }
+    else if ( e->button() & Qt::RightButton )
+    {
+      emit pointCanceled( toMapCoordinates( e->pos() ) );
+    }
   }
 }
