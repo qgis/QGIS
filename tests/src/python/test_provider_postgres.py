@@ -4960,6 +4960,46 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         f2.setAttributes([7, 330, "qgis", "qgis", NULL])
         self.testGetFeatures(l.dataProvider(), [f1, f2])
 
+    def testAddFeatureAllNull(self):
+        # overridden from base test because of extra attributes in layer
+        if not getattr(self, "getEditableLayer", None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL])
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-72.345 71.987)"))
+
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.AddFeatures
+        ):
+            # expect success
+            result, added = l.dataProvider().addFeatures([f1])
+            self.assertTrue(
+                result,
+                "Provider reported AddFeatures capability, but returned False to addFeatures",
+            )
+
+            # check result
+            f_new = next(
+                l.dataProvider().getFeatures(
+                    QgsFeatureRequest().setFilterFid(added[0].id())
+                )
+            )
+            self.assertEqual(
+                f_new.attributes(),
+                [8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL],
+            )
+        else:
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().addFeatures([f1]),
+                "Provider reported no AddFeatures capability, but returned true to addFeatures",
+            )
+
     def testAddFeature(self):
         if not getattr(self, "getEditableLayer", None):
             return
