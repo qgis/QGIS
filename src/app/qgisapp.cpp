@@ -9451,9 +9451,8 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QgsFeatureList featureList = vl->selectedFeatures();
 
   //merge the attributes together
-  QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
-  //initialize dialog with all columns set to skip
-  d.setAllToSkip();
+  QgsMergeAttributesDialog d( featureList, vl, mapCanvas(), true );
+
   if ( d.exec() == QDialog::Rejected )
   {
     return;

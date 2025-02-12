@@ -50,7 +50,7 @@ const QList<Qgis::Statistic> QgsMergeAttributesDialog::DISPLAY_STATS = QList<Qgi
                                                                                                 << Qgis::Statistic::ThirdQuartile
                                                                                                 << Qgis::Statistic::InterQuartileRange;
 
-QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
+QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, bool skipAll, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mFeatureList( features )
   , mVectorLayer( vl )
@@ -63,7 +63,11 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
   connect( mFromLargestPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromLargestPushButton_clicked );
   connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
-  createTableWidgetContents();
+
+  createTableWidgetContents( skipAll );
+
+  if ( skipAll )
+    setAllToSkip();
 
   QHeaderView *verticalHeader = mTableWidget->verticalHeader();
   if ( verticalHeader )
@@ -149,7 +153,7 @@ void QgsMergeAttributesDialog::setAttributeTableConfig( const QgsAttributeTableC
   }
 }
 
-void QgsMergeAttributesDialog::createTableWidgetContents()
+void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
 {
   //get information about attributes from vector layer
   if ( !mVectorLayer )
@@ -238,26 +242,106 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   //initially set any fields with default values/default value clauses to that value
   for ( int j = 0; j < mTableWidget->columnCount(); j++ )
   {
+    if ( skipAll )
+      break;
+
     int idx = mTableWidget->horizontalHeaderItem( j )->data( FieldIndex ).toInt();
     bool setToManual = false;
 
-    if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
+    const QgsField field = mVectorLayer->fields().at( idx );
+
+    switch ( field.mergePolicy() )
     {
-      QVariant v = mVectorLayer->dataProvider()->defaultValueClause( idx );
-      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
-      mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
-      setToManual = true;
-    }
-    else
-    {
-      QVariant v = mVectorLayer->dataProvider()->defaultValue( idx );
-      if ( v.isValid() )
+      case Qgis::FieldDomainMergePolicy::Sum:
       {
+        if ( !field.isNumeric() )
+          break;
+
+        const double sum = std::accumulate( mFeatureList.constBegin(), mFeatureList.constEnd(), 0.0, [idx]( double sum, const QgsFeature &f ) {
+          return sum + f.attribute( idx ).toDouble();
+        } );
+
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, sum );
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, sum );
+        setToManual = true;
+
+        break;
+      }
+
+      case Qgis::FieldDomainMergePolicy::DefaultValue:
+      {
+        // create a dummy feature with the combined geometry in case the default value expression uses the geometry.
+        // however populating the feature's fields is problematic because the values haven't been set yet and
+        // generating them at this point isn't possible since the expression might refer to another field
+        // with a default value expression leading to conflicts
+        QgsFeature f;
+
+        QVector<QgsGeometry> geoms;
+        for ( const QgsFeature &f : mFeatureList )
+          geoms << f.geometry();
+
+        const QgsGeometry mergedGeom = QgsGeometry::unaryUnion( geoms );
+        f.setGeometry( mergedGeom );
+
+        const QVariant v = mVectorLayer->defaultValue( idx, f );
+
+        if ( !v.isValid() )
+          break;
+
         mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
         mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
         setToManual = true;
+        break;
+      }
+
+      case Qgis::FieldDomainMergePolicy::GeometryWeighted:
+      {
+        if ( !field.isNumeric() || mVectorLayer->geometryType() == Qgis::GeometryType::Point )
+          break;
+
+        QVector<QgsGeometry> geoms;
+        for ( const QgsFeature &f : mFeatureList )
+          geoms << f.geometry();
+
+        const QgsGeometry mergedGeom = QgsGeometry::unaryUnion( geoms );
+        const double mergedSize = mVectorLayer->geometryType() == Qgis::GeometryType::Polygon ? mergedGeom.area() : mergedGeom.length();
+
+        const double value = std::accumulate( mFeatureList.constBegin(), mFeatureList.constEnd(), 0.0, [&, idx]( double sum, const QgsFeature &f ) {
+          const double geomSize = mVectorLayer->geometryType() == Qgis::GeometryType::Polygon ? f.geometry().area() : f.geometry().length();
+          const double weightMultiplier = geomSize / mergedSize;
+          return sum + ( f.attribute( idx ).toDouble() * weightMultiplier );
+        } );
+
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, value );
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, value );
+        setToManual = true;
+
+        break;
+      }
+
+      case Qgis::FieldDomainMergePolicy::UnsetField:
+      {
+        if ( !mVectorLayer->dataProvider()->defaultValueClause( idx ).isEmpty() )
+        {
+          QVariant v = mVectorLayer->dataProvider()->defaultValueClause( idx );
+          mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
+          mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
+          setToManual = true;
+        }
+        else
+        {
+          QVariant v = mVectorLayer->dataProvider()->defaultValue( idx );
+          if ( v.isValid() )
+          {
+            mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
+            mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
+            setToManual = true;
+          }
+        }
       }
     }
+
+
     if ( setToManual )
     {
       QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, j ) );
