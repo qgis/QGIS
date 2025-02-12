@@ -12,7 +12,7 @@
   }, {
     "arg": "source_crs",
     "optional": true,
-    "description": "an optional string representing the source CRS of the points. By default the current layer's CRS is used."
+    "description": "an optional string or CRS object representing the source CRS of the points. By default the current layer's CRS is used."
 
   }, {
     "arg": "ellipsoid",

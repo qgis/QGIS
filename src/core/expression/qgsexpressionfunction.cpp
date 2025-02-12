@@ -2585,7 +2585,7 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
 
 static QVariant fcnCrsToAuthid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const QgsCoordinateReferenceSystem crs = QgsExpressionUtils::getCrs( values.at( 0 ), parent );
+  const QgsCoordinateReferenceSystem crs = QgsExpressionUtils::getCrsValue( values.at( 0 ), parent );
   if ( !crs.isValid() )
     return QVariant();
   return crs.authid();
@@ -2599,7 +2599,6 @@ static QVariant fcnCrsFromText( const QVariantList &values, const QgsExpressionC
   if ( !crs.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to cordinate reference system" ).arg( definition ) );
-    crs = QgsCoordinateReferenceSystem();
   }
 
   return QVariant::fromValue( crs );
@@ -5476,7 +5475,7 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
 {
   const QgsGeometry geom1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   const QgsGeometry geom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
-  QString sourceCrs = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  QgsCoordinateReferenceSystem sourceCrs = QgsExpressionUtils::getCrsValue( values.at( 2 ), parent );
   QString ellipsoid = QgsExpressionUtils::getStringValue( values.at( 3 ), parent );
 
   if ( geom1.isNull() || geom2.isNull() || geom1.type() != Qgis::GeometryType::Point || geom2.type() != Qgis::GeometryType::Point )
@@ -5498,9 +5497,9 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
   {
     tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
 
-    if ( sourceCrs.isEmpty() )
+    if ( !sourceCrs.isValid() )
     {
-      sourceCrs = context->variable( QStringLiteral( "layer_crs" ) ).toString();
+      sourceCrs = context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>();
     }
 
     if ( ellipsoid.isEmpty() )
@@ -5509,15 +5508,14 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
     }
   }
 
-  const QgsCoordinateReferenceSystem sCrs = QgsCoordinateReferenceSystem( sourceCrs );
-  if ( !sCrs.isValid() )
+  if ( !sourceCrs.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `bearing` requires a valid source CRS." ) );
     return QVariant();
   }
 
   QgsDistanceArea da;
-  da.setSourceCrs( sCrs, tContext );
+  da.setSourceCrs( sourceCrs, tContext );
   if ( !da.setEllipsoid( ellipsoid ) )
   {
     parent->setEvalErrorString( QObject::tr( "Function `bearing` requires a valid ellipsoid acronym or ellipsoid authority ID." ) );
@@ -6505,20 +6503,19 @@ static QVariant fcnGetFeatureId( const QVariantList &values, const QgsExpression
 static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  QString sAuthId = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  QString dAuthId = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  QgsCoordinateReferenceSystem sCrs = QgsExpressionUtils::getCrsValue( values.at( 1 ), parent );
+  QgsCoordinateReferenceSystem dCrs = QgsExpressionUtils::getCrsValue( values.at( 2 ), parent );
 
-  QgsCoordinateReferenceSystem s = QgsCoordinateReferenceSystem::fromOgcWmsCrs( sAuthId );
-  if ( ! s.isValid() )
+  if ( !sCrs.isValid() )
     return QVariant::fromValue( fGeom );
-  QgsCoordinateReferenceSystem d = QgsCoordinateReferenceSystem::fromOgcWmsCrs( dAuthId );
-  if ( ! d.isValid() )
+
+  if ( !dCrs.isValid() )
     return QVariant::fromValue( fGeom );
 
   QgsCoordinateTransformContext tContext;
   if ( context )
     tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
-  QgsCoordinateTransform t( s, d, tContext );
+  QgsCoordinateTransform t( sCrs, dCrs, tContext );
   try
   {
     if ( fGeom.transform( t ) == Qgis::GeometryOperationResult::Success )
@@ -9200,8 +9197,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnGeomToWKB, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false )
         << new QgsStaticExpressionFunction( QStringLiteral( "geometry" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ) ), fcnGetGeometry, QStringLiteral( "GeometryGroup" ), QString(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "source_auth_id" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "dest_auth_id" ) ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "source_crs" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "dest_crs" ) ),
                                             fcnTransformGeometry, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "extrude" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "x" ) )
