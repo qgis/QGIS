@@ -11854,9 +11854,14 @@ void QgisApp::setProjectCrsFromLayer()
     return;
   }
 
-  QgsCoordinateReferenceSystem crs = mLayerTreeView->currentLayer()->crs();
+  const QgsCoordinateReferenceSystem crs = mLayerTreeView->currentLayer()->crs();
   QgsCanvasRefreshBlocker refreshBlocker;
-  QgsProject::instance()->setCrs( crs );
+  QgsProject::instance()->setCrs( crs.horizontalCrs() );
+  const QgsCoordinateReferenceSystem vertCrs = crs.verticalCrs();
+  if ( vertCrs.isValid() )
+  {
+    QgsProject::instance()->setVerticalCrs( vertCrs );
+  }
 }
 
 
