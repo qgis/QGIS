@@ -71,8 +71,8 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
     QgsPointCloudNodeId mNode;
     QHash< int, double > mPointValues; // contains pairs of (point number, old value)
     QgsPointCloudAttribute mAttribute;
-    int mAttributeOffset;
-    double mNewValue;
+    int mAttributeOffset = 0;
+    double mNewValue = 0;
     bool mFirstEditForNode = false;
 };
 #endif // QGSPOINTCLOUDLAYERUNDOCOMMAND_H
