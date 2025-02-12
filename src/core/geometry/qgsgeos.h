@@ -212,6 +212,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
+
+    /**
+     * Directly calculates the buffer for a GEOS geometry object and returns a GEOS geometry result.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    SIP_SKIP static geos::unique_ptr buffer( const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr );
+
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
@@ -331,6 +340,14 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                                          bool topological,
                                          QgsPointSequence &topologyTestPoints,
                                          QString *errorMsg = nullptr, bool skipIntersectionCheck = false ) const override;
+
+    /**
+     * Directly calculates the offset curve for a GEOS geometry object and returns a GEOS geometry result.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    SIP_SKIP static geos::unique_ptr offsetCurve( const GEOSGeometry *geometry, double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr );
 
     QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
 

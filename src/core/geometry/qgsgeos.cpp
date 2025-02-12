@@ -2094,7 +2094,13 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *er
 
 QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
 {
-  if ( !mGeos )
+  geos::unique_ptr geos = buffer( mGeos.get(), distance, segments, endCapStyle, joinStyle, miterLimit, errorMsg );
+  return fromGeos( geos.get() ).release();
+}
+
+geos::unique_ptr QgsGeos::buffer( const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg )
+{
+  if ( !geometry )
   {
     return nullptr;
   }
@@ -2102,10 +2108,10 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, Qgis::EndCa
   geos::unique_ptr geos;
   try
   {
-    geos.reset( GEOSBufferWithStyle_r( QgsGeosContext::get(), mGeos.get(), distance, segments, static_cast< int >( endCapStyle ), static_cast< int >( joinStyle ), miterLimit ) );
+    geos.reset( GEOSBufferWithStyle_r( QgsGeosContext::get(), geometry, distance, segments, static_cast< int >( endCapStyle ), static_cast< int >( joinStyle ), miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
-  return fromGeos( geos.get() ).release();
+  return geos;
 }
 
 QgsAbstractGeometry *QgsGeos::simplify( double tolerance, QString *errorMsg ) const
@@ -2743,9 +2749,9 @@ geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, do
   return geosPolygon;
 }
 
-QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
+geos::unique_ptr QgsGeos::offsetCurve( const GEOSGeometry *geometry, double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg )
 {
-  if ( !mGeos )
+  if ( !geometry )
     return nullptr;
 
   geos::unique_ptr offset;
@@ -2755,11 +2761,19 @@ QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, Qgis::
     // https://github.com/qgis/QGIS/issues/53165#issuecomment-1563470832
     if ( segments < 8 )
       segments = 8;
-    offset.reset( GEOSOffsetCurve_r( QgsGeosContext::get(), mGeos.get(), distance, segments, static_cast< int >( joinStyle ), miterLimit ) );
+    offset.reset( GEOSOffsetCurve_r( QgsGeosContext::get(), geometry, distance, segments, static_cast< int >( joinStyle ), miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
-  std::unique_ptr< QgsAbstractGeometry > offsetGeom = fromGeos( offset.get() );
-  return offsetGeom.release();
+  return offset;
+}
+
+QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
+{
+  geos::unique_ptr res = offsetCurve( mGeos.get(), distance, segments, joinStyle, miterLimit, errorMsg );
+  if ( !res )
+    return nullptr;
+
+  return fromGeos( res.get() ).release();
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
