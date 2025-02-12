@@ -130,9 +130,9 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPointXY &sourceCoordinates );
 
-    void selectPoint( QPoint );
-    void movePoint( QPoint canvasPixels );
-    void releasePoint( QPoint );
+    void selectPoint( QgsPointXY p );
+    void movePoint( QgsPointXY p );
+    void releasePoint( QgsPointXY p );
 
     void loadGCPsDialog();
     void saveGCPsDialog();

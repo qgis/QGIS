@@ -18,6 +18,7 @@
 
 #include "qgsmaptool.h"
 #include "qgsrubberband.h"
+#include "qgssnapindicator.h"
 
 class QgsGeorefToolMovePoint : public QgsMapTool
 {
@@ -33,13 +34,15 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     bool isCanvas( QgsMapCanvas * );
 
   signals:
-    void pointPressed( QPoint p );
-    void pointMoved( QPoint p );
-    void pointReleased( QPoint p );
+    void pointPressed( QgsPointXY p );
+    void pointMoved( QgsPointXY p );
+    void pointReleased( QgsPointXY p );
 
   private:
     //! Start point of the move in map coordinates
-    QPoint mStartPointMapCoords;
+    QgsPointXY mStartPointMapCoords;
+
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };
 
 #endif // QGSGEOREFTOOLMOVEPOINT_H

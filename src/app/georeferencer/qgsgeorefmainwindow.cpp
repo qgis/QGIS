@@ -728,7 +728,7 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( int theGCPIndex )
   updateGeorefTransform();
 }
 
-void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
+void QgsGeoreferencerMainWindow::selectPoint( QgsPointXY p )
 {
   const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
   QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
@@ -748,19 +748,19 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
   }
 }
 
-void QgsGeoreferencerMainWindow::movePoint( QPoint canvasPixels )
+void QgsGeoreferencerMainWindow::movePoint( QgsPointXY p )
 {
   const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
   QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
 
   if ( mvPoint )
   {
-    mvPoint->moveTo( canvasPixels, pointType );
+    mvPoint->moveTo( p, pointType );
     mGCPListWidget->updateResiduals();
   }
 }
 
-void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
+void QgsGeoreferencerMainWindow::releasePoint( QgsPointXY p )
 {
   Q_UNUSED( p )
   mGCPListWidget->updateResiduals();

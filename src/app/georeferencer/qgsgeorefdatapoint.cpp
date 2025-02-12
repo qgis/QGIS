@@ -130,47 +130,49 @@ void QgsGeorefDataPoint::updateCoords()
   }
 }
 
-bool QgsGeorefDataPoint::contains( QPoint p, QgsGcpPoint::PointType type, double &distance )
+bool QgsGeorefDataPoint::contains( QgsPointXY p, QgsGcpPoint::PointType type, double &distance )
 {
   const double searchRadiusMM = QgsMapTool::searchRadiusMM();
   const double pixelsPerMM = mGCPSourceItem->canvas()->logicalDpiX() / 25.4;
   const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
 
+  QPointF pPos;
   QPointF itemPos;
   switch ( type )
   {
     case QgsGcpPoint::PointType::Source:
     {
+      pPos = mGCPSourceItem->toCanvasCoordinates( p );
       itemPos = mGCPSourceItem->pos();
       break;
     }
 
     case QgsGcpPoint::PointType::Destination:
     {
+      pPos = mGCPDestinationItem->toCanvasCoordinates( p );
       itemPos = mGCPDestinationItem->pos();
       break;
     }
   }
 
-  const double dx = p.x() - itemPos.x();
-  const double dy = p.y() - itemPos.y();
+  const double dx = pPos.x() - itemPos.x();
+  const double dy = pPos.y() - itemPos.y();
   distance = std::sqrt( dx * dx + dy * dy );
   return distance <= searchRadiusPx;
 }
 
-void QgsGeorefDataPoint::moveTo( QPoint canvasPixels, QgsGcpPoint::PointType type )
+void QgsGeorefDataPoint::moveTo( QgsPointXY p, QgsGcpPoint::PointType type )
 {
   switch ( type )
   {
     case QgsGcpPoint::PointType::Source:
     {
-      const QgsPointXY pnt = mGCPSourceItem->toMapCoordinates( canvasPixels );
-      mGcpPoint.setSourcePoint( pnt );
+      mGcpPoint.setSourcePoint( p );
       break;
     }
     case QgsGcpPoint::PointType::Destination:
     {
-      mGcpPoint.setDestinationPoint( mGCPDestinationItem->toMapCoordinates( canvasPixels ) );
+      mGcpPoint.setDestinationPoint( p );
       if ( mSrcCanvas && mSrcCanvas->mapSettings().destinationCrs().isValid() )
         mGcpPoint.setDestinationPointCrs( mSrcCanvas->mapSettings().destinationCrs() );
       else
