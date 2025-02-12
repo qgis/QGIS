@@ -48,7 +48,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   p->setRenderHint( QPainter::Antialiasing );
 
   bool enabled = true;
-  double scale = 1.0;
+  int scale = 1;
   QgsPointXY worldCoords;
   int id = -1;
   const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
@@ -56,7 +56,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   if ( mDataPoint )
   {
     enabled = mDataPoint->isEnabled();
-    scale = mDataPoint->isHovered() ? 2.0 : 1.0;
+    scale = mDataPoint->isHovered() ? 2 : 1;
     worldCoords = mDataPoint->destinationPoint();
     id = mDataPoint->id();
   }

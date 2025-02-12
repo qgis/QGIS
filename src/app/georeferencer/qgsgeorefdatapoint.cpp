@@ -45,6 +45,7 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
   , mDstCanvas( p.mDstCanvas )
   , mGCPSourceItem( nullptr )
   , mGCPDestinationItem( nullptr )
+  , mHovered( p.mHovered )
   , mGcpPoint( p.mGcpPoint )
   , mId( p.id() )
   , mResidual( p.residual() )
@@ -144,7 +145,7 @@ void QgsGeorefDataPoint::setHovered( bool hovered )
   }
 }
 
-bool QgsGeorefDataPoint::contains( QgsPointXY p, QgsGcpPoint::PointType type, double &distance )
+bool QgsGeorefDataPoint::contains( const QgsPointXY &p, QgsGcpPoint::PointType type, double &distance )
 {
   const double searchRadiusMM = QgsMapTool::searchRadiusMM();
   const double pixelsPerMM = mGCPSourceItem->canvas()->logicalDpiX() / 25.4;

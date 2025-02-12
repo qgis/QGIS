@@ -48,7 +48,7 @@ void QgsGeorefToolMovePoint::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( mStartPointMapCoords.isEmpty() )
     {
-      emit pointBeginMove( mStartPointMapCoords );
+      emit pointBeginMove( toMapCoordinates( e->pos() ) );
     }
     else
     {
