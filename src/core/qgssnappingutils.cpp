@@ -45,7 +45,7 @@ QgsPointLocator *QgsSnappingUtils::locatorForLayer( QgsVectorLayer *vl )
     connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
     connect( vl, &QObject::destroyed, this, [this, vl]()
     {
-      mLocators.remove( vl );
+      delete mLocators.take( vl );
     } );
 
     mLocators.insert( vl, vlpl );
