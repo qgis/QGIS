@@ -3955,7 +3955,7 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
 
   if ( points.count() >= 2 )
   {
-    std::unique_ptr< QgsAbstractGeometry > ls = QgsLineString::fromQPolygonF( points );
+    std::unique_ptr< QgsAbstractGeometry > ls( QgsLineString::fromQPolygonF( points ) );
     geos::unique_ptr lineGeom;
 
     if ( !qgsDoubleNear( offset, 0 ) )
