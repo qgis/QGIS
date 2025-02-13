@@ -39,7 +39,6 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     //! Ctor
     explicit QgsPointCloudEditingIndex( QgsPointCloudLayer *layer );
 
-    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
     void load( const QString &fileName ) override;
     bool isValid() const override;
     Qgis::PointCloudAccessType accessType() const override;

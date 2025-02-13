@@ -47,11 +47,6 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mIsValid = true;
 }
 
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsPointCloudEditingIndex::clone() const
-{
-  return nullptr;
-}
-
 void QgsPointCloudEditingIndex::load( const QString & )
 {
   return;

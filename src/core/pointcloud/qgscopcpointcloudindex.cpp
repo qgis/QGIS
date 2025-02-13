@@ -53,14 +53,6 @@ QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsCopcPointCloudIndex::clone() const
-{
-  QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
-  QMutexLocker locker( &mHierarchyMutex );
-  copyCommonProperties( clone );
-  return std::unique_ptr<QgsAbstractPointCloudIndex>( clone );
-}
-
 void QgsCopcPointCloudIndex::load( const QString &urlString )
 {
   QUrl url = urlString;
@@ -430,22 +422,6 @@ QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id
 
   QgsBox3D bounds = QgsPointCloudNode::bounds( mRootBounds, id );
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
-}
-
-void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *destination ) const
-{
-  QgsAbstractPointCloudIndex::copyCommonProperties( destination );
-
-  // QgsCopcPointCloudIndex specific fields
-  destination->mIsValid = mIsValid;
-  destination->mAccessType = mAccessType;
-  destination->mUri = mUri;
-  if ( mAccessType == Qgis::PointCloudAccessType::Local )
-    destination->mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
-  destination->mCopcInfoVlr = mCopcInfoVlr;
-  destination->mHierarchyNodePos = mHierarchyNodePos;
-  destination->mOriginalMetadata = mOriginalMetadata;
-  destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
 }
 
 QByteArray QgsCopcPointCloudIndex::readRange( uint64_t offset, uint64_t length ) const
