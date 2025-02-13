@@ -155,7 +155,17 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
 
 QgsCoordinateReferenceSystem QgsExpressionUtils::getCrsValue( const QVariant &value, QgsExpression *parent )
 {
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+
   const bool isCrs = value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>();
+
+  if ( !isCrs && value.toString().isEmpty() )
+  {
+    return QgsCoordinateReferenceSystem();
+  }
 
   QgsCoordinateReferenceSystem crs = isCrs ? value.value<QgsCoordinateReferenceSystem>() : QgsCoordinateReferenceSystem( value.toString() );
   if ( !crs.isValid() )

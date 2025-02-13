@@ -9197,8 +9197,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnGeomToWKB, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false )
         << new QgsStaticExpressionFunction( QStringLiteral( "geometry" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "feature" ) ), fcnGetGeometry, QStringLiteral( "GeometryGroup" ), QString(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "source_crs" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "dest_crs" ) ),
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "source_auth_id" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "dest_auth_id" ) ),
                                             fcnTransformGeometry, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "extrude" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "x" ) )
