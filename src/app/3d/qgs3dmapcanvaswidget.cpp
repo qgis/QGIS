@@ -1094,7 +1094,8 @@ QValidator::State ClassValidator::validate( QString &input, int &pos ) const
   if ( mClasses.contains( n ) )
   {
     input = QStringLiteral( "%1 (%2)" ).arg( n ).arg( mClasses[n] );
-    pos = std::min( pos, number.size() );
+    if ( pos > number.size() )
+      pos = number.size();
     return QValidator::State::Acceptable;
   }
   return QValidator::State::Intermediate;
