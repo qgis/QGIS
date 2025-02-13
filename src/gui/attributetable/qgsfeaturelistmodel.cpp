@@ -115,6 +115,14 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     return QVariant::fromValue( feat );
   }
+  else if ( role == FeatureWithGeometryRole )
+  {
+    QgsFeature feat;
+
+    mFilterModel->layerCache()->featureAtIdWithAllAttributesAndGeometry( idxToFid( index ), feat );
+
+    return QVariant::fromValue( feat );
+  }
   else if ( role == Qt::TextAlignmentRole )
   {
     return static_cast<Qt::Alignment::Int>( Qt::AlignLeft );

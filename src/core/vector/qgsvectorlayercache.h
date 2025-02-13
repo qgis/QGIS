@@ -64,10 +64,12 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
          * \param feat     The feature to cache. A copy will be made.
          * \param vlCache  The cache to inform when the feature has been removed from the cache.
          * \param allAttributesFetched TRUE if the feature was fetched with all attributes (and not a subset)
+         * \param geometryFetched TRUE if the feature was fetched with geometry, \since QGIS 3.42
          */
-        QgsCachedFeature( const QgsFeature &feat, QgsVectorLayerCache *vlCache, bool allAttributesFetched )
+        QgsCachedFeature( const QgsFeature &feat, QgsVectorLayerCache *vlCache, bool allAttributesFetched, bool geometryFetched )
           : mCache( vlCache )
           , mAllAttributesFetched( allAttributesFetched )
+          , mGeometryFetched( geometryFetched )
         {
           mFeature = new QgsFeature( feat );
         }
@@ -84,10 +86,13 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
         bool allAttributesFetched() const;
 
+        bool geometryFetched() const;
+
       private:
         QgsFeature *mFeature = nullptr;
         QgsVectorLayerCache *mCache = nullptr;
         bool mAllAttributesFetched = true;
+        bool mGeometryFetched = false;
 
         friend class QgsVectorLayerCache;
         Q_DISABLE_COPY( QgsCachedFeature )
@@ -271,6 +276,21 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     bool featureAtIdWithAllAttributes( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
 
     /**
+     * Gets the feature at the given feature id with all attributes and geometry, if the cached feature
+     * already contains all attributes and geometry, calling this function has the same effect as calling
+     * featureAtId().
+     *
+     * Considers the changed, added, deleted and permanent features
+     * \param featureId The id of the feature to query
+     * \param feature   The result of the operation will be written to this feature
+     * \param skipCache Will query the layer regardless if the feature is in the cache already
+     * \returns TRUE in case of success
+     * \see featureAtId()
+     * \since QGIS 3.42
+     */
+    bool featureAtIdWithAllAttributesAndGeometry( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
+
+    /**
      * Removes the feature identified by fid from the cache if present.
      * \param fid The id of the feature to delete
      * \returns TRUE if the feature was removed, FALSE if the feature id was not found in the cache
@@ -417,9 +437,9 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     void connectJoinedLayers() const;
 
-    inline void cacheFeature( QgsFeature &feat, bool allAttributesFetched )
+    inline void cacheFeature( QgsFeature &feat, bool allAttributesFetched, bool geometryFetched = false )
     {
-      QgsCachedFeature *cachedFeature = new QgsCachedFeature( feat, this, allAttributesFetched );
+      QgsCachedFeature *cachedFeature = new QgsCachedFeature( feat, this, allAttributesFetched, geometryFetched );
       mCache.insert( feat.id(), cachedFeature );
       if ( mCacheUnorderedKeys.find( feat.id() ) == mCacheUnorderedKeys.end() )
       {
