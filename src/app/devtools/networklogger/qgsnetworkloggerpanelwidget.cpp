@@ -41,6 +41,8 @@ QgsNetworkLoggerTreeView::QgsNetworkLoggerTreeView( QgsNetworkLogger *logger, QW
   : QTreeView( parent )
   , mLogger( logger )
 {
+  setUniformRowHeights( true );
+
   connect( this, &QTreeView::expanded, this, &QgsNetworkLoggerTreeView::itemExpanded );
 
   setFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
