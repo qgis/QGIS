@@ -3905,6 +3905,20 @@ void QgsFilledLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   }
 }
 
+void QgsFilledLineSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  installMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
+void QgsFilledLineSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  removeMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
 void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();

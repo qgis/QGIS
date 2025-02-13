@@ -29,6 +29,10 @@ from qgis.core import (
     QgsRenderContext,
     QgsFilledLineSymbolLayer,
     QgsFillSymbol,
+    QgsSimpleFillSymbolLayer,
+    QgsMarkerSymbol,
+    QgsSimpleMarkerSymbolLayer,
+    QgsCentroidFillSymbolLayer,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -163,6 +167,41 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
         )
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.image_check("loop", "loop", rendered_image))
+
+    def testCentroidFillSubSymbol(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        line = QgsFilledLineSymbolLayer()
+        line.setColor(QColor(255, 0, 0))
+        line.setWidth(5)
+
+        sub_symbol = QgsFillSymbol()
+        simple_fill = QgsSimpleFillSymbolLayer()
+        simple_fill.setColor(QColor(0, 255, 0, 100))
+        simple_fill.setStrokeStyle(Qt.NoPen)
+        centroid_fill = QgsCentroidFillSymbolLayer()
+        simple_marker = QgsSimpleMarkerSymbolLayer()
+        simple_marker.setFillColor(QColor(255, 0, 0))
+        simple_marker.setStrokeStyle(Qt.NoPen)
+        centroid_fill_marker = QgsMarkerSymbol()
+        centroid_fill_marker.changeSymbolLayer(0, simple_marker)
+        centroid_fill.setPointOnSurface(True)
+
+        centroid_fill.setSubSymbol(centroid_fill_marker)
+        sub_symbol.changeSymbolLayer(0, centroid_fill)
+        sub_symbol.appendSymbolLayer(simple_fill)
+        line.setSubSymbol(sub_symbol)
+
+        s.appendSymbolLayer(line.clone())
+
+        g = QgsGeometry.fromWkt("LineString(2 2, 10 10, 10 0)")
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "render_centroid_fill", "render_centroid_fill", rendered_image
+            )
+        )
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
