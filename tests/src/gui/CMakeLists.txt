@@ -34,6 +34,7 @@ set(TESTS
   testqgsdoublespinbox.cpp
   testqgsdualview.cpp
   testqgsattributeform.cpp
+  testqgsattributesformproperties.cpp
   testqgsdatetimeedit.cpp
   testqgsdockwidget.cpp
   testqgsfieldexpressionwidget.cpp

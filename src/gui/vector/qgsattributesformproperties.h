@@ -422,6 +422,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitFilePath;
     QString mInitCode;
     int mBlockUpdates = 0;
+
+    friend class TestQgsAttributesFormProperties;
 };
 
 

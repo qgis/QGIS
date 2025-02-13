@@ -618,8 +618,13 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
   const Qgis::AttributeFormLayout layout = mEditorLayoutComboBox->currentData().value<Qgis::AttributeFormLayout>();
 
   if ( layout == Qgis::AttributeFormLayout::DragAndDrop )
+  {
     storeAttributeWidgetEdit();
-
+  }
+  if ( mAttributeTypeDialog )
+  {
+    storeAttributeTypeDialog();
+  }
   clearAttributeTypeFrame();
 
   if ( emitter->selectedItems().count() != 1 )
@@ -648,7 +653,9 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       {
         receiver->selectFirstMatchingItem( itemData );
         if ( layout == Qgis::AttributeFormLayout::DragAndDrop )
+        {
           loadAttributeWidgetEdit();
+        }
         loadAttributeTypeDialog();
         break;
       }
