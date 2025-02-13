@@ -389,7 +389,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 
   if ( index.isValid() )
   {
-    const QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
+    const QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureWithGeometryRole ).value<QgsFeature>();
 
     QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
 
