@@ -118,7 +118,19 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   {
     outputCrs = mLayers.at( 0 )->crs();
   }
+
+
   const Qgis::DataType outputDataType = qobject_cast<QgsRasterLayer *>( mLayers.at( 0 ) )->dataProvider()->dataType( 1 );
+  double outputNoData = 0.0;
+  if ( qobject_cast<QgsRasterLayer *>( mLayers.at( 0 ) )->dataProvider()->sourceHasNoDataValue( 1 ) )
+  {
+    outputNoData = qobject_cast<QgsRasterLayer *>( mLayers.at( 0 ) )->dataProvider()->sourceNoDataValue( 1 );
+  }
+  else
+  {
+    outputNoData = -FLT_MAX;
+  }
+
   QgsRectangle outputExtent;
   if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
   {
@@ -171,7 +183,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
-  provider->setNoDataValue( 1, 0 );
+  provider->setNoDataValue( 1, outputNoData );
 
   const double step = rows > 0 ? 100.0 / rows : 1;
   for ( int row = 0; row < rows; row++ )
@@ -227,7 +239,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
       }
       else
       {
-        block.setValue( 0, col, 0 );
+        block.setValue( 0, col, outputNoData );
       }
     }
 
