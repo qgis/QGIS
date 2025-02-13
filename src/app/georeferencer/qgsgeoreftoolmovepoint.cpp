@@ -65,3 +65,15 @@ void QgsGeorefToolMovePoint::canvasReleaseEvent( QgsMapMouseEvent *e )
     }
   }
 }
+
+void QgsGeorefToolMovePoint::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Escape )
+  {
+    if ( !mStartPointMapCoords.isEmpty() )
+    {
+      mSnapIndicator->setMatch( QgsPointLocator::Match() );
+      emit pointCancelMove( QgsPointXY() );
+    }
+  }
+}
