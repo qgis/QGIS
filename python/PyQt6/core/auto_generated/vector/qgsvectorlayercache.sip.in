@@ -211,6 +211,25 @@ Considers the changed, added, deleted and permanent features
 .. versionadded:: 3.32
 %End
 
+    bool featureAtIdWithAllAttributesAndGeometry( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
+%Docstring
+Gets the feature at the given feature id with all attributes and geometry, if the cached feature
+already contains all attributes and geometry, calling this function has the same effect as calling
+:py:func:`~QgsVectorLayerCache.featureAtId`.
+
+Considers the changed, added, deleted and permanent features
+
+:param featureId: The id of the feature to query
+:param feature: The result of the operation will be written to this feature
+:param skipCache: Will query the layer regardless if the feature is in the cache already
+
+:return: ``True`` in case of success
+
+.. seealso:: :py:func:`featureAtId`
+
+.. versionadded:: 3.42
+%End
+
     bool removeCachedFeature( QgsFeatureId fid );
 %Docstring
 Removes the feature identified by fid from the cache if present.
