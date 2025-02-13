@@ -54,6 +54,7 @@ class QgsSettingsEntryBool;
 class QgsSettingsEntryString;
 class QgsSettingsEntryColor;
 class QgsMapLayerProxyModel;
+class QgsLineSymbol;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
 {
@@ -93,6 +94,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryBool *settingLockAxis;
     static const QgsSettingsEntryString *settingLastExportDir;
     static const QgsSettingsEntryColor *settingBackgroundColor;
+    static const QgsSettingsEntryBool *settingShowSubsections;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
@@ -133,6 +135,8 @@ class QgsElevationProfileWidget : public QWidget
     void axisScaleLockToggled( bool active );
     void renameProfileTriggered();
     void onProjectElevationPropertiesChanged();
+    void showSubsectionsTriggered();
+    void editSubsectionsSymbology();
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
@@ -154,6 +158,8 @@ class QgsElevationProfileWidget : public QWidget
     QAction *mNudgeRightAction = nullptr;
     QAction *mRenameProfileAction = nullptr;
     QAction *mLockRatioAction = nullptr;
+    QAction *mShowSubsectionsAction = nullptr;
+    QAction *mSubsectionsSymbologyAction = nullptr;
     QMenu *mDistanceUnitMenu = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
@@ -180,6 +186,8 @@ class QgsElevationProfileWidget : public QWidget
     std::unique_ptr<QgsLayerTree> mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
     QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
+
+    std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
 };
 
 
