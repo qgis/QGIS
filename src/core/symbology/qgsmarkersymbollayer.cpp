@@ -663,7 +663,8 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
               << QPointF( inner_r * std::sin( DEG2RAD( 135.0 ) ), - inner_r * std::cos( DEG2RAD( 135.0 ) ) )
               << QPointF( std::sin( DEG2RAD( 90 ) ), - std::cos( DEG2RAD( 90 ) ) )
               << QPointF( inner_r * std::sin( DEG2RAD( 45.0 ) ), - inner_r * std::cos( DEG2RAD( 45.0 ) ) )
-              << QPointF( std::sin( DEG2RAD( 0 ) ), - std::cos( DEG2RAD( 0 ) ) );
+              << QPointF( std::sin( DEG2RAD( 0 ) ), - std::cos( DEG2RAD( 0 ) ) )
+              << QPointF( inner_r * std::sin( DEG2RAD( 315.0 ) ), - inner_r * std::cos( DEG2RAD( 315.0 ) ) );
       return true;
     }
 
