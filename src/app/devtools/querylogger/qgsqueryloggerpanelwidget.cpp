@@ -42,6 +42,7 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
   : QTreeView( parent )
   , mLogger( logger )
 {
+  setUniformRowHeights( true );
   connect( this, &QTreeView::expanded, this, &QgsDatabaseQueryLoggerTreeView::itemExpanded );
 
   setFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
