@@ -45,7 +45,7 @@
 #include <Qt3DRender/QRenderSettings>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
-#include <qframeaction.h>
+#include <Qt3DLogic/QFrameAction>
 
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
@@ -72,6 +72,7 @@ void Qgs3DUtils::waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene
   QObject::connect( frameAction, &Qt3DLogic::QFrameAction::triggered, &evLoop, &QEventLoop::quit );
   evLoop.exec();
   scene->removeComponent( frameAction );
+  frameAction->deleteLater();
 
   engine.renderSettings()->setRenderPolicy( oldPolicy );
 }
