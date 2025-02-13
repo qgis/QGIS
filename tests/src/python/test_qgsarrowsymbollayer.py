@@ -21,7 +21,7 @@ __copyright__ = "(C) 2016, Hugo Mercier"
 
 import os
 
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     QgsArrowSymbolLayer,
@@ -38,6 +38,10 @@ from qgis.core import (
     QgsSymbol,
     QgsSymbolLayer,
     QgsVectorLayer,
+    QgsSimpleFillSymbolLayer,
+    QgsCentroidFillSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
+    QgsMarkerSymbol,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -72,6 +76,10 @@ class TestQgsArrowSymbolLayer(QgisTestCase):
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
+
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol_arrow"
 
     def test_1(self):
         sym = self.lines_layer.renderer().symbol()
@@ -363,6 +371,43 @@ class TestQgsArrowSymbolLayer(QgisTestCase):
                 "arrow_ddopacity",
                 ms,
                 control_path_prefix="symbol_arrow",
+            )
+        )
+
+    def testCentroidFillSubSymbol(self):
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        line = QgsArrowSymbolLayer()
+        line.setColor(QColor(255, 0, 0))
+        line.setArrowStartWidth(10)
+        line.setArrowWidth(5)
+        line.setIsCurved(False)
+
+        sub_symbol = QgsFillSymbol()
+        simple_fill = QgsSimpleFillSymbolLayer()
+        simple_fill.setColor(QColor(0, 255, 0, 100))
+        simple_fill.setStrokeStyle(Qt.NoPen)
+        centroid_fill = QgsCentroidFillSymbolLayer()
+        simple_marker = QgsSimpleMarkerSymbolLayer()
+        simple_marker.setFillColor(QColor(255, 0, 0))
+        simple_marker.setStrokeStyle(Qt.NoPen)
+        centroid_fill_marker = QgsMarkerSymbol()
+        centroid_fill_marker.changeSymbolLayer(0, simple_marker)
+        centroid_fill.setPointOnSurface(True)
+
+        centroid_fill.setSubSymbol(centroid_fill_marker)
+        sub_symbol.changeSymbolLayer(0, centroid_fill)
+        sub_symbol.appendSymbolLayer(simple_fill)
+        line.setSubSymbol(sub_symbol)
+
+        s.appendSymbolLayer(line.clone())
+
+        g = QgsGeometry.fromWkt("LineString(2 2, 10 10, 10 0)")
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "render_centroid_fill", "render_centroid_fill", rendered_image
             )
         )
 
