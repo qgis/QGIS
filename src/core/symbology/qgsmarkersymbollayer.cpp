@@ -1939,6 +1939,20 @@ void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   }
 }
 
+void QgsFilledMarkerSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  installMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
+void QgsFilledMarkerSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  removeMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
 QVariantMap QgsFilledMarkerSymbolLayer::properties() const
 {
   QVariantMap map;
