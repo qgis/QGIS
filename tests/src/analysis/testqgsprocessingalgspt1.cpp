@@ -2023,7 +2023,7 @@ void TestQgsProcessingAlgsPt1::fillNoData_data()
    * searchRadius = 3
    * pixelSize = 1.8
    */
-  QTest::newRow( "testcase 2" )
+  QTest::newRow( "testcase 3" )
     << "/raster/band1_float32_noct_epsg4326.tif"
     << QStringLiteral( "/fillnodata_testcase3.tif" )
     << 1
