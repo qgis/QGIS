@@ -500,6 +500,10 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
     virtual QVariantMap properties() const;
 
     virtual QgsFilledMarkerSymbolLayer *clone() const /Factory/;
