@@ -60,10 +60,10 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
   if ( !mEnabled )
     return;
 
-  QList<QgsLayerTreeNode *> nodes;
+  QList<QgsLayerTreeNode *> newNodes;
   for ( QgsMapLayer *layer : layers )
   {
-    QgsLayerTreeLayer *nodeLayer;
+    QgsLayerTreeLayer *nodeLayer = nullptr;
     switch ( mInsertionMethod )
     {
       case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
@@ -72,6 +72,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
         if ( !targetGroup )
           targetGroup = mRoot;
 
+        // returned layer is already owned by the group!
         nodeLayer = QgsLayerTreeUtils::insertLayerAtOptimalPlacement( targetGroup, layer );
         break;
       }
@@ -80,13 +81,15 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
       case Qgis::LayerTreeInsertionMethod::TopOfTree:
       {
         nodeLayer = new QgsLayerTreeLayer( layer );
+        newNodes << nodeLayer;
         break;
       }
     }
 
-    nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
+    if ( !nodeLayer )
+      continue;
 
-    nodes << nodeLayer;
+    nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
 
     // check whether the layer is marked as embedded
     const QString projectFile = mProject->layerIsEmbedded( nodeLayer->layerId() );
@@ -102,13 +105,13 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
       if ( QgsLayerTreeGroup *group = mInsertionPointGroup )
       {
-        group->insertChildNodes( mInsertionPointPosition, nodes );
+        group->insertChildNodes( mInsertionPointPosition, newNodes );
         break;
       }
       // if no group for the insertion point, then insert into root instead
       [[fallthrough]];
     case Qgis::LayerTreeInsertionMethod::TopOfTree:
-      mRoot->insertChildNodes( 0, nodes );
+      mRoot->insertChildNodes( 0, newNodes );
       break;
     case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
       break;
