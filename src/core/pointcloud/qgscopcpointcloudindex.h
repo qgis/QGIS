@@ -46,8 +46,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex();
 
-    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
-
     void load( const QString &fileName ) override;
 
     bool hasNode( const QgsPointCloudNodeId &n ) const override;
@@ -76,12 +74,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
      * \since QGIS 3.42
      */
     QgsPointCloudStatistics metadataStatistics() const override;
-
-    /**
-     * Copies common properties to the \a destination index
-     * \since QGIS 3.26
-     */
-    void copyCommonProperties( QgsCopcPointCloudIndex *destination ) const;
 
     /**
      * Returns one datapoint, "CopcGpsTimeFlag": The gps time flag from global_encoding field in LAS header,

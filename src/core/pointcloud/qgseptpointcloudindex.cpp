@@ -55,14 +55,6 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex()
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsEptPointCloudIndex::clone() const
-{
-  QgsEptPointCloudIndex *clone = new QgsEptPointCloudIndex;
-  QMutexLocker locker( &mHierarchyMutex );
-  copyCommonProperties( clone );
-  return std::unique_ptr<QgsAbstractPointCloudIndex>( clone );
-}
-
 void QgsEptPointCloudIndex::load( const QString &urlString )
 {
   QUrl url = urlString;
@@ -649,23 +641,6 @@ bool QgsEptPointCloudIndex::isValid() const
 Qgis::PointCloudAccessType QgsEptPointCloudIndex::accessType() const
 {
   return mAccessType;
-}
-
-void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destination ) const
-{
-  QgsAbstractPointCloudIndex::copyCommonProperties( destination );
-
-  // QgsEptPointCloudIndex specific fields
-  destination->mIsValid = mIsValid;
-  destination->mAccessType = mAccessType;
-  destination->mDataType = mDataType;
-  destination->mUrlDirectoryPart = mUrlDirectoryPart;
-  destination->mWkt = mWkt;
-  destination->mHierarchyNodes = mHierarchyNodes;
-  destination->mPointCount = mPointCount;
-  destination->mMetadataStats = mMetadataStats;
-  destination->mAttributeClasses = mAttributeClasses;
-  destination->mOriginalMetadata = mOriginalMetadata;
 }
 
 #undef PROVIDER_KEY

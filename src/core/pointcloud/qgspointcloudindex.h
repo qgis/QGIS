@@ -218,13 +218,6 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
     explicit QgsAbstractPointCloudIndex();
     virtual ~QgsAbstractPointCloudIndex();
 
-    /**
-     * Returns a clone of the current point cloud index object
-     * \note It is the responsibility of the caller to handle the ownership and delete the object.
-     * \since QGIS 3.26
-     */
-    virtual std::unique_ptr<QgsAbstractPointCloudIndex> clone() const = 0;
-
     //! Loads the index from the file
     virtual void load( const QString &fileName ) = 0;
 
