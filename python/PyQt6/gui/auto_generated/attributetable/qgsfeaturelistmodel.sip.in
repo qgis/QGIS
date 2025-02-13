@@ -30,7 +30,8 @@ class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
     enum Role /BaseType=IntEnum/
     {
       FeatureInfoRole,
-      FeatureRole
+      FeatureRole,
+      FeatureWithGeometryRole,
     };
 
   public:
