@@ -25,6 +25,7 @@
 #include "qgsmaplayermodel.h"
 #include "qgsmaptoolprofilecurve.h"
 #include "qgsmaptoolprofilecurvefromfeature.h"
+#include "qgsprofilerenderer.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsvectorlayerelevationproperties.h"
 #include "qgsrubberband.h"
@@ -59,6 +60,8 @@
 #include "qgsterrainprovider.h"
 #include "qgsprofilesourceregistry.h"
 #include "qgsnewnamedialog.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsstyle.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -74,6 +77,7 @@ const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = ne
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new QgsSettingsEntryBool( QStringLiteral( "lock-axis-ratio" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether the the distance and elevation axis scales are locked to each other" ) );
 const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir = new QgsSettingsEntryString( QStringLiteral( "last-export-dir" ), QgsSettingsTree::sTreeElevationProfile, QString(), QStringLiteral( "Last elevation profile export directory" ) );
 const QgsSettingsEntryColor *QgsElevationProfileWidget::settingBackgroundColor = new QgsSettingsEntryColor( QStringLiteral( "background-color" ), QgsSettingsTree::sTreeElevationProfile, QColor(), QStringLiteral( "Elevation profile chart background color" ) );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowSubsections = new QgsSettingsEntryBool( QStringLiteral( "show-sub-sections" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether to display subsections" ) );
 //
 // QgsElevationProfileLayersDialog
 //
@@ -411,6 +415,23 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mOptionsMenu->addSeparator();
 
+  // show Subsections Indicator Action
+  // create a default simple symbology
+  mSubsectionsSymbol.reset( QgsProfilePlotRenderer::defaultSubSectionsSymbol().release() );
+  mShowSubsectionsAction = new QAction( tr( "Show Subsections Indicator" ), this );
+  mShowSubsectionsAction->setCheckable( true );
+  mShowSubsectionsAction->setChecked( settingShowSubsections->value() );
+  connect( mShowSubsectionsAction, &QAction::triggered, this, &QgsElevationProfileWidget::showSubsectionsTriggered );
+  mOptionsMenu->addAction( mShowSubsectionsAction );
+
+  // Edit Subsections Symbology action
+  mSubsectionsSymbologyAction = new QAction( tr( "Subsections Symbology…" ), this );
+  mSubsectionsSymbologyAction->setEnabled( settingShowSubsections->value() );
+  connect( mSubsectionsSymbologyAction, &QAction::triggered, this, &QgsElevationProfileWidget::editSubsectionsSymbology );
+  mOptionsMenu->addAction( mSubsectionsSymbologyAction );
+
+  mOptionsMenu->addSeparator();
+
   mRenameProfileAction = new QAction( tr( "Rename Profile…" ), this );
   connect( mRenameProfileAction, &QAction::triggered, this, &QgsElevationProfileWidget::renameProfileTriggered );
   mOptionsMenu->addAction( mRenameProfileAction );
@@ -656,6 +677,7 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool 
 {
   mNudgeLeftAction->setEnabled( !curve.isEmpty() );
   mNudgeRightAction->setEnabled( !curve.isEmpty() );
+  mShowSubsectionsAction->setEnabled( !curve.isEmpty() );
 
   mProfileCurve = curve;
   createOrUpdateRubberBands();
@@ -685,6 +707,7 @@ void QgsElevationProfileWidget::updatePlot()
 {
   mCanvas->setTolerance( mSettingsAction->toleranceSpinBox()->value() );
   mCanvas->setCrs( QgsProject::instance()->crs3D() );
+  showSubsectionsTriggered();
 
   if ( !mProfileCurve.isEmpty() )
   {
@@ -721,6 +744,7 @@ void QgsElevationProfileWidget::clear()
   mCanvas->clear();
   mNudgeLeftAction->setEnabled( false );
   mNudgeRightAction->setEnabled( false );
+  mShowSubsectionsAction->setEnabled( false );
   mProfileCurve = QgsGeometry();
 }
 
@@ -959,6 +983,33 @@ void QgsElevationProfileWidget::renameProfileTriggered()
   if ( dlg.exec() == QDialog::Accepted )
   {
     setCanvasName( dlg.name() );
+  }
+}
+
+void QgsElevationProfileWidget::showSubsectionsTriggered()
+{
+  const bool showSubSections = mShowSubsectionsAction->isChecked();
+
+  settingShowSubsections->setValue( showSubSections );
+  mSubsectionsSymbologyAction->setEnabled( showSubSections );
+
+  if ( showSubSections )
+  {
+    mCanvas->setSubsectionsSymbol( mSubsectionsSymbol->clone() );
+  }
+  else
+  {
+    mCanvas->setSubsectionsSymbol( nullptr );
+  }
+}
+
+void QgsElevationProfileWidget::editSubsectionsSymbology()
+{
+  QgsSymbolSelectorDialog symbolDialog( mSubsectionsSymbol.get(), QgsStyle::defaultStyle(), nullptr, this );
+  symbolDialog.setWindowTitle( tr( "Subsections Symbol Selector" ) );
+  if ( symbolDialog.exec() )
+  {
+    showSubsectionsTriggered();
   }
 }
 
