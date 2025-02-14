@@ -1903,59 +1903,46 @@ void TestQgsProcessingAlgsPt1::createConstantRaster()
 void TestQgsProcessingAlgsPt1::rasterRank_data()
 {
   QTest::addColumn<QString>( "expectedRaster" );
-  QTest::addColumn<int>( "rank" );
+  QTest::addColumn<QString>( "ranks" );
   QTest::addColumn<int>( "nodataHandling" );
 
   /*
    * Testcase 1
-   *
-   * inputExtent = from "/raster/band1_int16_noct_epsg4326.tif"
-   * crs = EPSG:4326
-   * pixelSize = 1.0
-   * constantValue = 12
-   * Byte Raster Layer
-   *
    */
   QTest::newRow( "testcase 1" )
     << QStringLiteral( "/rasterRank_testcase1.tif" )
-    << 2
+    << QString::number( 2 )
     << 0;
 
   /*
    * Testcase 2
-   *
-   * inputExtent = from "/raster/band1_int16_noct_epsg4326.tif"
-   * crs = EPSG:4326
-   * pixelSize = 1.0
-   * constantValue = -1
-   * Byte Raster Layer
-   *
    */
   QTest::newRow( "testcase 2" )
     << QStringLiteral( "/rasterRank_testcase2.tif" )
-    << -2
+    << QString::number( -2 )
     << 0;
 
   /*
    * Testcase 3
-   *
-   * inputExtent = from "/raster/band1_int16_noct_epsg4326.tif"
-   * crs = EPSG:4326
-   * pixelSize = 1.0
-   * constantValue = -1
-   * Byte Raster Layer
-   *
    */
   QTest::newRow( "testcase 3" )
     << QStringLiteral( "/rasterRank_testcase3.tif" )
-    << 2
+    << QString::number( 2 )
     << 1;
+
+  /*
+   * Testcase 4
+   */
+  QTest::newRow( "testcase 4" )
+    << QStringLiteral( "/rasterRank_testcase4.tif" )
+    << QStringLiteral( "2,-2" )
+    << 0;
 }
 
 void TestQgsProcessingAlgsPt1::rasterRank()
 {
   QFETCH( QString, expectedRaster );
-  QFETCH( int, rank );
+  QFETCH( QString, ranks );
   QFETCH( int, nodataHandling );
 
   //prepare input params
@@ -1966,7 +1953,7 @@ void TestQgsProcessingAlgsPt1::rasterRank()
   QVariantMap parameters;
 
   parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << testDataPath + "/raster/rank1.tif" << testDataPath + "/raster/rank2.tif" << testDataPath + "/raster/rank3.tif" << testDataPath + "/raster/rank4.tif" );
-  parameters.insert( QStringLiteral( "RANK" ), rank );
+  parameters.insert( QStringLiteral( "RANKS" ), ranks );
   parameters.insert( QStringLiteral( "NODATA_HANDLING" ), nodataHandling );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
