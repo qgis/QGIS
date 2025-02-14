@@ -105,6 +105,9 @@ class TestQgsProcessingAlgsPt1 : public QgsTest
     void createConstantRaster_data();
     void createConstantRaster();
 
+    void rasterRank_data();
+    void rasterRank();
+
     void densifyGeometries_data();
     void densifyGeometries();
 
@@ -1892,6 +1895,126 @@ void TestQgsProcessingAlgsPt1::createConstantRaster()
           const double outputValue = outputRasterBlock->value( row, column );
           QCOMPARE( outputValue, expectedValue );
         }
+      }
+    }
+  }
+}
+
+void TestQgsProcessingAlgsPt1::rasterRank_data()
+{
+  QTest::addColumn<QString>( "expectedRaster" );
+  QTest::addColumn<int>( "rank" );
+  QTest::addColumn<int>( "nodataHandling" );
+
+  /*
+   * Testcase 1
+   *
+   * inputExtent = from "/raster/band1_int16_noct_epsg4326.tif"
+   * crs = EPSG:4326
+   * pixelSize = 1.0
+   * constantValue = 12
+   * Byte Raster Layer
+   *
+   */
+  QTest::newRow( "testcase 1" )
+    << QStringLiteral( "/rasterRank_testcase1.tif" )
+    << 2
+    << 0;
+
+  /*
+   * Testcase 2
+   *
+   * inputExtent = from "/raster/band1_int16_noct_epsg4326.tif"
+   * crs = EPSG:4326
+   * pixelSize = 1.0
+   * constantValue = -1
+   * Byte Raster Layer
+   *
+   */
+  QTest::newRow( "testcase 2" )
+    << QStringLiteral( "/rasterRank_testcase2.tif" )
+    << -2
+    << 0;
+
+  /*
+   * Testcase 3
+   *
+   * inputExtent = from "/raster/band1_int16_noct_epsg4326.tif"
+   * crs = EPSG:4326
+   * pixelSize = 1.0
+   * constantValue = -1
+   * Byte Raster Layer
+   *
+   */
+  QTest::newRow( "testcase 3" )
+    << QStringLiteral( "/rasterRank_testcase3.tif" )
+    << 2
+    << 1;
+}
+
+void TestQgsProcessingAlgsPt1::rasterRank()
+{
+  QFETCH( QString, expectedRaster );
+  QFETCH( int, rank );
+  QFETCH( int, nodataHandling );
+
+  //prepare input params
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:rasterrank" ) ) );
+
+  const QString testDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << testDataPath + "/raster/rank1.tif" << testDataPath + "/raster/rank2.tif" << testDataPath + "/raster/rank3.tif" << testDataPath + "/raster/rank4.tif" );
+  parameters.insert( QStringLiteral( "RANK" ), rank );
+  parameters.insert( QStringLiteral( "NODATA_HANDLING" ), nodataHandling );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  //prepare expected raster
+  auto expectedRasterLayer = std::make_unique<QgsRasterLayer>( testDataPath + "/control_images/expected_rasterRank" + expectedRaster, "expectedDataset", "gdal" );
+  std::unique_ptr<QgsRasterInterface> expectedInterface( expectedRasterLayer->dataProvider()->clone() );
+  QgsRasterIterator expectedIter( expectedInterface.get() );
+  expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
+
+  //run algorithm...
+  auto context = std::make_unique<QgsProcessingContext>();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  //...and check results with expected datasets
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  std::unique_ptr<QgsRasterInterface> outputInterface( outputRaster->dataProvider()->clone() );
+
+  QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
+  QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
+
+  QgsRasterIterator outputIter( outputInterface.get() );
+  outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+  int outputIterLeft = 0;
+  int outputIterTop = 0;
+  int outputIterCols = 0;
+  int outputIterRows = 0;
+  int expectedIterLeft = 0;
+  int expectedIterTop = 0;
+  int expectedIterCols = 0;
+  int expectedIterRows = 0;
+
+  std::unique_ptr<QgsRasterBlock> outputRasterBlock;
+  std::unique_ptr<QgsRasterBlock> expectedRasterBlock;
+
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) && expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  {
+    for ( int row = 0; row < expectedIterRows; row++ )
+    {
+      for ( int column = 0; column < expectedIterCols; column++ )
+      {
+        const double expectedValue = expectedRasterBlock->value( row, column );
+        const double outputValue = outputRasterBlock->value( row, column );
+        QCOMPARE( outputValue, expectedValue );
       }
     }
   }
