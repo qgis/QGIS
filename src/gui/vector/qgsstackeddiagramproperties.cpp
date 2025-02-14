@@ -65,6 +65,8 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
 
   mSubDiagramsView->setStyle( new QgsStackedDiagramsViewStyle( mSubDiagramsView ) );
 
+  connect( mModel, &QgsStackedDiagramPropertiesModel::subDiagramsMoved, this, &QgsStackedDiagramProperties::rowsMoved );
+
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsStackedDiagramProperties::widgetChanged );
@@ -168,6 +170,11 @@ void QgsStackedDiagramProperties::removeSubDiagramRenderer()
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
   }
   // make sure that the selection is gone
+  mSubDiagramsView->selectionModel()->clear();
+}
+
+void QgsStackedDiagramProperties::rowsMoved()
+{
   mSubDiagramsView->selectionModel()->clear();
 }
 
@@ -375,7 +382,7 @@ QgsStackedDiagramPropertiesModel::~QgsStackedDiagramPropertiesModel()
 Qt::ItemFlags QgsStackedDiagramPropertiesModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
-    return Qt::ItemIsDropEnabled;
+    return Qt::ItemIsDropEnabled; // Only invalid indexes are dropEnabled to ease drop handling
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
@@ -404,23 +411,15 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  for ( const QModelIndex &index : indexes )
+  // Create list of rows
+  const auto constIndexes = indexes;
+  for ( const QModelIndex &index : constIndexes )
   {
-    // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )
       continue;
 
-    if ( QgsDiagramRenderer *diagram = mRenderers.at( index.row() ) )
-    {
-      QDomDocument doc;
-
-      QDomElement rootElem = doc.createElement( QStringLiteral( "diagram_mime" ) );
-      diagram->writeXml( rootElem, doc, QgsReadWriteContext() );
-      doc.appendChild( rootElem );
-      stream << doc.toString( -1 );
-    }
+    stream << index.row();
   }
-
   mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
   return mimeData;
 }
@@ -438,7 +437,6 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
 
   QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
-  int rows = 0;
 
   // the item was dropped at parent, we may decide where to put the items
   if ( row == -1 )
@@ -446,44 +444,34 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
     row = mRenderers.count(); // let's append them (e.g., drop in empty space)
   }
 
+  QVector<int> sourceRows;
   while ( !stream.atEnd() )
   {
-    QString text;
-    stream >> text;
-
-    QDomDocument doc;
-    if ( !doc.setContent( text ) )
-      continue;
-    const QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != QLatin1String( "diagram_mime" ) || !rootElem.hasChildNodes() )
-      continue;
-    const QDomElement childElem = rootElem.firstChild().toElement();
-
-    QgsDiagramRenderer *diagram = nullptr;
-    if ( childElem.nodeName() == QLatin1String( "SingleCategoryDiagramRenderer" ) )
-    {
-      diagram = new QgsSingleCategoryDiagramRenderer();
-      diagram->readXml( childElem, QgsReadWriteContext() );
-    }
-    else if ( childElem.nodeName() == QLatin1String( "LinearlyInterpolatedDiagramRenderer" ) )
-    {
-      diagram = new QgsLinearlyInterpolatedDiagramRenderer();
-      diagram->readXml( childElem, QgsReadWriteContext() );
-    }
-    else if ( childElem.nodeName() == QLatin1String( "StackedDiagramRenderer" ) )
-    {
-      diagram = new QgsStackedDiagramRenderer();
-      diagram->readXml( childElem, QgsReadWriteContext() );
-    }
-
-    if ( diagram )
-    {
-      insertSubDiagram( row + rows, diagram );
-      rows++;
-    }
+    int sourceRow;
+    stream >> sourceRow;
+    sourceRows.append( sourceRow );
   }
 
-  return true;
+  // Items may come unsorted depending on selecion order
+  std::sort( sourceRows.begin(), sourceRows.end() );
+
+  // Some logic to handle multiple items being dropped.
+  // Increasing the to, decreasing the from, as we
+  // iterate and move the items.
+  int from;
+  int to = row - 1;
+  for ( int i = 0; i < sourceRows.size(); i++ )
+  {
+    from = sourceRows[i];
+    if ( from < row )
+      from = from - i;
+    else
+      to++;
+    moveSubDiagram( from, to );
+  }
+
+  emit subDiagramsMoved();
+  return false; // Since we take care of 'removing' dragged items ourselves
 }
 
 QVariant QgsStackedDiagramPropertiesModel::data( const QModelIndex &index, int role ) const
@@ -631,6 +619,23 @@ bool QgsStackedDiagramPropertiesModel::setData( const QModelIndex &index, const 
     }
   }
   return false;
+}
+
+
+void QgsStackedDiagramPropertiesModel::moveSubDiagram( int from, int to )
+{
+  if ( from < 0 || from >= mRenderers.count() || to < 0 || to >= mRenderers.count() )
+    return;
+
+  if ( from == to )
+    return;
+
+  mRenderers.move( from, to );
+
+  if ( from < to )
+    emit dataChanged( index( from, 0 ), index( to, 0 ) );
+  else
+    emit dataChanged( index( to, 0 ), index( from, 0 ) );
 }
 
 bool QgsStackedDiagramPropertiesModel::removeRows( int row, int count, const QModelIndex &parent )
