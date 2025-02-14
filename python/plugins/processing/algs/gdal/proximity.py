@@ -95,12 +95,14 @@ class proximity(GdalAlgorithm):
         )
         values_param = QgsProcessingParameterString(
             self.VALUES,
-            self.tr(
-                "List of target pixels"
-            ),
+            self.tr("List of target pixels"),
             optional=True,
         )
-        values_param.setHelp(self.tr("Comma-separated list of pixel values in the source image to consider as target pixels. If not specified, all non-zero pixels will be considered target pixels."))
+        values_param.setHelp(
+            self.tr(
+                "Comma-separated list of pixel values in the source image to consider as target pixels. If not specified, all non-zero pixels will be considered target pixels."
+            )
+        )
         self.addParameter(values_param)
 
         self.addParameter(
@@ -132,7 +134,11 @@ class proximity(GdalAlgorithm):
             defaultValue=0.0,
             optional=True,
         )
-        replace_param.setHelp(self.tr("Value to apply to all pixels within the maximum distance of target pixels (including the target pixels) instead of a distance value"))
+        replace_param.setHelp(
+            self.tr(
+                "Value to apply to all pixels within the maximum distance of target pixels (including the target pixels) instead of a distance value"
+            )
+        )
         self.addParameter(replace_param)
 
         nodata_param = QgsProcessingParameterNumber(
@@ -142,8 +148,12 @@ class proximity(GdalAlgorithm):
             defaultValue=0.0,
             optional=True,
         )
-        nodata_param.setHelp(self.tr("NoData value to use for the pixels beyond the maximum distance. "
-            "If not provided, it will be set to the one from the output band, or ultimately to 65535."))
+        nodata_param.setHelp(
+            self.tr(
+                "NoData value to use for the pixels beyond the maximum distance. "
+                "If not provided, it will be set to the one from the output band, or ultimately to 65535."
+            )
+        )
         self.addParameter(nodata_param)
 
         options_param = QgsProcessingParameterString(
