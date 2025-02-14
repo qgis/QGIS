@@ -169,6 +169,7 @@ void QgsStacSourceSelect::btnConnect_clicked()
   mItemsModel->clear();
   qDeleteAll( mRubberBands );
   mRubberBands.clear();
+  mCollectionsPageCounter = 0;
   mStatusLabel->setText( tr( "Connecting…" ) );
   mStac->cancelPendingAsyncRequests();
   mStac->fetchStacObjectAsync( connection.url );
