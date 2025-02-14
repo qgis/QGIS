@@ -78,6 +78,13 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     //! Replaces the diagram located at \a index by \a dr. Takes ownership.
     void updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr );
 
+    /**
+     * Moves a subdiagram from \a from to \a to.
+     *
+     * \since QGIS 3.40.4
+     */
+    void moveSubDiagram( int from, int to );
+
     //! Returns the list of diagram renderers from the model. Does not transfer ownership.
     QList<QgsDiagramRenderer *> subRenderers() const;
 
@@ -89,6 +96,10 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
      */
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
+  signals:
+    //! Informs views that subdiagrams were moved (e.g., via moveSubDiagram()) in the model.
+    void subDiagramsMoved();
+
   protected:
     QList<QgsDiagramRenderer *> mRenderers;
     QgsDiagramLayerSettings mDiagramLayerSettings;
@@ -97,12 +108,18 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
 /**
  * \ingroup gui
  * \brief View style which shows drop indicator line between items
+ *
+ * \since QGIS 3.40.4
  */
 class QgsStackedDiagramsViewStyle : public QgsProxyStyle
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsStackedDiagramsViewStyle
+     * \param parent parent object
+     */
     explicit QgsStackedDiagramsViewStyle( QWidget *parent );
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
@@ -131,6 +148,7 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
 
   public slots:
     void apply();
+    void rowsMoved();
 
   private slots:
 
