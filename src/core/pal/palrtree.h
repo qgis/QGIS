@@ -59,14 +59,18 @@ class PalRtree : public RTree<T *, float, 2, float>
     void insert( T *data, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Insert(
+      const float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      const float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      data );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Insert(
+        aMin,
+        aMax,
+        data );
     }
 
     /**
@@ -78,14 +82,18 @@ class PalRtree : public RTree<T *, float, 2, float>
     void remove( T *data, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Remove(
+      const float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      const float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      data );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Remove(
+        aMin,
+        aMax,
+        data );
     }
 
     /**
@@ -96,14 +104,17 @@ class PalRtree : public RTree<T *, float, 2, float>
     bool intersects( const QgsRectangle &bounds, const std::function< bool( T *data )> &callback ) const
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Search(
+      const float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      const float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      callback );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Search(
+        aMin, aMax,
+        callback );
       return true;
     }
 
