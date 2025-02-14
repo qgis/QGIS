@@ -59,7 +59,7 @@ QgsRasterRankAlgorithm *QgsRasterRankAlgorithm::createInstance() const
 void QgsRasterRankAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RANK" ), QObject::tr( "Rank" ), Qgis::ProcessingNumberParameterType::Integer, 1 ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "RANKS" ), QObject::tr( "Rank (separate multiple ranks using commas)" ), 1 ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "NODATA_HANDLING" ), QObject::tr( "NoData value handling" ), QStringList() << QObject::tr( "Exclude NoData from values lists" ) << QObject::tr( "Presence of NoData in a values list results in NoData output cell" ), false, 0 ) );
 
   auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
@@ -80,14 +80,24 @@ void QgsRasterRankAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsRasterRankAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if ( parameterAsInt( parameters, QStringLiteral( "RANK" ), context ) == 0 )
+  const QStringList rankStrings = parameterAsString( parameters, QStringLiteral( "RANKS" ), context ).split( QLatin1String( "," ) );
+  for ( const QString &rankString : rankStrings )
   {
-    feedback->reportError( QObject::tr( "Rank value must be greater than zero" ), false );
+    bool ok = false;
+    const int rank = rankString.toInt( &ok );
+    if ( ok && rank != 0 )
+    {
+      mRanks << rank;
+    }
+  }
+
+  if ( mRanks.isEmpty() )
+  {
+    feedback->reportError( QObject::tr( "No valid non-zero rank value(s) provided" ), false );
     return false;
   }
 
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
-
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
     if ( !qobject_cast<const QgsRasterLayer *>( layer ) || !layer->dataProvider() )
@@ -114,8 +124,6 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   {
     layer->moveToThread( QThread::currentThread() );
   }
-
-  const int rank = parameterAsInt( parameters, QStringLiteral( "RANK" ), context );
 
   QgsCoordinateReferenceSystem outputCrs;
   if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
@@ -164,16 +172,8 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
       extent = ct.transformBoundingBox( extent );
     }
 
-    double cellSizeX = ( extent.xMaximum() - extent.xMinimum() ) / rLayer->width();
-    if ( cellSizeX < minCellSizeX )
-    {
-      minCellSizeX = cellSizeX;
-    }
-    double cellSizeY = ( extent.yMaximum() - extent.yMinimum() ) / rLayer->height();
-    if ( cellSizeY < minCellSizeY )
-    {
-      minCellSizeY = cellSizeY;
-    }
+    minCellSizeX = std::min( minCellSizeX, ( extent.xMaximum() - extent.xMinimum() ) / rLayer->width() );
+    minCellSizeY = std::min( minCellSizeY, ( extent.yMaximum() - extent.yMinimum() ) / rLayer->height() );
 
     inputBlocks[rLayer->id()] = std::make_unique<QgsRasterBlock>();
   }
@@ -195,12 +195,19 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( outputDataType, cols, rows, outputExtent, outputCrs ) );
+  std::unique_ptr<QgsRasterDataProvider> provider( writer->createMultiBandRaster( outputDataType, cols, rows, outputExtent, outputCrs, mRanks.size() ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
   provider->setNoDataValue( 1, outputNoData );
+
+
+  std::vector<std::unique_ptr<QgsRasterBlock>> outputBlocks;
+  for ( int i = 0; i < mRanks.size(); i++ )
+  {
+    outputBlocks.push_back( std::make_unique<QgsRasterBlock>() );
+  }
 
   const double step = rows > 0 ? 100.0 / rows : 1;
   for ( int row = 0; row < rows; row++ )
@@ -210,8 +217,11 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
       break;
     }
 
-    QgsRasterBlock block( outputDataType, cols, 1 );
-    block.setNoDataValue( 0 );
+    for ( int i = 0; i < mRanks.size(); i++ )
+    {
+      outputBlocks[i].reset( new QgsRasterBlock( outputDataType, cols, 1 ) );
+      outputBlocks[i]->setNoDataValue( outputNoData );
+    }
 
     // Calculates the rect for a single row read
     QgsRectangle rowExtent( outputExtent );
@@ -253,19 +263,25 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
           break;
         }
       }
-
       std::sort( values.begin(), values.end() );
-      if ( values.size() >= std::abs( rank ) )
+
+      for ( int i = 0; i < mRanks.size(); i++ )
       {
-        block.setValue( 0, col, values.at( rank > 0 ? rank - 1 : values.size() + rank ) );
-      }
-      else
-      {
-        block.setValue( 0, col, outputNoData );
+        if ( values.size() >= std::abs( mRanks[i] ) )
+        {
+          outputBlocks[i]->setValue( 0, col, values.at( mRanks[i] > 0 ? mRanks[i] - 1 : values.size() + mRanks[i] ) );
+        }
+        else
+        {
+          outputBlocks[i]->setValue( 0, col, outputNoData );
+        }
       }
     }
 
-    provider->writeBlock( &block, 1, 0, row );
+    for ( int i = 0; i < mRanks.size(); i++ )
+    {
+      provider->writeBlock( outputBlocks[i].get(), i + 1, 0, row );
+    }
     feedback->setProgress( row * step );
   }
 
