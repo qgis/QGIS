@@ -134,8 +134,15 @@ class Buffer(GdalAlgorithm):
         source_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
+        if not source_details.layer_name:
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
-        geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
+        if source_details.geometry_column_name:
+            geometry = source_details.geometry_column_name
+        else:
+            geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         dissolve = self.parameterAsBoolean(parameters, self.DISSOLVE, context)
@@ -166,6 +173,9 @@ class Buffer(GdalAlgorithm):
             sql = f'{sql} GROUP BY "{fieldName}"'
 
         arguments.append(sql)
+
+        if source_details.geometry_column_name:
+            arguments.append("-nlt PROMOTE_TO_MULTI")
 
         if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append("-explodecollections")
