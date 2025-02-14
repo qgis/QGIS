@@ -3116,7 +3116,7 @@ bool QgsRasterMarkerSymbolLayer::setPreservedAspectRatio( bool par )
 
 double QgsRasterMarkerSymbolLayer::updateDefaultAspectRatio()
 {
-  if ( mDefaultAspectRatio == 0.0 )
+  if ( mDefaultAspectRatio == 0.0 && !mPath.isEmpty() )
   {
     const QSize size = QgsApplication::imageCache()->originalSize( mPath );
     mDefaultAspectRatio = ( !size.isNull() && size.isValid() && size.width() > 0 ) ? static_cast< double >( size.height() ) / static_cast< double >( size.width() ) : 0.0;
@@ -3365,7 +3365,12 @@ QVariantMap QgsRasterMarkerSymbolLayer::properties() const
 
 QgsRasterMarkerSymbolLayer *QgsRasterMarkerSymbolLayer::clone() const
 {
-  auto m = std::make_unique< QgsRasterMarkerSymbolLayer >( mPath, mSize, mAngle );
+  auto m = std::make_unique< QgsRasterMarkerSymbolLayer >();
+  m->mPath = mPath;
+  m->mDefaultAspectRatio = mDefaultAspectRatio;
+  m->mSize = mSize;
+  m->mAngle = mAngle;
+  // other members are copied by:
   copyCommonProperties( m.get() );
   return m.release();
 }
