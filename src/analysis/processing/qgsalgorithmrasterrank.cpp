@@ -60,6 +60,7 @@ void QgsRasterRankAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RANK" ), QObject::tr( "Rank" ), Qgis::ProcessingNumberParameterType::Integer, 1 ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "NODATA_HANDLING" ), QObject::tr( "NoData value handling" ), QStringList() << QObject::tr( "Exclude NoData from values lists" ) << QObject::tr( "Presence of NoData in a values list results in NoData output cell" ), false, 0 ) );
 
   auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
@@ -79,6 +80,12 @@ void QgsRasterRankAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsRasterRankAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  if ( parameterAsInt( parameters, QStringLiteral( "RANK" ), context ) == 0 )
+  {
+    feedback->reportError( QObject::tr( "Rank value must be greater than zero" ), false );
+    return false;
+  }
+
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
@@ -109,6 +116,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   }
 
   const int rank = parameterAsInt( parameters, QStringLiteral( "RANK" ), context );
+
   QgsCoordinateReferenceSystem outputCrs;
   if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
   {
@@ -130,6 +138,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   {
     outputNoData = -FLT_MAX;
   }
+  const bool outputNoDataOverride = parameterAsInt( parameters, QStringLiteral( "NODATA_HANDLING" ), context ) == 1;
 
   QgsRectangle outputExtent;
   if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
@@ -229,6 +238,11 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
         if ( !isNoData )
         {
           values << value;
+        }
+        else if ( outputNoDataOverride )
+        {
+          values.clear();
+          break;
         }
       }
 
