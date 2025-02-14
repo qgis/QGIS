@@ -150,7 +150,8 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
     outputExtent = QgsProcessingUtils::combineLayerExtents( mLayers, outputCrs, context );
   }
 
-  double minCellSize = 1e9;
+  double minCellSizeX = 1e9;
+  double minCellSizeY = 1e9;
   std::map<QString, std::unique_ptr<QgsRasterBlock>> inputBlocks;
   for ( QgsMapLayer *layer : mLayers )
   {
@@ -163,23 +164,30 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
       extent = ct.transformBoundingBox( extent );
     }
 
-    double cellSize = ( extent.xMaximum() - extent.xMinimum() ) / rLayer->width();
-    if ( cellSize < minCellSize )
+    double cellSizeX = ( extent.xMaximum() - extent.xMinimum() ) / rLayer->width();
+    if ( cellSizeX < minCellSizeX )
     {
-      minCellSize = cellSize;
+      minCellSizeX = cellSizeX;
+    }
+    double cellSizeY = ( extent.yMaximum() - extent.yMinimum() ) / rLayer->height();
+    if ( cellSizeY < minCellSizeY )
+    {
+      minCellSizeY = cellSizeY;
     }
 
     inputBlocks[rLayer->id()] = std::make_unique<QgsRasterBlock>();
   }
 
-  double outputCellSize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
-  if ( outputCellSize == 0 )
+  double outputCellSizeX = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
+  double outputCellSizeY = outputCellSizeX;
+  if ( outputCellSizeX == 0 )
   {
-    outputCellSize = minCellSize;
+    outputCellSizeX = minCellSizeX;
+    outputCellSizeY = minCellSizeY;
   }
 
-  double cols = std::round( ( outputExtent.xMaximum() - outputExtent.xMinimum() ) / outputCellSize );
-  double rows = std::round( ( outputExtent.yMaximum() - outputExtent.yMinimum() ) / outputCellSize );
+  double cols = std::round( ( outputExtent.xMaximum() - outputExtent.xMinimum() ) / outputCellSizeX );
+  double rows = std::round( ( outputExtent.yMaximum() - outputExtent.yMinimum() ) / outputCellSizeY );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
@@ -207,8 +215,8 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     // Calculates the rect for a single row read
     QgsRectangle rowExtent( outputExtent );
-    rowExtent.setYMaximum( rowExtent.yMaximum() - outputCellSize * row );
-    rowExtent.setYMinimum( rowExtent.yMaximum() - outputCellSize );
+    rowExtent.setYMaximum( rowExtent.yMaximum() - outputCellSizeY * row );
+    rowExtent.setYMinimum( rowExtent.yMaximum() - outputCellSizeY );
 
     for ( QgsMapLayer *layer : mLayers )
     {
