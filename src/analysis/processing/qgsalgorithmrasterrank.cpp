@@ -247,9 +247,9 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
       }
 
       std::sort( values.begin(), values.end() );
-      if ( values.size() >= rank )
+      if ( values.size() >= std::abs( rank ) )
       {
-        block.setValue( 0, col, values.at( rank - 1 ) );
+        block.setValue( 0, col, values.at( rank > 0 ? rank - 1 : values.size() + rank ) );
       }
       else
       {
