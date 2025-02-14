@@ -62,6 +62,7 @@ class TestQgsPdalProvider : public QgsTest
     void brokenPath();
     void validLayer();
     void testCopcGeneration();
+    void testCopcGenerationSpecialChars();
 
   private:
     QString mTestDataDir;
@@ -232,6 +233,20 @@ void TestQgsPdalProvider::testCopcGeneration()
   QVERIFY( task.run() );
   const QFileInfo fi( outputPath );
   QVERIFY( fi.exists() );
+}
+
+void TestQgsPdalProvider::testCopcGenerationSpecialChars()
+{
+  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/las/cloud.las" ) );
+  QString dataPathSpecial = dataPath;
+  dataPathSpecial.replace( QStringLiteral( "cloud.las" ), QStringLiteral( "éèêëáéíóúñäöüßãõçêàèòù.las" ) );
+  QVERIFY( QFile::rename( dataPath, dataPathSpecial ) );
+  QString outputPath = dataPathSpecial;
+  outputPath.replace( QStringLiteral( "éèêëáéíóúñäöüßãõçêàèòù.las" ), QStringLiteral( "éèêëáéíóúñäöüßãõçêàèòù.copc.laz" ) );
+  QVERIFY( QFileInfo::exists( dataPathSpecial ) );
+  QgsPdalIndexingTask task( dataPathSpecial, outputPath );
+  QVERIFY( task.run() );
+  QVERIFY( QFileInfo::exists( outputPath ) );
 }
 
 QGSTEST_MAIN( TestQgsPdalProvider )
