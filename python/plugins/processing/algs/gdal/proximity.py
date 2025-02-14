@@ -93,15 +93,16 @@ class proximity(GdalAlgorithm):
                 parentLayerParameterName=self.INPUT,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.VALUES,
-                self.tr(
-                    "A list of pixel values in the source image to be considered target pixels"
-                ),
-                optional=True,
-            )
+        values_param = QgsProcessingParameterString(
+            self.VALUES,
+            self.tr(
+                "List of target pixels"
+            ),
+            optional=True,
         )
+        values_param.setHelp(self.tr("Comma-separated list of pixel values in the source image to consider as target pixels. If not specified, all non-zero pixels will be considered target pixels."))
+        self.addParameter(values_param)
+
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.UNITS,
@@ -114,33 +115,36 @@ class proximity(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.MAX_DISTANCE,
-                self.tr("The maximum distance to be generated"),
+                self.tr("The maximum distance to generate"),
                 type=QgsProcessingParameterNumber.Type.Double,
                 minValue=0.0,
                 defaultValue=0.0,
                 optional=True,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.REPLACE,
-                self.tr(
-                    "Value to be applied to all pixels that are within the -maxdist of target pixels"
-                ),
-                type=QgsProcessingParameterNumber.Type.Double,
-                defaultValue=0.0,
-                optional=True,
-            )
+
+        replace_param = QgsProcessingParameterNumber(
+            self.REPLACE,
+            self.tr(
+                "Value to apply to pixels within the maximum distance of target pixels"
+            ),
+            type=QgsProcessingParameterNumber.Type.Double,
+            defaultValue=0.0,
+            optional=True,
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.NODATA,
-                self.tr("Nodata value to use for the destination proximity raster"),
-                type=QgsProcessingParameterNumber.Type.Double,
-                defaultValue=0.0,
-                optional=True,
-            )
+        replace_param.setHelp(self.tr("Value to apply to all pixels within the maximum distance of target pixels (including the target pixels) instead of a distance value"))
+        self.addParameter(replace_param)
+
+        nodata_param = QgsProcessingParameterNumber(
+            self.NODATA,
+            self.tr("Nodata value to use for the destination proximity raster"),
+            type=QgsProcessingParameterNumber.Type.Double,
+            defaultValue=0.0,
+            optional=True,
         )
+        nodata_param.setHelp(self.tr("NoData value to use for the pixels beyond the maximum distance. "
+            "If not provided, it will be set to the one from the output band, or ultimately to 65535."))
+        self.addParameter(nodata_param)
 
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
