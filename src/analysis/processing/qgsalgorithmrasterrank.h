@@ -46,6 +46,7 @@ class QgsRasterRankAlgorithm : public QgsProcessingAlgorithm
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    QList<int> mRanks;
     QList<QgsMapLayer *> mLayers;
 };
 
