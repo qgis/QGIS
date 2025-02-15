@@ -744,6 +744,12 @@ void QgsGeoreferencerMainWindow::selectPoint( const QgsPointXY &p )
   mvPoint = findPoint( p, pointType );
   if ( mvPoint )
   {
+    if ( mHoveredPoint )
+    {
+      mHoveredPoint->setHovered( false );
+      mHoveredPoint = nullptr;
+    }
+
     if ( pointType == QgsGcpPoint::PointType::Source )
     {
       mToolMovePoint->setStartPoint( mvPoint->sourcePoint() );
@@ -794,7 +800,7 @@ void QgsGeoreferencerMainWindow::movePoint( const QgsPointXY &p )
   }
 }
 
-void QgsGeoreferencerMainWindow::releasePoint( const QgsPointXY & )
+void QgsGeoreferencerMainWindow::releasePoint( const QgsPointXY &p )
 {
   const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
   if ( pointType == QgsGcpPoint::PointType::Source )
@@ -807,6 +813,17 @@ void QgsGeoreferencerMainWindow::releasePoint( const QgsPointXY & )
     mToolMovePointQgis->setStartPoint( QgsPointXY() );
     mMovingPointQgis = nullptr;
   }
+
+  QgsGeorefDataPoint *point = findPoint( p, pointType );
+  if ( point )
+  {
+    point->setHovered( true );
+  }
+  if ( mHoveredPoint && point != mHoveredPoint )
+  {
+    mHoveredPoint->setHovered( false );
+  }
+  mHoveredPoint = point;
 }
 
 void QgsGeoreferencerMainWindow::cancelPoint( const QgsPointXY &p )
