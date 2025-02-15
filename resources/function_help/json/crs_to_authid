@@ -2,7 +2,7 @@
   "name": "crs_to_authid",
   "type": "function",
   "groups": ["CRS"],
-  "description": "Returns the authority:id identifier string for a coordinate reference system.",
+  "description": "Returns the authority ID string for a coordinate reference system.",
   "arguments": [{
     "arg": "crs",
     "description": "crs value"

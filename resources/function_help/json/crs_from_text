@@ -2,7 +2,7 @@
   "name": "crs_from_text",
   "type": "function",
   "groups": ["CRS"],
-  "description": "Creates a coordinate reference system from a string definition. The string can represent an auth:id code, a WKT definition, or a PROJ string definition of the CRS.",
+  "description": "Creates a coordinate reference system from a string definition. The string can represent an authority ID, a WKT definition, or a PROJ string definition of the CRS.",
   "arguments": [{
     "arg": "definition",
     "description": "CRS definition"
