@@ -227,9 +227,9 @@ std::unique_ptr<T> QgsStacController::takeStacObject( int requestId )
 
   return nullptr;
 }
-template std::unique_ptr< QgsStacItem > QgsStacController::takeStacObject<QgsStacItem>( int requestId );
-template std::unique_ptr< QgsStacCatalog > QgsStacController::takeStacObject<QgsStacCatalog>( int requestId );
-template std::unique_ptr< QgsStacObject > QgsStacController::takeStacObject<QgsStacObject>( int requestId );
+template CORE_EXPORT std::unique_ptr< QgsStacItem > QgsStacController::takeStacObject<QgsStacItem>( int requestId );
+template CORE_EXPORT std::unique_ptr< QgsStacCatalog > QgsStacController::takeStacObject<QgsStacCatalog>( int requestId );
+template CORE_EXPORT std::unique_ptr< QgsStacObject > QgsStacController::takeStacObject<QgsStacObject>( int requestId );
 
 std::unique_ptr< QgsStacItemCollection > QgsStacController::takeItemCollection( int requestId )
 {
@@ -420,6 +420,6 @@ std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString 
   return res;
 }
 
-template std::unique_ptr< QgsStacItem > QgsStacController::fetchStacObject<QgsStacItem>( const QUrl &url, QString *error );
-template std::unique_ptr< QgsStacCollection > QgsStacController::fetchStacObject<QgsStacCollection>( const QUrl &url, QString *error );
-template std::unique_ptr< QgsStacCatalog > QgsStacController::fetchStacObject<QgsStacCatalog>( const QUrl &url, QString *error );
+template CORE_EXPORT std::unique_ptr< QgsStacItem > QgsStacController::fetchStacObject<QgsStacItem>( const QUrl &url, QString *error );
+template CORE_EXPORT std::unique_ptr< QgsStacCollection > QgsStacController::fetchStacObject<QgsStacCollection>( const QUrl &url, QString *error );
+template CORE_EXPORT std::unique_ptr< QgsStacCatalog > QgsStacController::fetchStacObject<QgsStacCatalog>( const QUrl &url, QString *error );
