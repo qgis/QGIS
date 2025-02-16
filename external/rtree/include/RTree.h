@@ -1499,6 +1499,7 @@ RTREE_TEMPLATE
     // It is assured that AddBranch here will not cause a node split.
     bool nodeWasSplit = AddBranch(&a_parVars->m_branchBuf[index], targetNodes[targetNodeIndex], NULL);
     RTREE_ASSERT(!nodeWasSplit);
+    (void)nodeWasSplit;
   }
 }
 
