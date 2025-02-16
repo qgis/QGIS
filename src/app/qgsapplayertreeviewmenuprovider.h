@@ -50,16 +50,23 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     bool removeLegendLayerAction( QAction *action );
     void addLegendLayerActionForLayer( QAction *action, QgsMapLayer *layer );
     void removeLegendLayerActionsForLayer( QgsMapLayer *layer );
+    void addLegendLayerActionForGroup( QAction *action, const QString &menu );
+    bool removeLegendLayerActionForGroup( QAction *action );
+    bool removeLegendLayerActionsForGroup( const QString &menu );
     QList<LegendLayerAction> legendLayerActions( Qgis::LayerType type ) const;
+    QList<LegendLayerAction> groupLegendLayerActions() const;
+    QList<QAction *> groupMenuActions( const QString &menu ) const;
 
   protected:
     void addCustomLayerActions( QMenu *menu, QgsMapLayer *layer );
+    void addCustomGroupActions( QMenu *menu );
+    void addCustomActionsToMenu( QMenu *menu, const QList<LegendLayerAction> &customActions );
 
     QgsLayerTreeView *mView = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
     QMap<Qgis::LayerType, QList<LegendLayerAction>> mLegendLayerActionMap;
-
+    QList<LegendLayerAction> mGroupLegendLayerActionList;
   private slots:
 
     void editVectorSymbol( const QString &layerId );
