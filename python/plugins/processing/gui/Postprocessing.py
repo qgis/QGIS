@@ -206,7 +206,7 @@ def handleAlgorithmResults(
     i = 0
 
     added_layers: list[
-        tuple[Optional[QgsLayerTreeGroup], QgsLayerTreeLayer, QgsProject]
+        tuple[QgsMapLayer, Optional[QgsLayerTreeGroup], QgsLayerTreeLayer, QgsProject]
     ] = []
     layers_to_post_process: list[
         tuple[QgsMapLayer, QgsProcessingContext.LayerDetails]
@@ -245,7 +245,12 @@ def handleAlgorithmResults(
                     # later, after we've sorted all added layers
                     layer_tree_layer = create_layer_tree_layer(owned_map_layer, details)
                     added_layers.append(
-                        (results_group, layer_tree_layer, details.project)
+                        (
+                            owned_map_layer,
+                            results_group,
+                            layer_tree_layer,
+                            details.project,
+                        )
                     )
 
                 if details.postProcessor():
@@ -272,7 +277,7 @@ def handleAlgorithmResults(
 
     # sort added layer tree layers
     sorted_layer_tree_layers = sorted(
-        added_layers, key=lambda x: x[1].customProperty(SORT_ORDER_CUSTOM_PROPERTY, 0)
+        added_layers, key=lambda x: x[2].customProperty(SORT_ORDER_CUSTOM_PROPERTY, 0)
     )
     have_set_active_layer = False
 
@@ -281,7 +286,7 @@ def handleAlgorithmResults(
         current_selected_node = iface.layerTreeView().currentNode()
         iface.layerTreeView().setUpdatesEnabled(False)
 
-    for group, layer_node, project in sorted_layer_tree_layers:
+    for layer, group, layer_node, project in sorted_layer_tree_layers:
         if not project:
             project = context.project()
 
