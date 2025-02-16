@@ -28,7 +28,7 @@ bool QgisUntwine::start(Options& options)
         cmdline += "--" + op.first + " \"" + op.second + "\" ";
 
     PROCESS_INFORMATION processInfo;
-    STARTUPINFOA startupInfo;
+    STARTUPINFO startupInfo;
 
     ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
     ZeroMemory(&startupInfo, sizeof(STARTUPINFO));
@@ -42,7 +42,7 @@ bool QgisUntwine::start(Options& options)
 
     std::vector<char> ncCmdline(cmdline.begin(), cmdline.end());
     ncCmdline.push_back((char)0);
-    bool ok = CreateProcessA(m_path.c_str(), ncCmdline.data(),
+    bool ok = CreateProcess(m_path.c_str(), ncCmdline.data(),
         NULL, /* process attributes */
         NULL, /* thread attributes */
         TRUE, /* inherit handles */
