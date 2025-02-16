@@ -24,6 +24,7 @@
 #include "qgis_core.h"
 #include "qgshttpheaders.h"
 #include "qgsnetworkreply.h"
+#include "qgsstacobject.h"
 
 class QgsStacObject;
 class QgsStacCatalog;
@@ -56,26 +57,26 @@ class CORE_EXPORT QgsStacController : public QObject
      *  Returns a STAC Catalog by parsing a local file
      *  The caller takes ownership of the returned catalog
      */
-    QgsStacCatalog *openLocalCatalog( const QString &fileName ) const;
+    std::unique_ptr< QgsStacCatalog > openLocalCatalog( const QString &fileName ) const;
 
     /**
      *  Returns a STAC Collection by parsing a local file
      *  The caller takes ownership of the returned collection
      */
-    QgsStacCollection *openLocalCollection( const QString &fileName ) const;
+    std::unique_ptr< QgsStacCollection > openLocalCollection( const QString &fileName ) const;
 
     /**
      *  Returns a STAC Item by parsing a local file
      *  The caller takes ownership of the returned item
      */
-    QgsStacItem *openLocalItem( const QString &fileName ) const;
+    std::unique_ptr< QgsStacItem > openLocalItem( const QString &fileName ) const;
 
     /**
      * Fetches a STAC object from \a url using a blocking network request.
      * An optional \a error parameter will be populated with any network error information.
      * The caller takes ownership of the returned object
      */
-    std::unique_ptr< QgsStacObject > fetchStacObject( const QUrl &url, QString *error = nullptr );
+    template<class T> std::unique_ptr< T > fetchStacObject( const QUrl &url, QString *error = nullptr );
 
     /**
      * Fetches a feature collection from \a url using a blocking network request.
@@ -130,7 +131,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * \see fetchStacObjectAsync
      * \see finishedStacObjectRequest
      */
-    std::unique_ptr< QgsStacObject > takeStacObject( int requestId );
+    template<class T> std::unique_ptr< T > takeStacObject( int requestId );
 
     /**
      * Returns the feature collection fetched with the specified \a requestId
