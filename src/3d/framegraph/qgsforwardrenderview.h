@@ -17,9 +17,6 @@
 #define QGSFORWARDRENDERVIEW_H
 
 #include "qgsabstractrenderview.h"
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 15, 0 )
-#include <Qt3DRender/QDebugOverlay>
-#endif
 
 namespace Qt3DRender
 {
@@ -31,9 +28,11 @@ namespace Qt3DRender
   class QCameraSelector;
   class QLayerFilter;
   class QRenderTargetSelector;
+  class QRenderTarget;
   class QClearBuffers;
   class QFrustumCulling;
   class QRenderStateSet;
+  class QDebugOverlay;
 } // namespace Qt3DRender
 
 #define SIP_NO_FILE
@@ -41,6 +40,49 @@ namespace Qt3DRender
 /**
  * \ingroup 3d
  * \brief Container class that holds different objects related to forward rendering
+ *
+ * The branch structure:
+ * We define two forward passes: one for solid objects, followed by one for transparent objects.
+ *
+ *                                  |
+ *                         +-----------------+
+ *                         | QCameraSelector |  (using the main camera)
+ *                         +-----------------+
+ *                                  |
+ *                         +-----------------+
+ *                         |  QLayerFilter   |  (using mForwardRenderLayer)
+ *                         +-----------------+
+ *                                  |
+ *                         +-----------------+
+ *                         | QRenderStateSet |  define clip planes
+ *                         +-----------------+
+ *                                  |
+ *                      +-----------------------+
+ *                      | QRenderTargetSelector | (write mForwardColorTexture + mForwardDepthTexture)
+ *                      +-----------------------+
+ *                                  |
+ *         +------------------------+---------------------+
+ *         |                                              |
+ *  +-----------------+    discard               +-----------------+    accept
+ *  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
+ *  +-----------------+    objects               +-----------------+    objects
+ *         |                                              |
+ *  +-----------------+  use depth test          +-----------------+   sort entities
+ *  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
+ *  +-----------------+                          +-----------------+
+ *         |                                              |
+ *  +-----------------+              +--------------------+--------------------+
+ *  | QFrustumCulling |              |                                         |
+ *  +-----------------+     +-----------------+  use depth tests      +-----------------+  use depth tests
+ *         |                | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
+ *         |                +-----------------+  write colors         +-----------------+  don't write colors
+ *  +-----------------+                          use alpha blending                        don't use alpha blending
+ *  |  QClearBuffers  |  color and depth         no culling                                no culling
+ *  +-----------------+
+ *         |
+ *  +-----------------+
+ *  |  QDebugOverlay  |
+ *  +-----------------+
  *
  * \note Not available in Python bindings
  *
@@ -54,7 +96,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     QgsForwardRenderView( QObject *parent, Qt3DRender::QCamera *mainCamera );
 
     //! Returns a layer object used to indicate that the object is transparent
-    Qt3DRender::QLayer *opaqueObjectLayer() { return mLayer; }
+    Qt3DRender::QLayer *rendertLayer() { return mRenderLayer; }
 
     //! Returns a layer object used to indicate that the object is transparent
     Qt3DRender::QLayer *transparentObjectLayer() { return mTransparentObjectsLayer; }
@@ -65,10 +107,10 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     //! Returns whether frustum culling is enabled
     bool isFrustumCullingEnabled() const { return mFrustumCullingEnabled; }
     //! Sets whether frustum culling is enabled
-    void enableFrustumCulling( bool enabled );
+    void setFrustumCullingEnabled( bool enabled );
 
     //! Sets whether debug overlay is enabled
-    void enableDebugOverlay( bool enabled );
+    void setDebugOverlayEnabled( bool enabled );
 
     //! Returns current render target selector
     Qt3DRender::QRenderTargetSelector *renderTargetSelector() { return mRenderTargetSelector; }
@@ -108,7 +150,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     // clip planes render state
     Qt3DRender::QRenderStateSet *mClipRenderStateSet = nullptr;
 
-    Qt3DRender::QLayer *mLayer = nullptr;
+    Qt3DRender::QLayer *mRenderLayer = nullptr;
     Qt3DRender::QLayer *mTransparentObjectsLayer = nullptr;
     Qt3DRender::QClearBuffers *mClearBuffers = nullptr;
     bool mFrustumCullingEnabled = true;
@@ -121,7 +163,8 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
 #endif
 
-    Qt3DRender::QFrameGraphNode *buildRenderPass();
+    void buildRenderPasses();
+    Qt3DRender::QRenderTarget *buildTextures();
 };
 
 #endif // QGSFORWARDRENDERVIEW_H

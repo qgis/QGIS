@@ -20,7 +20,6 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include "qgsabstractrenderview.h"
-#include "qgspreviewquad.h"
 #include "qgs3dmapcanvas.h"
 
 #include "qgsframegraph.h"
@@ -67,11 +66,7 @@ void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 {
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
-  if ( mFrameGraph->renderView( QgsFrameGraph::FORWARD_RENDERVIEW ) )
-  {
-    QgsForwardRenderView *rv = mFrameGraph->forwardRenderView();
-    mSceneRoot->addComponent( rv->opaqueObjectLayer() );
-  }
+  mSceneRoot->addComponent( mFrameGraph->forwardRenderView()->rendertLayer() );
   mSceneRoot->addComponent( mFrameGraph->shadowRenderView()->entityCastingShadowsLayer() );
 }
 

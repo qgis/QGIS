@@ -67,54 +67,13 @@ const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 void QgsFrameGraph::constructForwardRenderPass()
 {
   // This is where rendering of the 3D scene actually happens.
-  // We define two forward passes: one for solid objects, followed by one for transparent objects.
-  //
-  //                                  |
-  //                         +-----------------+
-  //                         | QCameraSelector |  (using the main camera)
-  //                         +-----------------+
-  //                                  |
-  //                         +-----------------+
-  //                         |  QLayerFilter   |  (using mForwardRenderLayer)
-  //                         +-----------------+
-  //                                  |
-  //                         +-----------------+
-  //                         | QRenderStateSet |  define clip planes
-  //                         +-----------------+
-  //                                  |
-  //                      +-----------------------+
-  //                      | QRenderTargetSelector | (write mForwardColorTexture + mForwardDepthTexture)
-  //                      +-----------------------+
-  //                                  |
-  //         +------------------------+---------------------+
-  //         |                                              |
-  //  +-----------------+    discard               +-----------------+    accept
-  //  |  QLayerFilter   |  transparent             |  QLayerFilter   |  transparent
-  //  +-----------------+    objects               +-----------------+    objects
-  //         |                                              |
-  //  +-----------------+  use depth test          +-----------------+   sort entities
-  //  | QRenderStateSet |  cull back faces         |  QSortPolicy    |  back to front
-  //  +-----------------+                          +-----------------+
-  //         |                                              |
-  //  +-----------------+              +--------------------+--------------------+
-  //  | QFrustumCulling |              |                                         |
-  //  +-----------------+     +-----------------+  use depth tests      +-----------------+  use depth tests
-  //         |                | QRenderStateSet |  don't write depths   | QRenderStateSet |  write depths
-  //         |                +-----------------+  write colors         +-----------------+  don't write colors
-  //  +-----------------+                          use alpha blending                        don't use alpha blending
-  //  |  QClearBuffers  |  color and depth         no culling                                no culling
-  //  +-----------------+
-
   QgsForwardRenderView *forwardRenderView = new QgsForwardRenderView( this, mMainCamera );
   registerRenderView( forwardRenderView, FORWARD_RENDERVIEW );
 }
 
 Qt3DRender::QLayer *QgsFrameGraph::transparentObjectLayer()
 {
-  QgsForwardRenderView *rv = forwardRenderView();
-  if ( rv )
-    return rv->transparentObjectLayer();
-  return nullptr;
+  return forwardRenderView()->transparentObjectLayer();
 }
 
 void QgsFrameGraph::constructShadowRenderPass()
@@ -517,14 +476,12 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   mPreviewLayer = new Qt3DRender::QLayer;
   mDepthRenderPassLayer = new Qt3DRender::QLayer;
-  mTransparentObjectsPassLayer = new Qt3DRender::QLayer;
   mRubberBandsLayer = new Qt3DRender::QLayer;
 
   mRubberBandsLayer->setObjectName( "mRubberBandsLayer" );
 
   mPreviewLayer->setRecursive( true );
   mDepthRenderPassLayer->setRecursive( true );
-  mTransparentObjectsPassLayer->setRecursive( true );
   mRubberBandsLayer->setRecursive( true );
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
@@ -727,7 +684,7 @@ void QgsFrameGraph::setFrustumCullingEnabled( bool enabled )
 {
   QgsForwardRenderView *rv = forwardRenderView();
   if ( rv )
-    rv->enableFrustumCulling( enabled );
+    rv->setFrustumCullingEnabled( enabled );
 }
 
 void QgsFrameGraph::setupEyeDomeLighting( bool enabled, double strength, int distance )
@@ -818,12 +775,12 @@ void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
   QgsForwardRenderView *rv = forwardRenderView();
   if ( rv )
-    rv->enableDebugOverlay( enabled );
+    rv->setDebugOverlayEnabled( enabled );
 }
 
 QgsForwardRenderView *QgsFrameGraph::forwardRenderView() const
 {
-  QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::FORWARD_RENDERVIEW];
+  QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::FORWARD_RENDERVIEW].get();
   if ( rv )
     return dynamic_cast<QgsForwardRenderView *>( rv );
   return nullptr;

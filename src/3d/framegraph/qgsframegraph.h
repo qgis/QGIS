@@ -294,7 +294,6 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
     Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
-    Qt3DRender::QLayer *mTransparentObjectsPassLayer = nullptr;
     Qt3DRender::QLayer *mRubberBandsLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;

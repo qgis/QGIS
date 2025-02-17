@@ -38,43 +38,28 @@
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QClipPlane>
 
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 15, 0 )
+#include <Qt3DRender/QDebugOverlay>
+#endif
+
 QgsForwardRenderView::QgsForwardRenderView( QObject *parent, Qt3DRender::QCamera *mainCamera )
   : QgsAbstractRenderView( parent, "forward" )
   , mMainCamera( mainCamera )
 {
-  mLayer = new Qt3DRender::QLayer;
-  mLayer->setRecursive( true );
-  mLayer->setObjectName( objectName() + "::Layer" );
+  mRenderLayer = new Qt3DRender::QLayer;
+  mRenderLayer->setRecursive( true );
+  mRenderLayer->setObjectName( objectName() + "::Layer" );
 
   mTransparentObjectsLayer = new Qt3DRender::QLayer;
   mTransparentObjectsLayer->setRecursive( true );
   mTransparentObjectsLayer->setObjectName( objectName() + "::TransparentLayer" );
 
   // forward rendering pass
-  buildRenderPass();
+  buildRenderPasses();
 }
 
-Qt3DRender::QFrameGraphNode *QgsForwardRenderView::buildRenderPass()
+Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 {
-  // The branch structure:
-  // mMainCameraSelector
-  // mRenderLayerFilter
-  // mRenderTargetSelector
-  // opaqueObjectsFilter       | transparentObjectsLayerFilter
-  // forwaredRenderStateSet    | sortPolicy
-  // mFrustumCulling           | transparentObjectsRenderStateSet
-  // mClearBuffers      |
-  // mDebugOverlay             |
-  mMainCameraSelector = new Qt3DRender::QCameraSelector( mRendererEnabler );
-  mMainCameraSelector->setObjectName( objectName() + "::CameraSelector" );
-  mMainCameraSelector->setCamera( mMainCamera );
-
-  mLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
-  mLayerFilter->addLayer( mLayer );
-
-  mClipRenderStateSet = new Qt3DRender::QRenderStateSet( mLayerFilter );
-  mClipRenderStateSet->setObjectName( objectName() + "::Clip Plane RenderStateSet" );
-
   mColorTexture = new Qt3DRender::QTexture2D;
   mColorTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
   mColorTexture->setGenerateMipMaps( false );
@@ -101,6 +86,23 @@ Qt3DRender::QFrameGraphNode *QgsForwardRenderView::buildRenderPass()
   renderTargetColorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
   renderTargetColorOutput->setTexture( mColorTexture );
   renderTarget->addOutput( renderTargetColorOutput );
+
+  return renderTarget;
+}
+
+void QgsForwardRenderView::buildRenderPasses()
+{
+  mMainCameraSelector = new Qt3DRender::QCameraSelector( mRendererEnabler );
+  mMainCameraSelector->setObjectName( objectName() + "::CameraSelector" );
+  mMainCameraSelector->setCamera( mMainCamera );
+
+  mLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
+  mLayerFilter->addLayer( mRenderLayer );
+
+  mClipRenderStateSet = new Qt3DRender::QRenderStateSet( mLayerFilter );
+  mClipRenderStateSet->setObjectName( objectName() + "::Clip Plane RenderStateSet" );
+
+  Qt3DRender::QRenderTarget *renderTarget = buildTextures();
 
   mRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mClipRenderStateSet );
   mRenderTargetSelector->setTarget( renderTarget );
@@ -181,10 +183,6 @@ Qt3DRender::QFrameGraphNode *QgsForwardRenderView::buildRenderPass()
 
   mDebugOverlay = new Qt3DRender::QDebugOverlay( mClearBuffers );
   mDebugOverlay->setEnabled( false );
-
-  // cppcheck wrongly believes transparentObjectsRenderStateSetColor and transparentObjectsRenderStateSetDepth will leak
-  // cppcheck-suppress memleak
-  return mMainCameraSelector;
 }
 
 void QgsForwardRenderView::updateWindowResize( int width, int height )
@@ -200,19 +198,16 @@ void QgsForwardRenderView::setClearColor( const QColor &clearColor )
 }
 
 
-void QgsForwardRenderView::enableFrustumCulling( bool enabled )
+void QgsForwardRenderView::setFrustumCullingEnabled( bool enabled )
 {
   if ( enabled == mFrustumCullingEnabled )
     return;
   mFrustumCullingEnabled = enabled;
-  if ( mFrustumCullingEnabled )
-    mFrustumCulling->setParent( mClearBuffers );
-  else
-    mFrustumCulling->setParent( ( Qt3DCore::QNode * ) nullptr );
+  mFrustumCulling->setEnabled( enabled );
 }
 
 
-void QgsForwardRenderView::enableDebugOverlay( bool enabled )
+void QgsForwardRenderView::setDebugOverlayEnabled( bool enabled )
 {
   mDebugOverlay->setEnabled( enabled );
 }
