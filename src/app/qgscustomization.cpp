@@ -272,6 +272,14 @@ void QgsCustomizationDialog::apply()
 
 void QgsCustomizationDialog::cancel()
 {
+  if ( mSelectedWidgets.size() > 0 )
+  {
+    for ( int i = 0; i < mSelectedWidgets.size(); i++ )
+    {
+      mSelectedWidgets.at( i )->setStyleSheet( "" );
+    }
+    mSelectedWidgets.clear();
+  }
   hide();
 }
 
@@ -513,6 +521,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     QString style;
     if ( !on )
     {
+      mSelectedWidgets.append( widget );
       style = QStringLiteral( "background-color: #FFCCCC;" );
     }
     widget->setStyleSheet( style );
