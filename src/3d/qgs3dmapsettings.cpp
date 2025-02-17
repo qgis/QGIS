@@ -680,7 +680,8 @@ void Qgs3DMapSettings::setTerrainSettings( QgsAbstractTerrainSettings *settings 
   }
   else
   {
-    hasChanged = !settings->equals( mTerrainSettings.get() );
+    // ensure to generate the terrain if the settings have changed or if the terrain has never been generated.
+    hasChanged = !settings->equals( mTerrainSettings.get() ) || !mTerrainGenerator;
     mTerrainSettings.reset( settings );
   }
 
