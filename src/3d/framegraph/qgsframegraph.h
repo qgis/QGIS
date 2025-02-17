@@ -189,14 +189,18 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Dumps scene graph as string
     QString dumpSceneGraph() const;
 
-    //! Registers a new the render view \a renderView with name \a name
+    /**
+     * Registers a new the render view \a renderView with name \a name
+     *
+     * Will take owner ship of the renderView
+     */
     bool registerRenderView( QgsAbstractRenderView *renderView, const QString &name );
 
     //! Unregisters the render view named \a name, if any
     void unregisterRenderView( const QString &name );
 
     //! Enables or disables the render view named \a name according to \a enable
-    void setEnableRenderView( const QString &name, bool enable );
+    void setRenderViewEnabled( const QString &name, bool enable );
 
     //! Returns true if the render view named \a name is found and enabled
     bool isRenderViewEnabled( const QString &name );
@@ -311,7 +315,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     bool mRenderCaptureEnabled = false;
 
     // holds renderviews according to their name
-    QMap<QString, QgsAbstractRenderView *> mRenderViewMap;
+    QMap<QString, std::shared_ptr<QgsAbstractRenderView>> mRenderViewMap;
 
     Q_DISABLE_COPY( QgsFrameGraph )
 };

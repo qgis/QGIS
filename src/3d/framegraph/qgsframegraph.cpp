@@ -589,7 +589,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
 void QgsFrameGraph::unregisterRenderView( const QString &name )
 {
-  QgsAbstractRenderView *renderView = mRenderViewMap[name];
+  QgsAbstractRenderView *renderView = mRenderViewMap.find( name ).value().get();
   if ( renderView )
   {
     renderView->topGraphNode()->setParent( ( QNode * ) nullptr );
@@ -600,11 +600,12 @@ void QgsFrameGraph::unregisterRenderView( const QString &name )
 bool QgsFrameGraph::registerRenderView( QgsAbstractRenderView *renderView, const QString &name )
 {
   bool out;
-  if ( mRenderViewMap[name] == nullptr )
+  if ( mRenderViewMap.find( name ) == mRenderViewMap.end() )
   {
-    mRenderViewMap[name] = renderView;
-    renderView->topGraphNode()->setParent( mMainViewPort );
-    renderView->updateWindowResize( mSize.width(), mSize.height() );
+    mRenderViewMap.insert( name, std::shared_ptr<QgsAbstractRenderView>( renderView ) );
+    QgsAbstractRenderView *rv = mRenderViewMap.find( name ).value().get();
+    rv->topGraphNode()->setParent( mMainViewPort );
+    rv->updateWindowResize( mSize.width(), mSize.height() );
     out = true;
   }
   else
@@ -613,7 +614,7 @@ bool QgsFrameGraph::registerRenderView( QgsAbstractRenderView *renderView, const
   return out;
 }
 
-void QgsFrameGraph::setEnableRenderView( const QString &name, bool enable )
+void QgsFrameGraph::setRenderViewEnabled( const QString &name, bool enable )
 {
   if ( mRenderViewMap[name] )
   {
@@ -623,7 +624,7 @@ void QgsFrameGraph::setEnableRenderView( const QString &name, bool enable )
 
 QgsAbstractRenderView *QgsFrameGraph::renderView( const QString &name )
 {
-  return mRenderViewMap[name];
+  return mRenderViewMap[name].get();
 }
 
 bool QgsFrameGraph::isRenderViewEnabled( const QString &name )
@@ -759,9 +760,9 @@ void QgsFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Corner corner, dou
 void QgsFrameGraph::setSize( QSize s )
 {
   mSize = s;
-  for ( QMap<QString, QgsAbstractRenderView *>::iterator it = mRenderViewMap.begin(); it != mRenderViewMap.end(); ++it )
+  for ( QMap<QString, std::shared_ptr<QgsAbstractRenderView>>::iterator it = mRenderViewMap.begin(); it != mRenderViewMap.end(); ++it )
   {
-    QgsAbstractRenderView *rv = it.value();
+    QgsAbstractRenderView *rv = it.value().get();
     rv->updateWindowResize( mSize.width(), mSize.height() );
   }
 

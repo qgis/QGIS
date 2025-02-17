@@ -19,38 +19,21 @@
 #include "qgis_3d.h"
 
 #include <QObject>
-#include <Qt3DRender/QRenderTargetOutput>
 
 #define SIP_NO_FILE
 
-class QColor;
-class QRect;
-class QSurface;
-
-namespace Qt3DCore
-{
-  class QEntity;
-}
-
 namespace Qt3DRender
 {
-  class QRenderSettings;
-  class QCamera;
   class QFrameGraphNode;
-  class QLayer;
-  class QViewport;
-  class QTexture2D;
   class QSubtreeEnabler;
-  class QRenderTargetSelector;
 } // namespace Qt3DRender
-
-class QgsFrameGraph;
 
 /**
  * \ingroup 3d
  * \brief Base class for 3D render view
  *
- * An instance of QgsAbstractRenderView is a branch (ie. a render pass, ie. a render view) of in the framegraph
+ * An instance of QgsAbstractRenderView is a branch (ie. a render pass, ie. a render view) of the framegraph.
+ * It may contains multiple render passes.
  *
  * Will be used with QgsFrameGraph::registerRenderView.
  *
@@ -66,7 +49,10 @@ class _3D_EXPORT QgsAbstractRenderView : public QObject
      */
     QgsAbstractRenderView( QObject *parent, const QString &viewName );
 
-    //! Updates texture sizes for all target outputs
+    /**
+     * Called when 3D window is resized. Render views may update their textures accordingly.
+     * Default implementation does nothing.
+     */
     virtual void updateWindowResize( int width, int height );
 
     //! Returns the top node of this render view branch. Will be used to register the render view.

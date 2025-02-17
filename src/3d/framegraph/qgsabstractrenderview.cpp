@@ -17,8 +17,6 @@
 #include "moc_qgsabstractrenderview.cpp"
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/qsubtreeenabler.h>
-#include <Qt3DRender/QRenderTarget>
-#include <Qt3DRender/QRenderTargetSelector>
 
 QgsAbstractRenderView::QgsAbstractRenderView( QObject *parent, const QString &viewName )
   : QObject( parent )
