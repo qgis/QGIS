@@ -325,6 +325,9 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
     rows.append( r );
   }
 
+  // Items may come unsorted depending on selecion order
+  std::sort( rows.begin(), rows.end() );
+
   int to = row;
 
   // to is -1 if dragged outside items, i.e. below any item,
