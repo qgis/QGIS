@@ -5623,6 +5623,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "not IN right" ) << QStringLiteral( "field IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field  IN ('value', 'value2') OR field NOT IN ('value3')" );
       QTest::newRow( "not IN left same" ) << QStringLiteral( "field NOT IN ('value') OR field IN ('value')" ) << QStringLiteral( "field NOT IN ('value') OR field  IN ('value')" );
       QTest::newRow( "not IN right same" ) << QStringLiteral( "field IN ('value') OR field NOT IN ('value')" ) << QStringLiteral( "field  IN ('value') OR field NOT IN ('value')" );
+      QTest::newRow( "not IN three" ) << QStringLiteral( "\"TYPE\" in ('a') OR \"TYPE\" not in ('b') OR \"TYPE\" in ('c')" ) << QStringLiteral( "TYPE  IN ('a') OR TYPE NOT IN ('b') OR TYPE  IN ('c')" );
 
       // could be handled, but isn't right now
       QTest::newRow( "not IN both" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" );
