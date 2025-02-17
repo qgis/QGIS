@@ -221,7 +221,7 @@ std::unique_ptr<T> QgsStacController::takeStacObject( int requestId )
 
   if ( T *downCastObj = dynamic_cast< T * >( obj.get() ) )
   {
-    obj.release();
+    ( void )obj.release();
     return std::unique_ptr< T >( downCastObj );
   }
 
@@ -406,7 +406,7 @@ std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString 
   std::unique_ptr< T > res;
   if ( T *castObject = dynamic_cast< T * >( object.get() ) )
   {
-    object.release();
+    ( void )object.release();
     res.reset( castObject );
   }
   else
