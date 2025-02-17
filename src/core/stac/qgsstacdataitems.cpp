@@ -69,9 +69,8 @@ QVector<QgsDataItem *> QgsStacItemItem::createChildren()
 {
   QgsStacController *controller = stacController();
   QString error;
-  QgsStacObject *obj = controller->fetchStacObject( mPath, &error );
-  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj );
-  setStacItem( item );
+  std::unique_ptr< QgsStacObject > obj = controller->fetchStacObject( mPath, &error );
+  setStacItem( obj );
 
   if ( !mStacItem )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
@@ -175,8 +174,15 @@ QgsStacController *QgsStacItemItem::stacController()
   return nullptr;
 }
 
-void QgsStacItemItem::setStacItem( QgsStacItem *item )
+void QgsStacItemItem::setStacItem( std::unique_ptr< QgsStacObject > &object )
 {
+  QgsStacItem *item = dynamic_cast<QgsStacItem *>( object.get() );
+  if ( item )
+  {
+    // release object, mStacItem will take ownership of the successfully cast item
+    ( void )object.release();
+  }
+
   mStacItem.reset( item );
   updateToolTip();
 }
@@ -189,15 +195,14 @@ QgsStacItem *QgsStacItemItem::stacItem() const
 void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
 {
   QgsStacController *controller = stacController();
-  QgsStacObject *object = controller->takeStacObject( requestId );
-  QgsStacItem *item = dynamic_cast< QgsStacItem * >( object );
-  setStacItem( item );
-  if ( item )
+  std::unique_ptr< QgsStacObject > object = controller->takeStacObject( requestId );
+  setStacItem( object );
+  if ( mStacItem )
   {
     mIconName = QStringLiteral( "mActionPropertiesWidget.svg" );
-    QString name = item->properties().value( QStringLiteral( "title" ), QString() ).toString();
+    QString name = mStacItem->properties().value( QStringLiteral( "title" ), QString() ).toString();
     if ( name.isEmpty() )
-      name = item->id();
+      name = mStacItem->id();
     mName = name;
   }
   else
@@ -297,7 +302,7 @@ void QgsStacCatalogItem::childrenCreated()
 
 void QgsStacCatalogItem::onControllerFinished( int requestId, const QString &error )
 {
-  for ( auto child : std::as_const( mChildren ) )
+  for ( QgsDataItem *child : std::as_const( mChildren ) )
   {
     if ( child->state() != Qgis::BrowserItemState::NotPopulated )
       continue;
@@ -314,44 +319,47 @@ void QgsStacCatalogItem::onControllerFinished( int requestId, const QString &err
 
 QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
 {
-  QgsStacCatalog *root = rootCatalog();
-  const bool supportsApi = root ? root->supportsStacApi() : false;
 
   QgsStacController *controller = stacController();
   QString error;
-  QgsStacObject *obj = controller->fetchStacObject( mPath, &error );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
-  setStacCatalog( cat );
+  std::unique_ptr< QgsStacObject > obj = controller->fetchStacObject( mPath, &error );
+  setStacCatalog( obj );
 
   if ( !mStacCatalog )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
+
+  QgsStacCatalog *root = rootCatalog();
+
+  const bool supportsCollections = root && root->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/collections" ) );
+  const bool supportsItems = root && root->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/ogcapi-features" ) );
 
   int itemsCount = 0;
   QVector<QgsDataItem *> contents;
   const QVector< QgsStacLink > links = mStacCatalog->links();
 
   // treat catalog/collection as static if it does not have a /items endpoint
-  bool hasItemsEndpoint = false;
-  bool hasCollectionsEndpoint = false;
-  if ( supportsApi )
+  bool useItemsEndpoint = false;
+  bool useCollectionsEndpoint = false;
+  if ( supportsCollections || supportsItems )
   {
-    for ( const auto &link : links )
+    for ( const QgsStacLink &link : links )
     {
       if ( link.relation() == QLatin1String( "items" ) )
       {
-        hasItemsEndpoint = true;
+        useItemsEndpoint = true;
       }
       else if ( link.relation() == QLatin1String( "data" ) &&
                 link.href().endsWith( QLatin1String( "/collections" ) ) )
       {
-        hasCollectionsEndpoint = true;
+        useCollectionsEndpoint = true;
       }
-      if ( hasItemsEndpoint && hasCollectionsEndpoint )
+      // if we found what we need we can stop looking
+      if ( supportsItems == useItemsEndpoint && supportsCollections == useCollectionsEndpoint )
         break;
     }
   }
 
-  for ( const auto &link : links )
+  for ( const QgsStacLink &link : links )
   {
     // skip hierarchical navigation links
     if ( link.relation() == QLatin1String( "self" ) ||
@@ -361,7 +369,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       continue;
 
     if ( link.relation() == QLatin1String( "child" ) &&
-         !hasCollectionsEndpoint )
+         !useCollectionsEndpoint )
     {
       // may be either catalog or collection
       QgsStacCatalogItem *c = new QgsStacCatalogItem( this, link.title(), link.href() );
@@ -385,7 +393,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       }
     }
     else if ( link.relation() == QLatin1String( "item" ) &&
-              !hasItemsEndpoint )
+              !useItemsEndpoint )
     {
       itemsCount++;
 
@@ -395,7 +403,8 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       QgsStacItemItem *i = new QgsStacItemItem( this, link.title(), link.href() );
       contents.append( i );
     }
-    else if ( link.relation() == QLatin1String( "items" ) )
+    else if ( link.relation() == QLatin1String( "items" ) &&
+              useItemsEndpoint )
     {
       // stac api items (ogcapi features)
       QString error;
@@ -453,8 +462,15 @@ void QgsStacCatalogItem::updateToolTip()
   }
 }
 
-void QgsStacCatalogItem::setStacCatalog( QgsStacCatalog *catalog )
+void QgsStacCatalogItem::setStacCatalog( std::unique_ptr< QgsStacObject > &object )
 {
+  QgsStacCatalog *catalog = dynamic_cast<QgsStacCatalog *>( object.get() );
+  if ( catalog )
+  {
+    // release object, mStacCatalog will take ownership of the successfully cast catalog
+    ( void )object.release();
+  }
+
   mStacCatalog.reset( catalog );
   if ( mStacCatalog )
   {
@@ -484,10 +500,12 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
     if ( !item )
       continue;
 
+    std::unique_ptr< QgsStacObject > object( item );
+
     const QString name = item->properties().value( QStringLiteral( "title" ), item->id() ).toString();
 
     QgsStacItemItem *i = new QgsStacItemItem( this, name, item->url() );
-    i->setStacItem( item );
+    i->setStacItem( object );
     i->setState( Qgis::BrowserItemState::Populated );
     contents.append( i );
   }
@@ -503,10 +521,12 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createCollections( const QVector<QgsS
     if ( !col )
       continue;
 
+    std::unique_ptr< QgsStacObject > object( col );
+
     const QString name = col->title().isEmpty() ? col->id() : col->title();
 
     QgsStacCatalogItem *i = new QgsStacCatalogItem( this, name, col->url() );
-    i->setStacCatalog( col );
+    i->setStacCatalog( object );
     contents.append( i );
   }
   return contents;
@@ -586,7 +606,7 @@ QgsStacRootItem::QgsStacRootItem( QgsDataItem *parent, const QString &name, cons
 QVector<QgsDataItem *> QgsStacRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  const auto connectionList = QgsStacConnection::connectionList();
+  const QStringList connectionList = QgsStacConnection::connectionList();
   for ( const QString &connName : connectionList )
   {
     QgsDataItem *conn = new QgsStacConnectionItem( this, connName );

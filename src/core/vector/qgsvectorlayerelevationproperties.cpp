@@ -54,6 +54,9 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
 
   element.setAttribute( QStringLiteral( "extrusionEnabled" ), mEnableExtrusion ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "extrusion" ), qgsDoubleToString( mExtrusionHeight ) );
+  element.setAttribute( QStringLiteral( "customToleranceEnabled" ), mEnableCustomTolerance ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( mCustomTolerance != 0 )
+    element.setAttribute( QStringLiteral( "customTolerance" ), qgsDoubleToString( mCustomTolerance ) );
   element.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mClamping ) );
   element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
   element.setAttribute( QStringLiteral( "type" ), qgsEnumValueToKey( mType ) );
@@ -93,6 +96,8 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
   mType = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "type" ) ), Qgis::VectorProfileType::IndividualFeatures );
   mEnableExtrusion = elevationElement.attribute( QStringLiteral( "extrusionEnabled" ), QStringLiteral( "0" ) ).toInt();
   mExtrusionHeight = elevationElement.attribute( QStringLiteral( "extrusion" ), QStringLiteral( "0" ) ).toDouble();
+  mEnableCustomTolerance = elevationElement.attribute( QStringLiteral( "customToleranceEnabled" ), QStringLiteral( "0" ) ).toInt();
+  mCustomTolerance = elevationElement.attribute( QStringLiteral( "customTolerance" ), QStringLiteral( "0" ) ).toDouble();
   mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
   if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
     mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
@@ -135,13 +140,19 @@ void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer
   mEnableExtrusion = false;
   mExtrusionHeight = 0;
 
+  // By default override default tolerance for Polygon and Line
+  // to avoid unexpected behaviors.
+  // For example, see: https://github.com/qgis/QGIS/issues/58016
+  mEnableCustomTolerance = vlayer->geometryType() != Qgis::GeometryType::Point;
+  mCustomTolerance = 0;
+
   mDataDefinedProperties.clear();
 
   mBinding = Qgis::AltitudeBinding::Centroid;
 
   if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
   {
-    mClamping = Qgis::AltitudeClamping::Relative;
+    mClamping = Qgis::AltitudeClamping::Absolute;
   }
   else
   {
@@ -151,12 +162,14 @@ void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer
 
 QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsVectorLayerElevationProperties > res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
+  auto res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
   res->setClamping( mClamping );
   res->setBinding( mBinding );
   res->setType( mType );
   res->setExtrusionEnabled( mEnableExtrusion );
   res->setExtrusionHeight( mExtrusionHeight );
+  res->setCustomToleranceEnabled( mEnableCustomTolerance );
+  res->setCustomTolerance( mCustomTolerance );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
@@ -226,6 +239,11 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
     {
       properties << tr( "Extrusion: %1" ).arg( mExtrusionHeight );
     }
+  }
+
+  if ( mEnableCustomTolerance )
+  {
+    properties << tr( "CustomTolerance: %1" ).arg( mCustomTolerance );
   }
 
   properties << tr( "Scale: %1" ).arg( mZScale );
@@ -301,6 +319,26 @@ void QgsVectorLayerElevationProperties::setExtrusionHeight( double height )
     return;
 
   mExtrusionHeight = height;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsVectorLayerElevationProperties::setCustomTolerance( double tolerance )
+{
+  if ( mCustomTolerance == tolerance )
+    return;
+
+  mCustomTolerance = tolerance;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsVectorLayerElevationProperties::setCustomToleranceEnabled( bool enabled )
+{
+  if ( mEnableCustomTolerance == enabled )
+    return;
+
+  mEnableCustomTolerance = enabled;
   emit changed();
   emit profileGenerationPropertyChanged();
 }
@@ -388,13 +426,13 @@ void QgsVectorLayerElevationProperties::setShowMarkerSymbolInSurfacePlots( bool 
 
 void QgsVectorLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
+  auto profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
   mProfileLineSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
 }
 
 void QgsVectorLayerElevationProperties::setDefaultProfileMarkerSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > profileMarkerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Diamond, 3 );
+  auto profileMarkerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Diamond, 3 );
   profileMarkerLayer->setColor( color );
   profileMarkerLayer->setStrokeWidth( 0.2 );
   profileMarkerLayer->setStrokeColor( color.darker( 140 ) );
@@ -403,7 +441,7 @@ void QgsVectorLayerElevationProperties::setDefaultProfileMarkerSymbol( const QCo
 
 void QgsVectorLayerElevationProperties::setDefaultProfileFillSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleFillSymbolLayer > profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
+  auto profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
   profileFillLayer->setStrokeWidth( 0.2 );
   profileFillLayer->setStrokeColor( color.darker( 140 ) );
   mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );

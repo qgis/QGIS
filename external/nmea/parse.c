@@ -335,6 +335,7 @@ int nmea_parse_GPGSA( const char *buff, int buff_sz, nmeaGPGSA *pack )
 int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
 {
   int nsen, nsat;
+  int has_signal_id = 0;
 
   NMEA_ASSERT( buff && pack );
 
@@ -342,29 +343,63 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  nsen = nmea_scanf( buff, buff_sz,
-                     "$%C%CGSV,%d,%d,%d,"
-                     "%d,%d,%d,%d,"
-                     "%d,%d,%d,%d,"
-                     "%d,%d,%d,%d,"
-                     "%d,%d,%d,%d*",
-                     &( pack->talkerId[0] ), &( pack->talkerId[1] ),
-                     &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
-                     &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
-                     &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
-                     &( pack->sat_data[2].id ), &( pack->sat_data[2].elv ), &( pack->sat_data[2].azimuth ), &( pack->sat_data[2].sig ),
-                     &( pack->sat_data[3].id ), &( pack->sat_data[3].elv ), &( pack->sat_data[3].azimuth ), &( pack->sat_data[3].sig ) );
+
+  // Count the number of fields in the sentence
+  const char *ptr = buff;
+  int field_count = 1;
+  while ( ( ptr = strchr( ptr, ',' ) ) != NULL )
+  {
+    field_count++;
+    ptr++;
+  }
+
+  // Check if the number of fields is even, indicating the presence of SIGNAL_ID
+  has_signal_id = field_count >= 21 ? 1 : 0;
+
+  if ( has_signal_id )
+  {
+    // SIGNAL_ID is present NMEA 4.10
+    nsen = nmea_scanf( buff, buff_sz,
+                       "$%C%CGSV,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,%d*",
+                       &( pack->talkerId[0] ), &( pack->talkerId[1] ),
+                       &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
+                       &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
+                       &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
+                       &( pack->sat_data[2].id ), &( pack->sat_data[2].elv ), &( pack->sat_data[2].azimuth ), &( pack->sat_data[2].sig ),
+                       &( pack->sat_data[3].id ), &( pack->sat_data[3].elv ), &( pack->sat_data[3].azimuth ), &( pack->sat_data[3].sig ),
+                       &( pack->signal_id ) );
+  }
+  else
+  {
+    // SIGNAL_ID is not present
+    nsen = nmea_scanf( buff, buff_sz,
+                       "$%C%CGSV,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d,"
+                       "%d,%d,%d,%d*",
+                       &( pack->talkerId[0] ), &( pack->talkerId[1] ),
+                       &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
+                       &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
+                       &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
+                       &( pack->sat_data[2].id ), &( pack->sat_data[2].elv ), &( pack->sat_data[2].azimuth ), &( pack->sat_data[2].sig ),
+                       &( pack->sat_data[3].id ), &( pack->sat_data[3].elv ), &( pack->sat_data[3].azimuth ), &( pack->sat_data[3].sig ) );
+  }
 
   nsat = ( pack->pack_index - 1 ) * NMEA_SATINPACK;
   nsat = ( nsat + NMEA_SATINPACK > pack->sat_count ) ? pack->sat_count - nsat : NMEA_SATINPACK;
   nsat = nsat * 4 + 3 /* first three sentence`s */;
 
-  if ( nsen - 2 < nsat || nsen - 2 > ( NMEA_SATINPACK * 4 + 3 ) )
+  int expected_nsen = has_signal_id ? ( NMEA_SATINPACK * 4 + 4 ) : ( NMEA_SATINPACK * 4 + 3 );
+  if ( nsen - 2 < nsat || nsen - 2 > expected_nsen )
   {
     nmea_error( "GSV parse error!" );
     return 0;
   }
-
   return 1;
 }
 

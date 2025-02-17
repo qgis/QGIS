@@ -252,11 +252,37 @@ class CORE_EXPORT QgsDataSourceUri
      */
     void setSql( const QString &sql );
 
-    //! Returns the host name stored in the URI.
+    /**
+     * Sets the \a host name stored in the URI.
+     *
+     * \see host()
+     * \since QGIS 3.42
+     */
+    void setHost( const QString &host );
+
+    /**
+     * Returns the host name stored in the URI.
+     *
+     * \see setHost()
+     */
     QString host() const;
+
     //! Returns the database name stored in the URI.
     QString database() const;
-    //! Returns the port stored in the URI.
+
+    /**
+     * Sets the \a port stored in the URI.
+     *
+     * \see port()
+     * \since QGIS 3.42
+     */
+    void setPort( const QString &port );
+
+    /**
+     * Returns the port stored in the URI.
+     *
+     * \see setPort()
+     */
     QString port() const;
 
     /**
@@ -272,10 +298,34 @@ class CORE_EXPORT QgsDataSourceUri
     //! Returns the password stored in the URI.
     QString password() const;
 
-    //! Returns the SSL mode associated with the URI.
+    /**
+     * Sets the SSL \a mode associated with the URI.
+     *
+     * \see sslMode()
+     * \since QGIS 3.42
+     */
+    void setSslMode( SslMode mode );
+
+    /**
+     * Returns the SSL mode associated with the URI.
+     *
+     * \see setSslMode()
+     */
     SslMode sslMode() const;
 
-    //! Returns the service name associated with the URI.
+    /**
+     * Sets the \a service name associated with the URI.
+     *
+     * \see service()
+     * \since QGIS 3.42
+     */
+    void setService( const QString &service );
+
+    /**
+     * Returns the service name associated with the URI.
+     *
+     * \see setService()
+     */
     QString service() const;
 
     //! Returns the name of the (primary) key column for the referenced table.
@@ -358,6 +408,9 @@ class CORE_EXPORT QgsDataSourceUri
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
+
+    bool operator==( const QgsDataSourceUri &other ) const;
+    bool operator!=( const QgsDataSourceUri &other ) const;
 
   private:
     void skipBlanks( const QString &uri, int &i );

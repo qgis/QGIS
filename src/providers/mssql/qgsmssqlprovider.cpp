@@ -1202,6 +1202,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
+      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
+
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
 
@@ -1299,6 +1302,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( fld.name().isEmpty() )
         continue; // invalid
+
+      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
@@ -1554,6 +1560,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       if ( fld.name().isEmpty() )
         continue; // invalid
 
+      if ( it2.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
+
       if ( mComputedColumns.contains( fld.name() ) )
         continue; // skip computed columns because they are done server side.
 
@@ -1592,6 +1601,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
       if ( fld.name().isEmpty() )
         continue; // invalid
+
+      if ( it2.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
 
       if ( mComputedColumns.contains( fld.name() ) )
         continue; // skip computed columns because they are done server side.
@@ -2257,7 +2269,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
                  "CREATE TABLE spatial_ref_sys (srid integer not null "
                  "PRIMARY KEY, auth_name varchar(256), auth_srid integer, srtext varchar(2048), proj4text varchar(2048))" );
 
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
+  auto logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
 
   if ( !q.exec( sql ) )
   {

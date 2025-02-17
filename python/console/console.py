@@ -46,7 +46,7 @@ from qgis.PyQt.QtWidgets import (
     QApplication,
     QShortcut,
 )
-from qgis.PyQt.QtGui import QDesktopServices, QKeySequence
+from qgis.PyQt.QtGui import QDesktopServices, QKeySequence, QColor, QPalette
 from qgis.PyQt.QtWidgets import QVBoxLayout, QMessageBox
 from qgis.utils import iface
 from .console_sci import ShellScintilla
@@ -320,7 +320,10 @@ class PythonConsoleWidget(QWidget):
         self.toggleCommentEditorButton.setCheckable(False)
         self.toggleCommentEditorButton.setEnabled(True)
         self.toggleCommentEditorButton.setIcon(
-            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
+            QgsApplication.getThemeIcon(
+                "console/iconCommentEditorConsole.svg",
+                self.palette().color(QPalette.ColorRole.WindowText),
+            ),
         )
         self.toggleCommentEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.toggleCommentEditorButton.setIconVisibleInMenu(True)

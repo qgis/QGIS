@@ -8,10 +8,10 @@
     "description": "a geometry"
   }, {
     "arg": "source_auth_id",
-    "description": "the source auth CRS ID"
+    "description": "the source CRS definition or CRS object"
   }, {
     "arg": "dest_auth_id",
-    "description": "the destination auth CRS ID"
+    "description": "the destination CRS definition or CRS object"
   }],
   "examples": [{
     "expression": "geom_to_wkt( transform( make_point(488995.53240249, 7104473.38600835), 'EPSG:2154', 'EPSG:4326' ) )",

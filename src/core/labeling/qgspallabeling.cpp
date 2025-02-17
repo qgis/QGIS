@@ -2104,6 +2104,34 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     parseDropShadow( context );
   }
 
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::TabStopDistance ) )
+  {
+    QList<QgsTextFormat::Tab> tabPositions;
+    if ( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QVariantList )
+    {
+      const QVariantList parts = dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toList();
+      for ( const QVariant &part : parts )
+      {
+        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
+      }
+      evaluatedFormat.setTabPositions( tabPositions );
+    }
+    else if ( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QStringList )
+    {
+      const QStringList parts = dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toStringList();
+      for ( const QString &part : parts )
+      {
+        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
+      }
+      evaluatedFormat.setTabPositions( tabPositions );
+    }
+    else
+    {
+      evaluatedFormat.setTabPositions( tabPositions );
+      evaluatedFormat.setTabStopDistance( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toDouble() );
+    }
+  }
+
   evaluatedFormat.setFont( labelFont );
   // undo scaling by symbology reference scale, as this would have been applied in the previous call to QgsTextRenderer::sizeToPixel and we risk
   // double-applying it if we don't re-adjust, since all the text format metric calculations assume an unscaled format font size is present
@@ -2150,6 +2178,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   {
     capitalization = static_cast< Qgis::Capitalization >( mFormat.font().capitalization() );
   }
+
   // data defined font capitalization?
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontCase ) )
   {
@@ -2897,7 +2926,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   //  feature to the layer
-  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), labelSize );
+  auto labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), labelSize );
   labelFeature->setAnchorPosition( anchorPosition );
   labelFeature->setFeature( feature );
   labelFeature->setSymbol( symbol );
@@ -3182,7 +3211,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerObstacleFeature( c
     return nullptr; // invalid geometry
 
   //  feature to the layer
-  std::unique_ptr< QgsLabelFeature > obstacleFeature = std::make_unique< QgsLabelFeature >( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
+  auto obstacleFeature = std::make_unique< QgsLabelFeature >( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
   obstacleFeature->setFeature( f );
 
   QgsLabelObstacleSettings os = mObstacleSettings;
@@ -3682,6 +3711,15 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
   if ( dataDefinedValEval( DDInt, QgsPalLayerSettings::Property::AutoWrapLength, exprVal, context.expressionContext(), evalAutoWrapLength ) )
   {
     evalAutoWrapLength = exprVal.toInt();
+  }
+
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::TabStopDistance ) )
+  {
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::TabStopDistance, context.expressionContext() );
+    if ( !QgsVariantUtils::isNull( exprVal ) )
+    {
+      dataDefinedValues.insert( QgsPalLayerSettings::Property::TabStopDistance, exprVal );
+    }
   }
 
   // data defined multiline height?
@@ -4411,6 +4449,36 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
     tmpLyr.setFormat( format );
   }
 
+  if ( ddValues.contains( QgsPalLayerSettings::Property::TabStopDistance ) )
+  {
+    QgsTextFormat format = tmpLyr.format();
+    QList<QgsTextFormat::Tab> tabPositions;
+    if ( ddValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QVariantList )
+    {
+      const QVariantList parts = ddValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toList();
+      for ( const QVariant &part : parts )
+      {
+        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
+      }
+      format.setTabPositions( tabPositions );
+    }
+    else if ( ddValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QStringList )
+    {
+      const QStringList parts = ddValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toStringList();
+      for ( const QString &part : parts )
+      {
+        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
+      }
+      format.setTabPositions( tabPositions );
+    }
+    else
+    {
+      format.setTabPositions( tabPositions );
+      format.setTabStopDistance( ddValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toDouble() );
+    }
+    tmpLyr.setFormat( format );
+  }
+
   if ( ddValues.contains( QgsPalLayerSettings::Property::MultiLineAlignment ) )
   {
     tmpLyr.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( ddValues.value( QgsPalLayerSettings::Property::MultiLineAlignment ).toInt() );
@@ -4449,7 +4517,6 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
     {
       tmpLyr.lineSettings().setReverseDirectionSymbol( ddValues.value( QgsPalLayerSettings::Property::DirSymbReverse ).toBool() );
     }
-
   }
 }
 

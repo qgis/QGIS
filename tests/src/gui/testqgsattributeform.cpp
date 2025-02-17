@@ -1207,7 +1207,7 @@ void TestQgsAttributeForm::testMinimumWidth()
   ft.setAttribute( QStringLiteral( "col0" ), 0.0 );
   QgsAttributeEditorContext context;
   context.setAttributeFormMode( QgsAttributeEditorContext::SingleEditMode );
-  std::unique_ptr<QgsAttributeForm> form = std::make_unique<QgsAttributeForm>( &layer, QgsFeature(), context );
+  auto form = std::make_unique<QgsAttributeForm>( &layer, QgsFeature(), context );
   form->setFeature( ft );
   form->show();
   // we don't want the larger width requirement of the search wrappers to be enforced when the attribute form

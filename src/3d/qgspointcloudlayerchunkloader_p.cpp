@@ -238,16 +238,71 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
 ///////////////
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudIndex pc, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
-  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+static QgsChunkNode *findChunkNodeFromNodeId( QgsChunkNode *rootNode, QgsPointCloudNodeId nodeId )
+{
+  // find path from the node to the root
+  QVector<QgsPointCloudNodeId> parentIds;
+  while ( nodeId.d() > 0 )
+  {
+    parentIds << nodeId;
+    nodeId = nodeId.parentNode();
+  }
+
+  // now descend from the root to the node in the QgsChunkNode hierarchy
+  QgsChunkNode *chunk = rootNode;
+  while ( !parentIds.empty() )
+  {
+    QgsPointCloudNodeId p = parentIds.takeLast();
+    QgsChunkNodeId childNodeId( p.d(), p.x(), p.y(), p.z() );
+
+    QgsChunkNode *chunkChild = nullptr;
+    QgsChunkNode *const *children = chunk->children();
+    for ( int i = 0; i < chunk->childCount(); ++i )
+    {
+      if ( children[i]->tileId() == childNodeId )
+      {
+        chunkChild = children[i];
+        break;
+      }
+    }
+    Q_ASSERT( chunkChild );
+    chunk = chunkChild;
+  }
+  return chunk;
+}
+
+
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, QgsPointCloudIndex index, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, index, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+  , mLayer( pcl )
 {
   setShowBoundingBoxes( showBoundingBoxes );
+
+  if ( pcl->supportsEditing() )
+  {
+    // when editing starts or stops, we need to update our index to use the editing index (or not)
+    connect( pcl, &QgsPointCloudLayer::editingStarted, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
+    connect( pcl, &QgsPointCloudLayer::editingStopped, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
+
+    mChunkUpdaterFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
+
+    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n ) {
+      QList<QgsChunkNode *> nodes;
+      nodes << findChunkNodeFromNodeId( mRootNode, n );
+      updateNodes( nodes, mChunkUpdaterFactory.get() );
+    } );
+  }
 }
 
 QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 {
   // cancel / wait for jobs
   cancelActiveJobs();
+}
+
+void QgsPointCloudLayerChunkedEntity::updateIndex()
+{
+  static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();
 }
 
 QVector<QgsRayCastingUtils::RayHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const

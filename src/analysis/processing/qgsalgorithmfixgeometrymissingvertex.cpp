@@ -66,7 +66,7 @@ void QgsFixGeometryMissingVertexAlgorithm::initAlgorithm( const QVariantMap &con
   // Inputs
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
   );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
   );
 
   addParameter( new QgsProcessingParameterField(
@@ -97,7 +97,7 @@ void QgsFixGeometryMissingVertexAlgorithm::initAlgorithm( const QVariantMap &con
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
@@ -121,20 +121,20 @@ auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &
 
   // Verify that input fields exists
   if ( errors->fields().indexFromName( featIdFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( featIdFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( featIdFieldName ) );
   if ( errors->fields().indexFromName( partIdxFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( partIdxFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( partIdxFieldName ) );
   if ( errors->fields().indexFromName( ringIdxFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( ringIdxFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( ringIdxFieldName ) );
   if ( errors->fields().indexFromName( vertexIdxFieldName ) == -1 )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in errors layer." ).arg( vertexIdxFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( vertexIdxFieldName ) );
   int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field %1 does not exist in input layer." ).arg( featIdFieldName ) );
 
   QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
   if ( inputFeatIdField.type() != errors->fields().at( errors->fields().indexFromName( featIdFieldName ) ).type() )
-    throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type than in errors layer." ).arg( featIdFieldName ) );
+    throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
@@ -150,7 +150,7 @@ auto QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
   const QgsProject *project = QgsProject::instance();
-  std::unique_ptr<QgsGeometryCheckContext> checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  auto checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
   QStringList messages;
 
   const QgsGeometryMissingVertexCheck check( checkContext.get(), QVariantMap() );

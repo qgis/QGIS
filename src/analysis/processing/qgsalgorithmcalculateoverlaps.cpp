@@ -54,7 +54,7 @@ void QgsCalculateVectorOverlapsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Overlay layers" ), Qgis::ProcessingSourceType::VectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> gridSize = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "GRID_SIZE" ), QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto gridSize = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "GRID_SIZE" ), QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   gridSize->setFlags( gridSize->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( gridSize.release() );
 }

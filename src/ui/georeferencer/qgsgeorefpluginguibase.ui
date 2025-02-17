@@ -121,6 +121,7 @@
    <addaction name="mActionAddPoint"/>
    <addaction name="mActionDeletePoint"/>
    <addaction name="mActionMoveGCPPoint"/>
+   <addaction name="mActionAdvancedDigitizingDock"/>
   </widget>
   <widget class="QToolBar" name="toolBarView">
    <property name="windowTitle">
@@ -150,7 +151,7 @@
   </widget>
   <widget class="QgsDockWidget" name="dockWidgetGCPpoints">
    <property name="allowedAreas">
-    <set>Qt::AllDockWidgetAreas</set>
+    <set>Qt::DockWidgetArea::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>GCP table</string>
@@ -396,6 +397,24 @@
     <string>Open Vector…</string>
    </property>
   </action>
+  <action name="mActionAdvancedDigitizingDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/cadtools/cad.svg</normaloff>:/images/themes/default/cadtools/cad.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Advanced Digitizing Dock</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Advanced Digitizing Dock</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -406,7 +425,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

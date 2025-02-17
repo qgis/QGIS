@@ -663,7 +663,8 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
               << QPointF( inner_r * std::sin( DEG2RAD( 135.0 ) ), - inner_r * std::cos( DEG2RAD( 135.0 ) ) )
               << QPointF( std::sin( DEG2RAD( 90 ) ), - std::cos( DEG2RAD( 90 ) ) )
               << QPointF( inner_r * std::sin( DEG2RAD( 45.0 ) ), - inner_r * std::cos( DEG2RAD( 45.0 ) ) )
-              << QPointF( std::sin( DEG2RAD( 0 ) ), - std::cos( DEG2RAD( 0 ) ) );
+              << QPointF( std::sin( DEG2RAD( 0 ) ), - std::cos( DEG2RAD( 0 ) ) )
+              << QPointF( inner_r * std::sin( DEG2RAD( 315.0 ) ), - inner_r * std::cos( DEG2RAD( 315.0 ) ) );
       return true;
     }
 
@@ -1938,6 +1939,20 @@ void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   }
 }
 
+void QgsFilledMarkerSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  installMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
+void QgsFilledMarkerSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  removeMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
 QVariantMap QgsFilledMarkerSymbolLayer::properties() const
 {
   QVariantMap map;
@@ -3043,7 +3058,7 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "scale_method" ) ) )
     scaleMethod = QgsSymbolLayerUtils::decodeScaleMethod( props[QStringLiteral( "scale_method" )].toString() );
 
-  std::unique_ptr< QgsRasterMarkerSymbolLayer > m = std::make_unique< QgsRasterMarkerSymbolLayer >( path, size, angle, scaleMethod );
+  auto m = std::make_unique< QgsRasterMarkerSymbolLayer >( path, size, angle, scaleMethod );
   m->setCommonProperties( props );
   return m.release();
 }
@@ -3116,7 +3131,7 @@ bool QgsRasterMarkerSymbolLayer::setPreservedAspectRatio( bool par )
 
 double QgsRasterMarkerSymbolLayer::updateDefaultAspectRatio()
 {
-  if ( mDefaultAspectRatio == 0.0 )
+  if ( mDefaultAspectRatio == 0.0 && !mPath.isEmpty() )
   {
     const QSize size = QgsApplication::imageCache()->originalSize( mPath );
     mDefaultAspectRatio = ( !size.isNull() && size.isValid() && size.width() > 0 ) ? static_cast< double >( size.height() ) / static_cast< double >( size.width() ) : 0.0;
@@ -3365,7 +3380,12 @@ QVariantMap QgsRasterMarkerSymbolLayer::properties() const
 
 QgsRasterMarkerSymbolLayer *QgsRasterMarkerSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsRasterMarkerSymbolLayer > m = std::make_unique< QgsRasterMarkerSymbolLayer >( mPath, mSize, mAngle );
+  auto m = std::make_unique< QgsRasterMarkerSymbolLayer >();
+  m->mPath = mPath;
+  m->mDefaultAspectRatio = mDefaultAspectRatio;
+  m->mSize = mSize;
+  m->mAngle = mAngle;
+  // other members are copied by:
   copyCommonProperties( m.get() );
   return m.release();
 }
@@ -4051,7 +4071,7 @@ QgsSymbolLayer *QgsAnimatedMarkerSymbolLayer::create( const QVariantMap &propert
   if ( properties.contains( QStringLiteral( "angle" ) ) )
     angle = properties[QStringLiteral( "angle" )].toDouble();
 
-  std::unique_ptr< QgsAnimatedMarkerSymbolLayer > m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( path, size, angle );
+  auto m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( path, size, angle );
   m->setFrameRate( properties.value( QStringLiteral( "frameRate" ), QStringLiteral( "10" ) ).toDouble() );
 
   m->setCommonProperties( properties );
@@ -4072,7 +4092,7 @@ QVariantMap QgsAnimatedMarkerSymbolLayer::properties() const
 
 QgsAnimatedMarkerSymbolLayer *QgsAnimatedMarkerSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsAnimatedMarkerSymbolLayer > m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( mPath, mSize, mAngle );
+  auto m = std::make_unique< QgsAnimatedMarkerSymbolLayer >( mPath, mSize, mAngle );
   m->setFrameRate( mFrameRateFps );
   copyCommonProperties( m.get() );
   return m.release();

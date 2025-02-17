@@ -165,6 +165,8 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
   }
 
+  const QString optionsSql { sanitizeSqlForQueryLayer( options.sql ) };
+
   QgsDataSourceUri tUri( uri() );
 
   tUri.setSql( options.filter );
@@ -173,25 +175,25 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
   if ( !options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
-    tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( optionsSql ) );
   }
   else
   {
     // Disable when there is no pk
     tUri.setUseEstimatedMetadata( false );
     int pkId { 0 };
-    while ( options.sql.contains( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    while ( optionsSql.contains( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
       pkId++;
     }
     tUri.setKeyColumn( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ) );
 
     int sqlId { 0 };
-    while ( options.sql.contains( QStringLiteral( "qgis_generated_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    while ( optionsSql.contains( QStringLiteral( "qgis_generated_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
       sqlId++;
     }
-    tUri.setTable( QStringLiteral( "(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
+    tUri.setTable( QStringLiteral( "(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)" ).arg( QString::number( pkId ), optionsSql, QString::number( sqlId ) ) );
   }
 
   if ( !options.geometryColumn.isEmpty() )
@@ -199,7 +201,7 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+  auto vl = std::make_unique<QgsVectorLayer>( tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 
   // Try to guess the geometry and srid
   if ( !vl->isValid() )
@@ -212,7 +214,7 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
             WHERE a.%1 IS NOT NULL %3
             ORDER BY a.%1.SDO_GTYPE
     )" )
-                          .arg( options.geometryColumn, options.sql, limit ) };
+                          .arg( options.geometryColumn, optionsSql, limit ) };
     const QList<QList<QVariant>> candidates { executeSql( sql ) };
     for ( const QList<QVariant> &row : std::as_const( candidates ) )
     {
@@ -1349,7 +1351,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( feedback && feedback->isCanceled() )
     return QgsAbstractDatabaseProviderConnection::QueryResult();
 
-  std::shared_ptr<QgsPoolOracleConn> pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri { uri() }.connectionInfo( false ) );
+  auto pconn = std::make_shared<QgsPoolOracleConn>( QgsDataSourceUri { uri() }.connectionInfo( false ) );
   if ( !pconn->get() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
@@ -1358,7 +1360,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   if ( feedback && feedback->isCanceled() )
     return QgsAbstractDatabaseProviderConnection::QueryResult();
 
-  std::unique_ptr<QgsOracleQuery> qry = std::make_unique<QgsOracleQuery>( pconn );
+  auto qry = std::make_unique<QgsOracleQuery>( pconn );
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
   QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), QStringLiteral( "QgsAbstractDatabaseProviderConnection" ), QGS_QUERY_LOG_ORIGIN };

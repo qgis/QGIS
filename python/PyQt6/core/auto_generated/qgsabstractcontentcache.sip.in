@@ -108,6 +108,23 @@ Data URLs are of the form ``data:[<mediatype>;]base64,<data>``.
 .. versionadded:: 3.40
 %End
 
+
+    static bool parseEmbeddedStringData( const QString &path, QString *mimeType /Out/ = 0, QString *data /Out/ = 0 );
+%Docstring
+Parses a ``path`` to determine if it represents a embedded string data, and if so, extracts the components
+of the URL.
+
+Data URLs are of the form ``data:[<mediatype>;]utf8,<data>``.
+
+:param path: path to test
+
+:return: - ``True`` if ``path`` is an embedded string data URL
+         - mimeType: the extracted mime type if the ``path`` is a data URL
+         - data: the extracted string data if the ``path`` is a data URL
+
+.. versionadded:: 3.42
+%End
+
     static bool isBase64Data( const QString &path );
 %Docstring
 Returns ``True`` if ``path`` represents base64 encoded data.

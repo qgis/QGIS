@@ -61,7 +61,7 @@ QgsNumericFormat *QgsCurrencyNumericFormat::clone() const
 
 QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsCurrencyNumericFormat > res = std::make_unique< QgsCurrencyNumericFormat >();
+  auto res = std::make_unique< QgsCurrencyNumericFormat >();
   res->setConfiguration( configuration, context );
   res->mPrefix = configuration.value( QStringLiteral( "prefix" ), QStringLiteral( "$" ) ).toString();
   res->mSuffix = configuration.value( QStringLiteral( "suffix" ), QString() ).toString();

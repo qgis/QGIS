@@ -6,7 +6,7 @@ set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.27")
+if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.27")
   # include(Dart) still used, as is the "Experimental" target
   cmake_policy(SET CMP0145 OLD)
 endif()
@@ -17,7 +17,9 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
-set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
+option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
+set(WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
+
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
@@ -317,8 +319,11 @@ if(WITH_CORE)
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
     add_custom_target(qgis_desktop
-      DEPENDS qgis qgispython pycore pygui pyanalysis provider_postgres staged-plugins pyplugin-installer resources svg doc icons
+      DEPENDS qgis provider_postgres staged-plugins resources svg doc icons
     )
+    if ( WITH_PYTHON )
+      add_dependencies(qgis_desktop qgispython pycore pygui pyanalysis staged-plugins pyplugin-installer )
+    endif()
   endif()
 
   # try to configure and build MDAL support
@@ -435,6 +440,10 @@ if(WITH_CORE)
   # required
   find_package(Proj REQUIRED)
   message(STATUS "Found Proj: ${PROJ_VERSION} ${PROJ_DIR}")
+  if(PROJ_VERSION VERSION_LESS "8.1")
+    message(FATAL_ERROR "Cannot build QGIS using Proj older than 8.1")
+  endif()
+
   find_package(GEOS REQUIRED)
   message(STATUS "Found Geos: ${GEOS_VERSION} ${GEOS_DIR}")
   find_package(GDAL REQUIRED)
@@ -691,8 +700,10 @@ if (ENABLE_TESTS)
   set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
   set(QT_USE_QTTEST TRUE)
   enable_testing()
-  # Adds some testing specific build targets e.g. make Experimental
-  include(Dart)
+  if (PUSH_TO_CDASH)
+    # Adds some testing specific build targets e.g. make Experimental
+    include(Dart)
+  endif()
   # Additional test configuration options e.g. max upload size of test report
   configure_file(
     "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
@@ -1174,7 +1185,6 @@ if (WITH_CORE AND WITH_BINDINGS)
     set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT_MOD_DIR}/uic/widget-plugins/)
   endif()
 endif()
-
 
 #############################################################
 # create qgsconfig.h

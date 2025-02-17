@@ -64,6 +64,7 @@
 #include "qgsgdalutils.h"
 #include "qgstiledscenelayer.h"
 #include "qgsogrproviderutils.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 #include <QObject>
 #include <QMessageBox>
@@ -94,7 +95,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       {
         if ( rasterLayer->elevationProperties()->hasElevation() )
         {
-          std::unique_ptr<QgsRasterDemTerrainProvider> terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+          auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
           terrain->setLayer( rasterLayer );
           QgsProject::instance()->elevationProperties()->setTerrainProvider(
             terrain.release()
@@ -169,7 +170,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
 #ifdef HAVE_3D
       if ( !layer->renderer3D() )
       {
-        std::unique_ptr<QgsTiledSceneLayer3DRenderer> renderer3D = std::make_unique<QgsTiledSceneLayer3DRenderer>();
+        auto renderer3D = std::make_unique<QgsTiledSceneLayer3DRenderer>();
         layer->setRenderer3D( renderer3D.release() );
       }
 #endif
@@ -194,8 +195,13 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
         // If the layer has no 3D renderer and syncing 3D to 2D renderer is enabled, we create a renderer and set it up with the 2D renderer
         if ( pcLayer->sync3DRendererTo2DRenderer() )
         {
-          std::unique_ptr<QgsPointCloudLayer3DRenderer> renderer3D = std::make_unique<QgsPointCloudLayer3DRenderer>();
+          auto renderer3D = std::make_unique<QgsPointCloudLayer3DRenderer>();
           renderer3D->convertFrom2DRenderer( pcLayer->renderer() );
+          // if overview of the virtual point cloud exists set the zoom out behavior to show it
+          if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( pcLayer->dataProvider() ) )
+          {
+            renderer3D->setZoomOutBehavior( vpcProvider->overview() ? Qgis::PointCloudZoomOutRenderBehavior::RenderOverview : Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
+          }
           layer->setRenderer3D( renderer3D.release() );
         }
       }
@@ -713,42 +719,48 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   if ( !groupName.isEmpty() )
   {
     int index { 0 };
-    if ( QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod() == Qgis::LayerTreeInsertionMethod::TopOfTree )
+    switch ( QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod() )
     {
-      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
-    }
-    else
-    {
-      QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
-      if ( currentNode && currentNode->parent() )
+      case Qgis::LayerTreeInsertionMethod::TopOfTree:
       {
-        if ( QgsLayerTree::isGroup( currentNode ) )
+        group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+        break;
+      }
+      case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
+      case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
+      {
+        QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
+        if ( currentNode && currentNode->parent() )
         {
-          group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
-        }
-        else if ( QgsLayerTree::isLayer( currentNode ) )
-        {
-          const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
-          int nodeIdx { 0 };
-          for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+          if ( QgsLayerTree::isGroup( currentNode ) )
           {
-            nodeIdx++;
-            if ( child == currentNode )
-            {
-              index = nodeIdx;
-              break;
-            }
+            group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
           }
-          group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+          else if ( QgsLayerTree::isLayer( currentNode ) )
+          {
+            const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+            int nodeIdx { 0 };
+            for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+            {
+              nodeIdx++;
+              if ( child == currentNode )
+              {
+                index = nodeIdx;
+                break;
+              }
+            }
+            group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+          }
+          else
+          {
+            group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+          }
         }
         else
         {
           group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
         }
-      }
-      else
-      {
-        group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+        break;
       }
     }
   }
@@ -1128,8 +1140,6 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
 
     if ( QgsRasterLayer::isValidRasterFileName( uri, errMsg ) )
     {
-      QFileInfo myFileInfo( uri );
-
       // set the layer name to the file base name unless provided explicitly
       QString layerName;
       const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
@@ -1139,7 +1149,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
       }
       else
       {
-        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( uri );
+        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( uriDetails[QStringLiteral( "path" )].toString() );
       }
 
       // try to create the layer
@@ -1157,7 +1167,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
         //only allow one copy of a ai grid file to be loaded at a
         //time to prevent the user selecting all adfs in 1 dir which
         //actually represent 1 coverage,
-
+        const QFileInfo myFileInfo( uriDetails[QStringLiteral( "path" )].toString() );
         if ( myFileInfo.fileName().endsWith( QLatin1String( ".adf" ), Qt::CaseInsensitive ) )
         {
           break;
@@ -1642,7 +1652,7 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
                 }
               }
               // Load it!
-              std::unique_ptr<QgsVectorLayer> newVl = std::make_unique<QgsVectorLayer>( layerUri, !dependency.name.isEmpty() ? dependency.name : tableName, providerName );
+              auto newVl = std::make_unique<QgsVectorLayer>( layerUri, !dependency.name.isEmpty() ? dependency.name : tableName, providerName );
               if ( newVl->isValid() )
               {
                 return qobject_cast<QgsVectorLayer *>( QgsProject::instance()->addMapLayer( newVl.release() ) );

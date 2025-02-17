@@ -186,11 +186,6 @@ bool lazSerialize_( char *data, size_t outputPosition, QgsPointCloudAttribute::D
   return true;
 }
 
-bool lazStoreDoubleToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, double value )
-{
-  return lazStoreToStream_<double>( s, position, type, value );
-}
-
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::vector< QgsLazDecoder::RequestedAttributeDetails > prepareRequestedAttributeDetails_( const QgsPointCloudAttributeCollection &requestedAttributes, QVector<QgsLazInfo::ExtraBytesAttributeDetails> &extrabytesAttr )
@@ -562,11 +557,11 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
 
     std::size_t outputOffset = 0;
 
-    std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
-          count,
-          requestedAttributes,
-          data, scale, offset
-        );
+    auto block = std::make_unique< QgsPointCloudBlock >(
+                   count,
+                   requestedAttributes,
+                   data, scale, offset
+                 );
 
     int skippedPoints = 0;
     const bool filterIsValid = filterExpression.isValid();
@@ -677,10 +672,10 @@ std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteAr
 
   QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = lazInfo.extrabytes();
   std::vector< RequestedAttributeDetails > requestedAttributeDetails = prepareRequestedAttributeDetails_( requestedAttributes, extrabyteAttributesDetails );
-  std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
-        pointCount, requestedAttributes,
-        blockData, lazInfo.scale(), lazInfo.offset()
-      );
+  auto block = std::make_unique< QgsPointCloudBlock >(
+                 pointCount, requestedAttributes,
+                 blockData, lazInfo.scale(), lazInfo.offset()
+               );
 
   int skippedPoints = 0;
   const bool filterIsValid = filterExpression.isValid();

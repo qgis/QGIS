@@ -70,42 +70,46 @@ Converts the parameter into a list of strings
 :return: A list of strings
 %End
 
-    QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
+    QList<int> toIntList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 %Docstring
 Converts the parameter into a list of integers.
 
 :param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
+:param skipEmptyParts: for splitting
 
 :return: A list of integers
 %End
 
-    QList<double> toDoubleList( bool &ok, char delimiter = ',' ) const;
+    QList<double> toDoubleList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 %Docstring
 Converts the parameter into a list of doubles.
 
 :param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
+:param skipEmptyParts: for splitting
 
 :return: A list of doubles
 %End
 
-    QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
+    QList<QColor> toColorList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 %Docstring
 Converts the parameter into a list of colors.
 
 :param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
+:param skipEmptyParts: for splitting
 
 :return: A list of colors
 %End
 
-    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
+    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 %Docstring
 Converts the parameter into a list of geometries.
 
 :param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
 :param delimiter: The character used for delimiting
+:param skipEmptyParts: for splitting
 
 :return: A list of geometries
 %End

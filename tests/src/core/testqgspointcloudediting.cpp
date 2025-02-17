@@ -48,6 +48,8 @@ class TestQgsPointCloudEditing : public QgsTest
     void testStartStopEditing();
     void testModifyAttributeValue();
     void testModifyAttributeValueInvalid();
+    void testModifyAttributeValueFiltered();
+    void testCommitChanges();
 };
 
 //runs before all tests
@@ -69,7 +71,7 @@ void TestQgsPointCloudEditing::testQgsPointCloudEditingIndex()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   auto i = layer->index();
@@ -96,7 +98,7 @@ void TestQgsPointCloudEditing::testStartStopEditing()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
@@ -161,10 +163,11 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
+  QSignalSpy spyChunkChanged( layer.get(), &QgsPointCloudLayer::chunkAttributeValuesChanged );
 
   QgsPointCloudCategoryList categories = QgsPointCloudRendererRegistry::classificationAttributeCategories( layer.get() );
   QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), categories );
@@ -183,6 +186,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
 
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
 
   // Change some points, point order should not matter
   QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
@@ -190,19 +194,57 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QVERIFY( layer->changeAttributeValue( n, { 4, 2, 0, 1, 3, 16, 5, 13, 15, 14 }, at, 1 ) );
   QVERIFY( layer->isModified() );
   QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spyChunkChanged.size(), 1 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
 
   // Change some more
   QVERIFY( layer->changeAttributeValue( n, { 42, 82, 62, 52, 72 }, at, 6 ) );
   QVERIFY( layer->isModified() );
   QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spyChunkChanged.size(), 2 );
+  QCOMPARE( layer->undoStack()->index(), 2 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_2", "classified_render_edit_2", mapSettings );
+
+  // Undo one edit
+  layer->undoStack()->undo();
+  QCOMPARE( spy.size(), 3 );
+  QCOMPARE( spyChunkChanged.size(), 3 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
+
+  // Undo second edit
+  layer->undoStack()->undo();
+  QVERIFY( !layer->isModified() );
+  QCOMPARE( spy.size(), 4 );
+  QCOMPARE( spyChunkChanged.size(), 4 );
+  QCOMPARE( layer->undoStack()->index(), 0 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
+
+  // Redo first edit
+  layer->undoStack()->redo();
+  QVERIFY( layer->isModified() );
+  QCOMPARE( spy.size(), 5 );
+  QCOMPARE( spyChunkChanged.size(), 5 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_1", "classified_render_edit_1", mapSettings );
+
+  // Redo second edit
+  layer->undoStack()->redo();
+  QVERIFY( layer->isModified() );
+  QCOMPARE( spy.size(), 6 );
+  QCOMPARE( spyChunkChanged.size(), 6 );
+  QCOMPARE( layer->undoStack()->index(), 2 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_edit_2", "classified_render_edit_2", mapSettings );
 
   // Abort editing, original points should be rendered
   QVERIFY( layer->rollBack() );
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
-  QCOMPARE( spy.size(), 3 );
+  QCOMPARE( spy.size(), 7 );
+  QCOMPARE( spyChunkChanged.size(), 7 );
+  QCOMPARE( layer->undoStack()->index(), 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
 }
 
@@ -210,10 +252,11 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
 {
   const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
 
@@ -407,6 +450,121 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 65536 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
+
+  QCOMPARE( layer->undoStack()->index(), 0 );
+}
+
+void TestQgsPointCloudEditing::testModifyAttributeValueFiltered()
+{
+  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  QVERIFY( layer->isValid() );
+
+  QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
+
+  QgsPointCloudCategoryList categories = QgsPointCloudRendererRegistry::classificationAttributeCategories( layer.get() );
+  QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), categories );
+  layer->setRenderer( renderer );
+
+  layer->renderer()->setPointSize( 2 );
+  layer->renderer()->setPointSizeUnit( Qgis::RenderUnit::Millimeters );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( QSize( 400, 400 ) );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( layer->crs() );
+  mapSettings.setExtent( QgsRectangle( 498061, 7050991, 498069, 7050999 ) );
+  mapSettings.setLayers( { layer.get() } );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
+
+  // Set a filter
+  QVERIFY( layer->setSubsetString( QStringLiteral( "Classification != 3" ) ) );
+  QVERIFY( layer->startEditing() );
+  QVERIFY( layer->isEditable() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_filtered", "classified_render_filtered", mapSettings );
+
+  // Change some points, some where filtered out
+  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+  QgsPointCloudNodeId n( 0, 0, 0, 0 );
+  QVERIFY( layer->changeAttributeValue( n, { 42, 82, 62, 52, 72 }, at, 6 ) );
+  QVERIFY( layer->isModified() );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_filtered_edit", "classified_render_filtered_edit", mapSettings );
+
+  // Commit changes and clear filter
+  QVERIFY( layer->commitChanges() );
+  QVERIFY( !layer->isModified() );
+  QVERIFY( layer->setSubsetString( QString() ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_filtered_edit_saved", "classified_render_filtered_edit_saved", mapSettings );
+}
+
+void TestQgsPointCloudEditing::testCommitChanges()
+{
+  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  QVERIFY( layer->isValid() );
+  QVERIFY( layer->startEditing() );
+  QVERIFY( layer->isEditable() );
+
+  QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
+
+  QgsPointCloudNodeId n( 0, 0, 0, 0 );
+  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+
+  QgsPointCloudRequest request;
+  request.setAttributes( QgsPointCloudAttributeCollection( QVector<QgsPointCloudAttribute>() << at ) );
+
+  // check values before any changes
+  std::unique_ptr<QgsPointCloudBlock> block0 = layer->index().nodeData( n, request );
+  const char *block0Data = block0->data();
+  QCOMPARE( block0Data[0], 2 );
+  QCOMPARE( block0Data[6], 2 );
+  QCOMPARE( block0Data[11], 3 );
+  QCOMPARE( block0Data[14], 3 );
+
+  // Change some points, point order should not matter
+  QVERIFY( layer->changeAttributeValue( n, { 4, 2, 0, 1, 3, 16, 5, 13, 15, 14 }, at, 1 ) );
+  QVERIFY( layer->isModified() );
+  QCOMPARE( layer->undoStack()->index(), 1 );
+  QCOMPARE( layer->undoStack()->count(), 1 );
+  QCOMPARE( spy.size(), 1 );
+
+  // check values after change, before committing
+  std::unique_ptr<QgsPointCloudBlock> block1 = layer->index().nodeData( n, request );
+  const char *block1Data = block1->data();
+  QCOMPARE( block1Data[0], 1 );
+  QCOMPARE( block1Data[6], 2 );  // unchanged
+  QCOMPARE( block1Data[11], 3 ); // unchanged
+  QCOMPARE( block1Data[14], 1 );
+
+  QVERIFY( layer->commitChanges() );
+  QVERIFY( !layer->isModified() );
+  QCOMPARE( layer->undoStack()->index(), 0 );
+  QCOMPARE( layer->undoStack()->count(), 0 );
+  QCOMPARE( spy.size(), 2 );
+
+  // check values after committing changes
+  std::unique_ptr<QgsPointCloudBlock> block2 = layer->index().nodeData( n, request );
+  const char *block2Data = block2->data();
+  QCOMPARE( block2Data[0], 1 );
+  QCOMPARE( block2Data[6], 2 );  // unchanged
+  QCOMPARE( block2Data[11], 3 ); // unchanged
+  QCOMPARE( block2Data[14], 1 );
+
+  // try to open the file as a new layer and check saved values
+  auto layerNew = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+
+  // check values in the new layer
+  std::unique_ptr<QgsPointCloudBlock> block3 = layerNew->index().nodeData( n, request );
+  const char *block3Data = block3->data();
+  QCOMPARE( block3Data[0], 1 );
+  QCOMPARE( block3Data[6], 2 );  // unchanged
+  QCOMPARE( block3Data[11], 3 ); // unchanged
+  QCOMPARE( block3Data[14], 1 );
 }
 
 QGSTEST_MAIN( TestQgsPointCloudEditing )

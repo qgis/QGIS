@@ -105,6 +105,7 @@ class TestQgsPaintEffect : public QgsTest
     void cleanup();         // will be called after every testfunction.
     void saveRestore();
     void stackSaveRestore();
+    void painterFlags();
 
     //specific effects
     void drawSource();
@@ -270,6 +271,35 @@ void TestQgsPaintEffect::stackSaveRestore()
 
   delete stack;
   delete restoredStack;
+}
+
+void TestQgsPaintEffect::painterFlags()
+{
+  QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( static_cast< int >( 96 / 25.4 * 1000 ) );
+  image.setDotsPerMeterY( static_cast< int >( 96 / 25.4 * 1000 ) );
+  image.fill( Qt::transparent );
+  QPainter painter;
+  painter.begin( &image );
+  painter.setRenderHint( QPainter::RenderHint::Antialiasing, true );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+  context.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, true );
+  context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, false );
+  QVERIFY( context.painter()->renderHints().testFlag( QPainter::RenderHint::Antialiasing ) );
+
+  QgsDrawSourceEffect effect;
+  effect.begin( context );
+  // context should now be painting to the effect's internal deferred painter
+  QVERIFY( context.painter() != &painter );
+  // which should have all the render hints set from the context correctly
+  QVERIFY( context.painter()->renderHints().testFlag( QPainter::RenderHint::Antialiasing ) );
+  QVERIFY( context.painter()->renderHints().testFlag( QPainter::RenderHint::LosslessImageRendering ) );
+  QVERIFY( !context.painter()->renderHints().testFlag( QPainter::RenderHint::SmoothPixmapTransform ) );
+  effect.end( context );
+
+  // painter should be switched back to the original
+  QCOMPARE( context.painter(), &painter );
+  painter.end();
 }
 
 void TestQgsPaintEffect::drawSource()
@@ -619,7 +649,7 @@ void TestQgsPaintEffect::glow()
 void TestQgsPaintEffect::transform()
 {
   //create
-  std::unique_ptr<QgsTransformEffect> effect( new QgsTransformEffect() );
+  auto effect = std::make_unique<QgsTransformEffect>();
   QVERIFY( effect.get() );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
@@ -650,7 +680,7 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( effect->drawMode(), QgsPaintEffect::Modifier );
 
   //copy constructor
-  std::unique_ptr<QgsTransformEffect> copy( new QgsTransformEffect( *effect ) );
+  auto copy = std::make_unique<QgsTransformEffect>( *effect );
   QVERIFY( copy.get() );
   QCOMPARE( copy->enabled(), false );
   QCOMPARE( copy->translateX(), 6.0 );
@@ -950,7 +980,7 @@ void TestQgsPaintEffect::layout()
   lineLayer->setRenderer( renderer );
 
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &l );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 50, 50 ) );
   l.pageCollection()->addPage( page.release() );
 

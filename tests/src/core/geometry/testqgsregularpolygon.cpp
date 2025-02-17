@@ -239,7 +239,7 @@ void TestQgsRegularPolygon::conversions()
   QVERIFY( toP->isEmpty() );
 
   QgsPointSequence ptsPol;
-  std::unique_ptr<QgsPolygon> pol( new QgsPolygon() );
+  auto pol = std::make_unique<QgsPolygon>();
   pol.reset( rp.toPolygon() );
 
   QCOMPARE( pol->numInteriorRings(), 0 );

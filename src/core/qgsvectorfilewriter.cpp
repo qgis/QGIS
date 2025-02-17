@@ -1574,7 +1574,11 @@ class QgsVectorFileWriterMetadataContainer
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "GeoPackage" ),
                                QObject::tr( "GeoPackage" ),
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+                               QStringLiteral( "*.gpkg *.gpkg.zip" ),
+#else
                                QStringLiteral( "*.gpkg" ),
+#endif
                                QStringLiteral( "gpkg" ),
                                datasetOptions,
                                layerOptions,
@@ -2251,6 +2255,7 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,11,0)
       // ESRI FileGDB (using ESRI FileGDB API SDK)
       datasetOptions.clear();
       layerOptions.clear();
@@ -2282,6 +2287,7 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "UTF-8" )
                              )
                            );
+#endif
 
       // XLSX
       datasetOptions.clear();
@@ -3842,7 +3848,7 @@ QStringList multiLayerFormats()
     const QSet< QString > splitExtensions = qgis::listToSet( driverExtensions.split( ' ', Qt::SkipEmptyParts ) );
     if ( splitExtensions.intersects( multiLayerExtensions ) )
     {
-      driverNames << OGR_Dr_GetName( driver );
+      driverNames << GDALGetDescription( driver );
     }
   }
   return driverNames;
@@ -3872,7 +3878,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
     OGRSFDriverH drv = OGRGetDriver( i );
     if ( drv )
     {
-      const QString drvName = OGR_Dr_GetName( drv );
+      const QString drvName = GDALGetDescription( drv );
 
       if ( options & SupportsMultipleLayers )
       {
@@ -3995,7 +4001,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
     OGRSFDriverH drv = OGRGetDriver( i );
     if ( drv )
     {
-      const QString drvName = OGR_Dr_GetName( drv );
+      const QString drvName = GDALGetDescription( drv );
 
       if ( options & SupportsMultipleLayers )
       {
@@ -4492,7 +4498,7 @@ QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilitie
   gdal::ogr_datasource_unique_ptr hDS( OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
   if ( !hDS )
     return QgsVectorFileWriter::EditionCapabilities();
-  QString drvName = OGR_Dr_GetName( hDriver );
+  const QString drvName = GDALGetDescription( hDriver );
   QgsVectorFileWriter::EditionCapabilities caps = QgsVectorFileWriter::EditionCapabilities();
   if ( OGR_DS_TestCapability( hDS.get(), ODsCCreateLayer ) )
   {

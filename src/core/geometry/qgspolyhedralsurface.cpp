@@ -375,7 +375,7 @@ double QgsPolyhedralSurface::perimeter() const
 
 QgsAbstractGeometry *QgsPolyhedralSurface::boundary() const
 {
-  std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
+  auto multiLine = std::make_unique<QgsMultiLineString>();
   multiLine->reserve( mPatches.size() );
   for ( QgsPolygon *polygon : mPatches )
   {
@@ -413,7 +413,7 @@ QgsPolyhedralSurface *QgsPolyhedralSurface::snappedToGrid( double hSpacing, doub
       return nullptr;
     }
 
-    std::unique_ptr<QgsPolygon> gridifiedPatch = std::make_unique<QgsPolygon>();
+    auto gridifiedPatch = std::make_unique<QgsPolygon>();
     gridifiedPatch->setExteriorRing( exteriorRing.release() );
 
     //interior rings
@@ -439,7 +439,7 @@ QgsPolyhedralSurface *QgsPolyhedralSurface::simplifyByDistance( double tolerance
   if ( isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsPolyhedralSurface > simplifiedGeom = std::make_unique< QgsPolyhedralSurface >();
+  auto simplifiedGeom = std::make_unique< QgsPolyhedralSurface >();
   for ( QgsPolygon *polygon : mPatches )
   {
     std::unique_ptr<QgsCurvePolygon> polygonSimplified( polygon->simplifyByDistance( tolerance ) );
@@ -896,7 +896,7 @@ void QgsPolyhedralSurface::swapXy()
 
 QgsMultiSurface *QgsPolyhedralSurface::toCurveType() const
 {
-  std::unique_ptr<QgsMultiSurface> multiSurface = std::make_unique< QgsMultiSurface >();
+  auto multiSurface = std::make_unique< QgsMultiSurface >();
   multiSurface->reserve( mPatches.size() );
   for ( const QgsPolygon *polygon : std::as_const( mPatches ) )
   {
@@ -928,7 +928,7 @@ bool QgsPolyhedralSurface::transform( QgsAbstractGeometryTransformer *transforme
 
 QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
 {
-  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique< QgsMultiPolygon >();
+  auto multiPolygon = std::make_unique< QgsMultiPolygon >();
   multiPolygon->reserve( mPatches.size() );
   for ( const QgsPolygon *polygon : std::as_const( mPatches ) )
   {

@@ -515,7 +515,7 @@ function will be used when creating these outputs.
 
     QString preferredRasterFormat() const /HoldGIL/;
 %Docstring
-Returns the preferred raster format to use for vector outputs.
+Returns the preferred raster format to use for raster outputs.
 
 This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
 it is preferable to use the extension associated with a particular parameter, which can be retrieved through
@@ -536,7 +536,7 @@ and to provide an appropriate fallback when the returned format is not usable.
 
     void setPreferredRasterFormat( const QString &format ) /HoldGIL/;
 %Docstring
-Sets the preferred raster ``format`` to use for vector outputs.
+Sets the preferred raster ``format`` to use for raster outputs.
 
 This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
 it is preferable to use the extension associated with a particular parameter, which can be retrieved through
@@ -661,6 +661,13 @@ Returns the model results, populated when the context is used to run a model alg
 .. versionadded:: 3.38
 %End
 
+
+    void clearModelResult();
+%Docstring
+Clears model results previously populated when the context was used to run a model algorithm.
+
+.. versionadded:: 3.42
+%End
 
   private:
     QgsProcessingContext( const QgsProcessingContext &other );

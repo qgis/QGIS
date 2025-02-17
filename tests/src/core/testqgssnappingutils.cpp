@@ -319,7 +319,7 @@ class TestQgsSnappingUtils : public QObject
     void testSnapOnIntersectionCurveZ()
     {
       // testing with a layer with curve and Z
-      std::unique_ptr<QgsVectorLayer> vCurveZ( new QgsVectorLayer( QStringLiteral( "CircularStringZ" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
+      auto vCurveZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "CircularStringZ" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" );
       f1.setGeometry( f1g );
@@ -362,7 +362,7 @@ class TestQgsSnappingUtils : public QObject
     }
     void testSnapOnIntersectionMultiGeom()
     {
-      std::unique_ptr<QgsVectorLayer> vMulti( new QgsVectorLayer( QStringLiteral( "MultiLineStringZ" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vMulti = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineStringZ" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineStringZ ((0 0 0, 0 5 5), (5 0 10, 5 5 10))" );
       f1.setGeometry( f1g );
@@ -403,7 +403,7 @@ class TestQgsSnappingUtils : public QObject
     }
     void testSnapOnCentroidAndMiddleSegment()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" );
       f1.setGeometry( f1g );
@@ -440,7 +440,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnLineEndpoints()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0)" );
       f1.setGeometry( f1g );
@@ -489,7 +489,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnLineEndpointsMultiLine()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "MultiLineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineString ((0 0, 0 5, 5 5, 5 0), (0 -0.1, 0 -5, 5 -0.5))" );
       f1.setGeometry( f1g );
@@ -557,7 +557,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnPolygonEndpoints()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "Polygon ((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2))" );
       f1.setGeometry( f1g );
@@ -608,7 +608,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnMultiPolygonEndpoints()
     {
-      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "MultiPolygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiPolygon (((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2)), ((10 0, 10 5, 15 5, 15 0, 10 0),(13 2, 13.5 2, 13.5 3, 13 2)) )" );
       f1.setGeometry( f1g );
@@ -820,6 +820,60 @@ class TestQgsSnappingUtils : public QObject
       const QgsPointLocator::Match m6 = u.snapToMap( QgsPointXY( 0.75, 0.75 ) );
       QVERIFY( !m5.isValid() );
       QVERIFY( !m6.isValid() );
+    }
+
+
+    void testLocatorsCleaning()
+    {
+      auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      const int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+      QVERIFY( idx != -1 );
+      f1.initAttributes( 1 );
+      f2.initAttributes( 1 );
+
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
+      polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
+      polygon << polyline;
+      const QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
+      f1.setGeometry( polygonGeom );
+      f1.setAttribute( idx, QVariant( 2 ) );
+      QgsFeatureList flist;
+      flist << f1;
+
+      vl->dataProvider()->addFeatures( flist );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      u.setCurrentLayer( vl.get() );
+
+      // first try with no snapping enabled
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( false );
+      snappingConfig.setTolerance( 10 );
+      snappingConfig.setUnits( Qgis::MapToolUnit::Pixels );
+      snappingConfig.setMode( Qgis::SnappingMode::ActiveLayer );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setTypeFlag( Qgis::SnappingType::Vertex );
+      u.setConfig( snappingConfig );
+
+      QCOMPARE( u.mLocators.count(), 0 );
+
+      const QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
+
+      QCOMPARE( u.mLocators.count(), 1 );
+
+      vl.reset();
+
+      QCOMPARE( u.mLocators.count(), 0 );
     }
 };
 

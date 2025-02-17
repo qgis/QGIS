@@ -149,6 +149,52 @@ Sets the feature extrusion height.
 .. seealso:: :py:func:`extrusionHeight`
 %End
 
+    bool customToleranceEnabled() const;
+%Docstring
+Returns ``True`` if custom tolerance is enabled.
+
+.. seealso:: :py:func:`setCustomToleranceEnabled`
+
+.. seealso:: :py:func:`customTolerance`
+%End
+
+    void setCustomToleranceEnabled( bool enabled );
+%Docstring
+Sets whether custom tolerance is ``enabled``.
+
+.. seealso:: :py:func:`customToleranceEnabled`
+
+.. seealso:: :py:func:`setCustomTolerance`
+%End
+
+    double customTolerance() const;
+%Docstring
+Returns the feature custom tolerance.
+
+.. warning::
+
+   custom tolerance is only applied if :py:func:`~QgsVectorLayerElevationProperties.customToleranceEnabled` is ``True``.
+
+If enabled, the profile generator will use this tolerance instead of the one
+defined in the elevation profile widget.
+
+.. seealso:: :py:func:`setCustomTolerance`
+%End
+
+    void setCustomTolerance( double tolerance );
+%Docstring
+Sets the feature custom tolerance.
+
+.. warning::
+
+   custom tolerance is only applied if :py:func:`~QgsVectorLayerElevationProperties.customToleranceEnabled` is ``True``.
+
+If enabled, the profile generator will use this tolerance instead of the one
+defined in the elevation profile widget.
+
+.. seealso:: :py:func:`customTolerance`
+%End
+
     bool respectLayerSymbology() const;
 %Docstring
 Returns ``True`` if layer symbology should be respected when rendering elevation profile plots.

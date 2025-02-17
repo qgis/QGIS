@@ -76,15 +76,15 @@ void QgsAuthCrypto::passwordKeyHash( const QString &pass, QString *salt, QString
   if ( !key.isEmpty() )
   {
     *salt = QCA::arrayToHex( saltiv.toByteArray() );
-    qDebug( "salt hex: %s", qPrintable( *salt ) );
+    //qDebug( "salt hex: %s", qPrintable( *salt ) );
 
     *hash = QCA::arrayToHex( key.toByteArray() );
-    qDebug( "hash hex: %s", qPrintable( *hash ) );
+    //qDebug( "hash hex: %s", qPrintable( *hash ) );
 
     if ( cipheriv )
     {
       *cipheriv = QCA::arrayToHex( QCA::InitializationVector( CIPHER_IV_LENGTH ).toByteArray() );
-      qDebug( "cipheriv hex: %s", qPrintable( *cipheriv ) );
+      //qDebug( "cipheriv hex: %s", qPrintable( *cipheriv ) );
     }
   }
 }

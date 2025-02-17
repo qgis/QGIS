@@ -875,6 +875,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrendererregistry.cpp
   pointcloud/qgspointcloudrgbrenderer.cpp
   pointcloud/qgspointcloudlayerexporter.cpp
+  pointcloud/qgspointcloudlayerundocommand.cpp
 
   pointcloud/expression/qgspointcloudexpression.cpp
   pointcloud/expression/qgspointcloudexpressionnode.cpp
@@ -1742,6 +1743,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrendererregistry.h
   pointcloud/qgspointcloudrgbrenderer.h
   pointcloud/qgspointcloudlayerexporter.h
+  pointcloud/qgspointcloudlayerundocommand.h
 
   pointcloud/expression/qgspointcloudexpression.h
   pointcloud/expression/qgspointcloudexpressionnode.h
@@ -2280,6 +2282,7 @@ if (WITH_EPT OR WITH_COPC)
     ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
     ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
@@ -2296,11 +2299,13 @@ if (WITH_EPT OR WITH_COPC)
       pointcloud/qgseptdecoder.cpp
       pointcloud/qgslazdecoder.cpp
       pointcloud/qgslazinfo.cpp
+      pointcloud/qgscopcupdate.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       pointcloud/qgseptdecoder.h
       pointcloud/qgslazdecoder.h
       pointcloud/qgslazinfo.h
+      pointcloud/qgscopcupdate.h
   )
 endif()
 

@@ -207,9 +207,9 @@ void TestQgs3DRendering::initTestCase()
   QColor cMin = Qt::red, cMax = Qt::yellow;
 
   // change renderer for the new style
-  std::unique_ptr<QgsColorRampShader> colorRampShader( new QgsColorRampShader( vMin, vMax ) );
+  auto colorRampShader = std::make_unique<QgsColorRampShader>( vMin, vMax );
   colorRampShader->setColorRampItemList( QList<QgsColorRampShader::ColorRampItem>() << QgsColorRampShader::ColorRampItem( vMin, cMin ) << QgsColorRampShader::ColorRampItem( vMax, cMax ) );
-  std::unique_ptr<QgsRasterShader> shader( new QgsRasterShader( vMin, vMax ) );
+  auto shader = std::make_unique<QgsRasterShader>( vMin, vMax );
   shader->setRasterShaderFunction( colorRampShader.release() );
   QgsSingleBandPseudoColorRenderer *r = new QgsSingleBandPseudoColorRenderer( mLayerDtm->renderer()->input(), 1, shader.release() );
   mLayerDtm->setRenderer( r );
@@ -260,7 +260,7 @@ void TestQgs3DRendering::testLights()
   map.setLightSources( { dsLight } );
   QCOMPARE( lightSourceChangedSpy.size(), 2 );
   // different light type
-  std::unique_ptr<QgsPointLightSettings> pointLight = std::make_unique<QgsPointLightSettings>();
+  auto pointLight = std::make_unique<QgsPointLightSettings>();
   pointLight->setColor( QColor( 255, 0, 0 ) );
   map.setLightSources( { pointLight->clone() } );
   QCOMPARE( lightSourceChangedSpy.size(), 3 );
@@ -492,7 +492,7 @@ void TestQgs3DRendering::testPhongShading()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
 
-  std::unique_ptr<QgsVectorLayer> buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
   QVERIFY( buildings->isValid() );
 
   QgsPhongMaterialSettings materialSettings;
@@ -875,7 +875,7 @@ void TestQgs3DRendering::testExtrudedPolygonsMetalRoughShading()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
 
-  std::unique_ptr<QgsVectorLayer> buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  auto buildings = std::make_unique<QgsVectorLayer>( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
   QVERIFY( buildings->isValid() );
 
   QgsMetalRoughMaterialSettings materialSettings;
@@ -937,8 +937,8 @@ void TestQgs3DRendering::testPolygonsEdges()
 
   std::unique_ptr<QgsVectorLayer> layer( mLayerBuildings->clone() );
 
-  std::unique_ptr<QgsSimpleFillSymbolLayer> simpleFill = std::make_unique<QgsSimpleFillSymbolLayer>( QColor( 0, 0, 0 ), Qt::SolidPattern, QColor( 0, 0, 0 ), Qt::NoPen );
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList() << simpleFill.release() );
+  auto simpleFill = std::make_unique<QgsSimpleFillSymbolLayer>( QColor( 0, 0, 0 ), Qt::SolidPattern, QColor( 0, 0, 0 ), Qt::NoPen );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList() << simpleFill.release() );
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol.release() ) );
 
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
@@ -1099,7 +1099,7 @@ void TestQgs3DRendering::testLineRenderingCurved()
 
   QVector<QgsPoint> pts;
   pts << QgsPoint( 0, 0, 10 ) << QgsPoint( 0, 1000, 10 ) << QgsPoint( 1000, 1000, 10 ) << QgsPoint( 1000, 0, 10 );
-  std::unique_ptr<QgsCompoundCurve> curve = std::make_unique<QgsCompoundCurve>();
+  auto curve = std::make_unique<QgsCompoundCurve>();
   curve->addCurve( new QgsLineString( pts ) );
   pts.clear();
   pts << QgsPoint( 1000, 0, 10 ) << QgsPoint( 1000, 0, 500 ) << QgsPoint( 1000, 1000, 500 ) << QgsPoint( 0, 1000, 500 ) << QgsPoint( 0, 0, 500 );
@@ -1545,7 +1545,7 @@ void TestQgs3DRendering::testInstancedRendering()
 {
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
@@ -1620,7 +1620,7 @@ void TestQgs3DRendering::testInstancedRenderingClipping()
 {
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
@@ -1720,7 +1720,7 @@ void TestQgs3DRendering::testBillboardRendering()
 {
   const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
 
   QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
   QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
@@ -2003,6 +2003,15 @@ void TestQgs3DRendering::testAmbientOcclusion()
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
 
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  symbol3d->setAltitudeClamping( Qgis::AltitudeClamping::Relative );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
   // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
 
@@ -2105,10 +2114,11 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_1", "depth_wheel_action_1", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.7, -185.5, 224.6 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -32.7, -185.5, 224.6 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 955.4, 1.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -6.8, -38.6, 46.7 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1187.5, 1.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking second wheel action
@@ -2122,10 +2132,11 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_2", "depth_wheel_action_2", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.5, -184.7, 223.5 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -32.5, -184.7, 223.5 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 757.4, 1.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -12.1, -69.0, 83.5 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 940.1, 1.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking third wheel action
@@ -2139,10 +2150,11 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_3", "depth_wheel_action_3", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.4, -184.1, 222.8 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -32.4, -184.1, 222.8 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 126.4, 0.1 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -29.0, -164.9, 199.6 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 156.6, 0.1 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking fourth wheel action
@@ -2158,8 +2170,8 @@ void TestQgs3DRendering::testDepthBuffer()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.3, -183.2, 221.7 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -32.3, -183.2, 221.7 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 101.1, 0.1 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -29.7, -168.7, 204.2 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 124.0, 0.1 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking camera position

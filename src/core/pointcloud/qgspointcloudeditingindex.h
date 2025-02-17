@@ -39,7 +39,6 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     //! Ctor
     explicit QgsPointCloudEditingIndex( QgsPointCloudLayer *layer );
 
-    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
     void load( const QString &fileName ) override;
     bool isValid() const override;
     Qgis::PointCloudAccessType accessType() const override;
@@ -50,6 +49,9 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     bool hasNode( const QgsPointCloudNodeId &n ) const override;
     QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
 
+    bool setSubsetString( const QString &subset ) override;
+    QString subsetString() const override;
+
     std::unique_ptr< QgsPointCloudBlock > nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
 
@@ -57,18 +59,26 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
 
     /**
      * Tries to store pending changes to the data provider.
+     * If errorMessage is not a null pointer, it will receive
+     * an error message in case the call failed.
      * \return TRUE on success, otherwise FALSE
      */
-    bool commitChanges();
+    bool commitChanges( QString *errorMessage = nullptr );
 
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
     bool isModified() const;
+
+    //! Returns a list of node IDs that have been modified
+    QList<QgsPointCloudNodeId> updatedNodes() const;
 
 
   private:
     QgsPointCloudIndex mIndex;
     bool mIsValid = false;
     QHash<QgsPointCloudNodeId, QByteArray> mEditedNodeData;
+
+    friend class QgsPointCloudLayerEditUtils;
+    friend class QgsPointCloudLayerUndoCommandChangeAttribute;
 };
 
 #endif // QGSPOINTCLOUDEDITINGINDEX_H

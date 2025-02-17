@@ -161,41 +161,42 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 
-  if ( !context.testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) )
+  if ( !context.testFlag( Qgis::RenderContextFlag::RenderPreviewJob )
+       && !( context.flags() & Qgis::RenderContextFlag::Render3DMap ) )
   {
-    QgsMeshDatasetIndex activeDatasetIndex = layer->activeScalarDatasetIndex( context );
+    const QgsMeshDatasetIndex activeDatasetIndex = layer->activeScalarDatasetIndex( context );
 
     if ( activeDatasetIndex.isValid() )
     {
       QgsMeshRendererScalarSettings scalarRendererSettings = mRendererSettings.scalarSettings( activeDatasetIndex.group() );
-      double previousMin = scalarRendererSettings.classificationMinimum();
-      double previousMax = scalarRendererSettings.classificationMaximum();
-
-      QgsRenderedLayerStatistics *layerStatistics = new QgsRenderedLayerStatistics( layer->id(), previousMin, previousMax );
-      layerStatistics->setBoundingBox( layer->extent() );
+      const double previousMin = scalarRendererSettings.classificationMinimum();
+      const double previousMax = scalarRendererSettings.classificationMaximum();
 
       if ( scalarRendererSettings.extent() == Qgis::MeshRangeExtent::UpdatedCanvas &&
            scalarRendererSettings.limits() == Qgis::MeshRangeLimit::MinimumMaximum )
       {
         double min, max;
 
-        bool found  = layer->minimumMaximumActiveScalarDataset( context.extent(), activeDatasetIndex, min, max );
+        const bool found  = layer->minimumMaximumActiveScalarDataset( context.extent(), activeDatasetIndex, min, max );
 
         if ( found )
         {
           if ( previousMin != min || previousMax != max )
           {
+
+            scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+            mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
+
+            QgsRenderedLayerStatistics *layerStatistics = new QgsRenderedLayerStatistics( layer->id(), previousMin, previousMax );
+
             layerStatistics->setBoundingBox( context.extent() );
             layerStatistics->setMaximum( 0, max );
             layerStatistics->setMinimum( 0, min );
 
-            scalarRendererSettings.setClassificationMinimumMaximum( min, max );
-            mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
+            appendRenderedItemDetails( layerStatistics );
           }
         }
       }
-
-      appendRenderedItemDetails( layerStatistics );
     }
   }
 

@@ -46,6 +46,8 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
         self.assertEqual(props.type(), Qgis.VectorProfileType.IndividualFeatures)
         self.assertEqual(props.profileSymbology(), Qgis.ProfileSurfaceSymbology.Line)
         self.assertFalse(props.showMarkerSymbolInSurfacePlots())
+        self.assertFalse(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
 
         props.setZOffset(0.5)
         props.setZScale(2)
@@ -135,6 +137,8 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
         )
         self.assertTrue(props2.showMarkerSymbolInSurfacePlots())
         self.assertEqual(props2.elevationLimit(), 909)
+        self.assertFalse(props2.customToleranceEnabled())
+        self.assertEqual(props2.customTolerance(), 0)
 
         self.assertEqual(props2.profileLineSymbol().color().name(), "#ff4433")
         self.assertEqual(props2.profileFillSymbol().color().name(), "#ff4455")
@@ -161,6 +165,8 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
         )
         self.assertTrue(props_clone.showMarkerSymbolInSurfacePlots())
         self.assertEqual(props2.elevationLimit(), 909)
+        self.assertFalse(props_clone.customToleranceEnabled())
+        self.assertEqual(props_clone.customTolerance(), 0)
 
         self.assertEqual(props_clone.profileLineSymbol().color().name(), "#ff4433")
         self.assertEqual(props_clone.profileFillSymbol().color().name(), "#ff4455")
@@ -182,12 +188,12 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
             vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Terrain
         )
 
-        # a layer WITH z values present should default to relative mode
+        # a layer WITH z values present should default to absolute mode
         vl = QgsVectorLayer(unitTestDataPath() + "/3d/points_with_z.shp")
         self.assertTrue(vl.isValid())
 
         self.assertEqual(
-            vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Relative
+            vl.elevationProperties().clamping(), Qgis.AltitudeClamping.Absolute
         )
 
     def test_show_by_default(self):
@@ -209,6 +215,38 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
         props = QgsVectorLayerElevationProperties(None)
         props.setClamping(Qgis.AltitudeClamping.Absolute)
         self.assertTrue(props.showByDefaultInElevationProfilePlots())
+
+    def test_defaults_from_layer(self):
+        props = QgsVectorLayerElevationProperties(None)
+        self.assertFalse(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
+
+        point_layer = QgsVectorLayer("Point", "my layer point", "memory")
+        self.assertTrue(point_layer.isValid())
+        props = QgsVectorLayerElevationProperties(None)
+        self.assertFalse(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
+        props.setDefaultsFromLayer(point_layer)
+        self.assertFalse(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
+
+        line_layer = QgsVectorLayer("LineStringZ", "my layer point", "memory")
+        self.assertTrue(line_layer.isValid())
+        props = QgsVectorLayerElevationProperties(None)
+        self.assertFalse(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
+        props.setDefaultsFromLayer(line_layer)
+        self.assertTrue(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
+
+        polygon_layer = QgsVectorLayer("Polygon", "Polys", "memory")
+        self.assertTrue(polygon_layer.isValid())
+        props = QgsVectorLayerElevationProperties(None)
+        self.assertFalse(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
+        props.setDefaultsFromLayer(polygon_layer)
+        self.assertTrue(props.customToleranceEnabled())
+        self.assertEqual(props.customTolerance(), 0)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,9 @@
+!table
+!version 300
+!charset Neutral
+
+Definition Table
+  Type NATIVE Charset "Neutral"
+  Fields 2
+    fid Decimal (20,0) ;
+    field1 Char (12) ;

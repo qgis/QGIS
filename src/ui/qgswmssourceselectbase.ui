@@ -39,14 +39,14 @@
    <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::StandardButton::Help</set>
      </property>
     </widget>
    </item>
    <item row="0" column="0">
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -57,7 +57,7 @@
         <x>0</x>
         <y>0</y>
         <width>744</width>
-        <height>639</height>
+        <height>647</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -142,7 +142,7 @@
                <item>
                 <spacer name="horizontalSpacer_2">
                  <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <enum>Qt::Orientation::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -280,7 +280,7 @@
                 <item row="4" column="2">
                  <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                   <property name="focusPolicy">
-                   <enum>Qt::StrongFocus</enum>
+                   <enum>Qt::FocusPolicy::StrongFocus</enum>
                   </property>
                  </widget>
                 </item>
@@ -303,7 +303,7 @@
                 </sizepolicy>
                </property>
                <property name="selectionMode">
-                <enum>QAbstractItemView::ExtendedSelection</enum>
+                <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
                </property>
                <property name="allColumnsShowFocus">
                 <bool>true</bool>
@@ -380,7 +380,7 @@
              <item row="0" column="2">
               <spacer>
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -462,10 +462,10 @@
                 <bool>true</bool>
                </property>
                <property name="selectionMode">
-                <enum>QAbstractItemView::SingleSelection</enum>
+                <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
                </property>
                <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
+                <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
                </property>
                <property name="cornerButtonEnabled">
                 <bool>false</bool>
@@ -508,23 +508,6 @@
             </layout>
            </widget>
           </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Layer name</string>
-             </property>
-             <property name="buddy">
-              <cstring>leLayerName</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="leLayerName"/>
-           </item>
-          </layout>
          </item>
          <item>
           <widget class="QCheckBox" name="mLoadLayersIndividuallyCheckBox">
@@ -606,7 +589,6 @@
   <tabstop>mFeatureCount</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mContextualLegendCheckbox</tabstop>
-  <tabstop>leLayerName</tabstop>
   <tabstop>mLayerUpButton</tabstop>
   <tabstop>mLayerDownButton</tabstop>
   <tabstop>mLayerOrderTreeWidget</tabstop>

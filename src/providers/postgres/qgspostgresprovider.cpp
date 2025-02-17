@@ -49,6 +49,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgspostgresproviderconnection.h"
 #include "qgspostgresprovidermetadatautils.h"
+#include "qgspostgresutils.h"
 #include <QRegularExpression>
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
@@ -64,18 +65,6 @@ inline qint64 PKINT2FID( qint32 x )
 inline qint32 FID2PKINT( qint64 x )
 {
   return QgsPostgresUtils::fid_to_int32pk( x );
-}
-
-static bool tableExists( QgsPostgresConn &conn, const QString &name )
-{
-  QgsPostgresResult res( conn.LoggedPQexec( QStringLiteral( "tableExists" ), "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( 't' );
-}
-
-static bool columnExists( QgsPostgresConn &conn, const QString &table, const QString &column )
-{
-  QgsPostgresResult res( conn.LoggedPQexec( QStringLiteral( "columnExists" ), "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
-  return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
 
 QgsPostgresPrimaryKeyType
@@ -637,193 +626,6 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
 QString QgsPostgresProvider::whereClause( QgsFeatureIds featureIds ) const
 {
   return QgsPostgresUtils::whereClause( featureIds, mAttributeFields, connectionRO(), mPrimaryKeyType, mPrimaryKeyAttrs, mShared );
-}
-
-
-QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
-{
-  QString whereClause;
-
-  switch ( pkType )
-  {
-    case PktTid:
-      whereClause = QStringLiteral( "ctid='(%1,%2)'" )
-                      .arg( FID_TO_NUMBER( featureId ) >> 16 )
-                      .arg( FID_TO_NUMBER( featureId ) & 0xffff );
-      break;
-
-    case PktOid:
-      whereClause = QStringLiteral( "oid=%1" ).arg( featureId );
-      break;
-
-    case PktInt:
-      Q_ASSERT( pkAttrs.size() == 1 );
-      whereClause = QStringLiteral( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ).arg( FID2PKINT( featureId ) );
-      break;
-
-    case PktInt64:
-    case PktUint64:
-    {
-      Q_ASSERT( pkAttrs.size() == 1 );
-      QVariantList pkVals = sharedData->lookupKey( featureId );
-      if ( !pkVals.isEmpty() )
-      {
-        QgsField fld = fields.at( pkAttrs[0] );
-        whereClause = conn->fieldExpression( fld );
-        if ( !QgsVariantUtils::isNull( pkVals[0] ) )
-          whereClause += '=' + pkVals[0].toString();
-        else
-          whereClause += QLatin1String( " IS NULL" );
-      }
-    }
-    break;
-
-    case PktFidMap:
-    {
-      QVariantList pkVals = sharedData->lookupKey( featureId );
-      if ( !pkVals.isEmpty() )
-      {
-        Q_ASSERT( pkVals.size() == pkAttrs.size() );
-
-        QString delim;
-        for ( int i = 0; i < pkAttrs.size(); i++ )
-        {
-          int idx = pkAttrs[i];
-          QgsField fld = fields.at( idx );
-
-          whereClause += delim + conn->fieldExpressionForWhereClause( fld, static_cast<QMetaType::Type>( pkVals[i].userType() ) );
-          if ( QgsVariantUtils::isNull( pkVals[i] ) )
-            whereClause += QLatin1String( " IS NULL" );
-          else
-            whereClause += '=' + QgsPostgresConn::quotedValue( pkVals[i] ); // remove toString as it must be handled by quotedValue function
-
-          delim = QStringLiteral( " AND " );
-        }
-      }
-      else
-      {
-        QgsDebugError( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
-        whereClause = QStringLiteral( "NULL" );
-      }
-    }
-    break;
-
-    case PktUnknown:
-      Q_ASSERT( !"FAILURE: Primary key unknown" );
-      whereClause = QStringLiteral( "NULL" );
-      break;
-  }
-
-  return whereClause;
-}
-
-QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
-{
-  auto lookupKeyWhereClause = [=] {
-    if ( featureIds.isEmpty() )
-      return QString();
-
-    //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
-    QString delim;
-    QString expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
-
-    for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
-    {
-      const QVariantList pkVals = sharedData->lookupKey( featureId );
-      if ( !pkVals.isEmpty() )
-      {
-        expr += delim + QgsPostgresConn::quotedValue( pkVals.at( 0 ) );
-        delim = ',';
-      }
-    }
-    expr += ')';
-
-    return expr;
-  };
-
-  switch ( pkType )
-  {
-    case PktOid:
-    case PktInt:
-    {
-      QString expr;
-
-      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
-      if ( !featureIds.isEmpty() )
-      {
-        QString delim;
-        expr = QStringLiteral( "%1 IN (" ).arg( ( pkType == PktOid ? QStringLiteral( "oid" ) : QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ) );
-
-        for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
-        {
-          expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : FID2PKINT( featureId ) ) );
-          delim = ',';
-        }
-        expr += ')';
-      }
-
-      return expr;
-    }
-    case PktInt64:
-    case PktUint64:
-      return lookupKeyWhereClause();
-
-    case PktFidMap:
-    case PktTid:
-    case PktUnknown:
-    {
-      // on simple string primary key we can use IN
-      if ( pkType == PktFidMap && pkAttrs.count() == 1 && fields.at( pkAttrs[0] ).type() == QMetaType::Type::QString )
-        return lookupKeyWhereClause();
-
-      //complex primary key, need to build up where string
-      QStringList whereClauses;
-      for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
-      {
-        whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
-      }
-      return whereClauses.isEmpty() ? QString() : whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
-    }
-  }
-  return QString(); //avoid warning
-}
-
-QString QgsPostgresUtils::andWhereClauses( const QString &c1, const QString &c2 )
-{
-  if ( c1.isEmpty() )
-    return c2;
-  if ( c2.isEmpty() )
-    return c1;
-
-  return QStringLiteral( "(%1) AND (%2)" ).arg( c1, c2 );
-}
-
-void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
-{
-  static const QRegularExpression replaceRe { QStringLiteral( "([\\x00-\\x08\\x0B-\\x1F\\x7F])" ) };
-  QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
-  while ( it.hasNext() )
-  {
-    const QRegularExpressionMatch match { it.next() };
-    const QChar c { match.captured( 1 ).at( 0 ) };
-    xml.replace( c, QStringLiteral( "UTF-8[%1]" ).arg( c.unicode() ) );
-  }
-}
-
-void QgsPostgresUtils::restoreInvalidXmlChars( QString &xml )
-{
-  static const QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
-  QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
-  while ( it.hasNext() )
-  {
-    const QRegularExpressionMatch match { it.next() };
-    bool ok;
-    const ushort code { match.captured( 1 ).toUShort( &ok ) };
-    if ( ok )
-    {
-      xml.replace( QStringLiteral( "UTF-8[%1]" ).arg( code ), QChar( code ) );
-    }
-  }
 }
 
 QString QgsPostgresProvider::filterWhereClause() const
@@ -1400,7 +1202,7 @@ bool QgsPostgresProvider::loadFields()
 
 void QgsPostgresProvider::setEditorWidgets()
 {
-  if ( !tableExists( *connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
+  if ( !QgsPostgresUtils::tableExists( connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
   {
     return;
   }
@@ -2485,7 +2287,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           QVariant v2 = attrs2.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
           // a PK field with a sequence val is auto populate by QGIS with this default
           // we are only interested in non default values
-          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue )
+          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue && v2.userType() != qMetaTypeId< QgsUnsetAttributeValue >() )
           {
             foundNonEmptyPK = true;
             break;
@@ -2496,7 +2298,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( !skipSinglePKField )
       {
-        for ( int idx : mPrimaryKeyAttrs )
+        for ( int idx : std::as_const( mPrimaryKeyAttrs ) )
         {
           if ( mIdentityFields[idx] == 'a' )
             overrideIdentity = true;
@@ -2525,7 +2327,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         continue;
 
       QString fieldname = mAttributeFields.at( idx ).name();
-
       if ( !mGeneratedValues.value( idx, QString() ).isEmpty() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldname, QString::number( idx ) ), 2 );
@@ -2667,7 +2468,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
 
         QString v;
-        if ( QgsVariantUtils::isNull( value ) )
+        if ( QgsVariantUtils::isNull( value ) || value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
         {
           QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[i], defaultValues[i] );
@@ -3147,6 +2948,10 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       {
         try
         {
+          const QVariant attributeValue = siter.value();
+          if ( attributeValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+            continue;
+
           QgsField fld = field( siter.key() );
 
           pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
@@ -3163,13 +2968,13 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           delim = ',';
 
           QString defVal = defaultValueClause( siter.key() );
-          if ( qgsVariantEqual( *siter, defVal ) )
+          if ( qgsVariantEqual( attributeValue, defVal ) )
           {
             sql += defVal.isNull() ? "NULL" : defVal;
           }
           else if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
-            QString val = geomAttrToString( siter.value(), connectionRO() );
+            QString val = geomAttrToString( attributeValue, connectionRO() );
 
             sql += QStringLiteral( "%1(%2)" )
                      .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt", quotedValue( val ) );
@@ -3177,25 +2982,25 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
             sql += QStringLiteral( "st_geographyfromtext(%1)" )
-                     .arg( quotedValue( siter->toString() ) );
+                     .arg( quotedValue( attributeValue.toString() ) );
           }
           else if ( fld.typeName() == QLatin1String( "jsonb" ) )
           {
             sql += QStringLiteral( "%1::jsonb" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( attributeValue ) );
           }
           else if ( fld.typeName() == QLatin1String( "json" ) )
           {
             sql += QStringLiteral( "%1::json" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( attributeValue ) );
           }
           else if ( fld.typeName() == QLatin1String( "bytea" ) )
           {
-            sql += quotedByteaValue( siter.value() );
+            sql += quotedByteaValue( attributeValue );
           }
           else
           {
-            sql += quotedValue( *siter );
+            sql += quotedValue( attributeValue );
           }
         }
         catch ( PGFieldNotFound )
@@ -3526,6 +3331,12 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
             continue;
           }
 
+          const QVariant value = siter.value();
+          if ( value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          {
+            continue;
+          }
+
           numChangedFields++;
 
           sql += delim + QStringLiteral( "%1=" ).arg( quotedIdentifier( fld.name() ) );
@@ -3533,32 +3344,32 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
           if ( fld.typeName() == QLatin1String( "geometry" ) )
           {
-            QString val = geomAttrToString( siter.value(), connectionRO() );
+            QString val = geomAttrToString( value, connectionRO() );
             sql += QStringLiteral( "%1(%2)" )
                      .arg( connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt", quotedValue( val ) );
           }
           else if ( fld.typeName() == QLatin1String( "geography" ) )
           {
             sql += QStringLiteral( "st_geographyfromtext(%1)" )
-                     .arg( quotedValue( siter->toString() ) );
+                     .arg( quotedValue( value.toString() ) );
           }
           else if ( fld.typeName() == QLatin1String( "jsonb" ) )
           {
             sql += QStringLiteral( "%1::jsonb" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( value ) );
           }
           else if ( fld.typeName() == QLatin1String( "json" ) )
           {
             sql += QStringLiteral( "%1::json" )
-                     .arg( quotedJsonValue( siter.value() ) );
+                     .arg( quotedJsonValue( value ) );
           }
           else if ( fld.typeName() == QLatin1String( "bytea" ) )
           {
-            sql += quotedByteaValue( siter.value() );
+            sql += quotedByteaValue( value );
           }
           else
           {
-            sql += quotedValue( *siter );
+            sql += quotedValue( value );
           }
         }
         catch ( PGFieldNotFound )
@@ -4793,7 +4604,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
 
   QgsDataProvider::ProviderOptions providerOptions;
   Qgis::DataProviderReadFlags flags;
-  std::unique_ptr<QgsPostgresProvider> provider = std::make_unique<QgsPostgresProvider>( dsUri.uri( false ), providerOptions, flags );
+  auto provider = std::make_unique<QgsPostgresProvider>( dsUri.uri( false ), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -5345,11 +5156,11 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
     return false;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
     return false;
   }
-  else if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     return false;
   }
@@ -5405,25 +5216,9 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     return false;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
-    QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "CREATE TABLE layer_styles("
-                                                                                                "id SERIAL PRIMARY KEY"
-                                                                                                ",f_table_catalog varchar"
-                                                                                                ",f_table_schema varchar"
-                                                                                                ",f_table_name varchar"
-                                                                                                ",f_geometry_column varchar"
-                                                                                                ",styleName text"
-                                                                                                ",styleQML xml"
-                                                                                                ",styleSLD xml"
-                                                                                                ",useAsDefault boolean"
-                                                                                                ",description text"
-                                                                                                ",owner varchar(63) DEFAULT CURRENT_USER"
-                                                                                                ",ui xml"
-                                                                                                ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                                                                                ",type varchar"
-                                                                                                ")" ) );
-    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+    if ( !QgsPostgresUtils::createStylesTable( conn, QStringLiteral( "QgsPostgresProviderMetadata" ) ) )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
       conn->unref();
@@ -5432,7 +5227,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   }
   else
   {
-    if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
     {
       QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
@@ -5580,7 +5375,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
     conn->unref();
     return QString();
@@ -5599,7 +5394,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
   QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
 
   // support layer_styles without type column < 3.14
-  if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     selectQmlQuery = QString( "SELECT styleName, styleQML"
                               " FROM layer_styles"
@@ -5655,7 +5450,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
     return -1;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
     return -1;
   }
@@ -5854,124 +5649,6 @@ void QgsPostgresProviderMetadata::cleanupProvider()
 }
 
 
-// ----------
-
-void QgsPostgresSharedData::addFeaturesCounted( long long diff )
-{
-  QMutexLocker locker( &mMutex );
-
-  if ( mFeaturesCounted >= 0 )
-    mFeaturesCounted += diff;
-}
-
-void QgsPostgresSharedData::ensureFeaturesCountedAtLeast( long long fetched )
-{
-  QMutexLocker locker( &mMutex );
-
-  /* only updates the feature count if it was already once.
-   * Otherwise, this would lead to false feature count if
-   * an existing project is open at a restrictive extent.
-   */
-  if ( mFeaturesCounted > 0 && mFeaturesCounted < fetched )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "feature count adjusted from %1 to %2" ).arg( mFeaturesCounted ).arg( fetched ), 2 );
-    mFeaturesCounted = fetched;
-  }
-}
-
-long long QgsPostgresSharedData::featuresCounted()
-{
-  QMutexLocker locker( &mMutex );
-  return mFeaturesCounted;
-}
-
-void QgsPostgresSharedData::setFeaturesCounted( long long count )
-{
-  QMutexLocker locker( &mMutex );
-  mFeaturesCounted = count;
-}
-
-
-QgsFeatureId QgsPostgresSharedData::lookupFid( const QVariantList &v )
-{
-  QMutexLocker locker( &mMutex );
-
-  QMap<QVariantList, QgsFeatureId>::const_iterator it = mKeyToFid.constFind( v );
-
-  if ( it != mKeyToFid.constEnd() )
-  {
-    return it.value();
-  }
-
-  mFidToKey.insert( ++mFidCounter, v );
-  mKeyToFid.insert( v, mFidCounter );
-
-  return mFidCounter;
-}
-
-
-QVariantList QgsPostgresSharedData::removeFid( QgsFeatureId fid )
-{
-  QMutexLocker locker( &mMutex );
-
-  QVariantList v = mFidToKey[fid];
-  mFidToKey.remove( fid );
-  mKeyToFid.remove( v );
-  return v;
-}
-
-void QgsPostgresSharedData::insertFid( QgsFeatureId fid, const QVariantList &k )
-{
-  QMutexLocker locker( &mMutex );
-
-  mFidToKey.insert( fid, k );
-  mKeyToFid.insert( k, fid );
-}
-
-QVariantList QgsPostgresSharedData::lookupKey( QgsFeatureId featureId )
-{
-  QMutexLocker locker( &mMutex );
-
-  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.constFind( featureId );
-  if ( it != mFidToKey.constEnd() )
-    return it.value();
-  return QVariantList();
-}
-
-void QgsPostgresSharedData::clear()
-{
-  QMutexLocker locker( &mMutex );
-  mFidToKey.clear();
-  mKeyToFid.clear();
-  mFeaturesCounted = -1;
-  mFidCounter = 0;
-}
-
-void QgsPostgresSharedData::clearSupportsEnumValuesCache()
-{
-  QMutexLocker locker( &mMutex );
-  mFieldSupportsEnumValues.clear();
-}
-
-bool QgsPostgresSharedData::fieldSupportsEnumValuesIsSet( int index )
-{
-  QMutexLocker locker( &mMutex );
-  return mFieldSupportsEnumValues.contains( index );
-}
-
-bool QgsPostgresSharedData::fieldSupportsEnumValues( int index )
-{
-  QMutexLocker locker( &mMutex );
-  return mFieldSupportsEnumValues.contains( index ) && mFieldSupportsEnumValues[index];
-}
-
-void QgsPostgresSharedData::setFieldSupportsEnumValues( int index, bool isSupported )
-{
-  QMutexLocker locker( &mMutex );
-  mFieldSupportsEnumValues[index] = isSupported;
-}
-
-
 QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
   : QgsProviderMetadata( QgsPostgresProvider::POSTGRES_KEY, QgsPostgresProvider::POSTGRES_DESCRIPTION )
 {
@@ -6037,7 +5714,6 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri ) const
 
   return uriParts;
 }
-
 
 QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {

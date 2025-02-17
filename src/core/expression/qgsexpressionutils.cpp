@@ -153,6 +153,31 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   return ml;
 }
 
+QgsCoordinateReferenceSystem QgsExpressionUtils::getCrsValue( const QVariant &value, QgsExpression *parent )
+{
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+
+  const bool isCrs = value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>();
+
+  if ( !isCrs && value.toString().isEmpty() )
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+
+  QgsCoordinateReferenceSystem crs = isCrs ? value.value<QgsCoordinateReferenceSystem>() : QgsCoordinateReferenceSystem( value.toString() );
+  if ( !crs.isValid() )
+  {
+    parent->setEvalErrorString( isCrs ? QObject::tr( "Input CRS is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to CRS" ).arg( value.toString() ) );
+  }
+
+  return crs;
+}
+
+
 void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function, bool &foundLayer )
 {
   foundLayer = false;

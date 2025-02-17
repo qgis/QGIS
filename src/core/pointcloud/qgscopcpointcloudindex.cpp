@@ -53,14 +53,6 @@ QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsCopcPointCloudIndex::clone() const
-{
-  QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
-  QMutexLocker locker( &mHierarchyMutex );
-  copyCommonProperties( clone );
-  return std::unique_ptr<QgsAbstractPointCloudIndex>( clone );
-}
-
 void QgsCopcPointCloudIndex::load( const QString &urlString )
 {
   QUrl url = urlString;
@@ -134,7 +126,7 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   // TODO: Rounding?
   mSpan = mRootBounds.width() / mCopcInfoVlr.spacing;
 
-#ifdef QGIS_DEBUG
+#ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
   QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
   QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
@@ -166,7 +158,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
     // we need to create a copy of the expression to pass to the decoder
     // as the same QgsPointCloudExpression object mighgt be concurrently
     // used on another thread, for example in a 3d view
-    QgsPointCloudExpression filterExpression = mFilterExpression;
+    QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
     QgsPointCloudAttributeCollection requestAttributes = request.attributes();
     requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
@@ -221,7 +213,7 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object might be concurrently
   // used on another thread, for example in a 3d view
-  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
   auto [ blockOffset, blockSize ] = mHierarchyNodePos.value( n );
@@ -432,22 +424,6 @@ QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
 }
 
-void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *destination ) const
-{
-  QgsAbstractPointCloudIndex::copyCommonProperties( destination );
-
-  // QgsCopcPointCloudIndex specific fields
-  destination->mIsValid = mIsValid;
-  destination->mAccessType = mAccessType;
-  destination->mUri = mUri;
-  if ( mAccessType == Qgis::PointCloudAccessType::Local )
-    destination->mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
-  destination->mCopcInfoVlr = mCopcInfoVlr;
-  destination->mHierarchyNodePos = mHierarchyNodePos;
-  destination->mOriginalMetadata = mOriginalMetadata;
-  destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
-}
-
 QByteArray QgsCopcPointCloudIndex::readRange( uint64_t offset, uint64_t length ) const
 {
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
@@ -510,6 +486,30 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData() const
   }
 
   return statisticsEvlrData;
+}
+
+void QgsCopcPointCloudIndex::reset()
+{
+  // QgsAbstractPointCloudIndex
+  mExtent = QgsRectangle();
+  mZMin = 0;
+  mZMax = 0;
+  mHierarchy.clear();
+  mScale = QgsVector3D();
+  mOffset = QgsVector3D();
+  mRootBounds = QgsBox3D();
+  mAttributes = QgsPointCloudAttributeCollection();
+  mSpan = 0;
+  mError.clear();
+
+  // QgsCopcPointCloudIndex
+  mIsValid = false;
+  mAccessType = Qgis::PointCloudAccessType::Local;
+  mCopcFile.close();
+  mOriginalMetadata.clear();
+  mStatistics.reset();
+  mLazInfo.reset();
+  mHierarchyNodePos.clear();
 }
 
 QVariantMap QgsCopcPointCloudIndex::extraMetadata() const

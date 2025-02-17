@@ -1294,6 +1294,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( FileFilterType )
 
     /**
+     * Flags for cleaning layer URIs.
+     *
+     * \since QGIS 3.42
+     */
+    enum class UriCleaningFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RemoveCredentials = 1 << 0, //!< Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag.
+      RedactCredentials = 1 << 1, //!< Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag.
+    };
+    Q_ENUM( UriCleaningFlag )
+
+    /**
+     * Flags for cleaning layer URIs.
+     *
+     * \since QGIS 3.42
+     */
+    Q_DECLARE_FLAGS( UriCleaningFlags, UriCleaningFlag )
+    Q_FLAG( UriCleaningFlags )
+
+    /**
      * Flags which control how data providers will scan for sublayers in a dataset.
      *
      * \since QGIS 3.22
@@ -5747,6 +5767,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( PointCloudZoomOutRenderBehavior )
 
     /**
+     * brief Method used to calculate the number of segments for circle approximation
+     * \since QGIS 3.44
+     */
+    enum class SegmentCalculationMethod : int
+    {
+      Standard = 0,   //!< Standard sagitta-based calculation
+      Adaptive,       //!< Adaptive calculation based on radius size
+      AreaError,      //!< Calculation based on area error
+      ConstantDensity //!< Simple calculation with constant segment density
+    };
+    Q_ENUM( SegmentCalculationMethod )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -5894,6 +5927,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SettingsTreeNodeOptions )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::UriCleaningFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRendererFlags )

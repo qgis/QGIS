@@ -167,13 +167,6 @@ QgsRectangle QgsMeshLayer::extent() const
   }
 }
 
-QString QgsMeshLayer::providerType() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mProviderKey;
-}
-
 bool QgsMeshLayer::supportsEditing() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -418,7 +411,7 @@ QgsMeshRendererSettings QgsMeshLayer::rendererSettings() const
   return mRendererSettings;
 }
 
-void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings )
+void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -433,7 +426,11 @@ void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings 
     emit activeVectorDatasetGroupChanged( mRendererSettings.activeVectorDatasetGroup() );
 
   emit rendererChanged();
-  triggerRepaint();
+
+  if ( repaint )
+  {
+    triggerRepaint();
+  }
 }
 
 QgsMeshTimeSettings QgsMeshLayer::timeSettings() const
@@ -1703,6 +1700,11 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
     return false;
 
   QgsTriangularMesh *tMesh = triangularMesh();
+
+  if ( ! tMesh )
+  {
+    return false;
+  }
 
   QVector<double> scalarDatasetValues;
   const QgsMeshDatasetGroupMetadata metadata = datasetGroupMetadata( datasetIndex.group() );

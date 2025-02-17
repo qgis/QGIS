@@ -313,7 +313,7 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
   QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), 0 ) )->text();
 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( layerURI( index ), tableName, QStringLiteral( "ogr" ), options );
+  auto vlayer = std::make_unique<QgsVectorLayer>( layerURI( index ), tableName, QStringLiteral( "ogr" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -321,7 +321,7 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
   }
 
   // create a query builder object
-  std::unique_ptr<QgsQueryBuilder> gb( new QgsQueryBuilder( vlayer.get(), this ) );
+  auto gb = std::make_unique<QgsQueryBuilder>( vlayer.get(), this );
 
   if ( gb->exec() )
   {

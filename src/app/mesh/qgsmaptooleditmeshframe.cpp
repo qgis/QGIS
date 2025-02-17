@@ -2064,7 +2064,7 @@ void QgsMapToolEditMeshFrame::selectTouchedByGeometry( const QgsGeometry &geomet
   for ( const int faceIndex : nativeFaceIndexes )
   {
     const QgsMeshFace &face = nativeFace( faceIndex );
-    std::unique_ptr<QgsPolygon> faceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
+    auto faceGeom = std::make_unique<QgsPolygon>( new QgsLineString( nativeFaceGeometry( faceIndex ) ) );
     if ( engine->intersects( faceGeom.get() ) )
     {
       QSet<int> faceToAdd = qgis::listToSet( face.toList() );
@@ -2429,7 +2429,7 @@ void QgsMapToolEditMeshFrame::forceByLineReleaseEvent( QgsMapMouseEvent *e )
     {
       points.append( QgsPoint( rubbergandLines.at( i ).x(), rubbergandLines.at( i ).y(), mForcingLineZValue.isEmpty() ? defaultValue : mForcingLineZValue.at( i ) ) );
     }
-    std::unique_ptr<QgsLineString> forcingLine = std::make_unique<QgsLineString>( points );
+    auto forcingLine = std::make_unique<QgsLineString>( points );
     forceByLine( QgsGeometry( forcingLine.release() ) );
     mForceByLineRubberBand->reset( Qgis::GeometryType::Line );
     mForcingLineZValue.clear();

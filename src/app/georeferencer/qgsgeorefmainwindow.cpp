@@ -30,10 +30,14 @@
 #include <QUrl>
 #include <QActionGroup>
 
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgisapp.h"
+#include "qgssettingsregistrycore.h"
 
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
@@ -46,6 +50,7 @@
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 #include "qgsdatasourceselectdialog.h"
+#include "qgssnappingwidget.h"
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -71,23 +76,28 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgslayoutexporter.h"
 
-const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
+const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QStringLiteral( "Last used georeferencer resampling method" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingCompressionMethod = new QgsSettingsEntryString( QStringLiteral( "compression-method" ), sTreeGeoreferencer, QStringLiteral( "NONE" ), QObject::tr( "Last used georeferencer compression method" ) );
+const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( QStringLiteral( "creation-options" ), sTreeGeoreferencer, QStringList(), QStringLiteral( "Last used georeferencer raster creation options" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QObject::tr( "Last used georeferencer use-zero-as-transparent option" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QStringLiteral( "Last used georeferencer use-zero-as-transparent option" ) );
 
-const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QObject::tr( "Last used georeferencer transform method" ) );
+const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QStringLiteral( "Last used georeferencer transform method" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QObject::tr( "Whether georeferencer should automatically save .points files" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QStringLiteral( "Whether georeferencer should automatically save .points files" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QObject::tr( "Whether georeferencer should automatically load results into the current project" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QStringLiteral( "Whether georeferencer should automatically load results into the current project" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used folder for georeferencer source files" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used raster file filter for georeferencer source files" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used georeferencer target CRS" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used georeferencer target CRS" ) );
+
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( QStringLiteral( "snapping-enabled" ), sTreeGeoreferencer, false, QStringLiteral( "Snapping enabled." ) );
+
+const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( QStringLiteral( "snapping-types" ), sTreeGeoreferencer, Qgis::SnappingType::Vertex, QStringLiteral( "Snapping types." ) );
+
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -135,6 +145,19 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   if ( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
   {
     dockThisWindow( true );
+  }
+}
+
+void QgsGeoreferencerMainWindow::showGeoreferencer()
+{
+  if ( mDock )
+  {
+    mDock->setUserVisible( true );
+  }
+  else
+  {
+    show();
+    setFocus();
   }
 }
 
@@ -444,7 +467,7 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
   d.setCreateWorldFileOnly( mCreateWorldFileOnly );
   d.setTransformMethod( mTransformMethod );
   d.setResamplingMethod( mResamplingMethod );
-  d.setCompressionMethod( mCompressionMethod );
+  d.setCreationOptions( mCreationOptions.join( ' ' ) );
   d.setPdfMapFilename( mPdfOutputMapFile );
   d.setPdfReportFilename( mPdfOutputFile );
   d.setSaveGcpPoints( mSaveGcp );
@@ -462,7 +485,7 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
   mTargetCrs = d.targetCrs();
   mTransformMethod = d.transformMethod();
   mResamplingMethod = d.resamplingMethod();
-  mCompressionMethod = d.compressionMethod();
+  mCreationOptions = d.creationOptions();
   mModifiedFileName = d.destinationFilename();
   mPdfOutputMapFile = d.pdfMapFilename();
   mPdfOutputFile = d.pdfReportFilename();
@@ -524,7 +547,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
           int order = polynomialOrder( mTransformMethod );
           if ( order != 0 )
           {
-            gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order, mUserResX, mUserResY );
+            gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCreationOptions, mUseZeroForTrans, order, mUserResX, mUserResY );
             showGDALScript( QStringList() << translateCommand << gdalwarpCommand );
           }
           else
@@ -1098,6 +1121,66 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mCentralLayout->addWidget( mCanvas, 0, 0, 2, 1 );
 
+  // snapping + cad
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
+  addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
+  mAdvancedDigitizingDockWidget->hide();
+  connect( mActionAdvancedDigitizingDock, &QAction::triggered, mAdvancedDigitizingDockWidget, [=]( bool checked ) { mAdvancedDigitizingDockWidget->setVisible( checked ); } );
+
+  QgsSnappingConfig snappingConfig;
+  snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snappingConfig.setTypeFlag( settingSnappingTypes->value() );
+  snappingConfig.setTolerance( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance->value() );
+  snappingConfig.setUnits( QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit->value() );
+  snappingConfig.setEnabled( settingSnappingEnabled->value() );
+
+  mSnappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
+  mSnappingUtils->setConfig( snappingConfig );
+  mCanvas->setSnappingUtils( mSnappingUtils );
+
+  // type button
+  mSnappingTypeButton = new QToolButton( this );
+  mSnappingTypeButton->setCheckable( true );
+  mSnappingTypeButton->setChecked( snappingConfig.enabled() );
+  mSnappingTypeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
+  mSnappingTypeButton->setToolTip( tr( "Snapping Type" ) );
+  mSnappingTypeButton->setPopupMode( QToolButton::MenuButtonPopup );
+  SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
+
+  for ( Qgis::SnappingType type : qgsEnumList<Qgis::SnappingType>() )
+  {
+    if ( type == Qgis::SnappingType::NoSnap )
+      continue;
+    QAction *action = new QAction( QgsSnappingConfig::snappingTypeToIcon( type ), QgsSnappingConfig::snappingTypeToString( type ), typeMenu );
+    action->setData( QVariant::fromValue( type ) );
+    action->setCheckable( true );
+    action->setChecked( snappingConfig.typeFlag().testFlag( type ) );
+    typeMenu->addAction( action );
+    mSnappingTypeActions << action;
+  }
+
+  mSnappingTypeButton->setMenu( typeMenu );
+  mSnappingTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
+  connect( mSnappingTypeButton, &QToolButton::triggered, this, [=]( QAction *action ) {
+    QgsSnappingConfig snappingConfig = mSnappingUtils->config();
+    unsigned int type = static_cast<int>( snappingConfig.typeFlag() );
+    const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
+    type ^= actionFlag;
+    snappingConfig.setTypeFlag( static_cast<Qgis::SnappingTypes>( type ) );
+    mSnappingUtils->setConfig( snappingConfig );
+  } );
+
+  connect( mSnappingTypeButton, &QToolButton::clicked, this, [=]( bool checked ) {
+    QgsSnappingConfig snappingConfig = mSnappingUtils->config();
+    snappingConfig.setEnabled( checked );
+    mSnappingUtils->setConfig( snappingConfig );
+    for ( QAction *action : std::as_const( mSnappingTypeActions ) )
+      action->setEnabled( checked );
+  } );
+
+  toolBarEdit->insertWidget( mActionAdvancedDigitizingDock, mSnappingTypeButton );
+
+
   // set up map tools
   mToolZoomIn = new QgsMapToolZoom( mCanvas, false /* zoomOut */ );
   mToolZoomIn->setAction( mActionZoomIn );
@@ -1108,7 +1191,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   mToolPan = new QgsMapToolPan( mCanvas );
   mToolPan->setAction( mActionPan );
 
-  mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas );
+  mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas, mAdvancedDigitizingDockWidget );
   mToolAddPoint->setAction( mActionAddPoint );
   connect( mToolAddPoint, &QgsGeorefToolAddPoint::showCoordDialog, this, &QgsGeoreferencerMainWindow::showCoordDialog );
 
@@ -1370,7 +1453,7 @@ void QgsGeoreferencerMainWindow::readSettings()
 
   // warp options
   mResamplingMethod = settingResamplingMethod->value();
-  mCompressionMethod = settingCompressionMethod->value();
+  mCreationOptions = settingCreationOptions->value();
   mUseZeroForTrans = settingUseZeroForTransparent->value();
   mTransformMethod = settingTransformMethod->value();
   mSaveGcp = settingSaveGcps->value();
@@ -1385,7 +1468,7 @@ void QgsGeoreferencerMainWindow::writeSettings()
 
   settingTransformMethod->setValue( mTransformMethod );
   settingResamplingMethod->setValue( mResamplingMethod );
-  settingCompressionMethod->setValue( mCompressionMethod );
+  settingCreationOptions->setValue( mCreationOptions );
   settingUseZeroForTransparent->setValue( mUseZeroForTrans );
   settingSaveGcps->setValue( mSaveGcp );
   settingLoadInProject->setValue( mLoadInQgis );
@@ -1527,13 +1610,13 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
     mGeorefTransform,
     mResamplingMethod,
     mUseZeroForTrans,
-    mCompressionMethod,
+    mCreationOptions,
     mTargetCrs,
     mUserResX,
     mUserResY
   );
 
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
   connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
     progressDialog->setValue( static_cast<int>( progress ) );
@@ -1593,7 +1676,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
 {
   QgsVectorWarperTask *task = new QgsVectorWarperTask( mTransformMethod, mPoints.asPoints(), mTargetCrs, qobject_cast<QgsVectorLayer *>( mLayer.get() ), mModifiedFileName );
 
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
   connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
     progressDialog->setValue( static_cast<int>( progress ) );
@@ -1769,7 +1852,7 @@ bool QgsGeoreferencerMainWindow::writePDFMapFile( const QString &fileName, const
 
   //create layout
   QgsLayout layout( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page = std::make_unique<QgsLayoutItemPage>( &layout );
 
   double leftMargin = 8;
   double topMargin = 8;
@@ -1836,10 +1919,10 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   //create layout A4 with 300 dpi
   QgsLayout layout( QgsProject::instance() );
 
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page = std::make_unique<QgsLayoutItemPage>( &layout );
   page->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page.release() );
-  std::unique_ptr<QgsLayoutItemPage> page2 = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page2 = std::make_unique<QgsLayoutItemPage>( &layout );
   page2->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page2.release() );
 
@@ -2197,7 +2280,7 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
-QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order, double targetResX, double targetResY )
+QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QStringList &options, bool useZeroForTrans, int order, double targetResX, double targetResY )
 {
   QStringList gdalCommand;
   gdalCommand << QStringLiteral( "gdalwarp" ) << QStringLiteral( "-r" ) << resampling;
@@ -2212,7 +2295,12 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
     // Otherwise, use thin plate spline interpolation
     gdalCommand << QStringLiteral( "-tps" );
   }
-  gdalCommand << "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
+
+  for ( const QString &option : options )
+  {
+    gdalCommand << QStringLiteral( "-co %1" ).arg( option );
+  }
+  gdalCommand << ( useZeroForTrans ? "-dstalpha" : "" );
 
   if ( targetResX != 0.0 && targetResY != 0.0 )
   {

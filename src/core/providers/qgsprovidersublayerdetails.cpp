@@ -30,35 +30,20 @@ QgsMapLayer *QgsProviderSublayerDetails::toLayer( const LayerOptions &options ) 
 QgsMimeDataUtils::Uri QgsProviderSublayerDetails::toMimeUri() const
 {
   QgsMimeDataUtils::Uri u;
+  u.layerType = QgsMapLayerFactory::typeToString( mType );
   switch ( mType )
   {
     case Qgis::LayerType::Vector:
-      u.layerType = QStringLiteral( "vector" );
       u.wkbType = mWkbType;
       break;
     case Qgis::LayerType::Raster:
-      u.layerType = QStringLiteral( "raster" );
-      break;
     case Qgis::LayerType::Mesh:
-      u.layerType = QStringLiteral( "mesh" );
-      break;
     case Qgis::LayerType::VectorTile:
-      u.layerType = QStringLiteral( "vector-tile" );
-      break;
     case Qgis::LayerType::PointCloud:
-      u.layerType = QStringLiteral( "pointcloud" );
-      break;
     case Qgis::LayerType::Plugin:
-      u.layerType = QStringLiteral( "plugin" );
-      break;
     case Qgis::LayerType::Group:
-      u.layerType = QStringLiteral( "group" );
-      break;
     case Qgis::LayerType::Annotation:
-      u.layerType = QStringLiteral( "annotation" );
-      break;
     case Qgis::LayerType::TiledScene:
-      u.layerType = QStringLiteral( "tiled-scene" );
       break;
   }
 

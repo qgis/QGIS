@@ -163,11 +163,6 @@ data.
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QString providerType() const;
-%Docstring
-Returns the provider type for this layer
-%End
-
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
 %Docstring
 Adds datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file
@@ -234,9 +229,13 @@ Gets native mesh and updates (creates if it doesn't exist) the base triangular m
 %Docstring
 Returns renderer settings
 %End
-    void setRendererSettings( const QgsMeshRendererSettings &settings );
+
+    void setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint = true );
 %Docstring
 Sets new renderer settings
+
+:param settings:
+:param repaint: should the update of renderer settings trigger repaint and emit rendererChanged signal
 %End
 
     QgsMeshTimeSettings timeSettings() const;

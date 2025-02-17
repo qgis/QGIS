@@ -74,8 +74,8 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       const QSizeF size = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
 
       double uPP = context.mapToPixel().mapUnitsPerPixel();
-      std::unique_ptr< QgsTextLabelFeatureWithFormat > feature = std::make_unique< QgsTextLabelFeatureWithFormat >( mLabels.size(),
-          QgsGeos::asGeos( &mapPoint ), QSizeF( size.width() * uPP, size.height() * uPP ), format );
+      auto feature = std::make_unique< QgsTextLabelFeatureWithFormat >( mLabels.size(),
+                     QgsGeos::asGeos( &mapPoint ), QSizeF( size.width() * uPP, size.height() * uPP ), format );
 
       feature->setDocument( doc, documentMetrics );
       feature->setFixedAngle( angleRadians );
@@ -121,7 +121,7 @@ QgsLinearReferencingSymbolLayer::~QgsLinearReferencingSymbolLayer() = default;
 
 QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &properties )
 {
-  std::unique_ptr< QgsLinearReferencingSymbolLayer > res = std::make_unique< QgsLinearReferencingSymbolLayer >();
+  auto res = std::make_unique< QgsLinearReferencingSymbolLayer >();
   res->setPlacement( qgsEnumKeyToValue( properties.value( QStringLiteral( "placement" ) ).toString(), Qgis::LinearReferencingPlacement::IntervalCartesian2D ) );
   res->setLabelSource( qgsEnumKeyToValue( properties.value( QStringLiteral( "source" ) ).toString(), Qgis::LinearReferencingLabelSource::CartesianDistance2D ) );
   bool ok = false;
@@ -190,7 +190,7 @@ QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &prop
 
 QgsLinearReferencingSymbolLayer *QgsLinearReferencingSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsLinearReferencingSymbolLayer > res = std::make_unique< QgsLinearReferencingSymbolLayer >();
+  auto res = std::make_unique< QgsLinearReferencingSymbolLayer >();
   res->setPlacement( mPlacement );
   res->setLabelSource( mLabelSource );
   res->setInterval( mInterval );

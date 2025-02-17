@@ -32,6 +32,7 @@
 #include "qgschunkedentity.h"
 #include "qgs3dmapsceneentity.h"
 #include "qgs3drendercontext.h"
+#include "qgspointcloudlayerchunkloader_p.h"
 
 class QgsAABB;
 class QgsChunkBoundsEntity;
@@ -87,13 +88,11 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     //! Returns a pointer to the associated layer's provider
     QgsVirtualPointCloudProvider *provider() const;
 
-    //! Returns the bounding box for sub index i
-    QgsAABB boundingBox( int i ) const;
-
     QgsPointCloudLayer *mLayer = nullptr;
     QMap<int, QgsChunkedEntity *> mChunkedEntitiesMap;
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
-    QList<QgsAABB> mBboxes;
+    QgsPointCloudLayerChunkedEntity *mOverviewEntity = nullptr;
+    QList<QgsBox3D> mBboxes;
     QgsCoordinateTransform mCoordinateTransform;
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     double mZValueScale = 1.0;

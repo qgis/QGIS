@@ -60,6 +60,20 @@ Contains utility functions for working with symbols and symbol layers.
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
+    static Qgis::EndCapStyle penCapStyleToEndCapStyle( Qt::PenCapStyle style );
+%Docstring
+Converts a Qt pen cap style to a QGIS end cap style.
+
+.. versionadded:: 3.42
+%End
+
+    static Qgis::JoinStyle penJoinStyleToJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Converts a Qt pen joinstyle to a QGIS join style.
+
+.. versionadded:: 3.42
+%End
+
     static bool hasSldSymbolizer( const QDomElement &element );
 %Docstring
 Returns ``True`` if a DOM ``element`` contains an SLD Symbolizer element.
@@ -816,6 +830,15 @@ as a list of geometry parts and rings.
 .. versionadded:: 3.40
 %End
 
+    static QList< QList< QPolygonF > > toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type );
+%Docstring
+Converts a ``geometry`` to a set of QPolygonF objects representing
+how the geometry should be drawn for a symbol of the given ``type``,
+as a list of geometry parts and rings.
+
+.. versionadded:: 3.42
+%End
+
     static QPointF polygonCentroid( const QPolygonF &points );
 %Docstring
 Calculate the centroid point of a QPolygonF
@@ -1020,6 +1043,13 @@ Regenerate recursively unique id from all ``symbol`` symbol layers
 Regenerate recursively unique id from ``symbolLayer`` and its children
 
 .. versionadded:: 3.30
+%End
+
+    static void clearSymbolLayerMasks( QgsSymbol *symbol );
+%Docstring
+Remove recursively masks from all ``symbol`` symbol layers
+
+.. versionadded:: 3.42
 %End
 
     static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );

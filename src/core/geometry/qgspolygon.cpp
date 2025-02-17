@@ -101,7 +101,7 @@ bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   wkbPtr >> nRings;
   for ( int i = 0; i < nRings; ++i )
   {
-    std::unique_ptr< QgsLineString > line( new QgsLineString() );
+    auto line = std::make_unique<QgsLineString>();
     line->fromWkbPoints( ringType, wkbPtr );
     /*if ( !line->isRing() )
     {

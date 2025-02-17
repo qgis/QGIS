@@ -81,7 +81,7 @@ Qgis::ProcessingFeatureSourceFlags QgsRemoveHolesAlgorithm::sourceFlags() const
 
 void QgsRemoveHolesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterArea> minArea = std::make_unique<QgsProcessingParameterArea>( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove holes with area less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minArea = std::make_unique<QgsProcessingParameterArea>( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove holes with area less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   minArea->setIsDynamic( true );
   minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove holes with area less than" ), QgsPropertyDefinition::DoublePositive ) );
   minArea->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

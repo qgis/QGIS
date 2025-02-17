@@ -188,7 +188,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   meshTri.setCrs( QgsCoordinateReferenceSystem( "EPSG:32620" ) );
 
-  std::unique_ptr<QgsVectorLayer> mLayerPointZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ?crs=EPSG:32620" ), QStringLiteral( "point Z" ), QStringLiteral( "memory" ) );
+  auto mLayerPointZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ?crs=EPSG:32620" ), QStringLiteral( "point Z" ), QStringLiteral( "memory" ) );
 
   const QString wkt1 = "PointZ (684486.0 1761297.0 1)";
   const QString wkt2 = "PointZ (684276.0 1761309.0 2)";
@@ -228,7 +228,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   const QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
 
-  std::unique_ptr<QgsVectorLayer> mLayerBreakLine = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=EPSG:32620" ), QStringLiteral( "line" ), QStringLiteral( "memory" ) );
+  auto mLayerBreakLine = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=EPSG:32620" ), QStringLiteral( "line" ), QStringLiteral( "memory" ) );
 
   QgsFeature f5;
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
@@ -255,7 +255,7 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  std::unique_ptr<QgsVectorLayer> mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
+  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
 
   QStringList wktLines;
 
@@ -303,7 +303,7 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  std::unique_ptr<QgsVectorLayer> mLayerPointsZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ), QStringLiteral( "points Z" ), QStringLiteral( "memory" ) );
+  auto mLayerPointsZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ), QStringLiteral( "points Z" ), QStringLiteral( "memory" ) );
 
   for ( int i = 0; i < 4; ++i )
   {
@@ -326,7 +326,7 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
   QCOMPARE( mesh.vertexCount(), 40 );
   QCOMPARE( mesh.faceCount(), 54 );
 
-  std::unique_ptr<QgsVectorLayer> mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
+  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
 
 
   QgsFeature feat;

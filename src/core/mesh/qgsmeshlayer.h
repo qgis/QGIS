@@ -197,9 +197,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool supportsEditing() const override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
 
-    //! Returns the provider type for this layer
-    QString providerType() const;
-
     /**
      * Adds datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
      *
@@ -309,8 +306,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 
     //! Returns renderer settings
     QgsMeshRendererSettings rendererSettings() const;
-    //! Sets new renderer settings
-    void setRendererSettings( const QgsMeshRendererSettings &settings );
+
+    /**
+     * Sets new renderer settings
+     *
+     * \param settings
+     * \param repaint should the update of renderer settings trigger repaint and emit rendererChanged signal
+     */
+    void setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint = true );
 
     /**
      * Returns time format settings

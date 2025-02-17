@@ -102,7 +102,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
   // Refill with templates from this directory
   for ( const QFileInfo &file : files )
   {
-    std::unique_ptr<QStandardItem> item = std::make_unique<QStandardItem>( file.fileName() );
+    auto item = std::make_unique<QStandardItem>( file.fileName() );
 
     const QString fileId = QCryptographicHash::hash( file.filePath().toUtf8(), QCryptographicHash::Sha224 ).toHex();
 

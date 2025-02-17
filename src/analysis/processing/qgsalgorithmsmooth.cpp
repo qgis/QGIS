@@ -79,19 +79,19 @@ QList<int> QgsSmoothAlgorithm::inputLayerTypes() const
 
 void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> iterations = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ITERATIONS" ), QObject::tr( "Iterations" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10 );
+  auto iterations = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ITERATIONS" ), QObject::tr( "Iterations" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10 );
   iterations->setIsDynamic( true );
   iterations->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ITERATIONS" ), QObject::tr( "Iterations" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   iterations->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( iterations.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> offset = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 0.5 );
+  auto offset = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 0.5 );
   offset->setIsDynamic( true );
   offset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), QgsPropertyDefinition::Double0To1 ) );
   offset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( offset.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> maxAngle = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAX_ANGLE" ), QObject::tr( "Maximum node angle to smooth" ), Qgis::ProcessingNumberParameterType::Double, 180.0, false, 0.0, 180.0 );
+  auto maxAngle = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAX_ANGLE" ), QObject::tr( "Maximum node angle to smooth" ), Qgis::ProcessingNumberParameterType::Double, 180.0, false, 0.0, 180.0 );
   maxAngle->setIsDynamic( true );
   maxAngle->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MAX_ANGLE" ), QObject::tr( "Maximum node angle to smooth" ), QgsPropertyDefinition::Rotation ) );
   maxAngle->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

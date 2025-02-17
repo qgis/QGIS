@@ -37,7 +37,7 @@ QString QgsClassificationJenks::id() const
 
 std::unique_ptr<QgsClassificationMethod> QgsClassificationJenks::clone() const
 {
-  std::unique_ptr< QgsClassificationJenks > c = std::make_unique< QgsClassificationJenks >();
+  auto c = std::make_unique< QgsClassificationJenks >();
   copyBase( c.get() );
   return c;
 }

@@ -190,6 +190,21 @@ class _3D_EXPORT QgsCameraController : public QObject
     void rotateCamera( float diffPitch, float diffYaw );
 
     /**
+     * Rotates the camera around the pivot point (in world coordinates)
+     * to the given new pitch and heading angle.
+     * \since QGIS 3.42
+     */
+    void rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint );
+
+    /**
+     * Zooms camera by given zoom factor (>1 one means zoom in)
+     * while keeping the pivot point (given in world coordinates) at the
+     * same screen coordinates after the zoom.
+     * \since QGIS 3.42
+     */
+    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
+
+    /**
      * Returns TRUE if the camera controller will handle the specified key \a event,
      * preventing it from being instead handled by parents of the 3D window before
      * the controller ever receives it.
@@ -203,6 +218,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      * \since QGIS 3.42
      */
     void setOrigin( const QgsVector3D &origin );
+
+    /**
+     * Sets whether the camera controller responds to mouse and keyboard events
+     * \since QGIS 3.42
+     */
+    void setInputHandlersEnabled( bool enable ) { mInputHandlersEnabled = enable; }
 
   public slots:
 
@@ -305,7 +326,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
      * If the value is 1, the average depth of all non void pixels is returned instead.
      */
-    double sampleDepthBuffer( const QImage &buffer, int px, int py );
+    double sampleDepthBuffer( int px, int py );
 
 #ifndef SIP_RUN
     //! Converts screen point to world position
@@ -329,6 +350,9 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
+    // -1 when unset
+    // TODO: Change to std::optional<double>
+    double mDepthBufferNonVoidAverage = -1;
 
     std::unique_ptr<Qt3DRender::QCamera> mCameraBefore;
 
@@ -347,6 +371,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
     Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
+    bool mInputHandlersEnabled = true;
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
     double mCameraMovementSpeed = 5.0;
@@ -362,6 +387,9 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     // 3D world's origin in map coordinates
     QgsVector3D mOrigin;
+
+    //! Did camera change since last frame? Need to know if we should emit cameraChanged().
+    bool mCameraChanged = false;
 
     // To test the cameracontroller
     friend class TestQgs3DRendering;

@@ -160,7 +160,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
               break;
             }
 
-            std::unique_ptr< QgsPoint > point = std::make_unique< QgsPoint >( x, y );
+            auto point = std::make_unique< QgsPoint >( x, y );
             if ( elementSize > 2 )
             {
               element = PySequence_GetItem( value, 2 );

@@ -49,7 +49,7 @@ void QgsFuzzifyRasterAlgorithmBase::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -89,7 +89,7 @@ QVariantMap QgsFuzzifyRasterAlgorithmBase::processAlgorithm( const QVariantMap &
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !createOptions.isEmpty() )
   {
@@ -195,7 +195,7 @@ void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr<QgsRasterBlock> fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
+    auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -321,7 +321,7 @@ void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr<QgsRasterBlock> fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
+    auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -442,7 +442,7 @@ void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr<QgsRasterBlock> fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
+    auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -546,7 +546,7 @@ void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr<QgsRasterBlock> fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
+    auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -650,7 +650,7 @@ void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsRasterDataProvider
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr<QgsRasterBlock> fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
+    auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -755,7 +755,7 @@ void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *de
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
-    std::unique_ptr<QgsRasterBlock> fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
+    auto fuzzifiedBlock = std::make_unique<QgsRasterBlock>( destinationProvider->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {

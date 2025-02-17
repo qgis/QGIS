@@ -95,6 +95,8 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbFeaturePaging->addItem( tr( "Disabled" ) );
   connect( cmbFeaturePaging, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged );
 
+  cbxWmsIgnoreReportedLayerExtents->setChecked( settingsIgnoreReportedLayerExtentsDefault->value() );
+
   if ( !connectionName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -156,8 +158,6 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     }
   }
 
-  cbxWmsIgnoreReportedLayerExtents->setChecked( settingsIgnoreReportedLayerExtentsDefault->value() );
-
   if ( !( flags & FlagShowTestConnection ) )
   {
     mTestConnectionButton->hide();
@@ -187,10 +187,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 {
   // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
-  cmbFeaturePaging->setEnabled( index == WFS_VERSION_MAX || index >= WFS_VERSION_2_0 );
-  const bool pagingNotDisabled = cmbFeaturePaging->currentIndex() != static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED );
-  lblPageSize->setEnabled( pagingNotDisabled && ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 ) );
-  txtPageSize->setEnabled( pagingNotDisabled && ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 ) );
+  const bool pagingOptionsEnabled = ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 );
+  cmbFeaturePaging->setEnabled( pagingOptionsEnabled );
+  lblPageSize->setEnabled( pagingOptionsEnabled );
+  txtPageSize->setEnabled( pagingOptionsEnabled );
   cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES_1_0 );
   cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
   wfsUseGml2EncodingForTransactions()->setEnabled( index == WFS_VERSION_1_1 );

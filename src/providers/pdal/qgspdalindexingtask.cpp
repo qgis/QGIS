@@ -88,7 +88,7 @@ bool QgsPdalIndexingTask::runUntwine()
 
   const std::vector<std::string> files = { mFile.toStdString() };
   untwineProcess.start( files, mOutputPath.toStdString(), options );
-  const int lastPercent = 0;
+  int lastPercent = 0;
   while ( true )
   {
     QThread::msleep( 100 );
@@ -103,6 +103,7 @@ bool QgsPdalIndexingTask::runUntwine()
       }
 #endif
       setProgress( percent );
+      lastPercent = percent;
     }
 
     if ( isCanceled() )

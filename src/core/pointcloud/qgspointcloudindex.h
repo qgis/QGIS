@@ -119,7 +119,7 @@ class CORE_EXPORT QgsPointCloudCacheKey
 {
   public:
     //! Ctor
-    QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri );
+    QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QString &subset, const QString &uri );
 
     bool operator==( const QgsPointCloudCacheKey &other ) const;
 
@@ -132,14 +132,14 @@ class CORE_EXPORT QgsPointCloudCacheKey
     //! Returns the key's QgsPointCloudRequest
     QgsPointCloudRequest request() const { return mRequest; }
 
-    //! Returns the key's QgsPointCloudExpression
-    QgsPointCloudExpression filterExpression() const { return mFilterExpression; }
+    //! Returns the key's subset string. This is used in the point cloud index as a filter expression
+    QString subsetString() const { return mSubsetString; }
 
   private:
     QgsPointCloudNodeId mNode;
     QString mUri;
     QgsPointCloudRequest mRequest;
-    QgsPointCloudExpression mFilterExpression;
+    QString mSubsetString;
 };
 
 //! Hash function for QgsPointCloudCacheKey
@@ -217,13 +217,6 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
     //! Constructs index
     explicit QgsAbstractPointCloudIndex();
     virtual ~QgsAbstractPointCloudIndex();
-
-    /**
-     * Returns a clone of the current point cloud index object
-     * \note It is the responsibility of the caller to handle the ownership and delete the object.
-     * \since QGIS 3.26
-     */
-    virtual std::unique_ptr<QgsAbstractPointCloudIndex> clone() const = 0;
 
     //! Loads the index from the file
     virtual void load( const QString &fileName ) = 0;
@@ -336,7 +329,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      * \returns true if the expression is parsed with no errors, false otherwise
      * \since QGIS 3.26
      */
-    bool setSubsetString( const QString &subset );
+    virtual bool setSubsetString( const QString &subset );
 
     /**
      * Returns the string used to define a subset of the point cloud.
@@ -344,7 +337,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      *
      * \since QGIS 3.26
      */
-    QString subsetString() const;
+    virtual QString subsetString() const;
 
     /**
      * Copies common properties to the \a destination index
@@ -421,6 +414,9 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     //! Checks if index is non-null
     operator bool() const;
+
+    //! Returns pointer to the implementation class
+    QgsAbstractPointCloudIndex *get() SIP_SKIP { return mIndex.get(); }
 
     /**
     * Loads the index from the file
@@ -643,12 +639,17 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     /**
      * Tries to store pending changes to the data provider.
+     * If errorMessage is not a null pointer, it will receive
+     * an error message in case the call failed.
      * \return TRUE on success, otherwise FALSE
      */
-    bool commitChanges();
+    bool commitChanges( QString *errorMessage SIP_OUT = nullptr );
 
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
     bool isModified() const;
+
+    //! Returns a list of node IDs that have been modified
+    QList<QgsPointCloudNodeId> updatedNodes() const;
 
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;

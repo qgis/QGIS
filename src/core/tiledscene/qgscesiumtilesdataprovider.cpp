@@ -195,7 +195,7 @@ QgsCesiumTiledSceneIndex::QgsCesiumTiledSceneIndex( const json &tileset, const Q
 
 std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis )
 {
-  std::unique_ptr< QgsTiledSceneTile > tile = std::make_unique< QgsTiledSceneTile >( mNextTileId++ );
+  auto tile = std::make_unique< QgsTiledSceneTile >( mNextTileId++ );
 
   tile->setBaseUrl( baseUrl );
   tile->setMetadata(
@@ -348,7 +348,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
 QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, const QUrl &baseUrl, QgsTiledSceneNode *parent, Qgis::Axis gltfUpAxis )
 {
   std::unique_ptr< QgsTiledSceneTile > tile = tileFromJson( json, baseUrl, parent ? parent->tile() : nullptr, gltfUpAxis );
-  std::unique_ptr< QgsTiledSceneNode > newNode = std::make_unique< QgsTiledSceneNode >( tile.release() );
+  auto newNode = std::make_unique< QgsTiledSceneNode >( tile.release() );
   mNodeMap.insert( newNode->tile()->id(), newNode.get() );
 
   if ( parent )

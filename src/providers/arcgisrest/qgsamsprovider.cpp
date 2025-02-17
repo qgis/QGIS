@@ -256,13 +256,24 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   if ( mServiceInfo.contains( QStringLiteral( "maxImageHeight" ) ) )
     mMaxImageHeight = mServiceInfo.value( QStringLiteral( "maxImageHeight" ) ).toInt();
 
-  QVariantList layerList = mServiceInfo["layers"].toList();
+  const QVariantList layerList = mServiceInfo["layers"].toList();
   std::function<void( int )> includeChildSublayers = [&]( int layerId ) {
-    if ( layerId < layerList.size() )
+    auto matchedLayer = std::find_if( layerList.begin(), layerList.end(), [layerId]( const QVariant &layerData ) {
+      const QVariant matchedLayerId = layerData.toMap().value( QStringLiteral( "id" ) );
+      bool ok = false;
+      return matchedLayerId.isValid() && matchedLayerId.toInt( &ok ) == layerId && ok;
+    } );
+
+    if ( matchedLayer != layerList.end() )
     {
-      QVariantList subLayersList = layerList[layerId].toMap()["subLayerIds"].toList();
+      const QVariantList subLayersList = matchedLayer->toMap()["subLayerIds"].toList();
       for ( const QVariant &sublayer : subLayersList )
       {
+        // avoid possible infinite recursion on bad sources with parent layer ID included in sub layer IDs
+        bool ok = false;
+        if ( sublayer.toInt( &ok ) == layerId && ok )
+          continue;
+
         mSubLayers.append( sublayer.toString() );
         mSubLayerVisibilities.append( true );
         includeChildSublayers( sublayer.toInt() );
@@ -978,6 +989,7 @@ QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString 
       QgsMessageLog::logMessage( error, tr( "Network" ) );
       continue;
     }
+    request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), mTileReqNo );
@@ -1054,6 +1066,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
         // mErrors.append( error );
         QgsMessageLog::logMessage( error, tr( "Network" ) );
       }
+      request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
       request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileReqNo ), tileReqNo );

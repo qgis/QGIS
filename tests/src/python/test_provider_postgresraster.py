@@ -1012,6 +1012,168 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertEqual(dp.xBlockSize(), 2)
         self.assertEqual(dp.yBlockSize(), 2)
 
+    def testStyle(self):
+        rl = QgsRasterLayer(
+            self.dbconn
+            + ' sslmode=disable srid=3035  table="public"."raster_tiled_3035" sql=',
+            "test",
+            "postgresraster",
+        )
+
+        self.assertTrue(rl.isValid())
+
+        self.assertEqual(
+            int(rl.dataProvider().styleStorageCapabilities())
+            & Qgis.ProviderStyleStorageCapability.LoadFromDatabase,
+            Qgis.ProviderStyleStorageCapability.LoadFromDatabase,
+        )
+        self.assertEqual(
+            int(rl.dataProvider().styleStorageCapabilities())
+            & Qgis.ProviderStyleStorageCapability.SaveToDatabase,
+            Qgis.ProviderStyleStorageCapability.SaveToDatabase,
+        )
+        self.assertEqual(
+            int(rl.dataProvider().styleStorageCapabilities())
+            & Qgis.ProviderStyleStorageCapability.DeleteFromDatabase,
+            Qgis.ProviderStyleStorageCapability.DeleteFromDatabase,
+        )
+
+        # not style yet for layer
+        res, err = QgsProviderRegistry.instance().styleExists(
+            "postgresraster", rl.source(), ""
+        )
+        self.assertFalse(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = rl.listStylesInDatabase()
+        self.assertEqual(related_count, -1)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertFalse(errmsg)
+
+        # Save style twice, one as as default
+        errmsg = rl.saveStyleToDatabase("related raster style", "test style", False, "")
+        self.assertEqual(errmsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = rl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(idlist, ["1"])
+        self.assertEqual(namelist, ["related raster style"])
+        self.assertEqual(desclist, ["test style"])
+        self.assertFalse(errmsg)
+
+        errmsg = rl.saveStyleToDatabase(
+            "related raster style default", "default test style", True, ""
+        )
+        self.assertEqual(errmsg, "")
+
+        # check style exist
+        res, err = QgsProviderRegistry.instance().styleExists(
+            "postgresraster", rl.source(), "related raster style default"
+        )
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        qml, errmsg = rl.getStyleFromDatabase("2")
+        self.assertTrue(qml)
+        self.assertEqual(errmsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = rl.listStylesInDatabase()
+        self.assertEqual(related_count, 2)
+        self.assertEqual(idlist, ["2", "1"])
+        self.assertEqual(
+            namelist, ["related raster style default", "related raster style"]
+        )
+        self.assertEqual(desclist, ["default test style", "test style"])
+        self.assertFalse(errmsg)
+
+        # Remove these style
+        res, errmsg = rl.deleteStyleFromDatabase("1")
+        self.assertTrue(res)
+        self.assertFalse(errmsg)
+
+        related_count, idlist, namelist, desclist, errmsg = rl.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(idlist, ["2"])
+        self.assertEqual(namelist, ["related raster style default"])
+        self.assertEqual(desclist, ["default test style"])
+        self.assertFalse(errmsg)
+
+        # Raster layer with defined column
+        rl_1 = QgsRasterLayer(
+            self.dbconn
+            + ' sslmode=disable srid=3035  table="public"."raster_tiled_3035" (rast) sql=',
+            "test",
+            "postgresraster",
+        )
+
+        self.assertTrue(rl_1.isValid())
+
+        # not style yet for layer
+        res, err = QgsProviderRegistry.instance().styleExists(
+            "postgresraster", rl_1.source(), ""
+        )
+        self.assertFalse(res)
+        self.assertFalse(err)
+
+        related_count, idlist, namelist, desclist, errmsg = rl_1.listStylesInDatabase()
+        self.assertEqual(related_count, 0)
+        self.assertEqual(idlist, [])
+        self.assertEqual(namelist, [])
+        self.assertEqual(desclist, [])
+        self.assertFalse(errmsg)
+
+        # Save style twice, one as as default
+        errmsg = rl_1.saveStyleToDatabase(
+            "related raster style", "test style", False, ""
+        )
+        self.assertEqual(errmsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = rl_1.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(idlist, ["3"])
+        self.assertEqual(namelist, ["related raster style"])
+        self.assertEqual(desclist, ["test style"])
+        self.assertFalse(errmsg)
+
+        errmsg = rl_1.saveStyleToDatabase(
+            "related raster style default", "default test style", True, ""
+        )
+        self.assertEqual(errmsg, "")
+
+        # check style exist
+        res, err = QgsProviderRegistry.instance().styleExists(
+            "postgresraster", rl_1.source(), "related raster style default"
+        )
+        self.assertTrue(res)
+        self.assertFalse(err)
+
+        qml, errmsg = rl_1.getStyleFromDatabase("3")
+        self.assertTrue(qml)
+        self.assertEqual(errmsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = rl_1.listStylesInDatabase()
+        self.assertEqual(related_count, 2)
+        self.assertEqual(idlist, ["4", "3"])
+        self.assertEqual(
+            namelist, ["related raster style default", "related raster style"]
+        )
+        self.assertEqual(desclist, ["default test style", "test style"])
+        self.assertFalse(errmsg)
+
+        # Remove these style
+        res, errmsg = rl_1.deleteStyleFromDatabase("3")
+        self.assertTrue(res)
+        self.assertFalse(errmsg)
+
+        related_count, idlist, namelist, desclist, errmsg = rl_1.listStylesInDatabase()
+        self.assertEqual(related_count, 1)
+        self.assertEqual(idlist, ["4"])
+        self.assertEqual(namelist, ["related raster style default"])
+        self.assertEqual(desclist, ["default test style"])
+        self.assertFalse(errmsg)
+
 
 if __name__ == "__main__":
     unittest.main()

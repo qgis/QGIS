@@ -344,8 +344,13 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "GPKG" ) ) )
       {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+        sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg *.gpkg.zip" ) );
+        sExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "gpkg.zip" );
+#else
         sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg" ) );
         sExtensions << QStringLiteral( "gpkg" );
+#endif
       }
       else if ( driverName.startsWith( QLatin1String( "GRASS" ) ) )
       {
@@ -916,6 +921,11 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     else if ( fields[0] == QLatin1String( "DateTime" ) )
     {
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDateTime );
+    }
+    else if ( fields[0] == QLatin1String( "bool" ) )
+    {
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTInteger );
+      OGR_Fld_SetSubType( field, OFSTBoolean );
     }
     else
     {
@@ -2653,7 +2663,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     QgsDebugMsgLevel( QStringLiteral( "Unknown geometry type, count features for each geometry type" ), 2 );
     // Add virtual sublayers for supported geometry types if layer type is unknown
     // Count features for geometry types
-    QMap<OGRwkbGeometryType, int64_t> fCount;
+    QMap<OGRwkbGeometryType, size_t> fCount;
     QSet<OGRwkbGeometryType> fHasZ;
     // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
 
@@ -2697,7 +2707,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
             if ( gType == wkbTINZ )
               gType = wkbMultiPolygon25D;
             bool hasZ = wkbHasZ( gType );
-            gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+            gType = wkbFlatten( gType );
             fCount[gType] = fCount.value( gType ) + pasCounter[i].nCount;
             if ( hasZ )
               fHasZ.insert( gType );
@@ -2718,7 +2728,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         if ( gType != wkbNone )
         {
           bool hasZ = wkbHasZ( gType );
-          gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+          gType = wkbFlatten( gType );
           fCount[gType] = fCount.value( gType ) + 1;
           if ( hasZ )
             fHasZ.insert( gType );
@@ -2744,40 +2754,120 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       }
     }
 
-    // List TIN and PolyhedralSurface as Polygon
-    if ( fCount.contains( wkbTIN ) )
+    QMap<Qgis::GeometryType, size_t> baseTypeCount;
+    baseTypeCount[Qgis::GeometryType::Point] = 0;
+    baseTypeCount[Qgis::GeometryType::Line] = 0;
+    baseTypeCount[Qgis::GeometryType::Polygon] = 0;
+
+    OGRwkbGeometryType polyBaseType { wkbPolygon };
+    OGRwkbGeometryType lineBaseType { wkbLineString };
+    OGRwkbGeometryType pointBaseType { wkbPoint };
+
+    // Last type in the list is the winner
+    const static QList<OGRwkbGeometryType> pointHierarchy { wkbPoint, wkbMultiPoint };
+    const static QList<OGRwkbGeometryType> lineHierarchy { wkbLineString, wkbCircularString, wkbMultiLineString, wkbCompoundCurve, wkbMultiCurve };
+    const static QList<OGRwkbGeometryType> polyHierarchy { wkbPolyhedralSurface, wkbTIN, wkbPolygon, wkbCurvePolygon, wkbMultiPolygon, wkbMultiSurface };
+
+    for ( const auto t : std::as_const( pointHierarchy ) )
     {
-      fCount[wkbPolygon] = fCount.value( wkbPolygon ) + fCount[wkbTIN];
-      fCount.remove( wkbTIN );
+      if ( fCount.contains( t ) )
+      {
+        baseTypeCount[Qgis::GeometryType::Point] += fCount.value( t );
+        pointBaseType = t;
+        fCount.remove( t );
+      }
     }
-    if ( fCount.contains( wkbPolyhedralSurface ) )
+
+    // For lines use a three-step approach
+    // 1. First collapse linestring and circularstring into compoundcurve
+    if ( fCount.contains( wkbLineString ) && fCount.contains( wkbCircularString ) )
     {
-      fCount[wkbPolygon] = fCount.value( wkbPolygon ) + fCount[wkbPolyhedralSurface];
-      fCount.remove( wkbPolyhedralSurface );
-    }
-    // When there are CurvePolygons, promote Polygons
-    if ( fCount.contains( wkbPolygon ) && fCount.contains( wkbCurvePolygon ) )
-    {
-      fCount[wkbCurvePolygon] += fCount.value( wkbPolygon );
-      fCount.remove( wkbPolygon );
-    }
-    // When there are CompoundCurves, promote LineStrings and CircularStrings
-    if ( fCount.contains( wkbLineString ) && fCount.contains( wkbCompoundCurve ) )
-    {
-      fCount[wkbCompoundCurve] += fCount.value( wkbLineString );
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbLineString );
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbCircularString );
+      lineBaseType = wkbCompoundCurve;
+      if ( ! fCount.contains( wkbCompoundCurve ) )
+      {
+        fCount[wkbCompoundCurve] = baseTypeCount[Qgis::GeometryType::Line];
+        baseTypeCount[Qgis::GeometryType::Line] = 0;
+      }
       fCount.remove( wkbLineString );
-    }
-    if ( fCount.contains( wkbCircularString ) && fCount.contains( wkbCompoundCurve ) )
-    {
-      fCount[wkbCompoundCurve] += fCount.value( wkbCircularString );
       fCount.remove( wkbCircularString );
+    }
+
+    // 2. Then collapse multilinestring and compoundcurve into multicurve
+    if ( fCount.contains( wkbMultiLineString ) && fCount.contains( wkbCompoundCurve ) )
+    {
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbMultiLineString );
+      baseTypeCount[Qgis::GeometryType::Line] += fCount.value( wkbCompoundCurve );
+      lineBaseType = wkbMultiCurve;
+      if ( ! fCount.contains( wkbMultiCurve ) )
+      {
+        fCount[wkbMultiCurve] = baseTypeCount[Qgis::GeometryType::Line];
+        baseTypeCount[Qgis::GeometryType::Line] = 0;
+      }
+      fCount.remove( wkbMultiLineString );
+      fCount.remove( wkbCompoundCurve );
+    }
+
+    // 3. Then follow the hierarchy
+    for ( const auto t : std::as_const( lineHierarchy ) )
+    {
+      if ( fCount.contains( t ) )
+      {
+        baseTypeCount[Qgis::GeometryType::Line] += fCount.value( t );
+        lineBaseType = t;
+        fCount.remove( t );
+      }
+    }
+
+
+    // For polygons use a two-step approach:
+    // 1. First collapse multipolygon and curvepolygon into multisurface
+    if ( fCount.contains( wkbMultiPolygon ) && fCount.contains( wkbCurvePolygon ) )
+    {
+      baseTypeCount[Qgis::GeometryType::Polygon] += fCount.value( wkbMultiPolygon );
+      baseTypeCount[Qgis::GeometryType::Polygon] += fCount.value( wkbMultiSurface );
+      polyBaseType = wkbMultiSurface;
+      if ( ! fCount.contains( wkbMultiSurface ) )
+      {
+        fCount[wkbMultiSurface] = baseTypeCount[Qgis::GeometryType::Polygon];
+        baseTypeCount[Qgis::GeometryType::Polygon] = 0;
+      }
+      fCount.remove( wkbMultiPolygon );
+      fCount.remove( wkbCurvePolygon );
+    }
+
+    // 2. Then collapse following the hierarchy
+    for ( const auto t : std::as_const( polyHierarchy ) )
+    {
+      if ( fCount.contains( t ) )
+      {
+        baseTypeCount[Qgis::GeometryType::Polygon] += fCount.value( t );
+        polyBaseType = t;
+        fCount.remove( t );
+      }
+    }
+
+    if ( baseTypeCount[Qgis::GeometryType::Point] > 0 )
+    {
+      fCount[pointBaseType] = baseTypeCount[Qgis::GeometryType::Point];
+    }
+
+    if ( baseTypeCount[Qgis::GeometryType::Line] > 0 )
+    {
+      fCount[lineBaseType] = baseTypeCount[Qgis::GeometryType::Line];
+    }
+
+    if ( baseTypeCount[Qgis::GeometryType::Polygon] > 0 )
+    {
+      fCount[polyBaseType] = baseTypeCount[Qgis::GeometryType::Polygon];
     }
 
     QList< QgsProviderSublayerDetails > res;
     res.reserve( fCount.size() );
 
     bool bIs25D = wkbHasZ( layerGeomType );
-    QMap<OGRwkbGeometryType, int64_t>::const_iterator countIt = fCount.constBegin();
+    QMap<OGRwkbGeometryType, size_t>::const_iterator countIt = fCount.constBegin();
     for ( ; countIt != fCount.constEnd(); ++countIt )
     {
       if ( feedback && feedback->isCanceled() )

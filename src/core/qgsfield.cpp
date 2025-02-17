@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsvariantutils.h"
+#include "qgsunsetattributevalue.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -479,6 +480,11 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   if ( QgsVariantUtils::isNull( v ) )
   {
     v.convert( d->type );
+    return true;
+  }
+
+  if ( v.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+  {
     return true;
   }
 

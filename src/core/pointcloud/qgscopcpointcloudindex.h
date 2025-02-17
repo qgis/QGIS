@@ -46,8 +46,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex();
 
-    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
-
     void load( const QString &fileName ) override;
 
     bool hasNode( const QgsPointCloudNodeId &n ) const override;
@@ -78,12 +76,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     QgsPointCloudStatistics metadataStatistics() const override;
 
     /**
-     * Copies common properties to the \a destination index
-     * \since QGIS 3.26
-     */
-    void copyCommonProperties( QgsCopcPointCloudIndex *destination ) const;
-
-    /**
      * Returns one datapoint, "CopcGpsTimeFlag": The gps time flag from global_encoding field in LAS header,
      * 0 indicates GPS week time (seconds passed since the beginning of the week)
      * 1 indicates GPS adjusted time, which is seconds passed since the GPS base time minus 1e9
@@ -109,6 +101,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
 
     QByteArray fetchCopcStatisticsEvlrData() const;
 
+    void reset();
+
     bool mIsValid = false;
     Qgis::PointCloudAccessType mAccessType = Qgis::PointCloudAccessType::Local;
     mutable std::ifstream mCopcFile;
@@ -119,6 +113,10 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     mutable std::optional<QgsPointCloudStatistics> mStatistics;
 
     std::unique_ptr<QgsLazInfo> mLazInfo = nullptr;
+
+    friend class QgsPointCloudLayerEditUtils;
+    friend class QgsPointCloudEditingIndex;
+    friend class QgsPointCloudLayerUndoCommandChangeAttribute;
 };
 
 ///@endcond

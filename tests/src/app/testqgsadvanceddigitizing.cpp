@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgstest.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"

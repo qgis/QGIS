@@ -174,7 +174,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(
             vl.dataProvider().subLayers()[0],
             QgsDataProvider.SUBLAYER_SEPARATOR.join(
-                ["0", "testMixOfPolygonCurvePolygon", "4", "CurvePolygon", "", ""]
+                ["0", "testMixOfPolygonCurvePolygon", "4", "MultiSurface", "", ""]
             ),
         )
 
@@ -188,7 +188,6 @@ class PyQgsOGRProvider(QgisTestCase):
             f.write('1,"LINESTRING(0 0,0 1)"\n')
             f.write('2,"COMPOUNDCURVE((0 0,0 1))"\n')
             f.write('3,"MULTILINESTRING((0 0,0 1))"\n')
-            f.write('4,"MULTICURVE((0 0,0 1))"\n')
             f.write('5,"CIRCULARSTRING(0 0,1 1,2 0)"\n')
 
         vl = QgsVectorLayer(f"{datasource}|layerid=0", "test", "ogr")
@@ -197,7 +196,146 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(
             vl.dataProvider().subLayers()[0],
             QgsDataProvider.SUBLAYER_SEPARATOR.join(
-                ["0", "testMixOfLineStringCompoundCurve", "5", "CompoundCurve", "", ""]
+                ["0", "testMixOfLineStringCompoundCurve", "4", "MultiCurve", "", ""]
+            ),
+        )
+
+    def testMixOfCurvePolygonAndMultiPolygon(self):
+
+        datasource = os.path.join(
+            self.basetestpath, "testMixOfCurvePolygonAndMultiPolygon.csv"
+        )
+        with open(datasource, "w") as f:
+            f.write("id,WKT\n")
+            f.write('1,"CURVEPOLYGON((0 0,0 1,1 1,0 0))"\n')
+            f.write('2,"MULTIPOLYGON(((0 0,0 1,1 1,0 0)))"\n')
+
+        vl = QgsVectorLayer(f"{datasource}|layerid=0", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        self.assertEqual(
+            vl.dataProvider().subLayers()[0],
+            QgsDataProvider.SUBLAYER_SEPARATOR.join(
+                [
+                    "0",
+                    "testMixOfCurvePolygonAndMultiPolygon",
+                    "2",
+                    "MultiSurface",
+                    "",
+                    "",
+                ]
+            ),
+        )
+
+    def testMixOfLineStringAndCircularString(self):
+
+        datasource = os.path.join(
+            self.basetestpath, "testMixOfLineStringAndCircularString.csv"
+        )
+        with open(datasource, "w") as f:
+            f.write("id,WKT\n")
+            f.write('1,"LINESTRING(0 0,0 1)"\n')
+            f.write('2,"CIRCULARSTRING(0 0,1 1,2 0)"\n')
+
+        vl = QgsVectorLayer(f"{datasource}|layerid=0", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        self.assertEqual(
+            vl.dataProvider().subLayers()[0],
+            QgsDataProvider.SUBLAYER_SEPARATOR.join(
+                [
+                    "0",
+                    "testMixOfLineStringAndCircularString",
+                    "2",
+                    "CompoundCurve",
+                    "",
+                    "",
+                ]
+            ),
+        )
+
+    def testMixOfLineStringAndCircularStringAndCompoundCurve(self):
+
+        datasource = os.path.join(
+            self.basetestpath,
+            "testMixOfLineStringAndCircularStringAndCompoundCurve.csv",
+        )
+        with open(datasource, "w") as f:
+            f.write("id,WKT\n")
+            f.write('1,"LINESTRING(0 0,0 1)"\n')
+            f.write('2,"CIRCULARSTRING(0 0,1 1,2 0)"\n')
+            f.write('3,"COMPOUNDCURVE((0 0,0 1))"\n')
+
+        vl = QgsVectorLayer(f"{datasource}|layerid=0", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        self.assertEqual(
+            vl.dataProvider().subLayers()[0],
+            QgsDataProvider.SUBLAYER_SEPARATOR.join(
+                [
+                    "0",
+                    "testMixOfLineStringAndCircularStringAndCompoundCurve",
+                    "3",
+                    "CompoundCurve",
+                    "",
+                    "",
+                ]
+            ),
+        )
+
+    def testMixOfMultiLineStringAndCompoundCurve(self):
+
+        datasource = os.path.join(
+            self.basetestpath, "testMixOfMultiLineStringAndCompoundCurve.csv"
+        )
+        with open(datasource, "w") as f:
+            f.write("id,WKT\n")
+            f.write('1,"MULTILINESTRING((0 0,0 1))"\n')
+            f.write('2,"COMPOUNDCURVE((0 0,0 1))"\n')
+
+        vl = QgsVectorLayer(f"{datasource}|layerid=0", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        self.assertEqual(
+            vl.dataProvider().subLayers()[0],
+            QgsDataProvider.SUBLAYER_SEPARATOR.join(
+                [
+                    "0",
+                    "testMixOfMultiLineStringAndCompoundCurve",
+                    "2",
+                    "MultiCurve",
+                    "",
+                    "",
+                ]
+            ),
+        )
+
+    def testMixOfMultiLineStringAndCompoundCurveAndMultiCurve(self):
+
+        datasource = os.path.join(
+            self.basetestpath,
+            "testMixOfMultiLineStringAndCompoundCurveAndMultiCurve.csv",
+        )
+        with open(datasource, "w") as f:
+            f.write("id,WKT\n")
+            f.write('1,"MULTILINESTRING((0 0,0 1))"\n')
+            f.write('2,"COMPOUNDCURVE((0 0,0 1))"\n')
+            f.write('3,"MULTICURVE((0 0,0 1))"\n')
+
+        vl = QgsVectorLayer(f"{datasource}|layerid=0", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        self.assertEqual(
+            vl.dataProvider().subLayers()[0],
+            QgsDataProvider.SUBLAYER_SEPARATOR.join(
+                [
+                    "0",
+                    "testMixOfMultiLineStringAndCompoundCurveAndMultiCurve",
+                    "3",
+                    "MultiCurve",
+                    "",
+                    "",
+                ]
             ),
         )
 
@@ -2535,11 +2673,11 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(
             res[0].uri(),
             TEST_DATA_DIR
-            + "/multipatch.shp|geometrytype=Polygon25D|uniqueGeometryType=yes",
+            + "/multipatch.shp|geometrytype=MultiPolygon25D|uniqueGeometryType=yes",
         )
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.MultiPolygonZ)
         self.assertEqual(res[0].geometryColumnName(), "")
         self.assertEqual(res[0].driverName(), "ESRI Shapefile")
 
@@ -3126,6 +3264,19 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[0].skippedContainerScan())
+
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "mapinfo", "multipoly.tab"),
+            Qgis.SublayerQueryFlag.ResolveGeometryType,
+        )
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.MultiPolygon)
+        layer = res[0].toLayer(options)
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiPolygon)
+        # Check feature geometries
+        for feature in layer.getFeatures():
+            self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.MultiPolygon)
 
     @unittest.skipIf(
         int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 4, 0),

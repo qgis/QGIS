@@ -247,7 +247,7 @@ void QgsConvertGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QgsApplication::gpsBabelFormatRegistry()->importFileFilter() + QStringLiteral( ";;%1" ).arg( QObject::tr( "All files (*.*)" ) ) ) );
 
-  std::unique_ptr<QgsProcessingParameterString> formatParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FORMAT" ), QObject::tr( "Format" ) );
+  auto formatParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FORMAT" ), QObject::tr( "Format" ) );
 
   QStringList formats;
   const QStringList formatNames = QgsApplication::gpsBabelFormatRegistry()->importFormatNames();
@@ -439,7 +439,7 @@ QString QgsDownloadGpsDataAlgorithm::groupId() const
 
 void QgsDownloadGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterString> deviceParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DEVICE" ), QObject::tr( "Device" ) );
+  auto deviceParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DEVICE" ), QObject::tr( "Device" ) );
 
   QStringList deviceNames = QgsApplication::gpsBabelFormatRegistry()->deviceNames();
   std::sort( deviceNames.begin(), deviceNames.end(), []( const QString &a, const QString &b ) {
@@ -452,7 +452,7 @@ void QgsDownloadGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 
 
   const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
-  std::unique_ptr<QgsProcessingParameterString> portParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "PORT" ), QObject::tr( "Port" ) );
+  auto portParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "PORT" ), QObject::tr( "Port" ) );
 
   QStringList ports;
   for ( auto it = devices.constBegin(); it != devices.constEnd(); ++it )
@@ -658,7 +658,7 @@ void QgsUploadGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input file" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "GPX files" ) + QStringLiteral( " (*.gpx *.GPX)" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterString> deviceParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DEVICE" ), QObject::tr( "Device" ) );
+  auto deviceParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DEVICE" ), QObject::tr( "Device" ) );
 
   QStringList deviceNames = QgsApplication::gpsBabelFormatRegistry()->deviceNames();
   std::sort( deviceNames.begin(), deviceNames.end(), []( const QString &a, const QString &b ) {
@@ -670,7 +670,7 @@ void QgsUploadGpsDataAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( deviceParam.release() );
 
   const QList<QPair<QString, QString>> devices = QgsGpsDetector::availablePorts() << QPair<QString, QString>( QStringLiteral( "usb:" ), QStringLiteral( "usb:" ) );
-  std::unique_ptr<QgsProcessingParameterString> portParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "PORT" ), QObject::tr( "Port" ) );
+  auto portParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "PORT" ), QObject::tr( "Port" ) );
 
   QStringList ports;
   for ( auto it = devices.constBegin(); it != devices.constEnd(); ++it )

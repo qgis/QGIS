@@ -86,10 +86,10 @@ void TestQgsStac::testParseLocalCatalog()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "catalog.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( url.toString() );
+  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
+  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj.get() );
 
   QVERIFY( cat );
   QCOMPARE( cat->id(), QLatin1String( "examples" ) );
@@ -108,18 +108,16 @@ void TestQgsStac::testParseLocalCatalog()
   QCOMPARE( links.at( 3 ).href(), QStringLiteral( "%1collection-only/collection-with-schemas.json" ).arg( basePath ) );
   QCOMPARE( links.at( 4 ).href(), QStringLiteral( "%1collectionless-item.json" ).arg( basePath ) );
   QCOMPARE( links.at( 5 ).href(), QStringLiteral( "https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/catalog.json" ) );
-
-  delete cat;
 }
 
 void TestQgsStac::testParseLocalCollection()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collection.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( url.toString() );
+  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
-  QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj );
+  QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj.get() );
 
   QVERIFY( col );
   QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );
@@ -158,18 +156,16 @@ void TestQgsStac::testParseLocalCollection()
   QVariantMap sum( col->summaries() );
   QCOMPARE( sum.size(), 9 );
   QCOMPARE( sum.value( QStringLiteral( "platform" ) ).toStringList(), QStringList() << QLatin1String( "cool_sat1" ) << QLatin1String( "cool_sat2" ) );
-
-  delete col;
 }
 
 void TestQgsStac::testParseLocalItem()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "core-item.json" ) ) );
   QgsStacController c;
-  QgsStacObject *obj = c.fetchStacObject( url.toString() );
+  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Item );
-  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj );
+  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj.get() );
 
   QVERIFY( item );
   QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
@@ -221,15 +217,13 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( !uri.isValid() );
   QVERIFY( uri.uri.isEmpty() );
   QVERIFY( uri.name.isEmpty() );
-
-  delete item;
 }
 
 void TestQgsStac::testParseLocalItemCollection()
 {
   const QString fileName = mDataDir + QStringLiteral( "itemcollection-sample-full.json" );
   QgsStacController c;
-  QgsStacItemCollection *ic = c.fetchItemCollection( QStringLiteral( "file://%1" ).arg( fileName ) );
+  std::unique_ptr< QgsStacItemCollection > ic = c.fetchItemCollection( QStringLiteral( "file://%1" ).arg( fileName ) );
   QVERIFY( ic );
   QCOMPARE( ic->numberReturned(), 1 );
   QCOMPARE( ic->numberMatched(), 10 );
@@ -242,15 +236,13 @@ void TestQgsStac::testParseLocalItemCollection()
   QCOMPARE( items.first()->links().size(), 3 );
   QCOMPARE( items.first()->stacExtensions().size(), 0 );
   QCOMPARE( items.first()->assets().size(), 2 );
-
-  delete ic;
 }
 
 void TestQgsStac::testParseLocalCollections()
 {
   const QString fileName = mDataDir + QStringLiteral( "collectioncollection-sample-full.json" );
   QgsStacController c;
-  QgsStacCollections *cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
+  std::unique_ptr< QgsStacCollections > cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
   QVERIFY( cols );
   QCOMPARE( cols->numberReturned(), 1 );
   QCOMPARE( cols->numberMatched(), 11 );
@@ -266,8 +258,6 @@ void TestQgsStac::testParseLocalCollections()
   QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( col->links().size(), 3 );
   QCOMPARE( col->stacExtensions().size(), 0 );
-
-  delete cols;
 }
 
 void TestQgsStac::testFetchStacObjectAsync()
@@ -286,14 +276,13 @@ void TestQgsStac::testFetchStacObjectAsync()
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), id );
   QVERIFY( spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QgsStacObject *obj = c.takeStacObject( id );
+  std::unique_ptr< QgsStacObject > obj = c.takeStacObject( id );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
-  delete obj;
 
   // cannot take same id twice
   obj = c.takeStacObject( id );
-  QVERIFY( obj == nullptr );
+  QVERIFY( !obj );
 
 
   // Collection
@@ -311,7 +300,6 @@ void TestQgsStac::testFetchStacObjectAsync()
   obj = c.takeStacObject( id );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
-  delete obj;
 
   // cannot take same id twice
   obj = c.takeStacObject( id );
@@ -333,11 +321,10 @@ void TestQgsStac::testFetchStacObjectAsync()
   obj = c.takeStacObject( id );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Item );
-  delete obj;
 
   // cannot take same id twice
   obj = c.takeStacObject( id );
-  QVERIFY( obj == nullptr );
+  QVERIFY( !obj );
 }
 
 void TestQgsStac::testFetchItemCollectionAsync()
@@ -356,7 +343,7 @@ void TestQgsStac::testFetchItemCollectionAsync()
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), id );
   QVERIFY( spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QgsStacItemCollection *ic = c.takeItemCollection( id );
+  std::unique_ptr< QgsStacItemCollection > ic = c.takeItemCollection( id );
   QVERIFY( ic );
   QCOMPARE( ic->numberReturned(), 1 );
   QCOMPARE( ic->numberMatched(), 10 );
@@ -369,11 +356,10 @@ void TestQgsStac::testFetchItemCollectionAsync()
   QCOMPARE( items.first()->links().size(), 3 );
   QCOMPARE( items.first()->stacExtensions().size(), 0 );
   QCOMPARE( items.first()->assets().size(), 2 );
-  delete ic;
 
   // cannot take same id twice
   ic = c.takeItemCollection( id );
-  QVERIFY( ic == nullptr );
+  QVERIFY( !ic );
 }
 
 void TestQgsStac::testFetchCollectionsAsync()
@@ -392,7 +378,7 @@ void TestQgsStac::testFetchCollectionsAsync()
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), id );
   QVERIFY( spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QgsStacCollections *cols = c.takeCollections( id );
+  std::unique_ptr< QgsStacCollections > cols = c.takeCollections( id );
   QVERIFY( cols );
   QCOMPARE( cols->numberReturned(), 1 );
   QCOMPARE( cols->numberMatched(), 11 );
@@ -408,8 +394,6 @@ void TestQgsStac::testFetchCollectionsAsync()
   QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
   QCOMPARE( col->links().size(), 3 );
   QCOMPARE( col->stacExtensions().size(), 0 );
-
-  delete cols;
 }
 
 void TestQgsStac::testFetchStacObjectAsyncInvalid()
@@ -429,7 +413,7 @@ void TestQgsStac::testFetchStacObjectAsyncInvalid()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( c.takeStacObject( id ) == nullptr );
+  QVERIFY( !c.takeStacObject( id ) );
 }
 
 void TestQgsStac::testFetchItemCollectionAsyncInvalid()
@@ -449,7 +433,7 @@ void TestQgsStac::testFetchItemCollectionAsyncInvalid()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( c.takeItemCollection( id ) == nullptr );
+  QVERIFY( !c.takeItemCollection( id ) );
 }
 
 void TestQgsStac::testFetchCollectionsAsyncInvalid()
@@ -469,7 +453,7 @@ void TestQgsStac::testFetchCollectionsAsyncInvalid()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( c.takeCollections( id ) == nullptr );
+  QVERIFY( !c.takeCollections( id ) );
 }
 
 void TestQgsStac::testFetchStacObjectAsyncUnavailable()
@@ -489,7 +473,7 @@ void TestQgsStac::testFetchStacObjectAsyncUnavailable()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( c.takeStacObject( id ) == nullptr );
+  QVERIFY( !c.takeStacObject( id ) );
 }
 
 void TestQgsStac::testFetchItemCollectionAsyncUnavailable()
@@ -509,7 +493,7 @@ void TestQgsStac::testFetchItemCollectionAsyncUnavailable()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( c.takeItemCollection( id ) == nullptr );
+  QVERIFY( !c.takeItemCollection( id ) );
 }
 
 void TestQgsStac::testFetchCollectionsAsyncUnavailable()
@@ -529,7 +513,7 @@ void TestQgsStac::testFetchCollectionsAsyncUnavailable()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( c.takeCollections( id ) == nullptr );
+  QVERIFY( !c.takeCollections( id ) );
 }
 
 QGSTEST_MAIN( TestQgsStac )

@@ -376,7 +376,7 @@ void TestQgsTaskManager::cleanup()
 
 void TestQgsTaskManager::task()
 {
-  std::unique_ptr<TestTask> task( new TestTask( QStringLiteral( "test_task_desc" ) ) );
+  auto task = std::make_unique<TestTask>( QStringLiteral( "test_task_desc" ) );
   QCOMPARE( task->status(), QgsTask::Queued );
   QCOMPARE( task->description(), QStringLiteral( "test_task_desc" ) );
   QVERIFY( !task->isActive() );
@@ -394,7 +394,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
 
   //test that calling stopped sets correct state
-  std::unique_ptr<FailTask> failTask( new FailTask( QStringLiteral( "task_fail" ) ) );
+  auto failTask = std::make_unique<FailTask>( QStringLiteral( "task_fail" ) );
   QSignalSpy stoppedSpy( failTask.get(), &QgsTask::taskTerminated );
   QSignalSpy statusSpy2( failTask.get(), &QgsTask::statusChanged );
   failTask->start();

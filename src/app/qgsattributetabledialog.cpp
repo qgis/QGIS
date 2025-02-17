@@ -561,7 +561,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     //go through all the features and change the new attributes
     QgsFeatureIterator fit = layer->getFeatures( request );
 
-    std::unique_ptr<QgsScopedProxyProgressTask> task = std::make_unique<QgsScopedProxyProgressTask>( tr( "Calculating field" ) );
+    auto task = std::make_unique<QgsScopedProxyProgressTask>( tr( "Calculating field" ) );
 
     long long count = !filteredIds.isEmpty() ? filteredIds.size() : layer->featureCount();
     long long i = 0;

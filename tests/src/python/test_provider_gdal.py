@@ -27,6 +27,7 @@ import unittest
 from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
+from raster_provider_test_base import RasterProviderTestCase
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -36,7 +37,12 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return (maj) * 1000000 + (min) * 10000 + (rev) * 100
 
 
-class PyQgsGdalProvider(QgisTestCase):
+class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
+
+    def get_layer(self, test_id: str) -> QgsRasterLayer:
+        return QgsRasterLayer(
+            self.get_test_data_path("landsat_4326.tif").as_posix(), test_id
+        )
 
     def checkBlockContents(self, block, expected):
         res = []

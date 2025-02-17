@@ -53,7 +53,7 @@ void QgsAppQueryLogger::queryLogged( const QgsDatabaseQueryLogEntry &query )
 
   beginInsertRows( QModelIndex(), childCount, childCount );
 
-  std::unique_ptr<QgsDatabaseQueryLoggerQueryGroup> group = std::make_unique<QgsDatabaseQueryLoggerQueryGroup>( query );
+  auto group = std::make_unique<QgsDatabaseQueryLoggerQueryGroup>( query );
   mQueryGroups.insert( query.queryId, group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();

@@ -145,6 +145,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
   }
   r->setMaximumScreenError( mMaximumScreenError );
   r->setShowBoundingBoxes( mShowBoundingBoxes );
+  r->setZoomOutBehavior( mZoomOutBehavior );
   return r;
 }
 
@@ -161,7 +162,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( Qgs3DMapSettings 
   Qt3DCore::QEntity *entity = nullptr;
   if ( pcl->index() )
   {
-    entity = new QgsPointCloudLayerChunkedEntity( map, pcl->index(), coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsPointCloudLayerChunkedEntity( map, pcl, pcl->index(), coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
   }
   else if ( !pcl->dataProvider()->subIndexes().isEmpty() )
   {
@@ -185,6 +186,7 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   elem.setAttribute( QStringLiteral( "max-screen-error" ), maximumScreenError() );
   elem.setAttribute( QStringLiteral( "show-bounding-boxes" ), showBoundingBoxes() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "point-budget" ), mPointBudget );
+  elem.setAttribute( QStringLiteral( "zoom-out-behavior" ), qgsEnumValueToKey( mZoomOutBehavior ) );
 
   QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
   if ( mSymbol )
@@ -205,6 +207,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "3.0" ) ).toDouble();
   mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "5000000" ) ).toInt();
+  mZoomOutBehavior = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "zoom-out-behavior" ) ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
 
   if ( symbolType == QLatin1String( "single-color" ) )
     mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );

@@ -235,7 +235,7 @@ int QgsOgrUtils::OGRTZFlagFromQt( const QDateTime &datetime )
 
 std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value, OGRFieldType type )
 {
-  std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
+  auto res = std::make_unique< OGRField >();
 
   switch ( value.userType() )
   {
@@ -788,7 +788,7 @@ std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
 
 std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
 {
-  std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >();
+  auto mp = std::make_unique< QgsMultiPoint >();
 
   const int count = OGR_G_GetGeometryCount( geom );
   mp->reserve( count );
@@ -828,7 +828,7 @@ std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
 
 std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeometryH geom )
 {
-  std::unique_ptr< QgsMultiLineString > mp = std::make_unique< QgsMultiLineString >();
+  auto mp = std::make_unique< QgsMultiLineString >();
 
   const int count = OGR_G_GetGeometryCount( geom );
   mp->reserve( count );
@@ -842,7 +842,7 @@ std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeomet
 
 std::unique_ptr< QgsPolygon > ogrGeometryToQgsPolygon( OGRGeometryH geom )
 {
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  auto polygon = std::make_unique< QgsPolygon >();
 
   const int count = OGR_G_GetGeometryCount( geom );
   if ( count >= 1 )
@@ -860,7 +860,7 @@ std::unique_ptr< QgsPolygon > ogrGeometryToQgsPolygon( OGRGeometryH geom )
 
 std::unique_ptr< QgsMultiPolygon > ogrGeometryToQgsMultiPolygon( OGRGeometryH geom )
 {
-  std::unique_ptr< QgsMultiPolygon > polygon = std::make_unique< QgsMultiPolygon >();
+  auto polygon = std::make_unique< QgsMultiPolygon >();
 
   const int count = OGR_G_GetGeometryCount( geom );
   polygon->reserve( count );
@@ -1398,7 +1398,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         return res;
     }
 
-    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( color, lineWidth );
+    auto simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( color, lineWidth );
     simpleLine->setWidthUnit( lineWidthUnit );
 
     // pattern
@@ -1543,13 +1543,13 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
     QgsSymbolLayerList layers;
     if ( backColor.isValid() && style != Qt::SolidPattern && style != Qt::NoBrush )
     {
-      std::unique_ptr< QgsSimpleFillSymbolLayer > backgroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( backColor );
+      auto backgroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( backColor );
       backgroundFill->setLocked( true );
       backgroundFill->setStrokeStyle( Qt::NoPen );
       layers << backgroundFill.release();
     }
 
-    std::unique_ptr< QgsSimpleFillSymbolLayer > foregroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( foreColor );
+    auto foregroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( foreColor );
     foregroundFill->setBrushStyle( style );
     foregroundFill->setStrokeStyle( Qt::NoPen );
 
@@ -1617,7 +1617,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
       if ( familyFound )
       {
-        std::unique_ptr< QgsFontMarkerSymbolLayer > fontMarker = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, QChar( symId ), symbolSize );
+        auto fontMarker = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, QChar( symId ), symbolSize );
         fontMarker->setSizeUnit( symbolSizeUnit );
         fontMarker->setAngle( -angle );
 
@@ -1716,7 +1716,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         shape = Qgis::MarkerShape::Square; // to initialize the variable
       }
 
-      std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );
+      auto simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );
       simpleMarker->setSizeUnit( symbolSizeUnit );
       simpleMarker->setStrokeWidth( 1.0 );
       simpleMarker->setStrokeWidthUnit( Qgis::RenderUnit::Points );
@@ -1780,7 +1780,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       }
       else
       {
-        std::unique_ptr< QgsSimpleFillSymbolLayer > emptyFill = std::make_unique< QgsSimpleFillSymbolLayer >();
+        auto emptyFill = std::make_unique< QgsSimpleFillSymbolLayer >();
         emptyFill->setBrushStyle( Qt::NoBrush );
         fillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << emptyFill.release() );
       }

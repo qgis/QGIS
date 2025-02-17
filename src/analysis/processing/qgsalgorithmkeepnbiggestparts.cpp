@@ -82,7 +82,7 @@ Qgis::ProcessingFeatureSourceFlags QgsKeepNBiggestPartsAlgorithm::sourceFlags() 
 
 void QgsKeepNBiggestPartsAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> partsToKeep = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PARTS" ), QObject::tr( "Parts to keep" ), Qgis::ProcessingNumberParameterType::Integer, 1.0, false, 1.0 );
+  auto partsToKeep = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PARTS" ), QObject::tr( "Parts to keep" ), Qgis::ProcessingNumberParameterType::Integer, 1.0, false, 1.0 );
   partsToKeep->setIsDynamic( true );
   partsToKeep->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "PARTS" ), QObject::tr( "Parts to keep" ), QgsPropertyDefinition::IntegerPositive ) );
   partsToKeep->setDynamicLayerParameterName( QStringLiteral( "POLYGONS" ) );

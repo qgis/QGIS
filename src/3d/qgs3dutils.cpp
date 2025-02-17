@@ -45,6 +45,7 @@
 #include <Qt3DRender/QRenderSettings>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <Qt3DLogic/QFrameAction>
 
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
@@ -58,6 +59,24 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 // declared here as Qgs3DTypes has no cpp file
 const char *Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG = "PROP_NAME_3D_RENDERER_FLAG";
 
+void Qgs3DUtils::waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
+{
+  // Set policy to always render frame, so we don't wait forever.
+  Qt3DRender::QRenderSettings::RenderPolicy oldPolicy = engine.renderSettings()->renderPolicy();
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
+
+  // Wait for at least one frame to render
+  Qt3DLogic::QFrameAction *frameAction = new Qt3DLogic::QFrameAction();
+  scene->addComponent( frameAction );
+  QEventLoop evLoop;
+  QObject::connect( frameAction, &Qt3DLogic::QFrameAction::triggered, &evLoop, &QEventLoop::quit );
+  evLoop.exec();
+  scene->removeComponent( frameAction );
+  frameAction->deleteLater();
+
+  engine.renderSettings()->setRenderPolicy( oldPolicy );
+}
+
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
 {
   QImage resImage;
@@ -66,13 +85,7 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
   engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
-  auto requestImageFcn = [&engine, scene] {
-    if ( scene->sceneState() == Qgs3DMapScene::Ready )
-    {
-      engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
-      engine.requestCaptureImage();
-    }
-  };
+  waitForFrame( engine, scene );
 
   auto saveImageFcn = [&evLoop, &resImage]( const QImage &img ) {
     resImage = img;
@@ -81,6 +94,14 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
 
   const QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, saveImageFcn );
   QMetaObject::Connection conn2;
+
+  auto requestImageFcn = [&engine, scene] {
+    if ( scene->sceneState() == Qgs3DMapScene::Ready )
+    {
+      engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
+      engine.requestCaptureImage();
+    }
+  };
 
   if ( scene->sceneState() == Qgs3DMapScene::Ready )
   {
@@ -126,6 +147,8 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
   QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::depthBufferCaptured, saveImageFcn );
   QMetaObject::Connection conn2;
 
+  // Make sure once-per-frame functions run
+  waitForFrame( engine, scene );
   if ( scene->sceneState() == Qgs3DMapScene::Ready )
   {
     requestImageFcn();
@@ -813,7 +836,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
 
   if ( symbol3D )
   {
-    std::unique_ptr<QgsPointCloudLayer3DRenderer> renderer3D = std::make_unique<QgsPointCloudLayer3DRenderer>();
+    auto renderer3D = std::make_unique<QgsPointCloudLayer3DRenderer>();
     renderer3D->setSymbol( symbol3D.release() );
     return renderer3D;
   }
@@ -976,10 +999,17 @@ int Qgs3DUtils::openGlMaxClipPlanes( QSurface *surface )
   context.setFormat( QSurfaceFormat::defaultFormat() );
   if ( context.create() )
   {
-    context.makeCurrent( surface );
-    QOpenGLFunctions *funcs = context.functions();
-    funcs->glGetIntegerv( GL_MAX_CLIP_PLANES, &numPlanes );
+    if ( context.makeCurrent( surface ) )
+    {
+      QOpenGLFunctions *funcs = context.functions();
+      funcs->glGetIntegerv( GL_MAX_CLIP_PLANES, &numPlanes );
+    }
   }
 
   return numPlanes;
+}
+
+QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle )
+{
+  return QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), headingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), pitchAngle );
 }

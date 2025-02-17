@@ -32,7 +32,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgsrasterlayer.h"
 #include "qgssettingsregistrycore.h"
-
+#include "qgsvectorfilewriter.h"
+#include "qgsarchive.h"
 
 class TestQgsProject : public QObject
 {
@@ -65,6 +66,13 @@ class TestQgsProject : public QObject
     void testAttachmentIdentifier();
     void testEmbeddedGroupWithJoins();
     void testAsynchronousLayerLoading();
+    void testSymlinks1LayerRasterChange();
+    void testSymlinks2LayerFolder();
+    void testSymlinks3LayerShapefile();
+    void testSymlinks4LayerShapefileBroken();
+    void testSymlinks5ProjectFile();
+    void testSymlinks6ProjectFolder();
+    void regression60100();
 };
 
 void TestQgsProject::init()
@@ -983,7 +991,7 @@ void TestQgsProject::testEmbeddedGroupWithJoins()
 
 void TestQgsProject::testAsynchronousLayerLoading()
 {
-  std::unique_ptr<QgsProject> project = std::make_unique<QgsProject>();
+  auto project = std::make_unique<QgsProject>();
 
   QStringList meshFilters;
   meshFilters << QStringLiteral( "*.nc" ) << QStringLiteral( "*.2dm" );
@@ -1102,6 +1110,508 @@ void TestQgsProject::testAsynchronousLayerLoading()
   QCOMPARE( project->mapLayers( false ).count(), layersCount );
 }
 
+QString getProjectXmlContent( const QString &projectPath )
+{
+  if ( projectPath.endsWith( QLatin1String( ".qgz" ) ) )
+  {
+    QgsProjectArchive archive;
+    if ( !archive.unzip( projectPath ) )
+      return QString();
+
+    const QString qgsFile = archive.projectFile();
+    if ( qgsFile.isEmpty() )
+      return QString();
+
+    QFile file( qgsFile );
+    if ( !file.open( QIODevice::ReadOnly ) )
+      return QString();
+    return file.readAll();
+  }
+
+  QFile file( projectPath );
+  if ( !file.open( QIODevice::ReadOnly ) )
+    return QString();
+  return file.readAll();
+}
+
+QString getLayerSourceFromProjectXml( const QString &projectPath, const QString &layerName )
+{
+  // Get XML content
+  const QString xmlContent = getProjectXmlContent( projectPath );
+  if ( xmlContent.isEmpty() )
+    return QString();
+
+  // Parse XML
+  QDomDocument doc;
+  if ( !doc.setContent( xmlContent ) )
+    return QString();
+
+  // Find layer by name in XML
+  const QDomNodeList layers = doc.elementsByTagName( QStringLiteral( "maplayer" ) );
+  for ( int i = 0; i < layers.count(); ++i )
+  {
+    const QDomElement layerElem = layers.at( i ).toElement();
+    if ( layerElem.firstChildElement( QStringLiteral( "layername" ) ).text() == layerName )
+    {
+      return layerElem.firstChildElement( QStringLiteral( "datasource" ) ).text();
+    }
+  }
+  return QString();
+}
+
+void TestQgsProject::testSymlinks1LayerRasterChange()
+{
+  // Verify that symlinked raster layer behaves well when target is changed
+
+  // ++SETUP++
+  // Create directory structure
+  QTemporaryDir tempDir;
+  const QString rootPath = tempDir.path();
+  const QString projectDir = rootPath + "/projects/qgis/test1";
+  const QString dataDir = rootPath + "/data";
+  const QString projectPath = projectDir + "/proj.qgs";
+  QDir().mkpath( projectDir );
+  QDir().mkpath( dataDir );
+
+  // Copy test rasters to data dir
+  const QString testDataDir( TEST_DATA_DIR );
+  const QStringList rasters = { "rnd_percentile_raster1_byte.tif", "rnd_percentile_raster2_byte.tif", "rnd_percentile_raster3_byte.tif" };
+  for ( const QString &raster : rasters )
+  {
+    QVERIFY( QFile::copy( testDataDir + "/raster/" + raster, dataDir + "/" + raster ) );
+  }
+
+  // Create symlink pointing to raster1
+  QVERIFY( QFile::link( dataDir + "/" + rasters[0], projectDir + "/latest.tif" ) );
+
+  // Create project with layer pointing to symlink
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsRasterLayer>( "./latest.tif", QStringLiteral( "Latest" ), QStringLiteral( "gdal" ) );
+  project->addMapLayer( layer.release() );
+  project->write( projectPath );
+  project.reset();
+
+  // ++Verify symlink changes are detected++
+  // Initial state - points to raster1
+  project = std::make_unique<QgsProject>();
+  project->read( projectPath );
+  QgsRasterLayer *loadedLayer = qobject_cast<QgsRasterLayer *>( project->mapLayersByName( QStringLiteral( "Latest" ) ).at( 0 ) );
+  QCOMPARE( QFileInfo( loadedLayer->source() ).canonicalFilePath(), dataDir + "/" + rasters[0] );
+  project->write( projectPath );
+  project.reset();
+  // Change to raster2
+  QFile::remove( projectDir + "/latest.tif" );
+  QVERIFY( QFile::link( dataDir + "/" + rasters[1], projectDir + "/latest.tif" ) );
+  project = std::make_unique<QgsProject>();
+  project->read( projectPath );
+  loadedLayer = qobject_cast<QgsRasterLayer *>( project->mapLayersByName( QStringLiteral( "Latest" ) ).at( 0 ) );
+  QCOMPARE( QFileInfo( loadedLayer->source() ).canonicalFilePath(), dataDir + "/" + rasters[1] );
+  project->write( projectPath );
+  project.reset();
+  // Change to raster3
+  QFile::remove( projectDir + "/latest.tif" );
+  QVERIFY( QFile::link( dataDir + "/" + rasters[2], projectDir + "/latest.tif" ) );
+  project = std::make_unique<QgsProject>();
+  project->read( projectPath );
+  loadedLayer = qobject_cast<QgsRasterLayer *>( project->mapLayersByName( QStringLiteral( "Latest" ) ).at( 0 ) );
+  QCOMPARE( QFileInfo( loadedLayer->source() ).canonicalFilePath(), dataDir + "/" + rasters[2] );
+}
+
+void TestQgsProject::testSymlinks2LayerFolder()
+{
+  // Verify that shapefile layer added via symlinked data folder
+  // maintains correct relative paths in .qgz on save
+
+  // ++SETUP++
+  // Create directory structure (QGZ file)
+  QTemporaryDir tempDir;
+  const QString rootPath = tempDir.path();
+  const QString testDataDir( TEST_DATA_DIR );
+  const QString projectDir = rootPath + "/projects/qgis/test1";
+  const QString dataDir = rootPath + "/data";
+  const QString projectPath = projectDir + "/proj.qgz";
+  QDir().mkpath( projectDir );
+  QDir().mkpath( dataDir );
+
+  // Copy shapefile components
+  const QStringList components = { "dbf", "prj", "shp", "shx" };
+  for ( const QString &ext : components )
+  {
+    QVERIFY( QFile::copy( testDataDir + "/points." + ext, dataDir + "/points." + ext ) );
+  }
+
+  // Symlink data folder
+  QVERIFY( QFile::link( dataDir, projectDir + "/data" ) );
+
+  // Create project with relative layer
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./data/points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  project->addMapLayer( layer.release() );
+  project->write( projectPath );
+  project.reset();
+
+  // ++Verify paths after re-opening++
+  // XML datasource is "./data/points.shp" NOT "../../../data/points.shp"
+  const QString layerSource = getLayerSourceFromProjectXml( projectPath, QStringLiteral( "Points" ) );
+  QCOMPARE( layerSource, QStringLiteral( "./data/points.shp" ) );
+
+  // Absolute layer source still in projectDir
+  project = std::make_unique<QgsProject>();
+  project->read( projectPath );
+  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  QCOMPARE( loadedLayer->source(), projectDir + "/data/points.shp" );
+}
+
+void TestQgsProject::testSymlinks3LayerShapefile()
+{
+  // Verify that individually symlinked shapefile components
+  // maintain correct relative paths in .qgs on save and shapefile edit
+
+  // ++SETUP++
+  // Create directory structure (QGS file)
+  QTemporaryDir tempDir;
+  const QString rootPath = tempDir.path();
+  const QString testDataDir( TEST_DATA_DIR );
+  const QString projectDir = rootPath + "/projects/qgis/test2";
+  const QString dataDir = rootPath + "/data";
+  const QString projectPath = projectDir + "/proj.qgs";
+  QDir().mkpath( projectDir );
+  QDir().mkpath( dataDir );
+
+  // Copy and symlink shapefile components
+  const QStringList components = { "dbf", "prj", "shp", "shx" };
+  for ( const QString &ext : components )
+  {
+    QVERIFY( QFile::copy( testDataDir + "/points." + ext, dataDir + "/points." + ext ) );
+    QVERIFY( QFile::link( dataDir + "/points." + ext, projectDir + "/points." + ext ) );
+  }
+
+  // Create project with relative layer
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  project->addMapLayer( layer.release() );
+  project->write( projectPath );
+  project.reset();
+
+  // ++Verify paths after re-opening++
+  // XML datasource is "./points.shp" NOT "../../../data/points.shp"
+  const QString layerSource = getLayerSourceFromProjectXml( projectPath, QStringLiteral( "Points" ) );
+  QCOMPARE( layerSource, QStringLiteral( "./points.shp" ) );
+
+  // Absolute layer source still in projectDir
+  project = std::make_unique<QgsProject>();
+  project->read( projectPath );
+  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  QCOMPARE( loadedLayer->source(), projectDir + "/points.shp" );
+
+  // ++Verify that layer edit follows symlinks++
+  const long initialCount = loadedLayer->featureCount();
+
+  // Add new feature
+  loadedLayer->startEditing();
+  QgsFeature feat( loadedLayer->fields() );
+  QgsGeometry geom = QgsGeometry::fromWkt( "POINT(1 2)" );
+  feat.setGeometry( geom );
+  loadedLayer->addFeature( feat );
+  loadedLayer->commitChanges();
+  project.reset();
+
+  // Symlinks still exist and point to correct files
+  for ( const QString &ext : components )
+  {
+    const QString symlink = projectDir + "/points." + ext;
+    const QString target = dataDir + "/points." + ext;
+    // Check symlink exists
+    QVERIFY( QFileInfo( symlink ).isSymLink() );
+    // Check canonical paths match
+    QFileInfo symlinkInfo( symlink );
+    QFileInfo targetInfo( target );
+    QCOMPARE( symlinkInfo.canonicalFilePath(), targetInfo.canonicalFilePath() );
+  }
+
+  // Feature count has increased
+  project = std::make_unique<QgsProject>();
+  project->read( projectPath );
+  loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  QCOMPARE( loadedLayer->featureCount(), initialCount + 1 );
+}
+
+void TestQgsProject::testSymlinks4LayerShapefileBroken()
+{
+  // Verify that saving a new layer to location with existing broken
+  // shapefile symlinks maintains the symlinks and properly saves the data
+
+  // ++SETUP++
+  // Create directory structure (QGS file)
+  QTemporaryDir tempDir;
+  const QString rootPath = tempDir.path();
+  const QString projectDir = rootPath + "/projects/qgis/test3";
+  const QString dataDir = rootPath + "/data";
+  const QString projectPath = projectDir + "/proj.qgz";
+  QDir().mkpath( projectDir );
+  QDir().mkpath( dataDir );
+
+  // Create broken symlinks for shapefile components, also symlink ".cpg" since it WILL be created
+  const QStringList components = { "dbf", "prj", "shp", "shx", "cpg" };
+  for ( const QString &ext : components )
+  {
+    QVERIFY( QFile::link( dataDir + "/points." + ext, projectDir + "/points." + ext ) );
+  }
+
+  // ++Verify that layer creation follows the (broken) symlink++
+  // Create memory layer with single point
+  auto memLayer = std::make_unique<QgsVectorLayer>( "Point", QStringLiteral( "Points" ), QStringLiteral( "memory" ) );
+  QgsFeature feat( memLayer->fields() );
+  feat.setGeometry( QgsGeometry::fromWkt( "POINT(1 2)" ) );
+  memLayer->startEditing();
+  memLayer->addFeature( feat );
+  memLayer->commitChanges();
+
+  // Save memory layer to shapefile at symlink location
+  QgsVectorFileWriter::SaveVectorOptions options;
+  options.driverName = QStringLiteral( "ESRI Shapefile" );
+  QgsVectorFileWriter::writeAsVectorFormatV3( memLayer.get(), projectDir + "/points.shp", QgsCoordinateTransformContext(), options );
+
+  // Create project with the layer
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  project->addMapLayer( layer.release() );
+  project->write( projectPath );
+  project.reset();
+
+  // Verify symlinks and data
+  for ( const QString &ext : components )
+  {
+    const QString symlink = projectDir + "/points." + ext;
+    const QString target = dataDir + "/points." + ext;
+    // Check symlink exists
+    QVERIFY( QFileInfo( symlink ).isSymLink() );
+    // Check canonical paths match
+    QFileInfo symlinkInfo( symlink );
+    QFileInfo targetInfo( target );
+    QCOMPARE( symlinkInfo.canonicalFilePath(), targetInfo.canonicalFilePath() );
+  }
+
+  // Verify layer has 1 feature
+  project = std::make_unique<QgsProject>();
+  project->read( projectPath );
+  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  QCOMPARE( loadedLayer->featureCount(), 1L );
+}
+
+void TestQgsProject::testSymlinks5ProjectFile()
+{
+  // Verify that symlinked project file maintains relative paths
+  // and test writing broken project links
+
+  // ++SETUP++
+  // Create directory structure
+  QTemporaryDir tempDir;
+  const QString rootPath = tempDir.path();
+  const QString projectDir = rootPath + "/projects/qgis/test4";
+  const QString symlinkprojDir = rootPath + "/symlinkproj";
+  QDir().mkpath( projectDir );
+  QDir().mkpath( symlinkprojDir );
+
+  // Copy shapefile components to project dir
+  const QString testDataDir( TEST_DATA_DIR );
+  const QStringList components = { "dbf", "prj", "shp", "shx" };
+  for ( const QString &ext : components )
+  {
+    QFile::copy( testDataDir + "/points." + ext, projectDir + "/points." + ext );
+  }
+
+  // Create initial project in project dir
+  const QString originalPath = projectDir + "/project.qgs";
+  const QString originalAttachPath = projectDir + "/project_attachments.zip";
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  project->addMapLayer( layer.release() );
+  project->write( originalPath );
+  project.reset();
+
+  // ++Verify that moved project behaves well++
+  // Move project file and create symlink
+  QVERIFY( QFile::rename( originalPath, symlinkprojDir + "/project.qgs" ) );
+  QVERIFY( QFile::rename( originalAttachPath, symlinkprojDir + "/project_attachments.zip" ) );
+  QVERIFY( QFile::link( symlinkprojDir + "/project.qgs", originalPath ) );
+  QVERIFY( QFile::link( symlinkprojDir + "/project_attachments.zip", originalAttachPath ) );
+
+  // Open symlinked project and verify paths
+  project = std::make_unique<QgsProject>();
+  project->read( originalPath );
+  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  QCOMPARE( loadedLayer->source(), projectDir + "/points.shp" );
+
+  // Save and verify XML content
+  project->write( originalPath );
+  const QString layerSource = getLayerSourceFromProjectXml( originalPath, QStringLiteral( "Points" ) );
+  QCOMPARE( layerSource, QStringLiteral( "./points.shp" ) );
+
+  // ++Change project settings, verify symlinks still good++
+  project->setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
+  project->write( originalPath );
+
+  // Verify symlinks and canonical paths
+  const QStringList symlinks = { originalPath, originalAttachPath };
+  for ( const QString &symlink : symlinks )
+  {
+    QVERIFY( QFileInfo( symlink ).isSymLink() );
+    QFileInfo symlinkInfo( symlink );
+    QFileInfo targetInfo( symlinkprojDir + "/" + QFileInfo( symlink ).fileName() );
+    QCOMPARE( symlinkInfo.canonicalFilePath(), targetInfo.canonicalFilePath() );
+  }
+
+  // ++Break symlinks and create new project++
+  // Remove symlink destinations
+  QVERIFY( QFile::remove( symlinkprojDir + "/project.qgs" ) );
+  QVERIFY( QFile::remove( symlinkprojDir + "/project_attachments.zip" ) );
+
+  // Create a new project, writing to the broken symlink
+  project = std::make_unique<QgsProject>();
+  layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  project->addMapLayer( layer.release() );
+  project->write( originalPath );
+
+  // Verify symlinks are now active and well-behaved
+  for ( const QString &symlink : symlinks )
+  {
+    QVERIFY( QFileInfo( symlink ).isSymLink() );
+    QFileInfo symlinkInfo( symlink );
+    QFileInfo targetInfo( symlinkprojDir + "/" + QFileInfo( symlink ).fileName() );
+    QCOMPARE( symlinkInfo.canonicalFilePath(), targetInfo.canonicalFilePath() );
+  }
+}
+
+void TestQgsProject::testSymlinks6ProjectFolder()
+{
+  // Replicate this test: python/test_qgsproject.py:testSymbolicLinkInProjectPath
+  // Check functionality if the immediate parent is a symlink
+
+  // ++SETUP++
+  // Create directory structure
+  QTemporaryDir tempDir;
+  const QString rootPath = tempDir.path();
+  const QString projectDir = rootPath + "/projects/qgis/test4";
+  const QString symlinkprojparentDir = rootPath + "/another/directory";
+  QDir().mkpath( projectDir );
+  QDir().mkpath( symlinkprojparentDir );
+
+  // Copy shapefile components to project dir
+  const QString testDataDir( TEST_DATA_DIR );
+  const QStringList components = { "dbf", "prj", "shp", "shx" };
+  for ( const QString &ext : components )
+  {
+    QFile::copy( testDataDir + "/points." + ext, projectDir + "/points." + ext );
+  }
+
+  // Create initial project in project dir
+  const QString originalPath = projectDir + "/project.qgs";
+  auto project = std::make_unique<QgsProject>();
+  auto layer = std::make_unique<QgsVectorLayer>( "./points.shp", QStringLiteral( "Points" ), QStringLiteral( "ogr" ) );
+  project->addMapLayer( layer.release() );
+  project->write( originalPath );
+  project.reset();
+
+  // Create a new temporary directory and a symbolic link to the original folder
+  const QString symlinkprojDir = symlinkprojparentDir + "/symlink_projdir";
+  QVERIFY( QFile::link( projectDir, symlinkprojDir ) );
+  const QString symlinkprojPath = symlinkprojDir + "/project.qgs";
+
+  // ++Open the project through a symlink and re-save++
+  project = std::make_unique<QgsProject>();
+  QVERIFY( project->read( symlinkprojPath ) );
+  QVERIFY( project->write( symlinkprojPath ) );
+  project.reset();
+
+  // ++Verify paths after re-opening++
+  // XML datasource is still "./points.shp"
+  const QString layerSource = getLayerSourceFromProjectXml( symlinkprojPath, QStringLiteral( "Points" ) );
+  QCOMPARE( layerSource, QStringLiteral( "./points.shp" ) );
+  // Absolute layer source does NOT resolve the symlink
+  project = std::make_unique<QgsProject>();
+  project->read( symlinkprojPath );
+  QgsVectorLayer *loadedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayersByName( QStringLiteral( "Points" ) ).at( 0 ) );
+  QCOMPARE( loadedLayer->source(), symlinkprojDir + "/points.shp" );
+}
+
+void TestQgsProject::regression60100()
+{
+  /*
+  * Regression test for QGIS issue #60100 (https://github.com/qgis/QGIS/issues/60100)
+  * This test ensures that when saving a QGIS project with relative paths,
+  * the correct layer datasource is preserved, even when the current working
+  * directory (CWD) contains a file with the same name as the layer datasource.
+  *
+  * Previous behavior:
+  * - If a file with the same name as a layer datasource existed in the CWD,
+  *   the layer path in the saved project would point to the file in the CWD,
+  *   rather than the intended file in the project directory (PROJDIR).
+  *
+  * Test steps:
+  * 1. Create a temporary directory structure with two subfolders: WORKDIR and PROJDIR.
+  * 2. Copy a `points.geojson` file to both WORKDIR and PROJDIR.
+  * 3. Create a new QGIS project in PROJDIR and add the `points.geojson` file from PROJDIR as a layer.
+  * 4. Change the working directory to WORKDIR and save the project.
+  * 5. Verify that the saved project references the correct datasource (`./points.geojson` in PROJDIR)
+  *    and does not erroneously reference the file in WORKDIR.
+  */
+  // Create directory structure with 2 subfolders
+  const QTemporaryDir baseDir;
+  const QDir base( baseDir.path() );
+  base.mkdir( QStringLiteral( "WORKDIR" ) );
+  base.mkdir( QStringLiteral( "PROJDIR" ) );
+  const QString workDirPath = baseDir.path() + QStringLiteral( "/WORKDIR" );
+  const QString projDirPath = baseDir.path() + QStringLiteral( "/PROJDIR" );
+
+  // Save our old CWD and switch to the new WORKDIR
+  const QString oldCWD = QDir::currentPath();
+  QVERIFY( QDir::setCurrent( workDirPath ) );
+
+  // Copy points.geojson to both subfolders
+  const QString testDataDir( TEST_DATA_DIR );
+  const QString pointsPath = testDataDir + QStringLiteral( "/points.geojson" );
+  QFile::copy( pointsPath, workDirPath + QStringLiteral( "/points.geojson" ) );
+  QFile::copy( pointsPath, projDirPath + QStringLiteral( "/points.geojson" ) );
+
+  // Create a new/empty project in PROJDIR
+  const QString projectPath = projDirPath + QStringLiteral( "/project.qgs" );
+  auto project = std::make_unique<QgsProject>();
+
+  // Add the local points.geojson (in PROJDIR) as a layer
+  auto layer = std::make_unique<QgsVectorLayer>(
+    projDirPath + QStringLiteral( "/points.geojson" ),
+    QStringLiteral( "Test Points" ),
+    QStringLiteral( "ogr" )
+  );
+  project->addMapLayer( layer.release() );
+
+  // Write (save) the project to disk. This used to pick up the WRONG file and save it to the proj.
+  project->write( projectPath );
+
+  // Restore old working directory
+  QVERIFY( QDir::setCurrent( oldCWD ) );
+
+  // Verify the layer path in the project file
+  QDomDocument doc;
+  QFile projectFile( projectPath );
+  bool res = projectFile.open( QIODevice::ReadOnly );
+  Q_ASSERT( res );
+  res = static_cast<bool>( doc.setContent( &projectFile ) );
+  Q_ASSERT( res );
+  projectFile.close();
+
+  const QDomElement docElem = doc.documentElement();
+  const QDomElement layersElem = docElem.firstChildElement( QStringLiteral( "projectlayers" ) );
+  QDomElement layerElem = layersElem.firstChildElement();
+  while ( !layerElem.isNull() )
+  {
+    const QString layerSource = layerElem.firstChildElement( QStringLiteral( "datasource" ) ).text();
+    // Should NOT be "../WORKDIR/points.geojson"
+    QCOMPARE( layerSource, QStringLiteral( "./points.geojson" ) );
+    layerElem = layerElem.nextSiblingElement();
+  }
+}
 
 QGSTEST_MAIN( TestQgsProject )
 #include "testqgsproject.moc"

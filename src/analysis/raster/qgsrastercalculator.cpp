@@ -79,6 +79,11 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mRasterEntries( rasterEntries )
   , mTransformContext( transformContext )
 {
+  //default to first layer's crs
+  if ( !mRasterEntries.isEmpty() )
+  {
+    mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  }
 }
 
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
@@ -105,7 +110,10 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
   , mRasterEntries( rasterEntries )
 {
   //default to first layer's crs
-  mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  if ( !mRasterEntries.isEmpty() )
+  {
+    mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
+  }
   mTransformContext = QgsProject::instance()->transformContext();
 }
 
@@ -438,10 +446,10 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
         entry.typeName = QStringLiteral( "unsigned char" );
         break;
       case Qgis::DataType::Int8:
-        entry.typeName = QStringLiteral( "signed char" );
+        entry.typeName = QStringLiteral( "char" );
         break;
       case Qgis::DataType::UInt16:
-        entry.typeName = QStringLiteral( "unsigned int" );
+        entry.typeName = QStringLiteral( "unsigned short" );
         break;
       case Qgis::DataType::Int16:
         entry.typeName = QStringLiteral( "short" );
@@ -536,7 +544,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION##" ), cExpression );
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION_ORIGINAL##" ), calcNode->toString() );
 
-    //qDebug() << programTemplate;
+    // qDebug() << programTemplate;
 
     // Create a program from the kernel source
     cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );

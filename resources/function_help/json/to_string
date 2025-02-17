@@ -2,14 +2,14 @@
   "name": "to_string",
   "type": "function",
   "groups": ["Conversions", "String"],
-  "description": "Converts a number to string.",
+  "description": "Converts a number to string. The conversion is not locale-aware, see 'format_number' for a locale-aware alternative.",
   "arguments": [{
     "arg": "number",
     "description": "Integer or real value. The number to convert to string."
   }],
   "examples": [{
-    "expression": "to_string(123)",
-    "returns": "'123'"
+    "expression": "to_string(1.23)",
+    "returns": "'1.23'"
   }],
   "tags": ["converts", "number"]
 }

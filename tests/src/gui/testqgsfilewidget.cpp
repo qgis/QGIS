@@ -96,9 +96,9 @@ void TestQgsFileWidget::testDroppedFiles()
   w->setStorageMode( QgsFileWidget::GetFile );
 
   // should not accept dropped folders
-  std::unique_ptr<QMimeData> mime( new QMimeData() );
+  auto mime = std::make_unique<QMimeData>();
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
-  std::unique_ptr<QDropEvent> event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  auto event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
 
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QVERIFY( w->lineEdit()->text().isEmpty() );
@@ -191,7 +191,7 @@ void TestQgsFileWidget::testMultipleFiles()
   QgsFileWidget *w = new QgsFileWidget();
   w->setStorageMode( QgsFileWidget::GetMultipleFiles );
 
-  std::unique_ptr<QMimeData> mime( new QMimeData() );
+  auto mime = std::make_unique<QMimeData>();
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/elev.gpx" ) ) );
   const std::unique_ptr<QDropEvent> event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
 

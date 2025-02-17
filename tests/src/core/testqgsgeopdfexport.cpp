@@ -114,7 +114,7 @@ void TestQgsGeospatialPdfExport::testCollectingFeatures()
   QCOMPARE( component.mapLayerId, QStringLiteral( "layer1" ) );
   QCOMPARE( component.name, QStringLiteral( "name layer1" ) );
   // check that temporary layers were correctly written
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->featureCount(), 2L );
   QCOMPARE( layer->wkbType(), Qgis::WkbType::Polygon );

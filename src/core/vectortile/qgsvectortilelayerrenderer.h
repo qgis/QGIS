@@ -71,6 +71,9 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
      */
     QgsVectorTileLabelProvider *mLabelProvider = nullptr;
 
+    // Decoded tile data
+    QMap<QString, QgsVectorTileRendererData> mTileDataMap;
+
     //! Whether to draw boundaries of tiles (useful for debugging)
     bool mDrawTileBoundaries = false;
 

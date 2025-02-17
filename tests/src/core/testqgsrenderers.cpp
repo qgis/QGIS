@@ -156,7 +156,7 @@ void TestQgsRenderers::emptyGeometry()
   QgsProject::instance()->addMapLayer( vl );
 
   QgsFeature f;
-  std::unique_ptr<QgsMultiPolygon> mp = std::make_unique<QgsMultiPolygon>();
+  auto mp = std::make_unique<QgsMultiPolygon>();
   mp->addGeometry( new QgsPolygon() );
   f.setGeometry( QgsGeometry( std::move( mp ) ) );
   QVERIFY( vl->dataProvider()->addFeature( f ) );
@@ -182,7 +182,7 @@ void TestQgsRenderers::emptyGeometry()
   vl = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
-  std::unique_ptr<QgsMultiLineString> mls = std::make_unique<QgsMultiLineString>();
+  auto mls = std::make_unique<QgsMultiLineString>();
   mls->addGeometry( new QgsLineString() );
   f.setGeometry( QgsGeometry( std::move( mls ) ) );
   QVERIFY( vl->dataProvider()->addFeature( f ) );
@@ -192,7 +192,7 @@ void TestQgsRenderers::emptyGeometry()
   vl = new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
-  std::unique_ptr<QgsMultiPoint> mlp = std::make_unique<QgsMultiPoint>();
+  auto mlp = std::make_unique<QgsMultiPoint>();
   f.setGeometry( QgsGeometry( std::move( mlp ) ) );
   QVERIFY( vl->dataProvider()->addFeature( f ) );
   QVERIFY( checkEmptyRender( "MultiPoint", vl ) );

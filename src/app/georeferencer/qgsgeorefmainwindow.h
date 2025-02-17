@@ -31,11 +31,13 @@ class QPlainTextEdit;
 class QLabel;
 
 class QgisInterface;
+class QgsAdvancedDigitizingDockWidget;
 class QgsDoubleSpinBox;
 class QgsGeorefDataPoint;
 class QgsGCPListWidget;
 class QgsMapTool;
 class QgsMapCanvas;
+class QgsMapCanvasSnappingUtils;
 class QgsMapCoordsDialog;
 class QgsPointXY;
 class QgsRasterLayer;
@@ -50,6 +52,7 @@ class QgsMapLayer;
 class QgsScreenHelper;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryString;
+class QgsSettingsEntryStringList;
 template<class T> class QgsSettingsEntryEnumFlag;
 
 
@@ -68,7 +71,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
 
     static const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *settingResamplingMethod;
-    static const QgsSettingsEntryString *settingCompressionMethod;
+    static const QgsSettingsEntryStringList *settingCreationOptions;
     static const QgsSettingsEntryBool *settingUseZeroForTransparent;
     static const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *settingTransformMethod;
     static const QgsSettingsEntryBool *settingSaveGcps;
@@ -76,9 +79,13 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     static const QgsSettingsEntryString *settingLastSourceFolder;
     static const QgsSettingsEntryString *settingLastRasterFileFilter;
     static const QgsSettingsEntryString *settingLastTargetCrs;
+    static const QgsSettingsEntryBool *settingSnappingEnabled;
+    static const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *settingSnappingTypes;
 
     QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
+
+    void showGeoreferencer();
 
   protected:
     void closeEvent( QCloseEvent * ) override;
@@ -204,7 +211,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
      * a value of -1 indicates that thin plate spline interpolation should be used for warping.
     */
-    QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order, double targetResX, double targetResY );
+    QString generateGDALwarpCommand( const QString &resampling, const QStringList &options, bool useZeroForTrans, int order, double targetResX, double targetResY );
 
     // utils
     bool validate();
@@ -264,13 +271,17 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QgsGcpTransformerInterface::TransformMethod mTransformMethod = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
-    QString mCompressionMethod = QStringLiteral( "NONE" );
+    QStringList mCreationOptions;
     bool mCreateWorldFileOnly = false;
 
     QgsGCPList mPoints;
     QList<QgsGcpPoint> mSavedPoints;
 
     QgsMapCanvas *mCanvas = nullptr;
+    QgsMapCanvasSnappingUtils *mSnappingUtils = nullptr;
+    QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
+    QToolButton *mSnappingTypeButton = nullptr;
+    QList<QAction *> mSnappingTypeActions;
     std::unique_ptr<QgsMapLayer> mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;

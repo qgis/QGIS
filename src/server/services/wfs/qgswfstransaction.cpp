@@ -249,7 +249,7 @@ namespace QgsWfs
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+    auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
 
     // get layers
     QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
@@ -292,8 +292,10 @@ namespace QgsWfs
 
       // get provider capabilities
       Qgis::VectorProviderCapabilities cap = provider->capabilities();
-      if ( !( cap & Qgis::VectorProviderCapability::ChangeAttributeValues ) && !( cap & Qgis::VectorProviderCapability::ChangeGeometries )
-           && !( cap & Qgis::VectorProviderCapability::DeleteFeatures ) && !( cap & Qgis::VectorProviderCapability::AddFeatures ) )
+
+      const bool canUpdateAnything { cap.testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) || ( vlayer->isSpatial() && cap.testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) ) };
+
+      if ( !canUpdateAnything && !( cap & Qgis::VectorProviderCapability::DeleteFeatures ) && !( cap & Qgis::VectorProviderCapability::AddFeatures ) )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "No capabilities to do WFS changes on layer '%1'" ).arg( name ) );
       }
@@ -357,7 +359,7 @@ namespace QgsWfs
 
       // verifying specific capabilities
       Qgis::VectorProviderCapabilities cap = provider->capabilities();
-      if ( !( cap & Qgis::VectorProviderCapability::ChangeAttributeValues ) || !( cap & Qgis::VectorProviderCapability::ChangeGeometries ) )
+      if ( !( cap.testFlag( Qgis::VectorProviderCapability::ChangeAttributeValues ) || ( vlayer->isSpatial() && cap.testFlag( Qgis::VectorProviderCapability::ChangeGeometries ) ) ) )
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "No capabilities to do WFS updates on layer '%1'" ).arg( typeName );

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>581</width>
-    <height>553</height>
+    <height>728</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -34,14 +34,8 @@
      <property name="checkable">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,0">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>3</number>
-      </property>
-      <item row="1" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
        <layout class="QGridLayout" name="gridLayout_7">
         <item row="0" column="0">
          <widget class="QLabel" name="labelPointSize">
@@ -120,14 +114,7 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
-        <property name="text">
-         <string>Show bounding boxes</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
+      <item>
        <widget class="QgsCollapsibleGroupBox" name="mTriangulateGroupBox">
         <property name="title">
          <string>Render as a Surface (Triangulate)</string>
@@ -188,13 +175,45 @@
         </layout>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
+        <property name="text">
+         <string>Show bounding boxes</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsCollapsibleGroupBox" name="mVpcGroupBox">
+        <property name="title">
+         <string>Virtual Point Cloud Options</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="1" colspan="2">
+          <widget class="QComboBox" name="mZoomOutOptions"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>When zoomed out</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
    <item row="2" column="0" colspan="3">
     <widget class="QgsStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="noRendererPage"/>
      <widget class="QWidget" name="follow2DRendererPage">

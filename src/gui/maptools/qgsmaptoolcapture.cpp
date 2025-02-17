@@ -492,11 +492,15 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
 
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  // If we are adding a record to a non-spatial layer, just return
+  if ( mCaptureModeFromLayer && ( !canvas()->currentLayer() || !canvas()->currentLayer()->isSpatial() ) )
+    return;
+
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
 
   const QgsPointXY point = e->mapPoint();
-  if ( canvas()->currentLayer() && canvas()->currentLayer()->isSpatial() )
-    mSnapIndicator->setMatch( e->mapPointMatch() );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
   {
@@ -638,10 +642,6 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
   {
     if ( ( match.hasVertex() || match.hasLineEndpoint() ) )
     {
-      if ( sourceLayer->crs() != vlayer->crs() )
-      {
-        return 1;
-      }
       QgsFeature f;
       QgsFeatureRequest request;
       request.setFilterFid( match.featureId() );
@@ -653,6 +653,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         {
           return 2;
         }
+
         layerPoint = f.geometry().constGet()->vertexAt( vId );
         if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
           layerPoint.addZValue( defaultZValue() );
@@ -670,6 +671,10 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
           layerPoint.dropMValue();
         }
 
+        if ( sourceLayer->crs() != vlayer->crs() )
+        {
+          layerPoint = toLayerCoordinates( vlayer, layerPoint );
+        }
         return 0;
       }
       return 2;

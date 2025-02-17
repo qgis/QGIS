@@ -17,6 +17,12 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayereditutils.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscopcpointcloudindex.h"
+#include "qgscopcupdate.h"
+#include "qgslazdecoder.h"
+
+#include <QDir>
+#include <QFileInfo>
 
 
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
@@ -27,6 +33,7 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
        !( layer->dataProvider()->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues ) )
     return;
 
+  mUri = layer->source();
   mIndex = layer->dataProvider()->index();
 
   mAttributes = mIndex.attributes();
@@ -38,11 +45,6 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mRootBounds = mIndex.rootNodeBounds();
   mSpan = mIndex.span();
   mIsValid = true;
-}
-
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsPointCloudEditingIndex::clone() const
-{
-  return nullptr;
 }
 
 void QgsPointCloudEditingIndex::load( const QString & )
@@ -85,22 +87,36 @@ QgsPointCloudNode QgsPointCloudEditingIndex::getNode( const QgsPointCloudNodeId 
   return mIndex.getNode( id );
 }
 
+bool QgsPointCloudEditingIndex::setSubsetString( const QString &subset )
+{
+  return mIndex.setSubsetString( subset );
+}
+
+QString QgsPointCloudEditingIndex::subsetString() const
+{
+  return mIndex.subsetString();
+}
+
 std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
   if ( mEditedNodeData.contains( n ) )
   {
-    const QByteArray data = mEditedNodeData.value( n );
-    int nPoints = data.size() / mIndex.attributes().pointRecordSize();
+    // we need to create a copy of the expression to pass to the decoder
+    // as the same QgsPointCloudExpression object mighgt be concurrently
+    // used on another thread, for example in a 3d view
+    QgsPointCloudExpression filterExpression = QgsPointCloudExpression( request.ignoreIndexFilterEnabled() ? QString() : subsetString() );
+    QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+    requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
-    const QByteArray requestedData = QgsPointCloudLayerEditUtils::dataForAttributes( mIndex.attributes(), data, request );
+    QgsRectangle filterRect = request.filterRect();
 
-    std::unique_ptr<QgsPointCloudBlock> block = std::make_unique< QgsPointCloudBlock >(
-          nPoints,
-          request.attributes(),
-          requestedData,
-          mIndex.scale(),
-          mIndex.offset() );
-    return block;
+    QByteArray rawBlockData = mEditedNodeData[n];
+
+    QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
+
+    int pointCount = copcIndex->mHierarchy.value( n );
+
+    return QgsLazDecoder::decompressCopc( rawBlockData, *copcIndex->mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
   }
   else
   {
@@ -114,15 +130,63 @@ QgsPointCloudBlockRequest *QgsPointCloudEditingIndex::asyncNodeData( const QgsPo
   return nullptr;
 }
 
-bool QgsPointCloudEditingIndex::commitChanges()
+bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
 {
   if ( !isModified() )
     return true;
 
-  if ( !mIndex.updateNodeData( mEditedNodeData ) )
+  QHash<QgsPointCloudNodeId, QgsCopcUpdate::UpdatedChunk> updatedChunks;
+  for ( auto it = mEditedNodeData.constBegin(); it != mEditedNodeData.constEnd(); ++it )
+  {
+    QgsPointCloudNodeId n = it.key();
+    // right now we're assuming there's no change of point count
+    qint32 nodePointCount = static_cast<qint32>( getNode( n ).pointCount() );
+    updatedChunks[n] = QgsCopcUpdate::UpdatedChunk{ nodePointCount, it.value() };
+  }
+
+  QFileInfo fileInfo( mUri );
+  const QString outputFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-update.copc.laz" ) );
+
+  if ( !QgsCopcUpdate::writeUpdatedFile( mUri, outputFilename, updatedChunks, errorMessage ) )
+  {
     return false;
+  }
+
+  // reset the underlying index - we will reload it at the end
+  QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
+  copcIndex->reset();
+
+  const QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-original.copc.laz" ) );
+  if ( !QFile::rename( mUri, originalFilename ) )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Rename of the old COPC failed!" );
+    QFile::remove( outputFilename );
+    return false;
+  }
+
+  if ( !QFile::rename( outputFilename, mUri ) )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Rename of the new COPC failed!" );
+    QFile::rename( originalFilename, mUri );
+    QFile::remove( outputFilename );
+    return false;
+  }
+
+  if ( !QFile::remove( originalFilename ) )
+  {
+    if ( errorMessage )
+      *errorMessage = QStringLiteral( "Removal of the old COPC failed!" );
+    // TODO: cleanup here as well?
+    return false;
+  }
 
   mEditedNodeData.clear();
+
+  // now let's reload
+  copcIndex->load( mUri );
+
   return true;
 }
 
@@ -131,11 +195,27 @@ bool QgsPointCloudEditingIndex::isModified() const
   return !mEditedNodeData.isEmpty();
 }
 
+QList<QgsPointCloudNodeId> QgsPointCloudEditingIndex::updatedNodes() const
+{
+  return mEditedNodeData.keys();
+}
+
 bool QgsPointCloudEditingIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data )
 {
   for ( auto it = data.constBegin(); it != data.constEnd(); ++it )
   {
     mEditedNodeData[it.key()] = it.value();
+  }
+
+  // get rid of cached keys that got modified
+  {
+    QMutexLocker locker( &sBlockCacheMutex );
+    const QList<QgsPointCloudCacheKey> cacheKeys = sBlockCache.keys();
+    for ( const QgsPointCloudCacheKey &cacheKey : cacheKeys )
+    {
+      if ( cacheKey.uri() == mUri && data.contains( cacheKey.node() ) )
+        sBlockCache.remove( cacheKey );
+    }
   }
 
   return true;

@@ -903,9 +903,18 @@ class TestQgsVectorFileWriter(QgisTestCase):
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(
             QgsVectorFileWriter.VectorFormatOption.SortRecommended
         )
-        self.assertEqual(formats[0].filterString, "GeoPackage (*.gpkg *.GPKG)")
+        if int(gdal.VersionInfo("VERSION_NUM")) >= GDAL_COMPUTE_VERSION(3, 7, 0):
+            self.assertEqual(
+                formats[0].filterString,
+                "GeoPackage (*.gpkg *.gpkg.zip *.GPKG *.GPKG.ZIP)",
+            )
+        else:
+            self.assertEqual(formats[0].filterString, "GeoPackage (*.gpkg *.GPKG)")
         self.assertEqual(formats[0].driverName, "GPKG")
-        self.assertEqual(formats[0].globs, ["*.gpkg"])
+        if int(gdal.VersionInfo("VERSION_NUM")) >= GDAL_COMPUTE_VERSION(3, 7, 0):
+            self.assertEqual(formats[0].globs, ["*.gpkg", "*.gpkg.zip"])
+        else:
+            self.assertEqual(formats[0].globs, ["*.gpkg"])
         self.assertEqual(formats[1].filterString, "ESRI Shapefile (*.shp *.SHP)")
         self.assertEqual(formats[1].driverName, "ESRI Shapefile")
         self.assertEqual(formats[1].globs, ["*.shp"])

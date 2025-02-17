@@ -154,6 +154,13 @@ returns the last created savepoint
 Emitted after a rollback
 %End
 
+    void afterRollbackToSavepoint( const QString &savepointName );
+%Docstring
+Emitted after a rollback to savepoint
+
+.. versionadded:: 3.42
+%End
+
     void dirtied( const QString &sql, const QString &name );
 %Docstring
 Emitted if a sql query is executed and the underlying data is modified

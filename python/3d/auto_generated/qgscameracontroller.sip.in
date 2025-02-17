@@ -175,6 +175,23 @@ Rotates the camera on itself.
 .. versionadded:: 3.30
 %End
 
+    void rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint );
+%Docstring
+Rotates the camera around the pivot point (in world coordinates)
+to the given new pitch and heading angle.
+
+.. versionadded:: 3.42
+%End
+
+    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
+%Docstring
+Zooms camera by given zoom factor (>1 one means zoom in)
+while keeping the pivot point (given in world coordinates) at the
+same screen coordinates after the zoom.
+
+.. versionadded:: 3.42
+%End
+
     bool willHandleKeyEvent( QKeyEvent *event );
 %Docstring
 Returns ``True`` if the camera controller will handle the specified key ``event``,
@@ -187,6 +204,13 @@ the controller ever receives it.
 Reacts to the shift of origin of the scene, updating camera pose and
 any other member variables so that the origin stays at the same position
 relative to other entities.
+
+.. versionadded:: 3.42
+%End
+
+    void setInputHandlersEnabled( bool enable );
+%Docstring
+Sets whether the camera controller responds to mouse and keyboard events
 
 .. versionadded:: 3.42
 %End

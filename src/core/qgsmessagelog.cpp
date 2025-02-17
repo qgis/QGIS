@@ -25,19 +25,27 @@
 
 class QgsMessageLogConsole;
 
-void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser )
+void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser,
+                                const char *file, const char *function, int line )
 {
+#ifndef QGISDEBUG
+  Q_UNUSED( file )
+  Q_UNUSED( function )
+  Q_UNUSED( line )
+#endif
   switch ( level )
   {
     case Qgis::MessageLevel::Info:
     case Qgis::MessageLevel::Success:
     case Qgis::MessageLevel::NoLevel:
-      QgsDebugMsgLevel( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ), 1 );
+      QgsDebugMsgLevelLoc( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
+                           1, file, function, line );
       break;
 
     case Qgis::MessageLevel::Warning:
     case Qgis::MessageLevel::Critical:
-      QgsDebugError( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ) );
+      QgsDebugErrorLoc( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
+                        file, function, line );
       break;
   }
 

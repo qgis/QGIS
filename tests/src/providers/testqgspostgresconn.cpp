@@ -20,6 +20,7 @@
 #include <qgsfields.h>
 #include <qgspostgresprovider.h>
 #include <qgsdatasourceuri.h>
+#include "qgspostgresutils.h"
 
 // Helper function for QCOMPARE
 char *toString( const QgsPostgresGeometryColumnType &t )

@@ -261,6 +261,8 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
   bool threadFinished = false;
   bool success = false;
 
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
+
   const std::function<void()> downloaderFunction = [this, request, synchronous, data, &verb, &waitConditionMutex, &waitCondition, &threadFinished, &success]() {
     if ( QThread::currentThread() != QApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
@@ -306,15 +308,22 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
           // note that we don't need to handle waking this thread back up - that's done automatically by QgsNetworkAccessManager
         };
 
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred, this, resumeMainThread, Qt::DirectConnection );
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
-
+        QMetaObject::Connection authRequestConnection = connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred, this, resumeMainThread, Qt::DirectConnection );
+        QMetaObject::Connection proxyAuthenticationConnection = connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
 #ifndef QT_NO_SSL
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred, this, resumeMainThread, Qt::DirectConnection );
+        QMetaObject::Connection sslErrorConnection = connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred, this, resumeMainThread, Qt::DirectConnection );
 #endif
+
         QEventLoop loop;
         connect( this, &QgsBaseNetworkRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
         loop.exec();
+
+        // event loop exited - need to disconnect as to not leave functor hanging to receive signals in future
+        disconnect( authRequestConnection );
+        disconnect( proxyAuthenticationConnection );
+#ifndef QT_NO_SSL
+        disconnect( sslErrorConnection );
+#endif
       }
     }
     waitConditionMutex.lock();
@@ -325,7 +334,7 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
 
   if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
   {
-    std::unique_ptr<_DownloaderThread> downloaderThread = std::make_unique<_DownloaderThread>( downloaderFunction );
+    auto downloaderThread = std::make_unique<_DownloaderThread>( downloaderFunction );
     downloaderThread->start();
 
     while ( true )
@@ -634,6 +643,7 @@ void QgsBaseNetworkRequest::replyFinished()
             emit downloadFinished();
             return;
           }
+          request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
           request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
           request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 

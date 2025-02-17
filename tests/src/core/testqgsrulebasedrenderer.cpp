@@ -164,7 +164,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
      */
     void test_many_rules_expression_filter()
     {
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "point?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsRenderContext ctx; // dummy render context
       ctx.expressionContext().setFields( layer->fields() );
 
@@ -194,7 +194,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testElse()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -232,7 +232,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testDisabledElse()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -272,7 +272,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testNoMatchingZoomRanges()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -330,7 +330,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testWillRenderFeature()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -385,7 +385,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testGroupAndElseRules()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -430,7 +430,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testWillRenderFeatureNestedElse()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -480,7 +480,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       // Regression #21287, also test rulesForFeature since there were no tests any where and I've found a couple of issues
 
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -545,7 +545,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
 
-      std::unique_ptr<QgsRuleBasedRenderer> renderer = std::make_unique<QgsRuleBasedRenderer>( rootrule );
+      auto renderer = std::make_unique<QgsRuleBasedRenderer>( rootrule );
 
       QgsMapSettings mapsettings;
       mapsettings.setOutputSize( QSize( 400, 400 ) );
@@ -559,7 +559,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testPointsUsedAttributes()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
 
       // Create rulebased style
@@ -616,7 +616,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testFeatureCount()
     {
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -672,7 +672,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       // Test refining rule with categories (refs #10815)
 
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -686,7 +686,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      std::unique_ptr<QgsRuleBasedRenderer::Rule> rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
+      auto rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -696,7 +696,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( 1, new QgsMarkerSymbol(), "id 1" ) );
       cats.append( QgsRendererCategory( 2, new QgsMarkerSymbol(), QString() ) );
       cats.append( QgsRendererCategory( QVariant(), new QgsMarkerSymbol(), QString() ) );
-      std::unique_ptr<QgsCategorizedSymbolRenderer> c = std::make_unique<QgsCategorizedSymbolRenderer>( "id", cats );
+      auto c = std::make_unique<QgsCategorizedSymbolRenderer>( "id", cats );
 
       QgsRuleBasedRenderer::refineRuleCategories( r2, c.get() );
       QCOMPARE( r2->children()[0]->filterExpression(), "\"id\" = 1" );
@@ -736,7 +736,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       // Test refining rule with ranges (refs #10815)
 
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -750,7 +750,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      std::unique_ptr<QgsRuleBasedRenderer::Rule> rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
+      auto rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -759,7 +759,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QList<QgsRendererRange> ranges;
       ranges.append( QgsRendererRange( 0, 1, new QgsMarkerSymbol(), "0-1" ) );
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
-      std::unique_ptr<QgsGraduatedSymbolRenderer> c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
+      auto c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
 
       QgsRuleBasedRenderer::refineRuleRanges( r2, c.get() );
       QCOMPARE( r2->children()[0]->filterExpression(), "\"id\" >= 0.0000 AND \"id\" <= 1.0000" );
@@ -791,7 +791,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       // Test converting categorised renderer to rule based
 
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -805,7 +805,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      std::unique_ptr<QgsRuleBasedRenderer::Rule> rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
+      auto rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -819,7 +819,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( "a\\b", new QgsMarkerSymbol(), "id a\\\\b" ) );
       cats.append( QgsRendererCategory( "a\tb", new QgsMarkerSymbol(), "id a\\tb" ) );
       cats.append( QgsRendererCategory( QVariantList( { "c", "d" } ), new QgsMarkerSymbol(), "c/d" ) );
-      std::unique_ptr<QgsCategorizedSymbolRenderer> c = std::make_unique<QgsCategorizedSymbolRenderer>( "id", cats );
+      auto c = std::make_unique<QgsCategorizedSymbolRenderer>( "id", cats );
 
       std::unique_ptr<QgsRuleBasedRenderer> r( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 7 );
@@ -881,7 +881,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      std::unique_ptr<QgsRuleBasedRenderer::Rule> rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
+      auto rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -895,7 +895,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( "a\\b", new QgsMarkerSymbol(), "id a\\\\b" ) );
       cats.append( QgsRendererCategory( "a\tb", new QgsMarkerSymbol(), "id a\\tb" ) );
       cats.append( QgsRendererCategory( QVariantList( { "c", "d" } ), new QgsMarkerSymbol(), "c/d" ) );
-      std::unique_ptr<QgsCategorizedSymbolRenderer> c = std::make_unique<QgsCategorizedSymbolRenderer>( "id", cats );
+      auto c = std::make_unique<QgsCategorizedSymbolRenderer>( "id", cats );
 
       std::unique_ptr<QgsRuleBasedRenderer> r( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 7 );
@@ -950,7 +950,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       // Test converting graduated renderer to rule based
 
       const QString shpFile = TEST_DATA_DIR + QStringLiteral( "/rectangles.shp" );
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( shpFile, QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
       QVERIFY( layer->isValid() );
       QgsField vfield = QgsField( QStringLiteral( "fa_cy-fie+ld" ), QMetaType::Type::Int );
       layer->addExpressionField( QStringLiteral( "\"id\"" ), vfield );
@@ -964,7 +964,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      std::unique_ptr<QgsRuleBasedRenderer::Rule> rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
+      auto rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -973,7 +973,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QList<QgsRendererRange> ranges;
       ranges.append( QgsRendererRange( 0, 1, new QgsMarkerSymbol(), "0-1" ) );
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
-      std::unique_ptr<QgsGraduatedSymbolRenderer> c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
+      auto c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
 
       std::unique_ptr<QgsRuleBasedRenderer> r( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
@@ -1027,7 +1027,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      std::unique_ptr<QgsRuleBasedRenderer::Rule> rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
+      auto rootrule = std::make_unique<QgsRuleBasedRenderer::Rule>( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -1036,7 +1036,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QList<QgsRendererRange> ranges;
       ranges.append( QgsRendererRange( 0, 1, new QgsMarkerSymbol(), "0-1" ) );
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
-      std::unique_ptr<QgsGraduatedSymbolRenderer> c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
+      auto c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
 
       std::unique_ptr<QgsRuleBasedRenderer> r( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
@@ -1081,7 +1081,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testConvertFromEmbedded()
     {
       // Test converting an embedded symbol renderer to a rule based renderer
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "points" ), QStringLiteral( "memory" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "points" ), QStringLiteral( "memory" ) );
       QVERIFY( layer->isValid() );
 
       QgsFeature f;
@@ -1120,7 +1120,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
     void testNullsCount()
     {
-      std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=number:int" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=number:int" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       QVERIFY( layer->isValid() );
 
       QgsFeature f( layer->fields() );
@@ -1153,7 +1153,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testLegendKeys()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-      std::unique_ptr<QgsRuleBasedRenderer> renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
+      auto renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
 
       QVERIFY( renderer->legendKeys().empty() );
 
@@ -1179,7 +1179,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testLegendKeysForFeature()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-      std::unique_ptr<QgsRuleBasedRenderer> renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
+      auto renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
       std::unique_ptr<QgsMarkerSymbol> symbol( QgsMarkerSymbol::createSimple( {} ) );
 
       QgsRuleBasedRenderer::Rule *lessThanTwoRule = new QgsRuleBasedRenderer::Rule( symbol->clone(), 0, 0, "\"Importance\" <= 2" );
@@ -1243,7 +1243,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testLegendKeyToExpression()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-      std::unique_ptr<QgsRuleBasedRenderer> renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
+      auto renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
 
       bool ok = false;
       QString exp = renderer->legendKeyToExpression( "xxxx", nullptr, ok );
@@ -1362,7 +1362,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
     void testElseRuleSld()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-      std::unique_ptr<QgsRuleBasedRenderer> renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
+      auto renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
 
       QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 1" );
       QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 6" );
@@ -1383,7 +1383,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QCOMPARE( exp, "NOT ((\"field_name\" = 1) OR (\"field_name\" = 6))" );
 
       QgsFields fields;
-      std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=field_name:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=field_name:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
       vl->setRenderer( renderer.release() );
       QString error;
       QDomDocument dom;

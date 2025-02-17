@@ -33,7 +33,7 @@ void QgsJoinByLocationSummaryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Join to features in" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  std::unique_ptr<QgsProcessingParameterEnum> predicateParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "PREDICATE" ), QObject::tr( "Where the features" ), QgsJoinByLocationAlgorithm::translatedPredicates(), true, 0 );
+  auto predicateParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "PREDICATE" ), QObject::tr( "Where the features" ), QgsJoinByLocationAlgorithm::translatedPredicates(), true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
@@ -66,7 +66,7 @@ void QgsJoinByLocationSummaryAlgorithm::initAlgorithm( const QVariantMap & )
                 << QObject::tr( "max_length" )
                 << QObject::tr( "mean_length" );
 
-  std::unique_ptr<QgsProcessingParameterEnum> summaryParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "SUMMARIES" ), QObject::tr( "Summaries to calculate (leave empty to use all available)" ), mAllSummaries, true, QVariant(), true );
+  auto summaryParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "SUMMARIES" ), QObject::tr( "Summaries to calculate (leave empty to use all available)" ), mAllSummaries, true, QVariant(), true );
   addParameter( summaryParam.release() );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ), QObject::tr( "Discard records which could not be joined" ), false ) );

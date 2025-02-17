@@ -39,6 +39,8 @@ class TestQgsHttpheaders : public QObject
     void init() {}            // will be called before each testfunction is executed.
     void cleanup() {}         // will be called after every testfunction.
 
+    void equality();
+
     void sanitize();
 
     void setFromSettingsGoodKey();
@@ -56,6 +58,44 @@ class TestQgsHttpheaders : public QObject
 
 void TestQgsHttpheaders::initTestCase()
 {
+}
+
+void TestQgsHttpheaders::equality()
+{
+  QgsHttpHeaders headers1;
+  QgsHttpHeaders headers2;
+  QVERIFY( headers1 == headers2 );
+  QVERIFY( !( headers1 != headers2 ) );
+
+  headers1.insert( QStringLiteral( "Content-Type" ), QStringLiteral( "application/json" ) );
+  QVERIFY( !( headers1 == headers2 ) );
+  QVERIFY( headers1 != headers2 );
+  headers2.insert( QStringLiteral( "Content-Type" ), QStringLiteral( "application/json" ) );
+  QVERIFY( headers1 == headers2 );
+  QVERIFY( !( headers1 != headers2 ) );
+
+  headers1.insert( QStringLiteral( "Accept" ), QStringLiteral( "text/html" ) );
+  QVERIFY( !( headers1 == headers2 ) );
+  QVERIFY( headers1 != headers2 );
+  headers2.insert( QStringLiteral( "Accept" ), QStringLiteral( "text/html" ) );
+  QVERIFY( headers1 == headers2 );
+  QVERIFY( !( headers1 != headers2 ) );
+
+  // different header values
+  headers1.insert( QStringLiteral( "Content-Type" ), QStringLiteral( "text/plain" ) );
+  QVERIFY( !( headers1 == headers2 ) );
+  QVERIFY( headers1 != headers2 );
+
+  // empty value
+  QgsHttpHeaders headers3;
+  headers3.insert( QStringLiteral( "Content-Type" ), QString( "" ) );
+  QgsHttpHeaders headers4;
+  QVERIFY( !( headers3 == headers4 ) );
+  QVERIFY( headers3 != headers4 );
+
+  headers4.insert( QStringLiteral( "Content-Type" ), "xxx" );
+  QVERIFY( !( headers3 == headers4 ) );
+  QVERIFY( headers3 != headers4 );
 }
 
 void TestQgsHttpheaders::sanitize()
@@ -272,7 +312,8 @@ void TestQgsHttpheaders::updateSetDomElement()
   QDomElement element = doc.createElement( "qgs" );
   // === update
   QgsHttpHeaders h( QVariantMap( { { QStringLiteral( "key1" ), "value1" }, { QgsHttpHeaders::KEY_REFERER, "my_ref" } } ) );
-  h.updateDomElement( element );
+  QMap<QString, QString> namespaceDeclarations;
+  h.updateDomElement( element, namespaceDeclarations );
 
   QVERIFY( element.hasAttribute( QgsHttpHeaders::PARAM_PREFIX + "key1" ) );
   QCOMPARE( element.attribute( QgsHttpHeaders::PARAM_PREFIX + "key1" ), "value1" );
@@ -283,6 +324,8 @@ void TestQgsHttpheaders::updateSetDomElement()
   // TODO mandatory or not?
   QVERIFY( element.hasAttribute( QgsHttpHeaders::KEY_REFERER ) );
   QCOMPARE( element.attribute( QgsHttpHeaders::KEY_REFERER ), "my_ref" );
+
+  QCOMPARE( namespaceDeclarations["http-header"], "https://qgis.org/http-header" );
 
   // === setFrom
   QgsHttpHeaders h2;

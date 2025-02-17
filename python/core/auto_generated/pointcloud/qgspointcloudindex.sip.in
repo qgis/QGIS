@@ -169,6 +169,7 @@ index is memory safe.
 
     operator bool() const;
 
+
     void load( const QString &fileName );
 %Docstring
 Loads the index from the file
@@ -355,9 +356,11 @@ in an implementation-specific dynamic structure.
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.extraMetadata`
 %End
 
-    bool commitChanges();
+    bool commitChanges( QString *errorMessage /Out/ = 0 );
 %Docstring
 Tries to store pending changes to the data provider.
+If errorMessage is not a null pointer, it will receive
+an error message in case the call failed.
 
 :return: ``True`` on success, otherwise ``False``
 %End
@@ -365,6 +368,11 @@ Tries to store pending changes to the data provider.
     bool isModified() const;
 %Docstring
 Returns ``True`` if there are uncommitted changes, ``False`` otherwise
+%End
+
+    QList<QgsPointCloudNodeId> updatedNodes() const;
+%Docstring
+Returns a list of node IDs that have been modified
 %End
 
 };

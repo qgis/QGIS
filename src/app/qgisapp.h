@@ -2249,7 +2249,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true );
 
-    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &newFilename, bool addToCanvas, const QString &layerName, const QString &encoding, const QString &vectorFileName )> &onSuccess, const std::function<void( int error, const QString &errorMessage )> &onFailure, QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::Option::AllOptions, const QString &dialogTitle = QString() );
+    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &newFilename, bool addToCanvas, const QString &layerName, const QString &encoding, const QString &vectorFileName )> &onSuccess, const std::function<void( int error, const QString &errorMessage, const QString &filePath )> &onFailure, QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::Option::AllOptions, const QString &dialogTitle = QString() );
 
     QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer );
 
@@ -2297,6 +2297,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Closes any existing 3D map docks
     void closeAdditional3DMapCanvases();
+
+    //! Updates current layer related actions on all open 3d views
+    void update3DMapViewsLayerRelatedActions();
 
     QgsElevationProfileWidget *createNewElevationProfile();
 
@@ -2379,6 +2382,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool toggleEditingMeshLayer( QgsMeshLayer *vlayer, bool allowCancel = true );
 
     /**
+     * Starts/stops for a point cloud layer \a pclayer
+     */
+    bool toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool allowCancel = true );
+
+    /**
      * Saves edits of a vector layer
      * \param leaveEditable leave the layer in editing mode when done
      * \param triggerRepaint send layer signal to repaint canvas when done
@@ -2393,6 +2401,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     /**
+     * Saves edits of a point cloud layer
+     * \param leaveEditable leave the layer in editing mode when done
+     * \param triggerRepaint send layer signal to repaint canvas when done
+     */
+    void savePointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
+
+    /**
      * Cancels edits of a vector layer
      * \param leaveEditable leave the layer in editing mode when done
      * \param triggerRepaint send layer signal to repaint canvas when done
@@ -2405,6 +2420,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param triggerRepaint send layer signal to repaint canvas when done
      */
     void cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
+
+    /**
+     * Cancels edits of a point cloud layer
+     * \param leaveEditable leave the layer in editing mode when done
+     * \param triggerRepaint send layer signal to repaint canvas when done
+     */
+    void cancelPointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     /**
      * Enables/Disables mesh frame editing tools

@@ -11,7 +11,7 @@ __date__ = "18/4/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 
-from qgis.core import QgsEllipsoidUtils, QgsProjUtils
+from qgis.core import QgsEllipsoidUtils
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -105,11 +105,7 @@ class TestQgsEllipsoidUtils(QgisTestCase):
         self.assertEqual(gany_defs.acronym, gany_id)
         self.assertEqual(gany_defs.description, "Ganymede 2000 IAU IAG (ESRI:107916)")
 
-        if QgsProjUtils.projVersionMajor() > 8 or (
-            QgsProjUtils.projVersionMajor() == 8
-            and QgsProjUtils.projVersionMinor() >= 1
-        ):
-            self.assertEqual(gany_defs.celestialBodyName, "Ganymede")
+        self.assertEqual(gany_defs.celestialBodyName, "Ganymede")
 
         self.assertTrue(gany_defs.parameters.valid)
         self.assertEqual(gany_defs.parameters.semiMajor, 2632345.0)
@@ -118,13 +114,6 @@ class TestQgsEllipsoidUtils(QgisTestCase):
         self.assertFalse(gany_defs.parameters.useCustomParameters)
         self.assertEqual(gany_defs.parameters.crs.authid(), "")
 
-    @unittest.skipIf(
-        QgsProjUtils.projVersionMajor() < 8
-        or (
-            QgsProjUtils.projVersionMajor() == 8 and QgsProjUtils.projVersionMinor() < 1
-        ),
-        "Not a proj >= 8.1 build",
-    )
     def testCelestialBodies(self):
         bodies = QgsEllipsoidUtils.celestialBodies()
 

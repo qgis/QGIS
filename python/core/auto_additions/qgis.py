@@ -2521,6 +2521,21 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterT
 # --
 Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.UriCleaningFlag.RemoveCredentials.__doc__ = "Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag."
+Qgis.UriCleaningFlag.RedactCredentials.__doc__ = "Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag."
+Qgis.UriCleaningFlag.__doc__ = """Flags for cleaning layer URIs.
+
+.. versionadded:: 3.42
+
+* ``RemoveCredentials``: Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag.
+* ``RedactCredentials``: Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag.
+
+"""
+# --
+Qgis.UriCleaningFlag.baseClass = Qgis
+Qgis.UriCleaningFlags.baseClass = Qgis
+UriCleaningFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
@@ -11055,6 +11070,23 @@ Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
 """
 # --
 Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SegmentCalculationMethod.Standard.__doc__ = "Standard sagitta-based calculation"
+Qgis.SegmentCalculationMethod.Adaptive.__doc__ = "Adaptive calculation based on radius size"
+Qgis.SegmentCalculationMethod.AreaError.__doc__ = "Calculation based on area error"
+Qgis.SegmentCalculationMethod.ConstantDensity.__doc__ = "Simple calculation with constant segment density"
+Qgis.SegmentCalculationMethod.__doc__ = """brief Method used to calculate the number of segments for circle approximation
+
+.. versionadded:: 3.44
+
+* ``Standard``: Standard sagitta-based calculation
+* ``Adaptive``: Adaptive calculation based on radius size
+* ``AreaError``: Calculation based on area error
+* ``ConstantDensity``: Simple calculation with constant segment density
+
+"""
+# --
+Qgis.SegmentCalculationMethod.baseClass = Qgis
 from enum import Enum
 
 

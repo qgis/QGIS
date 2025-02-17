@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###########################################################################
-#    qstringfixup.py
+#    code_fixup.py
 #    ---------------
 #    Date                 : October 2020
 #    Copyright            : (C) 2020 by Even Rouault
@@ -26,14 +26,15 @@
 # DEALINGS IN THE SOFTWARE.
 ###########################################################################
 
-# This script fixes several suboptimal uses of QStringLiteral where QLatin1String would be better
+# This script fixes several suboptimal uses of QStringLiteral where QLatin1String would be better,
+# and other auto code-cleaning operations (such as use of auto with std::make_unique)
 # It is not automatically run yet.
 
 # Run it on whole code base with:
-# ../scripts/qstringfixup.sh --all
+# ../scripts/code_fixup.sh --all
 
 # or on modified files only with:
-# ../scripts/qstringfixup.sh
+# ../scripts/code_fixup.sh
 
 import re
 import sys
@@ -91,6 +92,16 @@ join = re.compile(rf"""(.*)\.join\( {qsl} \)(.*)""")
 # if QT >= 5.14 .compare would be ok
 qlatin1str_single_char = re.compile(
     r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|\+=) QLatin1String\( ("[^"]") \)(.*)"""
+)
+
+make_unique_shared = re.compile(
+    r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>(\s*.*?\s*=\s*std::make_(?:unique|shared)<\s*(.*?)\s*>.*)$"""
+)
+make_unique_shared2 = re.compile(
+    r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*(std::make_(?:unique|shared)<\s*(.*?)\s*>.*?)\s*\)\s*;$"""
+)
+make_unique3 = re.compile(
+    r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*new\s*(.*?)\s*(\(.*\s*\))\s*\)\s*;"""
 )
 
 
@@ -224,6 +235,27 @@ while i < len(lines):
             line = newline
         else:
             break
+
+    m = make_unique_shared.match(line)
+    if m and m.group(2) == m.group(4):
+        line = m.group(1) + "auto" + m.group(3)
+
+    m = make_unique_shared2.match(line)
+    if m and m.group(2) == m.group(5):
+        line = m.group(1) + "auto " + m.group(3) + " = " + m.group(4) + ";"
+
+    m = make_unique3.match(line)
+    if m and m.group(2) == m.group(4):
+        line = (
+            m.group(1)
+            + "auto "
+            + m.group(3)
+            + " = std::make_unique<"
+            + m.group(4)
+            + ">"
+            + m.group(5)
+            + ";"
+        )
 
     print(line)
     i += 1

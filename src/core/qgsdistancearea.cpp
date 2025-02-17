@@ -542,7 +542,7 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
   if ( QgsWkbTypes::isCurvedType( g.wkbType() ) )
     g.convertToStraightSegment();
 
-  std::unique_ptr< QgsMultiLineString > res = std::make_unique< QgsMultiLineString >();
+  auto res = std::make_unique< QgsMultiLineString >();
   for ( auto part = g.const_parts_begin(); part != g.const_parts_end(); ++part )
   {
     const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( *part );

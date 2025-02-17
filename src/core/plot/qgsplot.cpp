@@ -784,26 +784,26 @@ QgsNumericFormat *QgsPlotDefaultSettings::axisLabelNumericFormat()
 
 QgsLineSymbol *QgsPlotDefaultSettings::axisGridMajorSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > gridMajor = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20, 150 ), 0.1 );
+  auto gridMajor = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20, 150 ), 0.1 );
   gridMajor->setPenCapStyle( Qt::FlatCap );
   return new QgsLineSymbol( QgsSymbolLayerList( { gridMajor.release() } ) );
 }
 
 QgsLineSymbol *QgsPlotDefaultSettings::axisGridMinorSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > gridMinor = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20, 50 ), 0.1 );
+  auto gridMinor = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20, 50 ), 0.1 );
   gridMinor->setPenCapStyle( Qt::FlatCap );
   return new QgsLineSymbol( QgsSymbolLayerList( { gridMinor.release() } ) );
 }
 
 QgsFillSymbol *QgsPlotDefaultSettings::chartBackgroundSymbol()
 {
-  std::unique_ptr< QgsSimpleFillSymbolLayer > chartFill = std::make_unique< QgsSimpleFillSymbolLayer >( QColor( 255, 255, 255 ) );
+  auto chartFill = std::make_unique< QgsSimpleFillSymbolLayer >( QColor( 255, 255, 255 ) );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartFill.release() } ) );
 }
 
 QgsFillSymbol *QgsPlotDefaultSettings::chartBorderSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > chartBorder = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20 ), 0.1 );
+  auto chartBorder = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20 ), 0.1 );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartBorder.release() } ) );
 }

@@ -852,7 +852,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
   const int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
-  std::unique_ptr<QgsExpression> exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
+  auto exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
   da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() ); // skip-keyword-check

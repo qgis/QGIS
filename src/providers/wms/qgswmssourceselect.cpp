@@ -78,9 +78,6 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( mLayersFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterLayers );
   connect( mTilesetsFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterTiles );
-  connect( mLoadLayersIndividuallyCheckBox, &QCheckBox::toggled, leLayerName, &QLineEdit::setDisabled );
-
-  leLayerName->setDisabled( mLoadLayersIndividuallyCheckBox->isChecked() );
 
   // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
@@ -299,9 +296,10 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
   const QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
   mLayerProperties = layers;
 
-  QString defaultEncoding = QgsSettings().value( "qgis/WMSDefaultFormat", "" ).toString();
+  QString defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
 
   bool first = true;
+  bool found = false;
   QSet<QString> alreadyAddedLabels;
   const auto supportedImageEncodings = capabilities.supportedImageEncodings();
   for ( const QString &encoding : supportedImageEncodings )
@@ -323,7 +321,11 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     mImageFormatGroup->button( id )->setVisible( true );
     if ( first || encoding == defaultEncoding )
     {
-      mImageFormatGroup->button( id )->setChecked( true );
+      if ( !found )
+      {
+        mImageFormatGroup->button( id )->setChecked( true );
+        found = true;
+      }
       first = false;
     }
   }
@@ -611,6 +613,8 @@ void QgsWMSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "crs" ), crs );
   QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
 
+  QgsSettings().setValue( QStringLiteral( "/qgis/lastWmsImageEncoding" ), format );
+
   // Remove in case the default value from the connection settings
   // is being overridden here
   uri.removeParam( QStringLiteral( "featureCount" ) );
@@ -644,9 +648,9 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "styles" ), styles );
 
     Q_NOWARN_DEPRECATED_PUSH
-    emit addRasterLayer( uri.encodedUri(), leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(), QStringLiteral( "wms" ) );
+    emit addRasterLayer( uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), QStringLiteral( "wms" ) );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(), QStringLiteral( "wms" ) );
+    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), QStringLiteral( "wms" ) );
   }
 }
 
@@ -1036,18 +1040,12 @@ void QgsWMSSourceSelect::updateButtons()
       QString tileLayerName = item->data( Qt::UserRole + 5 ).toString();
       if ( tileLayerName.isEmpty() )
         tileLayerName = item->data( Qt::UserRole + 0 ).toString();
-      leLayerName->setText( tileLayerName );
     }
     else
     {
       QStringList layers, styles, titles;
       collectSelectedLayers( layers, styles, titles );
-      leLayerName->setText( titles.join( QLatin1Char( '/' ) ) );
     }
-  }
-  else
-  {
-    leLayerName->setText( "" );
   }
 }
 

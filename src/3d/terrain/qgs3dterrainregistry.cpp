@@ -76,7 +76,7 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( Q
 {
   if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
   {
-    std::unique_ptr<QgsFlatTerrainSettings> flatTerrain = std::make_unique<QgsFlatTerrainSettings>();
+    auto flatTerrain = std::make_unique<QgsFlatTerrainSettings>();
     flatTerrain->setElevationOffset( properties->terrainProvider()->offset() );
     return flatTerrain.release();
   }
@@ -84,7 +84,7 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( Q
   {
     QgsRasterDemTerrainProvider *rasterProvider = qgis::down_cast<QgsRasterDemTerrainProvider *>( properties->terrainProvider() );
 
-    std::unique_ptr<QgsDemTerrainSettings> demTerrain = std::make_unique<QgsDemTerrainSettings>();
+    auto demTerrain = std::make_unique<QgsDemTerrainSettings>();
     demTerrain->setLayer( rasterProvider->layer() );
     demTerrain->setElevationOffset( properties->terrainProvider()->offset() );
     demTerrain->setVerticalScale( properties->terrainProvider()->scale() );
@@ -94,7 +94,7 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( Q
   {
     QgsMeshTerrainProvider *meshProvider = qgis::down_cast<QgsMeshTerrainProvider *>( properties->terrainProvider() );
 
-    std::unique_ptr<QgsMeshTerrainSettings> meshTerrain = std::make_unique<QgsMeshTerrainSettings>();
+    auto meshTerrain = std::make_unique<QgsMeshTerrainSettings>();
     meshTerrain->setLayer( meshProvider->layer() );
     meshTerrain->setElevationOffset( properties->terrainProvider()->offset() );
     meshTerrain->setVerticalScale( properties->terrainProvider()->scale() );
@@ -102,7 +102,7 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( Q
   }
   else
   {
-    std::unique_ptr<QgsFlatTerrainSettings> flatTerrain = std::make_unique<QgsFlatTerrainSettings>();
+    auto flatTerrain = std::make_unique<QgsFlatTerrainSettings>();
     return flatTerrain.release();
   }
 }

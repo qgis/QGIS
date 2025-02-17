@@ -35,7 +35,7 @@ QgsPolygon3DSymbol::~QgsPolygon3DSymbol() = default;
 
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
 {
-  std::unique_ptr<QgsPolygon3DSymbol> result = std::make_unique<QgsPolygon3DSymbol>();
+  auto result = std::make_unique<QgsPolygon3DSymbol>();
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
   result->mOffset = mOffset;

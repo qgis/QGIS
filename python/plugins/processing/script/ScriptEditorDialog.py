@@ -27,6 +27,7 @@ import warnings
 
 from qgis.PyQt import uic, sip
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QPalette
 from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QVBoxLayout
 
 from qgis.gui import QgsGui, QgsErrorDialog, QgsCodeEditorWidget
@@ -116,7 +117,10 @@ class ScriptEditorDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon("/mActionDecreaseFont.svg")
         )
         self.actionToggleComment.setIcon(
-            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
+            QgsApplication.getThemeIcon(
+                "console/iconCommentEditorConsole.svg",
+                self.palette().color(QPalette.ColorRole.WindowText),
+            )
         )
 
         # Connect signals and slots
