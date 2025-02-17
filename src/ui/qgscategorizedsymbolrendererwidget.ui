@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>424</width>
+    <width>471</width>
     <height>368</height>
    </rect>
   </property>
@@ -25,7 +25,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
@@ -156,6 +156,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnDeleteUnusedCategories">
+       <property name="text">
+        <string>Delete Unused</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -202,19 +209,19 @@
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorRampButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorrampbutton.h</header>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -229,6 +236,7 @@
   <tabstop>btnAdvanced</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
