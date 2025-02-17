@@ -50,21 +50,25 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   if ( QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
-    menu->addAction( actionRefresh );
-
-    menu->addSeparator();
-
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsPGConnectionItem *> pgConnectionItems = QgsDataItem::filteredItems<QgsPGConnectionItem>( selection );
+
+    if ( pgConnectionItems.size() == 1 )
+    {
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+      menu->addAction( actionRefresh );
+
+      menu->addSeparator();
+
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( pgConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [pgConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( pgConnectionItems, []( const QString &connectionName ) {
@@ -73,11 +77,14 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     } );
     menu->addAction( actionDelete );
 
-    menu->addSeparator();
+    if ( pgConnectionItems.size() == 1 )
+    {
+      menu->addSeparator();
 
-    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
-    connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
-    menu->addAction( actionCreateSchema );
+      QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
+      connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
+      menu->addAction( actionCreateSchema );
+    }
   }
 
   if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
