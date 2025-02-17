@@ -109,9 +109,6 @@ Qgs3DAxisRenderView::Qgs3DAxisRenderView( QObject *parent, const QString &viewNa
 
   // update viewport size
   onViewportSizeUpdate();
-
-  connect( mCanvas, &Qgs3DMapCanvas::widthChanged, this, &Qgs3DAxisRenderView::onViewportSizeUpdate );
-  connect( mCanvas, &Qgs3DMapCanvas::heightChanged, this, &Qgs3DAxisRenderView::onViewportSizeUpdate );
 }
 
 Qt3DRender::QViewport *Qgs3DAxisRenderView::viewport() const
@@ -139,13 +136,18 @@ Qt3DRender::QCamera *Qgs3DAxisRenderView::labelCamera() const
   return mLabelCamera;
 }
 
+void Qgs3DAxisRenderView::updateWindowResize( int width, int height )
+{
+  onViewportSizeUpdate( width, height );
+}
 
-void Qgs3DAxisRenderView::onViewportSizeUpdate( int )
+
+void Qgs3DAxisRenderView::onViewportSizeUpdate( int width, int height )
 {
   Qgs3DAxisSettings settings = mMapSettings->get3DAxisSettings();
 
-  double windowWidth = ( double ) mCanvas->width();
-  double windowHeight = ( double ) mCanvas->height();
+  double windowWidth = static_cast<double>( width );
+  double windowHeight = static_cast<double>( height );
 
   if ( 2 <= QgsLogger::debugLevel() )
   {

@@ -47,11 +47,8 @@
 #include "qgsframegraph.h"
 #include "qgsabstractterrainsettings.h"
 
-Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas,           //
-                      Qt3DCore::QEntity *parent3DScene, //
-                      Qgs3DMapScene *mapScene,          //
-                      QgsCameraController *cameraCtrl,  //
-                      Qgs3DMapSettings *map )
+Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, //
+                      QgsCameraController *cameraCtrl, Qgs3DMapSettings *map )
   : QObject( canvas )
   , mMapSettings( map )
   , mCanvas( canvas )
@@ -69,8 +66,6 @@ Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas,           //
   mTwoDLabelSceneEntity->addComponent( mRenderView->labelLayer() );
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::onCameraUpdate );
-  connect( mCanvas, &Qgs3DMapCanvas::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
-  connect( mCanvas, &Qgs3DMapCanvas::heightChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
   // callback for Qgs3DAxisRenderView::onViewportSizeUpdate:
   connect( mRenderView, &Qgs3DAxisRenderView::viewportScaleFactorChanged, this, &Qgs3DAxis::onViewportScaleFactorChanged );
 
@@ -930,9 +925,9 @@ void Qgs3DAxis::onAxisSettingsChanged()
   onAxisViewportSizeUpdate();
 }
 
-void Qgs3DAxis::onAxisViewportSizeUpdate( int )
+void Qgs3DAxis::onAxisViewportSizeUpdate()
 {
-  mRenderView->onViewportSizeUpdate(); // will call onViewportScaleFactorChanged as callback
+  mRenderView->onViewportSizeUpdate( mCanvas->width(), mCanvas->height() ); // will call onViewportScaleFactorChanged as callback
 
   // mRenderView->onViewportSizeUpdate() has updated `mTwoDLabelCamera` lens parameters.
   // The position of the labels needs to be updated.

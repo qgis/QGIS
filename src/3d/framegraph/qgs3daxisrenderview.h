@@ -82,6 +82,8 @@ class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
     //! Returns camera used for billboarded labels
     Qt3DRender::QCamera *labelCamera() const;
 
+    virtual void updateWindowResize( int width, int height ) override;
+
   public slots:
     //! Updates viewport horizontal \a position
     void onHorizontalPositionChanged( Qt::AnchorPoint position );
@@ -89,8 +91,8 @@ class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
     //! Updates viewport vertical \a position
     void onVerticalPositionChanged( Qt::AnchorPoint position );
 
-    //! Updates viewport \a size
-    void onViewportSizeUpdate( int size = 0 );
+    //! Updates viewport \a size. Uses canvas size by default.
+    void onViewportSizeUpdate( int width = -1, int height = -1 );
 
   signals:
     //! Emits new viewport scale factor when it change

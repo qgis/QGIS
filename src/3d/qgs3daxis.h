@@ -31,13 +31,13 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include <QtWidgets/QMenu>
-#include "qgs3daxisrenderview.h"
 #include "qgs3daxissettings.h"
 
 #define SIP_NO_FILE
 
 class QgsCameraController;
 class Qgs3DMapScene;
+class Qgs3DAxisRenderView;
 
 /**
  * \ingroup 3d
@@ -86,7 +86,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
   private slots:
 
     void onCameraUpdate();
-    void onAxisViewportSizeUpdate( int val = 0 );
+    void onAxisViewportSizeUpdate();
     void onViewportScaleFactorChanged( double scaleFactor );
 
     // axis picking and menu
