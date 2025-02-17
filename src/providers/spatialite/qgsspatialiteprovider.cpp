@@ -365,7 +365,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
   dsUri.setDataSource( QString(), tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri(), providerOptions );
+  auto provider = std::make_unique< QgsSpatiaLiteProvider >( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
     QgsDebugError( "The layer " + tableName + " just created is not valid or not supported by the provider." );
@@ -373,7 +373,6 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
       *errorMessage = QObject::tr( "loading of the layer %1 failed" )
                         .arg( tableName );
 
-    delete provider;
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
@@ -408,7 +407,6 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
           *errorMessage = QObject::tr( "unsupported type for field %1" )
                             .arg( fld.name() );
 
-        delete provider;
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
@@ -427,7 +425,6 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
       if ( errorMessage )
         *errorMessage = QObject::tr( "creation of fields failed" );
 
-      delete provider;
       return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
