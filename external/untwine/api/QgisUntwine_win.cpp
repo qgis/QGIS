@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "QgisUntwine.hpp"
+#include "../untwine/windows/stringconv.hpp" // untwine/os
 
 namespace untwine
 {
@@ -40,9 +41,8 @@ bool QgisUntwine::start(Options& options)
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
     **/
 
-    std::vector<char> ncCmdline(cmdline.begin(), cmdline.end());
-    ncCmdline.push_back((char)0);
-    bool ok = CreateProcess(m_path.c_str(), ncCmdline.data(),
+    auto ncCmdline = os::toNative(cmdline);
+    bool ok = CreateProcess(os::toNative(m_path).c_str(), ncCmdline.data(),
         NULL, /* process attributes */
         NULL, /* thread attributes */
         TRUE, /* inherit handles */
