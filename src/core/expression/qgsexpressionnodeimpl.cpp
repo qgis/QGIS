@@ -749,7 +749,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
       }
       else if ( QgsExpressionNodeInOperator *inOp = dynamic_cast<QgsExpressionNodeInOperator *>( node ) )
       {
-        if ( inOp->node()->nodeType() != QgsExpressionNode::ntColumnRef )
+        if ( inOp->isNotIn() || inOp->node()->nodeType() != QgsExpressionNode::ntColumnRef )
         {
           return false;
         }
