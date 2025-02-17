@@ -311,6 +311,9 @@ bool QgsPointCloudClassifiedRendererModel::dropMimeData( const QMimeData *data, 
     rows.append( r );
   }
 
+  // Items may come unsorted depending on selecion order
+  std::sort( rows.begin(), rows.end() );
+
   int to = row;
   // to is -1 if dragged outside items, i.e. below any item,
   // then move to the last position
