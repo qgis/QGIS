@@ -342,6 +342,7 @@ bool QgsPointCloudClassifiedRendererModel::dropMimeData( const QMimeData *data, 
   }
   emit dataChanged( createIndex( 0, 0 ), createIndex( mCategories.size(), 0 ) );
   emit categoriesChanged();
+  emit categoriesMoved();
   return false;
 }
 
@@ -428,6 +429,7 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged, this, &QgsPointCloudClassifiedRendererWidget::attributeChanged );
   connect( mModel, &QgsPointCloudClassifiedRendererModel::categoriesChanged, this, &QgsPointCloudClassifiedRendererWidget::emitWidgetChanged );
+  connect( mModel, &QgsPointCloudClassifiedRendererModel::categoriesMoved, this, &QgsPointCloudClassifiedRendererWidget::rowsMoved );
 
   connect( viewCategories, &QAbstractItemView::doubleClicked, this, &QgsPointCloudClassifiedRendererWidget::categoriesDoubleClicked );
   connect( btnAddCategories, &QAbstractButton::clicked, this, &QgsPointCloudClassifiedRendererWidget::addCategories );
@@ -707,6 +709,11 @@ void QgsPointCloudClassifiedRendererWidget::changeCategoryPointSize()
       mModel->setCategoryPointSize( row, size );
     }
   }
+}
+
+void QgsPointCloudClassifiedRendererWidget::rowsMoved()
+{
+  viewCategories->selectionModel()->clear();
 }
 
 QList<int> QgsPointCloudClassifiedRendererWidget::selectedCategories()
