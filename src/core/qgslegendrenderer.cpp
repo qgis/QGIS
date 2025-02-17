@@ -206,6 +206,8 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
   if ( !rootGroup )
     return size;
 
+  mSettings.updateDataDefinedProperties( context );
+
   // temporarily remove painter from context -- we don't need to actually draw anything yet. But we DO need
   // to send the full render context so that an expression context is available during the size calculation
   QgsScopedRenderContextPainterSwap noPainter( context, nullptr );

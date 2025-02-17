@@ -163,6 +163,14 @@ Reads the component's style definition from an XML element.
 .. seealso:: :py:func:`writeXml`
 %End
 
+    void updateDataDefinedProperties( QgsRenderContext &context );
+%Docstring
+Updates any data-defined properties in the style, using the specified
+render ``context``.
+
+.. versionadded:: 3.42
+%End
+
     static QString styleName( Style s );
 %Docstring
 Returns the name for a style component as a string.

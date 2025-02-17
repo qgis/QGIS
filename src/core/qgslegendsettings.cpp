@@ -64,6 +64,14 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
 }
 
+void QgsLegendSettings::updateDataDefinedProperties( QgsRenderContext &context )
+{
+  rstyle( QgsLegendStyle::Title ).updateDataDefinedProperties( context );
+  rstyle( QgsLegendStyle::Group ).updateDataDefinedProperties( context );
+  rstyle( QgsLegendStyle::Subgroup ).updateDataDefinedProperties( context );
+  rstyle( QgsLegendStyle::SymbolLabel ).updateDataDefinedProperties( context );
+}
+
 QColor QgsLegendSettings::fontColor() const
 {
   return style( QgsLegendStyle::SymbolLabel ).textFormat().color();
