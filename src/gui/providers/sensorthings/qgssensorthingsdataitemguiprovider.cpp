@@ -30,15 +30,19 @@ void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item,
 {
   if ( QgsSensorThingsConnectionItem *connectionItem = qobject_cast<QgsSensorThingsConnectionItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsSensorThingsConnectionItem *> stConnectionItems = QgsDataItem::filteredItems<QgsSensorThingsConnectionItem>( selection );
+
+    if ( stConnectionItems.size() == 1 )
+    {
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [stConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString &connectionName ) { QgsSensorThingsProviderConnection( QString() ).remove( connectionName ); }, context );
