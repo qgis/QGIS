@@ -336,6 +336,16 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::groupBoxItem( const QString
   return mGroupBoxItems.value( uuid );
 }
 
+QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::childAlgorithmItem( const QString &childId  ) 
+{
+  return mChildAlgorithmItems.value( childId );
+}
+
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::parameterItem( const QString &name ) 
+{
+  return mParameterItems.value( name );
+}
+
 void QgsModelGraphicsScene::selectAll()
 {
   //select all items in scene

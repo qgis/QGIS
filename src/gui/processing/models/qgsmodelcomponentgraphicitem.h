@@ -236,6 +236,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge SIP_OUT ) const;
 
     /**
+     * Return the output socket graphics items associated with the model Keep in sync with 
+     * the underlying component
+     */ 
+    QgsModelDesignerSocketGraphicItem * outSocketAt( int index ) {return mOutSockets.at(index); }
+
+
+    /**
      * Called when the comment attached to the item should be edited.
      *
      * The default implementation does nothing.
