@@ -109,6 +109,22 @@ bool QgsDateTimeEdit::event( QEvent *event )
     mClearAction->setVisible( !isReadOnly() && mAllowNull && ( !mIsNull || mIsEmpty ) );
   }
 
+  // Fix wrong internal logic of Qt when pasting text with selected text
+  // when the selection starts in a different position than the stored cursor
+  // position (which selects the currently active section of the date widget)
+  // See: https://github.com/qgis/QGIS/issues/53149
+  if ( event->type() == QEvent::KeyPress )
+  {
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+    if ( keyEvent->matches( QKeySequence::Paste ) && lineEdit()->hasSelectedText() )
+    {
+      const int selectionStart { lineEdit()->selectionStart() };
+      const int selectionEnd { lineEdit()->selectionEnd() };
+      lineEdit()->setCursorPosition( selectionStart );
+      lineEdit()->setSelection( selectionStart, selectionEnd );
+    }
+  }
+
   return QDateTimeEdit::event( event );
 }
 
