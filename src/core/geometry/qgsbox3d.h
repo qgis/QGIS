@@ -77,11 +77,7 @@ class CORE_EXPORT QgsBox3D
       sipIsErr = 0;
 
       QgsRectangle *p = reinterpret_cast<QgsRectangle *>( sipConvertToType( a0, sipType_QgsRectangle, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( p, sipType_QgsRectangle, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         double z1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
         double z2 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
@@ -89,6 +85,7 @@ class CORE_EXPORT QgsBox3D
 
         sipCpp = new QgsBox3D( *p, z1, z2, n );
       }
+      sipReleaseType( p, sipType_QgsRectangle, state );
     }
     else if ( sipCanConvertToType( a0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsPoint, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
@@ -96,23 +93,17 @@ class CORE_EXPORT QgsBox3D
       sipIsErr = 0;
 
       QgsPoint *pt1 = reinterpret_cast<QgsPoint *>( sipConvertToType( a0, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( pt1, sipType_QgsPoint, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         QgsPoint *pt2 = reinterpret_cast<QgsPoint *>( sipConvertToType( a1, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-        if ( sipIsErr )
-        {
-          sipReleaseType( pt2, sipType_QgsPoint, state );
-        }
-        else
+        if ( !sipIsErr )
         {
           bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
           sipCpp = new QgsBox3D( *pt1, *pt2, n );
         }
+        sipReleaseType( pt2, sipType_QgsPoint, state );
       }
+      sipReleaseType( pt1, sipType_QgsPoint, state );
     }
     else if (
       ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
