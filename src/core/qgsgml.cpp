@@ -793,21 +793,21 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
             localNameLen == static_cast<int>( strlen( "Polygon" ) ) && memcmp( pszLocalName, "Polygon", localNameLen ) == 0 )
   {
     isGeom = true;
-    mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
+    mCurrentWKBFragments.push_back( QList<QByteArray>() );
   }
   else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "MultiPoint" ) )
   {
     isGeom = true;
     mParseModeStack.push( QgsGmlStreamingParser::MultiPoint );
     //we need one nested list for intermediate WKB
-    mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
+    mCurrentWKBFragments.push_back( QList<QByteArray>() );
   }
   else if ( !mAttributeValIsNested && isGMLNS && ( LOCALNAME_EQUALS( "MultiLineString" ) || LOCALNAME_EQUALS( "MultiCurve" ) ) )
   {
     isGeom = true;
     mParseModeStack.push( QgsGmlStreamingParser::MultiLine );
     //we need one nested list for intermediate WKB
-    mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
+    mCurrentWKBFragments.push_back( QList<QByteArray>() );
   }
   else if ( !mAttributeValIsNested && isGMLNS && ( LOCALNAME_EQUALS( "MultiPolygon" ) || LOCALNAME_EQUALS( "MultiSurface" ) ) )
   {
@@ -1237,9 +1237,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       if ( mCurrentWKB.size() > 0 )
       {
         QgsGeometry g;
-        g.fromWkb( mCurrentWKB, mCurrentWKB.size() );
+        g.fromWkb( mCurrentWKB );
         mCurrentFeature->setGeometry( g );
-        mCurrentWKB = QgsWkbPtr( nullptr, 0 );
+        mCurrentWKB = QByteArray();
       }
       else if ( !mCurrentExtent.isEmpty() )
       {
@@ -1288,7 +1288,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     }
     else //multipoint, add WKB as fragment
     {
-      QgsWkbPtr wkbPtr( nullptr, 0 );
+      QByteArray wkbPtr;
       if ( getPointWKB( wkbPtr, *( pointList.constBegin() ) ) != 0 )
       {
         //error
@@ -1300,7 +1300,6 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       else
       {
         QgsDebugError( QStringLiteral( "No wkb fragments" ) );
-        delete [] wkbPtr;
       }
     }
   }
@@ -1328,7 +1327,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     }
     else //multiline, add WKB as fragment
     {
-      QgsWkbPtr wkbPtr( nullptr, 0 );
+      QByteArray wkbPtr;
       if ( getLineWKB( wkbPtr, pointList ) != 0 )
       {
         //error
@@ -1340,7 +1339,6 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       else
       {
         QgsDebugError( QStringLiteral( "no wkb fragments" ) );
-        delete [] wkbPtr;
       }
     }
   }
@@ -1353,7 +1351,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       //error
     }
 
-    QgsWkbPtr wkbPtr( nullptr, 0 );
+    QByteArray wkbPtr;
     if ( getRingWKB( wkbPtr, pointList ) != 0 )
     {
       //error
@@ -1365,7 +1363,6 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     }
     else
     {
-      delete[] wkbPtr;
       QgsDebugError( QStringLiteral( "no wkb fragments" ) );
     }
   }
@@ -1657,10 +1654,10 @@ int QgsGmlStreamingParser::pointsFromString( QList<QgsPointXY> &points, const QS
   return 1;
 }
 
-int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPointXY &point ) const
+int QgsGmlStreamingParser::getPointWKB( QByteArray &wkbPtr, const QgsPointXY &point ) const
 {
   const int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
-  wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
+  wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
   fillPtr << mEndian << Qgis::WkbType::Point << point.x() << point.y();
@@ -1668,10 +1665,10 @@ int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPointXY &poi
   return 0;
 }
 
-int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const
+int QgsGmlStreamingParser::getLineWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const
 {
   const int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
-  wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
+  wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
 
@@ -1686,10 +1683,10 @@ int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY
   return 0;
 }
 
-int QgsGmlStreamingParser::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const
+int QgsGmlStreamingParser::getRingWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const
 {
   const int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
-  wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
+  wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
 
@@ -1707,19 +1704,18 @@ int QgsGmlStreamingParser::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY
 int QgsGmlStreamingParser::createMultiLineFromFragments()
 {
   const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
-  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
+  mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
 
   wkbPtr << mEndian << Qgis::WkbType::MultiLineString << mCurrentWKBFragments.constBegin()->size();
 
   //copy (and delete) all the wkb fragments
-  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  auto wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
     memcpy( wkbPtr, *wkbIt, wkbIt->size() );
     wkbPtr += wkbIt->size();
-    delete[] *wkbIt;
   }
 
   mCurrentWKBFragments.clear();
@@ -1730,17 +1726,16 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
 int QgsGmlStreamingParser::createMultiPointFromFragments()
 {
   const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
-  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
+  mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
   wkbPtr << mEndian << Qgis::WkbType::MultiPoint << mCurrentWKBFragments.constBegin()->size();
 
-  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  auto wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
     memcpy( wkbPtr, *wkbIt, wkbIt->size() );
     wkbPtr += wkbIt->size();
-    delete[] *wkbIt;
   }
 
   mCurrentWKBFragments.clear();
@@ -1752,17 +1747,16 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
 int QgsGmlStreamingParser::createPolygonFromFragments()
 {
   const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
-  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
+  mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
   wkbPtr << mEndian << Qgis::WkbType::Polygon << mCurrentWKBFragments.constBegin()->size();
 
-  QList<QgsWkbPtr>::const_iterator wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
+  auto wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
   {
     memcpy( wkbPtr, *wkbIt, wkbIt->size() );
     wkbPtr += wkbIt->size();
-    delete[] *wkbIt;
   }
 
   mCurrentWKBFragments.clear();
@@ -1777,25 +1771,24 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   size += totalWKBFragmentSize();
   size += mCurrentWKBFragments.size() * ( 1 + 2 * sizeof( int ) ); //fragments are just the rings
 
-  mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
+  mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
   wkbPtr << ( char ) mEndian << Qgis::WkbType::MultiPolygon << mCurrentWKBFragments.size();
 
   //have outer and inner iterators
-  QList< QList<QgsWkbPtr> >::const_iterator outerWkbIt = mCurrentWKBFragments.constBegin();
+  auto outerWkbIt = mCurrentWKBFragments.constBegin();
 
   for ( ; outerWkbIt != mCurrentWKBFragments.constEnd(); ++outerWkbIt )
   {
     //new polygon
     wkbPtr << ( char ) mEndian << Qgis::WkbType::Polygon << outerWkbIt->size();
 
-    QList<QgsWkbPtr>::const_iterator innerWkbIt = outerWkbIt->constBegin();
+    auto innerWkbIt = outerWkbIt->constBegin();
     for ( ; innerWkbIt != outerWkbIt->constEnd(); ++innerWkbIt )
     {
       memcpy( wkbPtr, *innerWkbIt, innerWkbIt->size() );
       wkbPtr += innerWkbIt->size();
-      delete[] *innerWkbIt;
     }
   }
 
@@ -1807,11 +1800,9 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
 int QgsGmlStreamingParser::totalWKBFragmentSize() const
 {
   int result = 0;
-  const auto constMCurrentWKBFragments = mCurrentWKBFragments;
-  for ( const QList<QgsWkbPtr> &list : constMCurrentWKBFragments )
+  for ( const QList<QByteArray> &list : std::as_const( mCurrentWKBFragments ) )
   {
-    const auto constList = list;
-    for ( const QgsWkbPtr &i : constList )
+    for ( const QByteArray &i : list )
     {
       result += i.size();
     }
