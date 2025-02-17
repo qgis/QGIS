@@ -41,9 +41,9 @@ QgsShadowRenderView::QgsShadowRenderView( QObject *parent, const QString &viewNa
 {
   mLightCamera = new Qt3DRender::QCamera;
   mLightCamera->setObjectName( objectName() + "::LightCamera" );
-  mLayer = new Qt3DRender::QLayer;
-  mLayer->setRecursive( true );
-  mLayer->setObjectName( objectName() + "::Layer" );
+  mEntityCastingShadowsLayer = new Qt3DRender::QLayer;
+  mEntityCastingShadowsLayer->setRecursive( true );
+  mEntityCastingShadowsLayer->setObjectName( objectName() + "::Layer" );
 
   // shadow rendering pass
   buildRenderPass();
@@ -52,39 +52,34 @@ QgsShadowRenderView::QgsShadowRenderView( QObject *parent, const QString &viewNa
 void QgsShadowRenderView::setEnabled( bool enable )
 {
   QgsAbstractRenderView::setEnabled( enable );
-  emit shadowRenderingEnabled( enable );
   mLayerFilter->setEnabled( enable );
 }
 
-void QgsShadowRenderView::setupDirectionalLight( const QgsDirectionalLightSettings &light, double maximumShadowRenderingDistance, //
-                                                 const Qt3DRender::QCamera *mainCamera )
+Qt3DRender::QRenderTarget *QgsShadowRenderView::buildTextures()
 {
-  float minX, maxX, minY, maxY, minZ, maxZ;
-  QVector3D lookingAt = mainCamera->viewCenter();
-  const float d = 2.0f * ( mainCamera->position() - mainCamera->viewCenter() ).length();
+  mMapTexture = new Qt3DRender::QTexture2D;
+  mMapTexture->setWidth( mDefaultMapResolution );
+  mMapTexture->setHeight( mDefaultMapResolution );
+  mMapTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
+  mMapTexture->setGenerateMipMaps( false );
+  mMapTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  mMapTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+  mMapTexture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::ClampToEdge );
+  mMapTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
+  mMapTexture->setObjectName( "QgsShadowRenderView::DepthTarget" );
 
-  const QVector3D lightDirection = QVector3D( static_cast<float>( light.direction().x() ), static_cast<float>( light.direction().y() ), static_cast<float>( light.direction().z() ) ).normalized();
-  QgsShadowRenderView::calculateViewExtent( mainCamera, static_cast<float>( maximumShadowRenderingDistance ), lookingAt.z(), minX, maxX, minY, maxY, minZ, maxZ );
+  Qt3DRender::QRenderTargetOutput *renderTargetOutput = new Qt3DRender::QRenderTargetOutput;
+  renderTargetOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
+  renderTargetOutput->setTexture( mMapTexture );
 
-  lookingAt = QVector3D( 0.5f * ( minX + maxX ), 0.5f * ( minY + maxY ), mainCamera->viewCenter().z() );
-  const QVector3D lightPosition = lookingAt + QVector3D( 0.0f, 0.0f, d );
-  mLightCamera->setPosition( lightPosition );
-  mLightCamera->setViewCenter( lookingAt );
-  mLightCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
-  mLightCamera->rotateAboutViewCenter( QQuaternion::rotationTo( QVector3D( 0.0f, 0.0f, -1.0f ), lightDirection ) );
+  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
+  renderTarget->setObjectName( objectName() + "::Target" );
+  renderTarget->addOutput( renderTargetOutput );
 
-  mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
-  mLightCamera->lens()->setOrthographicProjection(
-    -0.7f * ( maxX - minX ), 0.7f * ( maxX - minX ),
-    -0.7f * ( maxY - minY ), 0.7f * ( maxY - minY ),
-    1.0f, 2 * ( lookingAt - lightPosition ).length()
-  );
-
-  emit shadowExtentChanged( minX, maxX, minY, maxY );
-  emit shadowDirectionLightUpdated( lightPosition, lightDirection );
+  return renderTarget;
 }
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderView::buildRenderPass()
+void QgsShadowRenderView::buildRenderPass()
 {
   // build render pass
   mLightCameraSelector = new Qt3DRender::QCameraSelector( mRendererEnabler );
@@ -92,7 +87,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderView::buildRenderPass()
   mLightCameraSelector->setCamera( mLightCamera );
 
   mLayerFilter = new Qt3DRender::QLayerFilter( mLightCameraSelector );
-  mLayerFilter->addLayer( mLayer );
+  mLayerFilter->addLayer( mEntityCastingShadowsLayer );
 
   mRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mLayerFilter );
 
@@ -116,137 +111,22 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderView::buildRenderPass()
   mRenderStateSet->addRenderState( polygonOffset );
 
   // build texture part
-  mDepthTexture = new Qt3DRender::QTexture2D;
-  mDepthTexture->setWidth( mDefaultMapResolution );
-  mDepthTexture->setHeight( mDefaultMapResolution );
-  mDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
-  mDepthTexture->setGenerateMipMaps( false );
-  mDepthTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  mDepthTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  mDepthTexture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::ClampToEdge );
-  mDepthTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
-  mDepthTexture->setObjectName( "QgsShadowRenderView::DepthTarget" );
-
-  Qt3DRender::QRenderTargetOutput *renderTargetOutput = new Qt3DRender::QRenderTargetOutput;
-  renderTargetOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
-  renderTargetOutput->setTexture( mDepthTexture );
-
-  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
-  renderTarget->setObjectName( objectName() + "::Target" );
-  renderTarget->addOutput( renderTargetOutput );
+  Qt3DRender::QRenderTarget *renderTarget = buildTextures();
 
   mRenderTargetSelector->setTarget( renderTarget );
-
-  return mLightCameraSelector;
 }
 
-
-void QgsShadowRenderView::updateWindowResize( int width, int height )
+Qt3DRender::QLayer *QgsShadowRenderView::entityCastingShadowsLayer() const
 {
-  mDepthTexture->setSize( width, height );
+  return mEntityCastingShadowsLayer;
 }
 
-Qt3DRender::QLayer *QgsShadowRenderView::layerToFilter() const
+void QgsShadowRenderView::setMapSize( int width, int height )
 {
-  return mLayer;
+  mMapTexture->setSize( width, height );
 }
 
-
-void QgsShadowRenderView::updateSettings(
-  const QgsShadowSettings &shadowSettings,
-  const QList<QgsLightSource *> &lightSources,
-  Qt3DRender::QCamera *mainCamera
-)
+Qt3DRender::QTexture2D *QgsShadowRenderView::mapTexture() const
 {
-  int selectedLight = shadowSettings.selectedDirectionalLight();
-  QgsDirectionalLightSettings *light = nullptr;
-  for ( int i = 0, dirLight = 0; !light && i < lightSources.size(); i++ )
-  {
-    if ( lightSources[i]->type() == Qgis::LightSourceType::Directional )
-    {
-      if ( dirLight == selectedLight )
-        light = qgis::down_cast< QgsDirectionalLightSettings * >( lightSources[i] );
-      dirLight++;
-    }
-  }
-
-  if ( shadowSettings.renderShadows() && light )
-  {
-    setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
-    updateWindowResize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
-    setupDirectionalLight( *light, shadowSettings.maximumShadowRenderingDistance(), mainCamera );
-    setEnabled( true );
-  }
-  else
-    setEnabled( false );
-}
-
-void QgsShadowRenderView::setShadowBias( float bias )
-{
-  mBias = bias;
-  emit shadowBiasChanged( mBias );
-}
-
-// computes the portion of the Y=y plane the camera is looking at
-void QgsShadowRenderView::calculateViewExtent( const Qt3DRender::QCamera *camera, float shadowRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
-{
-  const QVector3D cameraPos = camera->position();
-  const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
-  const QMatrix4x4 viewMatrix = camera->viewMatrix();
-  float depth = 1.0f;
-  QVector4D viewCenter = viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
-  viewCenter /= viewCenter.w();
-  viewCenter = projectionMatrix * viewCenter;
-  viewCenter /= viewCenter.w();
-  depth = viewCenter.z();
-  QVector<QVector3D> viewFrustumPoints = {
-    QVector3D( 0.0f, 0.0f, depth ),
-    QVector3D( 0.0f, 1.0f, depth ),
-    QVector3D( 1.0f, 0.0f, depth ),
-    QVector3D( 1.0f, 1.0f, depth ),
-    QVector3D( 0.0f, 0.0f, 0 ),
-    QVector3D( 0.0f, 1.0f, 0 ),
-    QVector3D( 1.0f, 0.0f, 0 ),
-    QVector3D( 1.0f, 1.0f, 0 )
-  };
-  maxX = std::numeric_limits<float>::lowest();
-  maxY = std::numeric_limits<float>::lowest();
-  maxZ = std::numeric_limits<float>::lowest();
-  minX = std::numeric_limits<float>::max();
-  minY = std::numeric_limits<float>::max();
-  minZ = std::numeric_limits<float>::max();
-  for ( int i = 0; i < viewFrustumPoints.size(); ++i )
-  {
-    // convert from view port space to world space
-    viewFrustumPoints[i] = viewFrustumPoints[i].unproject( viewMatrix, projectionMatrix, QRect( 0, 0, 1, 1 ) );
-    minX = std::min( minX, viewFrustumPoints[i].x() );
-    maxX = std::max( maxX, viewFrustumPoints[i].x() );
-    minY = std::min( minY, viewFrustumPoints[i].y() );
-    maxY = std::max( maxY, viewFrustumPoints[i].y() );
-    minZ = std::min( minZ, viewFrustumPoints[i].z() );
-    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
-    // find the intersection between the line going from cameraPos to the frustum quad point
-    // and the horizontal plane Z=z
-    // if the intersection is on the back side of the viewing panel we get a point that is
-    // shadowRenderingDistance units in front of the camera
-    const QVector3D pt = cameraPos;
-    const QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
-    float t = ( z - pt.z() ) / vect.z();
-    if ( t < 0 )
-      t = shadowRenderingDistance;
-    else
-      t = std::min( t, shadowRenderingDistance );
-    viewFrustumPoints[i] = pt + t * vect;
-    minX = std::min( minX, viewFrustumPoints[i].x() );
-    maxX = std::max( maxX, viewFrustumPoints[i].x() );
-    minY = std::min( minY, viewFrustumPoints[i].y() );
-    maxY = std::max( maxY, viewFrustumPoints[i].y() );
-    minZ = std::min( minZ, viewFrustumPoints[i].z() );
-    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
-  }
-}
-
-Qt3DRender::QTexture2D *QgsShadowRenderView::depthTexture() const
-{
-  return mDepthTexture;
+  return mMapTexture;
 }

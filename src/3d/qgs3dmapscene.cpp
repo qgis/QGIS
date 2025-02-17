@@ -940,10 +940,7 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
 void Qgs3DMapScene::onShadowSettingsChanged()
 {
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
-
-  QgsShadowRenderView *shadowRenderView = dynamic_cast<QgsShadowRenderView *>( frameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) );
-  if ( shadowRenderView )
-    shadowRenderView->updateSettings( mMap.shadowSettings(), mMap.lightSources(), frameGraph->mainCamera() );
+  frameGraph->updateShadowSettings( mMap.shadowSettings(), mMap.lightSources() );
 }
 
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()

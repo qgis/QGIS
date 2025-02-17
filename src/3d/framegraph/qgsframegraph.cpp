@@ -144,7 +144,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
 {
   Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector;
   cameraSelector->setObjectName( "Sub pass Postprocessing" );
-  cameraSelector->setCamera( dynamic_cast<QgsShadowRenderView *>( renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) )->lightCamera() );
+  cameraSelector->setCamera( shadowRenderView()->lightCamera() );
 
   Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
 
@@ -575,9 +575,8 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView()->depthTexture();
   mDebugDepthMapPreviewQuad = this->addTexturePreviewOverlay( forwardDepthTexture, QPointF( 0.9f, 0.9f ), QSizeF( 0.1, 0.1 ), QVector<Qt3DRender::QParameter *> { depthMapIsDepthParam } );
 
-  QgsShadowRenderView *shadowRenderView = dynamic_cast<QgsShadowRenderView *>( renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) );
-  Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView->depthTexture();
-  mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( shadowDepthTexture, QPointF( 0.9f, 0.9f ), QSizeF( 0.1, 0.1 ), QVector<Qt3DRender::QParameter *> { shadowMapIsDepthParam } );
+  Qt3DRender::QTexture2D *shadowMapTexture = shadowRenderView()->mapTexture();
+  mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( shadowMapTexture, QPointF( 0.9f, 0.9f ), QSizeF( 0.1, 0.1 ), QVector<Qt3DRender::QParameter *> { shadowMapIsDepthParam } );
 
   mDebugDepthMapPreviewQuad->setEnabled( false );
   mDebugShadowMapPreviewQuad->setEnabled( false );
@@ -641,6 +640,37 @@ QgsPreviewQuad *QgsFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D 
   return previewQuad;
 }
 
+void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources )
+{
+  if ( shadowSettings.renderShadows() )
+  {
+    int selectedLight = shadowSettings.selectedDirectionalLight();
+    QgsDirectionalLightSettings *light = nullptr;
+    for ( int i = 0, dirLight = 0; !light && i < lightSources.size(); i++ )
+    {
+      if ( lightSources[i]->type() == Qgis::LightSourceType::Directional )
+      {
+        if ( dirLight == selectedLight )
+          light = qgis::down_cast< QgsDirectionalLightSettings * >( lightSources[i] );
+        dirLight++;
+      }
+    }
+
+    if ( light )
+    {
+      shadowRenderView()->setMapSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
+      shadowRenderView()->setEnabled( true );
+      mPostprocessingEntity->setShadowRenderingEnabled( true );
+      mPostprocessingEntity->setShadowBias( static_cast<float>( shadowSettings.shadowBias() ) );
+      mPostprocessingEntity->updateShadowSettings( *light, shadowSettings.maximumShadowRenderingDistance() );
+    }
+  }
+  else
+  {
+    shadowRenderView()->setEnabled( false );
+    mPostprocessingEntity->setShadowRenderingEnabled( false );
+  }
+}
 
 QString QgsFrameGraph::dumpFrameGraph() const
 {
@@ -796,5 +826,13 @@ QgsForwardRenderView *QgsFrameGraph::forwardRenderView() const
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::FORWARD_RENDERVIEW];
   if ( rv )
     return dynamic_cast<QgsForwardRenderView *>( rv );
+  return nullptr;
+}
+
+QgsShadowRenderView *QgsFrameGraph::shadowRenderView() const
+{
+  QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::SHADOW_RENDERVIEW].get();
+  if ( rv )
+    return dynamic_cast<QgsShadowRenderView *>( rv );
   return nullptr;
 }

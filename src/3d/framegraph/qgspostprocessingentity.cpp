@@ -41,6 +41,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QDepthTest>
 #include <QUrl>
 
+#include "qgs3dutils.h"
+#include "qgsdirectionallightsettings.h"
 #include "qgsframegraph.h"
 #include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
@@ -48,16 +50,11 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
 {
-  QgsShadowRenderView *shadowRenderView = dynamic_cast<QgsShadowRenderView *>( frameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) );
-  connect( shadowRenderView, &QgsShadowRenderView::shadowDirectionLightUpdated, this, &QgsPostprocessingEntity::setupDirectionalLight );
-  connect( shadowRenderView, &QgsShadowRenderView::shadowExtentChanged, this, &QgsPostprocessingEntity::setupShadowRenderingExtent );
-  connect( shadowRenderView, &QgsShadowRenderView::shadowBiasChanged, this, &QgsPostprocessingEntity::setShadowBias );
-  connect( shadowRenderView, &QgsShadowRenderView::shadowRenderingEnabled, this, &QgsPostprocessingEntity::setShadowRenderingEnabled );
-
+  QgsShadowRenderView *shadowRenderView = frameGraph->shadowRenderView();
   QgsForwardRenderView *forwardRenderView = frameGraph->forwardRenderView();
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), forwardRenderView->colorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), forwardRenderView->depthTexture() );
-  mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), shadowRenderView->depthTexture() );
+  mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), shadowRenderView->mapTexture() );
   mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->blurredAmbientOcclusionFactorMap() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
@@ -149,6 +146,33 @@ void QgsPostprocessingEntity::setupDirectionalLight( QVector3D position, QVector
 {
   mLightPosition->setValue( QVariant::fromValue( position ) );
   mLightDirection->setValue( QVariant::fromValue( direction.normalized() ) );
+}
+
+void QgsPostprocessingEntity::updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
+{
+  float minX, maxX, minY, maxY, minZ, maxZ;
+  QVector3D lookingAt = mMainCamera->viewCenter();
+  const float d = 2 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
+
+  const QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
+  Qgs3DUtils::calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.z(), minX, maxX, minY, maxY, minZ, maxZ );
+
+  lookingAt = QVector3D( 0.5f * ( minX + maxX ), 0.5f * ( minY + maxY ), mMainCamera->viewCenter().z() );
+  const QVector3D lightPosition = lookingAt + QVector3D( 0.0f, 0.0f, d );
+  mLightCamera->setPosition( lightPosition );
+  mLightCamera->setViewCenter( lookingAt );
+  mLightCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
+  mLightCamera->rotateAboutViewCenter( QQuaternion::rotationTo( QVector3D( 0.0f, 0.0f, -1.0f ), lightDirection ) );
+
+  mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
+  mLightCamera->lens()->setOrthographicProjection(
+    -0.7f * ( maxX - minX ), 0.7f * ( maxX - minX ),
+    -0.7f * ( maxY - minY ), 0.7f * ( maxY - minY ),
+    1.0f, 2 * ( lookingAt - lightPosition ).length()
+  );
+
+  setupShadowRenderingExtent( minX, maxX, minY, maxY );
+  setupDirectionalLight( lightPosition, lightDirection );
 }
 
 void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )

@@ -47,6 +47,8 @@ class QgsPreviewQuad;
 class QgsAmbientOcclusionBlurEntity;
 class QgsAbstractRenderView;
 class QgsForwardRenderView;
+class QgsShadowRenderView;
+class QgsShadowSettings;
 
 #define SIP_NO_FILE
 
@@ -208,8 +210,14 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Returns forward renderview or nullptr if not defined
     QgsForwardRenderView *forwardRenderView() const;
 
+    //! Returns shadow renderview or nullptr if not defined
+    QgsShadowRenderView *shadowRenderView() const;
+
     //! Returns the render view named \a name, if any
     QgsAbstractRenderView *renderView( const QString &name );
+
+    //! Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
+    void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QList<QgsLightSource *> &lightSources );
 
     static const QString FORWARD_RENDERVIEW;
     static const QString SHADOW_RENDERVIEW;

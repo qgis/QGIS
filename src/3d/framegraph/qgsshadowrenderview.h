@@ -73,49 +73,23 @@ class QgsShadowRenderView : public QgsAbstractRenderView
     //! Enable or disable via \a enable the renderview sub tree
     virtual void setEnabled( bool enable ) override;
 
-    //! Returns the shadow bias value
-    float shadowBias() const { return mBias; }
-    //! Sets the shadow bias value
-    void setShadowBias( float bias );
-
     //! Returns the light camera
     Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
 
-    //! Sets shadow rendering to use a directional light
-    void setupDirectionalLight( const QgsDirectionalLightSettings &light, double maximumShadowRenderingDistance, //
-                                const Qt3DRender::QCamera *mainCamera );
-
-    //! Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
-    void updateSettings( const QgsShadowSettings &shadowSettings,     //
-                         const QList<QgsLightSource *> &lightSources, //
-                         Qt3DRender::QCamera *mainCamera );
-
     //! Returns shadow depth texture
-    Qt3DRender::QTexture2D *depthTexture() const;
+    Qt3DRender::QTexture2D *mapTexture() const;
 
     //! Returns the layer to be used by entities to be included in this renderview
-    Qt3DRender::QLayer *layerToFilter() const;
+    Qt3DRender::QLayer *entityCastingShadowsLayer() const;
 
-    //! Updates texture sizes for all target outputs
-    virtual void updateWindowResize( int width, int height ) override;
-
-  signals:
-    //! Emits updated light data when setupDirectionalLight is called
-    void shadowDirectionLightUpdated( const QVector3D &lightPosition, const QVector3D &lightDirection );
-    //! Emits updated extent data when setupDirectionalLight is called
-    void shadowExtentChanged( float minX, float maxX, float minY, float maxY );
-    //! Emits new bias when shadow settings are updated
-    void shadowBiasChanged( float bias );
-    //! Emits if shadows are enabled when shadow settings are updated
-    void shadowRenderingEnabled( bool isEnabled );
+    //! Update shadow depth texture size
+    void setMapSize( int width, int height );
 
   private:
     static constexpr int mDefaultMapResolution = 2048;
 
-    float mBias = 0.00001f;
-
     // Shadow rendering pass branch nodes:
-    Qt3DRender::QLayer *mLayer = nullptr;
+    Qt3DRender::QLayer *mEntityCastingShadowsLayer = nullptr;
     Qt3DRender::QRenderTargetSelector *mRenderTargetSelector = nullptr;
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
     Qt3DRender::QLayerFilter *mLayerFilter = nullptr;
@@ -124,11 +98,10 @@ class QgsShadowRenderView : public QgsAbstractRenderView
 
     Qt3DRender::QCamera *mLightCamera = nullptr;
 
-    Qt3DRender::QTexture2D *mDepthTexture = nullptr;
+    Qt3DRender::QTexture2D *mMapTexture = nullptr;
 
-    Qt3DRender::QFrameGraphNode *buildRenderPass();
-
-    static void calculateViewExtent( const Qt3DRender::QCamera *camera, float shadowRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
+    Qt3DRender::QRenderTarget *buildTextures();
+    void buildRenderPass();
 };
 
 #endif // QGSSHADOWRENDERVIEW_H

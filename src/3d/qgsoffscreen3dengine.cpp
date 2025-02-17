@@ -106,7 +106,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 
   mFrameGraph = new QgsFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
   mFrameGraph->setRenderCaptureEnabled( true );
-  mFrameGraph->setEnableRenderView( QgsFrameGraph::SHADOW_RENDERVIEW, false );
+  mFrameGraph->setRenderViewEnabled( QgsFrameGraph::SHADOW_RENDERVIEW, false );
   // Set this frame graph to be in use.
   // the render settings also sets itself as the parent of mSurfaceSelector
   mRenderSettings->setActiveFrameGraph( mFrameGraph->frameGraphRoot() );
@@ -156,11 +156,7 @@ void QgsOffscreen3DEngine::setRootEntity( Qt3DCore::QEntity *root )
     QgsForwardRenderView *rv = mFrameGraph->forwardRenderView();
     root->addComponent( rv->opaqueObjectLayer() );
   }
-  if ( mFrameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) )
-  {
-    QgsShadowRenderView *rv = dynamic_cast<QgsShadowRenderView *>( mFrameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) );
-    root->addComponent( rv->layerToFilter() );
-  }
+  root->addComponent( mFrameGraph->shadowRenderView()->entityCastingShadowsLayer() );
 }
 
 Qt3DRender::QRenderSettings *QgsOffscreen3DEngine::renderSettings()
