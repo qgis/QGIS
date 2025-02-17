@@ -75,7 +75,7 @@ namespace Qt3DRender
  * class will be attached to the parentEntity given in the constructor (normally this
  * should be the root entity, i.e. map scene object).
  *
- * \note Currently only supports multi point and linestring geometry.
+ * \note Currently only supports multi point, linestring and polygon geometry.
  * \since QGIS 3.20
  */
 class _3D_EXPORT QgsRubberBand3D
