@@ -19,6 +19,7 @@
 #include "qgsfontutils.h"
 #include "qgis.h"
 #include "qgsreadwritecontext.h"
+#include "qgspropertycollection.h"
 
 #include <QFont>
 #include <QMap>
@@ -108,6 +109,13 @@ void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, 
 
   mAlignment = static_cast< Qt::Alignment >( elem.attribute( QStringLiteral( "alignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
   mIndent = elem.attribute( QStringLiteral( "indent" ), QStringLiteral( "0" ) ).toDouble();
+}
+
+void QgsLegendStyle::updateDataDefinedProperties( QgsRenderContext &context )
+{
+  if ( mTextFormat.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
+    mTextFormat.updateDataDefinedProperties( context );
+
 }
 
 QString QgsLegendStyle::styleName( Style s )
