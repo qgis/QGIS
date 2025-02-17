@@ -1827,29 +1827,22 @@ class PyQgsOGRProvider(QgisTestCase):
         datasource = os.path.join(unitTestDataPath(), "gdb_metadata.gdb")
         vl = QgsVectorLayer(datasource, "test", "ogr")
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.metadata().identifier(), "Test")
-        self.assertEqual(vl.metadata().title(), "Title")
-        self.assertEqual(vl.metadata().type(), "dataset")
-        self.assertEqual(vl.metadata().language(), "ENG")
+        metadata = vl.metadata()
+        self.assertEqual(metadata.identifier(), "Test")
+        self.assertEqual(metadata.title(), "Title")
+        self.assertEqual(metadata.type(), "dataset")
+        self.assertEqual(metadata.language(), "ENG")
         self.assertIn("This is the abstract", vl.metadata().abstract())
-        self.assertEqual(vl.metadata().keywords(), {"Search keys": ["Tags"]})
-        self.assertEqual(vl.metadata().rights(), ["This is the credits"])
-        self.assertEqual(vl.metadata().constraints()[0].type, "Limitations of use")
+        self.assertEqual(metadata.keywords(), {"Search keys": ["Tags"]})
+        self.assertEqual(metadata.rights(), ["This is the credits"])
+        self.assertEqual(metadata.constraints()[0].type, "Limitations of use")
         self.assertEqual(
-            vl.metadata().constraints()[0].constraint, "This is the use limitation"
+            metadata.constraints()[0].constraint, "This is the use limitation"
         )
-        self.assertEqual(
-            vl.metadata().extent().spatialExtents()[0].bounds.xMinimum(), 1
-        )
-        self.assertEqual(
-            vl.metadata().extent().spatialExtents()[0].bounds.xMaximum(), 2
-        )
-        self.assertEqual(
-            vl.metadata().extent().spatialExtents()[0].bounds.yMinimum(), 3
-        )
-        self.assertEqual(
-            vl.metadata().extent().spatialExtents()[0].bounds.yMaximum(), 4
-        )
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.xMinimum(), 1)
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.xMaximum(), 2)
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.yMinimum(), 3)
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.yMaximum(), 4)
 
     def testShpLayerMetadata(self):
         """

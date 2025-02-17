@@ -2510,34 +2510,28 @@ gdal::relationship_unique_ptr QgsOgrUtils::convertRelationship( const QgsWeakRel
   // set left table fields
   const QStringList leftFieldNames = relationship.referencedLayerFields();
   int count = leftFieldNames.count();
-  char **lst = new char *[count + 1];
+  char **lst = nullptr;
   if ( count > 0 )
   {
-    int pos = 0;
     for ( const QString &string : leftFieldNames )
     {
-      lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
-      pos++;
+      lst = CSLAddString( lst, string.toLocal8Bit().constData() );
     }
   }
-  lst[count] = nullptr;
   GDALRelationshipSetLeftTableFields( relationH.get(), lst );
   CSLDestroy( lst );
 
   // set right table fields
   const QStringList rightFieldNames = relationship.referencingLayerFields();
   count = rightFieldNames.count();
-  lst = new char *[count + 1];
+  lst = nullptr;
   if ( count > 0 )
   {
-    int pos = 0;
     for ( const QString &string : rightFieldNames )
     {
-      lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
-      pos++;
+      lst = CSLAddString( lst, string.toLocal8Bit().constData() );
     }
   }
-  lst[count] = nullptr;
   GDALRelationshipSetRightTableFields( relationH.get(), lst );
   CSLDestroy( lst );
 
@@ -2548,34 +2542,28 @@ gdal::relationship_unique_ptr QgsOgrUtils::convertRelationship( const QgsWeakRel
     // set left mapping table fields
     const QStringList leftFieldNames = relationship.mappingReferencedLayerFields();
     int count = leftFieldNames.count();
-    char **lst = new char *[count + 1];
+    lst = nullptr;
     if ( count > 0 )
     {
-      int pos = 0;
       for ( const QString &string : leftFieldNames )
       {
-        lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
-        pos++;
+        lst = CSLAddString( lst, string.toLocal8Bit().constData() );
       }
     }
-    lst[count] = nullptr;
     GDALRelationshipSetLeftMappingTableFields( relationH.get(), lst );
     CSLDestroy( lst );
 
     // set right table fields
     const QStringList rightFieldNames = relationship.mappingReferencingLayerFields();
     count = rightFieldNames.count();
-    lst = new char *[count + 1];
+    lst = nullptr;
     if ( count > 0 )
     {
-      int pos = 0;
       for ( const QString &string : rightFieldNames )
       {
-        lst[pos] = CPLStrdup( string.toLocal8Bit().constData() );
-        pos++;
+        lst = CSLAddString( lst, string.toLocal8Bit().constData() );
       }
     }
-    lst[count] = nullptr;
     GDALRelationshipSetRightMappingTableFields( relationH.get(), lst );
     CSLDestroy( lst );
   }

@@ -69,14 +69,11 @@ based on the following rules:
       sipIsErr = 0;
 
       QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( a0, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( p, sipType_QgsPointXY, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         sipCpp = new sipQgsPoint( QgsPoint( *p ) );
       }
+      sipReleaseType( p, sipType_QgsPointXY, state );
     }
     else if ( sipCanConvertToType( a0, sipType_QPointF, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
@@ -84,14 +81,11 @@ based on the following rules:
       sipIsErr = 0;
 
       QPointF *p = reinterpret_cast<QPointF *>( sipConvertToType( a0, sipType_QPointF, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( p, sipType_QPointF, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         sipCpp = new sipQgsPoint( QgsPoint( *p ) );
       }
+      sipReleaseType( p, sipType_QPointF, state );
     }
     else if (
       ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
