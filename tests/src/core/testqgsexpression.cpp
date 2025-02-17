@@ -5618,6 +5618,14 @@ class TestQgsExpression : public QObject
       // test with IN
       QTest::newRow( "simple IN" ) << QStringLiteral( "field IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
       QTest::newRow( "simple IN 2" ) << QStringLiteral( "field = 'value' OR field IN ('value2', 'value3')" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
+      // not in, should fail
+      QTest::newRow( "not IN left" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field = 'value3'" );
+      QTest::newRow( "not IN right" ) << QStringLiteral( "field IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field  IN ('value', 'value2') OR field NOT IN ('value3')" );
+      QTest::newRow( "not IN left same" ) << QStringLiteral( "field NOT IN ('value') OR field IN ('value')" ) << QStringLiteral( "field NOT IN ('value') OR field  IN ('value')" );
+      QTest::newRow( "not IN right same" ) << QStringLiteral( "field IN ('value') OR field NOT IN ('value')" ) << QStringLiteral( "field  IN ('value') OR field NOT IN ('value')" );
+
+      // could be handled, but isn't right now
+      QTest::newRow( "not IN both" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" );
 
       // test cases that should not trigger reduction
       QTest::newRow( "no reduction 1" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" );
