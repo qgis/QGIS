@@ -65,7 +65,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   // draw the point
   p->setPen( Qt::black );
   p->setBrush( mPointBrush );
-  p->drawEllipse( -3 * scale, -3 * scale, 6 * scale, 6 * scale );
+  p->drawEllipse( -2 * scale, -2 * scale, 5 * scale, 5 * scale );
 
   // Don't draw point tip for temporary points
   if ( id < 0 )
@@ -142,7 +142,7 @@ QRectF QgsGCPCanvasItem::boundingRect() const
   }
 
   const QRectF residualArrowRect( QPointF( residualLeft, residualTop ), QPointF( residualRight, residualBottom ) );
-  const QRectF markerRect( -6, -6, mTextBounds.width() + 12, mTextBounds.height() + 12 );
+  const QRectF markerRect( -4, -4, mTextBounds.width() + 10, mTextBounds.height() + 10 );
   QRectF boundingRect = residualArrowRect.united( markerRect );
   if ( !mTextBoxRect.isNull() )
   {
@@ -154,7 +154,7 @@ QRectF QgsGCPCanvasItem::boundingRect() const
 QPainterPath QgsGCPCanvasItem::shape() const
 {
   QPainterPath p;
-  p.addEllipse( -3, -3, 6, 6 );
+  p.addEllipse( -2, -2, 5, 5 );
   p.addRect( 6, 6, mTextBounds.width(), mTextBounds.height() );
 
   return p;
