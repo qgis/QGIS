@@ -196,22 +196,22 @@ Sets the ``alignment`` of the legend title.
 .. seealso:: :py:func:`titleAlignment`
 %End
 
-    QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
+    QgsLegendStyle &rstyle( Qgis::LegendComponent s );
 %Docstring
 Returns reference to modifiable legend style.
 %End
 
-    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    QgsLegendStyle style( Qgis::LegendComponent s ) const;
 %Docstring
 Returns legend style.
 %End
 
-    void setStyle( QgsLegendStyle::Style component, const QgsLegendStyle &style );
+    void setStyle( Qgis::LegendComponent component, const QgsLegendStyle &style );
 %Docstring
 Sets the style of ``component`` to ``style`` for the legend.
 %End
 
- QFont styleFont( QgsLegendStyle::Style component ) const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() from style() instead."/;
+ QFont styleFont( Qgis::LegendComponent component ) const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() from style() instead."/;
 %Docstring
 Returns the font settings for a legend ``component``.
 
@@ -222,7 +222,7 @@ Returns the font settings for a legend ``component``.
    Use :py:func:`QgsLegendStyle.textFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
- void setStyleFont( QgsLegendStyle::Style component, const QFont &font ) /Deprecated="Since 3.40. Use QgsLegendStyle.setTextFormat() from style() instead."/;
+ void setStyleFont( Qgis::LegendComponent component, const QFont &font ) /Deprecated="Since 3.40. Use QgsLegendStyle.setTextFormat() from style() instead."/;
 %Docstring
 Sets the style ``font`` for a legend ``component``.
 
@@ -233,12 +233,12 @@ Sets the style ``font`` for a legend ``component``.
    Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLayoutItemLegend.style` instead.
 %End
 
-    void setStyleMargin( QgsLegendStyle::Style component, double margin );
+    void setStyleMargin( Qgis::LegendComponent component, double margin );
 %Docstring
 Set the ``margin`` for a legend ``component``.
 %End
 
-    void setStyleMargin( QgsLegendStyle::Style component, QgsLegendStyle::Side side, double margin );
+    void setStyleMargin( Qgis::LegendComponent component, QgsLegendStyle::Side side, double margin );
 %Docstring
 Set the ``margin`` for a particular ``side`` of a legend ``component``.
 %End

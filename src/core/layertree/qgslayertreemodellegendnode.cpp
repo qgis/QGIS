@@ -87,7 +87,7 @@ void QgsLayerTreeModelLegendNode::setUserPatchSize( QSizeF size )
 
 QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, ItemContext *ctx )
 {
-  const QgsTextFormat f = settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
+  const QgsTextFormat f = settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
 
   const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), ctx->context->expressionContext() );
 
@@ -195,7 +195,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
     context = tempContext.get();
   }
 
-  const QgsTextFormat format = settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
+  const QgsTextFormat format = settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
 
   // TODO QGIS 4.0 -- make these all mandatory
   std::optional< QgsTextDocument > tempDocument;
@@ -231,8 +231,8 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
       case Qt::AlignLeft:
       default:
         labelXMin = ctx->columnLeft + std::max( static_cast< double >( symbolSizeMM.width() ), ctx->maxSiblingSymbolWidth )
-                    + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
-                    + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
+                    + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                    + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
         labelXMax = ctx->columnRight;
         break;
 
@@ -242,8 +242,8 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
         // those are the only margins we expose and use for now! (and we expose them as generic margins, not side-specific
         // ones) TODO when/if we expose other margin settings, these should be reversed...
         labelXMax = ctx->columnRight - std::max( static_cast< double >( symbolSizeMM.width() ), ctx->maxSiblingSymbolWidth )
-                    - settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
-                    - settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
+                    - settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                    - settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
         break;
     }
 
@@ -256,8 +256,8 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
   if ( context->painter() )
   {
-    Qgis::TextHorizontalAlignment halign = settings.style( QgsLegendStyle::SymbolLabel ).alignment() == Qt::AlignLeft ? Qgis::TextHorizontalAlignment::Left :
-                                           settings.style( QgsLegendStyle::SymbolLabel ).alignment() == Qt::AlignRight ? Qgis::TextHorizontalAlignment::Right : Qgis::TextHorizontalAlignment::Center;
+    Qgis::TextHorizontalAlignment halign = settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() == Qt::AlignLeft ? Qgis::TextHorizontalAlignment::Left :
+                                           settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() == Qt::AlignRight ? Qgis::TextHorizontalAlignment::Right : Qgis::TextHorizontalAlignment::Center;
 
 
     QgsTextRenderer::drawDocument( QRectF( labelXMin * dotsPerMM, std::round( labelYMM * dotsPerMM ),
@@ -1550,8 +1550,8 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   }
 
   QgsDataDefinedSizeLegend ddsLegend( *mSettings );
-  ddsLegend.setFont( settings.style( QgsLegendStyle::SymbolLabel ).textFormat().toQFont() );
-  ddsLegend.setTextColor( settings.style( QgsLegendStyle::SymbolLabel ).textFormat().color() );
+  ddsLegend.setFont( settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat().toQFont() );
+  ddsLegend.setTextColor( settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat().color() );
 
   QSizeF contentSize;
   double labelXOffset;
