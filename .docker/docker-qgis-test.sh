@@ -183,7 +183,7 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
   export SQLUSER=sa
   export SQLHOST=mssql
   export SQLPORT=1433
-  export SQLPASSWORD='<YourStrong!Passw0rd>'
+  export SQLPASSWORD=QGIStestSQLServer1234
   export SQLDATABASE=qgis_test
 
   export PATH=$PATH:/opt/mssql-tools/bin
@@ -196,10 +196,10 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
 
   cat <<EOT > /etc/odbc.ini
 [ODBC Data Sources]
-testsqlserver = ODBC Driver 17 for SQL Server
+testsqlserver = ODBC Driver 18 for SQL Server
 
 [testsqlserver]
-Driver       = ODBC Driver 17 for SQL Server
+Driver       = ODBC Driver 18 for SQL Server
 Description  = Test SQL Server
 Server       = mssql
 EOT

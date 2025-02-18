@@ -243,7 +243,7 @@ jobs:
     strategy:
       matrix:
         qt-version: [5, 6]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
+        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA, SQLSERVER]
 
         include:
           - qt-version: 5
@@ -265,6 +265,9 @@ jobs:
 
           - qt-version: 6
             test-batch: POSTGRES
+
+          - qt-version: 6
+            test-batch: SQLSERVER
 
       fail-fast: false
 
