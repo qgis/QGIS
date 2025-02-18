@@ -4331,6 +4331,24 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( LayerTreeFilterFlags, LayerTreeFilterFlag )
     Q_FLAG( LayerTreeFilterFlags )
 
+    /**
+     * Component of legends which can be styled.
+     *
+     * Prior to QGIS 3.42 this was available as QgsLegendStyle::Style
+     *
+     * \since QGIS 3.42
+     */
+    enum class LegendComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLegendStyle, Style ) : int
+      {
+      Undefined, //!< Should not happen, only if corrupted project file
+      Hidden, //!< Special style, item is hidden including margins around
+      Title, //!< Legend title
+      Group, //!< Legend group title
+      Subgroup, //!< Legend subgroup title
+      Symbol, //!< Symbol icon (excluding label)
+      SymbolLabel, //!< Symbol label (excluding icon)
+    };
+    Q_ENUM( LegendComponent )
 
     /**
      * Legend JSON export flags.

@@ -1278,12 +1278,12 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
       QgsLegendStyle style;
       style.readXml( styleElem, QDomDocument() );
       const QString name = styleElem.attribute( QStringLiteral( "name" ) );
-      QgsLegendStyle::Style s;
-      if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
-      else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
-      else if ( name == QLatin1String( "subgroup" ) ) s = QgsLegendStyle::Subgroup;
-      else if ( name == QLatin1String( "symbol" ) ) s = QgsLegendStyle::Symbol;
-      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsLegendStyle::SymbolLabel;
+      Qgis::LegendComponent s;
+      if ( name == QLatin1String( "title" ) ) s = Qgis::LegendComponent::Title;
+      else if ( name == QLatin1String( "group" ) ) s = Qgis::LegendComponent::Group;
+      else if ( name == QLatin1String( "subgroup" ) ) s = Qgis::LegendComponent::Subgroup;
+      else if ( name == QLatin1String( "symbol" ) ) s = Qgis::LegendComponent::Symbol;
+      else if ( name == QLatin1String( "symbolLabel" ) ) s = Qgis::LegendComponent::SymbolLabel;
       else continue;
       layoutItem->setStyle( s, style );
     }
@@ -1292,10 +1292,10 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
   //font color
   QColor fontClr;
   fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
-  layoutItem->rstyle( QgsLegendStyle::Title ).textFormat().setColor( fontClr );
-  layoutItem->rstyle( QgsLegendStyle::Group ).textFormat().setColor( fontClr );
-  layoutItem->rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( fontClr );
-  layoutItem->rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( Qgis::LegendComponent::Title ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( Qgis::LegendComponent::Group ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( Qgis::LegendComponent::Subgroup ).textFormat().setColor( fontClr );
+  layoutItem->rstyle( Qgis::LegendComponent::SymbolLabel ).textFormat().setColor( fontClr );
 
   //spaces
   layoutItem->setBoxSpace( itemElem.attribute( QStringLiteral( "boxSpace" ), QStringLiteral( "2.0" ) ).toDouble() );

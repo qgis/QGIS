@@ -100,14 +100,14 @@ Renders the legend in a ``json`` object.
 .. versionadded:: 3.8
 %End
 
-    static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
+    static void setNodeLegendStyle( QgsLayerTreeNode *node, Qgis::LegendComponent style );
 %Docstring
 Sets the ``style`` of a ``node``.
 
 .. seealso:: :py:func:`nodeLegendStyle`
 %End
 
-    static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
+    static Qgis::LegendComponent nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
 %Docstring
 Returns the style for the given ``node``, within the specified ``model``.
 

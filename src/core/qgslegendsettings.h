@@ -78,21 +78,21 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \note Not available in Python bindings.
      */
-    SIP_SKIP QgsLegendStyle &rstyle( QgsLegendStyle::Style s ) SIP_SKIP { return mStyleMap[s]; }
+    SIP_SKIP QgsLegendStyle &rstyle( Qgis::LegendComponent s ) SIP_SKIP { return mStyleMap[s]; }
 
     /**
      * Returns the style for a legend component.
      *
      * \see setStyle()
      */
-    QgsLegendStyle style( QgsLegendStyle::Style s ) const { return mStyleMap.value( s ); }
+    QgsLegendStyle style( Qgis::LegendComponent s ) const { return mStyleMap.value( s ); }
 
     /**
      * Sets the \a style for a legend component.
      *
      * \see style()
      */
-    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style ) { mStyleMap[s] = style; }
+    void setStyle( Qgis::LegendComponent s, const QgsLegendStyle &style ) { mStyleMap[s] = style; }
 
     /**
      * Returns the legend box space (in millimeters), which is the empty margin around the inside of the legend's
@@ -579,7 +579,7 @@ class CORE_EXPORT QgsLegendSettings
     QColor mRasterStrokeColor;
     double mRasterStrokeWidth = 0.0;
 
-    QMap<QgsLegendStyle::Style, QgsLegendStyle> mStyleMap;
+    QMap<Qgis::LegendComponent, QgsLegendStyle> mStyleMap;
 
     //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit = 1;
