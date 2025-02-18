@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "QtTest/qtestcase.h"
-#include "qgsattributes.h"
 #include "qgstest.h"
 #include <QObject>
 
@@ -233,38 +231,44 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsField defaultValueField( QStringLiteral( "defaultValue" ), QMetaType::Type::Int );
       QgsField sumField( QStringLiteral( "sum" ), QMetaType::Type::Int );
       QgsField geometryWeightedField( QStringLiteral( "geometryWeighted" ), QMetaType::Type::Double );
-      QVERIFY( ml.dataProvider()->addAttributes( { defaultValueField, sumField, geometryWeightedField } ) );
+      QgsField largestGeometryField( QStringLiteral( "largestGeometry" ), QMetaType::Type::QString );
+      QVERIFY( ml.dataProvider()->addAttributes( { defaultValueField, sumField, geometryWeightedField, largestGeometryField } ) );
       ml.updateFields();
 
       // set policies
       ml.setFieldMergePolicy( 0, Qgis::FieldDomainMergePolicy::DefaultValue );
       ml.setFieldMergePolicy( 1, Qgis::FieldDomainMergePolicy::Sum );
       ml.setFieldMergePolicy( 2, Qgis::FieldDomainMergePolicy::GeometryWeighted );
+      ml.setFieldMergePolicy( 3, Qgis::FieldDomainMergePolicy::LargestGeometry );
 
       // verify that policies have been correctly set
 
       QCOMPARE( ml.fields().field( 0 ).mergePolicy(), Qgis::FieldDomainMergePolicy::DefaultValue );
       QCOMPARE( ml.fields().field( 1 ).mergePolicy(), Qgis::FieldDomainMergePolicy::Sum );
       QCOMPARE( ml.fields().field( 2 ).mergePolicy(), Qgis::FieldDomainMergePolicy::GeometryWeighted );
+      QCOMPARE( ml.fields().field( 3 ).mergePolicy(), Qgis::FieldDomainMergePolicy::LargestGeometry );
 
       // Create features
       QgsFeature f1( ml.fields(), 1 );
-      f1.setAttributes( QVector<QVariant>() << 10 << 200 << 5 );
-      f1.setGeometry( QgsGeometry::fromWkt( "LINESTRING(0 0, 10 0)" ) );
+      f1.setAttributes( QVector<QVariant>() << 10 << 200 << 7.5 << QStringLiteral( "smaller" ) );
+      f1.setGeometry( QgsGeometry::fromWkt( "LINESTRING(10 0, 15 0)" ) );
       QVERIFY( ml.dataProvider()->addFeature( f1 ) );
       QCOMPARE( ml.featureCount(), 1 );
 
       QgsFeature f2( ml.fields(), 2 );
-      f2.setAttributes( QVector<QVariant>() << 15 << 100 << 7.5 );
-      f2.setGeometry( QgsGeometry::fromWkt( "LINESTRING(10 0, 15 0)" ) );
+      f2.setAttributes( QVector<QVariant>() << 15 << 100 << 5 << QStringLiteral( "bigger" ) );
+      f2.setGeometry( QgsGeometry::fromWkt( "LINESTRING(0 0, 10 0)" ) );
       QVERIFY( ml.dataProvider()->addFeature( f2 ) );
       QCOMPARE( ml.featureCount(), 2 );
 
       QgsMergeAttributesDialog dialog1( QgsFeatureList() << f1 << f2, &ml, mQgisApp->mapCanvas() );
 
+      qDebug() << dialog1.mergedAttributes().at( 2 ).toDouble();
+
       QCOMPARE( dialog1.mergedAttributes().at( 0 ).toInt(), 10 );
       QCOMPARE( dialog1.mergedAttributes().at( 1 ).toInt(), 300 );
       QVERIFY( qgsDoubleNear( dialog1.mergedAttributes().at( 2 ).toDouble(), 5.83333, 0.00001 ) );
+      QCOMPARE( dialog1.mergedAttributes().at( 3 ).toString(), QStringLiteral( "bigger" ) );
     }
 };
 
