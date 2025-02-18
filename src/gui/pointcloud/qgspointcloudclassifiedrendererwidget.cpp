@@ -78,6 +78,7 @@ QgsPointCloudCategory QgsPointCloudClassifiedRendererModel::category( const QMod
 
 Qt::ItemFlags QgsPointCloudClassifiedRendererModel::flags( const QModelIndex &index ) const
 {
+  // Flat list, to ease drop handling valid indexes are not dropEnabled
   if ( !index.isValid() || mCategories.empty() )
   {
     return Qt::ItemIsDropEnabled;
@@ -293,7 +294,7 @@ QMimeData *QgsPointCloudClassifiedRendererModel::mimeData( const QModelIndexList
 bool QgsPointCloudClassifiedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
-  Q_UNUSED( parent ) // Unused because only valid indexes have Qt::ItemIsDropEnabled
+  Q_UNUSED( parent ) // Unused because only invalid indexes have Qt::ItemIsDropEnabled
   if ( action != Qt::MoveAction )
     return true;
 
