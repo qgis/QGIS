@@ -14,17 +14,14 @@
  ***************************************************************************/
 
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DCore/QEntity>
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DCore/QCoreAspect>
 #endif
-#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QInputSettings>
 #include <Qt3DLogic/QLogicAspect>
-#include <Qt3DRender/QCamera>
 #include <Qt3DLogic/QFrameAction>
 
 #include "qgs3dmapcanvas.h"

@@ -17,6 +17,7 @@
 #define QGSCAMERACONTROLLER_H
 
 #include "qgis_3d.h"
+#include "qgscamerapose.h"
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
@@ -38,8 +39,6 @@ namespace Qt3DRender
 }
 
 #endif
-
-#include "qgscamerapose.h"
 
 class QDomDocument;
 class QDomElement;

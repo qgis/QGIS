@@ -16,7 +16,6 @@
 #ifndef QGS3DMAPCANVASWIDGET_H
 #define QGS3DMAPCANVASWIDGET_H
 
-#include "qgsdockwidget.h"
 #include "qgis_app.h"
 #include "qobjectuniqueptr.h"
 #include "qgsrectangle.h"
@@ -24,7 +23,6 @@
 #include <QComboBox>
 #include <QMenu>
 #include <QPointer>
-#include <QToolButton>
 #include <QToolBar>
 
 #define SIP_NO_FILE

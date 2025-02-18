@@ -15,7 +15,20 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
+#define SIP_NO_FILE
+
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3danimationsettings.h"
+#include "qgs3dtypes.h"
+#include "qgsaabb.h"
+#include "qgsray3d.h"
+#include "qgsraycastingutils.h"
+
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCullFace>
+
+#include <memory>
 
 class QgsLineString;
 class QgsPolygon;
@@ -33,22 +46,6 @@ namespace Qt3DExtras
 }
 
 class QSurface;
-
-#include "qgs3dmapsettings.h"
-#include "qgs3danimationsettings.h"
-#include "qgs3dtypes.h"
-#include "qgsaabb.h"
-#include "qgsray3d.h"
-#include "qgsraycastingutils.h"
-
-#include <QSize>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCullFace>
-
-#include <memory>
-
-#define SIP_NO_FILE
-
 class Qgs3DRenderContext;
 
 /**
