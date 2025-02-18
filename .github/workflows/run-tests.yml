@@ -354,6 +354,7 @@ jobs:
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
+                     || ( [[ ${{ matrix.test-batch }} == "SQLSERVER" ]] && echo "docker-compose-testing-mssql.yml" ) \
                      || echo "docker-compose-testing.yml" )
           [[ ${{ matrix.test-batch }} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
           echo "TEST_BATCH=$TEST_BATCH"
