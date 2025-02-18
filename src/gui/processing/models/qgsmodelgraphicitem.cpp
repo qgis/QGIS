@@ -190,17 +190,16 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
     painter->setBrush( QBrush( QColor( 0, 0, 0, 33 ), Qt::SolidPattern ) );
   }
 
-  qDebug() << "mHoverState:" << mHoverState;
+  painter->setRenderHint( QPainter::Antialiasing );
 
-  painter->drawEllipse(getPosition(), 3.0, 3.0);
+  float display_size = 3.2;
+  painter->drawEllipse(getPosition(), display_size, display_size);
 
   painter->save();
   painter->setPen( QPen());
   painter->setBrush( QBrush());
   painter->drawRect(boundingRect());
   painter->restore();
-
-  // QgsModelDesignerFlatButtonGraphicItem::paint( painter, nullptr, nullptr );
 
 }
 
