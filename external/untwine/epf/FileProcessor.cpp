@@ -49,8 +49,8 @@ void setDimensions(pdal::PointLayoutPtr layout, FileInfo& fi)
 
 
 FileProcessor::FileProcessor(const FileInfo& fi, size_t pointSize, const Grid& grid,
-        Writer *writer, ProgressWriter& progress) :
-    m_fi(fi), m_cellMgr(pointSize, writer), m_grid(grid), m_progress(progress)
+        const Transform& xform, Writer *writer, ProgressWriter& progress) :
+    m_fi(fi), m_cellMgr(pointSize, writer), m_grid(grid), m_xform(xform), m_progress(progress)
 {}
 
 class BasePointProcessor
@@ -170,6 +170,11 @@ void FileProcessor::run()
             // cell buffer that we used. We're hoping that it's the right one.
             Point p = cell->point();
             ptProcessor->fill(point, p);
+
+            // Quantize the point value to what will be stored in the output file
+            // so that we're sure that the WRITTEN point value is in the expected
+            // location in the grid.
+            p.quantize(m_xform);
 
             // Find the actual cell that this point belongs in. If it's not the one
             // we chose, copy the data to the correct cell.
