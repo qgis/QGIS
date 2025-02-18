@@ -338,7 +338,25 @@ void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
             setToManual = true;
           }
         }
+        break;
       }
+
+      case Qgis::FieldDomainMergePolicy::LargestGeometry:
+      {
+        if ( mVectorLayer->geometryType() == Qgis::GeometryType::Unknown || mVectorLayer->geometryType() == Qgis::GeometryType::Null || mVectorLayer->geometryType() == Qgis::GeometryType::Point )
+          break;
+
+        std::function<double( const QgsGeometry & )> getSize = mVectorLayer->geometryType() == Qgis::GeometryType::Polygon ? &QgsGeometry::area : &QgsGeometry::length;
+
+        QList<QgsFeature>::iterator largestSelectedFeature = std::max_element( mFeatureList.begin(), mFeatureList.end(), [&getSize]( const QgsFeature &a, const QgsFeature &b ) -> bool {
+          return getSize( a.geometry() ) < getSize( b.geometry() );
+        } );
+
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, largestSelectedFeature->attribute( idx ) );
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, largestSelectedFeature->attribute( idx ) );
+        setToManual = true;
+      }
+      break;
     }
 
 
