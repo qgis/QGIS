@@ -282,6 +282,7 @@ void QgsCustomizationDialog::cancel()
     }
     mSelectedWidgets.clear();
   }
+  reset();
   hide();
 }
 
