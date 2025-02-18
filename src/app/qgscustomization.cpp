@@ -268,6 +268,8 @@ void QgsCustomizationDialog::apply()
 
   QSettings settings;
   settings.setValue( QStringLiteral( "UI/Customization/enabled" ), mCustomizationEnabledCheckBox->isChecked() );
+
+  mSelectedWidgets.clear();
 }
 
 void QgsCustomizationDialog::cancel()

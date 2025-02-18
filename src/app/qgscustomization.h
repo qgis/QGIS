@@ -104,7 +104,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
 
     QString mLastDirSettingsName;
     QSettings *mSettings = nullptr;
-    QList<QWidget *> mSelectedWidgets;
+    QList<QPointer< QWidget > > mSelectedWidgets;
 
   protected:
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand;
