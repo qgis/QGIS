@@ -846,11 +846,8 @@ int QgsModelParameterGraphicItem::linkPointCount( Qt::Edge edge ) const
 
 QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge edge, int index ) const
 {
-  if ( index != 0 )
+  if ( index < 0 )
   { 
-    // Always only one bottom socket for parameter
-    QgsMessageLog::logMessage(tr( "Cannot link output for parameter: %1" ),
-                              "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
     return QString();
   }
 
