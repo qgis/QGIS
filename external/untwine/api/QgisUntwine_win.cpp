@@ -41,17 +41,26 @@ bool QgisUntwine::start(Options& options)
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
     **/
 
-    auto ncCmdline = os::toNative(cmdline);
-    bool ok = CreateProcess(os::toNative(m_path).c_str(), ncCmdline.data(),
-        NULL, /* process attributes */
-        NULL, /* thread attributes */
-        TRUE, /* inherit handles */
-        CREATE_NO_WINDOW, /* creation flags */
-        NULL, /* environment */
-        NULL, /* current directory */
-        &startupInfo, /* startup info */
-        &processInfo /* process information */
-    );
+    bool ok = false;
+    try
+    {
+        auto ncCmdline = os::toNative(cmdline);
+        ok = CreateProcess(os::toNative(m_path).c_str(), ncCmdline.data(),
+            NULL, /* process attributes */
+            NULL, /* thread attributes */
+            TRUE, /* inherit handles */
+            CREATE_NO_WINDOW, /* creation flags */
+            NULL, /* environment */
+            NULL, /* current directory */
+            &startupInfo, /* startup info */
+            &processInfo /* process information */
+        );
+    }
+    catch (const untwine::FatalError& err)
+    {
+        m_errorMsg = err.what();
+    }
+
     if (ok)
     {
         m_pid = processInfo.hProcess;
