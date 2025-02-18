@@ -15,7 +15,7 @@ services:
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
     links:
-      - postgres
+      - mssql
     env_file:
       - docker-variables.env
     environment:
