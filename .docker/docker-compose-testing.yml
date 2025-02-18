@@ -27,7 +27,6 @@ services:
       - ${QGIS_WORKSPACE}:/root/QGIS
       - ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}
     links:
-    #  - mssql
       - webdav
       - minio
       - httpbin
