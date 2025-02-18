@@ -121,7 +121,7 @@ bool QgsDateTimeEdit::event( QEvent *event )
       const int selectionStart { lineEdit()->selectionStart() };
       const int selectionEnd { lineEdit()->selectionEnd() };
       lineEdit()->setCursorPosition( selectionStart );
-      lineEdit()->setSelection( selectionStart, selectionEnd );
+      lineEdit()->setSelection( selectionStart, selectionEnd - selectionStart );
     }
   }
 
