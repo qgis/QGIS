@@ -16,11 +16,6 @@
 #ifndef QGSRUBBERBAND3D_H
 #define QGSRUBBERBAND3D_H
 
-#include "qgis_3d.h"
-#include "qgsgeometry.h"
-
-#include <QColor>
-
 #define SIP_NO_FILE
 
 /// @cond PRIVATE
@@ -34,7 +29,14 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis_3d.h"
+#include "qgsgeometry.h"
+#include "qgspolygon.h"
+#include "qgstessellator.h"
 
+#include <QColor>
+
+class QgsGeometry;
 class QgsAbstract3DEngine;
 class QgsPoint;
 class QgsPhongMaterialSettings;

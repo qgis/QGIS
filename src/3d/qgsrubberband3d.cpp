@@ -24,6 +24,12 @@
 #include "qgsvertexid.h"
 #include "qgssymbollayer.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgslinestring.h"
+#include "qgsmessagelog.h"
+#include "qgspolygon.h"
+#include "qgssymbollayerutils.h"
+#include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
 
 #include <Qt3DCore/QEntity>
@@ -37,13 +43,6 @@
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
 #endif
-
-#include "qgs3dutils.h"
-#include "qgslinestring.h"
-#include "qgsmessagelog.h"
-#include "qgspolygon.h"
-#include "qgssymbollayerutils.h"
-#include "qgstessellatedpolygongeometry.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <QColor>
