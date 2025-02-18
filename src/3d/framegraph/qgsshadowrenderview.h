@@ -41,6 +41,7 @@ namespace Qt3DRender
   class QRenderTargetSelector;
   class QClearBuffers;
   class QRenderStateSet;
+  class QRenderTarget;
   class QRenderTargetOutput;
 } // namespace Qt3DRender
 
