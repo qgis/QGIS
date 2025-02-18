@@ -25,6 +25,7 @@
 #include "qgslinestring.h"
 #include "qgssymbollayer.h"
 #include "qgs3dmapsettings.h"
+#include "qgstessellator.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -40,6 +41,7 @@
 
 #include "qgs3dutils.h"
 #include "qgsmessagelog.h"
+#include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
 
 #include <Qt3DRender/QGeometryRenderer>
@@ -49,11 +51,10 @@
 /// @cond PRIVATE
 
 
-QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, const Qgis::GeometryType geometryType, const bool isOutlineDashed )
+QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, const Qgis::GeometryType geometryType )
   : mMapSettings( &map )
   , mEngine( engine )
   , mGeometryType( geometryType )
-  , mIsOutlineDashed( isOutlineDashed )
 {
   switch ( mGeometryType )
   {
@@ -71,7 +72,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
       break;
     case Qgis::GeometryType::Null:
     case Qgis::GeometryType::Unknown:
-      QgsMessageLog::logMessage( QObject::tr( "Unknown GeometryType used in QgsRubberband3D" ), QObject::tr( "3D" ) );
+      QgsDebugError( "Unknown GeometryType used in QgsRubberband3D" );
       break;
   }
 }
@@ -126,16 +127,17 @@ void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
 
   mPolygonGeometry = new QgsTessellatedPolygonGeometry();
 
-  mPolygonGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-  mPolygonGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
-  mPolygonGeometryRenderer->setGeometry( mPolygonGeometry );
-  mPolygonEntity->addComponent( mPolygonGeometryRenderer );
+  Qt3DRender::QGeometryRenderer *polygonGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+  polygonGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
+  polygonGeometryRenderer->setGeometry( mPolygonGeometry );
+  mPolygonEntity->addComponent( polygonGeometryRenderer );
 
-  mPolygonMaterial = new QgsPhongMaterialSettings();
-  mPolygonMaterial->setAmbient( mColor );
-  mPolygonMaterial->setDiffuse( mColor );
-  mPolygonMaterial->setOpacity( 0.25 );
-  mPolygonEntity->addComponent( mPolygonMaterial->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, QgsMaterialContext() ) );
+  QgsPhongMaterialSettings polygonMaterialSettings = QgsPhongMaterialSettings();
+  polygonMaterialSettings.setAmbient( mColor );
+  polygonMaterialSettings.setDiffuse( mColor );
+  polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
+  mPolygonMaterial = polygonMaterialSettings.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, QgsMaterialContext() );
+  mPolygonEntity->addComponent( mPolygonMaterial );
 }
 
 QgsRubberBand3D::~QgsRubberBand3D()
@@ -201,10 +203,13 @@ void QgsRubberBand3D::setColor( QColor color )
 
   if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
-    mPolygonEntity->removeComponent( mPolygonMaterial->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, QgsMaterialContext() ) );
-    mPolygonMaterial->setAmbient( mColor );
-    mPolygonMaterial->setDiffuse( mColor );
-    mPolygonEntity->addComponent( mPolygonMaterial->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, QgsMaterialContext() ) );
+    mPolygonEntity->removeComponent( mPolygonMaterial );
+    QgsPhongMaterialSettings polygonMaterialSettings;
+    polygonMaterialSettings.setAmbient( mColor );
+    polygonMaterialSettings.setDiffuse( mColor );
+    polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
+    mPolygonMaterial = polygonMaterialSettings.toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, QgsMaterialContext() );
+    mPolygonEntity->addComponent( mPolygonMaterial );
   }
 }
 
@@ -235,7 +240,7 @@ void QgsRubberBand3D::setMarkerType( MarkerType marker )
     { QStringLiteral( "size_unit" ), QStringLiteral( "pixel" ) },
     { QStringLiteral( "size" ), QString::number( lineOrPolygon ? mWidth * 3.f : mWidth ) },
     { QStringLiteral( "outline_color" ), mOutlineColor.value() ? mOutlineColor.name() : mColor.name() },
-    { QStringLiteral( "outline_style" ), mIsOutlineDashed ? QStringLiteral( "dot" ) : QStringLiteral( "solid" ) },
+    { QStringLiteral( "outline_style" ), QgsSymbolLayerUtils::encodePenStyle( mMarkerOutlineStyle ) },
     { QStringLiteral( "outline_width" ), QString::number( lineOrPolygon ? 0.5 : 1 ) },
     { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
   };
@@ -247,6 +252,16 @@ void QgsRubberBand3D::setMarkerType( MarkerType marker )
 QgsRubberBand3D::MarkerType QgsRubberBand3D::markerType() const
 {
   return mMarkerType;
+}
+
+void QgsRubberBand3D::setMarkerOutlineStyle( const Qt::PenStyle style )
+{
+  mMarkerOutlineStyle = style;
+}
+
+Qt::PenStyle QgsRubberBand3D::markerOutlineStyle() const
+{
+  return mMarkerOutlineStyle;
 }
 
 void QgsRubberBand3D::reset()
@@ -352,7 +367,7 @@ void QgsRubberBand3D::updateGeometry()
     // extract vertex buffer data from tessellator
     const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
     const int vertexCount = data.count() / tessellator.stride();
-    mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>() << -10, QVector<uint>() << 0 );
+    mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
   }
 }
 

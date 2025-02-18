@@ -17,6 +17,8 @@
 #define QGSRUBBERBAND3D_H
 
 #include "qgis_3d.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 #include <QColor>
 
@@ -32,10 +34,6 @@
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
-
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgstessellator.h"
 
 class QgsPhongMaterialSettings;
 class QgsMaterial;
@@ -100,7 +98,7 @@ class _3D_EXPORT QgsRubberBand3D
       None
     };
 
-    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool isOutlineDashed = false );
+    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
     ~QgsRubberBand3D();
 
     //! Returns the rubber band width in pixels
@@ -137,6 +135,19 @@ class _3D_EXPORT QgsRubberBand3D
      */
     MarkerType markerType() const;
 
+    /**
+     * Sets the marker outline style
+     * \note Default value is solid line
+     * \since QGIS 3.44
+     */
+    void setMarkerOutlineStyle( Qt::PenStyle style );
+
+    /**
+     * Returns current marker outline style used by rubberband.
+     * \since QGIS 3.44
+     */
+    Qt::PenStyle markerOutlineStyle() const;
+
     void reset();
 
     void addPoint( const QgsPoint &pt );
@@ -167,6 +178,8 @@ class _3D_EXPORT QgsRubberBand3D
     void setupLine( Qt3DCore::QEntity *parentEntity, QgsWindow3DEngine *engine );
     void setupPolygon( Qt3DCore::QEntity *parentEntity );
 
+    constexpr float DEFAULT_POLYGON_OPACITY = 0.25;
+
     QgsLineString mLineString;
     QgsPolygon mPolygon;
     bool mHideLastMarker = false;
@@ -180,16 +193,15 @@ class _3D_EXPORT QgsRubberBand3D
     float mWidth = 3.f;
     QColor mColor = Qt::red;
     QColor mOutlineColor;
-    bool mIsOutlineDashed = false;
+    Qt::PenStyle mMarkerOutlineStyle = Qt::PenStyle::SolidLine;
 
     Qt3DCore::QEntity *mLineEntity = nullptr;    // owned by parentEntity (from constructor)
     Qt3DCore::QEntity *mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
     Qt3DCore::QEntity *mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
 
     // all these are owned by mPolygonEntity
-    Qt3DRender::QGeometryRenderer *mPolygonGeometryRenderer = nullptr;
     QgsTessellatedPolygonGeometry *mPolygonGeometry = nullptr;
-    QgsPhongMaterialSettings *mPolygonMaterial = nullptr;
+    QgsMaterial *mPolygonMaterial = nullptr;
 
     // all these are owned by mLineEntity
     Qt3DRender::QGeometryRenderer *mLineGeometryRenderer = nullptr;
