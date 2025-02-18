@@ -69,10 +69,6 @@ Returns the model component associated with this item.
 Returns the model associated with this item.
 %End
 
-    const QgsProcessingModelAlgorithm *model() const;
-%Docstring
-Returns the model associated with this item.
-%End
 
     QgsModelGraphicsView *view();
 %Docstring

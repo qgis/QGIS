@@ -101,7 +101,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the model associated with this item.
      */
-    const QgsProcessingModelAlgorithm *model() const;
+    const QgsProcessingModelAlgorithm *model() const SIP_SKIP;
 
     /**
      * Returns the associated view.
