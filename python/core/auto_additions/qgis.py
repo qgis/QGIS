@@ -6863,6 +6863,7 @@ Qgis.FieldDomainMergePolicy.DefaultValue.__doc__ = "Use default field value"
 Qgis.FieldDomainMergePolicy.Sum.__doc__ = "Sum of values"
 Qgis.FieldDomainMergePolicy.GeometryWeighted.__doc__ = "New values are computed as the weighted average of the source values"
 Qgis.FieldDomainMergePolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.LargestGeometry.__doc__ = "Use value from the feature with the largest geometry \n.. versionadded:: 3.44"
 Qgis.FieldDomainMergePolicy.__doc__ = """Merge policy for field domains.
 
 When a feature is built by merging multiple features, defines how the value of
@@ -6874,6 +6875,10 @@ attributes following the domain are computed.
 * ``Sum``: Sum of values
 * ``GeometryWeighted``: New values are computed as the weighted average of the source values
 * ``UnsetField``: Clears the field value so that the data provider backend will populate using any backend triggers or similar logic
+
+  .. versionadded:: 3.44
+
+* ``LargestGeometry``: Use value from the feature with the largest geometry
 
   .. versionadded:: 3.44
 

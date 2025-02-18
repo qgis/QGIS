@@ -2300,6 +2300,7 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
       break;
 
     case Qgis::FieldDomainMergePolicy::UnsetField:
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
       // not supported
       break;
   }

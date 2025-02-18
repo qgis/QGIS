@@ -2247,6 +2247,9 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
     case Qgis::FieldDomainMergePolicy::UnsetField:
       metadata += tr( "Unset field" );
       break;
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
+      metadata += tr( "Largest geometry" );
+      break;
   }
 
   metadata += QLatin1String( "</table>\n<br><br>" );

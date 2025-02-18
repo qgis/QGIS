@@ -2113,6 +2113,7 @@ The development version
       Sum,
       GeometryWeighted,
       UnsetField,
+      LargestGeometry,
     };
 
     enum class FieldDuplicatePolicy

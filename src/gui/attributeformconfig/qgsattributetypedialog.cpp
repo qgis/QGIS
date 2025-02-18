@@ -137,7 +137,14 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
       mMergePolicyComboBox->addItem( tr( "Use Sum" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::Sum ) );
 
       if ( mLayer->geometryType() != Qgis::GeometryType::Point )
+      {
         mMergePolicyComboBox->addItem( tr( "Use Average Weighted by Geometry" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::GeometryWeighted ) );
+      }
+    }
+
+    if ( mLayer->geometryType() != Qgis::GeometryType::Point )
+    {
+      mMergePolicyComboBox->addItem( tr( "Use Largest Feature" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::LargestGeometry ) );
     }
   }
   else
@@ -590,6 +597,10 @@ void QgsAttributeTypeDialog::updateMergePolicyLabel()
 
     case Qgis::FieldDomainMergePolicy::UnsetField:
       helperText = tr( "Clears the field to an unset state." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
+      helperText = tr( "Use value from feature with the largest geometry." );
       break;
   }
   mMergePolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
