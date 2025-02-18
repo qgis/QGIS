@@ -108,6 +108,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testLeftAlignTextRightAlignSymbol();
     void testCenterAlignTextRightAlignSymbol();
     void testRightAlignTextRightAlignSymbol();
+    void testDataDefinedTextFormat();
 
     void testGroupHeadingSpacing();
     void testGroupIndentSetup();
@@ -737,6 +738,46 @@ void TestQgsLegendRenderer::testRightAlignTextRightAlignSymbol()
 
   res = renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_two_cols_right_align_symbol_right_align_text" ) ) );
+}
+
+void TestQgsLegendRenderer::testDataDefinedTextFormat()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+
+  setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  QgsTextFormat format = settings.style( QgsLegendStyle::Group ).textFormat();
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( "@text_color_group" ) );
+  settings.rstyle( QgsLegendStyle::Group ).setTextFormat( format );
+
+  format = settings.style( QgsLegendStyle::Subgroup ).textFormat();
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( "@text_color_subgroup" ) );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setTextFormat( format );
+
+  format = settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( "@text_color_symbol_label" ) );
+  settings.rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( format );
+
+  QgsExpressionContext context;
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( QStringLiteral( "text_color_group" ), QStringLiteral( "255,0,0" ) );
+  scope->setVariable( QStringLiteral( "text_color_subgroup" ), QStringLiteral( "0,255,255" ) );
+  scope->setVariable( QStringLiteral( "text_color_symbol_label" ), QStringLiteral( "255,0,255" ) );
+  context.appendScope( scope );
+
+  QgsRenderContext rc;
+  rc.setExpressionContext( context );
+  settings.updateDataDefinedProperties( rc );
+
+  QImage res = renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "data_defined_text_format" ) ) );
 }
 
 void TestQgsLegendRenderer::testGroupHeadingSpacing()
