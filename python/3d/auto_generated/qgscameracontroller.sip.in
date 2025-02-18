@@ -12,7 +12,6 @@
 
 
 
-
 class QgsCameraController : QObject
 {
 %Docstring(signature="appended")

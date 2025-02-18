@@ -25,8 +25,9 @@
 #include "qgslinestring.h"
 #include "qgssymbollayer.h"
 #include "qgs3dmapsettings.h"
-
-#include <Qt3DCore/QEntity>
+#include "qgs3dutils.h"
+#include "qgsmessagelog.h"
+#include "qgstessellatedpolygongeometry.h"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
@@ -38,10 +39,7 @@
 #include <Qt3DCore/QGeometry>
 #endif
 
-#include "qgs3dutils.h"
-#include "qgsmessagelog.h"
-#include "qgstessellatedpolygongeometry.h"
-
+#include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
 #include <QColor>
 
