@@ -41,8 +41,8 @@ class TestPyQgsLegendSettings(QgisTestCase):
         settings.setTitle(title)
         self.assertEqual(settings.title(), title)
 
-        settings.setTitleAlignment(Qt.AlignRight)
-        self.assertEqual(settings.titleAlignment(), Qt.AlignRight)
+        settings.setTitleAlignment(Qt.AlignmentFlag.AlignRight)
+        self.assertEqual(settings.titleAlignment(), Qt.AlignmentFlag.AlignRight)
 
         test_style = QgsLegendStyle()
         test_style.setIndent(33)
