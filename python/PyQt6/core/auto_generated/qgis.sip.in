@@ -2432,6 +2432,16 @@ The development version
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
 
 
+    enum class LegendComponent /BaseType=IntEnum/
+      {
+      Undefined,
+      Hidden,
+      Title,
+      Group,
+      Subgroup,
+      Symbol,
+      SymbolLabel,
+    };
 
     enum class LegendJsonRenderFlag /BaseType=IntFlag/
     {

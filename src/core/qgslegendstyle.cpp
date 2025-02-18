@@ -118,62 +118,62 @@ void QgsLegendStyle::updateDataDefinedProperties( QgsRenderContext &context )
 
 }
 
-QString QgsLegendStyle::styleName( Style s )
+QString QgsLegendStyle::styleName( Qgis::LegendComponent s )
 {
   switch ( s )
   {
-    case Undefined:
+    case Qgis::LegendComponent::Undefined:
       return QString();
-    case Hidden:
+    case Qgis::LegendComponent::Hidden:
       return QStringLiteral( "hidden" );
-    case Title:
+    case Qgis::LegendComponent::Title:
       return QStringLiteral( "title" );
-    case Group:
+    case Qgis::LegendComponent::Group:
       return QStringLiteral( "group" );
-    case Subgroup:
+    case Qgis::LegendComponent::Subgroup:
       return QStringLiteral( "subgroup" );
-    case Symbol:
+    case Qgis::LegendComponent::Symbol:
       return QStringLiteral( "symbol" );
-    case SymbolLabel:
+    case Qgis::LegendComponent::SymbolLabel:
       return QStringLiteral( "symbolLabel" );
   }
   return QString();
 }
 
-QgsLegendStyle::Style QgsLegendStyle::styleFromName( const QString &styleName )
+Qgis::LegendComponent QgsLegendStyle::styleFromName( const QString &styleName )
 {
   if ( styleName == QLatin1String( "hidden" ) )
-    return Hidden;
+    return Qgis::LegendComponent::Hidden;
   else if ( styleName == QLatin1String( "title" ) )
-    return Title;
+    return Qgis::LegendComponent::Title;
   else if ( styleName == QLatin1String( "group" ) )
-    return Group;
+    return Qgis::LegendComponent::Group;
   else if ( styleName == QLatin1String( "subgroup" ) )
-    return Subgroup;
+    return Qgis::LegendComponent::Subgroup;
   else if ( styleName == QLatin1String( "symbol" ) )
-    return Symbol;
+    return Qgis::LegendComponent::Symbol;
   else if ( styleName == QLatin1String( "symbolLabel" ) )
-    return SymbolLabel;
-  return Undefined;
+    return Qgis::LegendComponent::SymbolLabel;
+  return Qgis::LegendComponent::Undefined;
 }
 
-QString QgsLegendStyle::styleLabel( Style s )
+QString QgsLegendStyle::styleLabel( Qgis::LegendComponent s )
 {
   switch ( s )
   {
-    case Undefined:
+    case Qgis::LegendComponent::Undefined:
       return QObject::tr( "Undefined" );
-    case Hidden:
+    case Qgis::LegendComponent::Hidden:
       return QObject::tr( "Hidden" );
-    case Title:
+    case Qgis::LegendComponent::Title:
       return QObject::tr( "Title" );
-    case Group:
+    case Qgis::LegendComponent::Group:
       return QObject::tr( "Group" );
-    case Subgroup:
+    case Qgis::LegendComponent::Subgroup:
       return QObject::tr( "Subgroup" );
-    case Symbol:
+    case Qgis::LegendComponent::Symbol:
       return QObject::tr( "Symbol" );
-    case SymbolLabel:
+    case Qgis::LegendComponent::SymbolLabel:
       return QObject::tr( "Symbol label" );
   }
   return QString();
