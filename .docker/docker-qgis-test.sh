@@ -203,6 +203,7 @@ Driver       = ODBC Driver 18 for SQL Server
 Description  = Test SQL Server
 Server       = mssql
 TrustServerCertificate=yes
+AllowSelfSignedServerCert=1
 EOT
 
   echo "::endgroup::"
