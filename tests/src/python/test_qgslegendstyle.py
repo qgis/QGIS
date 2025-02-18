@@ -46,7 +46,7 @@ class TestPyQgsLegendStyle(QgisTestCase):
         self.assertEqual(style.margin(QgsLegendStyle.Side.Left), 5.2)
 
         style.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.assertEqual(style.alignment(), Qt.AlignCenter)
+        self.assertEqual(style.alignment(), Qt.AlignmentFlag.AlignCenter)
 
         style.setIndent(33)
         self.assertEqual(style.indent(), 33)
@@ -81,7 +81,7 @@ class TestPyQgsLegendStyle(QgisTestCase):
         self.assertEqual(style2.margin(QgsLegendStyle.Side.Right), 3.6)
         self.assertEqual(style2.margin(QgsLegendStyle.Side.Bottom), 4.2)
         self.assertEqual(style2.margin(QgsLegendStyle.Side.Left), 5.2)
-        self.assertEqual(style2.alignment(), Qt.AlignCenter)
+        self.assertEqual(style2.alignment(), Qt.AlignmentFlag.AlignCenter)
         self.assertEqual(style2.indent(), 33)
         self.assertEqual(style2.textFormat().color(), QColor(255, 0, 0, 0))
 
