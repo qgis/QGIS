@@ -163,7 +163,10 @@ class ModelerParametersDialog(QDialog):
         if isinstance(value, QgsProcessingModelChildParameterSource):
             if value.source() == Qgis.ProcessingModelChildParameterSource.StaticValue:
                 return value.staticValue()
-            elif value.source() == Qgis.ProcessingModelChildParameterSource.ModelParameter:
+            elif (
+                value.source()
+                == Qgis.ProcessingModelChildParameterSource.ModelParameter
+            ):
                 return self.model.parameterDefinition(
                     value.parameterName()
                 ).description()
@@ -437,7 +440,8 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
                     if (
                         isinstance(value, QgsProcessingModelChildParameterSource)
-                        and value.source() == Qgis.ProcessingModelChildParameterSource.StaticValue
+                        and value.source()
+                        == Qgis.ProcessingModelChildParameterSource.StaticValue
                     ):
                         value = value.staticValue()
                     wrapper.setValue(value)
@@ -513,7 +517,12 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 val = [val]
             elif not (
                 isinstance(val, list)
-                and all([isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val ])
+                and all(
+                    [
+                        isinstance(subval, QgsProcessingModelChildParameterSource)
+                        for subval in val
+                    ]
+                )
             ):
                 val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
 
@@ -521,11 +530,13 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             for subval in val:
                 if (
                     isinstance(subval, QgsProcessingModelChildParameterSource)
-                    and subval.source() == Qgis.ProcessingModelChildParameterSource.StaticValue
+                    and subval.source()
+                    == Qgis.ProcessingModelChildParameterSource.StaticValue
                     and not param.checkValueIsAcceptable(subval.staticValue())
                 ) or (
                     subval is None
-                    and not param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional
+                    and not param.flags()
+                    & QgsProcessingParameterDefinition.Flag.FlagOptional
                 ):
                     valid = False
                     break

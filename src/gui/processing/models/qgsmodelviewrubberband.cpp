@@ -201,7 +201,7 @@ QgsModelViewBezierRubberBand::~QgsModelViewBezierRubberBand()
 void QgsModelViewBezierRubberBand::start( QPointF position, Qt::KeyboardModifiers )
 {
   // QTransform t;
-  mRubberBandItem = new QGraphicsPathItem( );
+  mRubberBandItem = new QGraphicsPathItem();
   mRubberBandItem->setBrush( Qt::NoBrush );
   mRubberBandItem->setPen( pen() );
   mRubberBandStartPos = position;
@@ -221,27 +221,26 @@ void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifie
 
   QList<QPointF> controlPoints;
 
-  controlPoints.append(mRubberBandStartPos);
+  controlPoints.append( mRubberBandStartPos );
 
-  // Change the offset 
-  int offsetX = (position.x() - mRubberBandStartPos.x() > 0) ? 50 : -50;
+  // Change the offset
+  int offsetX = ( position.x() - mRubberBandStartPos.x() > 0 ) ? 50 : -50;
 
-  controlPoints.append(mRubberBandStartPos + QPointF(offsetX, 0));
-  controlPoints.append(position - QPointF(offsetX, 0));
-  
+  controlPoints.append( mRubberBandStartPos + QPointF( offsetX, 0 ) );
+  controlPoints.append( position - QPointF( offsetX, 0 ) );
 
 
   // controlPoints.append(bezierPointForCurve( pt, endEdge, mEndIsIncoming, endHasSpecificDirectionalFlow ));
-  controlPoints.append(position);
+  controlPoints.append( position );
 
   // const QRectF newRect = updateRect( mRubberBandStartPos, position, false, false );
-  
+
   // mRubberBandItem->setRect( 0, 0, newRect.width(), newRect.height() );
-  
+
   QPainterPath path;
   // path.moveTo( mRubberBandStartPos );
   // path.lineTo( position );
-  
+
 
   // path.moveTo( controlPoints.at( 0 ) );
   // path.lineTo( controlPoints.at( 1 ) );
@@ -252,7 +251,7 @@ void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifie
   path.cubicTo( controlPoints.at( 1 ), controlPoints.at( 2 ), controlPoints.at( 3 ) );
 
 
-  mRubberBandItem->setPath(path);
+  mRubberBandItem->setPath( path );
 
   // QTransform t;
   // t.translate( newRect.x(), newRect.y() );
@@ -263,7 +262,6 @@ void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifie
 
 QRectF QgsModelViewBezierRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
 {
-
   if ( mRubberBandItem )
   {
     view()->scene()->removeItem( mRubberBandItem );

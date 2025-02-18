@@ -169,38 +169,38 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
 }
 
 
-QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
+QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
   : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
-  , mComponentItem(parent), mComponent(component), mIndex( index ), mEdge ( edge )
+  , mComponentItem( parent )
+  , mComponent( component )
+  , mIndex( index )
+  , mEdge( edge )
 {
-
 }
 
-void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * ) {
-
-
+void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+{
   if ( mHoverState )
   {
-    painter->setPen( QPen( ) );
+    painter->setPen( QPen() );
     painter->setBrush( QBrush( QColor( 0, 0, 0, 200 ), Qt::SolidPattern ) );
   }
   else
   {
-    painter->setPen( QPen( ) );
+    painter->setPen( QPen() );
     painter->setBrush( QBrush( QColor( 0, 0, 0, 33 ), Qt::SolidPattern ) );
   }
 
   painter->setRenderHint( QPainter::Antialiasing );
 
   float display_size = 3.2;
-  painter->drawEllipse(getPosition(), display_size, display_size);
+  painter->drawEllipse( getPosition(), display_size, display_size );
 
   painter->save();
-  painter->setPen( QPen());
-  painter->setBrush( QBrush());
-  painter->drawRect(boundingRect());
+  painter->setPen( QPen() );
+  painter->setBrush( QBrush() );
+  painter->drawRect( boundingRect() );
   painter->restore();
-
 }
 
 void QgsModelDesignerSocketGraphicItem::mousePressEvent( QGraphicsSceneMouseEvent *event )

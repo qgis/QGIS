@@ -121,9 +121,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Returns the graphic item corresponding to the specified  specified child algorithm
      */
-    QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId  );
+    QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 
-    QgsModelComponentGraphicItem *parameterItem( const QString &name  );
+    QgsModelComponentGraphicItem *parameterItem( const QString &name );
 
     /**
      * Selects all the components in the scene.

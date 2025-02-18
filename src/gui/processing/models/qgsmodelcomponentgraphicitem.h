@@ -238,8 +238,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Return the output socket graphics items associated with the model Keep in sync with 
      * the underlying component
-     */ 
-    QgsModelDesignerSocketGraphicItem * outSocketAt( int index ) {return mOutSockets.at(index); }
+     */
+    QgsModelDesignerSocketGraphicItem *outSocketAt( int index ) { return mOutSockets.at( index ); }
 
 
     /**
@@ -380,8 +380,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsModelDesignerFlatButtonGraphicItem *mEditButton = nullptr;
     QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
 
-    QList< QgsModelDesignerSocketGraphicItem* > mInSockets;
-    QList< QgsModelDesignerSocketGraphicItem* > mOutSockets;
+    QList< QgsModelDesignerSocketGraphicItem * > mInSockets;
+    QList< QgsModelDesignerSocketGraphicItem * > mOutSockets;
 
 
     static constexpr double MIN_COMPONENT_WIDTH = 70;

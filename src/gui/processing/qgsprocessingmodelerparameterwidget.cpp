@@ -446,8 +446,8 @@ void QgsProcessingModelerParameterWidget::populateSources( const QStringList &co
   }
 }
 
-QList<QgsProcessingModelChildParameterSource> QgsProcessingModelerParameterWidget::availableSourcesForChild() 
-{ 
+QList<QgsProcessingModelChildParameterSource> QgsProcessingModelerParameterWidget::availableSourcesForChild()
+{
   return mSources;
 };
 

@@ -69,6 +69,11 @@ Returns the model component associated with this item.
 Returns the model associated with this item.
 %End
 
+    const QgsProcessingModelAlgorithm *model() const;
+%Docstring
+Returns the model associated with this item.
+%End
+
     QgsModelGraphicsView *view();
 %Docstring
 Returns the associated view.
@@ -182,6 +187,13 @@ Returns the best link point to use for a link originating at a specified ``other
 :return: - calculated link point in item coordinates.
          - edge: item edge for calculated best link point
 %End
+
+    QgsModelDesignerSocketGraphicItem *outSocketAt( int index );
+%Docstring
+Return the output socket graphics items associated with the model Keep in sync with 
+the underlying component
+%End
+
 
     virtual void editComment();
 %Docstring
@@ -344,6 +356,11 @@ Ownership of ``parameter`` is transferred to the item.
     virtual QColor textColor( State state ) const;
 
     virtual QPicture iconPicture() const;
+
+
+    virtual int linkPointCount( Qt::Edge edge ) const;
+
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
 
     virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 

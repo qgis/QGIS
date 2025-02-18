@@ -51,7 +51,7 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
      * Set the from socket, usually the one you click on
      * but if the input is already connected them we start from the other side (output)
      */
-    void setFromSocket(QgsModelDesignerSocketGraphicItem *socket);
+    void setFromSocket( QgsModelDesignerSocketGraphicItem *socket );
 
   private:
     std::unique_ptr<QgsModelViewBezierRubberBand> mBezierRubberBand;

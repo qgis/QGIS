@@ -277,7 +277,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 
           for ( int idx = 0; idx < linkPointCount( Qt::TopEdge ); ++idx )
           {
-            mInSockets.append( new QgsModelDesignerSocketGraphicItem(this, mComponent.get(),  idx, QPointF( 0, 0 ), Qt::TopEdge) );
+            mInSockets.append( new QgsModelDesignerSocketGraphicItem( this, mComponent.get(), idx, QPointF( 0, 0 ), Qt::TopEdge ) );
           }
         }
         if ( linkPointCount( Qt::BottomEdge ) )
@@ -287,7 +287,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 
           for ( int idx = 0; idx < linkPointCount( Qt::BottomEdge ); ++idx )
           {
-            mOutSockets.append( new QgsModelDesignerSocketGraphicItem(this, mComponent.get(), idx, QPointF( 0, 0 ), Qt::BottomEdge) );
+            mOutSockets.append( new QgsModelDesignerSocketGraphicItem( this, mComponent.get(), idx, QPointF( 0, 0 ), Qt::BottomEdge ) );
           }
         }
         mInitialized = true;
@@ -513,26 +513,25 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
   }
 
 
-  bool collapsed = mComponent->linksCollapsed(Qt::TopEdge);
+  bool collapsed = mComponent->linksCollapsed( Qt::TopEdge );
   for ( QgsModelDesignerSocketGraphicItem *socket : mInSockets )
   {
-    const QPointF pt = linkPoint(Qt::TopEdge, socket->index(), true);
-    socket->setPosition( pt ) ;
-    socket->setVisible(!collapsed);
+    const QPointF pt = linkPoint( Qt::TopEdge, socket->index(), true );
+    socket->setPosition( pt );
+    socket->setVisible( !collapsed );
   }
 
-  collapsed = mComponent->linksCollapsed(Qt::BottomEdge);
+  collapsed = mComponent->linksCollapsed( Qt::BottomEdge );
   for ( QgsModelDesignerSocketGraphicItem *socket : mOutSockets )
   {
-    const QPointF pt = linkPoint(Qt::BottomEdge, socket->index(), false);
-    socket->setPosition( pt ) ;
-    socket->setVisible(!collapsed);
+    const QPointF pt = linkPoint( Qt::BottomEdge, socket->index(), false );
+    socket->setPosition( pt );
+    socket->setVisible( !collapsed );
   }
-// Add a specific function ?
-// void QgsModelComponentGraphicItem::updateSocketsPositions()
-// {
-// }
-
+  // Add a specific function ?
+  // void QgsModelComponentGraphicItem::updateSocketsPositions()
+  // {
+  // }
 }
 
 QSizeF QgsModelComponentGraphicItem::itemSize() const
@@ -573,7 +572,6 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
     mModel->parameterComponent( param->parameterName() ).setLinksCollapsed( edge, folded );
   else if ( QgsProcessingModelOutput *output = dynamic_cast<QgsProcessingModelOutput *>( mComponent.get() ) )
     mModel->childAlgorithm( output->childId() ).modelOutput( output->name() ).setLinksCollapsed( edge, folded );
-
 
 
   updateButtonPositions();
@@ -815,43 +813,39 @@ QPicture QgsModelParameterGraphicItem::iconPicture() const
 
 int QgsModelParameterGraphicItem::linkPointCount( Qt::Edge edge ) const
 {
+  switch ( edge )
+  {
+    case Qt::BottomEdge:
+      return 1;
+    case Qt::TopEdge:
+    case Qt::LeftEdge:
+    case Qt::RightEdge:
+      break;
+  }
 
-    switch ( edge )
-    {
-      case Qt::BottomEdge:
-        return 1;
-      case Qt::TopEdge:
-      case Qt::LeftEdge:
-      case Qt::RightEdge:
-        break;
-    }
-  
   return 0;
 }
 
 QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge edge, int index ) const
 {
   if ( index < 0 )
-  { 
+  {
     return QString();
   }
 
 
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
-    {
-    
-    QString text =  this->model()->parameterDefinition(parameter->parameterName())->type();
-    return truncatedTextForItem(text);
+  {
+    QString text = this->model()->parameterDefinition( parameter->parameterName() )->type();
+    return truncatedTextForItem( text );
     // return truncatedTextForItem(QStringLiteral( "lorem:" ) + parameter->description() + parameter->parameterName());
-        // const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const SIP_HOLDGIL;
-    
+    // const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const SIP_HOLDGIL;
+
     //return model()->parameterDefinition(  parameter->parameterName())->description();
-    
-    }
-    
+  }
+
 
   return QString();
-
 }
 
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )

@@ -156,10 +156,8 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
  */
 class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlatButtonGraphicItem
 {
-
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
      *
@@ -167,8 +165,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      *
      * The sockets will be rendered at the specified \a position
      */
-    QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent* component, int index, const QPointF &position, Qt::Edge edge,
-                                           const QSizeF &size = QSizeF( 11, 11 ));
+    QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 ) );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
@@ -176,28 +173,25 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     void modelPressEvent( QgsModelViewMouseEvent *event ) override;
 #endif
 
-    int index( ) {return mIndex; };
-    Qt::Edge edge( ) {return mEdge; };
+    int index() { return mIndex; };
+    Qt::Edge edge() { return mEdge; };
 
-    bool isInput() { return mEdge== Qt::TopEdge; }
+    bool isInput() { return mEdge == Qt::TopEdge; }
 
-    /** Return the component associated to the socket */ 
-    QgsProcessingModelComponent* component() {return mComponent;};
+    /** Return the component associated to the socket */
+    QgsProcessingModelComponent *component() { return mComponent; };
 
-    /** Return the parent GraphicItem (QgsModelComponentGraphicItem) associated to the socket */ 
-    QgsModelComponentGraphicItem* componentItem() {return mComponentItem;};
+    /** Return the parent GraphicItem (QgsModelComponentGraphicItem) associated to the socket */
+    QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };
 
   signals:
 
-    
 
   private:
-
     QgsModelComponentGraphicItem *mComponentItem;
     int mIndex;
-    QgsProcessingModelComponent* mComponent;
+    QgsProcessingModelComponent *mComponent;
     Qt::Edge mEdge;
-
 };
 
 ///@endcond
