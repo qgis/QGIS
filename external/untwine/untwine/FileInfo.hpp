@@ -1,5 +1,5 @@
 /*****************************************************************************
- *   Copyright (c) 2020, Hobu, Inc. (info@hobu.co)                           *
+ *   Copyright (c) 2024, Hobu, Inc. (info@hobu.co)                           *
  *                                                                           *
  *   All rights reserved.                                                    *
  *                                                                           *
@@ -10,29 +10,39 @@
  *                                                                           *
  ****************************************************************************/
 
-
 #pragma once
 
-#include <cstdint>
-#include <memory>
-#include <unordered_map>
-#include <vector>
+#include "Common.hpp"
 
-#include "untwine/VoxelKey.hpp"
+#include <pdal/SpatialReference.hpp>
+#include <pdal/util/Bounds.hpp>
+
+#include "FileDimInfo.hpp"
 
 namespace untwine
 {
-namespace epf
+
+struct FileInfo
 {
+    FileInfo() :
+        numPoints(0), start(0), untwineBitsOffset(-1), fileVersion(0)
+    {}
 
-using DataVec = std::vector<uint8_t>;
-using DataVecPtr = std::unique_ptr<DataVec>;
-using Totals = std::unordered_map<VoxelKey, size_t>;
-constexpr int MaxPointsPerNode = 100000;
-constexpr int BufSize = 4096 * 10;
-constexpr int MaxBuffers = 1000;
-constexpr int NumWriters = 4;
-constexpr int NumFileProcessors = 8;
+    std::string filename;
+    std::string driver;
+    bool no_srs;
+    DimInfoList dimInfo;
+    uint64_t numPoints;
+    uint64_t start;
+    pdal::BOX3D bounds;
+    pdal::SpatialReference srs;
+    int untwineBitsOffset;
+    // Currently only set for LAS files.
+    int fileVersion;
+    Transform xform;
 
-} // namespace epf
+    bool valid() const
+    { return filename.size(); }
+};
+
 } // namespace untwine

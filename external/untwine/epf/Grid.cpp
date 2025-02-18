@@ -15,6 +15,7 @@
 #include <cstdint>
 
 #include "Epf.hpp"
+#include "EpfTypes.hpp"
 #include "Grid.hpp"
 
 using namespace pdal;
@@ -24,44 +25,28 @@ namespace untwine
 namespace epf
 {
 
-void Grid::expand(const BOX3D& bounds, size_t points)
+int Grid::calcLevel(uint64_t numPoints, bool cubic) const
 {
-    m_bounds.grow(bounds);
     double xside = m_bounds.maxx - m_bounds.minx;
     double yside = m_bounds.maxy - m_bounds.miny;
     double zside = m_bounds.maxz - m_bounds.minz;
+
     double side = (std::max)(xside, (std::max)(yside, zside));
-    m_cubicBounds = BOX3D(m_bounds.minx, m_bounds.miny, m_bounds.minz,
-        m_bounds.minx + side, m_bounds.miny + side, m_bounds.minz + side);
-    m_millionPoints += size_t(points / 1000000.0);
 
-    resetLevel(calcLevel());
-}
-
-int Grid::calcLevel()
-{
     int level = 0;
-    double mp = (double)m_millionPoints;
-
-    double xside = m_bounds.maxx - m_bounds.minx;
-    double yside = m_bounds.maxy - m_bounds.miny;
-    double zside = m_bounds.maxz - m_bounds.minz;
-
-    double side = (std::max)(xside, (std::max)(yside, zside));
-
-    while (mp > MaxPointsPerNode / 1000000.0)
+    while (numPoints > MaxPointsPerNode)
     {
-        if (m_cubic)
+        if (cubic)
         {
             if (xside >= side)
-                mp /= 2;
+                numPoints /= 2;
             if (yside >= side)
-                mp /= 2;
+                numPoints /= 2;
             if (zside >= side)
-                mp /= 2;
+                numPoints /= 2;
         }
         else
-            mp /= 8;
+            numPoints /= 8;
         side /= 2;
         level++;
     }
@@ -74,19 +59,9 @@ void Grid::resetLevel(int level)
     // We have to have at least level 1 or things break when sampling.
     m_maxLevel = (std::max)(level, 1);
     m_gridSize = (int)std::pow(2, m_maxLevel);
-
-    if (m_cubic)
-    {
-        m_xsize = (m_cubicBounds.maxx - m_cubicBounds.minx) / m_gridSize;
-        m_ysize = m_xsize;
-        m_zsize = m_xsize;
-    }
-    else
-    {
-        m_xsize = (m_bounds.maxx - m_bounds.minx) / m_gridSize;
-        m_ysize = (m_bounds.maxy - m_bounds.miny) / m_gridSize;
-        m_zsize = (m_bounds.maxz - m_bounds.minz) / m_gridSize;
-    }
+    m_xsize = (m_bounds.maxx - m_bounds.minx) / m_gridSize;
+    m_ysize = (m_bounds.maxy - m_bounds.miny) / m_gridSize;
+    m_zsize = (m_bounds.maxz - m_bounds.minz) / m_gridSize;
 }
 
 VoxelKey Grid::key(double x, double y, double z) const
