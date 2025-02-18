@@ -277,8 +277,7 @@ void QgsStacSourceSelect::cmbConnections_currentTextChanged( const QString &text
 void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished object request %1" ).arg( requestId ), 2 );
-  std::unique_ptr<QgsStacObject> obj( mStac->takeStacObject( requestId ) );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj.get() );
+  std::unique_ptr<QgsStacCatalog> cat( mStac->takeStacObject< QgsStacCatalog >( requestId ) );
 
   if ( !cat )
   {

@@ -86,10 +86,9 @@ void TestQgsStac::testParseLocalCatalog()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "catalog.json" ) ) );
   QgsStacController c;
-  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
-  QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj.get() );
+  std::unique_ptr< QgsStacCatalog > cat = c.fetchStacObject< QgsStacCatalog >( url.toString() );
+  QVERIFY( cat );
+  QCOMPARE( cat->type(), QgsStacObject::Type::Catalog );
 
   QVERIFY( cat );
   QCOMPARE( cat->id(), QLatin1String( "examples" ) );
@@ -114,10 +113,9 @@ void TestQgsStac::testParseLocalCollection()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collection.json" ) ) );
   QgsStacController c;
-  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
-  QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
-  QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj.get() );
+  std::unique_ptr< QgsStacCollection > col = c.fetchStacObject< QgsStacCollection >( url.toString() );
+  QVERIFY( col );
+  QCOMPARE( col->type(), QgsStacObject::Type::Collection );
 
   QVERIFY( col );
   QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );
@@ -162,10 +160,9 @@ void TestQgsStac::testParseLocalItem()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "core-item.json" ) ) );
   QgsStacController c;
-  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
-  QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Item );
-  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj.get() );
+  std::unique_ptr< QgsStacItem > item = c.fetchStacObject< QgsStacItem >( url.toString() );
+  QVERIFY( item );
+  QCOMPARE( item->type(), QgsStacObject::Type::Item );
 
   QVERIFY( item );
   QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
@@ -276,12 +273,12 @@ void TestQgsStac::testFetchStacObjectAsync()
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), id );
   QVERIFY( spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  std::unique_ptr< QgsStacObject > obj = c.takeStacObject( id );
+  std::unique_ptr< QgsStacCatalog > obj = c.takeStacObject< QgsStacCatalog >( id );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
 
   // cannot take same id twice
-  obj = c.takeStacObject( id );
+  obj = c.takeStacObject< QgsStacCatalog >( id );
   QVERIFY( !obj );
 
 
@@ -297,12 +294,12 @@ void TestQgsStac::testFetchStacObjectAsync()
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), id );
   QVERIFY( spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  obj = c.takeStacObject( id );
+  obj = c.takeStacObject< QgsStacCatalog >( id );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
 
   // cannot take same id twice
-  obj = c.takeStacObject( id );
+  obj = c.takeStacObject< QgsStacCatalog >( id );
   QVERIFY( obj == nullptr );
 
 
@@ -318,13 +315,13 @@ void TestQgsStac::testFetchStacObjectAsync()
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), id );
   QVERIFY( spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  obj = c.takeStacObject( id );
-  QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Item );
+  std::unique_ptr< QgsStacItem > item = c.takeStacObject< QgsStacItem >( id );
+  QVERIFY( item );
+  QCOMPARE( item->type(), QgsStacObject::Type::Item );
 
   // cannot take same id twice
-  obj = c.takeStacObject( id );
-  QVERIFY( !obj );
+  item = c.takeStacObject< QgsStacItem >( id );
+  QVERIFY( !item );
 }
 
 void TestQgsStac::testFetchItemCollectionAsync()
@@ -413,7 +410,7 @@ void TestQgsStac::testFetchStacObjectAsyncInvalid()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( !c.takeStacObject( id ) );
+  QVERIFY( !c.takeStacObject< QgsStacObject >( id ) );
 }
 
 void TestQgsStac::testFetchItemCollectionAsyncInvalid()
@@ -473,7 +470,7 @@ void TestQgsStac::testFetchStacObjectAsyncUnavailable()
   // Error should not be empty on failure
   QVERIFY( !spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  QVERIFY( !c.takeStacObject( id ) );
+  QVERIFY( !c.takeStacObject< QgsStacObject >( id ) );
 }
 
 void TestQgsStac::testFetchItemCollectionAsyncUnavailable()
