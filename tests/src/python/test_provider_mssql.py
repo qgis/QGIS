@@ -49,7 +49,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
         # These are the connection details for the SQL Server instance running on Travis
-        cls.dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
+        cls.dbconn = "service='testsqlserver' user=sa password='QGIStestSQLServer1234' "
         if "QGIS_MSSQLTEST_DB" in os.environ:
             cls.dbconn = os.environ["QGIS_MSSQLTEST_DB"]
         # Create test layers
