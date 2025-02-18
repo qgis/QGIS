@@ -1207,19 +1207,19 @@ namespace QgsWms
     settings.setBoxSpace( boxSpaceAsDouble() );
     settings.setSymbolSize( QSizeF( symbolWidthAsDouble(), symbolHeightAsDouble() ) );
 
-    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Top, layerSpaceAsDouble() );
-    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setMargin( QgsLegendStyle::Side::Bottom, layerTitleSpaceAsDouble() );
+    settings.rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Side::Top, layerSpaceAsDouble() );
+    settings.rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Side::Bottom, layerTitleSpaceAsDouble() );
 
     // text format must be set before setting the format's colors
-    settings.rstyle( QgsLegendStyle::Style::Subgroup ).setTextFormat( QgsTextFormat::fromQFont( layerFont() ) );
-    settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setTextFormat( QgsTextFormat::fromQFont( itemFont() ) );
+    settings.rstyle( Qgis::LegendComponent::Subgroup ).setTextFormat( QgsTextFormat::fromQFont( layerFont() ) );
+    settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setTextFormat( QgsTextFormat::fromQFont( itemFont() ) );
 
     if ( !itemFontColor().isEmpty() )
     {
-      settings.rstyle( QgsLegendStyle::Title ).textFormat().setColor( itemFontColorAsColor() );
-      settings.rstyle( QgsLegendStyle::Group ).textFormat().setColor( itemFontColorAsColor() );
-      settings.rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( itemFontColorAsColor() );
-      settings.rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( itemFontColorAsColor() );
+      settings.rstyle( Qgis::LegendComponent::Title ).textFormat().setColor( itemFontColorAsColor() );
+      settings.rstyle( Qgis::LegendComponent::Group ).textFormat().setColor( itemFontColorAsColor() );
+      settings.rstyle( Qgis::LegendComponent::Subgroup ).textFormat().setColor( itemFontColorAsColor() );
+      settings.rstyle( Qgis::LegendComponent::SymbolLabel ).textFormat().setColor( itemFontColorAsColor() );
     }
 
     // Ok, this is tricky: because QgsLegendSettings's layerFontColor was added to the API after
@@ -1227,11 +1227,11 @@ namespace QgsWms
     // for the whole legend we need to preserve that behavior.
     // But, the 2.18 server parameters ITEMFONTCOLOR did not have effect on the layer titles too, so
     // we set explicitly layerFontColor to black if it's not overridden by LAYERFONTCOLOR argument.
-    settings.rstyle( QgsLegendStyle::Group ).textFormat().setColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
-    settings.rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
+    settings.rstyle( Qgis::LegendComponent::Group ).textFormat().setColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
+    settings.rstyle( Qgis::LegendComponent::Subgroup ).textFormat().setColor( layerFontColor().isEmpty() ? QColor( Qt::black ) : layerFontColorAsColor() );
 
-    settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpaceAsDouble() );
-    settings.rstyle( QgsLegendStyle::Style::SymbolLabel ).setMargin( QgsLegendStyle::Side::Left, iconLabelSpaceAsDouble() );
+    settings.rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpaceAsDouble() );
+    settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setMargin( QgsLegendStyle::Side::Left, iconLabelSpaceAsDouble() );
 
     // When processing a request involving an upstream WMS server, any responses from such a remote
     // server must be awaited. This was not the case for GetLegendGraphic requests (#42063). If not,

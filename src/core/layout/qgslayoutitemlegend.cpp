@@ -408,41 +408,41 @@ void QgsLayoutItemLegend::setTitleAlignment( Qt::AlignmentFlag alignment )
   mSettings.setTitleAlignment( alignment );
 }
 
-QgsLegendStyle &QgsLayoutItemLegend::rstyle( QgsLegendStyle::Style s )
+QgsLegendStyle &QgsLayoutItemLegend::rstyle( Qgis::LegendComponent s )
 {
   return mSettings.rstyle( s );
 }
 
-QgsLegendStyle QgsLayoutItemLegend::style( QgsLegendStyle::Style s ) const
+QgsLegendStyle QgsLayoutItemLegend::style( Qgis::LegendComponent s ) const
 {
   return mSettings.style( s );
 }
 
-void QgsLayoutItemLegend::setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style )
+void QgsLayoutItemLegend::setStyle( Qgis::LegendComponent s, const QgsLegendStyle &style )
 {
   mSettings.setStyle( s, style );
 }
 
-QFont QgsLayoutItemLegend::styleFont( QgsLegendStyle::Style s ) const
+QFont QgsLayoutItemLegend::styleFont( Qgis::LegendComponent s ) const
 {
   Q_NOWARN_DEPRECATED_PUSH
   return mSettings.style( s ).font();
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsLayoutItemLegend::setStyleFont( QgsLegendStyle::Style s, const QFont &f )
+void QgsLayoutItemLegend::setStyleFont( Qgis::LegendComponent s, const QFont &f )
 {
   Q_NOWARN_DEPRECATED_PUSH
   rstyle( s ).setFont( f );
   Q_NOWARN_DEPRECATED_POP
 }
 
-void QgsLayoutItemLegend::setStyleMargin( QgsLegendStyle::Style s, double margin )
+void QgsLayoutItemLegend::setStyleMargin( Qgis::LegendComponent s, double margin )
 {
   rstyle( s ).setMargin( margin );
 }
 
-void QgsLayoutItemLegend::setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin )
+void QgsLayoutItemLegend::setStyleMargin( Qgis::LegendComponent s, QgsLegendStyle::Side side, double margin )
 {
   rstyle( s ).setMargin( side, margin );
 }
@@ -696,11 +696,11 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
   QDomElement legendStyles = doc.createElement( QStringLiteral( "styles" ) );
   legendElem.appendChild( legendStyles );
 
-  style( QgsLegendStyle::Title ).writeXml( QStringLiteral( "title" ), legendStyles, doc, context );
-  style( QgsLegendStyle::Group ).writeXml( QStringLiteral( "group" ), legendStyles, doc, context );
-  style( QgsLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), legendStyles, doc, context );
-  style( QgsLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), legendStyles, doc, context );
-  style( QgsLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), legendStyles, doc, context );
+  style( Qgis::LegendComponent::Title ).writeXml( QStringLiteral( "title" ), legendStyles, doc, context );
+  style( Qgis::LegendComponent::Group ).writeXml( QStringLiteral( "group" ), legendStyles, doc, context );
+  style( Qgis::LegendComponent::Subgroup ).writeXml( QStringLiteral( "subgroup" ), legendStyles, doc, context );
+  style( Qgis::LegendComponent::Symbol ).writeXml( QStringLiteral( "symbol" ), legendStyles, doc, context );
+  style( Qgis::LegendComponent::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), legendStyles, doc, context );
 
   if ( mCustomLayerTree )
   {
@@ -743,12 +743,12 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
       QgsLegendStyle style;
       style.readXml( styleElem, doc, context );
       const QString name = styleElem.attribute( QStringLiteral( "name" ) );
-      QgsLegendStyle::Style s;
-      if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
-      else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
-      else if ( name == QLatin1String( "subgroup" ) ) s = QgsLegendStyle::Subgroup;
-      else if ( name == QLatin1String( "symbol" ) ) s = QgsLegendStyle::Symbol;
-      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsLegendStyle::SymbolLabel;
+      Qgis::LegendComponent s;
+      if ( name == QLatin1String( "title" ) ) s = Qgis::LegendComponent::Title;
+      else if ( name == QLatin1String( "group" ) ) s = Qgis::LegendComponent::Group;
+      else if ( name == QLatin1String( "subgroup" ) ) s = Qgis::LegendComponent::Subgroup;
+      else if ( name == QLatin1String( "symbol" ) ) s = Qgis::LegendComponent::Symbol;
+      else if ( name == QLatin1String( "symbolLabel" ) ) s = Qgis::LegendComponent::SymbolLabel;
       else continue;
       setStyle( s, style );
     }
@@ -759,10 +759,10 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   {
     QColor fontClr;
     fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
-    rstyle( QgsLegendStyle::Title ).textFormat().setColor( fontClr );
-    rstyle( QgsLegendStyle::Group ).textFormat().setColor( fontClr );
-    rstyle( QgsLegendStyle::Subgroup ).textFormat().setColor( fontClr );
-    rstyle( QgsLegendStyle::SymbolLabel ).textFormat().setColor( fontClr );
+    rstyle( Qgis::LegendComponent::Title ).textFormat().setColor( fontClr );
+    rstyle( Qgis::LegendComponent::Group ).textFormat().setColor( fontClr );
+    rstyle( Qgis::LegendComponent::Subgroup ).textFormat().setColor( fontClr );
+    rstyle( Qgis::LegendComponent::SymbolLabel ).textFormat().setColor( fontClr );
   }
 
   //spaces
@@ -781,26 +781,26 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   {
     const double spacing = itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble();
     // line spacing *was* a fixed amount (in mm) added between each line of text.
-    QgsTextFormat f = rstyle( QgsLegendStyle::Title ).textFormat();
+    QgsTextFormat f = rstyle( Qgis::LegendComponent::Title ).textFormat();
     // assume font sizes in points, since that was what we always had from before this method was deprecated
     f.setLineHeight( f.size() * 0.352778 + spacing );
     f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
-    rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+    rstyle( Qgis::LegendComponent::Title ).setTextFormat( f );
 
-    f = rstyle( QgsLegendStyle::Group ).textFormat();
+    f = rstyle( Qgis::LegendComponent::Group ).textFormat();
     f.setLineHeight( f.size() * 0.352778 + spacing );
     f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
-    rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+    rstyle( Qgis::LegendComponent::Group ).setTextFormat( f );
 
-    f = rstyle( QgsLegendStyle::Subgroup ).textFormat();
+    f = rstyle( Qgis::LegendComponent::Subgroup ).textFormat();
     f.setLineHeight( f.size() * 0.352778 + spacing );
     f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
-    rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+    rstyle( Qgis::LegendComponent::Subgroup ).setTextFormat( f );
 
-    f = rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+    f = rstyle( Qgis::LegendComponent::SymbolLabel ).textFormat();
     f.setLineHeight( f.size() * 0.352778 + spacing );
     f.setLineHeightUnit( Qgis::RenderUnit::Millimeters );
-    rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
+    rstyle( Qgis::LegendComponent::SymbolLabel ).setTextFormat( f );
   }
 
   mSettings.setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
