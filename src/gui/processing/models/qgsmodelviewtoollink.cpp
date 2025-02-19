@@ -240,7 +240,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           {
             if ( QgsModelDesignerSocketGraphicItem *output_socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
             {
-              if ( _alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( output_socket->component() ) )
+              if ( (_alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( output_socket->component() ) ))
               {
                 if ( source.outputChildId() != _alg->childId() || output_socket->isInput() )
                 {
@@ -278,8 +278,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           emit scene() -> rebuildRequired();
 
           //Get Socket from Source alg / source parameter
-          QgsModelComponentGraphicItem *item;
-          int socket_index;
+          QgsModelComponentGraphicItem *item = nullptr;
+          int socket_index = -1;
           if ( old_source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput )
           {
             item = scene()->childAlgorithmItem( old_source.outputChildId() );

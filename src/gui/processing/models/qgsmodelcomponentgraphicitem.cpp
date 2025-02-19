@@ -826,7 +826,7 @@ int QgsModelParameterGraphicItem::linkPointCount( Qt::Edge edge ) const
   return 0;
 }
 
-QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge edge, int index ) const
+QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
 {
   if ( index < 0 )
   {

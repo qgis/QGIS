@@ -212,7 +212,7 @@ void QgsModelViewBezierRubberBand::start( QPointF position, Qt::KeyboardModifier
   view()->scene()->update();
 }
 
-void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifiers modifiers )
+void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifiers )
 {
   if ( !mRubberBandItem )
   {
@@ -260,7 +260,7 @@ void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifie
   // mRubberBandItem->setTransform( t );
 }
 
-QRectF QgsModelViewBezierRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
+QRectF QgsModelViewBezierRubberBand::finish( QPointF position, Qt::KeyboardModifiers )
 {
   if ( mRubberBandItem )
   {

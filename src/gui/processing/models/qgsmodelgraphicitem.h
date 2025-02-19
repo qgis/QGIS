@@ -189,8 +189,8 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
   private:
     QgsModelComponentGraphicItem *mComponentItem;
-    int mIndex;
     QgsProcessingModelComponent *mComponent;
+    int mIndex;
     Qt::Edge mEdge;
 };
 
