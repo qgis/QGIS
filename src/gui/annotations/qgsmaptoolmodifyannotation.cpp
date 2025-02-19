@@ -40,11 +40,15 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
     void insert( int index, const QgsRectangle &bounds )
     {
       std::array<float, 4> scaledBounds = scaleBounds( bounds );
+      const float aMin[2] {
+        scaledBounds[0], scaledBounds[1]
+      };
+      const float aMax[2] {
+        scaledBounds[2], scaledBounds[3]
+      };
       this->Insert(
-        { scaledBounds[0], scaledBounds[1]
-        },
-        { scaledBounds[2], scaledBounds[3]
-        },
+        aMin,
+        aMax,
         index
       );
     }
@@ -58,11 +62,15 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
     void remove( int index, const QgsRectangle &bounds )
     {
       std::array<float, 4> scaledBounds = scaleBounds( bounds );
+      const float aMin[2] {
+        scaledBounds[0], scaledBounds[1]
+      };
+      const float aMax[2] {
+        scaledBounds[2], scaledBounds[3]
+      };
       this->Remove(
-        { scaledBounds[0], scaledBounds[1]
-        },
-        { scaledBounds[2], scaledBounds[3]
-        },
+        aMin,
+        aMax,
         index
       );
     }
@@ -75,11 +83,15 @@ class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
     bool intersects( const QgsRectangle &bounds, const std::function<bool( int index )> &callback ) const
     {
       std::array<float, 4> scaledBounds = scaleBounds( bounds );
+      const float aMin[2] {
+        scaledBounds[0], scaledBounds[1]
+      };
+      const float aMax[2] {
+        scaledBounds[2], scaledBounds[3]
+      };
       this->Search(
-        { scaledBounds[0], scaledBounds[1]
-        },
-        { scaledBounds[2], scaledBounds[3]
-        },
+        aMin,
+        aMax,
         callback
       );
       return true;
