@@ -900,8 +900,8 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
 
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
-  QString attrName = mExpressionWidget->currentField();
-  QList<QVariant> uniqueValues = layerUniqueValues( attrName );
+  const QString attrName = mExpressionWidget->currentField();
+  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
 
   // ask to abort if too many classes
   if ( uniqueValues.size() >= 1000 )
@@ -1071,8 +1071,8 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
 {
   if ( !mRenderer )
     return;
-  QString attrName = mExpressionWidget->currentField();
-  QList<QVariant> uniqueValues = layerUniqueValues( attrName );
+  const QString attrName = mExpressionWidget->currentField();
+  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
 
   const QgsCategoryList catList = mRenderer->categories();
 
@@ -1080,7 +1080,7 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
 
   for ( int i = 0; i < catList.size(); ++i )
   {
-    QgsRendererCategory cat = catList.at( i );
+    const QgsRendererCategory cat = catList.at( i );
     if ( !uniqueValues.contains( cat.value() ) )
     {
       unusedIndexes.append( i );
@@ -1090,7 +1090,7 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
   emit widgetChanged();
 }
 
-QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( QString attrName )
+QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QString attrName )
 {
   const int idx = mLayer->fields().lookupField( attrName );
   QList<QVariant> uniqueValues;
