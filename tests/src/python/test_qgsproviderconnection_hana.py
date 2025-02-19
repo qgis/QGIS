@@ -72,7 +72,9 @@ class TestPyQgsProviderConnectionHana(
         super().tearDownClass()
 
     def getUniqueSchemaName(self, name):
-        return "qgis_test_providerconn_" + QgsHanaProviderUtils.generateSchemaName(self.conn, name)
+        return "qgis_test_providerconn_" + QgsHanaProviderUtils.generateSchemaName(
+            self.conn, name
+        )
 
     def createProviderMetadata(self):
         return QgsProviderRegistry.instance().providerMetadata(self.providerKey)
