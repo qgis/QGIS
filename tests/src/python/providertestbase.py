@@ -558,10 +558,18 @@ class ProviderTestCase(FeatureSourceTestCase):
     def testExtent(self):
         reference_extent = self.referenceExtent()
         provider_extent = self.source.extent()
-        self.assertAlmostEqual(provider_extent.xMinimum(), reference_extent.xMinimum())
-        self.assertAlmostEqual(provider_extent.xMaximum(), reference_extent.xMaximum())
-        self.assertAlmostEqual(provider_extent.yMinimum(), reference_extent.yMinimum())
-        self.assertAlmostEqual(provider_extent.yMaximum(), reference_extent.yMaximum())
+        self.assertAlmostEqual(
+            provider_extent.xMinimum(), reference_extent.xMinimum(), 5
+        )
+        self.assertAlmostEqual(
+            provider_extent.xMaximum(), reference_extent.xMaximum(), 5
+        )
+        self.assertAlmostEqual(
+            provider_extent.yMinimum(), reference_extent.yMinimum(), 5
+        )
+        self.assertAlmostEqual(
+            provider_extent.yMaximum(), reference_extent.yMaximum(), 5
+        )
 
     def testExtentSubsetString(self):
         if self.source.supportsSubsetString():

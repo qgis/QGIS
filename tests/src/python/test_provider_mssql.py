@@ -31,6 +31,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsWkbTypes,
+    QgsProviderConnectionException,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -49,7 +50,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         """Run before all tests"""
         super().setUpClass()
         # These are the connection details for the SQL Server instance running on Travis
-        cls.dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
+        cls.dbconn = "service='testsqlserver' user=sa password='QGIStestSQLServer1234' "
         if "QGIS_MSSQLTEST_DB" in os.environ:
             cls.dbconn = os.environ["QGIS_MSSQLTEST_DB"]
         # Create test layers
@@ -746,9 +747,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertTrue(vl.isValid())
 
-        self.assertEqual(
-            vl.dataProvider().extent().toString(1), "Empty"
-        )  # HAHA - you asked for it
+        self.assertTrue(vl.dataProvider().extent().isNull())  # HAHA - you asked for it
         # burn through features - don't expect anything wrong here yet
         count = 0
         for f in vl.dataProvider().getFeatures():
@@ -772,7 +771,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
             "mssql",
         )
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.dataProvider().extent().toString(1), "Empty")
+        self.assertTrue(vl.dataProvider().extent().isNull())
 
     def testEvaluateDefaultValueClause(self):
 
@@ -1211,26 +1210,29 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
 
         md = QgsProviderRegistry.instance().providerMetadata("mssql")
         conn = md.createConnection(self.dbconn, {})
-        conn.addField(
-            QgsField("qgis_xmin", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_xmax", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_ymin", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_ymax", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
+        try:
+            conn.addField(
+                QgsField("qgis_xmin", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_xmax", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_ymin", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_ymax", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+        except QgsProviderConnectionException:
+            pass
 
         # try with empty attribute
         layerUri.setParam("extentInGeometryColumns", "1")
