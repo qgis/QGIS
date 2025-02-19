@@ -110,6 +110,17 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     void populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes );
 
     /**
+     * HACK : Ugly workaround to expose the compatible sources for a parameter definition ( QgsProcessingParameterDefinition)
+     * Idealy we should no rely on any UI-related function to get this
+     * 
+     * \see also QgsProcessingModelAlgorithm::availableSourcesForChild
+     *
+     * The available sources are created on widget creation in \see populateSources
+     */
+    QList<QgsProcessingModelChildParameterSource> availableSourcesForChild();
+
+
+    /**
      * Set the expected expression format \a text, which is shown in the expression builder dialog for the widget
      * when in the "pre-calculated" expression mode. This is purely a text format and no expression validation is made
      * against it.
@@ -235,8 +246,10 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QComboBox *mChildOutputCombo = nullptr;
     QgsFilterLineEdit *mModelOutputName = nullptr;
 
-    QList<Qgis::ProcessingModelChildParameterSource> mLimitedSources;
+    QList<QgsProcessingModelChildParameterSource> mSources;
 
+
+    QList<Qgis::ProcessingModelChildParameterSource> mLimitedSources;
     friend class TestProcessingGui;
 };
 

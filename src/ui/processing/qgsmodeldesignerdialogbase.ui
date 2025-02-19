@@ -738,13 +738,13 @@
    </property>
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
+     <normaloff>:/images/themes/default/mActionSelectLink.svg</normaloff>:/images/themes/default/mActionSelectLink.svg</iconset>
    </property>
    <property name="text">
-    <string>Select/Move Item</string>
+    <string>Select/Move/Link Item</string>
    </property>
    <property name="toolTip">
-    <string>Select/Move item</string>
+    <string>Select/Move/Link item</string>
    </property>
    <property name="shortcut">
     <string>V</string>

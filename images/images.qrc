@@ -413,6 +413,7 @@
         <file>themes/default/mActionScaleFeature.svg</file>
         <file>themes/default/mActionScriptOpen.svg</file>
         <file>themes/default/mActionSelect.svg</file>
+        <file>themes/default/mActionSelectLink.svg</file>
         <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.svg</file>
         <file>themes/default/mActionSelectFreehand.svg</file>
