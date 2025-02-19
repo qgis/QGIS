@@ -1505,6 +1505,7 @@ ACCEPTABLE_MISSING_DOCS = {
     ],
     "QgsStackedDiagramProperties": [
         "apply()",
+        "rowsMoved()",
         "auxiliaryFieldCreated()",
         "QgsStackedDiagramProperties(QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas)",
     ],
