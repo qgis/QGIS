@@ -278,7 +278,7 @@ void QgsCustomizationDialog::cancel()
   {
     for ( int i = 0; i < mSelectedWidgets.size(); i++ )
     {
-      if ( QWidget* widget = mSelectedWidgets.at( i ) )
+      if ( QWidget *widget = mSelectedWidgets.at( i ) )
         widget->setStyleSheet( mSelectedWidgets.at( i )->property( "originalStylesheet" ).toString() );
     }
     mSelectedWidgets.clear();
