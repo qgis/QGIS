@@ -178,6 +178,9 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
   # Restore SQL Server test data
   ##############################
 
+  echo "Wait a moment before loading SQL Server database."
+  sleep 15
+
   echo "Importing SQL Server test data..."
 
   export SQLUSER=sa
