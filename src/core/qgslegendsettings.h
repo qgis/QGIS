@@ -40,6 +40,14 @@ class CORE_EXPORT QgsLegendSettings
     QgsLegendSettings();
 
     /**
+     * Updates any data-defined properties in the settings, using the specified
+     * render \a context.
+     *
+     * \since QGIS 3.42
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context );
+
+    /**
      * Sets the title for the legend, which will be rendered above all legend items.
      *
      * \see title()

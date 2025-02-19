@@ -166,6 +166,14 @@ class CORE_EXPORT QgsLegendStyle
     void readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
+     * Updates any data-defined properties in the style, using the specified
+     * render \a context.
+     *
+     * \since QGIS 3.42
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context );
+
+    /**
      * Returns the name for a style component as a string.
      *
      * This is a non-localised version, for internal use.

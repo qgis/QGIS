@@ -26,6 +26,14 @@ The content of the legend is driven by the :py:class:`QgsLegendModel` class.
   public:
     QgsLegendSettings();
 
+    void updateDataDefinedProperties( QgsRenderContext &context );
+%Docstring
+Updates any data-defined properties in the settings, using the specified
+render ``context``.
+
+.. versionadded:: 3.42
+%End
+
     void setTitle( const QString &t );
 %Docstring
 Sets the title for the legend, which will be rendered above all legend items.
