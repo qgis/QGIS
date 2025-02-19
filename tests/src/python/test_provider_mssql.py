@@ -746,9 +746,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertTrue(vl.isValid())
 
-        self.assertEqual(
-            vl.dataProvider().extent().toString(1), "Empty"
-        )  # HAHA - you asked for it
+        self.assertTrue(vl.dataProvider().extent().isNull())  # HAHA - you asked for it
         # burn through features - don't expect anything wrong here yet
         count = 0
         for f in vl.dataProvider().getFeatures():
@@ -772,7 +770,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
             "mssql",
         )
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.dataProvider().extent().toString(1), "Empty")
+        self.assertTrue(vl.dataProvider().extent().isNull())
 
     def testEvaluateDefaultValueClause(self):
 
