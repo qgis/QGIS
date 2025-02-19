@@ -31,6 +31,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsWkbTypes,
+    QgsProviderConnectionException,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1209,26 +1210,29 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
 
         md = QgsProviderRegistry.instance().providerMetadata("mssql")
         conn = md.createConnection(self.dbconn, {})
-        conn.addField(
-            QgsField("qgis_xmin", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_xmax", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_ymin", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
-        conn.addField(
-            QgsField("qgis_ymax", QVariant.Double, "FLOAT(24)"),
-            "dbo",
-            "geometry_columns",
-        )
+        try:
+            conn.addField(
+                QgsField("qgis_xmin", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_xmax", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_ymin", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+            conn.addField(
+                QgsField("qgis_ymax", QVariant.Double, "FLOAT(24)"),
+                "dbo",
+                "geometry_columns",
+            )
+        except QgsProviderConnectionException:
+            pass
 
         # try with empty attribute
         layerUri.setParam("extentInGeometryColumns", "1")
