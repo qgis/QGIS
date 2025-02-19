@@ -25,6 +25,9 @@ from qgis.core import (
     QgsRelation,
     QgsSettings,
     QgsVectorLayer,
+    QgsReferencedRectangle,
+    QgsCoordinateReferenceSystem,
+    QgsRectangle,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -465,6 +468,98 @@ class TestPackageLayers(QgisTestCase):
         region.selectByIds([])
         province.selectByIds([])
         city.selectByIds([])
+
+    def test_crs(self):
+        """Test export with transformation"""
+
+        alg = self.registry.createAlgorithmById("qgis:package")
+        self.assertIsNotNone(alg)
+
+        def _test(parameters, expected_wkts):
+
+            feedback = ConsoleFeedBack()
+            context = QgsProcessingContext()
+            context.setProject(QgsProject.instance())
+            # Note: the following returns true also in case of errors ...
+            self.assertTrue(execute(alg, parameters, context, feedback))
+            # ... so we check the log
+            self.assertEqual(feedback._errors, [])
+
+            # Check export
+            for layer_name, wkts in expected_wkts.items():
+                l = QgsVectorLayer(
+                    self.temp_export_path + f"|layername={layer_name}", layer_name
+                )
+                self.assertTrue(l.isValid())
+                features = {f.id(): f for f in l.getFeatures()}
+                self.assertCountEqual(
+                    list(features.keys()),
+                    list(wkts.keys()),
+                    layer_name + str(features.keys()),
+                )
+                for id, wkt in wkts.items():
+                    self.assertEqual(
+                        features[id].geometry().asWkt(3), wkt, f"{layer_name}: {id}"
+                    )
+
+        region = QgsProject.instance().mapLayersByName("region")[0]
+        province = QgsProject.instance().mapLayersByName("province")[0]
+        city = QgsProject.instance().mapLayersByName("city")[0]
+
+        parameters = {
+            "EXPORT_RELATED_LAYERS": False,
+            "LAYERS": [province, region, city],
+            "OUTPUT": self.temp_export_path,
+            "OVERWRITE": True,
+            "SELECTED_FEATURES_ONLY": False,
+            "EXTENT": None,
+            "CRS": "EPSG:4326",
+        }
+
+        # Test with no extent given
+        _test(
+            parameters,
+            {
+                "region": {
+                    1: "Polygon Z ((7.175 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.175 47.144 0, 7.175 47.135 0))",
+                    2: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.131 0))",
+                },
+                "province": {
+                    1: "Polygon Z ((7.175 47.135 0, 7.182 47.135 0, 7.182 47.144 0, 7.175 47.144 0, 7.175 47.135 0))",
+                    2: "Polygon Z ((7.182 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.182 47.144 0, 7.182 47.135 0))",
+                    3: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.135 0, 7.188 47.135 0, 7.188 47.131 0))",
+                    4: "Polygon Z ((7.188 47.135 0, 7.201 47.135 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.135 0))",
+                },
+                "city": {
+                    1: "Point Z (7.178 47.141 0)",
+                    2: "Point Z (7.18 47.137 0)",
+                    3: "Point Z (7.187 47.139 0)",
+                    4: "Point Z (7.191 47.133 0)",
+                },
+            },
+        )
+
+        # Test with extent
+        # Test more interesting extent
+        parameters["EXTENT"] = QgsReferencedRectangle(
+            QgsRectangle(2580700, 1220000, 2581500, 1222000),
+            QgsCoordinateReferenceSystem("EPSG:2056"),
+        )
+        _test(
+            parameters,
+            {
+                "region": {
+                    1: "Polygon Z ((7.175 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.175 47.144 0, 7.175 47.135 0))",
+                    2: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.131 0))",
+                },
+                "province": {
+                    2: "Polygon Z ((7.182 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.182 47.144 0, 7.182 47.135 0))",
+                    3: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.135 0, 7.188 47.135 0, 7.188 47.131 0))",
+                    4: "Polygon Z ((7.188 47.135 0, 7.201 47.135 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.135 0))",
+                },
+                "city": {3: "Point Z (7.187 47.139 0)", 4: "Point Z (7.191 47.133 0)"},
+            },
+        )
 
 
 if __name__ == "__main__":
