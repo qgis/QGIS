@@ -184,7 +184,7 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
   echo "Importing SQL Server test data..."
 
   export SQLUSER=sa
-  export SQLHOST=localhost
+  export SQLHOST=mssql
   export SQLPORT=1433
   export SQLPASSWORD=QGIStestSQLServer1234
   export SQLDATABASE=qgis_test
@@ -204,7 +204,7 @@ testsqlserver = ODBC Driver 18 for SQL Server
 [testsqlserver]
 Driver       = ODBC Driver 18 for SQL Server
 Description  = Test SQL Server
-Server       = 127.0.0.1
+Server       = mssql
 Encrypt=no
 AllowSelfSignedServerCert=1
 EOT
