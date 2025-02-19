@@ -1,10 +1,10 @@
-Qgis.defaultProjectScales: src/core/qgis.h#L5850
+Qgis.defaultProjectScales: src/core/qgis.h#L5851
 Qgis.devVersion: src/core/qgis.h#L89
-Qgis.geosVersion: src/core/qgis.h#L5885
-Qgis.geosVersionInt: src/core/qgis.h#L5857
-Qgis.geosVersionMajor: src/core/qgis.h#L5864
-Qgis.geosVersionMinor: src/core/qgis.h#L5871
-Qgis.geosVersionPatch: src/core/qgis.h#L5878
+Qgis.geosVersion: src/core/qgis.h#L5886
+Qgis.geosVersionInt: src/core/qgis.h#L5858
+Qgis.geosVersionMajor: src/core/qgis.h#L5865
+Qgis.geosVersionMinor: src/core/qgis.h#L5872
+Qgis.geosVersionPatch: src/core/qgis.h#L5879
 Qgis.releaseName: src/core/qgis.h#L79
 Qgis.version: src/core/qgis.h#L65
 Qgis.versionInt: src/core/qgis.h#L72
