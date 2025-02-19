@@ -181,7 +181,7 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
   echo "Importing SQL Server test data..."
 
   export SQLUSER=sa
-  export SQLHOST=127.0.0.1
+  export SQLHOST=localhost
   export SQLPORT=1433
   export SQLPASSWORD=QGIStestSQLServer1234
   export SQLDATABASE=qgis_test
