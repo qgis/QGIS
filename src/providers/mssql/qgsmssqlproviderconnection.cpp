@@ -330,8 +330,26 @@ long long QgssMssqlProviderResultIterator::rowCountPrivate() const
   return mQuery->size();
 }
 
+QgsAbstractDatabaseProviderConnection::TableProperty QgsMssqlProviderConnection::table( const QString &schema, const QString &table, QgsFeedback *feedback ) const
+{
+  const QList<QgsMssqlProviderConnection::TableProperty> properties { tablesPrivate( schema, table, TableFlags(), feedback ) };
+  if ( !properties.empty() )
+  {
+    return properties.first();
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                            .arg( table, schema ) );
+  }
+}
 
 QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
+{
+  return tablesPrivate( schema, QString(), flags, feedback );
+}
+
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsMssqlProviderConnection::tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsMssqlProviderConnection::TableProperty> tables;
@@ -339,14 +357,14 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   const QgsDataSourceUri dsUri { uri() };
 
   // Defaults to false
-  const bool useGeometryColumnsOnly { dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) };
+  const bool useGeometryColumnsOnly { !table.isEmpty() && ( dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) ) };
 
   // Defaults to true
   const bool useEstimatedMetadata { !dsUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) || ( dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' ) };
 
   // Defaults to true because we want to list all tables if flags are not set
   bool allowGeometrylessTables;
-  if ( flags == 0 )
+  if ( flags == 0 || !table.isEmpty() )
   {
     allowGeometrylessTables = true;
   }
@@ -355,6 +373,11 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     allowGeometrylessTables = flags.testFlag( TableFlag::Aspatial );
   }
   const bool disableInvalidGeometryHandling = dsUri.hasParam( QStringLiteral( "disableInvalidGeometryHandling" ) ) && dsUri.param( QStringLiteral( "disableInvalidGeometryHandling" ) ).toInt();
+  QString tableNameFilter;
+  if ( !table.isEmpty() )
+  {
+    tableNameFilter = QStringLiteral( " AND sys.objects.name = %1" ).arg( QgsMssqlProvider::quotedValue( table ) );
+  }
 
   QString query { QStringLiteral( "SELECT " ) };
 
@@ -375,11 +398,11 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                 JOIN sys.schemas
                                   ON sys.objects.schema_id = sys.schemas.schema_id
                                 WHERE
-                                  sys.schemas.name = %1
+                                  sys.schemas.name = %1 %2
                                   AND (sys.types.name = 'geometry' OR sys.types.name = 'geography')
                                   AND (sys.objects.type = 'U' OR sys.objects.type = 'V')
                              )raw" )
-               .arg( QgsMssqlProvider::quotedValue( schema ) );
+               .arg( QgsMssqlProvider::quotedValue( schema ), tableNameFilter );
   }
 
   if ( allowGeometrylessTables )
@@ -391,7 +414,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                JOIN sys.schemas
                                   ON sys.objects.schema_id = sys.schemas.schema_id
                              WHERE
-                               sys.schemas.name = %1
+                               sys.schemas.name = %1 %2
                                AND NOT EXISTS
                                 (SELECT *
                                   FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id
@@ -399,7 +422,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                     AND sys.objects.object_id = sc1.object_id )
                                AND (sys.objects.type = 'U' OR sys.objects.type = 'V')
                              )raw" )
-               .arg( QgsMssqlProvider::quotedValue( schema ) );
+               .arg( QgsMssqlProvider::quotedValue( schema ), tableNameFilter );
   }
 
   const QList<QVariantList> results { executeSqlPrivate( query, false ).rows() };
