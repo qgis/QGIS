@@ -156,6 +156,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnDeleteUnusedCategories">
+       <property name="text">
+        <string>Delete Unused</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
