@@ -82,7 +82,7 @@ void QgsLoadRasterAttributeTableDialog::accept()
   }
   else
   {
-    std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+    auto rat = std::make_unique<QgsRasterAttributeTable>();
 
     QString errorMessage;
     success = rat->readFromFile( filePath(), &errorMessage );

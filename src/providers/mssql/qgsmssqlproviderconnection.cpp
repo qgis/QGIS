@@ -246,7 +246,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
     //qDebug() << "MSSQL QUERY:" << sql;
 
-    std::unique_ptr<QgsMssqlQuery> q = std::make_unique<QgsMssqlQuery>( db );
+    auto q = std::make_unique<QgsMssqlQuery>( db );
     q->setForwardOnly( true );
     QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), QStringLiteral( "QgsMssqlProviderConnection" ), QGS_QUERY_LOG_ORIGIN };
 

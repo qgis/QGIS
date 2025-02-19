@@ -68,7 +68,7 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
 
 QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
 {
-  std::unique_ptr<QgsPhongTexturedMaterialSettings> m = std::make_unique<QgsPhongTexturedMaterialSettings>();
+  auto m = std::make_unique<QgsPhongTexturedMaterialSettings>();
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );

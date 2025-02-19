@@ -47,7 +47,7 @@ void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NODATA_AS_FALSE" ), QObject::tr( "Treat NoData values as false" ), false ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> noDataValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NO_DATA" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
+  auto noDataValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NO_DATA" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
   noDataValueParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( noDataValueParam.release() );
 
@@ -55,7 +55,7 @@ void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
   typeChoice->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( typeChoice.release() );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -125,7 +125,7 @@ QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariant
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !createOptions.isEmpty() )
   {

@@ -156,6 +156,23 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      */
     static bool parseBase64DataUrl( const QString &path, QString *mimeType SIP_OUT = nullptr, QString *data SIP_OUT = nullptr );
 
+
+    /**
+     * Parses a \a path to determine if it represents a embedded string data, and if so, extracts the components
+     * of the URL.
+     *
+     * Data URLs are of the form ``data:[<mediatype>;]utf8,<data>``.
+     *
+     * \param path path to test
+     * \param mimeType will be set to the extracted mime type if the \a path is a data URL
+     * \param data will be set to the extracted string data if the \a path is a data URL
+     *
+     * \returns TRUE if \a path is an embedded string data URL
+     *
+     * \since QGIS 3.42
+     */
+    static bool parseEmbeddedStringData( const QString &path, QString *mimeType SIP_OUT = nullptr, QString *data SIP_OUT = nullptr );
+
     /**
      * Returns TRUE if \a path represents base64 encoded data.
      *

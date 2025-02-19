@@ -1527,7 +1527,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
   }
   else
   {
-    std::unique_ptr<QgsSingleBandPseudoColorRenderer> pseudoColorRenderer = std::make_unique<QgsSingleBandPseudoColorRenderer>( provider, bandNumber );
+    auto pseudoColorRenderer = std::make_unique<QgsSingleBandPseudoColorRenderer>( provider, bandNumber );
     QStringList labels;
     // Athematic classification is not supported, but the classificationColumn will be used for labels.
     // if it's not specified, try to guess it here.

@@ -617,7 +617,7 @@ void QgsLayerTreeModel::setLegendFilter( const QgsMapSettings *settings, bool us
 {
   if ( settings && settings->hasValidSettings() )
   {
-    std::unique_ptr< QgsLayerTreeFilterSettings > filterSettings = std::make_unique< QgsLayerTreeFilterSettings >( *settings );
+    auto filterSettings = std::make_unique< QgsLayerTreeFilterSettings >( *settings );
 
     if ( !useExtent ) // only expressions
     {

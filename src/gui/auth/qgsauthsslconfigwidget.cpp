@@ -294,7 +294,7 @@ void QgsAuthSslConfigWidget::saveSslCertConfig()
   }
   if ( !QgsApplication::authManager()->storeSslCertCustomConfig( sslCustomConfig() ) )
   {
-    QgsDebugError( QStringLiteral( "SSL custom config FAILED to store in authentication database" ) );
+    QgsDebugError( QStringLiteral( "SSL custom config FAILED to store in authentication storage" ) );
   }
 }
 

@@ -1241,7 +1241,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
       //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-      std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+      auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
       if ( accessControl )
       {
         QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
@@ -1434,7 +1434,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     QgsAccessControl *accessControl = context.serverInterface()->accessControls();
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+    auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
     if ( accessControl )
     {
       QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
@@ -1498,7 +1498,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
       //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
       //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-      std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+      auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
       if ( accessControl )
       {
         QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
@@ -1629,7 +1629,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
       //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
       //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-      std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+      auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
       if ( accessControl )
       {
         QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );
@@ -1748,7 +1748,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
       //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
       //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-      std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
+      auto filterRestorer = std::make_unique<QgsOWSServerFilterRestorer>();
       if ( accessControl )
       {
         QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, mapLayer, filterRestorer->originalFilters() );

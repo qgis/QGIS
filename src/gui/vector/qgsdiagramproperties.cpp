@@ -874,7 +874,7 @@ std::unique_ptr<QgsDiagram> QgsDiagramProperties::createDiagramObject()
 
 std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings()
 {
-  std::unique_ptr<QgsDiagramSettings> ds = std::make_unique<QgsDiagramSettings>();
+  auto ds = std::make_unique<QgsDiagramSettings>();
   ds->enabled = isDiagramEnabled();
   ds->font = mDiagramFontButton->currentFont();
   ds->opacity = mOpacityWidget->opacity();
@@ -950,13 +950,13 @@ std::unique_ptr<QgsDiagramRenderer> QgsDiagramProperties::createRenderer()
   std::unique_ptr<QgsDiagramRenderer> renderer;
   if ( mFixedSizeRadio->isChecked() )
   {
-    std::unique_ptr<QgsSingleCategoryDiagramRenderer> dr = std::make_unique<QgsSingleCategoryDiagramRenderer>();
+    auto dr = std::make_unique<QgsSingleCategoryDiagramRenderer>();
     dr->setDiagramSettings( *ds );
     renderer = std::move( dr );
   }
   else
   {
-    std::unique_ptr<QgsLinearlyInterpolatedDiagramRenderer> dr = std::make_unique<QgsLinearlyInterpolatedDiagramRenderer>();
+    auto dr = std::make_unique<QgsLinearlyInterpolatedDiagramRenderer>();
     dr->setLowerValue( 0.0 );
     dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
     dr->setUpperValue( mMaxValueSpinBox->value() );

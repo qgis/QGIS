@@ -62,7 +62,7 @@ void QgsPdalReprojectAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterCoordinateOperation> crsOpParam = std::make_unique<QgsProcessingParameterCoordinateOperation>( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ), QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "CRS" ), QVariant(), QVariant(), true );
+  auto crsOpParam = std::make_unique<QgsProcessingParameterCoordinateOperation>( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ), QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "CRS" ), QVariant(), QVariant(), true );
   crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsOpParam.release() );
 

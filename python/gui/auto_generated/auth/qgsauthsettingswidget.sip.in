@@ -41,6 +41,13 @@ from existing configs, or creating/removing them from auth database
 :param dataprovider: The key of the calling layer provider, if applicable
 %End
 
+    void removeBasicSettings();
+%Docstring
+Removes the basic authentication tab from the widget.
+
+.. versionadded:: 3.42
+%End
+
     void setWarningText( const QString &warningText );
 %Docstring
 setWarningText set the text of the warning label

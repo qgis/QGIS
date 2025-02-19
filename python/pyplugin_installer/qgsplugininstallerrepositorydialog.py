@@ -46,8 +46,6 @@ class QgsPluginInstallerRepositoryDialog(
         self.editURL.setText("http://")
         self.editName.textChanged.connect(self.textChanged)
         self.editURL.textChanged.connect(self.textChanged)
-        self.btnClearAuthCfg.clicked.connect(self.editAuthCfg.clear)
-        self.btnEditAuthCfg.clicked.connect(self.editAuthCfgId)
         self.textChanged(None)
 
     # ----------------------------------------- #
@@ -55,21 +53,5 @@ class QgsPluginInstallerRepositoryDialog(
         enable = len(self.editName.text()) > 0 and len(self.editURL.text()) > 0
         self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(enable)
 
-    def editAuthCfgId(self):
-        dlg = QDialog(self)
-        dlg.setWindowModality(Qt.WindowModality.WindowModal)
-        layout = QVBoxLayout()
-        selector = QgsAuthConfigSelect(self)
-        if self.editAuthCfg.text():
-            selector.setConfigId(self.editAuthCfg.text())
-        layout.addWidget(selector)
-        buttonBox = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Close
-        )
-        buttonBox.accepted.connect(dlg.accept)
-        buttonBox.rejected.connect(dlg.reject)
-        layout.addWidget(buttonBox)
-        dlg.setLayout(layout)
-        if dlg.exec():
-            self.editAuthCfg.setText(selector.configId())
-        del dlg
+    def configId(self):
+        return self.editAuthCfgWgt.configId()

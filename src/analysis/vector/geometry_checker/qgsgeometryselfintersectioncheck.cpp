@@ -155,9 +155,9 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
       error->setFixFailed( tr( "Resulting geometry is degenerate" ) );
       return;
     }
-    std::unique_ptr<QgsLineString> ringGeom1 = std::make_unique<QgsLineString>();
+    auto ringGeom1 = std::make_unique<QgsLineString>();
     ringGeom1->setPoints( ring1 );
-    std::unique_ptr<QgsLineString> ringGeom2 = std::make_unique<QgsLineString>();
+    auto ringGeom2 = std::make_unique<QgsLineString>();
     ringGeom2->setPoints( ring2 );
 
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
@@ -216,7 +216,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
           // Otherwise, create multipolygon
           else
           {
-            std::unique_ptr<QgsMultiPolygon> multiPoly = std::make_unique<QgsMultiPolygon>();
+            auto multiPoly = std::make_unique<QgsMultiPolygon>();
             multiPoly->addGeometry( poly->clone() );
             multiPoly->addGeometry( poly2.release() );
             feature.setGeometry( QgsGeometry( std::move( multiPoly ) ) );

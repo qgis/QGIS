@@ -150,7 +150,7 @@ QVariantMap QgsExportToPostgresqlAlgorithm::processAlgorithm( const QVariantMap 
   uri.setKeyColumn( mPrimaryKeyField );
   uri.setGeometryColumn( mGeomColumn );
 
-  std::unique_ptr<QgsVectorLayerExporter> exporter = std::make_unique<QgsVectorLayerExporter>( uri.uri(), mProviderName, mSource->fields(), mSource->wkbType(), mSource->sourceCrs(), mOverwrite, mOptions );
+  auto exporter = std::make_unique<QgsVectorLayerExporter>( uri.uri(), mProviderName, mSource->fields(), mSource->wkbType(), mSource->sourceCrs(), mOverwrite, mOptions );
 
   if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
     throw QgsProcessingException( QObject::tr( "Error exporting to PostGIS\n%1" ).arg( exporter->errorMessage() ) );

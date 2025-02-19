@@ -174,6 +174,12 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     void afterRollback();
 
     /**
+     * Emitted after a rollback to savepoint
+     * \since QGIS 3.42
+     */
+    void afterRollbackToSavepoint( const QString &savepointName );
+
+    /**
      * Emitted if a sql query is executed and the underlying data is modified
      */
     void dirtied( const QString &sql, const QString &name );

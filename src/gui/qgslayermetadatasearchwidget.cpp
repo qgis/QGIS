@@ -82,6 +82,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     if ( progress == 100 )
     {
       mIsLoading = false;
+      mReloadRequired = false;
       mProgressBar->hide();
       updateLoadBtn();
     }
@@ -90,15 +91,16 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   connect( mAbortPushButton, &QPushButton::clicked, mSourceModel, [=]( bool ) {
     if ( !mIsLoading )
     {
-      mIsLoading = true;
       mProgressBar->show();
-      mSourceModel->reloadAsync();
+      mReloadRequired = true;
+      refresh();
     }
     else
     {
       mProgressBar->hide();
       mSourceModel->cancel();
       mIsLoading = false;
+      mReloadRequired = false;
     }
     updateLoadBtn();
   } );
@@ -145,10 +147,6 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   } );
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayerMetadataSearchWidget::showHelp );
-
-  // Start loading metadata in the model
-  mSourceModel->reloadAsync();
-  mIsLoading = true;
 }
 
 void QgsLayerMetadataSearchWidget::setMapCanvas( QgsMapCanvas *newMapCanvas )
@@ -185,7 +183,9 @@ void QgsLayerMetadataSearchWidget::updateExtentFilter( int index )
 
 void QgsLayerMetadataSearchWidget::refresh()
 {
-  mSourceModel->reloadAsync();
+  // Lazy reload
+  mReloadRequired = true;
+  refreshInternal();
 }
 
 void QgsLayerMetadataSearchWidget::addButtonClicked()
@@ -261,9 +261,19 @@ void QgsLayerMetadataSearchWidget::showEvent( QShowEvent *event )
 {
   QgsAbstractDataSourceWidget::showEvent( event );
   mSearchFilterLineEdit->setText( mProxyModel->filterString() );
+  refreshInternal();
 }
 
 void QgsLayerMetadataSearchWidget::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-layer-metadata-search-panel" ) );
+}
+
+void QgsLayerMetadataSearchWidget::refreshInternal()
+{
+  if ( mReloadRequired && isVisible() )
+  {
+    mIsLoading = true;
+    mSourceModel->reloadAsync();
+  }
 }

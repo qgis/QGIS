@@ -68,6 +68,9 @@
         </item>
         <item>
          <widget class="QToolButton" name="mRemoveDatasetButton">
+          <property name="toolTip">
+           <string>Remove Extra Dataset from Mesh</string>
+          </property>
           <property name="enabled">
            <bool>false</bool>
           </property>

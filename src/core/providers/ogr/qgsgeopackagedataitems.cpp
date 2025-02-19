@@ -186,7 +186,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
     if ( !fieldDomains.empty() || !domainError.isEmpty() )
     {
-      std::unique_ptr< QgsFieldDomainsItem > domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", path, QStringLiteral( "ogr" ) );
+      auto domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", path, QStringLiteral( "ogr" ) );
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
@@ -207,7 +207,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
     if ( !relations.empty() || !relationError.isEmpty() )
     {
-      std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
       // force this item to appear last by setting a maximum string value for the sort key
       relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
       children.append( relationsItem.release() );

@@ -2458,7 +2458,7 @@ void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousState()
   context.modelResult().clear();
   // start with an initial state
 
-  std::unique_ptr<QgsProcessingModelInitialRunConfig> modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
+  auto modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
   modelConfig->setPreviouslyExecutedChildAlgorithms( { QStringLiteral( "calculate" ) } );
   modelConfig->setInitialChildInputs( QVariantMap { { QStringLiteral( "calculate" ), QVariantMap { { QStringLiteral( "INPUT" ), QStringLiteral( "a different string" ) } } } } );
   modelConfig->setInitialChildOutputs( QVariantMap { { QStringLiteral( "calculate" ), QVariantMap { { QStringLiteral( "OUTPUT" ), QStringLiteral( "a different string" ) } } } } );
@@ -2502,7 +2502,7 @@ void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousState()
   // test handling of temporary layers generated during earlier runs
   modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
 
-  std::unique_ptr<QgsMapLayerStore> previousStore = std::make_unique<QgsMapLayerStore>();
+  auto previousStore = std::make_unique<QgsMapLayerStore>();
   QgsVectorLayer *layer = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
   previousStore->addMapLayer( layer );
   previousStore->moveToThread( nullptr );

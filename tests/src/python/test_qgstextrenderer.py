@@ -3656,6 +3656,20 @@ class PyQgsTextRenderer(QgisTestCase):
             self.checkRender(format, "text_tab_fixed_size", text=["with\ttabs", "a\tb"])
         )
 
+    def testDrawTabsMultipleHtmlFixedSize(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setSize(20)
+        format.setAllowHtmlFormatting(True)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setTabStopDistance(20)
+        format.setTabStopDistanceUnit(Qgis.RenderUnit.Millimeters)
+        self.assertTrue(
+            self.checkRender(
+                format, "text_tab_multiple_html", text=["with\t\ttabs", "a\t\tb"]
+            )
+        )
+
     def testDrawTabPositionsFixedSize(self):
         format = QgsTextFormat()
         format.setFont(getTestFont("bold"))
@@ -5338,6 +5352,30 @@ class PyQgsTextRenderer(QgisTestCase):
                 text=["1234", "5678"],
                 rect=QRectF(40, 20, 350, 350),
                 alignment=QgsTextRenderer.HAlignment.AlignRight,
+            )
+        )
+
+    def test_render_with_maximum_width_too_small_one_word(self):
+        """
+        Render where the rect size is too small to fit words when wrapping lines
+        and only one word present (https://github.com/qgis/QGIS/issues/60256)
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setSize(16)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        format.setAllowHtmlFormatting(True)
+
+        self.assertTrue(
+            self.checkRender(
+                format,
+                "wrap_small_rect_one_word",
+                None,
+                text=[
+                    """<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;">Text</p>"""
+                ],
+                rect=QRectF(40, 20, 10, 5),
+                flags=Qgis.TextRendererFlag.WrapLines,
             )
         )
 

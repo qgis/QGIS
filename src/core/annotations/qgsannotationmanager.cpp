@@ -192,7 +192,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
 
       destination->setCalloutAnchor( QgsGeometry::fromPointXY( mapPosition ) );
 
-      std::unique_ptr< QgsBalloonCallout > callout = std::make_unique< QgsBalloonCallout >();
+      auto callout = std::make_unique< QgsBalloonCallout >();
       if ( QgsFillSymbol *fill = source->fillSymbol() )
         callout->setFillSymbol( fill->clone() );
 
@@ -222,8 +222,8 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
     }
 
-    std::unique_ptr< QgsAnnotationPictureItem > item = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::SVG,
-        svg->filePath(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
+    auto item = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::SVG,
+                svg->filePath(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
     if ( !setCommonProperties( annotation, item.get() ) )
       return nullptr;
 
@@ -267,7 +267,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
     }
 
-    std::unique_ptr< QgsAnnotationRectangleTextItem > item = std::make_unique< QgsAnnotationRectangleTextItem >( text->document()->toHtml(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
+    auto item = std::make_unique< QgsAnnotationRectangleTextItem >( text->document()->toHtml(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
     if ( !setCommonProperties( annotation, item.get() ) )
       return nullptr;
 

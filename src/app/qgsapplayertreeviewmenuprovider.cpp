@@ -55,10 +55,10 @@
 #include "qgsmapcanvasutils.h"
 #include "qgsmaplayeraction.h"
 #include "qgsvectortilelayer.h"
-#include "qgsvectortiledataprovider.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsrasterlabeling.h"
+#include "qgssymbollayerutils.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -1185,6 +1185,7 @@ void QgsAppLayerTreeViewMenuProvider::pasteVectorSymbol( const QString &layerId 
       originalSymbol = embeddedRenderer->symbol();
   }
   std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  QgsSymbolLayerUtils::resetSymbolLayerIds( tempSymbol.get() );
   if ( !tempSymbol )
     return;
 
@@ -1312,6 +1313,7 @@ void QgsAppLayerTreeViewMenuProvider::pasteSymbolLegendNodeSymbol( const QString
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
 
   std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  QgsSymbolLayerUtils::resetSymbolLayerIds( tempSymbol.get() );
   if ( tempSymbol && tempSymbol->type() == originalSymbol->type() )
   {
     node->setSymbol( tempSymbol.release() );

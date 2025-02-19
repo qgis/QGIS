@@ -224,7 +224,7 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
       }
     }
 
-    std::unique_ptr<QgsPolygon> poly = std::make_unique<QgsPolygon>();
+    auto poly = std::make_unique<QgsPolygon>();
     poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
 
     if ( geometry.constGet()->is3D() )

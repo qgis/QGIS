@@ -605,7 +605,7 @@ bool QgsMssqlFeatureIterator::rewind()
   mQuery->setForwardOnly( true );
 
   QString sql { mOrderByClause.isEmpty() ? mStatement : mStatement + mOrderByClause };
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN );
+  auto logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN );
 
   bool result = mQuery->exec( sql );
   if ( !result )

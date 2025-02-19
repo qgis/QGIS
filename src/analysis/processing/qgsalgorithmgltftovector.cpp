@@ -105,7 +105,7 @@ std::unique_ptr<QgsAbstractGeometry> extractTriangles(
     x, y, z
   );
 
-  std::unique_ptr<QgsMultiPolygon> mp = std::make_unique<QgsMultiPolygon>();
+  auto mp = std::make_unique<QgsMultiPolygon>();
 
   if ( primitive.indices == -1 )
   {
@@ -206,7 +206,7 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
     x, y, z
   );
 
-  std::unique_ptr<QgsMultiLineString> ml = std::make_unique<QgsMultiLineString>();
+  auto ml = std::make_unique<QgsMultiLineString>();
 
   if ( primitive.indices == -1 )
   {

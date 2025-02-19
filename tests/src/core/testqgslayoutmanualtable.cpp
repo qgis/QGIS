@@ -355,7 +355,7 @@ void TestQgsLayoutManualTable::cellFormat()
 
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
+  auto format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );

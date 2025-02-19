@@ -325,3 +325,8 @@ std::unique_ptr< QgsProcessingModelInitialRunConfig > QgsProcessingContext::take
 {
   return std::move( mModelConfig );
 }
+
+void QgsProcessingContext::clearModelResult()
+{
+  mModelResult.clear();
+}

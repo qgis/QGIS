@@ -169,8 +169,8 @@ void QgsLayerMetadataResultsModel::reloadAsync()
   const QList<QgsAbstractLayerMetadataProvider *> providers { QgsApplication::instance()->layerMetadataProviderRegistry()->layerMetadataProviders() };
   for ( QgsAbstractLayerMetadataProvider *mdProvider : std::as_const( providers ) )
   {
-    std::unique_ptr<QgsMetadataResultsFetcher> fetcher = std::make_unique<QgsMetadataResultsFetcher>( mdProvider, mSearchContext, mFeedback.get() );
-    std::unique_ptr<QThread> thread = std::make_unique<QThread>();
+    auto fetcher = std::make_unique<QgsMetadataResultsFetcher>( mdProvider, mSearchContext, mFeedback.get() );
+    auto thread = std::make_unique<QThread>();
     fetcher->moveToThread( thread.get() );
     // Forward signals to the model
     connect( fetcher.get(), &QgsMetadataResultsFetcher::resultsReady, this, [=]( const QgsLayerMetadataSearchResults &results ) {

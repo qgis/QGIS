@@ -417,9 +417,13 @@ void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext &context 
 
   QWidget *widget = stackedWidget->currentWidget();
   if ( QgsLayerPropertiesWidget *layerProp = qobject_cast<QgsLayerPropertiesWidget *>( widget ) )
+  {
     layerProp->setContext( context );
+  }
   else if ( QgsSymbolsListWidget *listWidget = qobject_cast<QgsSymbolsListWidget *>( widget ) )
+  {
     listWidget->setContext( context );
+  }
 
   layerChanged();
   updatePreview();
@@ -872,12 +876,12 @@ QMenu *QgsSymbolSelectorDialog::advancedMenu()
 
 void QgsSymbolSelectorDialog::setContext( const QgsSymbolWidgetContext &context )
 {
-  mContext = context;
+  mSelectorWidget->setContext( context );
 }
 
 QgsSymbolWidgetContext QgsSymbolSelectorDialog::context() const
 {
-  return mContext;
+  return mSelectorWidget->context();
 }
 
 QgsSymbol *QgsSymbolSelectorDialog::symbol()

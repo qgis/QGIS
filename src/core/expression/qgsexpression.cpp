@@ -1047,6 +1047,11 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
+  else if ( value.userType() == qMetaTypeId< QgsCoordinateReferenceSystem>() )
+  {
+    const QgsCoordinateReferenceSystem crs = value.value<QgsCoordinateReferenceSystem>();
+    return startToken + tr( "crs: %1" ).arg( crs.userFriendlyIdentifier() ) + endToken;
+  }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {
     QgsInterval interval = value.value<QgsInterval>();

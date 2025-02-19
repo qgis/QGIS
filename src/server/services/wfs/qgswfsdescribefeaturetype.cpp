@@ -151,7 +151,7 @@ namespace QgsWfs
     }
 
     const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
-    if ( setup.type() == QStringLiteral( "DateTime" ) )
+    if ( setup.type() == QLatin1String( "DateTime" ) )
     {
       // Get editor widget setup config
       const QVariantMap config = setup.config();
@@ -171,7 +171,7 @@ namespace QgsWfs
       else if ( fieldFormat == QgsDateTimeFieldFormatter::QT_ISO_FORMAT )
         fieldType = QStringLiteral( "dateTime" );
     }
-    else if ( setup.type() == QStringLiteral( "Range" ) )
+    else if ( setup.type() == QLatin1String( "Range" ) )
     {
       const QVariantMap config = setup.config();
       if ( config.contains( QStringLiteral( "Precision" ) ) )

@@ -216,6 +216,7 @@ QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   , mSslErrorHandlerSemaphore( 1 )
   , mAuthRequestHandlerSemaphore( 1 )
 {
+  setRedirectPolicy( QNetworkRequest::NoLessSafeRedirectPolicy );
   setProxyFactory( new QgsNetworkProxyFactory() );
   setCookieJar( new QgsNetworkCookieJar( this ) );
   enableStrictTransportSecurityStore( true );

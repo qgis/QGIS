@@ -54,6 +54,7 @@ class QgsAuthMethod;
 class QgsAuthMethodEdit;
 class QgsAuthProvider;
 class QgsAuthMethodMetadata;
+class QgsSettingsEntryBool;
 class QTimer;
 class QgsAuthConfigurationStorage;
 class QgsAuthConfigurationStorageDb;
@@ -72,6 +73,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryBool *settingsGenerateRandomPasswordForPasswordHelper SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsUsingGeneratedRandomPassword SIP_SKIP;
 
     //! Message log level (mirrors that of QgsMessageLog, so it can also output there)
     enum MessageLevel
@@ -187,6 +191,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString authenticationDatabaseUriStripped() const;
 
     /**
+     * Creates a new securely seeded random password and stores it in the
+     * system keychain as the new master password.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool createAndStoreRandomMasterPasswordInKeyChain() SIP_SKIP;
+
+    /**
      * Main call to initially set or continually check master password is set
      * \note If it is not set, the user is asked for its input
      * \param verify Whether password's hash was saved in authentication database
@@ -227,14 +240,30 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool masterPasswordSame( const QString &password ) const;
 
     /**
-     * Reset the master password to a new one, then re-encrypt all previous
-     * configs in a new database file, optionally backup current database
+     * Reset the master password to a new one, then re-encrypts all previous
+     * configs with the new password.
+     *
      * \param newpass New master password to replace existing
      * \param oldpass Current master password to replace existing
-     * \param keepbackup Whether to keep the generated backup of current database
+     * \param keepbackup Whether to keep the generated backup of current database (if using file-based storage)
      * \param backuppath Where the backup is located, if kept
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath SIP_INOUT = nullptr );
+
+    /**
+     * Reset the master password to a new one, hen re-encrypts all previous
+     * configs with the new password.
+     *
+     * The old password will automatically be retrieved from the password helper.
+     *
+     * \param newPassword New master password to replace existing
+     * \param keepBackup Whether to keep the generated backup of current database (if using file-based storage)
+     * \param backupPath Where the backup is located, if kept
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool resetMasterPasswordUsingStoredPasswordHelper( const QString &newPassword, bool keepBackup, QString *backupPath = nullptr ) SIP_SKIP;
 
     /**
      * Whether there is a scheduled opitonal erase of authentication database.
@@ -756,12 +785,42 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool passwordHelperSync();
 
-    //! The display name of the password helper (platform dependent)
+    /**
+     * Verify the password stored in the password helper.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool verifyStoredPasswordHelperPassword() SIP_SKIP;
+
+    // TODO QGIS 4.0 -- remove
+
+    /**
+     * The display name of the password helper (platform dependent).
+     *
+     * This is deprecated, use passwordHelperDisplayName() instead.
+     */
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+
+    /**
+     * Returns a translated display name of the password helper (platform dependent).
+     *
+     * If \a titleCase is TRUE then a title case version of the string will be returned. Otherwise
+     * a mid-sentence case version will be returned.
+     *
+     * \since QGIS 3.42
+     */
+    static QString passwordHelperDisplayName( bool titleCase = false );
 
     //! The display name of the Authentication Manager
     static const QString AUTH_MAN_TAG;
 
+    /**
+     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
+     *
+     * \note Not available in Python bindings
+     */
+    QString sqliteDatabasePath() const SIP_SKIP;
 
   signals:
 
@@ -869,6 +928,11 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
   private:
 
+    /**
+     * Generates a random, securely seeded password.
+     */
+    static QString generatePassword();
+
     bool initPrivate( const QString &pluginPath );
 
     //////////////////////////////////////////////////////////////////////////////
@@ -881,7 +945,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void passwordHelperLog( const QString &msg ) const;
 
     //! Read Master password from the wallet
-    QString passwordHelperRead();
+    QString passwordHelperRead( bool &ok );
 
     //! Store Master password in the wallet
     bool passwordHelperWrite( const QString &password );
@@ -932,11 +996,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Returns the first ready storage with the given \a capability or NULLPTR if none available.
      */
     QgsAuthConfigurationStorage *firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
-
-    /**
-     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
-     */
-    const QString sqliteDatabasePath() const;
 
     static QgsAuthManager *sInstance;
     static const QString AUTH_CONFIG_TABLE;

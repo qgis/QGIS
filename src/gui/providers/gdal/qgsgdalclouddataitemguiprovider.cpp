@@ -31,15 +31,18 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
 {
   if ( QgsGdalCloudConnectionItem *providerItem = qobject_cast<QgsGdalCloudConnectionItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [providerItem] { editConnection( providerItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [providerItem] { duplicateConnection( providerItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsGdalCloudConnectionItem *> stConnectionItems = QgsDataItem::filteredItems<QgsGdalCloudConnectionItem>( selection );
+    if ( stConnectionItems.size() == 1 )
+    {
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [providerItem] { editConnection( providerItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [providerItem] { duplicateConnection( providerItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [stConnectionItems, item, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString &connectionName ) { QgsGdalCloudProviderConnection( QString() ).remove( connectionName ); }, context );

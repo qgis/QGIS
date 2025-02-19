@@ -104,8 +104,8 @@ class CORE_EXPORT QgsError
     void append( const QgsErrorMessage &message );
 
     /**
-     * Test if any error is set.
-     *  \returns TRUE if contains error
+     * Test if no error is set.
+     *  \returns FALSE if contains error
      */
     bool isEmpty() const { return mMessageList.isEmpty(); }
 

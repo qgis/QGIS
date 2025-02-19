@@ -30,7 +30,7 @@ QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
 
 QgsTextAnnotation *QgsTextAnnotation::clone() const
 {
-  std::unique_ptr< QgsTextAnnotation > c( new QgsTextAnnotation() );
+  auto c = std::make_unique<QgsTextAnnotation>();
   copyCommonProperties( c.get() );
   c->setDocument( mDocument.get() );
   return c.release();

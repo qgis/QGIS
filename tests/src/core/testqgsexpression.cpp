@@ -1402,13 +1402,15 @@ class TestQgsExpression : public QObject
       QTest::newRow( "azimuth" ) << "toint(degrees(azimuth( point_a := make_point(25, 45), point_b := make_point(75, 100)))*1000000)" << false << QVariant( 42273689 );
       QTest::newRow( "azimuth" ) << "toint(degrees( azimuth( make_point(75, 100), make_point(25,45) ) )*1000000)" << false << QVariant( 222273689 );
       QTest::newRow( "bearing 1" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
+      QTest::newRow( "bearing 1 with CRS" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), crs_from_text('EPSG:3857'), 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
       QTest::newRow( "bearing 2" ) << "to_int(bearing( make_point(-2074453, 9559553), make_point(-55665, 6828252), 'EPSG:3857', 'EPSG:7030')*1000000)" << false << QVariant( 2356910 );
       QTest::newRow( "bearing 3" ) << "to_int(degrees( bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030'))*1000000)" << false << QVariant( 49980071 );
       QTest::newRow( "bearing 4" ) << "to_int(degrees( bearing( make_point(18736872, -1877769), make_point(16198544, -4534850), 'EPSG:3857', 'WGS84'))*1000000)" << false << QVariant( 219282386 );
       QTest::newRow( "bearing multi point 1 part" ) << "to_int(bearing( geom_from_wkt('MULTIPOINT((16198544 -4534850))'), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
       QTest::newRow( "bearing multi point 2 parts" ) << "bearing( geom_from_wkt('MULTIPOINT((16198544 -4534850),(16198545 -4534851))'), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030')" << true << QVariant();
       QTest::newRow( "bearing nonfinite" ) << "bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:4326', 'EPSG:7030')" << false << QVariant();
-      QTest::newRow( "bearing transfor error exception" ) << "bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:32633', 'EPSG:7030')" << false << QVariant();
+      QTest::newRow( "bearing transform error exception" ) << "bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:32633', 'EPSG:7030')" << false << QVariant();
+      QTest::newRow( "bearing invalid crs" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), crs_from_text('dummy_crs'), 'EPSG:7030')*1000000)" << true << QVariant();
       QTest::newRow( "project not geom" ) << "project( 'asd', 1, 2 )" << true << QVariant();
       QTest::newRow( "project not point" ) << "project( geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'), 1, 2 )" << true << QVariant();
       QTest::newRow( "project x" ) << "toint(x(project( make_point( 1, 2 ), 3, radians(270)))*1000000)" << false << QVariant( -2 * 1000000 );
@@ -2287,6 +2289,11 @@ class TestQgsExpression : public QObject
       // Test NULL -> FALSE
       QTest::newRow( "between nulls FALSE" ) << QStringLiteral( "'c' between NULL AND 'b'" ) << false << QVariant( false );
       QTest::newRow( "between nulls FALSE 2" ) << QStringLiteral( "'a' between 'b' AND NULL" ) << false << QVariant( false );
+
+      // CRS functions
+      QTest::newRow( "crs_from_text epsg id" ) << "crs_from_text('EPSG:4326')" << false << QVariant( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+      QTest::newRow( "crs_from_text invalid def" ) << "crs_from_text('dummy crs')" << true << QVariant();
+      QTest::newRow( "crs_to_authid" ) << "crs_to_authid(crs_from_text('EPSG:3857'))" << false << QVariant( "EPSG:3857" );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
@@ -2400,6 +2407,12 @@ class TestQgsExpression : public QObject
             QgsInterval inter = result.value<QgsInterval>();
             QgsInterval gotinter = expected.value<QgsInterval>();
             QCOMPARE( inter.seconds(), gotinter.seconds() );
+          }
+          else if ( result.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
+          {
+            QgsCoordinateReferenceSystem crs = result.value<QgsCoordinateReferenceSystem>();
+            QgsCoordinateReferenceSystem expectedCrs = expected.value<QgsCoordinateReferenceSystem>();
+            QCOMPARE( crs.authid(), expectedCrs.authid() );
           }
           else if ( result.userType() >= QMetaType::Type::User )
           {
@@ -4049,6 +4062,7 @@ class TestQgsExpression : public QObject
       QgsGeometry oPolygon = QgsGeometry::fromPolygonXY( polygon );
       QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine.asWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << tLine << false << false;
       QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon.asWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << tPolygon << false << false;
+      QTest::newRow( "transform Polygon using CRS" ) << "transform( geomFromWKT('" + oPolygon.asWkt() + "'), crs_from_text('EPSG:4326'), crs_from_text('EPSG:3857') )" << tPolygon << false << false;
     }
 
     void eval_geometry_access_transform()
@@ -5278,6 +5292,9 @@ class TestQgsExpression : public QObject
 
       color = QColor::fromHsvF( 0.90, 0.5f, 0.25f, 0.1f );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "HSVA: 0.90,0.50,0.25,0.10" );
+
+      QgsCoordinateReferenceSystem crs( "EPSG:4326" );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326 - WGS 84&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()
@@ -5601,6 +5618,15 @@ class TestQgsExpression : public QObject
       // test with IN
       QTest::newRow( "simple IN" ) << QStringLiteral( "field IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
       QTest::newRow( "simple IN 2" ) << QStringLiteral( "field = 'value' OR field IN ('value2', 'value3')" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
+      // not in, should fail
+      QTest::newRow( "not IN left" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field = 'value3'" );
+      QTest::newRow( "not IN right" ) << QStringLiteral( "field IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field  IN ('value', 'value2') OR field NOT IN ('value3')" );
+      QTest::newRow( "not IN left same" ) << QStringLiteral( "field NOT IN ('value') OR field IN ('value')" ) << QStringLiteral( "field NOT IN ('value') OR field  IN ('value')" );
+      QTest::newRow( "not IN right same" ) << QStringLiteral( "field IN ('value') OR field NOT IN ('value')" ) << QStringLiteral( "field  IN ('value') OR field NOT IN ('value')" );
+      QTest::newRow( "not IN three" ) << QStringLiteral( "\"TYPE\" in ('a') OR \"TYPE\" not in ('b') OR \"TYPE\" in ('c')" ) << QStringLiteral( "TYPE  IN ('a') OR TYPE NOT IN ('b') OR TYPE  IN ('c')" );
+
+      // could be handled, but isn't right now
+      QTest::newRow( "not IN both" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" );
 
       // test cases that should not trigger reduction
       QTest::newRow( "no reduction 1" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" );
@@ -5634,7 +5660,7 @@ class TestQgsExpression : public QObject
 
       // prepare the expression using static variables
       QgsExpressionContext context;
-      std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
+      auto scope = std::make_unique<QgsExpressionContextScope>();
       scope->setVariable( QStringLiteral( "field_name_part_var" ), QStringLiteral( "field" ), true );
 
       // this feature gets added as a static variable, to emulate eg the @atlas_feature variable

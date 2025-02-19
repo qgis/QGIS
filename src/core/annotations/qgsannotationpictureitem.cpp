@@ -132,7 +132,7 @@ bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationPictureItem > item = std::make_unique< QgsAnnotationPictureItem >( mFormat, mPath, bounds() );
+  auto item = std::make_unique< QgsAnnotationPictureItem >( mFormat, mPath, bounds() );
   item->setLockAspectRatio( mLockAspectRatio );
 
   item->copyCommonProperties( this );

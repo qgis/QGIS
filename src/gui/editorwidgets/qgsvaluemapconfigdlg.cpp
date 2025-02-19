@@ -333,7 +333,7 @@ void QgsValueMapConfigDlg::copySelectionToClipboard()
 
   QString clipboardText;
   QModelIndex previous = indexes.first();
-  std::unique_ptr<QMimeData> mimeData = std::make_unique<QMimeData>();
+  auto mimeData = std::make_unique<QMimeData>();
   for ( const QModelIndex &current : indexes )
   {
     const QString text = model->data( current ).toString();

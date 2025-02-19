@@ -474,11 +474,11 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
     return result;
   }
 
-  std::unique_ptr<QgsSnapIndex> subjSnapIndex( new QgsSnapIndex() );
+  auto subjSnapIndex = std::make_unique<QgsSnapIndex>();
   subjSnapIndex->addGeometry( subjGeom );
 
   std::unique_ptr<QgsAbstractGeometry> origSubjGeom( subjGeom->clone() );
-  std::unique_ptr<QgsSnapIndex> origSubjSnapIndex( new QgsSnapIndex() );
+  auto origSubjSnapIndex = std::make_unique<QgsSnapIndex>();
   origSubjSnapIndex->addGeometry( origSubjGeom.get() );
 
   // Pass 2: add missing vertices to subject geometry

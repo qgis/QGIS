@@ -92,7 +92,7 @@ QgsInterpolatePointAlgorithm *QgsInterpolatePointAlgorithm::createInstance() con
 
 void QgsInterpolatePointAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

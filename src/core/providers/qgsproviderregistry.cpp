@@ -913,7 +913,7 @@ QLibrary *QgsProviderRegistry::createProviderLibrary( QString const &providerKey
   if ( lib.isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QLibrary > myLib( new QLibrary( lib ) );
+  auto myLib = std::make_unique<QLibrary>( lib );
 
   QgsDebugMsgLevel( "Library name is " + myLib->fileName(), 2 );
 

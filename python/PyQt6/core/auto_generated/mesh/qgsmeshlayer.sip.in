@@ -163,11 +163,6 @@ data.
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QString providerType() const;
-%Docstring
-Returns the provider type for this layer
-%End
-
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
 %Docstring
 Adds datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file

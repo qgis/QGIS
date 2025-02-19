@@ -465,7 +465,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
 void TestQgsRangeWidgetWrapper::testLongLong()
 {
   // test range widget with a long long field type
-  std::unique_ptr<QgsRangeWidgetWrapper> wrapper = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 4, nullptr, nullptr );
+  auto wrapper = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 4, nullptr, nullptr );
 
   // should use a double spin box, as a integer spin box does not have sufficient range
   QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( wrapper->createWidget( nullptr ) );

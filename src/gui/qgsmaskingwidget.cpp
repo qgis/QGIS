@@ -264,17 +264,13 @@ bool SymbolLayerVisitor::visitEnter( const QgsStyleEntityVisitorInterface::Node 
   if ( node.type != QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
     return false;
 
-  mSymbolKey = node.identifier;
   return true;
 }
 
-void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath )
+void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier )
 {
   for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
   {
-    QVector<int> indexPath = rootPath;
-    indexPath.push_back( idx );
-
     const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
 
     mCallback( sl, sl->id() );
@@ -282,7 +278,7 @@ void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &le
     // recurse over sub symbols
     const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
     if ( subSymbol )
-      visitSymbol( subSymbol, leafIdentifier, indexPath );
+      visitSymbol( subSymbol, leafIdentifier );
   }
 }
 
@@ -292,7 +288,7 @@ bool SymbolLayerVisitor::visit( const QgsStyleEntityVisitorInterface::StyleLeaf 
   {
     auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
     if ( symbolEntity->symbol() )
-      visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
+      visitSymbol( symbolEntity->symbol(), leaf.identifier );
   }
   return true;
 }

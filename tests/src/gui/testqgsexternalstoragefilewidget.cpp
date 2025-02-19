@@ -815,7 +815,7 @@ void TestQgsExternalStorageFileWidget::testDragAndDrop()
   QgsExternalStorageFileWidget w;
   w.show();
 
-  std::unique_ptr<QMimeData> mime( new QMimeData() );
+  auto mime = std::make_unique<QMimeData>();
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
 
   QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
@@ -843,11 +843,11 @@ void TestQgsExternalStorageFileWidget::testDragAndDrop()
   QVERIFY( !w.mCancelButton->isVisible() );
   QVERIFY( w.acceptDrops() );
 
-  std::unique_ptr<QDragEnterEvent> dragEvent( new QDragEnterEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  auto dragEvent = std::make_unique<QDragEnterEvent>( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   w.dragEnterEvent( dragEvent.get() );
   QVERIFY( dragEvent->isAccepted() );
 
-  std::unique_ptr<QDropEvent> dropEvent( new QDropEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  auto dropEvent = std::make_unique<QDropEvent>( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   w.dropEvent( dropEvent.get() );
   QVERIFY( dropEvent->isAccepted() );
 

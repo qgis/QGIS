@@ -289,8 +289,8 @@ QgsRasterCalcNode.setRight: src/analysis/raster/qgsrastercalcnode.h#L108
 QgsRasterCalcNode.toString: src/analysis/raster/qgsrastercalcnode.h#L125
 QgsRasterCalcNode.type: src/analysis/raster/qgsrastercalcnode.h#L96
 QgsRasterCalcNode: src/analysis/raster/qgsrastercalcnode.h#L38
-QgsRasterCalculator.lastError: src/analysis/raster/qgsrastercalculator.h#L162
-QgsRasterCalculator.processCalculation: src/analysis/raster/qgsrastercalculator.h#L156
+QgsRasterCalculator.lastError: src/analysis/raster/qgsrastercalculator.h#L161
+QgsRasterCalculator.processCalculation: src/analysis/raster/qgsrastercalculator.h#L155
 QgsRasterCalculator: src/analysis/raster/qgsrastercalculator.h#L74
 QgsRasterCalculatorEntry: src/analysis/raster/qgsrastercalculator.h#L39
 QgsRasterMatrix.absoluteValue: src/analysis/raster/qgsrastermatrix.h#L147

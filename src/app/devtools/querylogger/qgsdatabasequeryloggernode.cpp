@@ -65,7 +65,7 @@ QgsDatabaseQueryLoggerQueryGroup::QgsDatabaseQueryLoggerQueryGroup( const QgsDat
   , mQueryId( query.queryId )
 {
 #if 0
-  std::unique_ptr< QgsNetworkLoggerRequestDetailsGroup > detailsGroup = std::make_unique< QgsNetworkLoggerRequestDetailsGroup >( request );
+  auto detailsGroup = std::make_unique< QgsNetworkLoggerRequestDetailsGroup >( request );
   mDetailsGroup = detailsGroup.get();
   addChild( std::move( detailsGroup ) );
 #endif

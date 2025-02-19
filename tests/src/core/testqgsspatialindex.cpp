@@ -248,7 +248,7 @@ class TestQgsSpatialIndex : public QObject
 
     void bulkLoadWithCallback()
     {
-      std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QList<QgsFeatureId> addedIds;
       for ( int i = 0; i < 10; ++i )
       {

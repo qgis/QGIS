@@ -575,6 +575,13 @@ If a provider does not work with paths, unmodified URI will be returned.
 .. versionadded:: 3.30
 %End
 
+    virtual QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const;
+%Docstring
+Cleans a layer ``uri``, e.g. to remove or hide sensitive information from the URI.
+
+.. versionadded:: 3.42
+%End
+
     virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;
 %Docstring
 Returns data item providers. Caller is responsible for ownership of the item providers

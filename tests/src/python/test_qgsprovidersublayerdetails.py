@@ -201,7 +201,7 @@ class TestQgsProviderSublayerDetails(QgisTestCase):
 
         details.setType(QgsMapLayerType.PointCloudLayer)
         uri = details.toMimeUri()
-        self.assertEqual(uri.layerType, "pointcloud")
+        self.assertEqual(uri.layerType, "point-cloud")
 
         details.setType(QgsMapLayerType.PluginLayer)
         uri = details.toMimeUri()

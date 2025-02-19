@@ -133,12 +133,17 @@ void QgsGeometryValidationService::onGeometryChanged( QgsVectorLayer *layer, Qgs
 
 void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  if ( !mLayerChecks[layer].topologyChecks.empty() )
+  VectorLayerCheckInformation &checkInformation = mLayerChecks[layer];
+  checkInformation.singleFeatureCheckErrors.remove( fid );
+
+  if ( !checkInformation.topologyChecks.empty() )
   {
     invalidateTopologyChecks( layer );
   }
-
-  mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
+  else
+  {
+    layer->setAllowCommit( checkInformation.singleFeatureCheckErrors.empty() );
+  }
 
   // There should be no geometry errors on a non-existent feature, right?
   emit geometryCheckCompleted( layer, fid, QList<std::shared_ptr<QgsSingleGeometryCheckError>>() );
@@ -461,9 +466,13 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
     if ( !allErrors.empty() || !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
     {
       if ( mLayerChecks[layer].commitPending )
+      {
         showMessage( tr( "Geometry errors have been found. Please fix the errors before saving the layer." ) );
+      }
       else
+      {
         showMessage( tr( "Geometry errors have been found." ) );
+      }
     }
     if ( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
     {

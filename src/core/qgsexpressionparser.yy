@@ -229,16 +229,18 @@ expression_non_logical:
     | '(' expression ')'              { $$ = $2; }
     | NAME '(' exp_list ')'
         {
-          int fnIndex = QgsExpression::functionIndex(*$1);
+          const QString expressionFunctionName = *$1;
           delete $1;
+          const int fnIndex = QgsExpression::functionIndex(expressionFunctionName);
           if (fnIndex == -1)
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, QObject::tr( "Function is not known" ).toUtf8().constData() );
+            exp_error(&yyloc, parser_ctx, QObject::tr( "Function %1 is not known" ).arg( expressionFunctionName ).toUtf8().constData() );
             delete $3;
             YYERROR;
           }
+          QgsExpressionFunction* func = QgsExpression::Functions()[fnIndex];
           QString paramError;
           if ( !QgsExpressionNodeFunction::validateParams( fnIndex, $3, paramError ) )
           {
@@ -248,7 +250,6 @@ expression_non_logical:
             delete $3;
             YYERROR;
           }
-          QgsExpressionFunction* func = QgsExpression::Functions()[fnIndex];
           if ( func->params() != -1
                && !( func->params() >= $3->count()
                && func->minParams() <= $3->count() ) )
@@ -264,7 +265,7 @@ expression_non_logical:
             {
                expectedMessage = QObject::tr( "Expected between %1 and %2 parameters but %3 were provided." ).arg( QString::number( func->minParams() ), QString::number( func->params() ), QString::number( $3->count() ) );
             }
-            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments. %2" ).arg( QgsExpression::Functions()[fnIndex]->name(), expectedMessage ).toUtf8().constData() );
+            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments. %2" ).arg( func->name(), expectedMessage ).toUtf8().constData() );
             delete $3;
             YYERROR;
           }
@@ -275,23 +276,24 @@ expression_non_logical:
 
     | NAME '(' ')'
         {
-          int fnIndex = QgsExpression::functionIndex(*$1);
+          const QString expressionFunctionName = *$1;
+          const int fnIndex = QgsExpression::functionIndex(expressionFunctionName);
           delete $1;
           if (fnIndex == -1)
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, QObject::tr( "Function is not known" ).toUtf8().constData() );
+            exp_error(&yyloc, parser_ctx, QObject::tr( "Function %1 is not known" ).arg( expressionFunctionName ).toUtf8().constData() );
             YYERROR;
           }
+          QgsExpressionFunction* func = QgsExpression::Functions()[fnIndex];
           // 0 parameters is expected, -1 parameters means leave it to the
           // implementation
-          if ( QgsExpression::Functions()[fnIndex]->minParams() > 0 )
+          if ( func->minParams() > 0 )
           {
-
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionWrongArgs;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
+            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments" ).arg( func->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
           $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
@@ -313,7 +315,9 @@ expression_non_logical:
     // special columns (actually functions with no arguments)
     | SPECIAL_COL
         {
-          int fnIndex = QgsExpression::functionIndex(*$1);
+          const QString expressionFunctionName = *$1;
+          const int fnIndex = QgsExpression::functionIndex(*$1);
+          delete $1;
           if (fnIndex >= 0)
           {
             $$ = new QgsExpressionNodeFunction( fnIndex, nullptr );
@@ -322,10 +326,9 @@ expression_non_logical:
           {
             QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::FunctionUnknown;
             parser_ctx->currentErrorType = errorType;
-            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is not known" ).arg( *$1 ).toLocal8Bit().constData());
+            exp_error(&yyloc, parser_ctx, QObject::tr( "%1 function is not known" ).arg( expressionFunctionName ).toLocal8Bit().constData());
             YYERROR;
           }
-          delete $1;
         }
 
     // variables

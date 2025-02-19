@@ -97,19 +97,19 @@ QgsTaperedBufferAlgorithm *QgsTaperedBufferAlgorithm::createInstance() const
 
 void QgsTaperedBufferAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> startWidth = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "START_WIDTH" ), QObject::tr( "Start width" ), Qgis::ProcessingNumberParameterType::Double, 0.0, false, 0.0 );
+  auto startWidth = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "START_WIDTH" ), QObject::tr( "Start width" ), Qgis::ProcessingNumberParameterType::Double, 0.0, false, 0.0 );
   startWidth->setIsDynamic( true );
   startWidth->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "START_WIDTH" ), QObject::tr( "Start width" ), QgsPropertyDefinition::DoublePositive ) );
   startWidth->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( startWidth.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> endWidth = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "END_WIDTH" ), QObject::tr( "End width" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0.0 );
+  auto endWidth = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "END_WIDTH" ), QObject::tr( "End width" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0.0 );
   endWidth->setIsDynamic( true );
   endWidth->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "END_WIDTH" ), QObject::tr( "End width" ), QgsPropertyDefinition::DoublePositive ) );
   endWidth->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( endWidth.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> segments = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 16, false, 1 );
+  auto segments = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 16, false, 1 );
   segments->setIsDynamic( true );
   segments->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   segments->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -213,7 +213,7 @@ QgsVariableWidthBufferByMAlgorithm *QgsVariableWidthBufferByMAlgorithm::createIn
 
 void QgsVariableWidthBufferByMAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> segments = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 16, false, 1 );
+  auto segments = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 16, false, 1 );
   segments->setIsDynamic( true );
   segments->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   segments->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

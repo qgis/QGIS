@@ -56,13 +56,13 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addCommonParams();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "START_POINTS" ), QObject::tr( "Vector layer with start points" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> travelCost = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
+  auto travelCost = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   travelCost->setFlags( travelCost->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( travelCost.release() );
 
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
 
-  std::unique_ptr<QgsProcessingParameterBoolean> includeBounds = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
+  auto includeBounds = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
   includeBounds->setFlags( includeBounds->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( includeBounds.release() );
 
@@ -71,15 +71,15 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
   maxPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the points to the network layer. If a point is further from the network than this distance it will be treated as non-routable." ) );
   addParameter( maxPointDistanceFromNetwork.release() );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> outputLines = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Service area (lines)" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true );
+  auto outputLines = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Service area (lines)" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true );
   outputLines->setCreateByDefault( true );
   addParameter( outputLines.release() );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> outputPoints = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Service area (boundary nodes)" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
+  auto outputPoints = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Service area (boundary nodes)" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
   outputPoints->setCreateByDefault( false );
   addParameter( outputPoints.release() );
 
-  std::unique_ptr<QgsProcessingParameterFeatureSink> outputNonRoutable = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT_NON_ROUTABLE" ), QObject::tr( "Non-routable features" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
+  auto outputNonRoutable = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT_NON_ROUTABLE" ), QObject::tr( "Non-routable features" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
   outputNonRoutable->setHelp( QObject::tr( "An optional output which will be used to store any input features which could not be routed (e.g. those which are too far from the network layer)." ) );
   outputNonRoutable->setCreateByDefault( false );
   addParameter( outputNonRoutable.release() );

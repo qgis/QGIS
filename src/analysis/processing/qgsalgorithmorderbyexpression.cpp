@@ -65,6 +65,11 @@ QString QgsOrderByExpressionAlgorithm::shortHelpString() const
                       "which is available in the expression builder." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsOrderByExpressionAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
+}
+
 QgsOrderByExpressionAlgorithm *QgsOrderByExpressionAlgorithm::createInstance() const
 {
   return new QgsOrderByExpressionAlgorithm();
@@ -82,7 +87,7 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
   const bool nullsFirst = parameterAsBoolean( parameters, QStringLiteral( "NULLS_FIRST" ), context );
 
   QString sinkId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), source->wkbType(), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

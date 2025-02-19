@@ -320,7 +320,7 @@ QgsAnnotationLayer *QgsAnnotationLayer::clone() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsAnnotationLayer::LayerOptions options( mTransformContext );
-  std::unique_ptr< QgsAnnotationLayer > layer = std::make_unique< QgsAnnotationLayer >( name(), options );
+  auto layer = std::make_unique< QgsAnnotationLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
 
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )

@@ -140,7 +140,7 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -248,7 +248,7 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -293,7 +293,7 @@ void TestQgsProcessingFixGeometry::fixHoleAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -343,7 +343,7 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  auto context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );

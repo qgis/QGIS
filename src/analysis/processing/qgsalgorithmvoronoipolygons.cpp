@@ -204,7 +204,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  std::unique_ptr<QgsMultiPoint> points = std::make_unique<QgsMultiPoint>();
+  auto points = std::make_unique<QgsMultiPoint>();
 
   long long i = 0;
   const double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;

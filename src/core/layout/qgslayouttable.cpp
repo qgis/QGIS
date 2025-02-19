@@ -430,7 +430,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
     int col = 0;
     for ( const QgsLayoutTableColumn &column : std::as_const( mColumns ) )
     {
-      std::unique_ptr< QgsExpressionContextScope > headerCellScope = std::make_unique< QgsExpressionContextScope >();
+      auto headerCellScope = std::make_unique< QgsExpressionContextScope >();
       headerCellScope->setVariable( QStringLiteral( "column_number" ), col + 1, true );
       QgsExpressionContextScopePopper popper( context.renderContext().expressionContext(), headerCellScope.release() );
 
@@ -1022,7 +1022,7 @@ QMap<int, QString> QgsLayoutTable::headerLabels() const
 
 QgsExpressionContextScope *QgsLayoutTable::scopeForCell( int row, int column ) const
 {
-  std::unique_ptr< QgsExpressionContextScope > cellScope = std::make_unique< QgsExpressionContextScope >();
+  auto cellScope = std::make_unique< QgsExpressionContextScope >();
   cellScope->setVariable( QStringLiteral( "row_number" ), row + 1, true );
   cellScope->setVariable( QStringLiteral( "column_number" ), column + 1, true );
   return cellScope.release();
@@ -1134,7 +1134,7 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
     }
     else if ( mHeaderMode != QgsLayoutTable::NoHeaders )
     {
-      std::unique_ptr< QgsExpressionContextScope > headerCellScope = std::make_unique< QgsExpressionContextScope >();
+      auto headerCellScope = std::make_unique< QgsExpressionContextScope >();
       headerCellScope->setVariable( QStringLiteral( "column_number" ), i + 1, true );
       QgsExpressionContextScopePopper popper( context.expressionContext(), headerCellScope.release() );
 
@@ -1211,7 +1211,7 @@ bool QgsLayoutTable::calculateMaxRowHeights()
   int i = 0;
   for ( const QgsLayoutTableColumn &col : std::as_const( mColumns ) )
   {
-    std::unique_ptr< QgsExpressionContextScope > headerCellScope = std::make_unique< QgsExpressionContextScope >();
+    auto headerCellScope = std::make_unique< QgsExpressionContextScope >();
     headerCellScope->setVariable( QStringLiteral( "column_number" ), i + 1, true );
     QgsExpressionContextScopePopper popper( context.expressionContext(), headerCellScope.release() );
 

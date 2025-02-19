@@ -515,7 +515,7 @@ class TestQgsPointLocator : public QObject
 
     void testInterpolatedPoint()
     {
-      std::unique_ptr<QgsVectorLayer> curveLayer( new QgsVectorLayer( QStringLiteral( "CircularStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) ) );
+      auto curveLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "CircularStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" );
       f1.setGeometry( f1g );
@@ -539,7 +539,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( pt2, QgsPointXY( 0, 10 ) );
       QCOMPARE( m1.interpolatedPoint( QgsCoordinateReferenceSystem() ), QgsPoint( 3.53553390593273775, 8.53553390593273775, 7.70598050073098584 ) );
 
-      std::unique_ptr<QgsVectorLayer> lineLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) ) );
+      auto lineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       QgsFeature f2;
       const QgsGeometry f2g = QgsGeometry::fromWkt( "LineStringZ (0 0 0, 5 5 5, 0 10 10)" );
       f2.setGeometry( f2g );

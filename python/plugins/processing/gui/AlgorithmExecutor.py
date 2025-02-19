@@ -465,6 +465,9 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
         if feedback.isCanceled():
             return False
 
+        # clear any model result stored in the last iteration
+        context.clearModelResult()
+
         parameters[paramToIter] = f
         for out in alg.destinationParameterDefinitions():
             if out.name() not in outputs:

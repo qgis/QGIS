@@ -69,7 +69,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
 {
   errorMessage.clear();
 
-  QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
+  QgsLayerTreeGroup root;
 
   // reorder maplayer nodes based on dependencies
   // dependencies have to be resolved before IDs get changed
@@ -174,7 +174,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   bool loadInLegend = true;
   if ( !layerTreeElem.isNull() )
   {
-    root->readChildrenFromXml( layerTreeElem, context );
+    root.readChildrenFromXml( layerTreeElem, context );
     loadInLegend = false;
   }
 
@@ -189,11 +189,10 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     layer->resolveReferences( project );
   }
 
-  root->resolveReferences( project );
+  root.resolveReferences( project );
 
-  const QList<QgsLayerTreeNode *> nodes = root->children();
-  root->abandonChildren();
-  delete root;
+  const QList<QgsLayerTreeNode *> nodes = root.children();
+  root.abandonChildren();
 
   switch ( insertMethod )
   {
@@ -258,20 +257,17 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   Q_UNUSED( errorMessage )
   QDomElement qgiselm = doc.createElement( QStringLiteral( "qlr" ) );
   doc.appendChild( qgiselm );
-  const QList<QgsLayerTreeNode *> nodes = selectedTreeNodes;
-  QgsLayerTreeGroup *root = new QgsLayerTreeGroup;
-  const auto constNodes = nodes;
-  for ( QgsLayerTreeNode *node : constNodes )
+  QgsLayerTreeGroup root;
+  for ( QgsLayerTreeNode *node : selectedTreeNodes )
   {
     QgsLayerTreeNode *newnode = node->clone();
-    root->addChildNode( newnode );
+    root.addChildNode( newnode );
   }
-  root->writeXml( qgiselm, context );
+  root.writeXml( qgiselm, context );
 
   QDomElement layerselm = doc.createElement( QStringLiteral( "maplayers" ) );
-  const QList<QgsLayerTreeLayer *> layers = root->findLayers();
-  const auto constLayers = layers;
-  for ( QgsLayerTreeLayer *layer : constLayers )
+  const QList<QgsLayerTreeLayer *> layers = root.findLayers();
+  for ( QgsLayerTreeLayer *layer : layers )
   {
     if ( ! layer->layer() )
     {

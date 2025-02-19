@@ -292,8 +292,8 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
           distance = geodesicDistanceProperty.valueAsDouble( expressionContext, distance );
         }
 
-        std::unique_ptr<QgsMultiLineString> ml = std::make_unique<QgsMultiLineString>();
-        std::unique_ptr<QgsLineString> l = std::make_unique<QgsLineString>( QVector<QgsPoint>() << hubPoint );
+        auto ml = std::make_unique<QgsMultiLineString>();
+        auto l = std::make_unique<QgsLineString>( QVector<QgsPoint>() << hubPoint );
         const QVector<QVector<QgsPointXY>> points = da.geodesicLine( QgsPointXY( hubPoint ), QgsPointXY( spokePoint ), distance, splitAntimeridian );
         QVector<QgsPointXY> points1 = points.at( 0 );
         points1.pop_front();

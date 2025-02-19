@@ -48,11 +48,7 @@ the normalization step will not be applied automatically.
       sipIsErr = 0;
 
       QgsRectangle *p = reinterpret_cast<QgsRectangle *>( sipConvertToType( a0, sipType_QgsRectangle, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( p, sipType_QgsRectangle, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         double z1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
         double z2 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
@@ -60,6 +56,7 @@ the normalization step will not be applied automatically.
 
         sipCpp = new QgsBox3D( *p, z1, z2, n );
       }
+      sipReleaseType( p, sipType_QgsRectangle, state );
     }
     else if ( sipCanConvertToType( a0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsPoint, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
@@ -67,23 +64,17 @@ the normalization step will not be applied automatically.
       sipIsErr = 0;
 
       QgsPoint *pt1 = reinterpret_cast<QgsPoint *>( sipConvertToType( a0, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( pt1, sipType_QgsPoint, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         QgsPoint *pt2 = reinterpret_cast<QgsPoint *>( sipConvertToType( a1, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-        if ( sipIsErr )
-        {
-          sipReleaseType( pt2, sipType_QgsPoint, state );
-        }
-        else
+        if ( !sipIsErr )
         {
           bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
           sipCpp = new QgsBox3D( *pt1, *pt2, n );
         }
+        sipReleaseType( pt2, sipType_QgsPoint, state );
       }
+      sipReleaseType( pt1, sipType_QgsPoint, state );
     }
     else if ( sipCanConvertToType( a0, sipType_QgsVector3D, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsVector3D, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
@@ -91,23 +82,17 @@ the normalization step will not be applied automatically.
       sipIsErr = 0;
 
       QgsVector3D *corner1 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a0, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( corner1, sipType_QgsVector3D, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         QgsVector3D *corner2 = reinterpret_cast<QgsVector3D *>( sipConvertToType( a1, sipType_QgsVector3D, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-        if ( sipIsErr )
-        {
-          sipReleaseType( corner2, sipType_QgsVector3D, state );
-        }
-        else
+        if ( !sipIsErr )
         {
           bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
           sipCpp = new QgsBox3D( *corner1, *corner2, n );
         }
+        sipReleaseType( corner2, sipType_QgsVector3D, state );
       }
+      sipReleaseType( corner1, sipType_QgsVector3D, state );
     }
     else if (
       ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
@@ -375,12 +360,24 @@ Expands the bbox so that it covers both the original rectangle and the given poi
 Converts the box to a 2D rectangle.
 %End
 
-    double distanceTo( const  QVector3D &point ) const /HoldGIL/;
+ double distanceTo( const QVector3D &point ) const /Deprecated="Since 3.42. Use distanceTo() with QgsVector3D instead (QVector3D uses floats)."/;
 %Docstring
 Returns the smallest distance between the box and the point ``point``
 (returns 0 if the point is inside the box)
 
 .. versionadded:: 3.18
+
+.. deprecated:: 3.42
+
+   Use :py:func:`~QgsBox3D.distanceTo` with :py:class:`QgsVector3D` instead (QVector3D uses floats).
+%End
+
+    double distanceTo( const QgsVector3D &point ) const /HoldGIL/;
+%Docstring
+Returns the smallest distance between the box and the point ``point``
+(returns 0 if the point is inside the box)
+
+.. versionadded:: 3.42
 %End
 
     bool operator==( const QgsBox3D &other ) const /HoldGIL/;

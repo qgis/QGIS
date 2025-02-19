@@ -140,7 +140,7 @@ void QgsPlotCanvas::mouseDoubleClickEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+    auto me = std::make_unique<QgsPlotMouseEvent>( this, event );
     mTool->plotDoubleClickEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -153,7 +153,7 @@ void QgsPlotCanvas::mousePressEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+    auto me = std::make_unique<QgsPlotMouseEvent>( this, event );
     mTool->plotPressEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -168,7 +168,7 @@ void QgsPlotCanvas::mousePressEvent( QMouseEvent *event )
     }
     else if ( event->button() == Qt::RightButton && mTool->flags() & Qgis::PlotToolFlag::ShowContextMenu )
     {
-      std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+      auto me = std::make_unique<QgsPlotMouseEvent>( this, event );
       showContextMenu( me.get() );
       event->accept();
       return;
@@ -184,7 +184,7 @@ void QgsPlotCanvas::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+    auto me = std::make_unique<QgsPlotMouseEvent>( this, event );
     mTool->plotReleaseEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -216,7 +216,7 @@ void QgsPlotCanvas::mouseMoveEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsPlotMouseEvent> me( new QgsPlotMouseEvent( this, event ) );
+    auto me = std::make_unique<QgsPlotMouseEvent>( this, event );
     mTool->plotMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }

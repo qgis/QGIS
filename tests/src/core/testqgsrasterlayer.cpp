@@ -683,10 +683,10 @@ void TestQgsRasterLayer::multiBandColorRendererNoDataColor()
 void TestQgsRasterLayer::palettedRendererNoData()
 {
   const QString rasterFileName = mTestDataDir + "raster/with_color_table.tif";
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
 
-  std::unique_ptr<QgsPalettedRasterRenderer> rasterRenderer = std::make_unique<QgsPalettedRasterRenderer>( rl->dataProvider(), 1, QList<QgsPalettedRasterRenderer::Class>() << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), QStringLiteral( "class 2" ) ) << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), QStringLiteral( "class 1" ) ) );
+  auto rasterRenderer = std::make_unique<QgsPalettedRasterRenderer>( rl->dataProvider(), 1, QList<QgsPalettedRasterRenderer::Class>() << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), QStringLiteral( "class 2" ) ) << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), QStringLiteral( "class 1" ) ) );
   QVERIFY( rl->dataProvider()->setNoDataValue( 1, 2 ) );
   rl->setRenderer( rasterRenderer.release() );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
@@ -698,7 +698,7 @@ void TestQgsRasterLayer::palettedRendererNoData()
 void TestQgsRasterLayer::palettedRendererRasterAttributeTable()
 {
   const QString rasterFileName = mTestDataDir + "raster/band1_byte_attribute_table_epsg4326.tif";
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
   QVERIFY( rl->dataProvider()->setNoDataValue( 1, 9999 ) );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
@@ -751,7 +751,7 @@ void TestQgsRasterLayer::palettedRendererRasterAttributeTable()
 void TestQgsRasterLayer::palettedRendererNoDataColor()
 {
   const QString rasterFileName = mTestDataDir + "raster/with_color_table.tif";
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
 
   QgsPalettedRasterRenderer *rasterRenderer = new QgsPalettedRasterRenderer( rl->dataProvider(), 1, QList<QgsPalettedRasterRenderer::Class>() << QgsPalettedRasterRenderer::Class( 1, QColor( 0, 255, 0 ), QStringLiteral( "class 2" ) ) << QgsPalettedRasterRenderer::Class( 3, QColor( 255, 0, 0 ), QStringLiteral( "class 1" ) ) );
@@ -774,7 +774,7 @@ void TestQgsRasterLayer::palettedRendererConstantInt()
   Q_ASSERT( hDS );
   GDALFillRaster( GDALGetRasterBand( hDS, 1 ), value, 0 );
   GDALClose( hDS );
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( QString( tempFileName ), QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( QString( tempFileName ), QStringLiteral( "rl" ) );
   Q_ASSERT( rl->isValid() );
   const auto classData { QgsPalettedRasterRenderer::classDataFromRaster( rl->dataProvider(), 1 ) };
   QCOMPARE( classData.size(), 1 );
@@ -790,10 +790,10 @@ void TestQgsRasterLayer::singleBandGrayRendererNoData()
   QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
   const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
 
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
 
-  std::unique_ptr<QgsSingleBandGrayRenderer> rasterRenderer = std::make_unique<QgsSingleBandGrayRenderer>( rl->dataProvider(), 1 );
+  auto rasterRenderer = std::make_unique<QgsSingleBandGrayRenderer>( rl->dataProvider(), 1 );
   QVERIFY( rl->dataProvider()->setNoDataValue( 1, 126 ) );
   rl->setRenderer( rasterRenderer.release() );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
@@ -809,10 +809,10 @@ void TestQgsRasterLayer::singleBandGrayRendererNoDataColor()
   QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
   const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
 
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
 
-  std::unique_ptr<QgsSingleBandGrayRenderer> rasterRenderer = std::make_unique<QgsSingleBandGrayRenderer>( rl->dataProvider(), 1 );
+  auto rasterRenderer = std::make_unique<QgsSingleBandGrayRenderer>( rl->dataProvider(), 1 );
   QVERIFY( rl->dataProvider()->setNoDataValue( 1, 126 ) );
   rasterRenderer->setNodataColor( QColor( 255, 0, 255 ) );
   rl->setRenderer( rasterRenderer.release() );
@@ -829,7 +829,7 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoData()
   QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
   const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
 
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
 
   QgsRasterShader *rasterShader = new QgsRasterShader();
@@ -858,7 +858,7 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoData()
   colorRampShader->setColorRampItemList( colorRampItems );
   rasterShader->setRasterShaderFunction( colorRampShader );
 
-  std::unique_ptr<QgsSingleBandPseudoColorRenderer> rasterRenderer = std::make_unique<QgsSingleBandPseudoColorRenderer>( rl->dataProvider(), 1, rasterShader );
+  auto rasterRenderer = std::make_unique<QgsSingleBandPseudoColorRenderer>( rl->dataProvider(), 1, rasterShader );
   QVERIFY( rl->dataProvider()->setNoDataValue( 1, 126 ) );
   rl->setRenderer( rasterRenderer.release() );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rl.get() );
@@ -874,7 +874,7 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoDataColor()
   QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
   const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
 
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
 
   QgsRasterShader *rasterShader = new QgsRasterShader();
@@ -903,7 +903,7 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoDataColor()
   colorRampShader->setColorRampItemList( colorRampItems );
   rasterShader->setRasterShaderFunction( colorRampShader );
 
-  std::unique_ptr<QgsSingleBandPseudoColorRenderer> rasterRenderer = std::make_unique<QgsSingleBandPseudoColorRenderer>( rl->dataProvider(), 1, rasterShader );
+  auto rasterRenderer = std::make_unique<QgsSingleBandPseudoColorRenderer>( rl->dataProvider(), 1, rasterShader );
   QVERIFY( rl->dataProvider()->setNoDataValue( 1, 126 ) );
   rasterRenderer->setNodataColor( QColor( 255, 0, 255 ) );
   rl->setRenderer( rasterRenderer.release() );
@@ -1021,7 +1021,7 @@ void TestQgsRasterLayer::sample()
   QString fileName = mTestDataDir + "landsat-f32-b1.tif";
 
   QFileInfo rasterFileInfo( fileName );
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
+  auto rl = std::make_unique<QgsRasterLayer>( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
   QVERIFY( rl->isValid() );
   QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ) ) );
   bool ok = false;
@@ -1102,13 +1102,13 @@ void TestQgsRasterLayer::rotatedRaster()
 {
   mMapSettings->setExtent( QgsRectangle( 994, 922, 1174, 1102 ) );
 
-  std::unique_ptr<QgsRasterLayer> rgb = std::make_unique<QgsRasterLayer>( mTestDataDir + "raster/rotated_rgb.png", QStringLiteral( "rgb" ) );
+  auto rgb = std::make_unique<QgsRasterLayer>( mTestDataDir + "raster/rotated_rgb.png", QStringLiteral( "rgb" ) );
   QVERIFY( rgb->isValid() );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rgb.get() );
   QVERIFY( render( QStringLiteral( "raster_rotated_rgb" ) ) );
 
-  std::unique_ptr<QgsRasterLayer> rgba = std::make_unique<QgsRasterLayer>( mTestDataDir + "raster/rotated_rgba.png", QStringLiteral( "rgba" ) );
+  auto rgba = std::make_unique<QgsRasterLayer>( mTestDataDir + "raster/rotated_rgba.png", QStringLiteral( "rgba" ) );
   QVERIFY( rgba->isValid() );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rgba.get() );

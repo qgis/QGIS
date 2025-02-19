@@ -214,15 +214,6 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         """
         pass
 
-    def testCrs(self):
-        """
-        We override this test for Oracle provider, because without PROJ >= 7
-        Oracle is not able to understand correctly some EPSG code (4326 for instance)
-        """
-        # TODO remove this when PROJ will be >= 7
-        if QgsProjUtils.projVersionMajor() >= 7:
-            super().testCrs()
-
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
         vl = QgsVectorLayer(
@@ -1710,10 +1701,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         )
         self.assertTrue(query.next())
         self.assertEqual(query.value(0), "GEOM")
-        # Cannot work with proj version < 7 because it cannot identify properly EPSG:4326
-        # TODO remove this when PROJ will be >= 7
-        if QgsProjUtils.projVersionMajor() >= 7:
-            self.assertEqual(query.value(1), 4326)
+        self.assertEqual(query.value(1), 4326)
         query.finish()
 
         # no feature, so we cannot guess the geometry type, so the layer is not valid
@@ -1746,10 +1734,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             query.exec('SELECT "l"."GEOM"."SDO_SRID" from "QGIS"."EMPTY_LAYER" "l"')
         )
         self.assertTrue(query.next())
-        # Cannot work with proj version < 7 because it cannot identify properly EPSG:4326
-        # TODO remove this when PROJ will be >= 7
-        if QgsProjUtils.projVersionMajor() >= 7:
-            self.assertEqual(query.value(0), 4326)
+        self.assertEqual(query.value(0), 4326)
         query.finish()
 
         # now we can autodetect geom type and srid
@@ -1759,10 +1744,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             "oracle",
         )
         self.assertTrue(vl.isValid())
-        # Cannot work with proj version < 7 because it cannot identify properly EPSG:4326
-        # TODO remove this when PROJ will be >= 7
-        if QgsProjUtils.projVersionMajor() >= 7:
-            self.assertEqual(vl.sourceCrs().authid(), "EPSG:4326")
+        self.assertEqual(vl.sourceCrs().authid(), "EPSG:4326")
 
     def testCreateAspatialLayer(self):
         """

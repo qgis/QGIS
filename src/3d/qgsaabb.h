@@ -22,6 +22,8 @@
 #include <QList>
 #include <QVector3D>
 
+#include "qgsbox3d.h"
+
 #define SIP_NO_FILE
 
 /**
@@ -37,6 +39,16 @@ class _3D_EXPORT QgsAABB
 
     //! Constructs bounding box
     QgsAABB( float xMin, float yMin, float zMin, float xMax, float yMax, float zMax );
+
+    /**
+     * Constructs bounding box from QgsBox3D by subtracting origin 3D vector.
+     * Note: this is potentially lossy operation as the coordinates are converted
+     * from double values to floats!
+     */
+    static QgsAABB fromBox3D( const QgsBox3D &box3D, const QgsVector3D &origin )
+    {
+      return QgsAABB( static_cast<float>( box3D.xMinimum() - origin.x() ), static_cast<float>( box3D.yMinimum() - origin.y() ), static_cast<float>( box3D.zMinimum() - origin.z() ), static_cast<float>( box3D.xMaximum() - origin.x() ), static_cast<float>( box3D.yMaximum() - origin.y() ), static_cast<float>( box3D.zMaximum() - origin.z() ) );
+    }
 
     //! Returns box width in X axis
     float xExtent() const { return xMax - xMin; }

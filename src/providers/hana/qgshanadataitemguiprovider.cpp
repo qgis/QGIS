@@ -43,32 +43,38 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
 
   if ( QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
-    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
-    menu->addAction( actionRefresh );
-
-    menu->addSeparator();
-
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
-    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
-    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsHanaConnectionItem *> hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
+
+    if ( hanaConnectionItems.size() == 1 )
+    {
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+      connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+      menu->addAction( actionRefresh );
+
+      menu->addSeparator();
+
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
+      connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
+      connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( hanaConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [hanaConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( hanaConnectionItems, []( const QString &connectionName ) { QgsHanaSettings::removeConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
 
-    menu->addSeparator();
-
-    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), this );
-    connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
-    menu->addAction( actionCreateSchema );
+    if ( hanaConnectionItems.size() == 1 )
+    {
+      menu->addSeparator();
+      QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), this );
+      connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
+      menu->addAction( actionCreateSchema );
+    }
   }
 
   if ( QgsHanaSchemaItem *schemaItem = qobject_cast<QgsHanaSchemaItem *>( item ) )

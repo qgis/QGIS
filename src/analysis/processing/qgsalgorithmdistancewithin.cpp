@@ -23,7 +23,7 @@
 
 void QgsDistanceWithinAlgorithm::addDistanceParameter()
 {
-  std::unique_ptr<QgsProcessingParameterDistance> distanceParam( new QgsProcessingParameterDistance( QStringLiteral( "DISTANCE" ), QObject::tr( "Where the features are within" ), 100, QStringLiteral( "INPUT" ), false, 0 ) );
+  auto distanceParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Where the features are within" ), 100, QStringLiteral( "INPUT" ), false, 0 );
   distanceParam->setIsDynamic( true );
   distanceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Distance within" ), QgsPropertyDefinition::DoublePositive ) );
   distanceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

@@ -82,7 +82,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
   public:
     QgsProcessingMatrixParameterPanel( QWidget *parent = nullptr, const QgsProcessingParameterMatrix *param = nullptr );
 
-    QVariantList value() const { return mTable; }
+    QVariantList value() const;
 
     void setValue( const QVariantList &value );
 
@@ -102,6 +102,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
     QToolButton *mToolButton = nullptr;
 
     QVariantList mTable;
+    QPointer< QgsProcessingMatrixParameterPanelWidget > mPanelWidget;
 
     friend class TestProcessingGui;
 };

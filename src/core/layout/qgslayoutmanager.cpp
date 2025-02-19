@@ -210,7 +210,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     const QString layoutName = layoutNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
     QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
 
-    std::unique_ptr< QgsPrintLayout > l = std::make_unique< QgsPrintLayout >( mProject );
+    auto l = std::make_unique< QgsPrintLayout >( mProject );
     l->undoStack()->blockCommands( true );
     if ( !l->readLayoutXml( layoutNodes.at( i ).toElement(), doc, context ) )
     {
@@ -231,7 +231,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     const QString layoutName = reportNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
     QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
 
-    std::unique_ptr< QgsReport > r = std::make_unique< QgsReport >( mProject );
+    auto r = std::make_unique< QgsReport >( mProject );
     if ( !r->readLayoutXml( reportNodes.at( i ).toElement(), doc, context ) )
     {
       result = false;

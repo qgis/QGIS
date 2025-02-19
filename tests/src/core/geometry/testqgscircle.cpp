@@ -393,7 +393,7 @@ void TestQgsCircle::innerTangents()
 void TestQgsCircle::toPolygon()
 {
   QgsPointSequence pts;
-  std::unique_ptr<QgsPolygon> pol( new QgsPolygon() );
+  auto pol = std::make_unique<QgsPolygon>();
 
   pol.reset( QgsCircle( QgsPoint( 0, 0 ), 5 ).toPolygon( 4 ) );
 
@@ -413,7 +413,7 @@ void TestQgsCircle::toPolygon()
 void TestQgsCircle::toPolygonoOriented()
 {
   QgsPointSequence pts;
-  std::unique_ptr<QgsPolygon> pol( new QgsPolygon() );
+  auto pol = std::make_unique<QgsPolygon>();
 
   double val = 5 * std::sin( M_PI / 4 );
 

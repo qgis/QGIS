@@ -63,7 +63,7 @@ void TestQgsLayoutPage::itemType()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   QCOMPARE( page->type(), static_cast<int>( QgsLayoutItemRegistry::LayoutPage ) );
 }
 
@@ -71,7 +71,7 @@ void TestQgsLayoutPage::pageSize()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 270, 297, Qgis::LayoutUnit::Meters ) );
   QCOMPARE( page->pageSize().width(), 270.0 );
   QCOMPARE( page->pageSize().height(), 297.0 );
@@ -120,7 +120,7 @@ void TestQgsLayoutPage::grid()
   // test that grid follows page around
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
 
   // should have a grid
   QVERIFY( page->mGrid.get() );
@@ -151,7 +151,7 @@ void TestQgsLayoutPage::defaultPaper()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
@@ -162,12 +162,12 @@ void TestQgsLayoutPage::transparentPaper()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol( new QgsFillSymbol() );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::transparent );
   simpleFill->setStrokeColor( Qt::transparent );
@@ -180,12 +180,12 @@ void TestQgsLayoutPage::borderedPaper()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::white );
   simpleFill->setStrokeColor( Qt::black );
@@ -199,13 +199,13 @@ void TestQgsLayoutPage::markerLinePaper()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   static_cast<QgsSimpleMarkerSymbolLayer *>( markerLine->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
-  std::unique_ptr<QgsFillSymbol> markerLineSymbol = std::make_unique<QgsFillSymbol>();
+  auto markerLineSymbol = std::make_unique<QgsFillSymbol>();
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
 
@@ -216,12 +216,12 @@ void TestQgsLayoutPage::hiddenPages()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::blue );
   simpleFill->setStrokeColor( Qt::transparent );
@@ -236,7 +236,7 @@ void TestQgsLayoutPage::pageLayout()
 {
   QgsProject p;
   QgsLayout l( &p );
-  std::unique_ptr<QgsLayoutItemPage> page1( new QgsLayoutItemPage( &l ) );
+  auto page1 = std::make_unique<QgsLayoutItemPage>( &l );
   page1->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
 
   const QPageLayout layout1 = page1->pageLayout();
@@ -246,7 +246,7 @@ void TestQgsLayoutPage::pageLayout()
   QCOMPARE( layout1.pageSize().size( QPageSize::Millimeter ).width(), 210 );
   QCOMPARE( layout1.pageSize().size( QPageSize::Millimeter ).height(), 297 );
 
-  std::unique_ptr<QgsLayoutItemPage> page2( new QgsLayoutItemPage( &l ) );
+  auto page2 = std::make_unique<QgsLayoutItemPage>( &l );
   page2->setPageSize( QgsLayoutSize( 210, 297, Qgis::LayoutUnit::Millimeters ) );
 
   const QPageLayout layout2 = page2->pageLayout();

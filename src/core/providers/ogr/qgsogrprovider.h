@@ -222,6 +222,13 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
     bool mForceRecomputeExtent = false;
 
+    //! Flag set after a rollback to indicate that fields require reloading
+    bool mFieldsRequireReload = false;
+
+    //! Called after a transaction rollback
+    void afterRollback();
+    void afterRollbackToSavepoint( const QString &savePointName );
+
     QList<int> mPrimaryKeyAttrs;
 
     /**

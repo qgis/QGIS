@@ -192,7 +192,7 @@ void TestQgsMeshEditor::startEditingWithErrors()
   const QgsCoordinateTransform transform;
 
   QString uri( mDataDir + QStringLiteral( "/with_flat_face.2dm" ) );
-  std::unique_ptr<QgsMeshLayer> mesh = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "With flat face" ), QStringLiteral( "mdal" ) );
+  auto mesh = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "With flat face" ), QStringLiteral( "mdal" ) );
   QVERIFY( mesh->isValid() );
   QCOMPARE( mesh->meshFaceCount(), 3 );
   QCOMPARE( mesh->meshVertexCount(), 5 );
@@ -2142,7 +2142,7 @@ void TestQgsMeshEditor::refineMesh()
 
 void TestQgsMeshEditor::transformByExpression()
 {
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( mDataDir + "/quad_flower_to_edit.2dm", "mesh", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( mDataDir + "/quad_flower_to_edit.2dm", "mesh", "mdal" );
 
   const QgsCoordinateTransform transform;
   QgsMeshEditingError error;
@@ -2290,7 +2290,7 @@ void TestQgsMeshEditor::transformByExpression()
 void TestQgsMeshEditor::forceByLine()
 {
   QString uri( mDataDir + "/refined_quad_flower.2dm" );
-  std::unique_ptr<QgsMeshLayer> meshLayer = std::make_unique<QgsMeshLayer>( uri, "mesh layer", "mdal" );
+  auto meshLayer = std::make_unique<QgsMeshLayer>( uri, "mesh layer", "mdal" );
   QgsMeshEditingError error;
 
   QVERIFY( meshLayer->isValid() );
@@ -2455,7 +2455,7 @@ void TestQgsMeshEditor::forceByLine()
   QgsMeshEditForceByPolylines forceByPolyline1;
   forceByPolyline1.setTolerance( 5 );
 
-  std::unique_ptr<QgsLineString> lineString = std::make_unique<QgsLineString>();
+  auto lineString = std::make_unique<QgsLineString>();
   lineString->addVertex( { 1250, 2250, 5 } );
   lineString->addVertex( { 1850, 2850, 20 } );
   lineString->addVertex( { 1850, 0, 150 } );

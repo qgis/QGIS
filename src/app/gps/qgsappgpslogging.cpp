@@ -312,7 +312,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
     bool createPointLayer = true;
     if ( !newFile )
     {
-      std::unique_ptr<QgsVectorLayer> testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_points" ) } } ), QString(), QStringLiteral( "ogr" ) );
+      auto testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_points" ) } } ), QString(), QStringLiteral( "ogr" ) );
       if ( testLayer->isValid() )
       {
         createPointLayer = false;
@@ -353,7 +353,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
     bool createTracksLayer = true;
     if ( !newFile )
     {
-      std::unique_ptr<QgsVectorLayer> testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" ) } } ), QString(), QStringLiteral( "ogr" ) );
+      auto testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" ) } } ), QString(), QStringLiteral( "ogr" ) );
       if ( testLayer->isValid() )
       {
         createTracksLayer = false;

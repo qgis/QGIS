@@ -312,13 +312,11 @@ void TestQgsCoordinateTransform::constructorFlags()
   QVERIFY( !tr4.isShortCircuited() );
   QVERIFY( tr4.mIgnoreImpossible );
 
-#if ( PROJ_VERSION_MAJOR > 8 || ( PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR >= 1 ) )
   QgsCoordinateTransform tr5( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) ), QgsProject::instance(), Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
   QVERIFY( !tr5.mBallparkTransformsAreAppropriate );
   // crses are from two different celestial bodies, the transform is impossible and should be short-circuited
   QVERIFY( tr5.isShortCircuited() );
   QVERIFY( tr5.mIgnoreImpossible );
-#endif
 }
 
 void TestQgsCoordinateTransform::scaleFactor_data()
@@ -611,21 +609,11 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
   const QgsRectangle crossingRect( 6374985, -3626584, 7021195, -3272435 );
   QgsRectangle resultRect = tr.transformBoundingBox( crossingRect, Qgis::TransformDirection::Forward, true );
-  QgsRectangle expectedRect;
-  expectedRect.setXMinimum( 175.771 );
-  expectedRect.setYMinimum( -39.7222 );
-  expectedRect.setXMaximum( -176.549 );
-  expectedRect.setYMaximum( -36.3951 );
 
-  qDebug( "BBox transform x min: %.17f", resultRect.xMinimum() );
-  qDebug( "BBox transform x max: %.17f", resultRect.xMaximum() );
-  qDebug( "BBox transform y min: %.17f", resultRect.yMinimum() );
-  qDebug( "BBox transform y max: %.17f", resultRect.yMaximum() );
-
-  QGSCOMPARENEAR( resultRect.xMinimum(), expectedRect.xMinimum(), 0.001 );
-  QGSCOMPARENEAR( resultRect.yMinimum(), expectedRect.yMinimum(), 0.001 );
-  QGSCOMPARENEAR( resultRect.xMaximum(), expectedRect.xMaximum(), 0.001 );
-  QGSCOMPARENEAR( resultRect.yMaximum(), expectedRect.yMaximum(), 0.001 );
+  QGSCOMPARENEAR( resultRect.xMinimum(), 175.771, 0.001 );
+  QGSCOMPARENEAR( resultRect.yMinimum(), -39.7222, 0.001 );
+  QGSCOMPARENEAR( resultRect.xMaximum(), -176.549, 0.001 );
+  QGSCOMPARENEAR( resultRect.yMaximum(), -36.3951, 0.001 );
 
   // test transforming a bounding box, resulting in an invalid transform - exception must be thrown
   tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), QgsProject::instance() );
@@ -848,10 +836,8 @@ void TestQgsCoordinateTransform::testTransformationIsPossible()
   QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem() ) );
 
   QVERIFY( QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
-#if ( PROJ_VERSION_MAJOR > 8 || ( PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR >= 1 ) )
   // crses from two different celestial bodies => transformation is not possible
   QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) ) ) );
-#endif
 }
 
 

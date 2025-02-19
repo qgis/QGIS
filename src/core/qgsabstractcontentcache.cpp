@@ -71,6 +71,22 @@ bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QStri
   return true;
 }
 
+bool QgsAbstractContentCacheBase::parseEmbeddedStringData( const QString &path, QString *mimeType, QString *data )
+{
+  const thread_local QRegularExpression sRx( QStringLiteral( "^data:([a-zA-Z0-9+\\-]*\\/[a-zA-Z0-9+\\-]*?)\\;utf8,(.*)$" ), QRegularExpression::DotMatchesEverythingOption );
+  const QRegularExpressionMatch stringMatch = sRx.match( path );
+
+  if ( !stringMatch.hasMatch() )
+    return false;
+
+  if ( mimeType )
+    *mimeType = stringMatch.captured( 1 );
+  if ( data )
+    *data = stringMatch.captured( 2 );
+
+  return true;
+}
+
 bool QgsAbstractContentCacheBase::isBase64Data( const QString &path )
 {
   return path.startsWith( QLatin1String( "base64:" ) )

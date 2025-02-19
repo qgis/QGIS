@@ -85,7 +85,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   QVERIFY( !polySurfaceEmpty.patchN( 0 ) );
 
 
-  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique<QgsMultiPolygon>();
+  auto multiPolygon = std::make_unique<QgsMultiPolygon>();
   QgsPolygon part;
   QgsLineString ring;
   ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );

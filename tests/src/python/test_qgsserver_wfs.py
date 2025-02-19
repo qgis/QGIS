@@ -38,10 +38,22 @@ from qgis.core import (
     QgsGeometry,
     QgsProject,
     QgsVectorLayer,
+    QgsMemoryProviderUtils,
+    QgsWkbTypes,
+    QgsVectorDataProvider,
+    QgsFields,
+    QgsField,
 )
-from qgis.server import QgsServerRequest
+from qgis.server import (
+    QgsServerRequest,
+    QgsServer,
+    QgsBufferServerResponse,
+    QgsBufferServerRequest,
+)
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
+from qgis.PyQt.QtCore import QVariant, QUrl
+from test_qgsserver_accesscontrol import XML_NS
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = rb'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
@@ -1529,6 +1541,70 @@ class TestQgsServerWFS(QgsServerTestBase):
             "wfs_getfeature_datetime",
             project_file=project_file,
         )
+
+    def test_wfs_aspatial_getcapabilities(self):
+        ### Test issue GH #60185 - WFS GetCapabilities for aspatial layers"""
+
+        # create a memory layer with no geometry
+        fields = QgsFields()
+        fields.append(QgsField("id", QVariant.Int))
+        fields.append(QgsField("name", QVariant.String))
+        layer = QgsMemoryProviderUtils.createMemoryLayer(
+            "no_geom", fields, QgsWkbTypes.NoGeometry
+        )
+
+        provider = layer.dataProvider()
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.isSpatial())
+        self.assertFalse(
+            provider.capabilities() & QgsVectorDataProvider.Capability.ChangeGeometries
+        )
+
+        project = QgsProject()
+        project.addMapLayer(layer)
+        project.writeEntry("WFSLayers", "/", [layer.id()])
+        project.writeEntry("WFSTLayers", "Update", [layer.id()])
+        project.writeEntry("WFSTLayers", "Insert", [layer.id()])
+        project.writeEntry("WFSTLayers", "Delete", [layer.id()])
+
+        server = QgsServer()
+        request = QgsServerRequest()
+        request.setUrl(QUrl("?SERVICE=WFS&REQUEST=GetCapabilities"))
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        body = response.body().data().decode("utf8").replace("\n", "")
+        self.assertIn("<Operation>Update</Operation>", body)
+
+        # Test an actual transaction
+        post_data = f"""<?xml version="1.0" encoding="UTF-8"?>
+<wfs:Transaction {XML_NS}>
+  <wfs:Insert idgen="GenerateNew">
+    <qgs:no_geom>
+      <qgs:id>1</qgs:id>
+      <qgs:name>one</qgs:name>
+    </qgs:no_geom>
+  </wfs:Insert>
+</wfs:Transaction>"""
+
+        query_string = "?SERVICE=WFS&REQUEST=TRANSACTION"
+        request = QgsBufferServerRequest(
+            QUrl(query_string),
+            QgsServerRequest.PostMethod,
+            {},
+            post_data.encode("utf-8"),
+        )
+        response = QgsBufferServerResponse()
+        server.handleRequest(request, response, project)
+        body = response.body().data()
+
+        self.assertIn(b"<SUCCESS/>", body)
+
+        # Check the backend
+        features = list(provider.getFeatures())
+        self.assertEqual(len(features), 1)
+        f = features[0]
+        self.assertEqual(f["id"], 1)
+        self.assertEqual(f["name"], "one")
 
 
 if __name__ == "__main__":

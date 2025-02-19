@@ -500,7 +500,7 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
 
   // if actual aws dataset proves flaky, use this instead:
   // std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
 
   // confirm that GDAL VSI configuration options are set
   QString noSign( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
@@ -517,7 +517,7 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
   QCOMPARE( vl->dataProvider()->dataSourceUri(), QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ) );
 
   // credentials should be bucket specific
-  std::unique_ptr<QgsVectorLayer> vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "YES" ) );
   region = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );

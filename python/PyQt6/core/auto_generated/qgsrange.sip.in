@@ -385,6 +385,8 @@ Returns ``True`` if this range contains a specified ``element``.
     bool overlaps( const QgsTemporalRange<T> &other ) const;
 %Docstring
 Returns ``True`` if this range overlaps another range.
+
+.. seealso:: :py:func:`contains`
 %End
 
     bool extend( const QgsTemporalRange<T> &other );

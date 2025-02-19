@@ -32,15 +32,19 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 {
   if ( QgsVectorTileLayerItem *layerItem = qobject_cast<QgsVectorTileLayerItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsVectorTileLayerItem *> vtConnectionItems = QgsDataItem::filteredItems<QgsVectorTileLayerItem>( selection );
+
+    if ( vtConnectionItems.size() == 1 )
+    {
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( vtConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [vtConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( vtConnectionItems, []( const QString &connectionName ) { QgsVectorTileProviderConnection::deleteConnection( connectionName ); }, context );

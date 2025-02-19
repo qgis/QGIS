@@ -106,7 +106,7 @@ void TestQgsMapToolSelect::cleanup()
 QgsFeatureList
   TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
-  std::unique_ptr<QgsMapToolSelect> tool( new QgsMapToolSelect( canvas ) );
+  auto tool = std::make_unique<QgsMapToolSelect>( canvas );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
 
   // make given vector layer current
@@ -128,7 +128,7 @@ QgsFeatureList
 void TestQgsMapToolSelect::selectInvalidPolygons()
 {
   //create a temporary layer
-  std::unique_ptr<QgsVectorLayer> memoryLayer( new QgsVectorLayer( QStringLiteral( "Polygon?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto memoryLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature f1( memoryLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );

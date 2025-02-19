@@ -461,6 +461,14 @@ bool QgsManageConnectionsDialog::populateConnections()
   return true;
 }
 
+static void addNamespaceDeclarations( QDomElement &root, const QMap<QString, QString> &namespaceDeclarations )
+{
+  for ( auto it = namespaceDeclarations.begin(); it != namespaceDeclarations.end(); ++it )
+  {
+    root.setAttribute( QStringLiteral( "xmlns:" ) + it.key(), it.value() );
+  }
+}
+
 QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString &service )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
@@ -468,6 +476,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
+  QMap<QString, QString> namespaceDeclarations;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( service.toLower() );
@@ -484,13 +493,15 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( QStringLiteral( "dpiMode" ), static_cast<int>( QgsOwsConnection::settingsDpiMode->value( { service.toLower(), connections[i] } ) ) );
 
       QgsHttpHeaders httpHeader( QgsOwsConnection::settingsHeaders->value( { service.toLower(), connections[i] } ) );
-      httpHeader.updateDomElement( el );
+      httpHeader.updateDomElement( el, namespaceDeclarations );
     }
 
     el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( { service.toLower(), connections[i] } ) );
     el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( { service.toLower(), connections[i] } ) );
     root.appendChild( el );
   }
+
+  addNamespaceDeclarations( root, namespaceDeclarations );
 
   return doc;
 }
@@ -710,6 +721,7 @@ QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringL
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
+  QMap<QString, QString> namespaceDeclarations;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( QStringLiteral( "xyztiles" ) );
@@ -724,10 +736,12 @@ QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringL
     el.setAttribute( QStringLiteral( "tilePixelRatio" ), QgsXyzConnectionSettings::settingsTilePixelRatio->value( connections[i] ) );
 
     QgsHttpHeaders httpHeader( QgsXyzConnectionSettings::settingsHeaders->value( connections[i] ) );
-    httpHeader.updateDomElement( el );
+    httpHeader.updateDomElement( el, namespaceDeclarations );
 
     root.appendChild( el );
   }
+
+  addNamespaceDeclarations( root, namespaceDeclarations );
 
   return doc;
 }
@@ -739,6 +753,7 @@ QDomDocument QgsManageConnectionsDialog::saveArcgisConnections( const QStringLis
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
+  QMap<QString, QString> namespaceDeclarations;
   for ( const QString &connection : connections )
   {
     QDomElement el = doc.createElement( QStringLiteral( "arcgisfeatureserver" ) );
@@ -746,7 +761,7 @@ QDomDocument QgsManageConnectionsDialog::saveArcgisConnections( const QStringLis
     el.setAttribute( QStringLiteral( "url" ), QgsArcGisConnectionSettings::settingsUrl->value( connection ) );
 
     QgsHttpHeaders httpHeader( QgsArcGisConnectionSettings::settingsHeaders->value( connection ) );
-    httpHeader.updateDomElement( el );
+    httpHeader.updateDomElement( el, namespaceDeclarations );
 
     el.setAttribute( QStringLiteral( "username" ), QgsArcGisConnectionSettings::settingsUsername->value( connection ) );
     el.setAttribute( QStringLiteral( "password" ), QgsArcGisConnectionSettings::settingsPassword->value( connection ) );
@@ -754,6 +769,8 @@ QDomDocument QgsManageConnectionsDialog::saveArcgisConnections( const QStringLis
 
     root.appendChild( el );
   }
+
+  addNamespaceDeclarations( root, namespaceDeclarations );
 
   return doc;
 }
@@ -765,6 +782,7 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
+  QMap<QString, QString> namespaceDeclarations;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( QStringLiteral( "vectortile" ) );
@@ -780,10 +798,12 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
     el.setAttribute( QStringLiteral( "styleUrl" ), QgsVectorTileProviderConnection::settingsStyleUrl->value( connections[i] ) );
 
     QgsHttpHeaders httpHeader( QgsVectorTileProviderConnection::settingsHeaders->value( connections[i] ) );
-    httpHeader.updateDomElement( el );
+    httpHeader.updateDomElement( el, namespaceDeclarations );
 
     root.appendChild( el );
   }
+
+  addNamespaceDeclarations( root, namespaceDeclarations );
 
   return doc;
 }
@@ -795,6 +815,7 @@ QDomDocument QgsManageConnectionsDialog::saveTiledSceneConnections( const QStrin
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
+  QMap<QString, QString> namespaceDeclarations;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( QStringLiteral( "tiledscene" ) );
@@ -807,10 +828,12 @@ QDomDocument QgsManageConnectionsDialog::saveTiledSceneConnections( const QStrin
     el.setAttribute( QStringLiteral( "password" ), QgsTiledSceneProviderConnection::settingsPassword->value( connections[i] ) );
 
     QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[i] ) );
-    httpHeader.updateDomElement( el );
+    httpHeader.updateDomElement( el, namespaceDeclarations );
 
     root.appendChild( el );
   }
+
+  addNamespaceDeclarations( root, namespaceDeclarations );
 
   return doc;
 }
@@ -822,6 +845,7 @@ QDomDocument QgsManageConnectionsDialog::saveSensorThingsConnections( const QStr
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
+  QMap<QString, QString> namespaceDeclarations;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( QStringLiteral( "sensorthings" ) );
@@ -833,10 +857,12 @@ QDomDocument QgsManageConnectionsDialog::saveSensorThingsConnections( const QStr
     el.setAttribute( QStringLiteral( "password" ), QgsSensorThingsProviderConnection::settingsPassword->value( connections[i] ) );
 
     QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[i] ) );
-    httpHeader.updateDomElement( el );
+    httpHeader.updateDomElement( el, namespaceDeclarations );
 
     root.appendChild( el );
   }
+
+  addNamespaceDeclarations( root, namespaceDeclarations );
 
   return doc;
 }
@@ -882,6 +908,7 @@ QDomDocument QgsManageConnectionsDialog::saveStacConnections( const QStringList 
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
+  QMap<QString, QString> namespaceDeclarations;
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( QStringLiteral( "stac" ) );
@@ -893,10 +920,12 @@ QDomDocument QgsManageConnectionsDialog::saveStacConnections( const QStringList 
     el.setAttribute( QStringLiteral( "password" ), QgsStacConnection::settingsPassword->value( connections[i] ) );
 
     QgsHttpHeaders httpHeader( QgsStacConnection::settingsHeaders->value( connections[i] ) );
-    httpHeader.updateDomElement( el );
+    httpHeader.updateDomElement( el, namespaceDeclarations );
 
     root.appendChild( el );
   }
+
+  addNamespaceDeclarations( root, namespaceDeclarations );
 
   return doc;
 }

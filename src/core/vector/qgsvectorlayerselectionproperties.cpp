@@ -65,7 +65,7 @@ bool QgsVectorLayerSelectionProperties::readXml( const QDomElement &element, con
 
 QgsVectorLayerSelectionProperties *QgsVectorLayerSelectionProperties::clone() const
 {
-  std::unique_ptr< QgsVectorLayerSelectionProperties > res = std::make_unique< QgsVectorLayerSelectionProperties >( nullptr );
+  auto res = std::make_unique< QgsVectorLayerSelectionProperties >( nullptr );
   res->mSelectionRenderingMode = mSelectionRenderingMode;
   res->mSelectionColor = mSelectionColor;
   res->mSelectionSymbol.reset( mSelectionSymbol ? mSelectionSymbol->clone() : nullptr );

@@ -63,12 +63,12 @@ Content-Type: text/xml; charset=utf-8
    <ows:Title>QGIS Server Hello World</ows:Title>
    <ows:Abstract>QGIS Server Hello World</ows:Abstract>
    <ows:WGS84BoundingBox>
-    <ows:LowerCorner>-174.766573 -69.957839</ows:LowerCorner>
-    <ows:UpperCorner>177.930819 84.307877</ows:UpperCorner>
+    <ows:LowerCorner>-180 -69.957839</ows:LowerCorner>
+    <ows:UpperCorner>180 84.307877</ows:UpperCorner>
    </ows:WGS84BoundingBox>
    <ows:BoundingBox crs="EPSG:3857">
-    <ows:LowerCorner>-19454925.899 -11055006.823</ows:LowerCorner>
-    <ows:UpperCorner>19807168.137 19143772.794</ows:UpperCorner>
+    <ows:LowerCorner>-20037508.343 -11055006.823</ows:LowerCorner>
+    <ows:UpperCorner>20037508.343 19143772.794</ows:UpperCorner>
    </ows:BoundingBox>
    <Style isDefault="true">
     <ows:Identifier>default</ows:Identifier>
@@ -129,99 +129,99 @@ Content-Type: text/xml; charset=utf-8
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>7</TileMatrix>
-      <MinTileCol>1</MinTileCol>
+      <MinTileCol>0</MinTileCol>
       <MaxTileCol>127</MaxTileCol>
       <MinTileRow>2</MinTileRow>
       <MaxTileRow>99</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>8</TileMatrix>
-      <MinTileCol>3</MinTileCol>
-      <MaxTileCol>254</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>255</MaxTileCol>
       <MinTileRow>5</MinTileRow>
       <MaxTileRow>198</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>9</TileMatrix>
-      <MinTileCol>7</MinTileCol>
-      <MaxTileCol>509</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>511</MaxTileCol>
       <MinTileRow>11</MinTileRow>
       <MaxTileRow>397</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>10</TileMatrix>
-      <MinTileCol>14</MinTileCol>
-      <MaxTileCol>1018</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>1023</MaxTileCol>
       <MinTileRow>22</MinTileRow>
       <MaxTileRow>794</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>11</TileMatrix>
-      <MinTileCol>29</MinTileCol>
-      <MaxTileCol>2036</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>2047</MaxTileCol>
       <MinTileRow>45</MinTileRow>
       <MaxTileRow>1588</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>12</TileMatrix>
-      <MinTileCol>59</MinTileCol>
-      <MaxTileCol>4072</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>4095</MaxTileCol>
       <MinTileRow>91</MinTileRow>
       <MaxTileRow>3177</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>13</TileMatrix>
-      <MinTileCol>119</MinTileCol>
-      <MaxTileCol>8144</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>8191</MaxTileCol>
       <MinTileRow>182</MinTileRow>
       <MaxTileRow>6355</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>14</TileMatrix>
-      <MinTileCol>238</MinTileCol>
-      <MaxTileCol>16289</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>16383</MaxTileCol>
       <MinTileRow>365</MinTileRow>
       <MaxTileRow>12711</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>15</TileMatrix>
-      <MinTileCol>476</MinTileCol>
-      <MaxTileCol>32579</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>32767</MaxTileCol>
       <MinTileRow>730</MinTileRow>
       <MaxTileRow>25423</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>16</TileMatrix>
-      <MinTileCol>952</MinTileCol>
-      <MaxTileCol>65159</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>65535</MaxTileCol>
       <MinTileRow>1461</MinTileRow>
       <MaxTileRow>50846</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>17</TileMatrix>
-      <MinTileCol>1905</MinTileCol>
-      <MaxTileCol>130318</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>131071</MaxTileCol>
       <MinTileRow>2923</MinTileRow>
       <MaxTileRow>101693</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>18</TileMatrix>
-      <MinTileCol>3810</MinTileCol>
-      <MaxTileCol>260637</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>262143</MaxTileCol>
       <MinTileRow>5846</MinTileRow>
       <MaxTileRow>203386</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>19</TileMatrix>
-      <MinTileCol>7621</MinTileCol>
-      <MaxTileCol>521274</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>524287</MaxTileCol>
       <MinTileRow>11692</MinTileRow>
       <MaxTileRow>406772</MaxTileRow>
      </TileMatrixLimits>
      <TileMatrixLimits>
       <TileMatrix>20</TileMatrix>
-      <MinTileCol>15243</MinTileCol>
-      <MaxTileCol>1042549</MaxTileCol>
+      <MinTileCol>0</MinTileCol>
+      <MaxTileCol>1048575</MaxTileCol>
       <MinTileRow>23384</MinTileRow>
       <MaxTileRow>813545</MaxTileRow>
      </TileMatrixLimits>

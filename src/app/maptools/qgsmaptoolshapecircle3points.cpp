@@ -84,7 +84,7 @@ void QgsMapToolShapeCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsM
   {
     case 1:
     {
-      std::unique_ptr<QgsLineString> line( new QgsLineString() );
+      auto line = std::make_unique<QgsLineString>();
       line->addVertex( mPoints.at( 0 ) );
       line->addVertex( mParentTool->mapPoint( *e ) );
       mTempRubberBand->setGeometry( line.release() );

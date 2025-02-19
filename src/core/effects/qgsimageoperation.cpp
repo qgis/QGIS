@@ -693,7 +693,7 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
     return new QImage();
 
   //blur along columns
-  std::unique_ptr< QImage > yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
+  auto yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
   GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage.get(), kernel.get(), feedback );
   runRectOperation( xBlurImage, colBlur );
 

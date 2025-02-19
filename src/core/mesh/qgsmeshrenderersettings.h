@@ -211,19 +211,6 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
   private:
     void updateShader();
 
-    //! Returns a string to serialize Limits
-    static QString limitsString( Qgis::MeshRangeLimit limits );
-
-    //! \brief Deserialize Limits
-    static Qgis::MeshRangeLimit limitsFromString( const QString &limits );
-
-    //! Returns a string to serialize Extent
-    static QString extentString( Qgis::MeshRangeExtent extent );
-
-    //! \brief Deserialize Extent
-    static Qgis::MeshRangeExtent extentFromString( const QString &extent );
-
-
     QgsColorRampShader mColorRampShader;
     DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::NoResampling;
     double mClassificationMinimum = 0;

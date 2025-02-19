@@ -225,6 +225,20 @@ void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   mSymbol->stopRender( context.renderContext() );
 }
 
+void QgsArrowSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  installMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
+void QgsArrowSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  removeMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
 inline qreal euclidean_distance( QPointF po, QPointF pd )
 {
   return QgsGeometryUtilsBase::distance2D( po.x(), po.y(), pd.x(), pd.y() );

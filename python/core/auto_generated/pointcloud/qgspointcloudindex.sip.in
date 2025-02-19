@@ -370,6 +370,11 @@ an error message in case the call failed.
 Returns ``True`` if there are uncommitted changes, ``False`` otherwise
 %End
 
+    QList<QgsPointCloudNodeId> updatedNodes() const;
+%Docstring
+Returns a list of node IDs that have been modified
+%End
+
 };
 
 

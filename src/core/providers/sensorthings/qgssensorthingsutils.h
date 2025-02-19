@@ -81,8 +81,11 @@ class CORE_EXPORT QgsSensorThingsUtils
 
     /**
      * Returns the fields which correspond to a specified entity \a type.
+     *
+     * Since QGIS 3.42 the \a includeRangeFieldProxies argument can be used to hide the "start"/"end" fields
+     * which are proxies for the date time range field types which are not natively supported in QGIS.
      */
-    static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type );
+    static QgsFields fieldsForEntityType( Qgis::SensorThingsEntity type, bool includeRangeFieldProxies = true );
 
     /**
      * Returns the fields which correspond to a specified entity \a baseType, expanded

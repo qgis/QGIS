@@ -76,7 +76,7 @@ class slope(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterBoolean(
                 self.AS_PERCENT,
-                self.tr("Slope expressed as percent instead of degrees"),
+                self.tr("Express slope as percent instead of degrees"),
                 defaultValue=False,
             )
         )

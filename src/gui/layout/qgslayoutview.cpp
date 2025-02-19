@@ -930,7 +930,7 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsLayoutViewMouseEvent>( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps );
     mTool->layoutPressEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -966,7 +966,7 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsLayoutViewMouseEvent>( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps );
     mTool->layoutReleaseEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -985,7 +985,7 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
   QPointF cursorPos = mapToScene( mMouseCurrentXY );
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, false ) );
+    auto me = std::make_unique<QgsLayoutViewMouseEvent>( this, event, false );
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
       me->snapPoint( mHorizontalSnapLine, mVerticalSnapLine, mTool->ignoredSnapItems() );
@@ -1025,7 +1025,7 @@ void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsLayoutViewMouseEvent>( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps );
     mTool->layoutDoubleClickEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -1244,7 +1244,7 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
 
 QGraphicsLineItem *QgsLayoutView::createSnapLine() const
 {
-  std::unique_ptr<QGraphicsLineItem> item( new QGraphicsLineItem( nullptr ) );
+  auto item = std::make_unique<QGraphicsLineItem>( nullptr );
   QPen pen = QPen( QColor( Qt::blue ) );
   pen.setStyle( Qt::DotLine );
   pen.setWidthF( 0.0 );

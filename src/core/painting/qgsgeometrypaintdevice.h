@@ -103,8 +103,6 @@ class QgsGeometryPaintEngine: public QPaintEngine
 
     void addSubpathGeometries( const QPainterPath &path, const QTransform &matrix );
     void addStrokedLine( const QgsLineString *line, double penWidth, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, const QTransform *matrix );
-    static Qgis::EndCapStyle penStyleToCapStyle( Qt::PenCapStyle style );
-    static Qgis::JoinStyle penStyleToJoinStyle( Qt::PenJoinStyle style );
 
     bool mUsePathStroker = false;
     QPen mPen;

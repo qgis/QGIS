@@ -30,7 +30,7 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Join to features in" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  std::unique_ptr<QgsProcessingParameterEnum> predicateParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
+  auto predicateParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );

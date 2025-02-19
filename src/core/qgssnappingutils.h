@@ -321,6 +321,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
     bool mEnableSnappingForInvisibleFeature = true;
+
+    friend class TestQgsSnappingUtils;
 };
 
 

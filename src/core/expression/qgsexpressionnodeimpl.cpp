@@ -749,7 +749,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
       }
       else if ( QgsExpressionNodeInOperator *inOp = dynamic_cast<QgsExpressionNodeInOperator *>( node ) )
       {
-        if ( inOp->node()->nodeType() != QgsExpressionNode::ntColumnRef )
+        if ( inOp->isNotIn() || inOp->node()->nodeType() != QgsExpressionNode::ntColumnRef )
         {
           return false;
         }
@@ -795,7 +795,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
         auto orValuesIt = orValuesMap.find( fieldName );
         if ( orValuesIt.value().count() == 1 )
         {
-          std::unique_ptr<QgsExpressionNodeBinaryOperator> eqNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boEQ, new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().at( 0 )->clone() );
+          auto eqNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boEQ, new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().at( 0 )->clone() );
           if ( currentNode )
           {
             currentNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boOr, currentNode.release(), eqNode.release() );
@@ -807,7 +807,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
         }
         else
         {
-          std::unique_ptr<QgsExpressionNodeInOperator> inNode = std::make_unique<QgsExpressionNodeInOperator>( new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().clone() );
+          auto inNode = std::make_unique<QgsExpressionNodeInOperator>( new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().clone() );
           if ( currentNode )
           {
             currentNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boOr, currentNode.release(), inNode.release() );

@@ -120,7 +120,7 @@ void TestQgsRubberband::testAddSingleMultiGeometries()
 void TestQgsRubberband::pointGeometryAddPoints()
 {
   // point geometry
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   QgsRubberBand r1( canvas.get(), Qgis::GeometryType::Point );
   QVERIFY( r1.asGeometry().isEmpty() );
   r1.addPoint( QgsPointXY( 1, 2 ) );
@@ -138,7 +138,7 @@ void TestQgsRubberband::pointGeometryAddPoints()
 void TestQgsRubberband::pointGeometrySetGeometry()
 {
   // point geometry, set using setToGeometry
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   QgsRubberBand r1( canvas.get(), Qgis::GeometryType::Point );
   QVERIFY( r1.asGeometry().isEmpty() );
   r1.setToGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
@@ -160,7 +160,7 @@ void TestQgsRubberband::pointGeometrySetGeometry()
 
 void TestQgsRubberband::lineGeometryAddPoints()
 {
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   QgsRubberBand r1( canvas.get(), Qgis::GeometryType::Line );
   QVERIFY( r1.asGeometry().isEmpty() );
   r1.addPoint( QgsPointXY( 1, 2 ) );
@@ -177,7 +177,7 @@ void TestQgsRubberband::lineGeometryAddPoints()
 
 void TestQgsRubberband::copyPointsFrom()
 {
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   QgsRubberBand r1( canvas.get(), Qgis::GeometryType::Point );
   r1.addPoint( QgsPointXY( 1, 2 ) );
   r1.addPoint( QgsPointXY( 3, 4 ) );
@@ -304,7 +304,7 @@ void TestQgsRubberband::testClose()
 
 void TestQgsRubberband::testLineSymbolRender()
 {
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   canvas->setFrameStyle( 0 );
   canvas->resize( 600, 400 );
@@ -340,7 +340,7 @@ void TestQgsRubberband::testLineSymbolRender()
 
 void TestQgsRubberband::testFillSymbolRender()
 {
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   canvas->setFrameStyle( 0 );
   canvas->resize( 600, 400 );

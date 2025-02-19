@@ -76,7 +76,7 @@ bool QgsOnlineDemTerrainSettings::equals( const QgsAbstractTerrainSettings *othe
 
 std::unique_ptr<QgsTerrainGenerator> QgsOnlineDemTerrainSettings::createTerrainGenerator( const Qgs3DRenderContext &context ) const
 {
-  std::unique_ptr<QgsOnlineTerrainGenerator> generator = std::make_unique<QgsOnlineTerrainGenerator>();
+  auto generator = std::make_unique<QgsOnlineTerrainGenerator>();
   generator->setResolution( mResolution );
   generator->setSkirtHeight( static_cast<float>( mSkirtHeight ) );
   generator->setCrs( context.crs(), context.transformContext() );

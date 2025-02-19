@@ -67,7 +67,7 @@ QList<QgsMapLayerServerProperties::WmsDimensionInfo> QgsServerApiUtils::temporal
   // Filter only date and time
   dimensions.erase( std::remove_if( dimensions.begin(), dimensions.end(), []( QgsMapLayerServerProperties::WmsDimensionInfo &dim ) {
                       return dim.name.toLower() != QStringLiteral( "time" )
-                             && dim.name.toLower() != QStringLiteral( "date" );
+                             && dim.name.toLower() != QLatin1String( "date" );
                     } ),
                     dimensions.end() );
 

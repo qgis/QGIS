@@ -79,7 +79,7 @@ void QgsNetworkLogger::requestAboutToBeCreated( QgsNetworkRequestParameters para
 
   beginInsertRows( QModelIndex(), childCount, childCount );
 
-  std::unique_ptr<QgsNetworkLoggerRequestGroup> group = std::make_unique<QgsNetworkLoggerRequestGroup>( parameters );
+  auto group = std::make_unique<QgsNetworkLoggerRequestGroup>( parameters );
   mRequestGroups.insert( parameters.requestId(), group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();

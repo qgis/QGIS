@@ -216,7 +216,10 @@ bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray 
 
   int ret = inflateInit2( &strm, MAX_WBITS + DEC_MAGIC_NUM_FOR_GZIP );
   if ( ret != Z_OK )
+  {
+    inflateEnd( &strm );
     return false;
+  }
 
   while ( ret != Z_STREAM_END ) // done when inflate() says it's done
   {

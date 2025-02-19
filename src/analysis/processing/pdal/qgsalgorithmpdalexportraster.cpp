@@ -66,10 +66,10 @@ void QgsPdalExportRasterAlgorithm::initAlgorithm( const QVariantMap & )
 
   createCommonParameters();
 
-  std::unique_ptr<QgsProcessingParameterNumber> paramOriginX = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto paramOriginX = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   paramOriginX->setFlags( paramOriginX->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramOriginX.release() );
-  std::unique_ptr<QgsProcessingParameterNumber> paramOriginY = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ORIGIN_Y" ), QObject::tr( "Y origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0 );
+  auto paramOriginY = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ORIGIN_Y" ), QObject::tr( "Y origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0 );
   paramOriginY->setFlags( paramOriginY->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramOriginY.release() );
 

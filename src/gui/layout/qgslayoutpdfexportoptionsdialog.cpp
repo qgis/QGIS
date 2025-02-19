@@ -57,8 +57,6 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   else
   {
     mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 1 );
-    mGeospatialPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
-    mGeospatialPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
   }
 
   mComboImageCompression->addItem( tr( "Lossy (JPEG)" ), false );
@@ -199,26 +197,6 @@ bool QgsLayoutPdfExportOptionsDialog::exportGeospatialPdf() const
 
   return mGeospatialPDFGroupBox->isChecked();
 }
-
-void QgsLayoutPdfExportOptionsDialog::setUseOgcBestPracticeFormat( bool enabled )
-{
-  if ( !mGeospatialPdfAvailable )
-    return;
-
-  if ( enabled )
-    mGeospatialPdfFormatComboBox->setCurrentIndex( 1 );
-  else
-    mGeospatialPdfFormatComboBox->setCurrentIndex( 0 );
-}
-
-bool QgsLayoutPdfExportOptionsDialog::useOgcBestPracticeFormat() const
-{
-  if ( !mGeospatialPdfAvailable )
-    return false;
-
-  return mGeospatialPdfFormatComboBox->currentIndex() == 1;
-}
-
 
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
 {

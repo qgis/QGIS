@@ -802,20 +802,20 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
 
         if ( subVertexId.vertex < points.length() - 2 )
         {
-          std::unique_ptr<QgsCircularString> curveC = std::make_unique<QgsCircularString>();
+          auto curveC = std::make_unique<QgsCircularString>();
           curveC->setPoints( points.mid( subVertexId.vertex + 1 ) );
           mCurves.insert( curveId, curveC.release() );
         }
 
         const QgsPointSequence partB = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex + 1];
-        std::unique_ptr<QgsLineString> curveB = std::make_unique<QgsLineString>();
+        auto curveB = std::make_unique<QgsLineString>();
         curveB->setPoints( partB );
         mCurves.insert( curveId, curveB.release() );
         curve = mCurves.at( curveId );
 
         if ( subVertexId.vertex > 1 )
         {
-          std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
+          auto curveA = std::make_unique<QgsCircularString>();
           curveA->setPoints( points.mid( 0, subVertexId.vertex ) );
           mCurves.insert( curveId, curveA.release() );
         }
@@ -1004,11 +1004,11 @@ bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
     const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
     const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
 
-    std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
+    auto curveA = std::make_unique<QgsCircularString>();
     curveA->setPoints( partA );
-    std::unique_ptr<QgsLineString> curveB = std::make_unique<QgsLineString>();
+    auto curveB = std::make_unique<QgsLineString>();
     curveB->setPoints( partB );
-    std::unique_ptr<QgsCircularString> curveC = std::make_unique<QgsCircularString>();
+    auto curveC = std::make_unique<QgsCircularString>();
     curveC->setPoints( partC );
 
     removeCurve( curveId );
@@ -1029,11 +1029,11 @@ bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
     const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
     const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
 
-    std::unique_ptr<QgsLineString> curveA = std::make_unique<QgsLineString>();
+    auto curveA = std::make_unique<QgsLineString>();
     curveA->setPoints( partA );
-    std::unique_ptr<QgsCircularString> curveB = std::make_unique<QgsCircularString>();
+    auto curveB = std::make_unique<QgsCircularString>();
     curveB->setPoints( partB );
-    std::unique_ptr<QgsLineString> curveC = std::make_unique<QgsLineString>();
+    auto curveC = std::make_unique<QgsLineString>();
     curveC->setPoints( partC );
 
     removeCurve( curveId );
@@ -1178,7 +1178,7 @@ std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCompoundCur
 
   int curveStart = 0;
 
-  std::unique_ptr< QgsCompoundCurve > curve1 = std::make_unique< QgsCompoundCurve >();
+  auto curve1 = std::make_unique< QgsCompoundCurve >();
   std::unique_ptr< QgsCompoundCurve > curve2;
 
   for ( const QgsCurve *curve : mCurves )
@@ -1323,7 +1323,7 @@ QgsCompoundCurve *QgsCompoundCurve::curveSubstring( double startDistance, double
     return createEmptyWithSameType();
 
   endDistance = std::max( startDistance, endDistance );
-  std::unique_ptr< QgsCompoundCurve > substring = std::make_unique< QgsCompoundCurve >();
+  auto substring = std::make_unique< QgsCompoundCurve >();
 
   double distanceTraversed = 0;
   for ( const QgsCurve *curve : mCurves )

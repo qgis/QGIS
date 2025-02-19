@@ -72,7 +72,7 @@ QgsNetworkLoggerRequestGroup::QgsNetworkLoggerRequestGroup( const QgsNetworkRequ
     mHeaders.append( qMakePair( QString( header ), QString( request.request().rawHeader( header ) ) ) );
   }
 
-  std::unique_ptr<QgsNetworkLoggerRequestDetailsGroup> detailsGroup = std::make_unique<QgsNetworkLoggerRequestDetailsGroup>( request );
+  auto detailsGroup = std::make_unique<QgsNetworkLoggerRequestDetailsGroup>( request );
   mDetailsGroup = static_cast<QgsNetworkLoggerRequestDetailsGroup *>( addChild( std::move( detailsGroup ) ) );
 
   mTimer.start();
@@ -273,7 +273,7 @@ void QgsNetworkLoggerRequestGroup::setReply( const QgsNetworkReplyContent &reply
   mContentType = reply.rawHeader( "Content - Type" );
   mReplyFromCache = reply.attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
 
-  std::unique_ptr<QgsNetworkLoggerReplyGroup> replyGroup = std::make_unique<QgsNetworkLoggerReplyGroup>( reply );
+  auto replyGroup = std::make_unique<QgsNetworkLoggerReplyGroup>( reply );
   mReplyGroup = static_cast<QgsNetworkLoggerReplyGroup *>( addChild( std::move( replyGroup ) ) );
 }
 
@@ -294,7 +294,7 @@ void QgsNetworkLoggerRequestGroup::setSslErrors( const QList<QSslError> &errors 
   mHasSslErrors = !errors.empty();
   if ( mHasSslErrors )
   {
-    std::unique_ptr<QgsNetworkLoggerSslErrorGroup> errorGroup = std::make_unique<QgsNetworkLoggerSslErrorGroup>( errors );
+    auto errorGroup = std::make_unique<QgsNetworkLoggerSslErrorGroup>( errors );
     mSslErrorsGroup = static_cast<QgsNetworkLoggerSslErrorGroup *>( addChild( std::move( errorGroup ) ) );
   }
 }
@@ -373,11 +373,11 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
 
   if ( !QUrlQuery( request.request().url() ).queryItems().isEmpty() )
   {
-    std::unique_ptr<QgsNetworkLoggerRequestQueryGroup> queryGroup = std::make_unique<QgsNetworkLoggerRequestQueryGroup>( request.request().url() );
+    auto queryGroup = std::make_unique<QgsNetworkLoggerRequestQueryGroup>( request.request().url() );
     mQueryGroup = static_cast<QgsNetworkLoggerRequestQueryGroup *>( addChild( std::move( queryGroup ) ) );
   }
 
-  std::unique_ptr<QgsNetworkLoggerRequestHeadersGroup> requestHeadersGroup = std::make_unique<QgsNetworkLoggerRequestHeadersGroup>( request );
+  auto requestHeadersGroup = std::make_unique<QgsNetworkLoggerRequestHeadersGroup>( request );
   mRequestHeaders = static_cast<QgsNetworkLoggerRequestHeadersGroup *>( addChild( std::move( requestHeadersGroup ) ) );
 
   switch ( request.operation() )
@@ -389,7 +389,7 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
     case QNetworkAccessManager::PostOperation:
     case QNetworkAccessManager::PutOperation:
     {
-      std::unique_ptr<QgsNetworkLoggerPostContentGroup> postContentGroup = std::make_unique<QgsNetworkLoggerPostContentGroup>( request );
+      auto postContentGroup = std::make_unique<QgsNetworkLoggerPostContentGroup>( request );
       mPostContent = static_cast<QgsNetworkLoggerPostContentGroup *>( addChild( std::move( postContentGroup ) ) );
       break;
     }
@@ -400,7 +400,7 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
     {
       if ( !request.content().isEmpty() )
       {
-        std::unique_ptr<QgsNetworkLoggerPostContentGroup> postContentGroup = std::make_unique<QgsNetworkLoggerPostContentGroup>( request );
+        auto postContentGroup = std::make_unique<QgsNetworkLoggerPostContentGroup>( request );
         mPostContent = static_cast<QgsNetworkLoggerPostContentGroup *>( addChild( std::move( postContentGroup ) ) );
       }
       break;
@@ -477,7 +477,7 @@ QgsNetworkLoggerReplyGroup::QgsNetworkLoggerReplyGroup( const QgsNetworkReplyCon
   }
   addKeyValueNode( QObject::tr( "Cache (result)" ), reply.attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool() ? QObject::tr( "Used entry from cache" ) : QObject::tr( "Read from network" ) );
 
-  std::unique_ptr<QgsNetworkLoggerReplyHeadersGroup> headersGroup = std::make_unique<QgsNetworkLoggerReplyHeadersGroup>( reply );
+  auto headersGroup = std::make_unique<QgsNetworkLoggerReplyHeadersGroup>( reply );
   mReplyHeaders = static_cast<QgsNetworkLoggerReplyHeadersGroup *>( addChild( std::move( headersGroup ) ) );
 }
 

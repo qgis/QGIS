@@ -249,7 +249,7 @@ QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context )
 
 QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationLineTextItem > item = std::make_unique< QgsAnnotationLineTextItem >( mText, mCurve->clone() );
+  auto item = std::make_unique< QgsAnnotationLineTextItem >( mText, mCurve->clone() );
   item->setFormat( mTextFormat );
   item->setOffsetFromLine( mOffsetFromLineDistance );
   item->setOffsetFromLineUnit( mOffsetFromLineUnit );

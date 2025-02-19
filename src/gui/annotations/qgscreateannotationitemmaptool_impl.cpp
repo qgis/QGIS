@@ -109,7 +109,7 @@ void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event
 
   const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
 
-  std::unique_ptr<QgsAnnotationPointTextItem> createdItem = std::make_unique<QgsAnnotationPointTextItem>( tr( "Text" ), layerPoint );
+  auto createdItem = std::make_unique<QgsAnnotationPointTextItem>( tr( "Text" ), layerPoint );
   createdItem->setAlignment( Qt::AlignLeft );
   QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
   // default to HTML formatting
@@ -148,7 +148,7 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
     return;
 
   const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
-  std::unique_ptr<QgsAnnotationMarkerItem> createdItem = std::make_unique<QgsAnnotationMarkerItem>( QgsPoint( layerPoint ) );
+  auto createdItem = std::make_unique<QgsAnnotationMarkerItem>( QgsPoint( layerPoint ) );
 
   std::unique_ptr<QgsMarkerSymbol> markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsMarkerSymbol>( QStringLiteral( "marker_annotation_item" ) );
   if ( !markerSymbol )
@@ -184,7 +184,7 @@ void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
   std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    std::unique_ptr<QgsAnnotationLineItem> createdItem = std::make_unique<QgsAnnotationLineItem>( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    auto createdItem = std::make_unique<QgsAnnotationLineItem>( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
     if ( !lineSymbol )
@@ -216,9 +216,9 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
   std::unique_ptr<QgsAbstractGeometry> geometry( polygon->exteriorRing()->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    std::unique_ptr<QgsCurvePolygon> newPolygon = std::make_unique<QgsCurvePolygon>();
+    auto newPolygon = std::make_unique<QgsCurvePolygon>();
     newPolygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
-    std::unique_ptr<QgsAnnotationPolygonItem> createdItem = std::make_unique<QgsAnnotationPolygonItem>( newPolygon.release() );
+    auto createdItem = std::make_unique<QgsAnnotationPolygonItem>( newPolygon.release() );
 
     std::unique_ptr<QgsFillSymbol> fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsFillSymbol>( QStringLiteral( "polygon_annotation_item" ) );
     if ( !fillSymbol )
@@ -322,7 +322,7 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
 
     cadDockWidget()->clearPoints();
 
-    std::unique_ptr<QgsAnnotationPictureItem> createdItem = std::make_unique<QgsAnnotationPictureItem>( format, imagePath, QgsRectangle( point1, point2 ) );
+    auto createdItem = std::make_unique<QgsAnnotationPictureItem>( format, imagePath, QgsRectangle( point1, point2 ) );
     if ( size.isValid() )
     {
       const double pixelsToMm = mCanvas->mapSettings().outputDpi() / 25.4;
@@ -429,7 +429,7 @@ void QgsCreateRectangleTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *e
 
     cadDockWidget()->clearPoints();
 
-    std::unique_ptr<QgsAnnotationRectangleTextItem> createdItem = std::make_unique<QgsAnnotationRectangleTextItem>( tr( "Text" ), QgsRectangle( point1, point2 ) );
+    auto createdItem = std::make_unique<QgsAnnotationRectangleTextItem>( tr( "Text" ), QgsRectangle( point1, point2 ) );
 
     QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
     // default to HTML formatting
@@ -501,7 +501,7 @@ void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
   std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    std::unique_ptr<QgsAnnotationLineTextItem> createdItem = std::make_unique<QgsAnnotationLineTextItem>( tr( "Text" ), qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    auto createdItem = std::make_unique<QgsAnnotationLineTextItem>( tr( "Text" ), qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
     if ( !lineSymbol )

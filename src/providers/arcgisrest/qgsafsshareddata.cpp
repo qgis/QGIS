@@ -59,7 +59,7 @@ QgsAfsSharedData::QgsAfsSharedData( const QgsDataSourceUri &uri )
 std::shared_ptr<QgsAfsSharedData> QgsAfsSharedData::clone() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  std::shared_ptr<QgsAfsSharedData> copy = std::make_shared<QgsAfsSharedData>( mDataSource );
+  auto copy = std::make_shared<QgsAfsSharedData>( mDataSource );
   copy->mLimitBBox = mLimitBBox;
   copy->mExtent = mExtent;
   copy->mGeometryType = mGeometryType;

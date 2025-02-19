@@ -1,0 +1,18 @@
+{
+  "name": "crs_from_text",
+  "type": "function",
+  "groups": ["CRS"],
+  "description": "Creates a coordinate reference system from a string definition. The string can represent an authority ID, a WKT definition, or a PROJ string definition of the CRS.",
+  "arguments": [{
+    "arg": "definition",
+    "description": "CRS definition"
+  }],
+  "examples": [{
+    "expression": "crs_from_text('EPSG:3857')",
+    "returns": "crs value 'EPSG:3857 - WGS 84 / Pseudo-Mercator'"
+  }, {
+    "expression": "crs_from_text('PROJ:+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs')",
+    "returns": "crs value 'EPSG:3857 - WGS 84 / Pseudo-Mercator'"
+  }],
+  "tags": ["crs", "epsg"]
+}

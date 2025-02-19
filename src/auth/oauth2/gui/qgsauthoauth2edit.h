@@ -90,6 +90,14 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     void populateQueryPairs( const QVariantMap &querypairs, bool append = false );
 
+    void addExtraToken();
+
+    void removeExtraToken();
+
+    void clearExtraTokens();
+
+    void populateExtraTokens( const QVariantMap &tokens, bool append = false );
+
     void queryTableSelectionChanged();
 
     void updateConfigQueryPairs();
@@ -138,6 +146,9 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     void addQueryPairRow( const QString &key, const QString &val );
     QVariantMap queryPairs() const;
+
+    void addExtraTokenRow( const QString &key, const QString &val );
+    QVariantMap extraTokens() const;
 
     int customTab() const { return 0; }
     int definedTab() const { return 1; }

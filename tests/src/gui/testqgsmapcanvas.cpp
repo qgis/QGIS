@@ -371,7 +371,7 @@ void TestQgsMapCanvas::testZoomByWheel()
   mCanvas->setWheelFactor( 2 );
 
   //test zoom out
-  std::unique_ptr<QWheelEvent> e = std::make_unique<QWheelEvent>( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  auto e = std::make_unique<QWheelEvent>( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
   mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth * 2.0, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight * 2.0, 0.1 );
@@ -410,7 +410,7 @@ void TestQgsMapCanvas::testShiftZoom()
   // start by testing a tool with shift-zoom enabled
   mCanvas->setMapTool( &panTool );
 
-  std::unique_ptr<QMouseEvent> e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonPress, startPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  auto e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonPress, startPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mousePressEvent( e.get() );
   e = std::make_unique<QMouseEvent>( QMouseEvent::MouseMove, endPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseMoveEvent( e.get() );
@@ -475,8 +475,8 @@ class TestYesDropHandler : public QgsCustomDropHandler
 void TestQgsMapCanvas::testDragDrop()
 {
   // default drag, should not be accepted
-  std::unique_ptr<QMimeData> data = std::make_unique<QMimeData>();
-  std::unique_ptr<QDragEnterEvent> event = std::make_unique<QDragEnterEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  auto data = std::make_unique<QMimeData>();
+  auto event = std::make_unique<QDragEnterEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dragEnterEvent( event.get() );
   QVERIFY( !event->isAccepted() );
 
@@ -507,7 +507,7 @@ void TestQgsMapCanvas::testDragDrop()
 
   // check drop event logic
   mCanvas->setCustomDropHandlers( QVector<QPointer<QgsCustomDropHandler>>() );
-  std::unique_ptr<QDropEvent> dropEvent = std::make_unique<QDropEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  auto dropEvent = std::make_unique<QDropEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dropEvent( dropEvent.get() );
   QVERIFY( !dropEvent->isAccepted() );
   mCanvas->setCustomDropHandlers( QVector<QPointer<QgsCustomDropHandler>>() << &handler );
@@ -596,10 +596,10 @@ void TestQgsMapCanvas::testMapLayers()
   QVERIFY( vl1->isValid() );
   QgsProject::instance()->addMapLayer( vl1 );
 
-  std::unique_ptr<QgsVectorLayer> vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   QVERIFY( vl2->isValid() );
 
-  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
+  auto canvas = std::make_unique<QgsMapCanvas>();
   canvas->setLayers( { vl1, vl2.get() } );
 
   QCOMPARE( canvas->layers(), QList<QgsMapLayer *>( { vl1, vl2.get() } ) );

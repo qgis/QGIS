@@ -34,6 +34,54 @@ class QTemporaryDir;
 
 /**
  * \ingroup core
+ * \class QgsImageSizeCacheEntry
+ * \brief An entry for a QgsImageSizeCache, representing the original size of a single raster image
+ * \since QGIS 3.42
+ */
+class CORE_EXPORT QgsImageSizeCacheEntry : public QgsAbstractContentCacheEntry
+{
+  public:
+
+    /**
+     * Constructor for QgsImageSizeCacheEntry, corresponding to the specified image \a path.
+     */
+    QgsImageSizeCacheEntry( const QString &path ) ;
+
+    //! Original image size
+    QSize size;
+
+    int dataSize() const override;
+    void dump() const override;
+    bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
+
+};
+
+/**
+ * \class QgsImageSizeCache
+ * \ingroup core
+ * \brief A cache for original image sizes.
+ *
+ * QgsImageSizeCache stores the original sizes of raster image files, allowing efficient
+ * reuse without incurring the cost of re-opening and parsing the image on every render.
+ *
+ * This is a private class, used internally in QgsImageCache.
+ *
+ * \since QGIS 3.42
+*/
+class CORE_EXPORT QgsImageSizeCache : public QgsAbstractContentCache< QgsImageSizeCacheEntry >
+{
+    Q_OBJECT
+
+  public:
+
+    QgsImageSizeCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsImageSizeCache() override;
+    long maximumSize() const { return mMaxCacheSize; }
+    QSize originalSize( const QString &path, bool blocking = false );
+};
+
+/**
+ * \ingroup core
  * \class QgsImageCacheEntry
  * \brief An entry for a QgsImageCache, representing a single raster rendered at a specific width and height.
  * \since QGIS 3.6
@@ -256,6 +304,8 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
     static QImage getFrameFromReader( QImageReader &reader, int frameNumber );
 
+    QSize originalSizePrivate( const QString &path, bool blocking = false ) const;
+
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;
 
@@ -266,6 +316,9 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
     QMap< QString, int > mTotalFrameCounts;
     QMap< QString, QVector< int > > mImageDelays;
 
+    mutable QgsImageSizeCache mImageSizeCache;
+
+    friend class QgsImageSizeCache;
     friend class TestQgsImageCache;
 };
 

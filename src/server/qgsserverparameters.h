@@ -80,33 +80,37 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * Converts the parameter into a list of integers.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of integers
      */
-    QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
+    QList<int> toIntList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of doubles.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of doubles
      */
-    QList<double> toDoubleList( bool &ok, char delimiter = ',' ) const;
+    QList<double> toDoubleList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of colors.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of colors
      */
-    QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
+    QList<QColor> toColorList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of geometries.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of geometries
      */
-    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
+    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of OGC filters.

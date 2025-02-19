@@ -136,7 +136,7 @@ bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsR
 
 QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationPointTextItem > item = std::make_unique< QgsAnnotationPointTextItem >( mText, mPoint );
+  auto item = std::make_unique< QgsAnnotationPointTextItem >( mText, mPoint );
   item->setFormat( mTextFormat );
   item->setAngle( mAngle );
   item->setAlignment( mAlignment );

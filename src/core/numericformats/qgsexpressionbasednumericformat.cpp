@@ -51,7 +51,7 @@ QgsNumericFormat *QgsExpressionBasedNumericFormat::clone() const
 
 QgsNumericFormat *QgsExpressionBasedNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext & ) const
 {
-  std::unique_ptr< QgsExpressionBasedNumericFormat > res = std::make_unique< QgsExpressionBasedNumericFormat >();
+  auto res = std::make_unique< QgsExpressionBasedNumericFormat >();
   res->mExpression = QgsExpression( configuration.value( QStringLiteral( "expression" ), QStringLiteral( "@value" ) ).toString() );
   return res.release();
 }

@@ -31,7 +31,7 @@ QgsClassificationLogarithmic::QgsClassificationLogarithmic()
 
 std::unique_ptr<QgsClassificationMethod> QgsClassificationLogarithmic::clone() const
 {
-  std::unique_ptr<QgsClassificationLogarithmic > c = std::make_unique< QgsClassificationLogarithmic >();
+  auto c = std::make_unique< QgsClassificationLogarithmic >();
   copyBase( c.get() );
   return c;
 }

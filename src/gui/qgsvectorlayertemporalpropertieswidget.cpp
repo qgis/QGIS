@@ -122,9 +122,13 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
 
   properties->setIsActive( mTemporalGroupBox->isChecked() );
   properties->setMode( static_cast<Qgis::VectorTemporalMode>( mModeComboBox->currentData().toInt() ) );
-  properties->setLimitMode( static_cast<Qgis::VectorTemporalLimitMode>( mLimitsComboBox->currentData().toInt() ) );
+  Qgis::VectorTemporalLimitMode limitMode = static_cast<Qgis::VectorTemporalLimitMode>( mLimitsComboBox->currentData().toInt() );
+  properties->setLimitMode( limitMode );
 
-  const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(), mEndTemporalDateTimeEdit->dateTime() );
+  const QgsDateTimeRange normalRange = QgsDateTimeRange(
+    mStartTemporalDateTimeEdit->dateTime(), mEndTemporalDateTimeEdit->dateTime(),
+    true, limitMode == Qgis::VectorTemporalLimitMode::IncludeBeginIncludeEnd
+  );
 
   properties->setFixedTemporalRange( normalRange );
 

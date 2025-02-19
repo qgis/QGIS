@@ -241,13 +241,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
-     * Fetches the original point from the source layer if it has the same
-     * CRS as the current layer.
-     * If topological editing is activated, the points are projected to the
-     * current layer CRS.
+     * Fetches the original point from the source layer.
+     * If topological editing is activated.
+     * The points are projected to the current layer CRS.
      * \returns
      *  0 in case of success
-     *  1 if not applicable (CRS mismatch / invalid layer)
+     *  1 if not applicable (invalid layer)
      *  2 in case of failure
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );

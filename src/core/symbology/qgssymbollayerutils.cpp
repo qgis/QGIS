@@ -44,6 +44,7 @@
 #include "qgssymbollayerreference.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgscurvepolygon.h"
+#include "qgsmasksymbollayer.h"
 
 #include "qmath.h"
 #include <QColor>
@@ -389,6 +390,42 @@ Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
     return decodeBrushStyle( str.mid( 8 ) );
 
   return Qt::NoBrush;
+}
+
+Qgis::EndCapStyle QgsSymbolLayerUtils::penCapStyleToEndCapStyle( Qt::PenCapStyle style )
+{
+  switch ( style )
+  {
+    case Qt::FlatCap:
+      return Qgis::EndCapStyle::Flat;
+    case Qt::SquareCap:
+      return Qgis::EndCapStyle::Square;
+    case Qt::RoundCap:
+      return Qgis::EndCapStyle::Round;
+    case Qt::MPenCapStyle:
+      // undocumented?
+      break;
+  }
+
+  return Qgis::EndCapStyle::Round;
+}
+
+Qgis::JoinStyle QgsSymbolLayerUtils::penJoinStyleToJoinStyle( Qt::PenJoinStyle style )
+{
+  switch ( style )
+  {
+    case Qt::MiterJoin:
+    case Qt::SvgMiterJoin:
+      return Qgis::JoinStyle::Miter;
+    case Qt::BevelJoin:
+      return Qgis::JoinStyle::Bevel;
+    case Qt::RoundJoin:
+      return Qgis::JoinStyle::Round;
+    case Qt::MPenJoinStyle:
+      // undocumented?
+      break;
+  }
+  return Qgis::JoinStyle::Round;
 }
 
 bool QgsSymbolLayerUtils::hasSldSymbolizer( const QDomElement &element )
@@ -1348,7 +1385,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
 
   if ( !element.firstChildElement( QStringLiteral( "buffer" ) ).isNull() )
   {
-    std::unique_ptr< QgsSymbolBufferSettings > bufferSettings = std::make_unique< QgsSymbolBufferSettings >();
+    auto bufferSettings = std::make_unique< QgsSymbolBufferSettings >();
     bufferSettings->readXml( element, context );
     symbol->setBufferSettings( bufferSettings.release() );
   }
@@ -4497,15 +4534,23 @@ QPolygonF curveToPolygonF( const QgsCurve *curve )
 
 QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type )
 {
+  return toQPolygonF( geometry.constGet(), type );
+}
+
+QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type )
+{
+  if ( !geometry )
+    return {};
+
   switch ( type )
   {
     case Qgis::SymbolType::Marker:
     {
       QPolygonF points;
 
-      if ( QgsWkbTypes::flatType( geometry.wkbType() ) == Qgis::WkbType::MultiPoint )
+      if ( QgsWkbTypes::flatType( geometry->wkbType() ) == Qgis::WkbType::MultiPoint )
       {
-        for ( auto it = geometry.vertices_begin(); it != geometry.vertices_end(); ++it )
+        for ( auto it = geometry->vertices_begin(); it != geometry->vertices_end(); ++it )
           points << QPointF( ( *it ).x(), ( *it ).y() );
       }
       else
@@ -4518,9 +4563,9 @@ QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &ge
     case Qgis::SymbolType::Line:
     {
       QList< QList<QPolygonF> > res;
-      if ( QgsWkbTypes::geometryType( geometry.wkbType() ) == Qgis::GeometryType::Line )
+      if ( QgsWkbTypes::geometryType( geometry->wkbType() ) == Qgis::GeometryType::Line )
       {
-        for ( auto it = geometry.const_parts_begin(); it != geometry.const_parts_end(); ++it )
+        for ( auto it = geometry->const_parts_begin(); it != geometry->const_parts_end(); ++it )
         {
           res << ( QList< QPolygonF >() << curveToPolygonF( qgsgeometry_cast< const QgsCurve * >( *it ) ) );
         }
@@ -4532,7 +4577,7 @@ QList<QList<QPolygonF> > QgsSymbolLayerUtils::toQPolygonF( const QgsGeometry &ge
     {
       QList< QList<QPolygonF> > res;
 
-      for ( auto it = geometry.const_parts_begin(); it != geometry.const_parts_end(); ++it )
+      for ( auto it = geometry->const_parts_begin(); it != geometry->const_parts_end(); ++it )
       {
         QList<QPolygonF> thisPart;
         const QgsCurvePolygon *surface = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
@@ -5603,6 +5648,26 @@ void QgsSymbolLayerUtils::clearSymbolLayerIds( QgsSymbolLayer *symbolLayer )
 void QgsSymbolLayerUtils::resetSymbolLayerIds( QgsSymbolLayer *symbolLayer )
 {
   changeSymbolLayerIds( symbolLayer, []() { return QUuid::createUuid().toString(); } );
+}
+
+void QgsSymbolLayerUtils::clearSymbolLayerMasks( QgsSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+  {
+    if ( QgsMaskMarkerSymbolLayer *maskSl = dynamic_cast<QgsMaskMarkerSymbolLayer *>( symbol->symbolLayer( idx ) ) )
+    {
+      maskSl->clearMasks();
+
+      // recurse over sub symbols
+      if ( QgsSymbol *subSymbol = maskSl->subSymbol() )
+      {
+        clearSymbolLayerMasks( subSymbol );
+      }
+    }
+  }
 }
 
 QVector<QgsGeometry> QgsSymbolLayerUtils::collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds )

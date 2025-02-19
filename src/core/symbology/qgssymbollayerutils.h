@@ -95,6 +95,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
     /**
+     * Converts a Qt pen cap style to a QGIS end cap style.
+     *
+     * \since QGIS 3.42
+     */
+    static Qgis::EndCapStyle penCapStyleToEndCapStyle( Qt::PenCapStyle style );
+
+    /**
+     * Converts a Qt pen joinstyle to a QGIS join style.
+     *
+     * \since QGIS 3.42
+     */
+    static Qgis::JoinStyle penJoinStyleToJoinStyle( Qt::PenJoinStyle style );
+
+    /**
      * Returns TRUE if a DOM \a element contains an SLD Symbolizer element.
      *
      * \since QGIS 3.42
@@ -763,6 +777,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QList< QList< QPolygonF > > toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
 
+    /**
+     * Converts a \a geometry to a set of QPolygonF objects representing
+     * how the geometry should be drawn for a symbol of the given \a type,
+     * as a list of geometry parts and rings.
+     *
+     * \since QGIS 3.42
+     */
+    static QList< QList< QPolygonF > > toQPolygonF( const QgsAbstractGeometry *geometry, Qgis::SymbolType type );
+
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
 
@@ -948,6 +971,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.30
      */
     static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
+
+    /**
+     * Remove recursively masks from all \a symbol symbol layers
+     * \since QGIS 3.42
+     */
+    static void clearSymbolLayerMasks( QgsSymbol *symbol );
 
     /**
      * Returns a list of the symbol layer clip geometries to be used for the symbol layer with the specified

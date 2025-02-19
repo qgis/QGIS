@@ -156,7 +156,7 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationMarkerItem > item = std::make_unique< QgsAnnotationMarkerItem >( mPoint );
+  auto item = std::make_unique< QgsAnnotationMarkerItem >( mPoint );
   item->setSymbol( mSymbol->clone() );
   item->copyCommonProperties( this );
   return item.release();

@@ -419,9 +419,9 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         extent = approxTransform.transformBoundingBox( extent, Qgis::TransformDirection::Reverse );
     }
   }
-  catch ( QgsCsException & )
+  catch ( QgsCsException &e )
   {
-    QgsDebugError( QStringLiteral( "Transform error caught" ) );
+    QgsDebugError( QStringLiteral( "Transform error caught: %1" ).arg( e.what() ) );
     extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
     r2 = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
     res = false;
@@ -448,7 +448,7 @@ QImage *QgsMapRendererJob::allocateImage( QString layerId )
 
 QgsElevationMap *QgsMapRendererJob::allocateElevationMap( QString layerId )
 {
-  std::unique_ptr<QgsElevationMap> elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() );
+  auto elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() );
   if ( !elevationMap->isValid() )
   {
     mErrors.append( Error( layerId, tr( "Insufficient memory for elevation map %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -471,7 +471,7 @@ QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&
 
 QgsMapRendererJob::PictureAndPainter QgsMapRendererJob::allocatePictureAndPainter( const QgsRenderContext *context )
 {
-  std::unique_ptr<QPicture> picture = std::make_unique<QPicture>();
+  auto picture = std::make_unique<QPicture>();
   QPainter *painter = new QPainter( picture.get() );
   context->setPainterFlagsUsingContext( painter );
   return { std::move( picture ), painter };
@@ -830,7 +830,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     if ( forceVector && !labelHasEffects[ maskId ] )
     {
       // set a painter to get all masking instruction in order to later clip masked symbol layer
-      std::unique_ptr< QgsGeometryPaintDevice > geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( true );
+      auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( true );
       geomPaintDevice->setStrokedPathSegments( 4 );
       geomPaintDevice->setSimplificationTolerance( labelJob.context.maskSettings().simplifyTolerance() );
       maskPaintDevice = geomPaintDevice.release();
@@ -914,7 +914,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       if ( forceVector && !maskLayerHasEffects[ job.layerId ] )
       {
         // set a painter to get all masking instruction in order to later clip masked symbol layer
-        std::unique_ptr< QgsGeometryPaintDevice > geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( );
+        auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( );
         geomPaintDevice->setStrokedPathSegments( 4 );
         geomPaintDevice->setSimplificationTolerance( job.context()->maskSettings().simplifyTolerance() );
         maskPaintDevice = geomPaintDevice.release();

@@ -34,6 +34,7 @@ set(TESTS
   testqgsdoublespinbox.cpp
   testqgsdualview.cpp
   testqgsattributeform.cpp
+  testqgsattributesformproperties.cpp
   testqgsdatetimeedit.cpp
   testqgsdockwidget.cpp
   testqgsfieldexpressionwidget.cpp
@@ -46,6 +47,7 @@ set(TESTS
   testqgsmessagebar.cpp
   testprojectionissues.cpp
   testqgsgui.cpp
+  testqgsgdalguiutils.cpp
   testprocessinggui.cpp
   testqgsprocessingmodel.cpp
   testqgsrubberband.cpp
@@ -78,6 +80,7 @@ set(TESTS
   testqgscompoundcolorwidget.cpp
   testqgsmaskingwidget.cpp
   testqgssvgselectorwidget.cpp
+  testqgslabelingwidget.cpp
 )
 
 foreach(TESTSRC ${TESTS})

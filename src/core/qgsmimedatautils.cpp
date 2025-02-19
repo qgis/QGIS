@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
 
 #include <QRegularExpression>
@@ -71,38 +72,20 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
   , layerId( layer->id() )
   , pId( QString::number( QCoreApplication::applicationPid() ) )
 {
+  layerType = QgsMapLayerFactory::typeToString( layer->type() );
   switch ( layer->type() )
   {
     case Qgis::LayerType::Vector:
     {
-      layerType = QStringLiteral( "vector" );
       wkbType = qobject_cast< QgsVectorLayer *>( layer )->wkbType();
       break;
     }
     case Qgis::LayerType::Raster:
-    {
-      layerType = QStringLiteral( "raster" );
-      break;
-    }
-
     case Qgis::LayerType::Mesh:
-    {
-      layerType = QStringLiteral( "mesh" );
-      break;
-    }
     case Qgis::LayerType::PointCloud:
-    {
-      layerType = QStringLiteral( "pointcloud" );
-      break;
-    }
     case Qgis::LayerType::VectorTile:
-    {
-      layerType = QStringLiteral( "vector-tile" );
-      break;
-    }
     case Qgis::LayerType::TiledScene:
     {
-      layerType = QStringLiteral( "tiled-scene" );
       break;
     }
 

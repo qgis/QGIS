@@ -61,8 +61,8 @@ void QgsMapToolShapeCircularStringAbstract::undo()
   if ( mPoints.size() > 1 )
   {
     mPoints.removeLast();
-    std::unique_ptr<QgsCircularString> geomRubberBand( new QgsCircularString() );
-    std::unique_ptr<QgsLineString> geomTempRubberBand( new QgsLineString() );
+    auto geomRubberBand = std::make_unique<QgsCircularString>();
+    auto geomTempRubberBand = std::make_unique<QgsLineString>();
     const int lastPositionCompleteCircularString = mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2;
 
     geomTempRubberBand->setPoints( mPoints.mid( lastPositionCompleteCircularString ) );

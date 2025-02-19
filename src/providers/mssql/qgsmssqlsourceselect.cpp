@@ -547,7 +547,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsMssqlTableModel::DbtmTable ) )->text();
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
+  auto vlayer = std::make_unique<QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
 
   if ( !vlayer->isValid() )
   {

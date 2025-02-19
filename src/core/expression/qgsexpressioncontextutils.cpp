@@ -604,7 +604,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::updateSymbolScope( const Q
 
 QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayout *layout )
 {
-  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Layout" ) ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Layout" ) );
   if ( !layout )
     return scope.release();
 
@@ -901,7 +901,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
   // set aside for future use
   Q_UNUSED( context )
 
-  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Algorithm" ) ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Algorithm" ) );
   scope->addFunction( QStringLiteral( "parameter" ), new GetProcessingParameterValue( parameters ) );
 
   if ( !algorithm )
@@ -915,7 +915,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
 
 QgsExpressionContextScope *QgsExpressionContextUtils::processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &, QgsProcessingContext &context )
 {
-  std::unique_ptr< QgsExpressionContextScope > modelScope( new QgsExpressionContextScope( QObject::tr( "Model" ) ) );
+  auto modelScope = std::make_unique<QgsExpressionContextScope>( QObject::tr( "Model" ) );
   QString modelPath;
   if ( !model->sourceFilePath().isEmpty() )
   {
@@ -946,7 +946,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingModelAlgorithmSc
 
 QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const QString &message )
 {
-  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope() );
+  auto scope = std::make_unique<QgsExpressionContextScope>();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "notification_message" ), message, true ) );
   return scope.release();
 }
@@ -1293,7 +1293,7 @@ class CurrentFaceIndexExpressionFunction: public QgsScopedExpressionFunction
 
 QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
 {
-  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
+  auto scope = std::make_unique<QgsExpressionContextScope>();
 
   switch ( elementType )
   {

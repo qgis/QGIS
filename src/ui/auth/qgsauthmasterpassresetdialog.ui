@@ -18,7 +18,6 @@
     <widget class="QLabel" name="label_6">
      <property name="font">
       <font>
-       <weight>75</weight>
        <italic>false</italic>
        <bold>true</bold>
       </font>
@@ -42,7 +41,6 @@
     <widget class="QLabel" name="label_7">
      <property name="font">
       <font>
-       <weight>75</weight>
        <italic>false</italic>
        <bold>true</bold>
       </font>
@@ -63,42 +61,39 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>12</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chkKeepBackup">
-       <property name="text">
-        <string>Keep backup of current database</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="label_8">
      <property name="font">
       <font>
-       <italic>true</italic>
+       <italic>false</italic>
+       <bold>true</bold>
       </font>
      </property>
-     <property name="styleSheet">
-      <string notr="true">QLabel { color: rgb(128, 128, 128); }</string>
-     </property>
      <property name="text">
-      <string>Your authentication database will be duplicated
-and re-encrypted using new password</string>
+      <string>Re-enter NEW password</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsPasswordLineEdit" name="leMasterPassNew2">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkKeepBackup">
+     <property name="text">
+      <string>Keep backup of current database</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lblWarning">
+     <property name="text">
+      <string/>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -140,6 +135,7 @@ and re-encrypted using new password</string>
  <tabstops>
   <tabstop>leMasterPassCurrent</tabstop>
   <tabstop>leMasterPassNew</tabstop>
+  <tabstop>leMasterPassNew2</tabstop>
   <tabstop>chkKeepBackup</tabstop>
  </tabstops>
  <resources/>

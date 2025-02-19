@@ -253,7 +253,7 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
 
       overallExtent.combineExtentWith( extent );
 
-      std::unique_ptr<QgsPostgresRasterSharedData::Tile> tile = std::make_unique<QgsPostgresRasterSharedData::Tile>(
+      auto tile = std::make_unique<QgsPostgresRasterSharedData::Tile>(
         tileId,
         srid,
         extent,
@@ -332,7 +332,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       }
       const QgsRectangle extent( upperleftx, minY, upperleftx + tileWidth * scalex, maxY );
 
-      std::unique_ptr<QgsPostgresRasterSharedData::Tile> tile = std::make_unique<QgsPostgresRasterSharedData::Tile>(
+      auto tile = std::make_unique<QgsPostgresRasterSharedData::Tile>(
         tileId,
         srid,
         extent,

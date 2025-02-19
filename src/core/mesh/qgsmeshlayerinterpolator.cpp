@@ -72,7 +72,7 @@ int QgsMeshLayerInterpolator::bandCount() const
 
 QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock( Qgis::DataType::Float64, width, height ) );
+  auto outputBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float64, width, height );
   const double noDataValue = std::numeric_limits<double>::quiet_NaN();
   outputBlock->setNoDataValue( noDataValue );
   outputBlock->setIsNoData();  // assume initially that all values are unset
@@ -242,9 +242,9 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   renderContext.setMapToPixel( mapToPixel );
   renderContext.setExtent( extent );
 
-  std::unique_ptr<QgsMesh> nativeMesh = std::make_unique<QgsMesh>();
+  auto nativeMesh = std::make_unique<QgsMesh>();
   layer.dataProvider()->populateMesh( nativeMesh.get() );
-  std::unique_ptr<QgsTriangularMesh> triangularMesh = std::make_unique<QgsTriangularMesh>();
+  auto triangularMesh = std::make_unique<QgsTriangularMesh>();
   triangularMesh->update( nativeMesh.get(), transform );
 
   const QgsMeshDatasetGroupMetadata metadata = layer.datasetGroupMetadata( datasetIndex );

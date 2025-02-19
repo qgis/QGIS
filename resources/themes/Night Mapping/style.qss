@@ -1010,7 +1010,8 @@ QTreeView::indicator:unchecked:disabled {
 QgsLayerTreeView::item,
 QTreeView#viewGraduated::item,
 QTreeView#viewCategories::item,
-QTreeView#viewRules::item
+QTreeView#viewRules::item,
+QTreeView#mSubDiagramsView::item
 {
     border-top: 0.5px solid rgba(108,108,108,50);
     border-bottom: 0.5px solid rgba(108,108,108,50);
@@ -1020,7 +1021,8 @@ QTreeView#viewRules::item
 QgsLayerTreeView::item:hover, QgsLayerTreeView::branch:hover,
 QTreeView#viewGraduated::item:hover, QTreeView#viewGraduated::branch:hover,
 QTreeView#viewCategories::item:hover, QTreeView#viewCategories::branch:hover,
-QTreeView#viewRules::item:hover, QTreeView#viewRules::branch:hover
+QTreeView#viewRules::item:hover, QTreeView#viewRules::branch:hover,
+QTreeView#mSubDiagramsView::item:hover, QTreeView#mSubDiagramsView::branch:hover
 {
     background-color: @hover;
     color: @itembackground;
@@ -1029,7 +1031,8 @@ QTreeView#viewRules::item:hover, QTreeView#viewRules::branch:hover
 QgsLayerTreeView::item:selected:hover, QgsLayerTreeView::branch:selected:hover,
 QTreeView#viewGraduated::item:selected:hover, QTreeView#viewGraduated::branch:selected:hover,
 QTreeView#viewCategories::item:selected:hover, QTreeView#viewCategories::branch:selected:hover,
-QTreeView#viewRules::item:selected:hover, QTreeView#viewRules::branch:selected:hover
+QTreeView#viewRules::item:selected:hover, QTreeView#viewRules::branch:selected:hover,
+QTreeView#mSubDiagramsView::item:selected:hover, QTreeView#mSubDiagramsView::branch:selected:hover
 {
     background-color: @selection;
     color: @textlight;
@@ -1038,7 +1041,8 @@ QTreeView#viewRules::item:selected:hover, QTreeView#viewRules::branch:selected:h
 QgsLayerTreeView::indicator:unchecked,
 QTreeView#viewGraduated::indicator:unchecked,
 QTreeView#viewCategories::indicator:unchecked,
-QTreeView#viewRules::indicator:unchecked 
+QTreeView#viewRules::indicator:unchecked,
+QTreeView#mSubDiagramsView::indicator:unchecked
 {
     border: none;
     background-color: transparent;
@@ -1048,7 +1052,8 @@ QTreeView#viewRules::indicator:unchecked
 QgsLayerTreeView::indicator:checked,
 QTreeView#viewGraduated::indicator:checked, 
 QTreeView#viewCategories::indicator:checked, 
-QTreeView#viewRules::indicator:checked 
+QTreeView#viewRules::indicator:checked,
+QTreeView#mSubDiagramsView::indicator:checked
 {
     border: none;
     background-color: transparent;

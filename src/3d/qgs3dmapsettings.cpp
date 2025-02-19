@@ -200,7 +200,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
       QDomElement elemPointLight = elemPointLights.firstChildElement( QStringLiteral( "point-light" ) );
       while ( !elemPointLight.isNull() )
       {
-        std::unique_ptr<QgsPointLightSettings> pointLight = std::make_unique<QgsPointLightSettings>();
+        auto pointLight = std::make_unique<QgsPointLightSettings>();
         pointLight->readXml( elemPointLight, context );
         mLightSources << pointLight.release();
         elemPointLight = elemPointLight.nextSiblingElement( QStringLiteral( "point-light" ) );
@@ -209,7 +209,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     else
     {
       // QGIS <= 3.4 did not have light configuration
-      std::unique_ptr<QgsPointLightSettings> defaultLight = std::make_unique<QgsPointLightSettings>();
+      auto defaultLight = std::make_unique<QgsPointLightSettings>();
       defaultLight->setPosition( QgsVector3D( 0, 1000, 0 ) );
       mLightSources << defaultLight.release();
     }
@@ -220,7 +220,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
       QDomElement elemDirectionalLight = elemDirectionalLights.firstChildElement( QStringLiteral( "directional-light" ) );
       while ( !elemDirectionalLight.isNull() )
       {
-        std::unique_ptr<QgsDirectionalLightSettings> directionalLight = std::make_unique<QgsDirectionalLightSettings>();
+        auto directionalLight = std::make_unique<QgsDirectionalLightSettings>();
         directionalLight->readXml( elemDirectionalLight, context );
         mLightSources << directionalLight.release();
         elemDirectionalLight = elemDirectionalLight.nextSiblingElement( QStringLiteral( "directional-light" ) );
@@ -680,7 +680,8 @@ void Qgs3DMapSettings::setTerrainSettings( QgsAbstractTerrainSettings *settings 
   }
   else
   {
-    hasChanged = !settings->equals( mTerrainSettings.get() );
+    // ensure to generate the terrain if the settings have changed or if the terrain has never been generated.
+    hasChanged = !settings->equals( mTerrainSettings.get() ) || !mTerrainGenerator;
     mTerrainSettings.reset( settings );
   }
 

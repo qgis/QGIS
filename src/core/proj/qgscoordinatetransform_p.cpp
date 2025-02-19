@@ -334,11 +334,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         const int errNo = proj_context_errno( context );
         if ( errNo )
         {
-#if PROJ_VERSION_MAJOR>=8
           nonAvailableError = QString( proj_context_errno_string( context, errNo ) );
-#else
-          nonAvailableError = QString( proj_errno_string( errNo ) );
-#endif
         }
         else
         {
@@ -473,11 +469,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     const QStringList projErrors = errorLogger.errors();
     if ( errNo )
     {
-#if PROJ_VERSION_MAJOR>=8
       nonAvailableError = QString( proj_context_errno_string( context, errNo ) );
-#else
-      nonAvailableError = QString( proj_errno_string( errNo ) );
-#endif
     }
     else if ( !projErrors.empty() )
     {

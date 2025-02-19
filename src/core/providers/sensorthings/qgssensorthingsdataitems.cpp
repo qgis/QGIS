@@ -155,10 +155,10 @@ QVector<QgsDataItem *> QgsSensorThingsEntityContainerItem::createChildren()
       compatibleTypes << Qgis::WkbType::MultiPolygon << Qgis::WkbType::NoGeometry;
       break;
     case Qgis::GeometryType::Unknown:
-      compatibleTypes << Qgis::WkbType::Point << Qgis::WkbType::MultiPoint << Qgis::WkbType::MultiLineString << Qgis::WkbType::MultiPolygon;
+      compatibleTypes << Qgis::WkbType::Point << Qgis::WkbType::MultiPoint << Qgis::WkbType::MultiLineString << Qgis::WkbType::MultiPolygon << Qgis::WkbType::NoGeometry;
       break;
     case Qgis::GeometryType::Null:
-      compatibleTypes << Qgis::WkbType::NoGeometry;;
+      compatibleTypes << Qgis::WkbType::NoGeometry;
   }
 
   for ( const Qgis::WkbType wkbType : std::as_const( compatibleTypes ) )

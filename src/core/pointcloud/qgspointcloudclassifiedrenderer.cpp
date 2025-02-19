@@ -58,7 +58,7 @@ QString QgsPointCloudClassifiedRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > res = std::make_unique< QgsPointCloudClassifiedRenderer >();
+  auto res = std::make_unique< QgsPointCloudClassifiedRenderer >();
   res->mAttribute = mAttribute;
   res->mCategories = mCategories;
 
@@ -186,7 +186,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > r = std::make_unique< QgsPointCloudClassifiedRenderer >();
+  auto r = std::make_unique< QgsPointCloudClassifiedRenderer >();
 
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Classification" ) ) );
 
@@ -353,7 +353,7 @@ void QgsPointCloudClassifiedRenderer::addCategory( const QgsPointCloudCategory &
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudClassifiedRenderer::prepare()
 {
-  std::unique_ptr< QgsPointCloudClassifiedRendererPreparedData > data = std::make_unique< QgsPointCloudClassifiedRendererPreparedData >();
+  auto data = std::make_unique< QgsPointCloudClassifiedRendererPreparedData >();
   data->attributeName = mAttribute;
 
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )

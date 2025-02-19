@@ -344,7 +344,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   };
   addDefaultTimeoutAndClientEncoding( expandedConnectionInfo );
 
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "libpq::PQconnectdb()" ), expandedConnectionInfo.toUtf8(), QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
+  auto logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "libpq::PQconnectdb()" ), expandedConnectionInfo.toUtf8(), QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
   mConn = PQconnectdb( expandedConnectionInfo.toUtf8() );
 
   // remove temporary cert/key/CA if they exist
@@ -1541,7 +1541,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
 
   QgsDebugMsgLevel( QStringLiteral( "Executing SQL: %1" ).arg( query ), 3 );
 
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( query, mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+  auto logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( query, mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
 
   PGresult *res = ::PQexec( mConn, query.toUtf8() );
 
@@ -1734,7 +1734,7 @@ PGresult *QgsPostgresConn::PQprepare( const QString &stmtName, const QString &qu
 {
   QMutexLocker locker( &mLock );
 
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQprepare(%1): %2 " ).arg( stmtName, query ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+  auto logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQprepare(%1): %2 " ).arg( stmtName, query ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
 
   PGresult *res { ::PQprepare( mConn, stmtName.toUtf8(), query.toUtf8(), nParams, paramTypes ) };
 
@@ -1766,7 +1766,7 @@ PGresult *QgsPostgresConn::PQexecPrepared( const QString &stmtName, const QStrin
       param[i] = qparam[i];
   }
 
-  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQexecPrepared(%1)" ).arg( stmtName ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+  auto logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQexecPrepared(%1)" ).arg( stmtName ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
 
   PGresult *res { ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, nullptr, nullptr, 0 ) };
 

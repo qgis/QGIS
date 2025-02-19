@@ -215,7 +215,7 @@ QStringList QgsRuntimeProfiler::childGroups( const QString &parent, const QStrin
 
 void QgsRuntimeProfiler::start( const QString &name, const QString &group, const QString &id )
 {
-  std::unique_ptr< QgsRuntimeProfilerNode > node = std::make_unique< QgsRuntimeProfilerNode >( group, name, id );
+  auto node = std::make_unique< QgsRuntimeProfilerNode >( group, name, id );
   node->start();
 
   QgsRuntimeProfilerNode *child = node.get();
@@ -273,7 +273,7 @@ void QgsRuntimeProfiler::end( const QString &group )
 
 void QgsRuntimeProfiler::record( const QString &name, double time, const QString &group, const QString &id )
 {
-  std::unique_ptr< QgsRuntimeProfilerNode > node = std::make_unique< QgsRuntimeProfilerNode >( group, name, id );
+  auto node = std::make_unique< QgsRuntimeProfilerNode >( group, name, id );
 
   QgsRuntimeProfilerNode *child = node.get();
   if ( !mCurrentStack[ group ].empty() )
@@ -465,7 +465,7 @@ void QgsRuntimeProfiler::otherProfilerStarted( const QString &group, const QStri
 
     if ( !child )
     {
-      std::unique_ptr< QgsRuntimeProfilerNode > newChild = std::make_unique< QgsRuntimeProfilerNode >( group, part );
+      auto newChild = std::make_unique< QgsRuntimeProfilerNode >( group, part );
 
       const QModelIndex parentIndex = node2index( parentNode );
       beginInsertRows( parentIndex, parentNode->childCount(), parentNode->childCount() );
@@ -507,7 +507,7 @@ void QgsRuntimeProfiler::otherProfilerEnded( const QString &group, const QString
 
     if ( !child )
     {
-      std::unique_ptr< QgsRuntimeProfilerNode > newChild = std::make_unique< QgsRuntimeProfilerNode >( group, part );
+      auto newChild = std::make_unique< QgsRuntimeProfilerNode >( group, part );
 
       const QModelIndex parentIndex = node2index( parentNode );
       beginInsertRows( parentIndex, parentNode->childCount(), parentNode->childCount() );
@@ -525,7 +525,7 @@ void QgsRuntimeProfiler::otherProfilerEnded( const QString &group, const QString
   QgsRuntimeProfilerNode *destNode = parentNode->child( group, name, id );
   if ( !destNode )
   {
-    std::unique_ptr< QgsRuntimeProfilerNode > node = std::make_unique< QgsRuntimeProfilerNode >( group, name, id );
+    auto node = std::make_unique< QgsRuntimeProfilerNode >( group, name, id );
     destNode = node.get();
     const QModelIndex parentIndex = node2index( parentNode );
     beginInsertRows( parentIndex, parentNode->childCount(), parentNode->childCount() );

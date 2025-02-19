@@ -144,7 +144,7 @@ void TestQgsLineFillSymbol::lineFillSymbol()
 
 void TestQgsLineFillSymbol::lineFillSymbolVector()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -165,7 +165,7 @@ void TestQgsLineFillSymbol::lineFillSymbolVector()
 
 void TestQgsLineFillSymbol::viewportLineFillSymbol()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
@@ -191,7 +191,7 @@ void TestQgsLineFillSymbol::viewportLineFillSymbol()
 
 void TestQgsLineFillSymbol::viewportLineFillSymbolVector()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -222,7 +222,7 @@ void TestQgsLineFillSymbol::lineFillSymbolOffset()
 
 void TestQgsLineFillSymbol::lineFillSymbolOffsetVector()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -258,7 +258,7 @@ void TestQgsLineFillSymbol::lineFillLargeOffset()
 void TestQgsLineFillSymbol::lineFillLargeOffsetVector()
 {
   // test line fill with large offset compared to line distance
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -293,7 +293,7 @@ void TestQgsLineFillSymbol::lineFillNegativeAngle()
 
 void TestQgsLineFillSymbol::lineFillNegativeAngleVector()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -317,7 +317,7 @@ void TestQgsLineFillSymbol::lineFillNegativeAngleVector()
 void TestQgsLineFillSymbol::lineFillClipPainter()
 {
   // test clipping using painter path
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -356,7 +356,7 @@ void TestQgsLineFillSymbol::lineFillClipPainter()
 void TestQgsLineFillSymbol::lineFillClipIntersection()
 {
   // test clipping using intersections
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -395,7 +395,7 @@ void TestQgsLineFillSymbol::lineFillClipIntersection()
 void TestQgsLineFillSymbol::lineFillNoClip()
 {
   // test no clipping
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -434,7 +434,7 @@ void TestQgsLineFillSymbol::lineFillNoClip()
 void TestQgsLineFillSymbol::lineFillDataDefinedClip()
 {
   // test data defined clipping
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();

@@ -403,7 +403,7 @@ void TestQgsLayoutAtlas::test_remove_layer()
 
 void TestQgsLayoutAtlas::context()
 {
-  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&field=labelx:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer&field=labelx:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsFeature f;
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   QgsFeature f2;

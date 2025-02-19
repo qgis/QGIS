@@ -1435,14 +1435,14 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     return nullptr;
 
   auto it = placement->graphemePlacement.constBegin();
-  std::unique_ptr< LabelPosition > firstPosition = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
+  auto firstPosition = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
   firstPosition->setUpsideDownCharCount( placement->upsideDownCharCount );
   firstPosition->setPartId( it->graphemeIndex );
   LabelPosition *previousPosition = firstPosition.get();
   it++;
   while ( it != placement->graphemePlacement.constEnd() )
   {
-    std::unique_ptr< LabelPosition > position = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
+    auto position = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
     position->setPartId( it->graphemeIndex );
 
     LabelPosition *nextPosition = position.get();
@@ -1739,7 +1739,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
       labelPosition->setCost( cost );
 
-      std::unique_ptr< LabelPosition > p = std::make_unique< LabelPosition >( *labelPosition );
+      auto p = std::make_unique< LabelPosition >( *labelPosition );
       if ( p && mLF->permissibleZonePrepared() )
       {
         bool within = true;
@@ -1997,7 +1997,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
               // but the bugs noted in CostCalculator currently prevent this
               if ( mapShape->containsPoint( rx, ry ) )
               {
-                std::unique_ptr< LabelPosition > potentialCandidate = std::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
+                auto potentialCandidate = std::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
                 // cost is set to minimal value, evaluated later
                 lPos.emplace_back( std::move( potentialCandidate ) );
                 numberCandidatesGenerated++;
@@ -2131,7 +2131,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
     // Satisfy R2: Label should be placed entirely outside at some distance from the area feature.
     createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel * 0.5, visualMargin, 0, 0, labelAngle );
 
-    std::unique_ptr< LabelPosition > candidate = std::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, labelAngle, 0, this, LabelPosition::LabelDirectionToLine::SameDirection, quadrant );
+    auto candidate = std::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, labelAngle, 0, this, LabelPosition::LabelDirectionToLine::SameDirection, quadrant );
     if ( candidate->intersects( preparedBuffer.get() ) )
     {
       // satisfy R3. Name should not cross the boundary of its area feature.

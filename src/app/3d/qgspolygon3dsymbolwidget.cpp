@@ -91,7 +91,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
 
 QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 {
-  std::unique_ptr<QgsPolygon3DSymbol> sym = std::make_unique<QgsPolygon3DSymbol>();
+  auto sym = std::make_unique<QgsPolygon3DSymbol>();
   sym->setOffset( static_cast<float>( spinOffset->value() ) );
   sym->setExtrusionHeight( spinExtrusion->value() );
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );

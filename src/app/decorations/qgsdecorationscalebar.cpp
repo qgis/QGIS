@@ -151,11 +151,11 @@ void QgsDecorationScaleBar::setupScaleBar()
     case 0:
     case 1:
     {
-      std::unique_ptr<QgsTicksScaleBarRenderer> tickStyle = std::make_unique<QgsTicksScaleBarRenderer>();
+      auto tickStyle = std::make_unique<QgsTicksScaleBarRenderer>();
       tickStyle->setTickPosition( mStyleIndex == 0 ? QgsTicksScaleBarRenderer::TicksDown : QgsTicksScaleBarRenderer::TicksUp );
       mStyle = std::move( tickStyle );
 
-      std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
+      auto fillSymbol = std::make_unique<QgsFillSymbol>();
       fillSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
       if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
       {
@@ -163,7 +163,7 @@ void QgsDecorationScaleBar::setupScaleBar()
       }
       mSettings.setFillSymbol( fillSymbol.release() );
 
-      std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
+      auto lineSymbol = std::make_unique<QgsLineSymbol>();
       lineSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
       lineSymbol->setWidth( 0.3 );
       lineSymbol->setOutputUnit( Qgis::RenderUnit::Millimeters );
@@ -178,7 +178,7 @@ void QgsDecorationScaleBar::setupScaleBar()
       mStyle = std::make_unique<QgsSingleBoxScaleBarRenderer>();
 
 
-      std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
+      auto fillSymbol = std::make_unique<QgsFillSymbol>();
       fillSymbol->setColor( mColor );
       if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
       {
@@ -186,7 +186,7 @@ void QgsDecorationScaleBar::setupScaleBar()
       }
       mSettings.setFillSymbol( fillSymbol.release() );
 
-      std::unique_ptr<QgsFillSymbol> fillSymbol2 = std::make_unique<QgsFillSymbol>();
+      auto fillSymbol2 = std::make_unique<QgsFillSymbol>();
       fillSymbol2->setColor( QColor( 255, 255, 255, 0 ) );
       if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol2->symbolLayer( 0 ) ) )
       {
@@ -195,7 +195,7 @@ void QgsDecorationScaleBar::setupScaleBar()
       mSettings.setAlternateFillSymbol( fillSymbol2.release() );
 
       mSettings.setHeight( mStyleIndex == 2 ? 1 : 3 );
-      std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
+      auto lineSymbol = std::make_unique<QgsLineSymbol>();
       lineSymbol->setColor( mOutlineColor ); // Compatibility with pre 3.2 configuration
       lineSymbol->setWidth( mStyleIndex == 2 ? 0.2 : 0.3 );
       lineSymbol->setOutputUnit( Qgis::RenderUnit::Millimeters );

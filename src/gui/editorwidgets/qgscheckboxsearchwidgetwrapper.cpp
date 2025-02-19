@@ -43,8 +43,19 @@ QVariant QgsCheckboxSearchWidgetWrapper::value() const
 {
   QVariant v;
 
+  const QMetaType::Type fieldType = layer()->fields().at( mFieldIdx ).type();
+
   if ( mCheckBox )
-    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ), true ) : config( QStringLiteral( "UncheckedState" ), false );
+  {
+    if ( fieldType == QMetaType::Type::Bool )
+    {
+      v = mCheckBox->isChecked();
+    }
+    else
+    {
+      v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ), true ) : config( QStringLiteral( "UncheckedState" ), false );
+    }
+  }
 
   return v;
 }

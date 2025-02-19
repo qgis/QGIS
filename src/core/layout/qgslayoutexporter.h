@@ -381,6 +381,8 @@ class CORE_EXPORT QgsLayoutExporter
        * format is a mess!).
        *
        * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       *
+       * \deprecated QGIS 3.42. This parameter has no longer any effect. Only ISO 32000 georeferencing is handled.
       */
       bool useOgcBestPracticeFormatGeoreferencing = false;
 

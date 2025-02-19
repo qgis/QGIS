@@ -245,7 +245,7 @@ void QgsBox3D::combineWith( double x, double y, double z )
   }
 }
 
-double QgsBox3D::distanceTo( const  QVector3D &point ) const
+double QgsBox3D::distanceTo( const QgsVector3D &point ) const
 {
   const double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );
   const double dy = std::max( mBounds2d.yMinimum() - point.y(), std::max( 0., point.y() - mBounds2d.yMaximum() ) );

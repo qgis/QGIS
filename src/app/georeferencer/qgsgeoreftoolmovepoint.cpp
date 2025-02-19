@@ -16,20 +16,13 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsgeoreftoolmovepoint.h"
+#include "qgssnappingutils.h"
 #include "moc_qgsgeoreftoolmovepoint.cpp"
 
 QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-}
-
-void QgsGeorefToolMovePoint::canvasPressEvent( QgsMapMouseEvent *e )
-{
-  if ( e->button() & Qt::LeftButton )
-  {
-    mStartPointMapCoords = e->pos();
-    emit pointPressed( e->pos() );
-  }
+  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 }
 
 bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas )
@@ -39,10 +32,48 @@ bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas )
 
 void QgsGeorefToolMovePoint::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  emit pointMoved( e->pos() );
+  QgsPointLocator::Match match;
+  if ( !mStartPointMapCoords.isEmpty() )
+  {
+    const QgsPointXY pnt = toMapCoordinates( e->pos() );
+    match = canvas()->snappingUtils()->snapToMap( pnt );
+    mSnapIndicator->setMatch( match );
+  }
+  emit pointMoving( match.isValid() ? match.point() : toMapCoordinates( e->pos() ) );
 }
 
 void QgsGeorefToolMovePoint::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  emit pointReleased( e->pos() );
+  if ( e->button() & Qt::LeftButton )
+  {
+    if ( mStartPointMapCoords.isEmpty() )
+    {
+      emit pointBeginMove( toMapCoordinates( e->pos() ) );
+    }
+    else
+    {
+      mSnapIndicator->setMatch( QgsPointLocator::Match() );
+      emit pointEndMove( toMapCoordinates( e->pos() ) );
+    }
+  }
+  else if ( e->button() & Qt::RightButton )
+  {
+    if ( !mStartPointMapCoords.isEmpty() )
+    {
+      mSnapIndicator->setMatch( QgsPointLocator::Match() );
+      emit pointCancelMove( toMapCoordinates( e->pos() ) );
+    }
+  }
+}
+
+void QgsGeorefToolMovePoint::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Escape )
+  {
+    if ( !mStartPointMapCoords.isEmpty() )
+    {
+      mSnapIndicator->setMatch( QgsPointLocator::Match() );
+      emit pointCancelMove( QgsPointXY() );
+    }
+  }
 }

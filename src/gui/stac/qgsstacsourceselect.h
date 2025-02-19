@@ -75,8 +75,8 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     //! Called when search requests finish
     void onItemCollectionRequestFinished( int requestId, QString error );
 
-    //! Opens the filter parameters dialog
-    void openSearchParametersDialog();
+    //! Called when the filter parameters dialog is closed
+    void onSearchParametersDialogClosed( int result );
 
     //! Called when scrolling to fetch next page when scrolled to the end
     void onItemsViewScroll( int value );
@@ -102,9 +102,9 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     void showFootprints( bool enable );
     void loadUri( const QgsMimeDataUtils::Uri &uri );
 
-    QString mCollectionsUrl;
     QString mSearchUrl;
     QUrl mNextPageUrl;
+    int mCollectionsPageCounter = 0;
 
     QgsStacController *mStac = nullptr;
     QgsStacItemListModel *mItemsModel = nullptr;

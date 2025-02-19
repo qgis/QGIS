@@ -142,8 +142,8 @@ void TestQgsLayoutScaleBar::singleBoxLineSymbol()
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 4 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
@@ -184,15 +184,15 @@ void TestQgsLayoutScaleBar::singleBoxFillSymbol()
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
   scalebar->setFillSymbol( fillSymbol.release() );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol2 = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol2 = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
@@ -330,8 +330,8 @@ void TestQgsLayoutScaleBar::doubleBoxLineSymbol()
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 4 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
@@ -372,15 +372,15 @@ void TestQgsLayoutScaleBar::doubleBoxFillSymbol()
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
   scalebar->setFillSymbol( fillSymbol.release() );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol2 = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol2 = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
@@ -520,8 +520,8 @@ void TestQgsLayoutScaleBar::tickLineSymbol()
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 4 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
@@ -569,8 +569,8 @@ void TestQgsLayoutScaleBar::dataDefined()
   scalebar->setMinimumBarWidth( 11 );
   scalebar->setMaximumBarWidth( 13 );
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 1 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 0, 0, 0 ) );
@@ -730,8 +730,8 @@ void TestQgsLayoutScaleBar::steppedLine()
   scalebar->setHeight( 20 );
   scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 4 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
@@ -773,8 +773,8 @@ void TestQgsLayoutScaleBar::hollow()
   scalebar->setHeight( 20 );
   scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 4 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
@@ -788,15 +788,15 @@ void TestQgsLayoutScaleBar::hollow()
 
   scalebar->setLineSymbol( lineSymbol.release() );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
   scalebar->setFillSymbol( fillSymbol.release() );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol2 = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol2 = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
@@ -812,11 +812,11 @@ void TestQgsLayoutScaleBar::hollowDefaults()
 {
   QgsLayout l( QgsProject::instance() );
 
-  std::unique_ptr<QgsLayoutItemScaleBar> scalebar = std::make_unique<QgsLayoutItemScaleBar>( &l );
+  auto scalebar = std::make_unique<QgsLayoutItemScaleBar>( &l );
 
   // apply random symbols
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 4 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
@@ -830,15 +830,15 @@ void TestQgsLayoutScaleBar::hollowDefaults()
 
   scalebar->setLineSymbol( lineSymbol.release() );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
   scalebar->setFillSymbol( fillSymbol.release() );
 
-  std::unique_ptr<QgsFillSymbol> fillSymbol2 = std::make_unique<QgsFillSymbol>();
-  std::unique_ptr<QgsGradientFillSymbolLayer> fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
+  auto fillSymbol2 = std::make_unique<QgsFillSymbol>();
+  auto fillSymbolLayer2 = std::make_unique<QgsGradientFillSymbolLayer>();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
@@ -878,8 +878,8 @@ void TestQgsLayoutScaleBar::tickSubdivisions()
   scalebar->setSubdivisionsHeight( 3 );
 
 
-  std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
-  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+  auto lineSymbol = std::make_unique<QgsLineSymbol>();
+  auto lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
   lineSymbolLayer->setWidth( 4 );
   lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
   lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );

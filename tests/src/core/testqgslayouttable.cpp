@@ -448,7 +448,7 @@ void TestQgsLayoutTable::attributeTableInsideAtlasOnly()
   compareTable( table, expectedRows, false );
 
   //setup atlas
-  std::unique_ptr<QgsVectorLayer> atlasLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=EPSG:3857" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
+  auto atlasLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=EPSG:3857" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
   QVERIFY( atlasLayer->isValid() );
   const QgsGeometry atlasGeom( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((-8863916.31126776337623596 4621257.48816855065524578, -9664269.45078738406300545 5097056.938785120844841, -10049249.44194872118532658 3765399.75924854446202517, -8985488.94005555473268032 3458599.17133777122944593, -8863916.31126776337623596 4621257.48816855065524578))" ) ) );
   QgsFeature f;
@@ -1122,7 +1122,7 @@ void TestQgsLayoutTable::testIntegerNullCell()
   l.addLayoutItem( frame );
   table->addFrame( frame );
 
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=intf:integer" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=intf:integer" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
   QgsFeature f1( layer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "intf" ), 1 );
@@ -1207,7 +1207,7 @@ void TestQgsLayoutTable::wrapChar()
   table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
-  std::unique_ptr<QgsVectorLayer> multiLineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  auto multiLineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "multiline\nstring" );
@@ -1248,7 +1248,7 @@ void TestQgsLayoutTable::autoWrap()
   table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
 
-  std::unique_ptr<QgsVectorLayer> multiLineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  auto multiLineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "long multiline\nstring" );

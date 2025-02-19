@@ -24,7 +24,7 @@
 
 void QgsLocationBasedAlgorithm::addPredicateParameter()
 {
-  std::unique_ptr<QgsProcessingParameterEnum> predicateParam( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ), QObject::tr( "Where the features (geometric predicate)" ), predicateOptionsList(), true, QVariant::fromValue( QList<int>() << 0 ) ) );
+  auto predicateParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "PREDICATE" ), QObject::tr( "Where the features (geometric predicate)" ), predicateOptionsList(), true, QVariant::fromValue( QList<int>() << 0 ) );
 
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
@@ -423,7 +423,7 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
     case Qgis::SelectBehavior::RemoveFromSelection:
     {
       // When subsetting or removing we only need to check already selected features
-      std::unique_ptr<QgsVectorLayerSelectedFeatureSource> selectLayerSelected( new QgsVectorLayerSelectedFeatureSource( selectLayer ) );
+      auto selectLayerSelected = std::make_unique<QgsVectorLayerSelectedFeatureSource>( selectLayer );
       mTargetCrs = selectLayerSelected->sourceCrs();
       mTargetFeatureCount = selectLayerSelected->featureCount();
       process( context, selectLayerSelected.get(), intersectSource.get(), selectedPredicates, addToSelection, true, feedback );

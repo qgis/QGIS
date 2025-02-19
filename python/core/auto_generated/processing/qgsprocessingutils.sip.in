@@ -335,7 +335,7 @@ Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
 %End
 
-    static QString layerToStringIdentifier( const QgsMapLayer *layer ) /HoldGIL/;
+    static QString layerToStringIdentifier( const QgsMapLayer *layer, const QString &layerName = QString() ) /HoldGIL/;
 %Docstring
 Returns a string representation of the source for a ``layer``. The returned
 value is suitable for storage for subsequent executions of an algorithm

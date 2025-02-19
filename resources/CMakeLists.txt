@@ -90,7 +90,6 @@ endif()
 
 ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}" resources DEST_RESOURCE_FILES "${RESOURCES_FILES}")
 
-message(STATUS "Using PROJ >= 6 srs database.")
 set(SRSDB srs6.db)
 
 add_custom_command(

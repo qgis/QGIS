@@ -86,13 +86,11 @@ class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
     bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override;
 
     //! Process a symbol
-    void visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath );
+    void visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier );
 
     bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override;
 
   private:
-    QString mSymbolKey;
-    QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> mMasks;
     SymbolLayerCallback mCallback;
 };
 

@@ -59,7 +59,7 @@
       <string notr="true">color: rgb(128, 128, 128);</string>
      </property>
      <property name="text">
-      <string>Note: Saving writes directly to authentication database</string>
+      <string>Note: Saving writes directly to authentication storage</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

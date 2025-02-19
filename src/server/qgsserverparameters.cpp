@@ -95,12 +95,12 @@ QStringList QgsServerParameterDefinition::toStringList( const char delimiter, co
   }
 }
 
-QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const char delimiter ) const
+QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const char delimiter, const bool skipEmptyParts ) const
 {
   ok = true;
   QList<QgsGeometry> geoms;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &wkt : constStringList )
   {
     const QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
@@ -202,12 +202,12 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
   return filters;
 }
 
-QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char delimiter ) const
+QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char delimiter, bool skipEmptyParts ) const
 {
   ok = true;
   QList<QColor> colors;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &part : constStringList )
   {
     QString cStr( part );
@@ -234,12 +234,12 @@ QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char de
   return colors;
 }
 
-QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimiter ) const
+QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimiter, bool skipEmptyParts ) const
 {
   ok = true;
   QList<int> ints;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &part : constStringList )
   {
     const int val = part.toInt( &ok );
@@ -255,12 +255,12 @@ QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimit
   return ints;
 }
 
-QList<double> QgsServerParameterDefinition::toDoubleList( bool &ok, const char delimiter ) const
+QList<double> QgsServerParameterDefinition::toDoubleList( bool &ok, const char delimiter, bool skipEmptyParts ) const
 {
   ok = true;
   QList<double> vals;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &part : constStringList )
   {
     const double val = part.toDouble( &ok );

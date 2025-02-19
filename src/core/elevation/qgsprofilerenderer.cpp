@@ -75,7 +75,7 @@ void QgsProfilePlotRenderer::startGeneration()
   mJobs.reserve( mGenerators.size() );
   for ( const auto &it : mGenerators )
   {
-    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    auto job = std::make_unique< ProfileJob >();
     job->generator = it.get();
     job->context = mContext;
     mJobs.emplace_back( std::move( job ) );
@@ -99,7 +99,7 @@ void QgsProfilePlotRenderer::generateSynchronously()
 
   for ( const auto &it : mGenerators )
   {
-    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    auto job = std::make_unique< ProfileJob >();
     job->generator = it.get();
     job->context = mContext;
     it.get()->generateProfile( job->context );

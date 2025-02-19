@@ -205,13 +205,13 @@ void TestQgsVirtualPointCloudProvider::querySublayers()
 void TestQgsVirtualPointCloudProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( !layer->isValid() );
 }
 
 void TestQgsVirtualPointCloudProvider::validLayer()
 {
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:5514" ) );
@@ -228,7 +228,7 @@ void TestQgsVirtualPointCloudProvider::validLayer()
 
 void TestQgsVirtualPointCloudProvider::attributes()
 {
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
@@ -269,7 +269,7 @@ void TestQgsVirtualPointCloudProvider::attributes()
 
 void TestQgsVirtualPointCloudProvider::testLazyLoading()
 {
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( layer->isValid() );
 
   QgsPointCloudIndex index = layer->dataProvider()->index();

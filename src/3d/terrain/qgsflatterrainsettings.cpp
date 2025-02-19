@@ -54,7 +54,7 @@ bool QgsFlatTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) c
 
 std::unique_ptr<QgsTerrainGenerator> QgsFlatTerrainSettings::createTerrainGenerator( const Qgs3DRenderContext &context ) const
 {
-  std::unique_ptr<QgsFlatTerrainGenerator> generator = std::make_unique<QgsFlatTerrainGenerator>();
+  auto generator = std::make_unique<QgsFlatTerrainGenerator>();
   generator->setCrs( context.crs(), context.transformContext() );
   generator->setExtent( context.extent() );
   return generator;

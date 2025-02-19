@@ -127,11 +127,18 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudIndex pc, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
+    explicit QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, QgsPointCloudIndex index, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
 
     QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
 
     ~QgsPointCloudLayerChunkedEntity();
+
+  private slots:
+    void updateIndex();
+
+  private:
+    QgsPointCloudLayer *mLayer = nullptr;
+    std::unique_ptr<QgsChunkUpdaterFactory> mChunkUpdaterFactory;
 };
 
 /// @endcond

@@ -1445,7 +1445,10 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
     {
-      r->setSourceSymbol( symbols.at( 0 )->clone() );
+      QgsSymbol *newSymbol = symbols.at( 0 )->clone();
+      QgsSymbolLayerUtils::resetSymbolLayerIds( newSymbol );
+      QgsSymbolLayerUtils::clearSymbolLayerMasks( newSymbol );
+      r->setSourceSymbol( newSymbol );
     }
   }
 
@@ -1539,6 +1542,7 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
     for ( const QVariant &value : vals )
     {
       QgsSymbol *newSymbol = symbol->clone();
+      QgsSymbolLayerUtils::resetSymbolLayerIds( newSymbol );
       if ( !QgsVariantUtils::isNull( value ) )
       {
         const int fieldIdx = fields.lookupField( attributeName );
@@ -1557,6 +1561,7 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
 
   // add null (default) value
   QgsSymbol *newSymbol = symbol->clone();
+  QgsSymbolLayerUtils::resetSymbolLayerIds( newSymbol );
   cats.append( QgsRendererCategory( QVariant(), newSymbol, QString(), true ) );
 
   return cats;

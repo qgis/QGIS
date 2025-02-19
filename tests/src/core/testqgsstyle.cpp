@@ -1581,7 +1581,7 @@ void TestStyle::testColorRampShaderClassificationEqualInterval()
 {
   // Test Type::Interpolated and ClassificationMode::EqualInterval
   {
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod::EqualInterval ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod::EqualInterval );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1597,7 +1597,7 @@ void TestStyle::testColorRampShaderClassificationEqualInterval()
 
   // Test Type::Exact and ClassificationMode::EqualInterval
   {
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Exact, Qgis::ShaderClassificationMethod::EqualInterval ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Exact, Qgis::ShaderClassificationMethod::EqualInterval );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1613,7 +1613,7 @@ void TestStyle::testColorRampShaderClassificationEqualInterval()
 
   // Test Type::Discrete and ClassificationMode::EqualInterval
   {
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::EqualInterval ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::EqualInterval );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1631,7 +1631,7 @@ void TestStyle::testColorRampShaderClassificationEqualInterval()
   for ( int i = 0; i < 3; ++i )
   {
     const Qgis::ShaderInterpolationMethod type = static_cast<Qgis::ShaderInterpolationMethod>( i );
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, Qgis::ShaderClassificationMethod::EqualInterval ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, Qgis::ShaderClassificationMethod::EqualInterval );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1648,7 +1648,7 @@ void TestStyle::testColorRampShaderClassificationContinius()
 {
   // Test Type::Interpolated and ClassificationMode::Continuous
   {
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod::Continuous ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod::Continuous );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1661,7 +1661,7 @@ void TestStyle::testColorRampShaderClassificationContinius()
 
   // Test Type::Exact and ClassificationMode::Continuous
   {
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Exact, Qgis::ShaderClassificationMethod::Continuous ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Exact, Qgis::ShaderClassificationMethod::Continuous );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1674,7 +1674,7 @@ void TestStyle::testColorRampShaderClassificationContinius()
 
   // Test Type::Discrete and ClassificationMode::Continuous
   {
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::Continuous ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), Qgis::ShaderInterpolationMethod::Discrete, Qgis::ShaderClassificationMethod::Continuous );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
@@ -1689,7 +1689,7 @@ void TestStyle::testColorRampShaderClassificationContinius()
   for ( int i = 0; i < 3; ++i )
   {
     const Qgis::ShaderInterpolationMethod type = static_cast<Qgis::ShaderInterpolationMethod>( i );
-    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, Qgis::ShaderClassificationMethod::Continuous ) );
+    auto shader = std::make_unique<QgsColorRampShader>( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, Qgis::ShaderClassificationMethod::Continuous );
     shader->classifyColorRamp( 5, -1 );
 
     QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();

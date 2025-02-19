@@ -37,8 +37,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
     return;
 
   QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vl && vl->isEditable() )
+  if ( layer && layer->isEditable() )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Edit filter" ), tr( "Cannot edit filter when layer is in edit mode" ) );
     return;

@@ -200,6 +200,10 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
         mItemWidget->setItemId( itemId );
       }
     }
+    else
+    {
+      mItemWidget->setItemId( itemId );
+    }
   }
 
   if ( !setItem )

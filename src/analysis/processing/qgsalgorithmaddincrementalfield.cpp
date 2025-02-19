@@ -86,13 +86,13 @@ void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELDS" ), QObject::tr( "Group values by" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   // sort params
-  std::unique_ptr<QgsProcessingParameterExpression> sortExp = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "SORT_EXPRESSION" ), QObject::tr( "Sort expression" ), QVariant(), QStringLiteral( "INPUT" ), true );
+  auto sortExp = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "SORT_EXPRESSION" ), QObject::tr( "Sort expression" ), QVariant(), QStringLiteral( "INPUT" ), true );
   sortExp->setFlags( sortExp->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( sortExp.release() );
-  std::unique_ptr<QgsProcessingParameterBoolean> sortAscending = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "SORT_ASCENDING" ), QObject::tr( "Sort ascending" ), true );
+  auto sortAscending = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "SORT_ASCENDING" ), QObject::tr( "Sort ascending" ), true );
   sortAscending->setFlags( sortAscending->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( sortAscending.release() );
-  std::unique_ptr<QgsProcessingParameterBoolean> sortNullsFirst = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "SORT_NULLS_FIRST" ), QObject::tr( "Sort nulls first" ), false );
+  auto sortNullsFirst = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "SORT_NULLS_FIRST" ), QObject::tr( "Sort nulls first" ), false );
   sortNullsFirst->setFlags( sortNullsFirst->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( sortNullsFirst.release() );
 }

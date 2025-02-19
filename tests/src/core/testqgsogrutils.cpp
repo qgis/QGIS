@@ -74,6 +74,7 @@ class TestQgsOgrUtils : public QObject
     void testOgrStringToVariant_data();
     void testOgrStringToVariant();
     void testOgrUtilsStoredStyle();
+    void testOgrUtilsCreateFields();
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
     void testConvertFieldDomain();
@@ -1084,6 +1085,41 @@ void TestQgsOgrUtils::testOgrUtilsStoredStyle()
   QCOMPARE( names.size(), 3 );
   QCOMPARE( descriptions.size(), 3 );
   QCOMPARE( QSet<QString>( names.constBegin(), names.constEnd() ), QSet<QString>() << QStringLiteral( "style1" ) << QStringLiteral( "style2" ) << QStringLiteral( "style3" ) );
+}
+
+/**
+ * Test for issue GH #60324
+ */
+void TestQgsOgrUtils::testOgrUtilsCreateFields()
+{
+  // Create a test GPKG file with layer in a temporary directory
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QString tempDirPath = tempDir.path();
+  QString testFile = tempDirPath + "/test.gpkg";
+  // Create datasource
+  QString error;
+  QList<QPair<QString, QString>> fields;
+  fields << QPair<QString, QString>( QStringLiteral( "boolfield" ), QStringLiteral( "bool" ) );
+  fields << QPair<QString, QString>( QStringLiteral( "intfield" ), QStringLiteral( "Integer" ) );
+  fields << QPair<QString, QString>( QStringLiteral( "realfield" ), QStringLiteral( "Real" ) );
+  fields << QPair<QString, QString>( QStringLiteral( "stringfield" ), QStringLiteral( "String" ) );
+  fields << QPair<QString, QString>( QStringLiteral( "datefield" ), QStringLiteral( "Date" ) );
+  fields << QPair<QString, QString>( QStringLiteral( "datetimefield" ), QStringLiteral( "DateTime" ) );
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( testFile, QStringLiteral( "GPKG" ), QStringLiteral( "UTF-8" ), Qgis::WkbType::Point, fields, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+
+  // Open the datasource
+  QgsVectorLayer vl = QgsVectorLayer( testFile, QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  QVERIFY( vl.isValid() );
+
+  const QgsFields gotFields = vl.fields();
+  // Field 0 is the FID
+  QCOMPARE( gotFields[1].type(), QMetaType::Type::Bool );
+  QCOMPARE( gotFields[2].type(), QMetaType::Type::Int );
+  QCOMPARE( gotFields[3].type(), QMetaType::Type::Double );
+  QCOMPARE( gotFields[4].type(), QMetaType::Type::QString );
+  QCOMPARE( gotFields[5].type(), QMetaType::Type::QDate );
+  QCOMPARE( gotFields[6].type(), QMetaType::Type::QDateTime );
 }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )

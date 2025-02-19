@@ -52,7 +52,7 @@ void QgsCoverageSimplifyAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 ) );
-  std::unique_ptr<QgsProcessingParameterBoolean> boundaryParameter = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "PRESERVE_BOUNDARY" ), QObject::tr( "Preserve boundary" ), false );
+  auto boundaryParameter = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "PRESERVE_BOUNDARY" ), QObject::tr( "Preserve boundary" ), false );
   boundaryParameter->setHelp( QObject::tr( "When enabled the outside edges of the coverage will be preserved without simplification." ) );
   addParameter( boundaryParameter.release() );
 

@@ -238,6 +238,17 @@ void QgsChunkNode::setUpdated()
   mState = QgsChunkNode::Loaded;
 }
 
+void QgsChunkNode::replaceEntity( Qt3DCore::QEntity *newEntity )
+{
+  Q_ASSERT( mState == QgsChunkNode::Updating );
+  Q_ASSERT( mUpdater );
+  Q_ASSERT( mEntity );
+  Q_ASSERT( newEntity );
+
+  mEntity->deleteLater();
+  mEntity = newEntity;
+}
+
 void QgsChunkNode::setExactBox3D( const QgsBox3D &box3D )
 {
   mBox3D = box3D;

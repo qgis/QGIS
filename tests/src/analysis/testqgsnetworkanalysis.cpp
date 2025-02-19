@@ -131,7 +131,7 @@ void TestQgsNetworkAnalysis::testGraph()
 
 std::unique_ptr<QgsVectorLayer> TestQgsNetworkAnalysis::buildNetwork()
 {
-  std::unique_ptr<QgsVectorLayer> l = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  auto l = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   QgsFeature ff( 0 );
   const QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10)" ) );
@@ -148,10 +148,10 @@ std::unique_ptr<QgsVectorLayer> TestQgsNetworkAnalysis::buildNetwork()
 void TestQgsNetworkAnalysis::testBuild()
 {
   std::unique_ptr<QgsVectorLayer> network = buildNetwork();
-  std::unique_ptr<QgsVectorLayerDirector> director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
-  std::unique_ptr<QgsNetworkDistanceStrategy> strategy = std::make_unique<QgsNetworkDistanceStrategy>();
+  auto director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
+  auto strategy = std::make_unique<QgsNetworkDistanceStrategy>();
   director->addStrategy( strategy.release() );
-  std::unique_ptr<QgsGraphBuilder> builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+  auto builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
 
   QVector<QgsPointXY> snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ), snapped );
@@ -206,10 +206,10 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   flist << ff;
   network->dataProvider()->addFeatures( flist );
 
-  std::unique_ptr<QgsVectorLayerDirector> director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
-  std::unique_ptr<QgsNetworkDistanceStrategy> strategy = std::make_unique<QgsNetworkDistanceStrategy>();
+  auto director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
+  auto strategy = std::make_unique<QgsNetworkDistanceStrategy>();
   director->addStrategy( strategy.release() );
-  std::unique_ptr<QgsGraphBuilder> builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+  auto builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
 
   QVector<QgsPointXY> snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
@@ -319,10 +319,10 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   */
 
   // build graph
-  std::unique_ptr<QgsVectorLayerDirector> director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
+  auto director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
   std::unique_ptr<QgsNetworkStrategy> strategy = std::make_unique<TestNetworkStrategy>();
   director->addStrategy( strategy.release() );
-  std::unique_ptr<QgsGraphBuilder> builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+  auto builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
 
   QVector<QgsPointXY> snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
@@ -458,7 +458,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
 
 void TestQgsNetworkAnalysis::testRouteFail()
 {
-  std::unique_ptr<QgsVectorLayer> network = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:28355&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  auto network = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:28355&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   const QStringList lines = QStringList() << QStringLiteral( "LineString (302081.71116495534079149 5753475.15082756895571947, 302140.54234686412382871 5753417.70564490929245949, 302143.24717211339157075 5753412.57312887348234653, 302143.17789465241366997 5753406.77192200440913439, 302140.35127420048229396 5753401.70546196680516005, 302078.46200818457873538 5753338.31098813004791737, 302038.17299743194598705 5753309.50200006738305092)" )
                                           << QStringLiteral( "LineString (302081.70763194985920563 5753475.1403581602498889, 301978.24500802176771685 5753368.03299263771623373)" )
@@ -475,10 +475,10 @@ void TestQgsNetworkAnalysis::testRouteFail()
   network->dataProvider()->addFeatures( flist );
 
   // build graph
-  std::unique_ptr<QgsVectorLayerDirector> director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
+  auto director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
   std::unique_ptr<QgsNetworkStrategy> strategy = std::make_unique<TestNetworkStrategy>();
   director->addStrategy( strategy.release() );
-  std::unique_ptr<QgsGraphBuilder> builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 1 );
+  auto builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 1 );
 
   const QgsPointXY start( 302131.1053754404, 5753392.757948928 );
   const QgsPointXY end( 302148.1636281528, 5753541.408436851 );
@@ -511,7 +511,7 @@ void TestQgsNetworkAnalysis::testRouteFail()
 
 void TestQgsNetworkAnalysis::testRouteFail2()
 {
-  std::unique_ptr<QgsVectorLayer> network = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=cost:double" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  auto network = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=cost:double" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   const QStringList lines = QStringList() << QStringLiteral( "LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)" )
                                           << QStringLiteral( "LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)" )
@@ -531,10 +531,10 @@ void TestQgsNetworkAnalysis::testRouteFail2()
   network->dataProvider()->addFeatures( flist );
 
   // build graph
-  std::unique_ptr<QgsVectorLayerDirector> director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
+  auto director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
   std::unique_ptr<QgsNetworkStrategy> strategy = std::make_unique<TestNetworkStrategy>();
   director->addStrategy( strategy.release() );
-  std::unique_ptr<QgsGraphBuilder> builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+  auto builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
 
   const QgsPointXY start( 11.250443581846053, 48.42605665308498 );
   const QgsPointXY end( 11.250525546822013, 48.42561343506683 );

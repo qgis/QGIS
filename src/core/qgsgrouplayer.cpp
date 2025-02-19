@@ -54,7 +54,7 @@ QgsGroupLayer *QgsGroupLayer::clone() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsGroupLayer::LayerOptions options( mTransformContext );
-  std::unique_ptr< QgsGroupLayer > layer = std::make_unique< QgsGroupLayer >( name(), options );
+  auto layer = std::make_unique< QgsGroupLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
   layer->setChildLayers( _qgis_listRefToRaw( mChildren ) );
   layer->setPaintEffect( mPaintEffect ? mPaintEffect->clone() : nullptr );

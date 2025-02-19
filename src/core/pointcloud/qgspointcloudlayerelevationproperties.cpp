@@ -92,7 +92,7 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
 
 QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsPointCloudLayerElevationProperties > res = std::make_unique< QgsPointCloudLayerElevationProperties >( nullptr );
+  auto res = std::make_unique< QgsPointCloudLayerElevationProperties >( nullptr );
   res->copyCommonProperties( this );
 
   res->mMaximumScreenError = mMaximumScreenError;

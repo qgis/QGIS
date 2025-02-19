@@ -365,7 +365,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
   dsUri.setDataSource( QString(), tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri(), providerOptions );
+  auto provider = std::make_unique< QgsSpatiaLiteProvider >( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
     QgsDebugError( "The layer " + tableName + " just created is not valid or not supported by the provider." );
@@ -373,7 +373,6 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
       *errorMessage = QObject::tr( "loading of the layer %1 failed" )
                         .arg( tableName );
 
-    delete provider;
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
@@ -408,7 +407,6 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
           *errorMessage = QObject::tr( "unsupported type for field %1" )
                             .arg( fld.name() );
 
-        delete provider;
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
@@ -427,7 +425,6 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
       if ( errorMessage )
         *errorMessage = QObject::tr( "creation of fields failed" );
 
-      delete provider;
       return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
@@ -792,6 +789,10 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       mPrimaryKeyAttrs << i - 1;
     }
   }
+  else
+  {
+    sqlite3_free( errMsg );
+  }
 
   // check for constraints
   fetchConstraints();
@@ -823,7 +824,8 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK || rows != 1 )
   {
-    QgsMessageLog::logMessage( tr( "Retrieval of spatialite version failed" ), tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( tr( "Retrieval of spatialite version failed: %1" ).arg( QString( errMsg ) ), tr( "SpatiaLite" ) );
+    sqlite3_free( errMsg );
     return QString();
   }
 
@@ -1282,6 +1284,10 @@ void QgsSpatiaLiteProvider::determineViewPrimaryKey()
     }
     sqlite3_free_table( results );
   }
+  else
+  {
+    sqlite3_free( errMsg );
+  }
 }
 
 QStringList QgsSpatiaLiteProvider::tablePrimaryKeys( const QString &tableName ) const
@@ -1337,6 +1343,11 @@ bool QgsSpatiaLiteProvider::hasTriggers()
 
   ret = sqlite3_get_table( sqliteHandle(), sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   sqlite3_free_table( results );
+  if ( ret != SQLITE_OK )
+  {
+    sqlite3_free( errMsg );
+  }
+
   return ( ret == SQLITE_OK && rows > 0 );
 }
 
@@ -4131,7 +4142,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       for ( int i = 0; i < attributevec.count(); ++i )
       {
-        if ( mDefaultValues.contains( i ) && ( mDefaultValues.value( i ) == attributevec.at( i ).toString() || !attributevec.at( i ).isValid() ) )
+        if (
+          ( mDefaultValues.contains( i ) && ( mDefaultValues.value( i ) == attributevec.at( i ).toString() || !attributevec.at( i ).isValid() ) )
+          || ( attributevec.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        )
         {
           defaultIndexes.push_back( i );
           continue;
@@ -4597,6 +4611,8 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
       {
         QgsField fld = field( siter.key() );
         const QVariant &val = siter.value();
+        if ( val.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          continue;
 
         if ( !first )
           sql += ',';
@@ -6023,10 +6039,12 @@ bool QgsSpatiaLiteProviderMetadata::styleExists( const QString &uri, const QStri
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( countIfExist ) );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query %1: %2" ).arg( countIfExist ).arg( QString( errMsg ) ) );
+    sqlite3_free( errMsg );
     errorCause = QObject::tr( "Error looking for style. The query was logged" );
     return false;
   }
+  sqlite3_free_table( results );
   if ( rows == 0 )
   {
     // layer_styles table does not exist
@@ -6053,6 +6071,7 @@ bool QgsSpatiaLiteProviderMetadata::styleExists( const QString &uri, const QStri
     sqlError = errMsg;
     sqlite3_free( errMsg );
   }
+  sqlite3_free_table( results );
   QgsSqliteHandle::closeDb( handle );
 
   if ( SQLITE_OK != ret )
@@ -6094,7 +6113,8 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( countIfExist ) );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query %1: %2" ).arg( countIfExist ).arg( QString( errMsg ) ) );
+    sqlite3_free( errMsg );
     errCause = QObject::tr( "Error looking for style. The query was logged" );
     return false;
   }
@@ -6175,14 +6195,15 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( checkQuery ) );
+    QgsMessageLog::logMessage( QObject::tr( "Error executing query %1: %2" ).arg( checkQuery ).arg( QString( errMsg ) ) );
+    sqlite3_free( errMsg );
     errCause = QObject::tr( "Error looking for style. The query was logged" );
     return false;
   }
 
+  sqlite3_free_table( results );
   if ( 0 != rows )
   {
-    sqlite3_free_table( results );
     sql = QString( "UPDATE layer_styles"
                    " SET useAsDefault=%1"
                    ",styleQML=%2"
@@ -6285,6 +6306,7 @@ QString QgsSpatiaLiteProviderMetadata::loadStoredStyle( const QString &uri, QStr
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
+    sqlite3_free( errMsg );
     errCause = QObject::tr( "Error executing loading style. The query was logged" );
     return QString();
   }
@@ -6325,6 +6347,7 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
+    sqlite3_free( errMsg );
     errCause = QObject::tr( "Error looking for style. The query was logged" );
     return -1;
   }
@@ -6358,6 +6381,7 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
+    sqlite3_free( errMsg );
     errCause = QObject::tr( "Error loading styles. The query was logged" );
     return -1;
   }
@@ -6383,6 +6407,7 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
+    sqlite3_free( errMsg );
     errCause = QObject::tr( "Error executing the select query for unrelated styles. The query was logged" );
     return -1;
   }
@@ -6433,6 +6458,7 @@ QString QgsSpatiaLiteProviderMetadata::getStyleById( const QString &uri, const Q
   else
   {
     QgsMessageLog::logMessage( QObject::tr( "Style with id %1 not found in %2 (Query: %3)" ).arg( styleId, sqlitePath, selectQmlQuery ) );
+    sqlite3_free( errMsg );
     errCause = QObject::tr( "Error executing the select query. The query was logged" );
   }
 

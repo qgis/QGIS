@@ -78,7 +78,7 @@ QVariantMap QgsRepairShapefileAlgorithm::processAlgorithm( const QVariantMap &pa
 
   CPLSetConfigOption( "SHAPE_RESTORE_SHX", "YES" );
 
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( path );
+  auto layer = std::make_unique<QgsVectorLayer>( path );
   if ( !layer->isValid() )
   {
     CPLSetConfigOption( "SHAPE_RESTORE_SHX", nullptr );

@@ -43,7 +43,10 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
   public:
     class Rule;
     typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
-    typedef QMap<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> RuleToProviderMap;
+  private:
+    typedef std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> RuleToProviderVec;
+
+  public:
 
     /**
      * \ingroup core
@@ -238,8 +241,12 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
 
-        //! clone this rule, return new instance
-        QgsRuleBasedLabeling::Rule *clone() const SIP_FACTORY;
+        /**
+         * clone this rule
+         * \param resetRuleKey TRUE if this rule and its children rule key need to be reset to new unique ones.
+         * \returns new instance
+         */
+        QgsRuleBasedLabeling::Rule *clone( bool resetRuleKey = true ) const SIP_FACTORY;
 
         // load / save
 
@@ -261,7 +268,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * add providers
          * \note not available in Python bindings
          */
-        void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider ) SIP_SKIP;
+        void createSubProviders( QgsVectorLayer *layer, RuleToProviderVec &subProviders, QgsRuleBasedLabelProvider *provider ) SIP_SKIP;
 
         /**
          * append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
@@ -273,7 +280,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * call prepare() on sub-providers and populate attributeNames
          * \note not available in Python bindings
          */
-        void prepare( QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
+        void prepare( QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderVec &subProviders ) SIP_SKIP;
 
         /**
          * Register individual features
@@ -284,7 +291,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \note not available in Python bindings
          */
-        std::tuple< RegisterResult, QList< QgsLabelFeature * > > registerFeature( const QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr ) SIP_SKIP;
+        std::tuple< RegisterResult, QList< QgsLabelFeature * > > registerFeature( const QgsFeature &feature, QgsRenderContext &context, RuleToProviderVec &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr ) SIP_SKIP;
 
         /**
          * Returns TRUE if this rule or any of its children requires advanced composition effects
@@ -391,8 +398,6 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
   protected:
     std::unique_ptr<Rule> mRootRule;
-
-
 };
 
 #ifndef SIP_RUN
@@ -425,7 +430,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
     //! owned copy
     std::unique_ptr<QgsRuleBasedLabeling> mRules;
     //! label providers are owned by labeling engine
-    QgsRuleBasedLabeling::RuleToProviderMap mSubProviders;
+    std::vector<std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *>> mSubProviders;
 };
 
 #endif

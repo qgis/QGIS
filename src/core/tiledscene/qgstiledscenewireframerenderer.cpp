@@ -35,7 +35,7 @@ QString QgsTiledSceneWireframeRenderer::type() const
 
 QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
 {
-  std::unique_ptr< QgsTiledSceneWireframeRenderer > res = std::make_unique< QgsTiledSceneWireframeRenderer >();
+  auto res = std::make_unique< QgsTiledSceneWireframeRenderer >();
 
   res->setFillSymbol( mFillSymbol->clone() );
   res->setLineSymbol( mLineSymbol->clone() );
@@ -48,7 +48,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
 
 QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsTiledSceneWireframeRenderer > r = std::make_unique< QgsTiledSceneWireframeRenderer >();
+  auto r = std::make_unique< QgsTiledSceneWireframeRenderer >();
   {
     const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "fillSymbol" ) );
     if ( !fillSymbolElem.isNull() )

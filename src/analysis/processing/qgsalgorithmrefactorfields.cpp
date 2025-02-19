@@ -78,7 +78,7 @@ QgsRefactorFieldsAlgorithm *QgsRefactorFieldsAlgorithm::createInstance() const
 
 void QgsRefactorFieldsAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterFieldMapping> param = std::make_unique<QgsProcessingParameterFieldMapping>( QStringLiteral( "FIELDS_MAPPING" ), QObject::tr( "Fields mapping" ), QStringLiteral( "INPUT" ) );
+  auto param = std::make_unique<QgsProcessingParameterFieldMapping>( QStringLiteral( "FIELDS_MAPPING" ), QObject::tr( "Fields mapping" ), QStringLiteral( "INPUT" ) );
   addParameter( param.release() );
 }
 

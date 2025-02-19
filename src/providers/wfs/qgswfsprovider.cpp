@@ -1732,7 +1732,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     CSLDestroy( papszOpenOptions );
   };
 
-  std::unique_ptr<_DownloaderThread> downloaderThread = std::make_unique<_DownloaderThread>( downloaderLambda );
+  auto downloaderThread = std::make_unique<_DownloaderThread>( downloaderLambda );
   downloaderThread->start();
 
   QTimer timerForHits;
@@ -2637,7 +2637,15 @@ bool QgsWFSProvider::getCapabilities()
           QgsDebugMsgLevel( "dst:" + mShared->mSourceCrs.authid(), 4 );
 
           ct.setBallparkTransformsAreAppropriate( true );
-          mShared->mCapabilityExtent = ct.transformBoundingBox( r, Qgis::TransformDirection::Forward );
+          try
+          {
+            mShared->mCapabilityExtent = ct.transformBoundingBox( r, Qgis::TransformDirection::Forward );
+          }
+          catch ( QgsCsException &e )
+          {
+            QgsDebugError( QStringLiteral( "Error transforming layer extent: %1" ).arg( e.what() ) );
+            mShared->mCapabilityExtent = r;
+          }
         }
         else
         {

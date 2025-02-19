@@ -48,7 +48,7 @@ void QgsReportLayoutSectionWidget::editBody()
 {
   if ( !mSection->body() )
   {
-    std::unique_ptr<QgsLayout> body = std::make_unique<QgsLayout>( mSection->project() );
+    auto body = std::make_unique<QgsLayout>( mSection->project() );
     body->initializeDefaults();
     mSection->setBody( body.release() );
   }

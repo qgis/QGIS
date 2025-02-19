@@ -45,42 +45,49 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   }
   else if ( QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [connItem] {
-      connItem->refresh();
-      if ( connItem->parent() )
-        connItem->parent()->refreshConnections();
-    } );
-    menu->addAction( actionRefresh );
-
-    menu->addSeparator();
-
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsMssqlConnectionItem *> mssqlConnectionItems = QgsDataItem::filteredItems<QgsMssqlConnectionItem>( selection );
+
+    if ( mssqlConnectionItems.size() == 1 )
+    {
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, this, [connItem] {
+        connItem->refresh();
+        if ( connItem->parent() )
+          connItem->parent()->refreshConnections();
+      } );
+      menu->addAction( actionRefresh );
+
+      menu->addSeparator();
+
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( mssqlConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [mssqlConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( mssqlConnectionItems, []( const QString &connectionName ) { QgsMssqlSourceSelect::deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
 
-    menu->addSeparator();
+    if ( mssqlConnectionItems.size() == 1 )
+    {
+      menu->addSeparator();
 
-    QAction *actionShowNoGeom = new QAction( tr( "Show Non-spatial Tables" ), menu );
-    actionShowNoGeom->setCheckable( true );
-    actionShowNoGeom->setChecked( connItem->allowGeometrylessTables() );
-    connect( actionShowNoGeom, &QAction::toggled, connItem, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
-    menu->addAction( actionShowNoGeom );
+      QAction *actionShowNoGeom = new QAction( tr( "Show Non-spatial Tables" ), menu );
+      actionShowNoGeom->setCheckable( true );
+      actionShowNoGeom->setChecked( connItem->allowGeometrylessTables() );
+      connect( actionShowNoGeom, &QAction::toggled, connItem, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
+      menu->addAction( actionShowNoGeom );
 
-    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
-    connect( actionCreateSchema, &QAction::triggered, this, [connItem] { createSchema( connItem ); } );
-    menu->addAction( actionCreateSchema );
+      QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
+      connect( actionCreateSchema, &QAction::triggered, this, [connItem] { createSchema( connItem ); } );
+      menu->addAction( actionCreateSchema );
+    }
   }
   else if ( QgsMssqlSchemaItem *schemaItem = qobject_cast<QgsMssqlSchemaItem *>( item ) )
   {

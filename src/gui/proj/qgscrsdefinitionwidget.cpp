@@ -101,7 +101,7 @@ void QgsCrsDefinitionWidget::setDefinitionString( const QString &definition )
 
 void QgsCrsDefinitionWidget::pbnCopyCRS_clicked()
 {
-  std::unique_ptr<QgsProjectionSelectionDialog> selector = std::make_unique<QgsProjectionSelectionDialog>( this );
+  auto selector = std::make_unique<QgsProjectionSelectionDialog>( this );
   if ( selector->exec() )
   {
     const QgsCoordinateReferenceSystem srs = selector->crs();

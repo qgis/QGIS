@@ -57,6 +57,7 @@ class TestQgsFilledMarkerSymbol : public QgsTest
     void bounds();
     void opacityWithDataDefinedColor();
     void dataDefinedOpacity();
+    void centroidFillSubSymbol();
 
   private:
     bool mTestHasError = false;
@@ -195,6 +196,33 @@ void TestQgsFilledMarkerSymbol::dataDefinedOpacity()
   qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty() );
   qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty() );
   mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty() );
+  QVERIFY( result );
+}
+
+void TestQgsFilledMarkerSymbol::centroidFillSubSymbol()
+{
+  std::unique_ptr< QgsSymbol > prevFill( mFilledMarkerLayer->subSymbol()->clone() );
+  auto fillSymbol = std::make_unique< QgsFillSymbol >();
+  auto simpleFill = std::make_unique< QgsSimpleFillSymbolLayer >();
+  simpleFill->setFillColor( QColor( 0, 255, 0, 100 ) );
+  simpleFill->setStrokeStyle( Qt::NoPen );
+  auto centroidFill = std::make_unique< QgsCentroidFillSymbolLayer >();
+  auto simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >();
+  simpleMarker->setFillColor( QColor( 255, 0, 0 ) );
+  simpleMarker->setStrokeStyle( Qt::NoPen );
+  auto centroidFillMarker = std::make_unique< QgsMarkerSymbol >();
+  centroidFillMarker->changeSymbolLayer( 0, simpleMarker.release() );
+  centroidFill->setSubSymbol( centroidFillMarker.release() );
+
+  fillSymbol->changeSymbolLayer( 0, centroidFill.release() );
+  fillSymbol->appendSymbolLayer( simpleFill.release() );
+
+  mFilledMarkerLayer->setSubSymbol( fillSymbol.release() );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( "filledmarker_centroid", "filledmarker_centroid", mMapSettings );
+  mFilledMarkerLayer->setSubSymbol( prevFill.release() );
   QVERIFY( result );
 }
 

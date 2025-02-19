@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    QtMultimedia.py
+    ---------------------
+    Date                 : January 2025
+    Copyright            : (C) 2025 by Julien Cabieces
+    Email                : julien dot cabieces at oslandia dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Julien Cabieces'
+__date__ = 'January 2025'
+__copyright__ = '(C) 2025, Julien Cabieces'
+
+from PyQt@QT_VERSION_MAJOR@.QtMultimedia import *

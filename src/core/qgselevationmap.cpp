@@ -58,7 +58,7 @@ float QgsElevationMap::decodeElevation( QRgb colorRaw )
 
 std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBlock *block )
 {
-  std::unique_ptr<QgsElevationMap> elevMap( new QgsElevationMap( QSize( block->width(), block->height() ) ) );
+  auto elevMap = std::make_unique<QgsElevationMap>( QSize( block->width(), block->height() ) );
   QRgb *dataPtr = reinterpret_cast<QRgb *>( elevMap->mElevationImage.bits() );
   for ( int row = 0; row < block->height(); ++row )
   {

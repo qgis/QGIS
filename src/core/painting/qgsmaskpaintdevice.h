@@ -31,7 +31,7 @@ class QgsMaskPaintEngine: public QPaintEngine
 
   public:
 
-    Q_DECL_DEPRECATED QgsMaskPaintEngine( bool usePathStroker = false );
+    QgsMaskPaintEngine( bool usePathStroker = false );
 
     bool begin( QPaintDevice * ) override { return true; };
     bool end() override { return true; };

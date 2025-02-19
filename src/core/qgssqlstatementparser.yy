@@ -663,6 +663,7 @@ QgsSQLStatement::Node* parse(const QString& str, QString& parserErrorMsg, bool a
     }
     delete ctx.rootNode;
     delete ctx.whereExp;
+    delete ctx.expression;
     qDeleteAll(ctx.joinList);
     qDeleteAll(ctx.orderByList);
     return nullptr;

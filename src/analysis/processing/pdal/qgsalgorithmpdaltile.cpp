@@ -63,7 +63,7 @@ void QgsPdalTileAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "LENGTH" ), QObject::tr( "Tile length" ), Qgis::ProcessingNumberParameterType::Double, 1000.0, false, 1 ) );
 
-  std::unique_ptr<QgsProcessingParameterCrs> paramCrs = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Assign CRS" ), QVariant(), true );
+  auto paramCrs = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Assign CRS" ), QVariant(), true );
   paramCrs->setFlags( paramCrs->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramCrs.release() );
 

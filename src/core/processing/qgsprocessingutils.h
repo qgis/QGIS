@@ -315,7 +315,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \since QGIS 3.34
      */
-    static QString layerToStringIdentifier( const QgsMapLayer *layer ) SIP_HOLDGIL;
+    static QString layerToStringIdentifier( const QgsMapLayer *layer, const QString &layerName = QString() ) SIP_HOLDGIL;
 
     /**
      * Converts a variant to a Python literal.

@@ -151,7 +151,7 @@ bool QgsOapifProvider::init()
   }
 
   mShared->mCollectionUrl = landingPageRequest.collectionsUrl() + QStringLiteral( "/" ) + mShared->mURI.typeName();
-  std::unique_ptr<QgsOapifCollectionRequest> collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
+  auto collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
   if ( !collectionRequest->request( synchronous, forceRefresh ) || collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
   {
     // Retry with a trailing slash. Works around a bug with

@@ -47,6 +47,7 @@ class TestQgsMapToolReshape : public QObject
     void testAvoidIntersectionAndTopoEdit();
     void reshapeWithBindingLine();
     void testWithTracing();
+    void testKeepDirection();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -57,6 +58,7 @@ class TestQgsMapToolReshape : public QObject
     QgsVectorLayer *mLayerPolygonZ = nullptr;
     QgsVectorLayer *mLayerTopo = nullptr;
     QgsVectorLayer *mLayerTopo2 = nullptr;
+    QgsVectorLayer *mLayerLine = nullptr;
 };
 
 TestQgsMapToolReshape::TestQgsMapToolReshape() = default;
@@ -105,6 +107,10 @@ void TestQgsMapToolReshape::initTestCase()
 
   mLayerTopo2 = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:3946" ), QStringLiteral( "topo2" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerTopo2->isValid() );
+
+  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLine->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine );
 
   mLayerLineZ->startEditing();
   const QString wkt1 = "LineString Z (0 0 0, 1 1 0, 1 2 0)";
@@ -166,6 +172,20 @@ void TestQgsMapToolReshape::initTestCase()
   mLayerTopo2->dataProvider()->addFeatures( QgsFeatureList() << f8 );
   QCOMPARE( mLayerTopo2->featureCount(), 1 );
   QCOMPARE( mLayerTopo2->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 5, 4 5, 4 7, 0 7))" ) );
+
+  mLayerLine->startEditing();
+  const QString wkt9 = QStringLiteral( "LineString (0 0, 10 10)" );
+  const QString wkt10 = QStringLiteral( "LineString (2 8, 0 6)" );
+  const QString wkt11 = QStringLiteral( "LineString (13 0, 13 8, 19 11, 25 8, 25 0, 13 0)" ); // cw oriented linestring ring
+  QgsFeature f9, f10, f11;
+  f9.setGeometry( QgsGeometry::fromWkt( wkt9 ) );
+  f10.setGeometry( QgsGeometry::fromWkt( wkt10 ) );
+  f11.setGeometry( QgsGeometry::fromWkt( wkt11 ) );
+  mLayerLine->dataProvider()->addFeatures( QgsFeatureList() << f9 << f10 << f11 );
+  QCOMPARE( mLayerLine->featureCount(), ( long ) 3 );
+  QCOMPARE( mLayerLine->getFeature( 1 ).geometry().asWkt(), wkt9 );
+  QCOMPARE( mLayerLine->getFeature( 2 ).geometry().asWkt(), wkt10 );
+  QCOMPARE( mLayerLine->getFeature( 3 ).geometry().asWkt(), wkt11 );
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -381,7 +401,7 @@ void TestQgsMapToolReshape::testWithTracing()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo );
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerTopo );
 
-  std::unique_ptr<QgsMapCanvasTracer> tracer( new QgsMapCanvasTracer( mCanvas, nullptr ) );
+  auto tracer = std::make_unique<QgsMapCanvasTracer>( mCanvas, nullptr );
 
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
@@ -406,6 +426,57 @@ void TestQgsMapToolReshape::testWithTracing()
   QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4))" ) );
 
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+}
+
+void TestQgsMapToolReshape::testKeepDirection()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  // no snapping for this test
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // intersect linestring 4 times, and go backwards compared to its direction
+  utils.mouseClick( 9, 8, Qt::LeftButton );
+  utils.mouseClick( 9, 10, Qt::LeftButton );
+  utils.mouseClick( 8, 9, Qt::LeftButton );
+  utils.mouseClick( 8, 7, Qt::LeftButton );
+  utils.mouseClick( 7, 6, Qt::LeftButton );
+  utils.mouseClick( 7, 8, Qt::LeftButton );
+  utils.mouseClick( 6, 7, Qt::LeftButton );
+  utils.mouseClick( 6, 5, Qt::LeftButton );
+  utils.mouseClick( 6, 5, Qt::RightButton );
+
+  QString wkt1 = QStringLiteral( "LineString (0 0, 6 6, 6 7, 7 8, 7 7, 7 6, 8 7, 8 8, 8 9, 9 10, 9 9, 10 10)" );
+  QCOMPARE( mLayerLine->getFeature( 1 ).geometry().asWkt(), wkt1 );
+
+  // extend linestring from its start point
+  utils.mouseClick( 2, 8, Qt::LeftButton );
+  utils.mouseClick( 3, 9, Qt::LeftButton );
+  utils.mouseClick( 3, 9, Qt::RightButton );
+
+  QString wkt2 = QStringLiteral( "LineString (3 9, 2 8, 0 6)" );
+  QCOMPARE( mLayerLine->getFeature( 2 ).geometry().asWkt(), wkt2 );
+
+  // intersect linestring ring 4 times, and go backwards compared to its direction
+  utils.mouseClick( 14, 7, Qt::LeftButton );
+  utils.mouseClick( 12, 7, Qt::LeftButton );
+  utils.mouseClick( 12, 5, Qt::LeftButton );
+  utils.mouseClick( 14, 5, Qt::LeftButton );
+  utils.mouseClick( 14, 3, Qt::LeftButton );
+  utils.mouseClick( 12, 3, Qt::LeftButton );
+  utils.mouseClick( 12, 1, Qt::LeftButton );
+  utils.mouseClick( 14, 1, Qt::LeftButton );
+  utils.mouseClick( 14, 1, Qt::RightButton );
+
+  QString wkt3 = QStringLiteral( "LineString (13 1, 12 1, 12 3, 13 3, 14 3, 14 5, 13 5, 12 5, 12 7, 13 7, 13 8, 19 11, 25 8, 25 0, 13 0, 13 1)" );
+  QCOMPARE( mLayerLine->getFeature( 3 ).geometry().asWkt(), wkt3 );
+
+  // activate back snapping
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
 }
 
 

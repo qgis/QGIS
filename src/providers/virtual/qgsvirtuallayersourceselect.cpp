@@ -257,7 +257,7 @@ bool QgsVirtualLayerSourceSelect::preFlight()
   if ( !def.toString().isEmpty() )
   {
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options ) );
+    auto vl = std::make_unique<QgsVectorLayer>( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options );
     if ( vl->isValid() )
     {
       const QStringList fieldNames = vl->fields().names();

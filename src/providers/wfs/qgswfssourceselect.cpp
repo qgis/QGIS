@@ -95,7 +95,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   QgsSettings settings;
   QgsDebugMsgLevel( QStringLiteral( "restoring settings" ), 3 );
-  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
   cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
@@ -122,7 +121,6 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 
   QgsSettings settings;
   QgsDebugMsgLevel( QStringLiteral( "saving settings" ), 3 );
-  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
@@ -529,14 +527,9 @@ void QgsWFSSourceSelect::addButtonClicked()
       continue;
     }
     int row = idx.row();
-    QString typeName = mModel->item( row, MODEL_IDX_NAME )->text();   //WFS repository's name for layer
-    QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text(); //WFS type name title for layer name (if option is set)
-    QString sql = mModel->item( row, MODEL_IDX_SQL )->text();         //optional SqL specified by user
+    QString typeName = mModel->item( row, MODEL_IDX_NAME )->text(); //WFS repository's name for layer
+    QString sql = mModel->item( row, MODEL_IDX_SQL )->text();       //optional SqL specified by user
     QString layerName = typeName;
-    if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
-    {
-      layerName = titleName;
-    }
     QgsDebugMsgLevel( "Layer " + typeName + " SQL is " + sql, 3 );
 
     mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName, pCrsString, isOapif() ? QString() : sql, isOapif() ? sql : QString(), cbxFeatureCurrentViewExtent->isChecked() );

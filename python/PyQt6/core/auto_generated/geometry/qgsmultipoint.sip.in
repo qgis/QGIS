@@ -120,7 +120,7 @@ The multipoint Z and M type will be set based on the type of the first point in 
               break;
             }
 
-            std::unique_ptr< QgsPoint > point = std::make_unique< QgsPoint >( x, y );
+            auto point = std::make_unique< QgsPoint >( x, y );
             if ( elementSize > 2 )
             {
               element = PySequence_GetItem( value, 2 );

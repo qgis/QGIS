@@ -433,7 +433,7 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
 
     try
     {
-      std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( points ) );
+      auto cdt = std::make_unique<p2t::CDT>( points );
       cdt->Triangulate();
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
       QVector<QgsMeshFace> faces( triangles.size() );

@@ -322,7 +322,7 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
 void TestQgsDualView::testNoGeom()
 {
   //test that both the master model and cache for the dual view either both request geom or both don't request geom
-  std::unique_ptr<QgsDualView> dv( new QgsDualView() );
+  auto dv = std::make_unique<QgsDualView>();
 
   // request with geometry
   QgsFeatureRequest req;

@@ -191,7 +191,7 @@ void TestQgis::doubleToString()
 
 void TestQgis::signalBlocker()
 {
-  std::unique_ptr<QCheckBox> checkbox( new QCheckBox() );
+  auto checkbox = std::make_unique<QCheckBox>();
 
   QSignalSpy spy( checkbox.get(), &QCheckBox::toggled );
 

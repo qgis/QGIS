@@ -106,6 +106,8 @@ Curved geometries are not supported.
 
     virtual QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const;
 
+
+
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = 0 ) const;
 
     virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = 0 ) const;
@@ -286,6 +288,7 @@ This method requires a QGIS build based on GEOS 3.7 or later.
                                          bool topological,
                                          QgsPointSequence &topologyTestPoints,
                                          QString *errorMsg = 0, bool skipIntersectionCheck = false ) const;
+
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const;
 

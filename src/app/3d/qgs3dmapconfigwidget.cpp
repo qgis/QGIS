@@ -275,7 +275,7 @@ void Qgs3DMapConfigWidget::apply()
 
     case QgsTerrainGenerator::Dem:
     {
-      std::unique_ptr<QgsDemTerrainSettings> demTerrainSettings = std::make_unique<QgsDemTerrainSettings>();
+      auto demTerrainSettings = std::make_unique<QgsDemTerrainSettings>();
       demTerrainSettings->setLayer( qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() ) );
       demTerrainSettings->setResolution( spinTerrainResolution->value() );
       demTerrainSettings->setSkirtHeight( spinTerrainSkirtHeight->value() );
@@ -285,7 +285,7 @@ void Qgs3DMapConfigWidget::apply()
 
     case QgsTerrainGenerator::Online:
     {
-      std::unique_ptr<QgsOnlineDemTerrainSettings> onlineTerrainSettings = std::make_unique<QgsOnlineDemTerrainSettings>();
+      auto onlineTerrainSettings = std::make_unique<QgsOnlineDemTerrainSettings>();
       onlineTerrainSettings->setResolution( spinTerrainResolution->value() );
       onlineTerrainSettings->setSkirtHeight( spinTerrainSkirtHeight->value() );
       terrainSettings = std::move( onlineTerrainSettings );
@@ -294,7 +294,7 @@ void Qgs3DMapConfigWidget::apply()
 
     case QgsTerrainGenerator::Mesh:
     {
-      std::unique_ptr<QgsMeshTerrainSettings> meshTerrainSettings = std::make_unique<QgsMeshTerrainSettings>();
+      auto meshTerrainSettings = std::make_unique<QgsMeshTerrainSettings>();
       meshTerrainSettings->setLayer( qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() ) );
 
       std::unique_ptr<QgsMesh3DSymbol> symbol = mMeshSymbolWidget->symbol();
@@ -307,7 +307,7 @@ void Qgs3DMapConfigWidget::apply()
 
     case QgsTerrainGenerator::QuantizedMesh:
     {
-      std::unique_ptr<QgsQuantizedMeshTerrainSettings> meshTerrainSettings = std::make_unique<QgsQuantizedMeshTerrainSettings>();
+      auto meshTerrainSettings = std::make_unique<QgsQuantizedMeshTerrainSettings>();
       meshTerrainSettings->setLayer( qobject_cast<QgsTiledSceneLayer *>( cboTerrainLayer->currentLayer() ) );
 
       terrainSettings = std::move( meshTerrainSettings );

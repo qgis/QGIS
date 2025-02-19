@@ -252,17 +252,41 @@ form of a SQL "where" clause (e.g. "VALUE > 5", "CAT IN (1,2,3)").
 .. seealso:: :py:func:`sql`
 %End
 
+    void setHost( const QString &host );
+%Docstring
+Sets the ``host`` name stored in the URI.
+
+.. seealso:: :py:func:`host`
+
+.. versionadded:: 3.42
+%End
+
     QString host() const;
 %Docstring
 Returns the host name stored in the URI.
+
+.. seealso:: :py:func:`setHost`
 %End
+
     QString database() const;
 %Docstring
 Returns the database name stored in the URI.
 %End
+
+    void setPort( const QString &port );
+%Docstring
+Sets the ``port`` stored in the URI.
+
+.. seealso:: :py:func:`port`
+
+.. versionadded:: 3.42
+%End
+
     QString port() const;
 %Docstring
 Returns the port stored in the URI.
+
+.. seealso:: :py:func:`setPort`
 %End
 
     QString driver() const;
@@ -280,14 +304,36 @@ Sets the ``driver`` name stored in the URI.
 Returns the password stored in the URI.
 %End
 
+    void setSslMode( SslMode mode );
+%Docstring
+Sets the SSL ``mode`` associated with the URI.
+
+.. seealso:: :py:func:`sslMode`
+
+.. versionadded:: 3.42
+%End
+
     SslMode sslMode() const;
 %Docstring
 Returns the SSL mode associated with the URI.
+
+.. seealso:: :py:func:`setSslMode`
+%End
+
+    void setService( const QString &service );
+%Docstring
+Sets the ``service`` name associated with the URI.
+
+.. seealso:: :py:func:`service`
+
+.. versionadded:: 3.42
 %End
 
     QString service() const;
 %Docstring
 Returns the service name associated with the URI.
+
+.. seealso:: :py:func:`setService`
 %End
 
     QString keyColumn() const;
@@ -382,6 +428,9 @@ Sets headers to ``headers``
     QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    bool operator==( const QgsDataSourceUri &other ) const;
+    bool operator!=( const QgsDataSourceUri &other ) const;
 
 };
 

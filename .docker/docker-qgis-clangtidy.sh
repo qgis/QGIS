@@ -34,6 +34,9 @@ echo "::group::Download clang-tidy-diff"
 curl -XGET https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-14.0.6/clang-tools-extra/clang-tidy/tool/clang-tidy-diff.py -o clang-tidy-diff.py
 echo "::endgroup::"
 
+echo "${bold}Disable unity build...${endbold}"
+cmake . -B build -DENABLE_UNITY_BUILDS=OFF
+
 echo "${bold}Run clang-tidy on modifications...${endbold}"
 
 # We need to add build/src/test dir as extra include directories because when clang-tidy tries to process qgstest.h

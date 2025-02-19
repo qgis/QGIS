@@ -54,7 +54,7 @@
       <item row="0" column="1">
        <widget class="QgsDateTimeEdit" name="mFromDateTimeEdit">
         <property name="currentSection">
-         <enum>QDateTimeEdit::YearSection</enum>
+         <enum>QDateTimeEdit::Section::YearSection</enum>
         </property>
         <property name="displayFormat">
          <string>yyyy-MM-dd HH:mm:ss</string>
@@ -63,7 +63,7 @@
          <bool>true</bool>
         </property>
         <property name="timeSpec">
-         <enum>Qt::UTC</enum>
+         <enum>Qt::TimeSpec::UTC</enum>
         </property>
        </widget>
       </item>
@@ -77,7 +77,7 @@
       <item row="1" column="1">
        <widget class="QgsDateTimeEdit" name="mToDateTimeEdit">
         <property name="currentSection">
-         <enum>QDateTimeEdit::YearSection</enum>
+         <enum>QDateTimeEdit::Section::YearSection</enum>
         </property>
         <property name="displayFormat">
          <string>yyyy-MM-dd HH:mm:ss</string>
@@ -86,7 +86,7 @@
          <bool>true</bool>
         </property>
         <property name="timeSpec">
-         <enum>Qt::UTC</enum>
+         <enum>Qt::TimeSpec::UTC</enum>
         </property>
        </widget>
       </item>
@@ -95,7 +95,7 @@
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -135,7 +135,7 @@
       <item>
        <widget class="QListView" name="mCollectionsListView">
         <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
+         <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
         </property>
         <property name="showDropIndicator" stdset="0">
          <bool>false</bool>
@@ -161,7 +161,7 @@
         <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -177,25 +177,12 @@
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>

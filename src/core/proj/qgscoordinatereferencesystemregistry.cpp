@@ -380,7 +380,6 @@ QMap<QString, QgsProjOperation> QgsCoordinateReferenceSystemRegistry::projOperat
 
 QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies() const
 {
-#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
   static QList< QgsCelestialBody > sCelestialBodies;
   static std::once_flag initialized;
   std::call_once( initialized, []
@@ -409,9 +408,6 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
   } );
 
   return sCelestialBodies;
-#else
-  throw QgsNotSupportedException( QObject::tr( "Retrieving celestial bodies requires a QGIS build based on PROJ 8.1 or later" ) );
-#endif
 }
 
 QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const

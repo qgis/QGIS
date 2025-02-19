@@ -41,10 +41,10 @@ QgsGlowEffect::~QgsGlowEffect()
 
 void QgsGlowEffect::draw( QgsRenderContext &context )
 {
-  if ( !source() || !enabled() || !context.painter() )
+  if ( !enabled() || !context.painter() || source().isNull() )
     return;
 
-  QImage im = sourceAsImage( context )->copy();
+  QImage im = sourceAsImage( context ).copy();
 
   QgsColorRamp *ramp = nullptr;
   std::unique_ptr< QgsGradientColorRamp > tempRamp;
@@ -98,7 +98,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     QPainter p( &im );
     p.setRenderHint( QPainter::Antialiasing );
     p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
-    p.drawImage( 0, 0, *sourceAsImage( context ) );
+    p.drawImage( 0, 0, sourceAsImage( context ) );
     p.end();
   }
 

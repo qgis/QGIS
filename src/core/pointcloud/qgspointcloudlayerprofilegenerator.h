@@ -25,6 +25,8 @@
 #include "qgscoordinatetransform.h"
 #include "qgspointcloudattribute.h"
 #include "qgslinesymbol.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudsubindex.h"
 #include "qgsvector3d.h"
 #include "qgsgeos.h"
 
@@ -150,6 +152,8 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
 
     QPointer< QgsPointCloudLayer > mLayer;
+    QgsPointCloudIndex mIndex;
+    const QVector< QgsPointCloudSubIndex > mSubIndexes;
     QgsPointCloudAttributeCollection mLayerAttributes;
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
     double mMaximumScreenError = 0.3;

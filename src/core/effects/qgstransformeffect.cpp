@@ -30,7 +30,7 @@ QgsPaintEffect *QgsTransformEffect::create( const QVariantMap &map )
 
 void QgsTransformEffect::draw( QgsRenderContext &context )
 {
-  if ( !source() || !enabled() || !context.painter() )
+  if ( !enabled() || !context.painter() || source().isNull() )
     return;
 
   QPainter *painter = context.painter();
@@ -95,13 +95,14 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext &context 
 {
   QTransform t;
 
-  if ( !source() )
+  const QPicture &pic = source();
+  if ( pic.isNull() )
     return t;
 
-  const int width = source()->boundingRect().width();
-  const int height = source()->boundingRect().height();
-  const int top = source()->boundingRect().top();
-  const int left = source()->boundingRect().left();
+  const int width = pic.boundingRect().width();
+  const int height = pic.boundingRect().height();
+  const int top = pic.boundingRect().top();
+  const int left = pic.boundingRect().left();
 
   //remember that the below operations are effectively performed in the opposite order
   //so, first the reflection applies, then scale, shear, rotate and lastly translation

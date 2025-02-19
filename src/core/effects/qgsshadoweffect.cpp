@@ -29,13 +29,13 @@ QgsShadowEffect::QgsShadowEffect()
 
 void QgsShadowEffect::draw( QgsRenderContext &context )
 {
-  if ( !source() || !enabled() || !context.painter() )
+  if ( !enabled() || !context.painter() || source().isNull() )
     return;
 
   if ( context.feedback() && context.feedback()->isCanceled() )
     return;
 
-  QImage colorisedIm = sourceAsImage( context )->copy();
+  QImage colorisedIm = sourceAsImage( context ).copy();
 
   if ( context.feedback() && context.feedback()->isCanceled() )
     return;
@@ -87,7 +87,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
     //restrict shadow so it's only drawn on top of original image
     imPainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
-    imPainter.drawImage( 0, 0, *sourceAsImage( context ) );
+    imPainter.drawImage( 0, 0, sourceAsImage( context ) );
     imPainter.end();
 
     painter->drawImage( imageOffset( context ), innerShadowIm );

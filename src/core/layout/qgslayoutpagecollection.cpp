@@ -309,7 +309,7 @@ void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, Qgis:
 
   if ( mPages.empty() )
   {
-    std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( mLayout );
+    auto page = std::make_unique< QgsLayoutItemPage >( mLayout );
     addPage( page.release() );
   }
 
@@ -418,7 +418,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   for ( int i = 0; i < pageList.size(); ++i )
   {
     QDomElement pageElement = pageList.at( i ).toElement();
-    std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
+    auto page = std::make_unique<QgsLayoutItemPage>( mLayout );
     if ( mPageStyleSymbol )
       page->setPageStyleSymbol( mPageStyleSymbol->clone() );
     page->readXml( pageElement, document, context );
@@ -614,7 +614,7 @@ QgsLayoutItemPage *QgsLayoutPageCollection::extendByNewPage()
     return nullptr;
 
   QgsLayoutItemPage *lastPage = mPages.at( mPages.count() - 1 );
-  std::unique_ptr< QgsLayoutItemPage > newPage = std::make_unique< QgsLayoutItemPage >( mLayout );
+  auto newPage = std::make_unique< QgsLayoutItemPage >( mLayout );
   newPage->attemptResize( lastPage->sizeWithUnits() );
   addPage( newPage.release() );
   return mPages.at( mPages.count() - 1 );

@@ -73,7 +73,7 @@ QgsDateRange.__repr__ = _date_range_repr
 
 QgsProperty.__bool__ = lambda self: self.propertyType() != Qgis.PropertyType.Invalid
 QgsOptionalExpression.__bool__ = lambda self: self.enabled()
-
+QgsUnsetAttributeValue.__hash__ = lambda self: 2178310
 
 # add some __repr__ methods to processing classes
 def _processing_source_repr(self):
@@ -579,11 +579,15 @@ try:
          raise ValueError(f"The raster block data type '{str(self.dataType())}' is not compatible with NumPy arrays.")
       src_array = _numpy.frombuffer(self.data(), dtype=raster_dtype)
       src_array = src_array.reshape((self.height(), self.width()))
-      if not self.hasNoDataValue() or not use_masking:
-         return src_array
-      else:
-         no_data_value = self.noDataValue() if isinstance(self.noDataValue(), raster_dtype) else 0
+      if use_masking:
+         if not self.hasNoDataValue():
+      	    # Default to 0 as noDataValue if none is set
+            no_data_value = 0
+         else:
+            no_data_value = self.noDataValue()
          return _numpy.ma.masked_equal(src_array, no_data_value)
+      else:
+         return src_array
 
    QgsRasterBlock.as_numpy = _raster_block_as_numpy
 
@@ -596,7 +600,10 @@ try:
           src_array = block.as_numpy(use_masking=use_masking)
           arrays.append(src_array)
 
-      return _numpy.array(arrays)  # This converts any maskedArrays to numpy.array
+      if use_masking:
+          return _numpy.ma.stack(arrays, axis=0)
+      else:
+          return _numpy.array(arrays)
 
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
 

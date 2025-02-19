@@ -41,8 +41,6 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
     explicit QgsEptPointCloudIndex();
     ~QgsEptPointCloudIndex();
 
-    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
-
     void load( const QString &fileName ) override;
 
     std::unique_ptr<QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
@@ -57,12 +55,6 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
 
     bool isValid() const override;
     Qgis::PointCloudAccessType accessType() const override;
-
-    /**
-     * Copies common properties to the \a destination index
-     * \since QGIS 3.26
-     */
-    void copyCommonProperties( QgsEptPointCloudIndex *destination ) const;
 
   protected:
     bool loadSchema( const QByteArray &dataJson );

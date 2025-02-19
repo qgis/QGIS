@@ -321,7 +321,7 @@ Update feature with uncommitted geometry updates
 Update feature with uncommitted attribute updates
 %End
 
-    void handleAttributeAdded( int index );
+    void handleAttributeAdded( int index, const QgsField &field );
 %Docstring
 Update added and changed features after addition of an attribute
 %End

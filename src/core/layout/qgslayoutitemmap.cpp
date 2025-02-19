@@ -189,7 +189,7 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
 {
   double currentScaleDenominator = scale();
 
-  if ( qgsDoubleNear( scaleDenominator, currentScaleDenominator ) || qgsDoubleNear( scaleDenominator, 0.0 ) )
+  if ( qgsDoubleNear( scaleDenominator, currentScaleDenominator ) || qgsDoubleNear( scaleDenominator, 0.0 ) || qgsDoubleNear( currentScaleDenominator, 0 ) )
   {
     return;
   }
@@ -205,8 +205,12 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
-    scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
-    mExtent.scale( scaleRatio );
+    const double newScale = calculator.calculate( mExtent, rect().width() );
+    if ( !qgsDoubleNear( newScale, 0 ) )
+    {
+      scaleRatio = scaleDenominator / newScale;
+      mExtent.scale( scaleRatio );
+    }
   }
 
   invalidateCache();
@@ -476,8 +480,12 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
-    double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
-    mExtent.scale( scaleRatio );
+    const double newScale = calculator.calculate( mExtent, rect().width() );
+    if ( !qgsDoubleNear( newScale, 0 ) )
+    {
+      const double scaleRatio = scale() / newScale ;
+      mExtent.scale( scaleRatio );
+    }
   }
 
   //recalculate data defined scale and extents, since that may override zoom
@@ -1891,8 +1899,8 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   const double mapScale = scale();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_scale" ), mapScale, true ) );
 
-  scope->setVariable( QStringLiteral( "zoom_level" ), QgsVectorTileUtils::scaleToZoomLevel( mapScale, 0, 99999 ), true );
-  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), QgsVectorTileUtils::scaleToZoom( mapScale ), true );
+  scope->setVariable( QStringLiteral( "zoom_level" ), !qgsDoubleNear( mapScale, 0 ) ? QgsVectorTileUtils::scaleToZoomLevel( mapScale, 0, 99999 ) : 0, true );
+  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), !qgsDoubleNear( mapScale, 0 ) ? QgsVectorTileUtils::scaleToZoom( mapScale ) : 0, true );
 
   QgsRectangle currentExtent( extent() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent" ), QVariant::fromValue( QgsGeometry::fromRect( currentExtent ) ), true ) );
@@ -2942,7 +2950,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
       double newScale = calc.calculate( newExtent, rect().width() );
       newExtent.scale( originalScale / newScale );
     }
-    else if ( mAtlasScalingMode == Predefined )
+    else if ( mAtlasScalingMode == Predefined && !qgsDoubleNear( originalScale, 0 ) )
     {
       // choose one of the predefined scales
       double newWidth = originalExtent.width();
@@ -2963,7 +2971,10 @@ void QgsLayoutItemMap::updateAtlasFeature()
 
         //scale newExtent to match desired map scale
         //this is required for geographic coordinate systems, where the scale varies by extent
-        double newScale = calc.calculate( newExtent, rect().width() );
+        const double newScale = calc.calculate( newExtent, rect().width() );
+        if ( qgsDoubleNear( newScale, 0 ) )
+          continue;
+
         newExtent.scale( scales[i] / newScale );
 
         if ( ( newExtent.width() >= bounds.width() ) && ( newExtent.height() >= bounds.height() ) )

@@ -211,7 +211,7 @@ void TestQgsLayoutGeospatialPdfExport::testCollectingFeatures()
   }
 
   // read in as vector
-  std::unique_ptr<QgsVectorLayer> layer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  auto layer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
   QCOMPARE( layer1->featureCount(), 6L );
   for ( const auto &it : geospatialPdfExporter.mVectorComponents )
@@ -219,7 +219,7 @@ void TestQgsLayoutGeospatialPdfExport::testCollectingFeatures()
     if ( it.mapLayerId == pointsLayer->id() )
       vectorDetail = it;
   }
-  std::unique_ptr<QgsVectorLayer> layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  auto layer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer2->isValid() );
   QCOMPARE( layer2->featureCount(), 32L );
   for ( const auto &it : geospatialPdfExporter.mVectorComponents )
@@ -227,7 +227,7 @@ void TestQgsLayoutGeospatialPdfExport::testCollectingFeatures()
     if ( it.mapLayerId == polygonLayer->id() )
       vectorDetail = it;
   }
-  std::unique_ptr<QgsVectorLayer> layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  auto layer3 = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer3->isValid() );
   QCOMPARE( layer3->featureCount(), 10L );
 

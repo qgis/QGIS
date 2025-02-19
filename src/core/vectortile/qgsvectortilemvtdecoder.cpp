@@ -309,7 +309,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             {
               tmpPoints.append( tmpPoints.first() );  // close the ring
 
-              std::unique_ptr<QgsLineString> ring( new QgsLineString( tmpPoints ) );
+              auto ring = std::make_unique<QgsLineString>( tmpPoints );
               tmpPoints.clear();
 
               if ( QgsVectorTileMVTUtils::isExteriorRing( ring.get() ) )

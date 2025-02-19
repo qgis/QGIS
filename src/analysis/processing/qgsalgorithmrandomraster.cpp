@@ -45,7 +45,7 @@ void QgsRandomRasterAlgorithmBase::initAlgorithm( const QVariantMap & )
   //add specific parameters
   addAlgorithmParams();
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -83,14 +83,16 @@ QVariantMap QgsRandomRasterAlgorithmBase::processAlgorithm( const QVariantMap &p
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  const int rows = std::max( std::ceil( mExtent.height() / mPixelSize ), 1.0 );
-  const int cols = std::max( std::ceil( mExtent.width() / mPixelSize ), 1.0 );
+  // round up width and height to the nearest integer as GDAL does (e.g. in gdal_rasterize)
+  // see https://github.com/qgis/QGIS/issues/43547
+  const int rows = static_cast<int>( 0.5 + mExtent.height() / mPixelSize );
+  const int cols = static_cast<int>( 0.5 + mExtent.width() / mPixelSize );
 
   //build new raster extent based on number of columns and cellsize
   //this prevents output cellsize being calculated too small
   const QgsRectangle rasterExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMaximum() - ( rows * mPixelSize ), mExtent.xMinimum() + ( cols * mPixelSize ), mExtent.yMaximum() );
 
-  std::unique_ptr<QgsRasterFileWriter> writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !createOptions.isEmpty() )
   {
@@ -260,11 +262,11 @@ void QgsRandomUniformRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> lowerBoundParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "LOWER_BOUND" ), QStringLiteral( "Lower bound for random number range" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto lowerBoundParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "LOWER_BOUND" ), QStringLiteral( "Lower bound for random number range" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   lowerBoundParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( lowerBoundParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> upperBoundParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "UPPER_BOUND" ), QStringLiteral( "Upper bound for random number range" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto upperBoundParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "UPPER_BOUND" ), QStringLiteral( "Upper bound for random number range" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   upperBoundParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( upperBoundParameter.release() );
 }
@@ -451,11 +453,11 @@ void QgsRandomBinomialRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> nParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "N" ), QStringLiteral( "N" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 0 );
+  auto nParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "N" ), QStringLiteral( "N" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 0 );
   nParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( nParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> probabilityParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PROBABILITY" ), QStringLiteral( "Probability" ), Qgis::ProcessingNumberParameterType::Double, 0.5, true, 0 );
+  auto probabilityParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PROBABILITY" ), QStringLiteral( "Probability" ), Qgis::ProcessingNumberParameterType::Double, 0.5, true, 0 );
   probabilityParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( probabilityParameter.release() );
 }
@@ -543,7 +545,7 @@ void QgsRandomExponentialRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> lambdaParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "LAMBDA" ), QStringLiteral( "Lambda" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0.000001 );
+  auto lambdaParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "LAMBDA" ), QStringLiteral( "Lambda" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0.000001 );
   lambdaParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( lambdaParameter.release() );
 }
@@ -622,11 +624,11 @@ void QgsRandomGammaRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> alphaParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ALPHA" ), QStringLiteral( "Alpha" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0.000001 );
+  auto alphaParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ALPHA" ), QStringLiteral( "Alpha" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0.000001 );
   alphaParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( alphaParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> betaParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "BETA" ), QStringLiteral( "Beta" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0.000001 );
+  auto betaParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "BETA" ), QStringLiteral( "Beta" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0.000001 );
   betaParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( betaParameter.release() );
 }
@@ -712,7 +714,7 @@ void QgsRandomGeometricRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> probabilityParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PROBABILITY" ), QStringLiteral( "Probability" ), Qgis::ProcessingNumberParameterType::Double, 0.5, true, 0.00001 );
+  auto probabilityParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PROBABILITY" ), QStringLiteral( "Probability" ), Qgis::ProcessingNumberParameterType::Double, 0.5, true, 0.00001 );
   probabilityParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( probabilityParameter.release() );
 }
@@ -806,11 +808,11 @@ void QgsRandomNegativeBinomialRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> kParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "K_PARAMETER" ), QStringLiteral( "Distribution parameter k" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 0.00001 );
+  auto kParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "K_PARAMETER" ), QStringLiteral( "Distribution parameter k" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 0.00001 );
   kParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( kParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> probabilityParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PROBABILITY" ), QStringLiteral( "Probability" ), Qgis::ProcessingNumberParameterType::Double, 0.5, true, 0.00001 );
+  auto probabilityParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PROBABILITY" ), QStringLiteral( "Probability" ), Qgis::ProcessingNumberParameterType::Double, 0.5, true, 0.00001 );
   probabilityParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( probabilityParameter.release() );
 }
@@ -898,11 +900,11 @@ void QgsRandomNormalRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> meanParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MEAN" ), QStringLiteral( "Mean of normal distribution" ), Qgis::ProcessingNumberParameterType::Double, 0, true );
+  auto meanParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MEAN" ), QStringLiteral( "Mean of normal distribution" ), Qgis::ProcessingNumberParameterType::Double, 0, true );
   meanParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( meanParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> stdevParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "STDDEV" ), QStringLiteral( "Standard deviation of normal distribution" ), Qgis::ProcessingNumberParameterType::Double, 1, true, 0 );
+  auto stdevParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "STDDEV" ), QStringLiteral( "Standard deviation of normal distribution" ), Qgis::ProcessingNumberParameterType::Double, 1, true, 0 );
   stdevParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( stdevParameter.release() );
 }
@@ -987,7 +989,7 @@ void QgsRandomPoissonRasterAlgorithm::addAlgorithmParams()
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> upperBoundParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MEAN" ), QStringLiteral( "Mean" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0 );
+  auto upperBoundParameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MEAN" ), QStringLiteral( "Mean" ), Qgis::ProcessingNumberParameterType::Double, 1.0, true, 0 );
   upperBoundParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( upperBoundParameter.release() );
 }

@@ -195,7 +195,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
@@ -221,7 +221,7 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
@@ -355,7 +355,7 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -379,7 +379,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -403,7 +403,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -427,7 +427,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -452,7 +452,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedWithOpacity()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -482,7 +482,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedWithOpacity()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -509,7 +509,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -538,7 +538,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -565,7 +565,7 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngle()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -590,7 +590,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngle()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
@@ -616,7 +616,7 @@ void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngleViewport()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();

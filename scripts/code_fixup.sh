@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    qstringfixup.sh
+#    code_fixup.sh
 #    ---------------
 #    Date                 : October 2020
 #    Copyright            : (C) 2020 by Even Rouault
@@ -59,8 +59,8 @@ for f in $MODIFIED; do
     ;;
   esac
 
-  m=$f.qstringfixup
-  python "${TOPLEVEL}/scripts/qstringfixup.py" "$f" > "$m"
+  m=$f.code_fixup
+  python "${TOPLEVEL}/scripts/code_fixup.py" "$f" > "$m"
   if diff -u "$m" "$f" >/dev/null; then
     # no difference found
     rm "$m"

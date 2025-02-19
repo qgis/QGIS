@@ -1400,6 +1400,8 @@ class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsFilledLineSymbolLayer *clone() const override SIP_FACTORY;

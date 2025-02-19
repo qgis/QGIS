@@ -109,6 +109,10 @@ QVariant QgsStacItemListModel::data( const QModelIndex &index, int role ) const
     {
       return QVariant::fromValue( mItems.at( index.row() )->geometry() );
     }
+    case Role::Extent:
+    {
+      return QVariant::fromValue( mItems.at( index.row() )->boundingBox() );
+    }
   }
 
   return QVariant();

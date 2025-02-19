@@ -2704,7 +2704,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
       p.insert( name(), value );
       if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
       {
-        return QgsProcessingUtils::layerToStringIdentifier( layer );
+        return QgsProcessingUtils::layerToStringIdentifier( layer, value.toString() );
       }
     }
 
@@ -2882,7 +2882,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     p.insert( name(), value );
     if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
     {
-      return QgsProcessingUtils::layerToStringIdentifier( layer );
+      return QgsProcessingUtils::layerToStringIdentifier( layer, value.toString() );
     }
   }
 
@@ -3294,6 +3294,10 @@ QString QgsProcessingParameterMapLayer::asScriptCode() const
   {
     switch ( static_cast< Qgis::ProcessingSourceType >( type ) )
     {
+      case Qgis::ProcessingSourceType::Vector:
+        code += QLatin1String( "table " );
+        break;
+
       case Qgis::ProcessingSourceType::VectorAnyGeometry:
         code += QLatin1String( "hasgeometry " );
         break;
@@ -3345,6 +3349,12 @@ QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( 
   QString def = definition;
   while ( true )
   {
+    if ( def.startsWith( QLatin1String( "table" ), Qt::CaseInsensitive ) )
+    {
+      types << static_cast< int >( Qgis::ProcessingSourceType::Vector );
+      def = def.mid( 6 );
+      continue;
+    }
     if ( def.startsWith( QLatin1String( "hasgeometry" ), Qt::CaseInsensitive ) )
     {
       types << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry );

@@ -561,11 +561,16 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/tiledscene
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
-  ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/native
 
   ${CMAKE_BINARY_DIR}/src/app
 )
+
+if (WITH_PYTHON)
+  target_include_directories(qgis_app PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/python
+  )
+endif()
 
 if (WITH_3D)
   target_include_directories(qgis_app PUBLIC

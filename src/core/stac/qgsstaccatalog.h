@@ -80,9 +80,6 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
     //! Checks if the catalog is a STAC API conforming to the specified \a conformanceClass
     bool conformsTo( const QString &conformanceClass ) const;
 
-    //! Checks if the catalog is a STAC API endpoint
-    bool supportsStacApi() const;
-
   protected:
     QString mTitle;
     QString mDescription;

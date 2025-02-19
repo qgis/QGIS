@@ -40,7 +40,7 @@ QString QgsClassificationStandardDeviation::id() const
 
 std::unique_ptr< QgsClassificationMethod > QgsClassificationStandardDeviation::clone() const
 {
-  std::unique_ptr<QgsClassificationStandardDeviation > c = std::make_unique< QgsClassificationStandardDeviation >();
+  auto c = std::make_unique< QgsClassificationStandardDeviation >();
   copyBase( c.get() );
   c->mStdDev = mStdDev;
   return c;

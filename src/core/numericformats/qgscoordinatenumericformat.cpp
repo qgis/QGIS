@@ -95,7 +95,7 @@ QgsGeographicCoordinateNumericFormat *QgsGeographicCoordinateNumericFormat::clon
 
 QgsNumericFormat *QgsGeographicCoordinateNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsGeographicCoordinateNumericFormat > res = std::make_unique< QgsGeographicCoordinateNumericFormat >();
+  auto res = std::make_unique< QgsGeographicCoordinateNumericFormat >();
   res->setConfiguration( configuration, context );
   res->mAngleFormat = qgsEnumKeyToValue( configuration.value( QStringLiteral( "angle_format" ) ).toString(), AngleFormat::DecimalDegrees );
   res->mShowLeadingZeros = configuration.value( QStringLiteral( "show_leading_zeros" ), false ).toBool();

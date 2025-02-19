@@ -149,7 +149,15 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
   QgsCoordinateReferenceSystem extentCrs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context );
   QgsCoordinateTransform ct( extentCrs, project->crs(), context.transformContext() );
-  mExtent = ct.transformBoundingBox( extent );
+  try
+  {
+    mExtent = ct.transformBoundingBox( extent );
+  }
+  catch ( QgsCsException & )
+  {
+    feedback->reportError( QObject::tr( "Could not transform the extent into the project CRS" ), true );
+    return false;
+  }
 
   mMinZoom = parameterAsInt( parameters, QStringLiteral( "ZOOM_MIN" ), context );
   mMaxZoom = parameterAsInt( parameters, QStringLiteral( "ZOOM_MAX" ), context );
@@ -167,8 +175,15 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mMercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
   mSrc2Wgs = QgsCoordinateTransform( project->crs(), mWgs84Crs, context.transformContext() );
   mWgs2Mercator = QgsCoordinateTransform( mWgs84Crs, mMercatorCrs, context.transformContext() );
-
-  mWgs84Extent = mSrc2Wgs.transformBoundingBox( mExtent );
+  try
+  {
+    mWgs84Extent = mSrc2Wgs.transformBoundingBox( mExtent );
+  }
+  catch ( QgsCsException & )
+  {
+    feedback->reportError( QObject::tr( "Could not transform the extent into WGS84" ), true );
+    return false;
+  }
 
   if ( parameters.contains( QStringLiteral( "TILE_WIDTH" ) ) )
   {
@@ -212,7 +227,14 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     MetaTile metaTile = mMetaTiles.takeFirst();
 
     QgsMapSettings settings;
-    settings.setExtent( mWgs2Mercator.transformBoundingBox( metaTile.extent() ) );
+    try
+    {
+      settings.setExtent( mWgs2Mercator.transformBoundingBox( metaTile.extent() ) );
+    }
+    catch ( QgsCsException & )
+    {
+      continue;
+    }
     settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
     settings.setTransformContext( mTransformContext );
     settings.setDestinationCrs( mMercatorCrs );
@@ -275,13 +297,13 @@ void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_HEIGHT" ), QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "TMS_CONVENTION" ), QObject::tr( "Use inverted tile Y axis (TMS convention)" ), false ) );
 
-  std::unique_ptr<QgsProcessingParameterString> titleParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_TITLE" ), QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
+  auto titleParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_TITLE" ), QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
   titleParam->setFlags( titleParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( titleParam.release() );
-  std::unique_ptr<QgsProcessingParameterString> attributionParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_ATTRIBUTION" ), QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
+  auto attributionParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "HTML_ATTRIBUTION" ), QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
   attributionParam->setFlags( attributionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( attributionParam.release() );
-  std::unique_ptr<QgsProcessingParameterBoolean> osmParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "HTML_OSM" ), QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false );
+  auto osmParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "HTML_OSM" ), QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false );
   osmParam->setFlags( osmParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( osmParam.release() );
 

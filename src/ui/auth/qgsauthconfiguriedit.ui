@@ -62,7 +62,7 @@
          <string notr="true">color: rgb(128, 128, 128);</string>
         </property>
         <property name="text">
-         <string>Note: Button actions above affect authentication database</string>
+         <string>Note: Button actions above affect authentication storage</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

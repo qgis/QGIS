@@ -280,6 +280,10 @@ the returned rectangle.
 
 :return: rectangle in destination CRS
 
+.. warning::
+
+   Do not call this method if the transformation involves geocentric CRS -- in this situation transformation of a 2D bounding box is meaningless! Calling this method with a geocentric CRS will result in a :py:class:`QgsCsException` being thrown.
+
 :raises QgsCsException: if the transformation fails
 %End
 

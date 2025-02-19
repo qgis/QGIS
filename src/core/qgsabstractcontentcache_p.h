@@ -53,6 +53,12 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
     {
       return QByteArray::fromBase64( base64String.toLocal8Bit(), QByteArray::OmitTrailingEquals );
     }
+    // maybe embedded string data
+    QString embeddedString;
+    if ( parseEmbeddedStringData( path, nullptr, &embeddedString ) )
+    {
+      return embeddedString.toUtf8();
+    }
   }
 
   // maybe it's a url...

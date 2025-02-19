@@ -212,6 +212,7 @@ QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() co
   {
     context << new QgsExpressionContextScope( s );
   }
+  context.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE );
   return context;
 }
 

@@ -161,7 +161,7 @@ void QgsLayerTreeViewIndicatorProvider::updateLayerIndicator( QgsMapLayer *layer
 
 std::unique_ptr<QgsLayerTreeViewIndicator> QgsLayerTreeViewIndicatorProvider::newIndicator( QgsMapLayer *layer )
 {
-  std::unique_ptr<QgsLayerTreeViewIndicator> indicator = std::make_unique<QgsLayerTreeViewIndicator>( this );
+  auto indicator = std::make_unique<QgsLayerTreeViewIndicator>( this );
   indicator->setIcon( QgsApplication::getThemeIcon( iconName( layer ) ) );
   indicator->setToolTip( tooltipText( layer ) );
   connect( indicator.get(), &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewIndicatorProvider::onIndicatorClicked );

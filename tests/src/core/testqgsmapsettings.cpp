@@ -632,7 +632,7 @@ void TestQgsMapSettings::testRenderedFeatureHandlers()
   const std::unique_ptr<TestHandler> testHandler = std::make_unique<TestHandler>();
   const std::unique_ptr<TestHandler> testHandler2 = std::make_unique<TestHandler>();
 
-  std::unique_ptr<QgsMapSettings> mapSettings = std::make_unique<QgsMapSettings>();
+  auto mapSettings = std::make_unique<QgsMapSettings>();
   QVERIFY( mapSettings->renderedFeatureHandlers().isEmpty() );
   mapSettings->addRenderedFeatureHandler( testHandler.get() );
   mapSettings->addRenderedFeatureHandler( testHandler2.get() );
@@ -726,9 +726,9 @@ void TestQgsMapSettings::testLayersWithGroupLayers()
   // test retrieving layers from map settings when a QgsGroupLayer is present
   QgsMapSettings settings;
 
-  std::unique_ptr<QgsVectorLayer> vlA = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<QgsVectorLayer> vlB = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<QgsVectorLayer> vlC = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "c" ), QStringLiteral( "memory" ) );
+  auto vlA = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  auto vlB = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
+  auto vlC = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "c" ), QStringLiteral( "memory" ) );
 
   QgsGroupLayer::LayerOptions options( ( QgsCoordinateTransformContext() ) );
   QgsGroupLayer groupLayer( QStringLiteral( "group" ), options );

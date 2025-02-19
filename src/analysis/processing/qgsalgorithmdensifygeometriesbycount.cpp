@@ -75,7 +75,7 @@ QList<int> QgsDensifyGeometriesByCountAlgorithm::inputLayerTypes() const
 void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  std::unique_ptr<QgsProcessingParameterNumber> verticesCnt = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "VERTICES" ), QObject::tr( "Number of vertices to add" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10000000 );
+  auto verticesCnt = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "VERTICES" ), QObject::tr( "Number of vertices to add" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10000000 );
   verticesCnt->setIsDynamic( true );
   verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VerticesCount" ), QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
   verticesCnt->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

@@ -548,7 +548,7 @@ void QgsProcessingLayerOutputDestinationWidget::appendToLayer()
       else
       {
         // get fields for destination
-        std::unique_ptr<QgsVectorLayer> dest = std::make_unique<QgsVectorLayer>( widget->uri().uri, QString(), widget->uri().providerKey );
+        auto dest = std::make_unique<QgsVectorLayer>( widget->uri().uri, QString(), widget->uri().providerKey );
         if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
           setAppendDestination( widget->uri().uri, dest->fields() );
         else

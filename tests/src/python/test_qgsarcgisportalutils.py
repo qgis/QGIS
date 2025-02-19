@@ -12,57 +12,12 @@ __author__ = "Nyall Dawson"
 __date__ = "2018-02-16"
 __copyright__ = "Copyright 2018, Nyall Dawson"
 
-import hashlib
-import os
 import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject
 from qgis.core import QgsApplication, QgsArcGisPortalUtils, QgsSettings
 import unittest
 from qgis.testing import start_app, QgisTestCase
-
-
-def sanitize(endpoint, x):
-    if not os.path.exists(endpoint):
-        os.makedirs(endpoint)
-    if x.startswith("/query"):
-        x = x[len("/query") :]
-        endpoint = endpoint + "_query"
-
-    if len(endpoint + x) > 150:
-        ret = endpoint + hashlib.md5(x.encode()).hexdigest()
-        # print('Before: ' + endpoint + x)
-        # print('After:  ' + ret)
-        return ret
-    return endpoint + x.replace("?", "_").replace("&", "_").replace("<", "_").replace(
-        ">", "_"
-    ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
-
-
-class MessageLogger(QObject):
-
-    def __init__(self, tag=None):
-        QObject.__init__(self)
-        self.log = []
-        self.tag = tag
-
-    def __enter__(self):
-        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
-        return self
-
-    def __exit__(self, type, value, traceback):
-        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
-
-    def logMessage(self, msg, tag, level):
-        if tag == self.tag or not self.tag:
-            self.log.append(msg.encode("UTF-8"))
-
-    def messages(self):
-        return self.log
 
 
 class TestPyQgsArcGisPortalUtils(QgisTestCase):
@@ -95,7 +50,7 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
         """
         print(self.basetestpath)
         endpoint = self.basetestpath + "/user_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "/self?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "/self?f=json"), "wb") as f:
             f.write(
                 b"""{
   "username": "me",
@@ -136,7 +91,9 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
         print(self.basetestpath)
         endpoint = self.basetestpath + "/user_fake_qgis_http_endpoint"
 
-        with open(sanitize(endpoint + "_users/", "some_user?f=json"), "wb") as f:
+        with open(
+            self.sanitize_local_url(endpoint + "_users/", "some_user?f=json"), "wb"
+        ) as f:
             f.write(
                 b"""{
   "username": "some_user",
@@ -180,7 +137,9 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
         print(self.basetestpath)
         endpoint = self.basetestpath + "/group_fake_qgis_http_endpoint"
 
-        with open(sanitize(endpoint + "_users/", "some_user?f=json"), "wb") as f:
+        with open(
+            self.sanitize_local_url(endpoint + "_users/", "some_user?f=json"), "wb"
+        ) as f:
             f.write(
                 b"""{
           "username": "some_user",
@@ -217,7 +176,8 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
         endpoint = self.basetestpath + "/group_items_fake_qgis_http_endpoint"
 
         with open(
-            sanitize(endpoint + "_groups/", "ab1?f=json&start=1&num=2"), "wb"
+            self.sanitize_local_url(endpoint + "_groups/", "ab1?f=json&start=1&num=2"),
+            "wb",
         ) as f:
             f.write(
                 b"""{
@@ -239,7 +199,10 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
             )
 
             with open(
-                sanitize(endpoint + "_groups/", "ab1?f=json&start=3&num=2"), "wb"
+                self.sanitize_local_url(
+                    endpoint + "_groups/", "ab1?f=json&start=3&num=2"
+                ),
+                "wb",
             ) as f:
                 f.write(
                     b"""{
@@ -278,7 +241,8 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
         endpoint = self.basetestpath + "/groupf_items_fake_qgis_http_endpoint"
 
         with open(
-            sanitize(endpoint + "_groups/", "ab1?f=json&start=1&num=2"), "wb"
+            self.sanitize_local_url(endpoint + "_groups/", "ab1?f=json&start=1&num=2"),
+            "wb",
         ) as f:
             f.write(
                 b"""{
@@ -302,7 +266,10 @@ class TestPyQgsArcGisPortalUtils(QgisTestCase):
             )
 
             with open(
-                sanitize(endpoint + "_groups/", "ab1?f=json&start=3&num=2"), "wb"
+                self.sanitize_local_url(
+                    endpoint + "_groups/", "ab1?f=json&start=3&num=2"
+                ),
+                "wb",
             ) as f:
                 f.write(
                     b"""{

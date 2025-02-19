@@ -105,7 +105,8 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.cmbLayers.layerChanged.connect(self.layerChanged)
         self.cmbLayers.setFilters(Qgis.LayerFilter.VectorLayer)
         self.cmbFields.setFilters(QgsFieldProxyModel.Filter.Numeric)
-        self.cmbFields.setLayer(self.cmbLayers.currentLayer())
+
+        self.layerChanged(self.cmbLayers.currentLayer())
 
     def addLayer(self):
         layer = self.cmbLayers.currentLayer()

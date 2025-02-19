@@ -503,7 +503,7 @@ QgsGroupLayer *QgsLayerTreeGroup::convertToGroupLayer( const QgsGroupLayer::Laye
   if ( !mGroupLayer.layerId.isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsGroupLayer > res = std::make_unique< QgsGroupLayer >( name(), options );
+  auto res = std::make_unique< QgsGroupLayer >( name(), options );
 
   mGroupLayer.setLayer( res.get() );
   updateGroupLayers();

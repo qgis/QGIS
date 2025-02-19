@@ -271,9 +271,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
             name.replace( '_', ' ' );
             def.description = QStringLiteral( "%1 (%2:%3)" ).arg( name, authority, code );
 
-#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
             def.celestialBodyName = proj_get_celestial_body_name( context, ellipsoid.get() );
-#endif
 
             double semiMajor, semiMinor, invFlattening;
             int semiMinorComputed = 0;

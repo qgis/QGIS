@@ -1021,7 +1021,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         case Qgis::LayerType::Vector:
         {
           const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options ) );
+          auto layer = std::make_unique<QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
           if ( layer && layer->isValid() )
           {
             QgisApp::instance()->saveAsFile( layer.get(), false, false );
@@ -1031,7 +1031,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 
         case Qgis::LayerType::Raster:
         {
-          std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
+          auto layer = std::make_unique<QgsRasterLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
           if ( layer && layer->isValid() )
           {
             QgisApp::instance()->saveAsFile( layer.get(), false, false );
@@ -1900,7 +1900,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   bool hasError = false;
 
   // Main task
-  std::unique_ptr<QgsTaskWithSerialSubTasks> mainTask( new QgsTaskWithSerialSubTasks( tr( "Layer import" ) ) );
+  auto mainTask = std::make_unique<QgsTaskWithSerialSubTasks>( tr( "Layer import" ) );
   bool hasSubTasks = false;
 
   const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );

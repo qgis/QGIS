@@ -454,7 +454,7 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRendererWidget::renderer()
     return nullptr;
   }
 
-  std::unique_ptr<QgsPointCloudClassifiedRenderer> renderer = std::make_unique<QgsPointCloudClassifiedRenderer>();
+  auto renderer = std::make_unique<QgsPointCloudClassifiedRenderer>();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
   renderer->setCategories( mModel->categories() );
 

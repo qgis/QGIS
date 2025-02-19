@@ -203,8 +203,8 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 
 void TestQgsMapLayerStyleManager::testCopyStyles()
 {
-  std::unique_ptr<QgsVectorLayer> lines = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<QgsVectorLayer> lines2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  auto lines = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  auto lines2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
 
   QgsMapLayerStyleManager *sm = lines->styleManager();
 

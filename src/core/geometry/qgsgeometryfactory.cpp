@@ -153,7 +153,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPointXY( const Qg
 
 std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPointXY( const QgsMultiPointXY &multipoint )
 {
-  std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >();
+  auto mp = std::make_unique< QgsMultiPoint >();
   QgsMultiPointXY::const_iterator ptIt = multipoint.constBegin();
   mp->reserve( multipoint.size() );
   for ( ; ptIt != multipoint.constEnd(); ++ptIt )
@@ -171,7 +171,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolylineXY( const Q
 
 std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolylineXY( const QgsMultiPolylineXY &multiline )
 {
-  std::unique_ptr< QgsMultiLineString > mLine = std::make_unique< QgsMultiLineString >();
+  auto mLine = std::make_unique< QgsMultiLineString >();
   mLine->reserve( multiline.size() );
   for ( int i = 0; i < multiline.size(); ++i )
   {
@@ -182,7 +182,7 @@ std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolylineXY( con
 
 std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygonXY( const QgsPolygonXY &polygon )
 {
-  std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
+  auto poly = std::make_unique< QgsPolygon >();
 
   QVector<QgsCurve *> holes;
   holes.reserve( polygon.size() );
@@ -206,7 +206,7 @@ std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygonXY( const QgsPolygonX
 
 std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly )
 {
-  std::unique_ptr< QgsMultiPolygon > mp = std::make_unique< QgsMultiPolygon >();
+  auto mp = std::make_unique< QgsMultiPolygon >();
   mp->reserve( multipoly.size() );
   for ( int i = 0; i < multipoly.size(); ++i )
   {
@@ -231,7 +231,7 @@ std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const
     *destY++ = src->y();
     src++;
   }
-  std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( x, y );
+  auto line = std::make_unique< QgsLineString >( x, y );
   return line;
 }
 

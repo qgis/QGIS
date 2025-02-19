@@ -345,7 +345,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       }
     };
 
-    std::unique_ptr<_DownloaderThread> downloaderThread = std::make_unique<_DownloaderThread>( downloaderLambda );
+    auto downloaderThread = std::make_unique<_DownloaderThread>( downloaderLambda );
     downloaderThread->start();
     downloaderThread->wait();
 

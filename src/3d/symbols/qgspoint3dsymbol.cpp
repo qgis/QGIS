@@ -136,7 +136,7 @@ void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *laye
 
 Qgis::Point3DShape QgsPoint3DSymbol::shapeFromString( const QString &shape )
 {
-  if ( shape == QStringLiteral( "sphere" ) )
+  if ( shape == QLatin1String( "sphere" ) )
     return Qgis::Point3DShape::Sphere;
   else if ( shape == QLatin1String( "cone" ) )
     return Qgis::Point3DShape::Cone;

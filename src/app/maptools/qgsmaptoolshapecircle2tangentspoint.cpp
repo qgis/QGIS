@@ -129,7 +129,7 @@ void QgsMapToolShapeCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *
     {
       QgsPointXY p1, p2;
       match.edgePoints( p1, p2 );
-      std::unique_ptr<QgsLineString> line( new QgsLineString() );
+      auto line = std::make_unique<QgsLineString>();
 
       line->addVertex( QgsPoint( p1 ) );
       line->addVertex( QgsPoint( p2 ) );
@@ -161,11 +161,11 @@ void QgsMapToolShapeCircle2TangentsPoint::getPossibleCenter()
 
   if ( mPoints.size() == 4 )
   {
-    std::unique_ptr<QgsLineString> l1( new QgsLineString() );
+    auto l1 = std::make_unique<QgsLineString>();
     l1->addVertex( mPoints.at( 0 ) );
     l1->addVertex( mPoints.at( 1 ) );
 
-    std::unique_ptr<QgsLineString> l2( new QgsLineString() );
+    auto l2 = std::make_unique<QgsLineString>();
     l2->addVertex( mPoints.at( 2 ) );
     l2->addVertex( mPoints.at( 3 ) );
 
@@ -227,7 +227,7 @@ void QgsMapToolShapeCircle2TangentsPoint::radiusSpinBoxChanged( double radius )
     for ( int i = 0; i < mCenters.size(); ++i )
     {
       std::unique_ptr<QgsGeometryRubberBand> tempRB( mParentTool->createGeometryRubberBand( Qgis::GeometryType::Point, true ) );
-      std::unique_ptr<QgsPoint> tempCenter( new QgsPoint( mCenters.at( i ) ) );
+      auto tempCenter = std::make_unique<QgsPoint>( mCenters.at( i ) );
       tempRB->setGeometry( tempCenter.release() );
       tempRB->show();
       mRubberBands.append( tempRB.release() );

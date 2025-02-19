@@ -31,7 +31,7 @@ QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
-  std::unique_ptr<QgsLine3DSymbol> result = std::make_unique<QgsLine3DSymbol>();
+  auto result = std::make_unique<QgsLine3DSymbol>();
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
   result->mWidth = mWidth;

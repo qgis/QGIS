@@ -23,13 +23,13 @@
 QgsClassificationFixedInterval::QgsClassificationFixedInterval()
   : QgsClassificationMethod( IgnoresClassCount, 0 )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > param = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "INTERVAL" ), QObject::tr( "Interval size" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0.000000000001 );
+  auto param = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "INTERVAL" ), QObject::tr( "Interval size" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0.000000000001 );
   addParameter( param.release() );
 }
 
 std::unique_ptr<QgsClassificationMethod> QgsClassificationFixedInterval::clone() const
 {
-  std::unique_ptr<QgsClassificationFixedInterval > c = std::make_unique< QgsClassificationFixedInterval >();
+  auto c = std::make_unique< QgsClassificationFixedInterval >();
   copyBase( c.get() );
   return c;
 }

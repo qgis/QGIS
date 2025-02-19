@@ -240,7 +240,7 @@ std::unique_ptr<PointSet> PointSet::extractShape( int nbPtSh, int imin, int imax
 {
   int i, j;
 
-  std::unique_ptr<PointSet> newShape = std::make_unique< PointSet >();
+  auto newShape = std::make_unique< PointSet >();
   newShape->type = GEOS_POLYGON;
   newShape->nbPoints = nbPtSh;
   newShape->x.resize( newShape->nbPoints );

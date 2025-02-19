@@ -35,7 +35,7 @@ extern "C"
 
 std::unique_ptr<QgsPostgresListener> QgsPostgresListener::create( const QString &connString )
 {
-  std::unique_ptr<QgsPostgresListener> res( new QgsPostgresListener( connString ) );
+  auto res = std::make_unique<QgsPostgresListener>( connString );
   QgsDebugMsgLevel( QStringLiteral( "starting notification listener" ), 2 );
 
   res->start();

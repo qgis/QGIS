@@ -17,6 +17,8 @@
 #include "moc_qgstiledsceneconnectiondialog.cpp"
 #include "qgstiledsceneconnection.h"
 #include "qgsgui.h"
+#include "qgssettings.h"
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -37,6 +39,7 @@ QgsTiledSceneConnectionDialog::QgsTiledSceneConnectionDialog( QWidget *parent )
 void QgsTiledSceneConnectionDialog::setConnection( const QString &name, const QString &uri )
 {
   mEditName->setText( name );
+  mOriginalConnectionName = name;
 
   const QgsTiledSceneProviderConnection::Data conn = QgsTiledSceneProviderConnection::decodedUri( uri );
   mEditUrl->setText( conn.url );
@@ -73,6 +76,16 @@ void QgsTiledSceneConnectionDialog::updateOkButtonState()
 
 void QgsTiledSceneConnectionDialog::accept()
 {
+  const QString newConnectionName = mEditName->text();
+
+  // on rename delete original entry first
+  if ( !mOriginalConnectionName.isNull() && mOriginalConnectionName != newConnectionName )
+  {
+    QgsSettings settings;
+    QgsTiledSceneProviderConnection( QString() ).remove( mOriginalConnectionName );
+    settings.sync();
+  }
+
   QDialog::accept();
 }
 

@@ -82,7 +82,7 @@ QgsOffsetLinesAlgorithm *QgsOffsetLinesAlgorithm::createInstance() const
 
 void QgsOffsetLinesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> offset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10.0, QStringLiteral( "INPUT" ) );
+  auto offset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10.0, QStringLiteral( "INPUT" ) );
   offset->setIsDynamic( true );
   offset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsPropertyDefinition::Double ) );
   offset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

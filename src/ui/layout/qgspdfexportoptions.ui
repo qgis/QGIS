@@ -175,7 +175,7 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="2" column="0" colspan="2">
+              <item row="1" column="0" colspan="2">
                <widget class="QgsCollapsibleGroupBoxBasic" name="mIncludeMapThemesCheck">
                 <property name="title">
                  <string>Include multiple map themes</string>
@@ -193,17 +193,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>Format</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="mGeospatialPdfFormatComboBox"/>
-              </item>
-              <item row="3" column="0" colspan="2">
+              <item row="2" column="0" colspan="2">
                <widget class="QGroupBox" name="mExportGeospatialPdfFeaturesCheckBox">
                 <property name="title">
                  <string>Layer Structure</string>
@@ -359,7 +349,6 @@
   <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>mComboImageCompression</tabstop>
   <tabstop>mGeospatialPDFGroupBox</tabstop>
-  <tabstop>mGeospatialPdfFormatComboBox</tabstop>
   <tabstop>mIncludeMapThemesCheck</tabstop>
   <tabstop>mThemesList</tabstop>
   <tabstop>mGeospatialPdfStructureTree</tabstop>

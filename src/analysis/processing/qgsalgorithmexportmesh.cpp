@@ -427,7 +427,7 @@ QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
   QVector<QgsPoint> vertices( face.size() );
   for ( int i = 0; i < face.size(); ++i )
     vertices[i] = mNativeMesh.vertex( face.at( i ) );
-  std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
+  auto polygon = std::make_unique<QgsPolygon>();
   polygon->setExteriorRing( new QgsLineString( vertices ) );
   return QgsGeometry( polygon.release() );
 }
@@ -626,7 +626,12 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   // grid definition
-  double gridSpacing = parameterAsDouble( parameters, QStringLiteral( "GRID_SPACING" ), context );
+  const double gridSpacing = parameterAsDouble( parameters, QStringLiteral( "GRID_SPACING" ), context );
+  if ( qgsDoubleNear( gridSpacing, 0 ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Grid spacing cannot be 0" ) );
+  }
+
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
   if ( extent.isEmpty() )
     extent = mTriangularMesh.extent();
@@ -769,7 +774,7 @@ void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration 
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 1, QStringLiteral( "INPUT" ), false ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -830,7 +835,12 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
   // create raster
-  double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
+  const double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
+  if ( qgsDoubleNear( pixelSize, 0 ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Pixel size cannot be 0" ) );
+  }
+
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
   if ( extent.isEmpty() )
     extent = mTriangularMesh.extent();
@@ -975,7 +985,7 @@ void QgsMeshContoursAlgorithm::initAlgorithm( const QVariantMap &configuration )
     QStringLiteral( "MAXIMUM" ), QObject::tr( "Maximum contour level" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true
   ) );
 
-  std::unique_ptr<QgsProcessingParameterString> contourLevelList = std::make_unique<QgsProcessingParameterString>(
+  auto contourLevelList = std::make_unique<QgsProcessingParameterString>(
     QStringLiteral( "CONTOUR_LEVEL_LIST" ), QObject::tr( "List of contours level" ), QVariant(), false, true
   );
   contourLevelList->setHelp( QObject::tr( "Comma separated list of values to export. If filled, the increment, minimum and maximum settings are ignored." ) );

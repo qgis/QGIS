@@ -209,6 +209,10 @@ Sets the arrow type
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
     virtual void setColor( const QColor &c );

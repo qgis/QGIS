@@ -850,24 +850,12 @@ be returned.
 
    In the case of a compound crs, this method will always return the datum ensemble for the horizontal component.
 
-.. warning::
-
-   This method requires PROJ 8.0 or later
-
-:raises QgsNotSupportedException: on QGIS builds based on PROJ 7 or earlier.
-
 .. versionadded:: 3.20
 %End
 
     QString celestialBodyName() const;
 %Docstring
 Attempts to retrieve the name of the celestial body associated with the CRS (e.g. "Earth").
-
-.. warning::
-
-   This method requires PROJ 8.1 or later
-
-:raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
 
 .. versionadded:: 3.20
 %End

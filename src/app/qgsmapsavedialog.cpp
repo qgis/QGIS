@@ -129,8 +129,6 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       else
       {
         mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 1 );
-        mGeospatialPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
-        mGeospatialPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
       }
 
       connect( mGeospatialPDFGroupBox, &QGroupBox::toggled, this, &QgsMapSaveDialog::updatePdfExportWarning );
@@ -544,16 +542,7 @@ void QgsMapSaveDialog::onAccepted()
 
         if ( mGeospatialPDFGroupBox->isChecked() )
         {
-          if ( mGeospatialPdfFormatComboBox->currentIndex() == 0 )
-          {
-            geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
-            geospatialPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = false;
-          }
-          else
-          {
-            geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = false;
-            geospatialPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = true;
-          }
+          geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
 
           geospatialPdfExportDetails.includeFeatures = mExportGeospatialPdfFeaturesCheckBox->isChecked();
         }

@@ -232,7 +232,7 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( c
     prevElevation = it.value();
   }
   if ( result.has_value() )
-    return {result.value()};
+    return {*result};
   else
     return {};
 }

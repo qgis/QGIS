@@ -58,7 +58,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
   if ( !iface->layout() )
     return false;
 
-  std::unique_ptr<QgsLayoutItemPicture> item = std::make_unique<QgsLayoutItemPicture>( iface->layout() );
+  auto item = std::make_unique<QgsLayoutItemPicture>( iface->layout() );
 
   const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
 
@@ -92,7 +92,7 @@ bool QgsLayoutImageDropHandler::handlePaste( QgsLayoutDesignerInterface *iface, 
     return false;
 
   const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( pastePoint, iface->layout()->units() );
-  std::unique_ptr<QgsLayoutItemPicture> item = std::make_unique<QgsLayoutItemPicture>( iface->layout() );
+  auto item = std::make_unique<QgsLayoutItemPicture>( iface->layout() );
 
   const QByteArray imageData = data->data( QStringLiteral( "application/x-qt-image" ) );
   if ( imageData.isEmpty() )

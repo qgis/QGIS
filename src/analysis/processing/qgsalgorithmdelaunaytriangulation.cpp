@@ -60,7 +60,7 @@ QgsDelaunayTriangulationAlgorithm *QgsDelaunayTriangulationAlgorithm::createInst
 void QgsDelaunayTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  std::unique_ptr<QgsProcessingParameterNumber> toleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
+  auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   toleranceParam->setHelp( QObject::tr( "Specifies an optional snapping tolerance which can be used to improve the robustness of the triangulation" ) );
   addParameter( toleranceParam.release() );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ADD_ATTRIBUTES" ), QObject::tr( "Add point IDs to output" ), true ) );

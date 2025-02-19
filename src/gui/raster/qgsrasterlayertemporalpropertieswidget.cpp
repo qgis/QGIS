@@ -236,6 +236,7 @@ void QgsRasterLayerTemporalPropertiesWidget::calculateRangeByExpression( bool is
   bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), mLayer->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
 
   expressionContext.appendScope( bandScope );
+  expressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   expressionContext.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" ) } );
 
   QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, QStringLiteral( "generic" ), expressionContext );

@@ -167,13 +167,6 @@ QgsRectangle QgsMeshLayer::extent() const
   }
 }
 
-QString QgsMeshLayer::providerType() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mProviderKey;
-}
-
 bool QgsMeshLayer::supportsEditing() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

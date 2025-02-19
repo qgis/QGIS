@@ -255,7 +255,7 @@ bool QgsNewMeshLayerDialog::apply()
         QFileInfo fileInfo( fileName );
         layerName = fileInfo.completeBaseName();
       }
-      std::unique_ptr<QgsMeshLayer> newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, layerName, QStringLiteral( "mdal" ) );
+      auto newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, layerName, QStringLiteral( "mdal" ) );
 
       if ( newMeshLayer->crs() != crs )
         newMeshLayer->setCrs( crs );

@@ -2419,7 +2419,7 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent *e )
   // call handler of current map tool
   if ( mMapTool )
   {
-    std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+    auto me = std::make_unique<QgsMapMouseEvent>( this, e );
     mMapTool->canvasDoubleClickEvent( me.get() );
   }
 } // mouseDoubleClickEvent
@@ -2528,13 +2528,13 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
       }
       else if ( mMapTool->flags() & QgsMapTool::ShowContextMenu && e->button() == Qt::RightButton )
       {
-        std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+        auto me = std::make_unique<QgsMapMouseEvent>( this, e );
         showContextMenu( me.get() );
         return;
       }
       else
       {
-        std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+        auto me = std::make_unique<QgsMapMouseEvent>( this, e );
         mMapTool->canvasPressEvent( me.get() );
       }
     }
@@ -2583,7 +2583,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
     // call handler of current map tool
     if ( mMapTool )
     {
-      std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+      auto me = std::make_unique<QgsMapMouseEvent>( this, e );
       mMapTool->canvasReleaseEvent( me.get() );
     }
   }
@@ -2762,7 +2762,7 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
     // call handler of current map tool
     if ( mMapTool )
     {
-      std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+      auto me = std::make_unique<QgsMapMouseEvent>( this, e );
       mMapTool->canvasMoveEvent( me.get() );
     }
   }

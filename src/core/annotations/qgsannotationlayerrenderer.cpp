@@ -108,7 +108,7 @@ bool QgsAnnotationLayerRenderer::render()
     if ( bounds.intersects( context.extent() ) )
     {
       item.second->render( context, mFeedback.get() );
-      std::unique_ptr< QgsRenderedAnnotationItemDetails > details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
+      auto details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
       details->setBoundingBox( bounds );
       appendRenderedItemDetails( details.release() );
     }

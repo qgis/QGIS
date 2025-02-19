@@ -398,7 +398,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     }
   }
 
-  std::unique_ptr<QgsPolygon> snappedErrGeom = std::make_unique<QgsPolygon>();
+  auto snappedErrGeom = std::make_unique<QgsPolygon>();
   snappedErrGeom->setExteriorRing( new QgsLineString( snappedRing ) );
 
   // Merge geometries

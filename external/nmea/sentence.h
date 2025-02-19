@@ -100,6 +100,7 @@ typedef struct _nmeaGPGSV
   int     pack_index; //!< Message number
   int     sat_count;  //!< Total number of satellites in view
   nmeaSATELLITE sat_data[NMEA_SATINPACK];
+  char    signal_id;  //!< NMEA v4.1 - ID of the ranging signal
 
 } nmeaGPGSV;
 

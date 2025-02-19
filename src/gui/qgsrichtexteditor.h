@@ -162,8 +162,6 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     void focusInEvent( QFocusEvent *event ) override;
 
   private slots:
-    void setPlainText( const QString &text ) { mTextEdit->setPlainText( text ); }
-    void setHtml( const QString &text ) { mTextEdit->setHtml( text ); }
     void textRemoveFormat();
     void textRemoveAllFormat();
     void textBold();

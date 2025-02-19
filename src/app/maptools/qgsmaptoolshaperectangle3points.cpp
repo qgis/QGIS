@@ -134,7 +134,7 @@ void QgsMapToolShapeRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, Q
     {
       case 1:
       {
-        std::unique_ptr<QgsLineString> line( new QgsLineString() );
+        auto line = std::make_unique<QgsLineString>();
         line->addVertex( mPoints.at( 0 ) );
         line->addVertex( point );
         mTempRubberBand->setGeometry( line.release() );

@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgstest.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsunsetattributevalue.h"
 
 class TestQgsField : public QObject
 {
@@ -81,7 +82,7 @@ void TestQgsField::cleanup()
 
 void TestQgsField::create()
 {
-  std::unique_ptr<QgsField> field( new QgsField( QStringLiteral( "name" ), QMetaType::Type::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) ) );
+  auto field = std::make_unique<QgsField>( QStringLiteral( "name" ), QMetaType::Type::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
   QCOMPARE( field->name(), QString( "name" ) );
   QCOMPARE( field->type(), QMetaType::Type::Double );
   QCOMPARE( field->typeName(), QString( "double" ) );
@@ -603,6 +604,9 @@ void TestQgsField::convertCompatible()
   QVERIFY( stringField.convertCompatible( nullDouble ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::QString );
   QVERIFY( nullDouble.isNull() );
+  QVariant unsetValue = QgsUnsetAttributeValue( QStringLiteral( "Autonumber" ) );
+  QVERIFY( stringField.convertCompatible( unsetValue ) );
+  QCOMPARE( static_cast<QMetaType::Type>( unsetValue.userType() ), qMetaTypeId< QgsUnsetAttributeValue >() );
 
   //test double
   const QgsField doubleField( QStringLiteral( "double" ), QMetaType::Type::Double, QStringLiteral( "double" ) );
@@ -636,6 +640,9 @@ void TestQgsField::convertCompatible()
   QVERIFY( doubleField.convertCompatible( nullDouble ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::Double );
   QVERIFY( nullDouble.isNull() );
+  unsetValue = QgsUnsetAttributeValue( QStringLiteral( "Autonumber" ) );
+  QVERIFY( doubleField.convertCompatible( unsetValue ) );
+  QCOMPARE( static_cast<QMetaType::Type>( unsetValue.userType() ), qMetaTypeId< QgsUnsetAttributeValue >() );
 
   //test special rules
 

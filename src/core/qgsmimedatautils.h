@@ -100,13 +100,19 @@ class CORE_EXPORT QgsMimeDataUtils
        * - "vector": vector layers
        * - "raster": raster layers
        * - "mesh": mesh layers
-       * - "pointcloud": point cloud layers
+       * - "point-cloud": point cloud layers (spelled with a dash since QGIS 3.42.0. In prior versions, there was no dash)
        * - "vector-tile": vector tile layers
        * - "tiled-scene": tiled scene layers
+       * - "annotation": annotation layers
+       * - "group": group layers
        * - "plugin": plugin layers
        * - "custom": custom types
        * - "project": QGS/QGZ project file
        * - "directory": directory path
+       *
+       * Note: use QgsMapLayerFactory::typeToString() to convert from a
+       * Qgis::LayerType to a string (except for "custom", "project" and
+       * "directory")
        *
        * Mime data from plugins may use additional custom layer types.
        */

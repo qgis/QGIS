@@ -28,7 +28,7 @@ QgsMesh3DSymbol::~QgsMesh3DSymbol() = default;
 
 QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
 {
-  std::unique_ptr<QgsMesh3DSymbol> result = std::make_unique<QgsMesh3DSymbol>();
+  auto result = std::make_unique<QgsMesh3DSymbol>();
 
   result->mAltClamping = mAltClamping;
   result->mHeight = mHeight;

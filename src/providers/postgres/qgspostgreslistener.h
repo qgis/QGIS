@@ -44,6 +44,7 @@ class QgsPostgresListener : public QThread
      */
     static std::unique_ptr<QgsPostgresListener> create( const QString &connString );
 
+    QgsPostgresListener( const QString &connString );
     ~QgsPostgresListener() override;
 
     void run() override;
@@ -55,8 +56,6 @@ class QgsPostgresListener : public QThread
     volatile bool mStop = false;
 
     QgsPostgresConn *mConn = nullptr;
-
-    QgsPostgresListener( const QString &connString );
 
     Q_DISABLE_COPY( QgsPostgresListener )
 };

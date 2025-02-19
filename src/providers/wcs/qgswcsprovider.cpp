@@ -1675,6 +1675,7 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsAuthorizationS
     QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ), tr( "WCS" ) );
     return;
   }
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, cacheLoadControl );
 
@@ -1718,6 +1719,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
 
       QgsDebugMsgLevel( QStringLiteral( "redirected getmap: %1" ).arg( redirect.toString() ), 2 );
       QNetworkRequest request( redirect.toUrl() );
+      request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsDownloadHandler" ) );
       if ( !mAuth.setAuthorization( request ) )
       {

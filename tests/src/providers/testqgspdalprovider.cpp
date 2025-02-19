@@ -191,7 +191,7 @@ void TestQgsPdalProvider::querySublayers()
 void TestQgsPdalProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>(
+  auto layer = std::make_unique<QgsPointCloudLayer>(
     QStringLiteral( "not valid" ),
     QStringLiteral( "layer" ),
     QStringLiteral( "pdal" )
@@ -204,7 +204,7 @@ void TestQgsPdalProvider::validLayer()
   QgsPointCloudLayer::LayerOptions options;
   options.skipIndexGeneration = true;
 
-  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>(
+  auto layer = std::make_unique<QgsPointCloudLayer>(
     mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ),
     QStringLiteral( "layer" ),
     QStringLiteral( "pdal" ),

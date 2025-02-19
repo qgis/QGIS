@@ -315,7 +315,7 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
     case OutputScaled:
     {
       // Normalizing constant
-      const double k = 116. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
+      const double k = 16. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 15. / 16. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );

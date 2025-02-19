@@ -1546,6 +1546,10 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
     virtual QVariantMap properties() const;

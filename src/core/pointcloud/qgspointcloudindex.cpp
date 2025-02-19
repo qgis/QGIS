@@ -97,11 +97,11 @@ uint qHash( QgsPointCloudNodeId id )
 // QgsPointCloudCacheKey
 //
 
-QgsPointCloudCacheKey::QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+QgsPointCloudCacheKey::QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QString &subset, const QString &uri )
   : mNode( n )
   , mUri( uri )
   , mRequest( request )
-  , mFilterExpression( expression )
+  , mSubsetString( subset )
 {
 }
 
@@ -110,12 +110,12 @@ bool QgsPointCloudCacheKey::operator==( const QgsPointCloudCacheKey &other ) con
   return mNode == other.mNode &&
          mUri == other.mUri &&
          mRequest == other.mRequest &&
-         mFilterExpression == other.mFilterExpression;
+         mSubsetString == other.mSubsetString;
 }
 
 uint qHash( const QgsPointCloudCacheKey &key )
 {
-  return qHash( key.node() ) ^ qHash( key.request() ) ^ qHash( key.uri() ) ^ qHash( key.filterExpression() );
+  return qHash( key.node() ) ^ qHash( key.request() ) ^ qHash( key.uri() ) ^ qHash( key.subsetString() );
 }
 
 //
@@ -521,3 +521,10 @@ bool QgsPointCloudIndex::isModified() const
   return false;
 }
 
+QList<QgsPointCloudNodeId> QgsPointCloudIndex::updatedNodes() const
+{
+  if ( QgsPointCloudEditingIndex *index = dynamic_cast<QgsPointCloudEditingIndex *>( mIndex.get() ) )
+    return index->updatedNodes();
+
+  return QList<QgsPointCloudNodeId>();
+}

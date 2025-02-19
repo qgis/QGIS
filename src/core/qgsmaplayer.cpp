@@ -473,14 +473,20 @@ QString QgsMapLayer::metadataUrlFormat() const
   }
 }
 
-QString QgsMapLayer::publicSource( bool hidePassword ) const
+QString QgsMapLayer::publicSource( bool redactCredentials ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // Redo this every time we're asked for it, as we don't know if
   // dataSource has changed.
-  QString safeName = QgsDataSourceUri::removePassword( mDataSource, hidePassword );
-  return safeName;
+  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
+  {
+    return metadata->cleanUri( mDataSource, redactCredentials ? Qgis::UriCleaningFlag::RedactCredentials : Qgis::UriCleaningFlag::RemoveCredentials );
+  }
+  else
+  {
+    return QgsDataSourceUri::removePassword( mDataSource, redactCredentials );
+  }
 }
 
 QString QgsMapLayer::source() const
@@ -565,17 +571,16 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   mnl = layerElement.namedItem( QStringLiteral( "datasource" ) );
   mne = mnl.toElement();
   const QString dataSourceRaw = mne.text();
-  mDataSource = provider.isEmpty() ? dataSourceRaw : QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, dataSourceRaw, context );
 
   // if the layer needs authentication, ensure the master password is set
   const thread_local QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if ( rx.match( mDataSource ).hasMatch()
+  if ( rx.match( dataSourceRaw ).hasMatch()
        && !QgsApplication::authManager()->setMasterPassword( true ) )
   {
     return false;
   }
 
-  mDataSource = decodedSource( mDataSource, provider, context );
+  mDataSource = decodedSource( dataSourceRaw, provider, context );
 
   // Set the CRS from project file, asking the user if necessary.
   // Make it the saved CRS to have WMS layer projected correctly.
@@ -777,10 +782,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
-  const QgsDataProvider *provider = dataProvider();
-  const QString providerKey = provider ? provider->name() : QString();
-  const QString srcRaw = encodedSource( source(), context );
-  const QString src = providerKey.isEmpty() ? srcRaw : QgsProviderRegistry::instance()->absoluteToRelativeUri( providerKey, srcRaw, context );
+  const QString src = encodedSource( source(), context );
   const QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
   layerElement.appendChild( dataSource );
@@ -3232,12 +3234,14 @@ QString QgsMapLayer::generalHtmlMetadata() const
   // name
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
 
+  const QString lPublicSource = publicSource();
+
   QString path;
   bool isLocalPath = false;
   if ( dataProvider() )
   {
     // local path
-    QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( dataProvider()->name(), publicSource() );
+    QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( dataProvider()->name(), lPublicSource );
     if ( uriComponents.contains( QStringLiteral( "path" ) ) )
     {
       path = uriComponents[QStringLiteral( "path" )].toString();
@@ -3283,8 +3287,8 @@ QString QgsMapLayer::generalHtmlMetadata() const
   }
 
   // data source
-  if ( publicSource() != path || !isLocalPath )
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
+  if ( lPublicSource != path || !isLocalPath )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( lPublicSource != path ? lPublicSource : path ) + QStringLiteral( "</td></tr>\n" );
 
   // provider
   if ( dataProvider() )
@@ -3434,7 +3438,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
 
   metadata += QStringLiteral( "<h1>" ) + tr( "Coordinate Reference System (CRS)" ) + QStringLiteral( "</h1>\n<hr>\n" );
   metadata += QLatin1String( "<table class=\"list-view\">\n" );
-  addCrsInfo( crs(), true, true, true );
+  addCrsInfo( crs().horizontalCrs(), true, true, true );
   metadata += QLatin1String( "</table>\n<br><br>\n" );
 
   if ( verticalCrs().isValid() )

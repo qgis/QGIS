@@ -130,7 +130,7 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
     QgsRasterAnalysisUtils::mapToPixel( xMin, yMax, extent, xPixel, yPixel, startRow, startColumn );
     QgsRasterAnalysisUtils::mapToPixel( xMax, yMin, extent, xPixel, yPixel, endRow, endColumn );
 
-    std::unique_ptr<QgsGeos> engine = std::make_unique<QgsGeos>( f.geometry().constGet() );
+    auto engine = std::make_unique<QgsGeos>( f.geometry().constGet() );
     engine->prepareGeometry();
 
     for ( int row = startRow; row <= endRow; row++ )

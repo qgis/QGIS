@@ -118,7 +118,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   if ( !headerElement.isNull() )
   {
     const QDomElement headerLayoutElem = headerElement.firstChild().toElement();
-    std::unique_ptr< QgsLayout > header = std::make_unique< QgsLayout >( project() );
+    auto header = std::make_unique< QgsLayout >( project() );
     header->readXml( headerLayoutElem, doc, context );
     mHeader = std::move( header );
   }
@@ -126,7 +126,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   if ( !footerElement.isNull() )
   {
     const QDomElement footerLayoutElem = footerElement.firstChild().toElement();
-    std::unique_ptr< QgsLayout > footer = std::make_unique< QgsLayout >( project() );
+    auto footer = std::make_unique< QgsLayout >( project() );
     footer->readXml( footerLayoutElem, doc, context );
     mFooter = std::move( footer );
   }

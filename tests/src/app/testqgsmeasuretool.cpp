@@ -93,8 +93,8 @@ void TestQgsMeasureTool::testLengthCalculationCartesian()
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
 
   // run length calculation
-  std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, false ) );
-  std::unique_ptr<QgsMeasureDialog> dlg( new QgsMeasureDialog( tool.get() ) );
+  auto tool = std::make_unique<QgsMeasureTool>( mCanvas, false );
+  auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
 
   dlg->mCartesian->setChecked( true );
 
@@ -112,8 +112,8 @@ void TestQgsMeasureTool::testLengthCalculationCartesian()
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Feet );
-  std::unique_ptr<QgsMeasureTool> tool2( new QgsMeasureTool( mCanvas, false ) );
-  std::unique_ptr<QgsMeasureDialog> dlg2( new QgsMeasureDialog( tool2.get() ) );
+  auto tool2 = std::make_unique<QgsMeasureTool>( mCanvas, false );
+  auto dlg2 = std::make_unique<QgsMeasureDialog>( tool2.get() );
   dlg2->mCartesian->setChecked( true );
 
   tool2->restart();
@@ -160,8 +160,8 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
 
   // run length calculation
-  std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, false ) );
-  std::unique_ptr<QgsMeasureDialog> dlg( new QgsMeasureDialog( tool.get() ) );
+  auto tool = std::make_unique<QgsMeasureTool>( mCanvas, false );
+  auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
   dlg->mEllipsoidal->setChecked( true );
 
   tool->restart();
@@ -178,8 +178,8 @@ void TestQgsMeasureTool::testLengthCalculationProjected()
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Feet );
-  std::unique_ptr<QgsMeasureTool> tool2( new QgsMeasureTool( mCanvas, false ) );
-  std::unique_ptr<QgsMeasureDialog> dlg2( new QgsMeasureDialog( tool2.get() ) );
+  auto tool2 = std::make_unique<QgsMeasureTool>( mCanvas, false );
+  auto dlg2 = std::make_unique<QgsMeasureDialog>( tool2.get() );
   dlg2->mEllipsoidal->setChecked( true );
 
   tool2->restart();
@@ -225,8 +225,8 @@ void TestQgsMeasureTool::testLengthCalculationNoCrs()
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem() );
 
   // run length calculation
-  std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, false ) );
-  std::unique_ptr<QgsMeasureDialog> dlg( new QgsMeasureDialog( tool.get() ) );
+  auto tool = std::make_unique<QgsMeasureTool>( mCanvas, false );
+  auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
 
   tool->restart();
   tool->addPoint( QgsPointXY( 2484588, 2425722 ) );
@@ -255,8 +255,8 @@ void TestQgsMeasureTool::testAreaCalculationCartesian()
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMeters );
 
   // run length calculation
-  std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, true ) );
-  std::unique_ptr<QgsMeasureDialog> dlg( new QgsMeasureDialog( tool.get() ) );
+  auto tool = std::make_unique<QgsMeasureTool>( mCanvas, true );
+  auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
 
   dlg->mCartesian->setChecked( true );
 
@@ -276,8 +276,8 @@ void TestQgsMeasureTool::testAreaCalculationCartesian()
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMiles );
-  std::unique_ptr<QgsMeasureTool> tool2( new QgsMeasureTool( mCanvas, true ) );
-  std::unique_ptr<QgsMeasureDialog> dlg2( new QgsMeasureDialog( tool2.get() ) );
+  auto tool2 = std::make_unique<QgsMeasureTool>( mCanvas, true );
+  auto dlg2 = std::make_unique<QgsMeasureDialog>( tool2.get() );
   dlg2->mCartesian->setChecked( true );
 
   tool2->restart();
@@ -309,8 +309,8 @@ void TestQgsMeasureTool::testAreaCalculationProjected()
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMeters );
 
   // run length calculation
-  std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, true ) );
-  std::unique_ptr<QgsMeasureDialog> dlg( new QgsMeasureDialog( tool.get() ) );
+  auto tool = std::make_unique<QgsMeasureTool>( mCanvas, true );
+  auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
 
   dlg->mEllipsoidal->setChecked( true );
 
@@ -330,8 +330,8 @@ void TestQgsMeasureTool::testAreaCalculationProjected()
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMiles );
-  std::unique_ptr<QgsMeasureTool> tool2( new QgsMeasureTool( mCanvas, true ) );
-  std::unique_ptr<QgsMeasureDialog> dlg2( new QgsMeasureDialog( tool2.get() ) );
+  auto tool2 = std::make_unique<QgsMeasureTool>( mCanvas, true );
+  auto dlg2 = std::make_unique<QgsMeasureDialog>( tool2.get() );
 
   dlg2->mEllipsoidal->setChecked( true );
 
@@ -358,7 +358,7 @@ void TestQgsMeasureTool::degreeDecimalPlaces()
   s.setValue( QStringLiteral( "qgis/measure/decimalplaces" ), 3 );
 
   const std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, true ) );
-  std::unique_ptr<QgsMeasureDialog> dlg( new QgsMeasureDialog( tool.get() ) );
+  auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
 
   QCOMPARE( dlg->formatDistance( 11, false ), QString( "11.000 deg" ) );
   QCOMPARE( dlg->formatDistance( 0.005, false ), QString( "0.005 deg" ) );
@@ -378,8 +378,8 @@ void TestQgsMeasureTool::testToolDesactivationNoExtraPoint()
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMeters );
 
   // run length calculation
-  std::unique_ptr<QgsMeasureTool> tool( new QgsMeasureTool( mCanvas, true ) );
-  std::unique_ptr<QgsMeasureDialog> dlg( new QgsMeasureDialog( tool.get() ) );
+  auto tool = std::make_unique<QgsMeasureTool>( mCanvas, true );
+  auto dlg = std::make_unique<QgsMeasureDialog>( tool.get() );
 
   dlg->mEllipsoidal->setChecked( true );
 

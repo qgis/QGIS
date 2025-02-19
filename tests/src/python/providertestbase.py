@@ -31,6 +31,7 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayerFeatureSource,
     QgsVectorLayerUtils,
+    QgsUnsetAttributeValue,
 )
 
 from featuresourcetestbase import FeatureSourceTestCase
@@ -1003,6 +1004,86 @@ class ProviderTestCase(FeatureSourceTestCase):
             )
             self.assertEqual(l.dataProvider().featureCount(), 7)
 
+    def testAddFeatureUnsetAttributes(self):
+        if not getattr(self, "getEditableLayer", None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes(
+            [
+                6,
+                -220,
+                QgsUnsetAttributeValue(),
+                "String",
+                "15",
+                NULL,
+                NULL,
+                NULL,
+            ]
+        )
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-72.345 71.987)"))
+
+        f2 = QgsFeature()
+        f2.setAttributes(
+            [
+                7,
+                QgsUnsetAttributeValue(),
+                "Coconut",
+                "CoCoNut",
+                "13",
+                NULL,
+                NULL,
+                NULL,
+            ]
+        )
+
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.AddFeatures
+        ):
+            # expect success
+            result, added = l.dataProvider().addFeatures(
+                [f1, f2], QgsFeatureSink.Flag.FastInsert
+            )
+            self.assertTrue(
+                result,
+                "Provider reported AddFeatures capability, but returned False to addFeatures using QgsUnsetAttributeValues",
+            )
+            self.assertEqual(l.dataProvider().featureCount(), 7)
+
+            features = [f for f in l.dataProvider().getFeatures()]
+            self.assertEqual(len(features), 7)
+            f6 = [f for f in features if f[0] == 6][0]
+            f7 = [f for f in features if f[0] == 7][0]
+            self.assertEqual(f6[1], -220)
+            self.assertTrue(
+                isinstance(f6[2], QgsUnsetAttributeValue)
+                or f6[2] == NULL
+                or str(f6[2]) == "",
+                f"Expected null/unset value, got {f6[2]}",
+            )
+            self.assertEqual(f6[3], "String")
+            self.assertEqual(f6[4], "15")
+            self.assertEqual(f6[5], NULL)
+            self.assertEqual(f6[6], NULL)
+            self.assertEqual(f6[7], NULL)
+
+            self.assertTrue(
+                isinstance(f7[1], QgsUnsetAttributeValue)
+                or f7[1] == NULL
+                or str(f7[1]) == "",
+                f"Expected null/unset value, got {f7[1]}",
+            )
+            self.assertEqual(f7[2], "Coconut")
+            self.assertEqual(f7[3], "CoCoNut")
+            self.assertEqual(f7[4], "13")
+            self.assertEqual(f7[5], NULL)
+            self.assertEqual(f7[6], NULL)
+            self.assertEqual(f7[7], NULL)
+
     def testAddFeatureMissingAttributes(self):
         if not getattr(self, "getEditableLayer", None):
             return
@@ -1138,6 +1219,44 @@ class ProviderTestCase(FeatureSourceTestCase):
                 "03:04:05" if self.treat_time_as_string() else QTime(3, 4, 5),
             ],
         )
+
+    def testAddFeatureAllNull(self):
+        if not getattr(self, "getEditableLayer", None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL])
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-72.345 71.987)"))
+
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.AddFeatures
+        ):
+            # expect success
+            result, added = l.dataProvider().addFeatures([f1])
+            self.assertTrue(
+                result,
+                "Provider reported AddFeatures capability, but returned False to addFeatures",
+            )
+
+            # check result
+            f_new = next(
+                l.dataProvider().getFeatures(
+                    QgsFeatureRequest().setFilterFid(added[0].id())
+                )
+            )
+            self.assertEqual(
+                f_new.attributes()[1:], [NULL, NULL, NULL, NULL, NULL, NULL, NULL]
+            )
+        else:
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().addFeatures([f1]),
+                "Provider reported no AddFeatures capability, but returned true to addFeatures",
+            )
 
     def testAddFeatureWrongGeomType(self):
         if not getattr(self, "getEditableLayer", None):
@@ -1348,6 +1467,80 @@ class ProviderTestCase(FeatureSourceTestCase):
                 "Provider reported no ChangeAttributeValues capability, but returned true to changeAttributeValues",
             )
 
+    def testChangeAttributesUnsetValue(self):
+        if not getattr(self, "getEditableLayer", None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        # find 2 features to change
+        features = [f for f in l.dataProvider().getFeatures()]
+        # need to keep order here
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 3])
+        # changes by feature id, for changeAttributeValues call
+        changes = {
+            to_change[0].id(): {1: QgsUnsetAttributeValue(), 3: "new string"},
+            to_change[1].id(): {1: 502, 4: QgsUnsetAttributeValue()},
+        }
+        # changes by pk, for testing after retrieving changed features
+        new_attr_map = {1: {3: "new string"}, 3: {1: 502}}
+
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.ChangeAttributeValues
+        ):
+            # expect success
+            result = l.dataProvider().changeAttributeValues(changes)
+            self.assertTrue(
+                result,
+                "Provider reported ChangeAttributeValues capability, but returned False to changeAttributeValues",
+            )
+
+            # check result
+            self.testGetFeatures(l.dataProvider(), changed_attributes=new_attr_map)
+
+        else:
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().changeAttributeValues(changes),
+                "Provider reported no ChangeAttributeValues capability, but returned true to changeAttributeValues",
+            )
+
+    def testChangeAttributesOnlyUnsetValue(self):
+        if not getattr(self, "getEditableLayer", None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        # find 2 features to change
+        features = [f for f in l.dataProvider().getFeatures()]
+        # need to keep order here
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 3])
+        # changes by feature id, for changeAttributeValues call
+        changes = {
+            to_change[0].id(): {1: QgsUnsetAttributeValue()},
+            to_change[1].id(): {4: QgsUnsetAttributeValue()},
+        }
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.ChangeAttributeValues
+        ):
+            l.dataProvider().changeAttributeValues(changes)
+
+            # check result
+            self.testGetFeatures(l.dataProvider())
+
+        else:
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().changeAttributeValues(changes),
+                "Provider reported no ChangeAttributeValues capability, but returned true to changeAttributeValues",
+            )
+
     def testChangeAttributesConstraintViolation(self):
         """Checks that changing attributes violating a DB-level CHECK constraint returns false
         the provider test case must provide an editable layer with a text field
@@ -1497,6 +1690,83 @@ class ProviderTestCase(FeatureSourceTestCase):
         }
         # changes by pk, for testing after retrieving changed features
         new_attr_map = {1: {1: 501, 3: "new string"}, 2: {1: 502, 4: "NEW"}}
+
+        # find 2 features to change geometries for
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 3])
+        # changes by feature id, for changeGeometryValues call
+        geometry_changes = {
+            to_change[0].id(): QgsGeometry.fromWkt("Point (10 20)"),
+            to_change[1].id(): QgsGeometry(),
+        }
+        # changes by pk, for testing after retrieving changed features
+        new_geom_map = {1: QgsGeometry.fromWkt("Point ( 10 20 )"), 3: QgsGeometry()}
+
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.ChangeGeometries
+            and l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.ChangeAttributeValues
+        ):
+            # expect success
+            result = l.dataProvider().changeFeatures(
+                attribute_changes, geometry_changes
+            )
+            self.assertTrue(
+                result,
+                "Provider reported ChangeGeometries and ChangeAttributeValues capability, but returned False to changeFeatures",
+            )
+
+            # check result
+            self.testGetFeatures(
+                l.dataProvider(),
+                changed_attributes=new_attr_map,
+                changed_geometries=new_geom_map,
+            )
+
+            # change empty list, should return true for consistency
+            self.assertTrue(l.dataProvider().changeFeatures({}, {}))
+
+        elif (
+            not l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.ChangeGeometries
+        ):
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().changeFeatures(attribute_changes, geometry_changes),
+                "Provider reported no ChangeGeometries capability, but returned true to changeFeatures",
+            )
+        elif (
+            not l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.ChangeAttributeValues
+        ):
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().changeFeatures(attribute_changes, geometry_changes),
+                "Provider reported no ChangeAttributeValues capability, but returned true to changeFeatures",
+            )
+
+    def testChangeFeaturesUnsetAttribute(self):
+        if not getattr(self, "getEditableLayer", None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        features = [f for f in l.dataProvider().getFeatures()]
+
+        # find 2 features to change attributes for
+        features = [f for f in l.dataProvider().getFeatures()]
+        # need to keep order here
+        to_change = [f for f in features if f.attributes()[0] == 1]
+        to_change.extend([f for f in features if f.attributes()[0] == 2])
+        # changes by feature id, for changeAttributeValues call
+        attribute_changes = {
+            to_change[0].id(): {1: QgsUnsetAttributeValue(), 3: "new string"},
+            to_change[1].id(): {1: 502, 4: QgsUnsetAttributeValue()},
+        }
+        # changes by pk, for testing after retrieving changed features
+        new_attr_map = {1: {3: "new string"}, 2: {1: 502}}
 
         # find 2 features to change geometries for
         to_change = [f for f in features if f.attributes()[0] == 1]

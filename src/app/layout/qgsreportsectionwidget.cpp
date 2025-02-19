@@ -58,7 +58,7 @@ void QgsReportSectionWidget::editHeader()
 {
   if ( !mSection->header() )
   {
-    std::unique_ptr<QgsLayout> header = std::make_unique<QgsLayout>( mSection->project() );
+    auto header = std::make_unique<QgsLayout>( mSection->project() );
     header->initializeDefaults();
     mSection->setHeader( header.release() );
   }
@@ -75,7 +75,7 @@ void QgsReportSectionWidget::editFooter()
 {
   if ( !mSection->footer() )
   {
-    std::unique_ptr<QgsLayout> footer = std::make_unique<QgsLayout>( mSection->project() );
+    auto footer = std::make_unique<QgsLayout>( mSection->project() );
     footer->initializeDefaults();
     mSection->setFooter( footer.release() );
   }

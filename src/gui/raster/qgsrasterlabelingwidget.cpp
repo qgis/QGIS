@@ -104,7 +104,7 @@ void QgsRasterLabelingWidget::writeSettingsToLayer()
   const QString mode = mLabelModeComboBox->currentData().toString();
   if ( mode == QLatin1String( "simple" ) )
   {
-    std::unique_ptr<QgsRasterLayerSimpleLabeling> labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
+    auto labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
     if ( QgsRasterLabelSettingsWidget *settingsWidget = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
     {
       settingsWidget->updateLabeling( labeling.get() );
@@ -154,7 +154,7 @@ void QgsRasterLabelingWidget::labelModeChanged( int index )
     mWidget = settingsWidget;
     if ( !dynamic_cast<QgsRasterLayerSimpleLabeling *>( mLayer->labeling() ) )
     {
-      std::unique_ptr<QgsRasterLayerSimpleLabeling> labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
+      auto labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
       settingsWidget->setLabeling( labeling.get() );
       mLayer->setLabeling( labeling.release() );
     }

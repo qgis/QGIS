@@ -51,7 +51,7 @@ QgsTiledSceneRendererWidget *QgsTiledSceneWireframeRendererWidget::create( QgsTi
 
 QgsTiledSceneRenderer *QgsTiledSceneWireframeRendererWidget::renderer()
 {
-  std::unique_ptr<QgsTiledSceneWireframeRenderer> renderer = std::make_unique<QgsTiledSceneWireframeRenderer>();
+  auto renderer = std::make_unique<QgsTiledSceneWireframeRenderer>();
   renderer->setFillSymbol( mFillSymbolButton->clonedSymbol<QgsFillSymbol>() );
   renderer->setLineSymbol( mLineSymbolButton->clonedSymbol<QgsLineSymbol>() );
   renderer->setUseTextureColors( mCheckUseTextureColors->isChecked() );

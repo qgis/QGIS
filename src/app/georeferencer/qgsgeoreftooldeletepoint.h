@@ -21,18 +21,19 @@
 class QgsPointXY;
 class QgsMapCanvas;
 
-class QgsGeorefToolDeletePoint : public QgsMapToolEmitPoint
+class QgsGeorefToolDeletePoint : public QgsMapTool
 {
     Q_OBJECT
 
   public:
     explicit QgsGeorefToolDeletePoint( QgsMapCanvas *canvas );
 
-    // Mouse events for overriding
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   signals:
-    void deleteDataPoint( QPoint );
+    void hoverPoint( const QgsPointXY &p );
+    void deletePoint( const QgsPointXY &p );
 };
 
 #endif // QGSGEOREFTOOLDELETEPOINT_H

@@ -50,6 +50,12 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent, const QString &co
   updateConvertBtnState();
 }
 
+void QgsAuthSettingsWidget::removeBasicSettings()
+{
+  tabAuth->removeTab( tabAuth->indexOf( tabBasic ) );
+  tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
+}
+
 void QgsAuthSettingsWidget::setWarningText( const QString &warningText )
 {
   lblWarning->setText( warningText );

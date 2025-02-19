@@ -79,7 +79,7 @@ class FeatureFetcher : public QThread
 
 void TestQgsVectorLayerUtils::testGetFeatureSource()
 {
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl->startEditing();
   QgsFeature f1( vl->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 10 );

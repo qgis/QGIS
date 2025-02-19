@@ -573,12 +573,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isValid() const;
 
+    // TODO QGIS 4.0: consider changing bool hidePassword to an enumeration: HIDE_CREDENTIALS / REDACT_CREDENTIALS
+    // to avoid the ambiguity of the double negation (hide = false)
+
     /**
      * Gets a version of the internal layer definition that has sensitive
-      *  bits removed (for example, the password). This function should
-      * be used when displaying the source name for general viewing.
-      * \param hidePassword False, if the password should be removed or replaced by an arbitrary string, since QGIS 3.34
-      * \see source()
+     * bits removed (for example, the password). This function should
+     * be used when displaying the source name for general viewing.
+     * \param hidePassword TRUE to replace the value of credentials with 'xxxxxxxx', FALSE to completely remove credentials (key and value). Since QGIS 3.34
+     * \see source()
      */
     QString publicSource( bool hidePassword = false ) const;
 

@@ -49,7 +49,7 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
 
 std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLayer *layer, const QgsFeature &f )
 {
-  std::unique_ptr<QgsHighlight> highlight = std::make_unique<QgsHighlight>( mCanvas, f.geometry(), layer );
+  auto highlight = std::make_unique<QgsHighlight>( mCanvas, f.geometry(), layer );
   highlight->applyDefaultStyle();
 
   switch ( f.geometry().type() )

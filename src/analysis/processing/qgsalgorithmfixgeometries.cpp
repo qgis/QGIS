@@ -89,7 +89,7 @@ bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 void QgsFixGeometriesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterEnum> methodParameter = std::make_unique<QgsProcessingParameterEnum>(
+  auto methodParameter = std::make_unique<QgsProcessingParameterEnum>(
     QStringLiteral( "METHOD" ),
     QObject::tr( "Repair method" ),
     QStringList { QObject::tr( "Linework" ), QObject::tr( "Structure" ) },
