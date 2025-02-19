@@ -106,12 +106,12 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
 
   switch ( mSource->mPrimaryKeyType )
   {
-    case PktInt:
+    case QgsMssqlDatabase::PrimaryKeyType::Int:
       Q_ASSERT( mSource->mPrimaryKeyAttrs.size() == 1 );
       whereClause = QStringLiteral( "[%1]=%2" ).arg( mSource->mFields.at( mSource->mPrimaryKeyAttrs[0] ).name(), FID_TO_STRING( featureId ) );
       break;
 
-    case PktFidMap:
+    case QgsMssqlDatabase::PrimaryKeyType::FidMap:
     {
       const QVariantList &pkVals = mSource->mShared->lookupKey( featureId );
       if ( !pkVals.isEmpty() )
@@ -138,7 +138,7 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
     }
     break;
 
-    default:
+    case QgsMssqlDatabase::PrimaryKeyType::Unknown:
       Q_ASSERT( !"FAILURE: Primary key unknown" );
       whereClause = QStringLiteral( "NULL IS NOT NULL" );
       break;
@@ -258,11 +258,11 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     else
       mStatement += QLatin1String( " AND " );
 
-    if ( mSource->mPrimaryKeyType == PktInt )
+    if ( mSource->mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::Int )
     {
       mStatement += QStringLiteral( "[%1]=%2" ).arg( mSource->mFields[mSource->mPrimaryKeyAttrs[0]].name(), FID_TO_STRING( request.filterFid() ) );
     }
-    else if ( mSource->mPrimaryKeyType == PktFidMap )
+    else if ( mSource->mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::FidMap )
     {
       QVariantList key = mSource->mShared->lookupKey( request.filterFid() );
       if ( !key.isEmpty() )
@@ -297,7 +297,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     else
       mStatement += QLatin1String( " AND " );
 
-    if ( mSource->mPrimaryKeyType == PktInt )
+    if ( mSource->mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::Int )
     {
       QString delim;
       QString colName = mSource->mFields[mSource->mPrimaryKeyAttrs[0]].name();
@@ -512,14 +512,14 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 
     switch ( mSource->mPrimaryKeyType )
     {
-      case PktInt:
+      case QgsMssqlDatabase::PrimaryKeyType::Int:
         // get 64bit integer from result
         fid = mQuery->record().value( mSource->mFields.at( mSource->mPrimaryKeyAttrs.value( 0 ) ).name() ).toLongLong();
         if ( mAttributesToFetch.contains( mSource->mPrimaryKeyAttrs.value( 0 ) ) )
           feature.setAttribute( mSource->mPrimaryKeyAttrs.value( 0 ), fid );
         break;
 
-      case PktFidMap:
+      case QgsMssqlDatabase::PrimaryKeyType::FidMap:
       {
         QVariantList primaryKeyVals;
         for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
@@ -541,7 +541,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       }
       break;
 
-      case PktUnknown:
+      case QgsMssqlDatabase::PrimaryKeyType::Unknown:
         Q_ASSERT( !"FAILURE: cannot get feature with unknown primary key" );
         return false;
     }
