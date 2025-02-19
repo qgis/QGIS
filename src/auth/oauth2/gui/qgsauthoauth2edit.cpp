@@ -191,6 +191,11 @@ void QgsAuthOAuth2Edit::setupConnections()
   connect( spnbxRequestTimeout, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestTimeout );
 
   connect( mTokenHeaderLineEdit, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setCustomHeader );
+  connect( mExtraTokensTable, &QTableWidget::cellChanged, mOAuthConfigCustom.get(), [=]( int, int ) {
+    mOAuthConfigCustom->setExtraTokens( extraTokens() );
+  } );
+  connect( mAddExtraTokenButton, &QToolButton::clicked, this, &QgsAuthOAuth2Edit::addExtraToken );
+  connect( mRemoveExtraTokenButton, &QToolButton::clicked, this, &QgsAuthOAuth2Edit::removeExtraToken );
 
   connect( mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::validityChanged, this, &QgsAuthOAuth2Edit::configValidityChanged );
 
@@ -402,6 +407,8 @@ void QgsAuthOAuth2Edit::loadFromOAuthConfig( const QgsAuthOAuth2Config *config )
     leScope->setText( config->scope() );
     leApiKey->setText( config->apiKey() );
     mTokenHeaderLineEdit->setText( config->customHeader() );
+
+    populateExtraTokens( config->extraTokens() );
 
     // advanced
     chkbxTokenPersist->setChecked( config->persistToken() );
@@ -873,11 +880,19 @@ void QgsAuthOAuth2Edit::updateConfigAccessMethod( int indx )
     case QgsAuthOAuth2Config::AccessMethod::Header:
       mTokenHeaderLineEdit->setVisible( true );
       mTokenHeaderLabel->setVisible( true );
+      mExtraTokensHeaderLabel->setVisible( true );
+      mExtraTokensTable->setVisible( true );
+      mAddExtraTokenButton->setVisible( true );
+      mAddExtraTokenButton->setVisible( true );
       break;
     case QgsAuthOAuth2Config::AccessMethod::Form:
     case QgsAuthOAuth2Config::AccessMethod::Query:
       mTokenHeaderLineEdit->setVisible( false );
       mTokenHeaderLabel->setVisible( false );
+      mExtraTokensHeaderLabel->setVisible( false );
+      mExtraTokensTable->setVisible( false );
+      mAddExtraTokenButton->setVisible( false );
+      mAddExtraTokenButton->setVisible( false );
       break;
   }
 }
@@ -915,7 +930,6 @@ void QgsAuthOAuth2Edit::populateQueryPairs( const QVariantMap &querypairs, bool 
   }
 }
 
-
 void QgsAuthOAuth2Edit::queryTableSelectionChanged()
 {
   const bool hassel = tblwdgQueryPairs->selectedItems().count() > 0;
@@ -941,7 +955,6 @@ QVariantMap QgsAuthOAuth2Edit::queryPairs() const
   return querypairs;
 }
 
-
 void QgsAuthOAuth2Edit::addQueryPair()
 {
   addQueryPairRow( QString(), QString() );
@@ -956,13 +969,84 @@ void QgsAuthOAuth2Edit::removeQueryPair()
   tblwdgQueryPairs->removeRow( tblwdgQueryPairs->currentRow() );
 }
 
-
 void QgsAuthOAuth2Edit::clearQueryPairs()
 {
   for ( int i = tblwdgQueryPairs->rowCount(); i > 0; --i )
   {
     tblwdgQueryPairs->removeRow( i - 1 );
   }
+}
+
+QVariantMap QgsAuthOAuth2Edit::extraTokens() const
+{
+  QVariantMap extraTokens;
+  for ( int i = 0; i < mExtraTokensTable->rowCount(); ++i )
+  {
+    if ( mExtraTokensTable->item( i, 0 )->text().isEmpty() || mExtraTokensTable->item( i, 1 )->text().isEmpty() )
+    {
+      continue;
+    }
+    extraTokens.insert( mExtraTokensTable->item( i, 0 )->text(), QVariant( mExtraTokensTable->item( i, 1 )->text() ) );
+  }
+  return extraTokens;
+}
+
+void QgsAuthOAuth2Edit::addExtraToken()
+{
+  mExtraTokensTable->blockSignals( true );
+  addExtraTokenRow( QString(), QString() );
+  mExtraTokensTable->blockSignals( false );
+
+  mExtraTokensTable->setFocus();
+  mExtraTokensTable->setCurrentCell( mExtraTokensTable->rowCount() - 1, 0 );
+  mExtraTokensTable->edit( mExtraTokensTable->currentIndex() );
+}
+
+void QgsAuthOAuth2Edit::removeExtraToken()
+{
+  mExtraTokensTable->removeRow( mExtraTokensTable->currentRow() );
+}
+
+void QgsAuthOAuth2Edit::clearExtraTokens()
+{
+  for ( int i = mExtraTokensTable->rowCount(); i > 0; --i )
+  {
+    mExtraTokensTable->removeRow( i - 1 );
+  }
+}
+
+void QgsAuthOAuth2Edit::addExtraTokenRow( const QString &key, const QString &val )
+{
+  const int rowCnt = mExtraTokensTable->rowCount();
+  mExtraTokensTable->insertRow( rowCnt );
+
+  const Qt::ItemFlags itmFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                                 | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+
+  QTableWidgetItem *keyItm = new QTableWidgetItem( key );
+  keyItm->setFlags( itmFlags );
+  mExtraTokensTable->setItem( rowCnt, 0, keyItm );
+
+  QTableWidgetItem *valItm = new QTableWidgetItem( val );
+  keyItm->setFlags( itmFlags );
+  mExtraTokensTable->setItem( rowCnt, 1, valItm );
+}
+
+void QgsAuthOAuth2Edit::populateExtraTokens( const QVariantMap &tokens, bool append )
+{
+  mExtraTokensTable->blockSignals( true );
+  if ( !append )
+  {
+    clearExtraTokens();
+  }
+
+  QVariantMap::const_iterator i = tokens.constBegin();
+  while ( i != tokens.constEnd() )
+  {
+    addExtraTokenRow( i.key(), i.value().toString() );
+    ++i;
+  }
+  mExtraTokensTable->blockSignals( false );
 }
 
 void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
