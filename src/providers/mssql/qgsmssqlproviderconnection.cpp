@@ -493,6 +493,35 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsMssqlProviderConn
   return tables;
 }
 
+QgsFields QgsMssqlProviderConnection::fields( const QString &schema, const QString &table, QgsFeedback *feedback ) const
+{
+  if ( feedback && feedback->isCanceled() )
+  {
+    return QgsFields();
+  }
+
+  const QgsDataSourceUri dsUri { uri() };
+
+  // connect to database
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
+  if ( !db->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
+                                            .arg( uri(), db->errorText() ) );
+  }
+
+  QgsMssqlDatabase::FieldDetails details;
+
+  QString error;
+  const bool result = db->loadFields( details, schema, table, error );
+  if ( !result )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information: %1" ).arg( error ) );
+  }
+
+  return details.attributeFields;
+}
+
 QStringList QgsMssqlProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
@@ -500,7 +529,6 @@ QStringList QgsMssqlProviderConnection::schemas() const
 
   const QgsDataSourceUri connUri( uri() );
 
-  const QgsDataSourceUri dsUri { uri() };
   const QString sql {
     QStringLiteral(
       R"raw(

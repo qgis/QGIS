@@ -61,6 +61,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
+    QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QStringList schemas() const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
