@@ -56,7 +56,8 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     enum Role
     {
       FeatureInfoRole = 0x1000, // Make sure no collisions with roles on QgsAttributeTableModel
-      FeatureRole
+      FeatureRole,              //!< Feature with all attributes and no geometry
+      FeatureWithGeometryRole,  //!< Feature with all attributes and geometry, \since QGIS 3.42
     };
 
   public:

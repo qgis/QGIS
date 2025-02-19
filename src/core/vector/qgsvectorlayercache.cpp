@@ -220,6 +220,33 @@ bool QgsVectorLayerCache::featureAtIdWithAllAttributes( QgsFeatureId featureId, 
   return featureFound;
 }
 
+bool QgsVectorLayerCache::featureAtIdWithAllAttributesAndGeometry( QgsFeatureId featureId, QgsFeature &feature, bool skipCache )
+{
+  bool featureFound = false;
+
+  QgsCachedFeature *cachedFeature = nullptr;
+
+  if ( !skipCache )
+  {
+    cachedFeature = mCache[ featureId ];
+  }
+
+  if ( cachedFeature && cachedFeature->allAttributesFetched() && cachedFeature->geometryFetched() )
+  {
+    feature = QgsFeature( *cachedFeature->feature() );
+    featureFound = true;
+  }
+  else if ( mLayer->getFeatures( QgsFeatureRequest()
+                                 .setFilterFid( featureId ) )
+            .nextFeature( feature ) )
+  {
+    cacheFeature( feature, true, true );
+    featureFound = true;
+  }
+
+  return featureFound;
+}
+
 bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 {
   bool removed = mCache.remove( fid );
@@ -561,3 +588,7 @@ bool QgsVectorLayerCache::QgsCachedFeature::allAttributesFetched() const
   return mAllAttributesFetched;
 }
 
+bool QgsVectorLayerCache::QgsCachedFeature::geometryFetched() const
+{
+  return mGeometryFetched;
+}
