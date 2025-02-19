@@ -84,8 +84,8 @@ class TestPyQgsLegendSettings(QgisTestCase):
         self.assertEqual(settings.maximumSymbolSize(), 20.0)
         self.assertEqual(settings.minimumSymbolSize(), 5.0)
 
-        settings.setSymbolAlignment(Qt.AlignRight)
-        self.assertEqual(settings.symbolAlignment(), Qt.AlignRight)
+        settings.setSymbolAlignment(Qt.AlignmentFlag.AlignRight)
+        self.assertEqual(settings.symbolAlignment(), Qt.AlignmentFlag.AlignRight)
 
         settings.setDrawRasterStroke(True)
         self.assertTrue(settings.drawRasterStroke())
