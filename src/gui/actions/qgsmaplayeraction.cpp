@@ -75,6 +75,17 @@ bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerA
       return false;
   }
 
+  if ( mFlags & Qgis::MapLayerActionFlag::EnableOnlyWhenHasGeometry )
+  {
+    // action is only enabled for layers with geometry
+    if ( !layer )
+      return false;
+    if ( layer->type() != Qgis::LayerType::Vector )
+      return false;
+    if ( qobject_cast<QgsVectorLayer *>( layer )->wkbType() == Qgis::WkbType::NoGeometry )
+      return false;
+  }
+
   //check layer details
   if ( !mSingleLayer && !mSpecificLayerType )
   {
