@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-*
+      - oauth_extra_tokens_build
   pull_request:
   release:
     types: ['published']
