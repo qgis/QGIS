@@ -212,7 +212,9 @@ class QgsHanaProviderUtils:
             cursor.close()
 
             for row in rows:
-                QgsHanaProviderUtils.executeSQL(conn, f'DROP SCHEMA "{row["SCHEMA_NAME"]}" CASCADE')
+                QgsHanaProviderUtils.executeSQL(
+                    conn, f'DROP SCHEMA "{row["SCHEMA_NAME"]}" CASCADE'
+                )
         except Exception as ex:
             print(f"Unable to drop old test schemas. Error: {ex}")
             pass
