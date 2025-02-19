@@ -425,7 +425,7 @@ void QgsMssqlProvider::loadFields()
     }
   }
 
-  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = N%1, @table_owner = %2" ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
+  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = %1, @table_owner = %2" ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
   if ( !LoggedExec( query, sql3 ) )
   {
     pushError( query.lastError().text() );
@@ -528,7 +528,7 @@ void QgsMssqlProvider::loadFields()
   {
     query.clear();
     query.setForwardOnly( true );
-    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
+    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = %1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
     if ( !LoggedExec( query, sql4 ) )
     {
       QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
@@ -619,7 +619,7 @@ QString QgsMssqlProvider::quotedValue( const QVariant &value )
       if ( v.contains( '\\' ) )
         return v.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "N'" ).append( '\'' );
       else
-        return v.prepend( '\'' ).append( '\'' );
+        return v.prepend( "N'" ).append( '\'' );
   }
 }
 
