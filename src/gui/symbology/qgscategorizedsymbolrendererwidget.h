@@ -237,11 +237,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void applyChangeToSymbol();
 
     /**
-     * Returns the list of unique values in the widget's layer.
+     * Returns the list of unique values in the current widget's layer for attribute name \a attrName.
      *
      * Called by addCategories() and deleteUnusedCategories()
      */
-    QList<QVariant> layerUniqueValues( QString attrName );
+    QList<QVariant> layerUniqueValues( const QString attrName );
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
