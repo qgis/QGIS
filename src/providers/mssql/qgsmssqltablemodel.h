@@ -31,9 +31,9 @@ struct QgsMssqlLayerProperty
     QString geometryColName;
     QStringList pkCols;
     QString srid;
-    bool isGeography;
+    bool isGeography = false;
     QString sql;
-    bool isView;
+    bool isView = false;
 };
 
 
