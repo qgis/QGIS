@@ -37,9 +37,6 @@ QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
 
 void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
 {
-  // qDebug() << "QgsModelViewToolLink::modelMoveEvent";
-
-
   mBezierRubberBand->update( event->modelPoint(), Qt::KeyboardModifiers() );
 
   // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate
@@ -98,7 +95,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   QList<QgsProcessingModelChildParameterSource> sources;
 
-
   QgsProcessingModelComponent *component_from;
   QgsProcessingModelChildAlgorithm *child_to;
 
@@ -116,28 +112,18 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   }
 
 
-  // QString inputName = "INPUT";
   const QgsProcessingParameterDefinition *toParam = child_to->algorithm()->parameterDefinitions().at( mTo->index() );
-
 
   QgsProcessingModelChildParameterSource source;
   if ( QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( component_from ) )
   {
     QString outputName = child_from->algorithm()->outputDefinitions().at( mFrom->index() )->name();
     source = QgsProcessingModelChildParameterSource::fromChildOutput( child_from->childId(), outputName );
-    qDebug() << "child_from->childId: " << child_from->childId();
   }
   else if ( QgsProcessingModelParameter *param_from = dynamic_cast<QgsProcessingModelParameter *>( component_from ) )
   {
     source = QgsProcessingModelChildParameterSource::fromModelParameter( param_from->parameterName() );
   }
-
-  // QgsProcessingModelChildParameterSource source =  QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c2_CONCATENATION || 'x'" ) ) ;
-  qDebug() << "OUTPUTT:" << source.outputName();
-  qDebug() << "OUTPUT  child id" << source.outputChildId();
-
-
-  // setChildAlgorithm
 
   QgsProcessingContext context;
   QgsProcessingModelerParameterWidget *widget = QgsGui::processingGuiRegistry()->createModelerParameterWidget( view()->modelScene()->model(), child_to->childId(), toParam, context );
@@ -166,20 +152,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   // Redraw
   emit scene() -> rebuildRequired();
 
-
-  // // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
-  // // to multiple items
-  // QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
-  // qDebug() << "Click on an item";
-  // for ( QGraphicsItem *item : items )
-  // {
-  //   if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) ){
-  //     // Start link tool"
-  //     // qDebug() << "Start link tool";
-  //     // mLinkTool->setFromSocket(socket);
-  //     // view()->setTool( mLinkTool.get() );
-  //   }
-  // }
 }
 
 bool QgsModelViewToolLink::allowItemInteraction()
@@ -189,20 +161,16 @@ bool QgsModelViewToolLink::allowItemInteraction()
 
 void QgsModelViewToolLink::activate()
 {
-  qDebug() << "activate link tool";
   mPreviousViewTool = view()->tool();
 
   QPointF rubberStartPos = mFrom->mapToScene( mFrom->getPosition() );
   mBezierRubberBand->start( rubberStartPos, Qt::KeyboardModifiers() );
-
-  // if mFrom
 
   QgsModelViewTool::activate();
 }
 
 void QgsModelViewToolLink::deactivate()
 {
-  qDebug() << "deactivate link tool";
   mBezierRubberBand->finish();
   QgsModelViewTool::deactivate();
 }
@@ -217,7 +185,6 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
     const QgsProcessingParameterDefinition *param = child_from->algorithm()->parameterDefinitions().at( mFrom->index() );
 
     auto current_sources = child_from->parameterSources().value( param->name() );
-    qDebug() << "SOURCES :" << current_sources.size();
 
     // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate
     QList<QGraphicsItem *> items = scene()->items();
@@ -229,8 +196,6 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
         case Qgis::ProcessingModelChildParameterSource::ModelParameter:
         case Qgis::ProcessingModelChildParameterSource::ChildOutput:
         {
-          // source.outputName();
-          // source.outputChildId();
 
           old_source = source;
           QgsProcessingModelChildAlgorithm *_alg;
@@ -263,9 +228,6 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             }
           }
 
-
-          qDebug() << "new source";
-          // child_alg
           //reset to default value
           QList<QgsProcessingModelChildParameterSource> new_sources;
           new_sources << QgsProcessingModelChildParameterSource::fromStaticValue( param->defaultValue() );

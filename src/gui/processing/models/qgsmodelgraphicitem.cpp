@@ -195,7 +195,7 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 
   float display_size = 3.2;
   painter->drawEllipse( getPosition(), display_size, display_size );
-
+  /* Uncomment to display bouding box */
   // painter->save();
   // painter->setPen( QPen() );
   // painter->setBrush( QBrush() );

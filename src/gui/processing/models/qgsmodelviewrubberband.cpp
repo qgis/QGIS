@@ -205,8 +205,6 @@ void QgsModelViewBezierRubberBand::start( QPointF position, Qt::KeyboardModifier
   mRubberBandItem->setBrush( Qt::NoBrush );
   mRubberBandItem->setPen( pen() );
   mRubberBandStartPos = position;
-  // t.translate( position.x(), position.y() );
-  // mRubberBandItem->setTransform( t );
   mRubberBandItem->setZValue( QgsModelGraphicsScene::RubberBand );
   view()->scene()->addItem( mRubberBandItem );
   view()->scene()->update();
@@ -219,45 +217,23 @@ void QgsModelViewBezierRubberBand::update( QPointF position, Qt::KeyboardModifie
     return;
   }
 
-  QList<QPointF> controlPoints;
-
-  controlPoints.append( mRubberBandStartPos );
 
   // Change the offset
+  QList<QPointF> controlPoints;
+
   int offsetX = ( position.x() - mRubberBandStartPos.x() > 0 ) ? 50 : -50;
 
+  controlPoints.append( mRubberBandStartPos );
   controlPoints.append( mRubberBandStartPos + QPointF( offsetX, 0 ) );
   controlPoints.append( position - QPointF( offsetX, 0 ) );
-
-
-  // controlPoints.append(bezierPointForCurve( pt, endEdge, mEndIsIncoming, endHasSpecificDirectionalFlow ));
   controlPoints.append( position );
 
-  // const QRectF newRect = updateRect( mRubberBandStartPos, position, false, false );
-
-  // mRubberBandItem->setRect( 0, 0, newRect.width(), newRect.height() );
-
   QPainterPath path;
-  // path.moveTo( mRubberBandStartPos );
-  // path.lineTo( position );
-
-
-  // path.moveTo( controlPoints.at( 0 ) );
-  // path.lineTo( controlPoints.at( 1 ) );
-  // path.lineTo( controlPoints.at( 2 ) );
-  // path.lineTo( controlPoints.at( 3 ) );
 
   path.moveTo( controlPoints.at( 0 ) );
   path.cubicTo( controlPoints.at( 1 ), controlPoints.at( 2 ), controlPoints.at( 3 ) );
 
-
   mRubberBandItem->setPath( path );
-
-  // QTransform t;
-  // t.translate( newRect.x(), newRect.y() );
-
-  // t.translate( mRubberBandStartPos.x(), mRubberBandStartPos.y() );
-  // mRubberBandItem->setTransform( t );
 }
 
 QRectF QgsModelViewBezierRubberBand::finish( QPointF position, Qt::KeyboardModifiers )
