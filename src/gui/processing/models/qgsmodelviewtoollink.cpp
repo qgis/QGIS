@@ -136,7 +136,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   {
     //Type are incomatible
     QString title = "Impossible to connect socket";
-    QString message = "Impossible to connect socket either type are incompatibles or theres is a circular dependency";
+    QString message = "Impossible to connect socket either type are incompatibles or there is a circular dependency";
     scene()->showWarning( message, title, message );
     return;
   }
