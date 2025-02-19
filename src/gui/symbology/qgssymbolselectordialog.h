@@ -398,7 +398,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     QgsSymbolSelectorWidget *mSelectorWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
-    QgsSymbolWidgetContext mContext;
 };
 
 #endif
