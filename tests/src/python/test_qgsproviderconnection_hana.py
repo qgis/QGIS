@@ -49,9 +49,11 @@ class TestPyQgsProviderConnectionHana(
         if "QGIS_HANA_TEST_DB" in os.environ:
             cls.uri = os.environ["QGIS_HANA_TEST_DB"]
         cls.conn = QgsHanaProviderUtils.createConnection(cls.uri)
-        cls.schemaName = QgsHanaProviderUtils.generateSchemaName(
-            cls.conn, "qgis_test_provider_conn"
-        )
+
+        schemaPrefix = "qgis_test_providerconn"
+        QgsHanaProviderUtils.dropOldTestSchemas(cls.conn, schemaPrefix)
+
+        cls.schemaName = QgsHanaProviderUtils.generateSchemaName(cls.conn, schemaPrefix)
 
         QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn, cls.schemaName)
         # Create test layers
@@ -65,12 +67,14 @@ class TestPyQgsProviderConnectionHana(
     def tearDownClass(cls):
         """Run after all tests"""
 
-        QgsHanaProviderUtils.cleanUp(cls.conn, cls.schemaName)
+        QgsHanaProviderUtils.dropSchemaIfExists(cls.conn, cls.schemaName)
         cls.conn.close()
         super().tearDownClass()
 
     def getUniqueSchemaName(self, name):
-        return "qgis_test_" + QgsHanaProviderUtils.generateSchemaName(self.conn, name)
+        return "qgis_test_providerconn_" + QgsHanaProviderUtils.generateSchemaName(
+            self.conn, name
+        )
 
     def createProviderMetadata(self):
         return QgsProviderRegistry.instance().providerMetadata(self.providerKey)
