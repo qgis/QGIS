@@ -12124,12 +12124,13 @@ void QgisApp::legendGroupSetWmsData()
     return;
 
   QgsGroupWmsDataDialog dlg( *currentGroup->serverProperties(), this );
-  if ( dlg.exec() )
+  dlg.setHasTimeDimension( currentGroup->hasWmsTimeDimension() );
+  if ( dlg.exec() && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() ) )
   {
-    if ( *dlg.serverProperties() != *currentGroup->serverProperties() )
-      QgsProject::instance()->setDirty( true );
+    QgsProject::instance()->setDirty( true );
 
     dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
+    currentGroup->setHasWmsTimeDimension( dlg.hasTimeDimension() );
   }
 }
 

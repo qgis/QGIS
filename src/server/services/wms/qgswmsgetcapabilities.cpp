@@ -18,6 +18,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <optional>
+
 #include "qgswmsutils.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgsserverprojectutils.h"
@@ -58,7 +61,7 @@ namespace QgsWms
 
     void appendLayerStyles( QDomDocument &doc, QDomElement &layerElem, const QgsWmsLayerInfos &layerInfos, const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *settings );
 
-    void appendLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings );
+    void appendLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings, QList<QgsDateTimeRange> &parentDateRanges );
 
     void addKeywordListElement( const QgsProject *project, QDomDocument &doc, QDomElement &parent );
   } // namespace
@@ -752,7 +755,7 @@ namespace QgsWms
     return wfsLayersElem;
   }
 
-  void handleLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings )
+  void handleLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings, QList<QgsDateTimeRange> &parentDateRanges )
   {
     const auto layerIds = layerTreeGroup->findLayerIds();
 
@@ -768,7 +771,7 @@ namespace QgsWms
     appendLayerWgs84BoundingRect( doc, parentLayer, wgs84BoundingRect );
     appendLayerCrsExtents( doc, parentLayer, crsExtents );
 
-    appendLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, layerTreeGroup, wmsLayerInfos, projectSettings );
+    appendLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, layerTreeGroup, wmsLayerInfos, projectSettings, parentDateRanges );
   }
 
   QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, bool projectSettings )
@@ -881,11 +884,13 @@ namespace QgsWms
       appendLayerWgs84BoundingRect( doc, layerParentElem, wmsWgs84BoundingRect );
       appendLayerCrsExtents( doc, layerParentElem, wmsCrsExtents );
 
-      appendLayersFromTreeGroup( doc, layerParentElem, serverIface, project, request, projectLayerTreeRoot, wmsLayerInfos, projectSettings );
+      QList<QgsDateTimeRange> parentDateRanges;
+      appendLayersFromTreeGroup( doc, layerParentElem, serverIface, project, request, projectLayerTreeRoot, wmsLayerInfos, projectSettings, parentDateRanges );
     }
     else
     {
-      handleLayersFromTreeGroup( doc, layerParentElem, serverIface, project, request, projectLayerTreeRoot, wmsLayerInfos, projectSettings );
+      QList<QgsDateTimeRange> parentDateRanges;
+      handleLayersFromTreeGroup( doc, layerParentElem, serverIface, project, request, projectLayerTreeRoot, wmsLayerInfos, projectSettings, parentDateRanges );
     }
 
     return layerParentElem;
@@ -1082,7 +1087,42 @@ namespace QgsWms
       return styleElem;
     }
 
-    void appendLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings )
+    //! Return TRUE if date only have been written, FALSE if there is datetime
+    bool writeTimeDimensionNode( QDomDocument &doc, QDomElement &layerElem, const QList<QgsDateTimeRange> &dateRanges )
+    {
+      // Apparently, for vectors allTemporalRanges is always empty :/
+      // there is no way to know the type of range or the individual instants
+
+      // we write a TIME dimension even if dateRanges is empty. Not sure this is appropriate but
+      // it was like that from the beginning so better keep it that way to avoid regression on client side
+
+      const bool hasDateTime = std::any_of( dateRanges.constBegin(), dateRanges.constEnd(), []( const QgsDateTimeRange &r ) { return r.begin().time() != QTime( 0, 0 )
+                                                                                                                                     || ( !r.isInstant() && r.end().time() != QTime( 0, 0 ) ); } );
+
+      const QString dateFormat = hasDateTime ? QStringLiteral( "yyyy-MM-ddTHH:mm:ss" ) : QStringLiteral( "yyyy-MM-dd" );
+
+      QStringList strValues;
+      for ( const QgsDateTimeRange &r : dateRanges )
+      {
+        // Standard ISO8601 doesn't support range with no defined begin or end
+        if ( r.begin().isValid() && r.end().isValid() )
+        {
+          strValues << ( r.isInstant() ? r.begin().toString( dateFormat ) : QStringLiteral( "%1/%2" ).arg( r.begin().toString( dateFormat ) ).arg( r.end().toString( dateFormat ) ) );
+        }
+      }
+
+      QDomElement dimElem = doc.createElement( QStringLiteral( "Dimension" ) );
+      dimElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "TIME" ) );
+      dimElem.setAttribute( QStringLiteral( "units" ), QStringLiteral( "ISO8601" ) );
+      QDomText dimValuesText = doc.createTextNode( strValues.join( QChar( ',' ) ) );
+      dimElem.appendChild( dimValuesText );
+
+      layerElem.appendChild( dimElem );
+
+      return !hasDateTime;
+    }
+
+    void appendLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, bool projectSettings, QList<QgsDateTimeRange> &parentDateRanges )
     {
       const QString version = request.wmsParameters().version();
 
@@ -1117,7 +1157,7 @@ namespace QgsWms
             layerElem.setAttribute( QStringLiteral( "mutuallyExclusive" ), treeGroupChild->isMutuallyExclusive() );
           }
 
-          QString shortName = treeGroupChild->serverProperties()->shortName();
+          const QString shortName = treeGroupChild->serverProperties()->shortName();
 
           if ( !skipNameForGroup )
           {
@@ -1149,7 +1189,14 @@ namespace QgsWms
             layerElem.appendChild( treeNameElem );
           }
 
-          handleLayersFromTreeGroup( doc, layerElem, serverIface, project, request, treeGroupChild, wmsLayerInfos, projectSettings );
+          QList<QgsDateTimeRange> childrenDateRanges;
+          handleLayersFromTreeGroup( doc, layerElem, serverIface, project, request, treeGroupChild, wmsLayerInfos, projectSettings, childrenDateRanges );
+
+          if ( treeGroupChild->hasWmsTimeDimension() )
+          {
+            writeTimeDimensionNode( doc, layerElem, childrenDateRanges );
+            parentDateRanges.append( childrenDateRanges );
+          }
 
           // Check if child layer elements have been added
           if ( layerElem.elementsByTagName( QStringLiteral( "Layer" ) ).length() == 0 )
@@ -1313,61 +1360,13 @@ namespace QgsWms
                && l->temporalProperties()
                && l->temporalProperties()->isActive() )
           {
-            QDomElement dimElem = doc.createElement( QStringLiteral( "Dimension" ) );
-            dimElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "TIME" ) );
-            dimElem.setAttribute( QStringLiteral( "units" ), QStringLiteral( "ISO8601" ) );
-
             // TODO: set "default" (reference value)
 
             // Add all values
             const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
+            bool isDateList = writeTimeDimensionNode( doc, layerElem, allRanges );
 
-            // Apparently, for vectors allTemporalRanges is always empty :/
-            // there is no way to know the type of range or the individual instants
-
-            bool isDateList { true };
-            bool isInstantList { true };
-
-            QList<QDateTime> values;
-            for ( const auto &r : std::as_const( allRanges ) )
-            {
-              if ( r.isInstant() )
-              {
-                if ( r.begin().time() != QTime( 0, 0, 0, 0 ) )
-                {
-                  isDateList = false;
-                }
-                values.append( r.begin() );
-              }
-              else
-              {
-                isInstantList = false;
-                break;
-              }
-            }
-
-            // Only list individual values for list of instants,
-            // otherwise only the extent will be shown
-            if ( isInstantList )
-            {
-              // values list
-              QStringList strValues;
-              for ( const auto &v : values )
-              {
-                if ( isDateList )
-                {
-                  strValues << v.date().toString( Qt::DateFormat::ISODate );
-                }
-                else
-                {
-                  strValues << v.toString( Qt::DateFormat::ISODate );
-                }
-              }
-              QDomText dimValuesText = doc.createTextNode( strValues.join( QChar( ',' ) ) );
-              dimElem.appendChild( dimValuesText );
-            }
-
-            layerElem.appendChild( dimElem );
+            parentDateRanges.append( allRanges );
 
             QDomElement timeExtentElem = doc.createElement( QStringLiteral( "Extent" ) );
             timeExtentElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "TIME" ) );
