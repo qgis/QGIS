@@ -126,9 +126,9 @@ Changes the selected symbols alone for the change button, if there is a selectio
 Applies current symbol to selected categories, or to all categories if none is selected
 %End
 
-    QList<QVariant> layerUniqueValues( QString attrName );
+    QList<QVariant> layerUniqueValues( const QString attrName );
 %Docstring
-Returns the list of unique values in the widget's layer.
+Returns the list of unique values in the current widget's layer for attribute name ``attrName``.
 
 Called by :py:func:`~QgsCategorizedSymbolRendererWidget.addCategories` and :py:func:`~QgsCategorizedSymbolRendererWidget.deleteUnusedCategories`
 %End
