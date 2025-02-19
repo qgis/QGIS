@@ -48,6 +48,7 @@ Build-Depends:
  python3-mock,
  python3-nose2,
  python3-owslib,
+ python3-packaging,
  python3-psycopg2,
  python3-pyqt5,
  python3-pyqt5.qsci,
