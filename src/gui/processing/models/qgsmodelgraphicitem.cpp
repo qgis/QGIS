@@ -196,11 +196,11 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
   float display_size = 3.2;
   painter->drawEllipse( getPosition(), display_size, display_size );
 
-  painter->save();
-  painter->setPen( QPen() );
-  painter->setBrush( QBrush() );
-  painter->drawRect( boundingRect() );
-  painter->restore();
+  // painter->save();
+  // painter->setPen( QPen() );
+  // painter->setBrush( QBrush() );
+  // painter->drawRect( boundingRect() );
+  // painter->restore();
 }
 
 void QgsModelDesignerSocketGraphicItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
