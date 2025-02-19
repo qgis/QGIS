@@ -60,12 +60,6 @@ typedef struct projCtx_t PJ_CONTEXT;
 // forward declaration for sqlite3
 typedef struct sqlite3 sqlite3 SIP_SKIP;
 
-#ifdef DEBUG
-typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH SIP_SKIP;
-#else
-typedef void *OGRSpatialReferenceH SIP_SKIP;
-#endif
-
 class QgsCoordinateReferenceSystem;
 typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SKIP;
 
