@@ -90,12 +90,7 @@ class _3D_EXPORT QgsRubberBand3D
       /**
        * A circle is used to highlight points (○)
        */
-      Circle,
-
-      /**
-       * Points are not highlighted, neither the edges connecting them
-       */
-      None
+      Circle
     };
 
     QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
@@ -148,6 +143,42 @@ class _3D_EXPORT QgsRubberBand3D
      */
     Qt::PenStyle markerOutlineStyle() const;
 
+    /**
+     * Sets whether to show markers on vertices
+     * \since QGIS 3.44
+     */
+    void setMarkerEnabled( bool enable );
+
+    /**
+     * Returns whether markers are being shown on vertices
+     * \since QGIS 3.44
+     */
+    bool markerEnabled() const;
+
+    /**
+     * Sets whether to show edges
+     * \since QGIS 3.44
+     */
+    void setEdgesEnabled( bool enable );
+
+    /**
+       * Returns whether edges are shown
+       * \since QGIS 3.44
+       */
+    bool edgesEnabled() const;
+
+    /**
+       * Sets whether to show polygon fill
+       * \since QGIS 3.44
+       */
+    void setPolygonFillEnabled( bool enable );
+
+    /**
+       * Returns whether polygon fill is shown
+       * \since QGIS 3.44
+       */
+    bool polygonFillEnabled() const;
+
     void reset();
 
     void addPoint( const QgsPoint &pt );
@@ -194,6 +225,10 @@ class _3D_EXPORT QgsRubberBand3D
     QColor mColor = Qt::red;
     QColor mOutlineColor;
     Qt::PenStyle mMarkerOutlineStyle = Qt::PenStyle::SolidLine;
+
+    bool mMarkerEnabled = true;
+    bool mEdgesEnabled = true;
+    bool mPolygonFillEnabled = true;
 
     Qt3DCore::QEntity *mLineEntity = nullptr;    // owned by parentEntity (from constructor)
     Qt3DCore::QEntity *mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
