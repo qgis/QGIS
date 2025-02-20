@@ -2250,6 +2250,15 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
     case Qgis::FieldDomainMergePolicy::LargestGeometry:
       metadata += tr( "Largest geometry" );
       break;
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+      metadata += tr( "Maximum value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+      metadata += tr( "Minimum value" );
+      break;
+    case Qgis::FieldDomainMergePolicy::SkipAttribute:
+      metadata += tr( "Skip attribute" );
+      break;
   }
 
   metadata += QLatin1String( "</table>\n<br><br>" );

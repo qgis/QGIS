@@ -3731,6 +3731,9 @@ class CORE_EXPORT Qgis
       GeometryWeighted, //!< New values are computed as the weighted average of the source values
       UnsetField, //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.44
       LargestGeometry, //!< Use value from the feature with the largest geometry \since QGIS 3.44
+      MinimumValue, //!< Use the minimum value from the features-to-be-merged \since QGIS 3.44
+      MaximumValue, //!< Use the maximum value from the features-to-be-merged \since QGIS 3.44
+      SkipAttribute, //!< Use a null value \since QGIS 3.44
     };
     Q_ENUM( FieldDomainMergePolicy )
 

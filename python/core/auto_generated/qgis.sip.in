@@ -2114,6 +2114,9 @@ The development version
       GeometryWeighted,
       UnsetField,
       LargestGeometry,
+      MinimumValue,
+      MaximumValue,
+      SkipAttribute,
     };
 
     enum class FieldDuplicatePolicy

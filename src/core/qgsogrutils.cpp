@@ -2301,6 +2301,9 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
 
     case Qgis::FieldDomainMergePolicy::UnsetField:
     case Qgis::FieldDomainMergePolicy::LargestGeometry:
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+    case Qgis::FieldDomainMergePolicy::SkipAttribute:
       // not supported
       break;
   }

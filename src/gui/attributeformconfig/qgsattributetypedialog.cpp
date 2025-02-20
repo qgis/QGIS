@@ -135,6 +135,9 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     if ( mLayer->fields().at( mFieldIdx ).isNumeric() )
     {
       mMergePolicyComboBox->addItem( tr( "Use Sum" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::Sum ) );
+      mMergePolicyComboBox->addItem( tr( "Use Maximum Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::MaximumValue ) );
+      mMergePolicyComboBox->addItem( tr( "Use Minimum Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::MinimumValue ) );
+      mMergePolicyComboBox->addItem( tr( "Skip Attribute" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::SkipAttribute ) );
 
       if ( mLayer->geometryType() != Qgis::GeometryType::Point )
       {
@@ -601,6 +604,18 @@ void QgsAttributeTypeDialog::updateMergePolicyLabel()
 
     case Qgis::FieldDomainMergePolicy::LargestGeometry:
       helperText = tr( "Use value from feature with the largest geometry." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+      helperText = tr( "Use the lowest value from the selected features." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+      helperText = tr( "Use the highest value from the selected features." );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::SkipAttribute:
+      helperText = tr( "Skip attribute." );
       break;
   }
   mMergePolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
