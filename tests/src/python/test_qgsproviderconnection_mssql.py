@@ -43,7 +43,7 @@ class TestPyQgsProviderConnectionMssql(
         TestPyQgsProviderConnectionBase.setUpClass()
 
         # These are the connection details for the SQL Server instance running on Travis
-        cls.dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
+        cls.dbconn = "service='testsqlserver' user=sa password='QGIStestSQLServer1234' "
         if "QGIS_MSSQLTEST_DB" in os.environ:
             cls.dbconn = os.environ["QGIS_MSSQLTEST_DB"]
 
@@ -59,7 +59,7 @@ class TestPyQgsProviderConnectionMssql(
     def test_configuration(self):
         """Test storage and retrieval for configuration parameters"""
 
-        uri = "dbname='qgis_test' service='driver={SQL Server};server=localhost;port=1433;database=qgis_test' user='sa' password='<YourStrong!Passw0rd>' srid=4326 type=Point estimatedMetadata='true' disableInvalidGeometryHandling='1' table=\"qgis_test\".\"someData\" (geom)"
+        uri = "dbname='qgis_test' service='driver={SQL Server};server=localhost;port=1433;database=qgis_test' user='sa' password='QGIStestSQLServer1234' srid=4326 type=Point estimatedMetadata='true' disableInvalidGeometryHandling='1' table=\"qgis_test\".\"someData\" (geom)"
         md = QgsProviderRegistry.instance().providerMetadata("mssql")
         conn = md.createConnection(uri, {})
         ds_uri = QgsDataSourceUri(conn.uri())
@@ -70,7 +70,7 @@ class TestPyQgsProviderConnectionMssql(
         self.assertEqual(ds_uri.geometryColumn(), "")
         self.assertTrue(ds_uri.useEstimatedMetadata())
         self.assertEqual(ds_uri.srid(), "")
-        self.assertEqual(ds_uri.password(), "<YourStrong!Passw0rd>")
+        self.assertEqual(ds_uri.password(), "QGIStestSQLServer1234")
         self.assertEqual(ds_uri.param("disableInvalidGeometryHandling"), "1")
 
         conn.store("coronavirus")
@@ -83,7 +83,7 @@ class TestPyQgsProviderConnectionMssql(
         self.assertTrue(ds_uri.useEstimatedMetadata())
         self.assertEqual(ds_uri.geometryColumn(), "")
         self.assertEqual(ds_uri.srid(), "")
-        self.assertEqual(ds_uri.password(), "<YourStrong!Passw0rd>")
+        self.assertEqual(ds_uri.password(), "QGIStestSQLServer1234")
         self.assertEqual(ds_uri.param("disableInvalidGeometryHandling"), "true")
         conn.remove("coronavirus")
 

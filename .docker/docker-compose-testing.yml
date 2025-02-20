@@ -1,13 +1,6 @@
 version: '3'
 services:
 
-# Proving very fragile!
-#  mssql:
-#    image: microsoft/mssql-server-linux:2017-latest
-#    environment:
-#      ACCEPT_EULA: Y
-#      SA_PASSWORD: <YourStrong!Passw0rd>
-
   httpbin:
     image: kennethreitz/httpbin:latest
 
@@ -34,7 +27,6 @@ services:
       - ${QGIS_WORKSPACE}:/root/QGIS
       - ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}
     links:
-    #  - mssql
       - webdav
       - minio
       - httpbin
