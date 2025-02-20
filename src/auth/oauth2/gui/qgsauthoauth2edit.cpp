@@ -743,13 +743,13 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   const bool ccredentials = ( flow == QgsAuthOAuth2Config::GrantFlow::ClientCredentials );
   const bool pkce = ( flow == QgsAuthOAuth2Config::GrantFlow::Pkce );
 
-  lblRequestUrl->setVisible( !resowner );
-  leRequestUrl->setVisible( !resowner );
-  if ( resowner )
+  lblRequestUrl->setVisible( !resowner && !ccredentials );
+  leRequestUrl->setVisible( !resowner && !ccredentials );
+  if ( resowner || ccredentials )
     leRequestUrl->setText( QString() );
 
-  lblRedirectUrl->setVisible( !resowner || !ccredentials);
-  frameRedirectUrl->setVisible( !resowner || !ccredentials);
+  lblRedirectUrl->setVisible( !resowner && !ccredentials);
+  frameRedirectUrl->setVisible( !resowner && !ccredentials);
 
   lblClientSecret->setVisible( !implicit );
   leClientSecret->setVisible( !implicit );
@@ -764,13 +764,13 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   leClientSecret->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
 
 
-  lblUsername->setVisible( resowner || !ccredentials);
-  leUsername->setVisible( resowner || !ccredentials);
-  if ( !resowner || !ccredentials)
+  lblUsername->setVisible( resowner );
+  leUsername->setVisible( resowner );
+  if ( !resowner )
     leUsername->setText( QString() );
-  lblPassword->setVisible( resowner || !ccredentials);
-  lePassword->setVisible( resowner || !ccredentials);
-  if ( !resowner || !ccredentials)
+  lblPassword->setVisible( resowner );
+  lePassword->setVisible( resowner );
+  if ( !resowner )
     lePassword->setText( QString() );
 }
 

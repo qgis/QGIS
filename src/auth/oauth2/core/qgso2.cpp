@@ -139,6 +139,8 @@ void QgsO2::initOAuthConfig()
       setUsername( mOAuth2Config->username() );
       setPassword( mOAuth2Config->password() );
 
+      break;
+
     case QgsAuthOAuth2Config::GrantFlow::ClientCredentials:
       setGrantFlow( O2::GrantFlowClientCredentials );
       setClientId( mOAuth2Config->clientId() );
