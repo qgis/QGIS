@@ -59,7 +59,7 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
     QgsModelDesignerSocketGraphicItem *mToSocket;
 
     QgsModelDesignerSocketGraphicItem *mLastHoveredSocket = nullptr;
-    
+
     /* Used to return to select tool */
     QPointer<QgsModelViewTool> mPreviousViewTool;
 };
