@@ -2856,7 +2856,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       const bool deprecated = proj_is_deprecated( crs.get() );
       const QString name( proj_get_name( crs.get() ) );
 
-      QString sql = QStringLiteral( "SELECT parameters,description,deprecated,srs_type FROM tbl_srs WHERE auth_name='%1' AND auth_id='%2'" ).arg( authority, code );
+      QString sql = QStringLiteral( "SELECT parameters,description,deprecated,srs_type,projection_acronym FROM tbl_srs WHERE auth_name='%1' AND auth_id='%2'" ).arg( authority, code );
       statement = database.prepare( sql, result );
       if ( result != SQLITE_OK )
       {
@@ -2867,6 +2867,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       QString dbSrsProj4;
       QString dbSrsDesc;
       QString dbSrsType;
+      QString dbOperation;
       bool dbSrsDeprecated = deprecated;
       if ( statement.step() == SQLITE_ROW )
       {
@@ -2874,18 +2875,20 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         dbSrsDesc = statement.columnAsText( 1 );
         dbSrsDeprecated = statement.columnAsText( 2 ).toInt() != 0;
         dbSrsType = statement.columnAsText( 3 );
+        dbOperation = statement.columnAsText( 4 );
       }
 
       if ( !dbSrsProj4.isEmpty() || !dbSrsDesc.isEmpty() )
       {
-        if ( proj4 != dbSrsProj4 || name != dbSrsDesc || deprecated != dbSrsDeprecated || dbSrsType != srsTypeString )
+        if ( proj4 != dbSrsProj4 || name != dbSrsDesc || deprecated != dbSrsDeprecated || dbSrsType != srsTypeString || dbOperation != operation )
         {
           errMsg = nullptr;
-          sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3, srs_type=%4 WHERE auth_name=%5 AND auth_id=%6" )
+          sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3, srs_type=%4,projection_acronym=%5 WHERE auth_name=%6 AND auth_id=%7" )
                 .arg( QgsSqliteUtils::quotedString( proj4 ) )
                 .arg( QgsSqliteUtils::quotedString( name ) )
                 .arg( deprecated ? 1 : 0 )
                 .arg( QgsSqliteUtils::quotedString( srsTypeString ),
+                      QgsSqliteUtils::quotedString( operation ),
                       QgsSqliteUtils::quotedString( authority ), QgsSqliteUtils::quotedString( code ) );
 
           if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
