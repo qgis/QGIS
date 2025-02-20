@@ -170,9 +170,10 @@ QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider,
   // displayBandName() includes band description and this description can be the same
   // as a band description from the metadata, so let's not append description to the band
   // name if it is already there
-  if ( !description.isEmpty() )
+  if ( !description.isEmpty() && !name.contains( description, Qt::CaseInsensitive ) )
   {
-    return name.contains( description, Qt::CaseInsensitive ) ? name : QStringLiteral( "%1 - %2" ).arg( name, description );
+    name = QStringLiteral( "%1 - %2" ).arg( name, description );
   }
-  return name;
+  // avoid a name too long
+  return name.size() > 101 ? name.left( 50 ) + QChar( 0x2026 ) + name.right( 50 ) : name;
 }
