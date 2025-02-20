@@ -147,6 +147,8 @@ QString O2::grantType()
         return O2_OAUTH2_GRANT_TYPE_DEVICE;
     case GrantFlowPkce:
         return "pkce";
+    case GrantFlowClientCredentials:
+      return "client_credentials"; // Where are O2_OAUTH2_GRANT_TYPE_DEVICE etc defined? O2_OAUTH2_GRANT_TYPE_CLIENT_CREDENTIALS;
     }
 
     return QString();

@@ -139,6 +139,11 @@ void QgsO2::initOAuthConfig()
       setUsername( mOAuth2Config->username() );
       setPassword( mOAuth2Config->password() );
 
+    case QgsAuthOAuth2Config::GrantFlow::ClientCredentials:
+      setGrantFlow( O2::GrantFlowClientCredentials );
+      setClientId( mOAuth2Config->clientId() );
+      setClientSecret( mOAuth2Config->clientSecret() );
+
       break;
   }
 
@@ -316,6 +321,34 @@ void QgsO2::link()
 
     const QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
+    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+    QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
+
+    connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
+    connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+  }
+  else if ( grantFlow_ == GrantFlowClientCredentials )
+  {
+    QList<O0RequestParameter> parameters;
+    parameters.append( O0RequestParameter( O2_OAUTH2_CLIENT_ID, clientId_.toUtf8() ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_CLIENT_SECRET, clientSecret_.toUtf8() ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_GRANT_TYPE, "client_credentials" ) );
+    if ( !scope_.isEmpty() )
+      parameters.append( O0RequestParameter( O2_OAUTH2_SCOPE, scope_.toUtf8() ) );
+    if ( !apiKey_.isEmpty() )
+      parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
+
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
+    {
+      parameters.append( O0RequestParameter( iter.key().toUtf8(), iter.value().toString().toUtf8() ) );
+    }
+
+    const QByteArray payload = O0BaseAuth::createQueryParameters( parameters );
+
+    const QUrl url( tokenUrl_ );
+    QNetworkRequest tokenRequest( url );
+    QgsLogger::debug("Test");
     QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );

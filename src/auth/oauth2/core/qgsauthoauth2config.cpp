@@ -856,6 +856,8 @@ QString QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow flo
       return tr( "Authorization Code PKCE" );
     case QgsAuthOAuth2Config::GrantFlow::ResourceOwner:
       return tr( "Resource Owner" );
+    case QgsAuthOAuth2Config::GrantFlow::ClientCredentials:
+      return tr( "Client Credentials" );
   }
   BUILTIN_UNREACHABLE
 }

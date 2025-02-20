@@ -44,10 +44,11 @@ class QgsAuthOAuth2Config : public QObject
     //! OAuth2 grant flow
     enum class GrantFlow : int
     {
-      AuthCode,      //!< See http://tools.ietf.org/html/rfc6749#section-4.1
-      Implicit,      //!< See http://tools.ietf.org/html/rfc6749#section-4.2
-      ResourceOwner, //!< See http://tools.ietf.org/html/rfc6749#section-4.3
-      Pkce,          //!< See https://www.rfc-editor.org/rfc/rfc7636
+      AuthCode,           //!< See http://tools.ietf.org/html/rfc6749#section-4.1
+      Implicit,           //!< See http://tools.ietf.org/html/rfc6749#section-4.2
+      ResourceOwner,      //!< See http://tools.ietf.org/html/rfc6749#section-4.3
+      ClientCredentials,  //!< See http://tools.ietf.org/html/rfc6749#section-4.4
+      Pkce,               //!< See https://www.rfc-editor.org/rfc/rfc7636
       Last = Pkce
     };
     Q_ENUM( GrantFlow )

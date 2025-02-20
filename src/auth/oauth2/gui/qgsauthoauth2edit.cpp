@@ -497,6 +497,7 @@ void QgsAuthOAuth2Edit::populateGrantFlows()
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::AuthCode ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::AuthCode ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Implicit ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Implicit ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Pkce ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Pkce ) );
 }
 
@@ -732,6 +733,7 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   // bool authcode = ( flow == QgsAuthOAuth2Config::AuthCode );
   const bool implicit = ( flow == QgsAuthOAuth2Config::GrantFlow::Implicit );
   const bool resowner = ( flow == QgsAuthOAuth2Config::GrantFlow::ResourceOwner );
+  const bool ccredentials = ( flow == QgsAuthOAuth2Config::GrantFlow::ClientCredentials );
   const bool pkce = ( flow == QgsAuthOAuth2Config::GrantFlow::Pkce );
 
   lblRequestUrl->setVisible( !resowner );
@@ -739,8 +741,8 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   if ( resowner )
     leRequestUrl->setText( QString() );
 
-  lblRedirectUrl->setVisible( !resowner );
-  frameRedirectUrl->setVisible( !resowner );
+  lblRedirectUrl->setVisible( !resowner || !ccredentials);
+  frameRedirectUrl->setVisible( !resowner || !ccredentials);
 
   lblClientSecret->setVisible( !implicit );
   leClientSecret->setVisible( !implicit );
@@ -755,13 +757,13 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   leClientSecret->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
 
 
-  lblUsername->setVisible( resowner );
-  leUsername->setVisible( resowner );
-  if ( !resowner )
+  lblUsername->setVisible( resowner || !ccredentials);
+  leUsername->setVisible( resowner || !ccredentials);
+  if ( !resowner || !ccredentials)
     leUsername->setText( QString() );
-  lblPassword->setVisible( resowner );
-  lePassword->setVisible( resowner );
-  if ( !resowner )
+  lblPassword->setVisible( resowner || !ccredentials);
+  lePassword->setVisible( resowner || !ccredentials);
+  if ( !resowner || !ccredentials)
     lePassword->setText( QString() );
 }
 
