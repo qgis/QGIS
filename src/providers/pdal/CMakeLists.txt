@@ -14,6 +14,13 @@ set(PDAL_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
+IF(MSVC)
+  set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
+    PROPERTIES COMPILE_FLAGS "/DUNICODE"
+  )
+endif()
+
 set(PDAL_HDRS
   qgspdalprovider.h
   qgspdalindexingtask.h
