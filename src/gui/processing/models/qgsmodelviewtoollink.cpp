@@ -41,19 +41,31 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
 
   // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate
   QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
+
+  QgsModelDesignerSocketGraphicItem *socket = nullptr;
   for ( QGraphicsItem *item : items )
   {
-    if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
+    if ( (socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) ))
     {
-      socket->modelHoverEnterEvent( event );
       // snap
       if ( mFrom != socket && mFrom->edge() != socket->edge() )
       {
+        socket->modelHoverEnterEvent( event );
         QPointF rubberEndPos = socket->mapToScene( socket->getPosition() );
         mBezierRubberBand->update( rubberEndPos, Qt::KeyboardModifiers() );
+        
+        break;
       }
       qDebug() << "should trigger socket->modelHoverEnterEvent( event );";
     }
+  }
+
+  if (socket == nullptr && mLastHoveredSocket != nullptr && socket != mLastHoveredSocket ) {
+    mLastHoveredSocket->modelHoverLeaveEvent( event );
+    mLastHoveredSocket = nullptr;
+  }
+  else {
+    mLastHoveredSocket = socket;
   }
 }
 
@@ -152,7 +164,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
 bool QgsModelViewToolLink::allowItemInteraction()
 {
-  return false;
+  return true;
 }
 
 void QgsModelViewToolLink::activate()
