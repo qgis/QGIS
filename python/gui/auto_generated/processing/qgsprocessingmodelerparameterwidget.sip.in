@@ -81,6 +81,17 @@ The ``compatibleDataTypes`` list corresponds to the compatible data types
 from :py:class:`QgsProcessing`.SourceType.
 %End
 
+    QList<QgsProcessingModelChildParameterSource> availableSourcesForChild();
+%Docstring
+HACK : Ugly workaround to expose the compatible sources for a parameter definition ( :py:class:`QgsProcessingParameterDefinition`)
+Idealy we should no rely on any UI-related function to get this
+
+.. seealso:: :py:func:`also` QgsProcessingModelAlgorithm.availableSourcesForChild
+
+The available sources are created on widget creation in :py:func:`populateSources`
+%End
+
+
     void setExpressionHelpText( const QString &text );
 %Docstring
 Set the expected expression format ``text``, which is shown in the expression builder dialog for the widget

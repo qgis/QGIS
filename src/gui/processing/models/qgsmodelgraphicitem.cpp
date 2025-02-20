@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicitem.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include "moc_qgsmodelgraphicitem.cpp"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
 #include "qgsmodelviewmouseevent.h"
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -164,6 +166,33 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
   setPicture( mFolded ? mPlusPicture : mMinusPicture );
   emit folded( mFolded );
   QgsModelDesignerFlatButtonGraphicItem::modelPressEvent( event );
+}
+
+
+QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
+  : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
+  , mComponentItem( parent )
+  , mComponent( component )
+  , mIndex( index )
+  , mEdge( edge )
+{
+}
+
+void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  painter->setPen( QPen() );
+  painter->setBrush( QBrush( QColor( 0, 0, 0, mHoverState ? 200 : 33 ), Qt::SolidPattern ) );
+
+  painter->setRenderHint( QPainter::Antialiasing );
+
+  static const float display_size = 3.2;
+  painter->drawEllipse( getPosition(), display_size, display_size );
+  /* Uncomment to display bounding box */
+  // painter->save();
+  // painter->setPen( QPen() );
+  // painter->setBrush( QBrush() );
+  // painter->drawRect( boundingRect() );
+  // painter->restore();
 }
 
 ///@endcond

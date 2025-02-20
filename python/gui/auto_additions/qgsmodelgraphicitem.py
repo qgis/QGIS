@@ -10,3 +10,7 @@ try:
     QgsModelDesignerFoldButtonGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
+try:
+    QgsModelDesignerSocketGraphicItem.__group__ = ['processing', 'models']
+except (NameError, AttributeError):
+    pass

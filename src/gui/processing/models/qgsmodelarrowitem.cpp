@@ -97,6 +97,8 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
     case Marker::ArrowHead:
       drawArrowHead( painter, mStartPoint, path().pointAtPercent( 0.0 ) - path().pointAtPercent( 0.05 ) );
       break;
+    case Marker::None:
+      break;
   }
 
   switch ( mEndMarker )
@@ -106,6 +108,8 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
       break;
     case Marker::ArrowHead:
       drawArrowHead( painter, mEndPoint, path().pointAtPercent( 1.0 ) - path().pointAtPercent( 0.95 ) );
+      break;
+    case Marker::None:
       break;
   }
 

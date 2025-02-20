@@ -31,6 +31,7 @@ A link arrow item for use in the model designer.
     {
       Circle,
       ArrowHead,
+      None
     };
 
     QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );

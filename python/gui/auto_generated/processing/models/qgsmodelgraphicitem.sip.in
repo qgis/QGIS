@@ -47,6 +47,11 @@ for the button. The button will be rendered at the specified ``position`` and ``
 
 
 
+    const QPointF getPosition();
+%Docstring
+Gets the button's position.
+%End
+
     void setPosition( const QPointF &position );
 %Docstring
 Sets the button's ``position``.
@@ -110,6 +115,54 @@ Emitted when the button ``folded`` state changes.
 
 If ``folded`` is ``True``, the button represents the collapsed state for the item.
 %End
+
+};
+
+
+class QgsModelDesignerSocketGraphicItem : QgsModelDesignerFlatButtonGraphicItem
+{
+%Docstring(signature="appended")
+A socket allowing linking component together
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicitem.h"
+%End
+  public:
+    QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent /TransferThis/, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 ) );
+%Docstring
+Constructor for QgsModelDesignerSocketGraphicItem, with the specified ``parent`` item.
+
+The ``index`` argument specifies whether the index of link point 
+
+The sockets will be rendered at the specified ``position``
+%End
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
+
+    int index();
+
+    bool isInput();
+
+    QgsProcessingModelComponent *component();
+%Docstring
+Return the component associated to the socket */
+%End
+    QgsModelComponentGraphicItem *componentItem();
+%Docstring
+Return the parent GraphicItem (:py:class:`QgsModelComponentGraphicItem`) associated to the socket */
+%End
+  signals:
+
 
 };
 
