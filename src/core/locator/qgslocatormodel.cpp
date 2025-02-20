@@ -115,10 +115,11 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     }
 
     case Qt::FontRole:
-      if ( index.column() == Name && !entry.groupTitle.isEmpty() )
+      if ( index.column() == Name )
       {
         QFont font;
-        font.setItalic( true );
+        font.setItalic( entry.type == EntryType::Group );
+        font.setBold( entry.type != EntryType::Result );
         return font;
       }
       else
