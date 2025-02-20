@@ -62,6 +62,7 @@ class GdalConnectionDetails:
     open_options: Optional[list[str]] = None
     layer_name: Optional[str] = None
     credential_options: Optional[dict] = None
+    geometry_column_name: Optional[str] = None
 
     def open_options_as_arguments(self) -> list[str]:
         """
