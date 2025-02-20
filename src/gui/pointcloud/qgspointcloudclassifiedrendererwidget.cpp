@@ -78,6 +78,7 @@ QgsPointCloudCategory QgsPointCloudClassifiedRendererModel::category( const QMod
 
 Qt::ItemFlags QgsPointCloudClassifiedRendererModel::flags( const QModelIndex &index ) const
 {
+  // Flat list, to ease drop handling valid indexes are not dropEnabled
   if ( !index.isValid() || mCategories.empty() )
   {
     return Qt::ItemIsDropEnabled;
@@ -293,7 +294,7 @@ QMimeData *QgsPointCloudClassifiedRendererModel::mimeData( const QModelIndexList
 bool QgsPointCloudClassifiedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
-  Q_UNUSED( parent ) // Unused because only valid indexes have Qt::ItemIsDropEnabled
+  Q_UNUSED( parent ) // Unused because only invalid indexes have Qt::ItemIsDropEnabled
   if ( action != Qt::MoveAction )
     return true;
 
@@ -342,6 +343,7 @@ bool QgsPointCloudClassifiedRendererModel::dropMimeData( const QMimeData *data, 
   }
   emit dataChanged( createIndex( 0, 0 ), createIndex( mCategories.size(), 0 ) );
   emit categoriesChanged();
+  emit rowsMoved();
   return false;
 }
 
@@ -428,6 +430,7 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged, this, &QgsPointCloudClassifiedRendererWidget::attributeChanged );
   connect( mModel, &QgsPointCloudClassifiedRendererModel::categoriesChanged, this, &QgsPointCloudClassifiedRendererWidget::emitWidgetChanged );
+  connect( mModel, &QgsPointCloudClassifiedRendererModel::rowsMoved, this, &QgsPointCloudClassifiedRendererWidget::rowsMoved );
 
   connect( viewCategories, &QAbstractItemView::doubleClicked, this, &QgsPointCloudClassifiedRendererWidget::categoriesDoubleClicked );
   connect( btnAddCategories, &QAbstractButton::clicked, this, &QgsPointCloudClassifiedRendererWidget::addCategories );
@@ -707,6 +710,11 @@ void QgsPointCloudClassifiedRendererWidget::changeCategoryPointSize()
       mModel->setCategoryPointSize( row, size );
     }
   }
+}
+
+void QgsPointCloudClassifiedRendererWidget::rowsMoved()
+{
+  viewCategories->selectionModel()->clear();
 }
 
 QList<int> QgsPointCloudClassifiedRendererWidget::selectedCategories()
