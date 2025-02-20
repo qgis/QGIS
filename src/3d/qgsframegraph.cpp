@@ -46,11 +46,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QPointSize>
-#include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QBlendEquationArguments>
-#include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QAbstractTexture>
 #include "qgsfgutils.h"
 #include <Qt3DRender/QNoDraw>
@@ -478,10 +475,19 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
   mRubberBandsLayerFilter = new Qt3DRender::QLayerFilter( mRubberBandsCameraSelector );
   mRubberBandsLayerFilter->addLayer( mRubberBandsLayer );
 
+  Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
+  blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
+  blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
+
+  Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
+  blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
+
   mRubberBandsStateSet = new Qt3DRender::QRenderStateSet( mRubberBandsLayerFilter );
   Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
   depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
   mRubberBandsStateSet->addRenderState( depthTest );
+  mRubberBandsStateSet->addRenderState( blendState );
+  mRubberBandsStateSet->addRenderState( blendEquation );
 
   // Here we attach our drawings to the render target also used by forward pass.
   // This is kind of okay, but as a result, post-processing effects get applied
