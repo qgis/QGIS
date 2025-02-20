@@ -156,7 +156,7 @@ my $reltag = "final-${newmajor}_${newminor}_${newpatch}";
 
 unless( $skipts ) {
 	print "Pulling transifex translations...\n";
-	run( "scripts/pull_ts.sh", "pull_ts.sh failed" );
+	run( "CONSIDER_TS_DROP_FATAL=1 scripts/pull_ts.sh", "pull_ts.sh failed" );
 	run( "git add i18n/*.ts", "adding translations failed" );
 	run( "git commit -n -a -m \"translation update for $version from transifex\"", "could not commit translation updates" );
 } else {
