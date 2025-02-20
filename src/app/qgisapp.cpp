@@ -5505,10 +5505,20 @@ QString QgisApp::getVersionString()
   // GDAL version
   const QString gdalVersionCompiled { GDAL_RELEASE_NAME };
   const QString gdalVersionRunning { GDALVersionInfo( "RELEASE_NAME" ) };
-  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GDAL/OGR version" ), gdalVersionCompiled );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 11, 0 )
+  const QString gdalReleaseNickName { GDAL_RELEASE_NICKNAME };
+#else
+  const QString gdalReleaseNickName;
+#endif
+
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GDAL version" ), gdalVersionCompiled );
   if ( gdalVersionCompiled != gdalVersionRunning )
   {
     versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, gdalVersionRunning, runLabel );
+  }
+  if ( !gdalReleaseNickName.isEmpty() )
+  {
+    versionString += QStringLiteral( " — <i>%1</i>" ).arg( gdalReleaseNickName );
   }
   versionString += QLatin1String( "</td></tr><tr>" );
 

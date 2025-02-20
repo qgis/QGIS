@@ -35,12 +35,6 @@
 #include "qgsprojutils.h"
 #include "qgsreadwritelocker.h"
 
-#ifdef DEBUG
-typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
-#else
-typedef void *OGRSpatialReferenceH;
-#endif
-
 class QgsCoordinateReferenceSystemPrivate : public QSharedData
 {
   public:
