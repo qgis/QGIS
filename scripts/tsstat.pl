@@ -207,8 +207,17 @@ rename "i18n/CMakeLists.txt", "i18n/CMakeLists.txt.temp" || die "cannot rename i
 open I, "i18n/CMakeLists.txt.temp";
 open O, ">i18n/CMakeLists.txt";
 while(<I>) {
-	if( /^SET\(TS_FILES /i ) {
-		print O "set(TS_FILES " . join( " ", map { "qgis_$_\.ts"; } @ts ) . ")\n";
+	if( /^SET\(TS_FILES (.*)\)/i ) {
+		my @oldts = split /\s+/, $1;
+		my @newts = map { "qgis_$_\.ts"; } @ts;
+		for my $ts (@oldts) {
+			die "FATAL: $ts was dropped\n" if exists $ENV{CONSIDER_TS_DROP_FATAL} && ! grep /^$ts$/, @newts;
+			print STDERR "WARNING: $ts dropped\n" unless grep /^$ts$/, @newts;
+		}
+		for my $ts (@newts) {
+			print STDERR "INFO: $ts added\n" unless grep /^$ts$/, @oldts;
+		}
+		print O "set(TS_FILES " . join( " ", @newts ) . ")\n";
 	} else {
 		print O;
 	}
