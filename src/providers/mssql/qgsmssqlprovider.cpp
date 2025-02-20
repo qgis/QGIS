@@ -1027,10 +1027,20 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
   if ( !readAllGeography && query.next() )
   {
-    mExtent.setXMinimum( query.value( 0 ).toDouble() );
-    mExtent.setYMinimum( query.value( 1 ).toDouble() );
-    mExtent.setXMaximum( query.value( 2 ).toDouble() );
-    mExtent.setYMaximum( query.value( 3 ).toDouble() );
+    if ( QgsVariantUtils::isNull( query.value( 0 ) )
+         || QgsVariantUtils::isNull( query.value( 1 ) )
+         || QgsVariantUtils::isNull( query.value( 2 ) )
+         || QgsVariantUtils::isNull( query.value( 3 ) ) )
+    {
+      mExtent.setNull();
+    }
+    else
+    {
+      mExtent.setXMinimum( query.value( 0 ).toDouble() );
+      mExtent.setYMinimum( query.value( 1 ).toDouble() );
+      mExtent.setXMaximum( query.value( 2 ).toDouble() );
+      mExtent.setYMaximum( query.value( 3 ).toDouble() );
+    }
     return;
   }
 
@@ -1042,15 +1052,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     if ( geom )
     {
       const QgsRectangle rect = geom->boundingBox();
-
-      if ( rect.xMinimum() < mExtent.xMinimum() )
-        mExtent.setXMinimum( rect.xMinimum() );
-      if ( rect.yMinimum() < mExtent.yMinimum() )
-        mExtent.setYMinimum( rect.yMinimum() );
-      if ( rect.xMaximum() > mExtent.xMaximum() )
-        mExtent.setXMaximum( rect.xMaximum() );
-      if ( rect.yMaximum() > mExtent.yMaximum() )
-        mExtent.setYMaximum( rect.yMaximum() );
+      mExtent.combineExtentWith( rect );
 
       mWkbType = geom->wkbType();
       mSRId = mParser.GetSRSId();
@@ -1061,7 +1063,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 // Return the extent of the layer
 QgsRectangle QgsMssqlProvider::extent() const
 {
-  if ( mExtent.isEmpty() )
+  if ( mExtent.isNull() )
     UpdateStatistics( mUseEstimatedMetadata );
   return mExtent;
 }
