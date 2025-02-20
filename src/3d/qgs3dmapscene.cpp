@@ -310,15 +310,7 @@ void Qgs3DMapScene::onCameraChanged()
   }
 
   updateScene( true );
-  bool changedCameraPlanes = updateCameraNearFarPlanes();
-
-  if ( changedCameraPlanes )
-  {
-    // repeat update of entities - because we have updated camera's near/far planes,
-    // the active nodes may have changed as well
-    updateScene( true );
-    updateCameraNearFarPlanes();
-  }
+  updateCameraNearFarPlanes();
 
   onShadowSettingsChanged();
 
@@ -342,6 +334,14 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   sceneContext.cameraPos = camera->position();
   const QSize size = mEngine->size();
   sceneContext.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+
+  // Make our own projection matrix so that frustum culling done by the
+  // entities isn't dependent on the current near/far planes, which would then
+  // require multiple steps to stabilize.
+  QMatrix4x4 projMatrix;
+  projMatrix.setToIdentity();
+  // Just use some high values for the far plane so we don't have to custom-make the matrix.
+  projMatrix.perspective( camera->fieldOfView(), camera->aspectRatio(), 1, 10'000'000 );
   sceneContext.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
 
 
