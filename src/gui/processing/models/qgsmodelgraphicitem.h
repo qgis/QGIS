@@ -73,7 +73,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     /**
      * Gets the button's position.
      */
-    const QPointF getPosition() { return mPosition; };
+    QPointF getPosition() { return mPosition; };
 
 
     /**
@@ -168,10 +168,6 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 ) );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
-    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
-#ifndef SIP_RUN
-    void modelPressEvent( QgsModelViewMouseEvent *event ) override;
-#endif
 
     int index() { return mIndex; };
     Qt::Edge edge() { return mEdge; };
