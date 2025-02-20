@@ -206,6 +206,42 @@ class TestPyQgsProviderConnectionMssql(
 
         conn.dropVectorTable("qgis_test", "test_zm")
 
+    def test_invalid_geometries(self):
+        """Test retrieving details for a table containing invalid geometries"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        tb = conn.table("qgis_test", "invalid_polys")
+        self.assertEqual(tb.tableName(), "invalid_polys")
+        self.assertEqual(tb.schema(), "qgis_test")
+        self.assertEqual(tb.geometryColumn(), "ogr_geometry")
+        self.assertEqual(tb.primaryKeyColumns(), [])
+        self.assertEqual(len(tb.geometryColumnTypes()), 1)
+        gct = tb.geometryColumnTypes()[0]
+        self.assertEqual(gct.wkbType, Qgis.WkbType.MultiPolygon)
+        self.assertEqual(tb.maxCoordinateDimensions(), 2)
+        self.assertEqual(gct.crs, QgsCoordinateReferenceSystem("EPSG:4167"))
+
+    def test_invalid_geometries_disable_workaround(self):
+        """Test retrieving details for a table containing invalid geometries,
+        with invalid geometry workarounds disabled
+        """
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        uri = QgsDataSourceUri(self.uri)
+        uri.setParam("disableInvalidGeometryHandling", "1")
+        conn = md.createConnection(uri.uri(), {})
+
+        tb = conn.table("qgis_test", "invalid_polys")
+        self.assertEqual(tb.tableName(), "invalid_polys")
+        self.assertEqual(tb.schema(), "qgis_test")
+        self.assertEqual(tb.geometryColumn(), "ogr_geometry")
+        self.assertEqual(tb.primaryKeyColumns(), [])
+        # we can't retrieve this, as SQL server will have raised an exception
+        # due to the invalid geometries in this table
+        self.assertEqual(len(tb.geometryColumnTypes()), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

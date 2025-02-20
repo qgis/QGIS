@@ -354,6 +354,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   {
     allowGeometrylessTables = flags.testFlag( TableFlag::Aspatial );
   }
+  const bool disableInvalidGeometryHandling = dsUri.hasParam( QStringLiteral( "disableInvalidGeometryHandling" ) ) && dsUri.param( QStringLiteral( "disableInvalidGeometryHandling" ) ).toInt();
 
   QString query { QStringLiteral( "SELECT " ) };
 
@@ -422,18 +423,32 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     if ( !table.geometryColumn().isEmpty() )
     {
       // Fetch geom cols
-      const QString geomColSql {
-        QStringLiteral( R"raw(
-                        SELECT %4 UPPER( %1.STGeometryType()), %1.STSrid,
+      QString geomColSql;
+
+      if ( disableInvalidGeometryHandling )
+      {
+        // this query will fail if the table contains invalid geometries
+        geomColSql = QStringLiteral( R"raw(
+SELECT %4 UPPER( %1.STGeometryType()), %1.STSrid,
                             %1.HasZ, %1.HasM
                         FROM %2.%3
                         WHERE %1 IS NOT NULL
                         GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM
-                        )raw" )
-          .arg( QgsMssqlProvider::quotedIdentifier( table.geometryColumn() ), QgsMssqlProvider::quotedIdentifier( table.schema() ), QgsMssqlProvider::quotedIdentifier( table.tableName() ), useEstimatedMetadata ? "TOP 1" : "" )
-      };
 
-      // This may fail for invalid geometries
+                        )raw" )
+                       .arg( QgsMssqlProvider::quotedIdentifier( table.geometryColumn() ), QgsMssqlProvider::quotedIdentifier( table.schema() ), QgsMssqlProvider::quotedIdentifier( table.tableName() ), useEstimatedMetadata ? "TOP 1" : "" );
+      }
+      else
+      {
+        geomColSql = QStringLiteral( R"raw(
+                        SELECT type, srid, hasz, hasm FROM
+                            (SELECT %4 UPPER((CASE WHEN %1.STIsValid() = 0 THEN %1.MakeValid() ELSE %1 END).STGeometryType()) as type,
+                             %1.STSrid as srid, %1.HasZ as hasz, %1.HasM as hasm FROM %2.%3 WHERE %1 IS NOT NULL) AS a
+                        GROUP BY type, srid, hasz, hasm
+                        )raw" )
+                       .arg( QgsMssqlProvider::quotedIdentifier( table.geometryColumn() ), QgsMssqlProvider::quotedIdentifier( table.schema() ), QgsMssqlProvider::quotedIdentifier( table.tableName() ), useEstimatedMetadata ? "TOP 1" : "" );
+      }
+
       try
       {
         const auto geomColResults { executeSqlPrivate( geomColSql ).rows() };
