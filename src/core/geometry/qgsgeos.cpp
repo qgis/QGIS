@@ -1457,7 +1457,7 @@ geos::unique_ptr QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const G
 
   geos::unique_ptr geometryBoundary;
   GEOSContextHandle_t context = QgsGeosContext::get();
-  if ( GEOSGeomTypeId_r( context, geom ) == GEOS_POLYGON || GEOSGeomTypeId_r( context, geom ) == GEOS_MULTIPOLYGON )
+  if ( GEOSGeom_getDimensions_r( context, geom ) == 2 )
     geometryBoundary.reset( GEOSBoundary_r( context, geom ) );
   else
     geometryBoundary.reset( GEOSGeom_clone_r( context, geom ) );
