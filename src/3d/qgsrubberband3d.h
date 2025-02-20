@@ -17,8 +17,7 @@
 #define QGSRUBBERBAND3D_H
 
 #include "qgis_3d.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
+#include "qgsgeometry.h"
 
 #include <QColor>
 
@@ -35,6 +34,8 @@
 // version without notice, or even be removed.
 //
 
+
+class QgsPoint;
 class QgsPhongMaterialSettings;
 class QgsMaterial;
 class QgsTessellatedPolygonGeometry;
@@ -183,24 +184,22 @@ class _3D_EXPORT QgsRubberBand3D
 
     void addPoint( const QgsPoint &pt );
 
-    void setPoints( const QgsLineString &points );
-
     /**
-     * Sets the polygon geometry to be shown
+     * Sets the geometry of rubberband
      *
-     * \note Function doesn't set \a GeometryType to Polygon
+     * \note Function doesn't set \a GeometryType
      * \since QGIS 3.44
      */
-    void setPolygon( const QgsPolygon &polygon );
+    void setGeometry( const QgsGeometry &geometry );
 
     void removeLastPoint();
 
     void moveLastPoint( const QgsPoint &pt );
 
     //! Sets whether the marker on the last vertex is displayed. We typically do not want it displayed while it is still tracked by the mouse.
-    void setHideLastMarker( bool hide ) { mHideLastMarker = hide; }
+    void setHideLastMarker( const bool hide ) { mHideLastMarker = hide; }
 
-    bool isEmpty() const { return mLineString.isEmpty(); }
+    bool isEmpty() const { return mGeometry.isEmpty(); }
 
   private:
     void updateGeometry();
@@ -209,10 +208,9 @@ class _3D_EXPORT QgsRubberBand3D
     void setupLine( Qt3DCore::QEntity *parentEntity, QgsWindow3DEngine *engine );
     void setupPolygon( Qt3DCore::QEntity *parentEntity );
 
-    constexpr float DEFAULT_POLYGON_OPACITY = 0.25;
+    const float DEFAULT_POLYGON_OPACITY = 0.25;
 
-    QgsLineString mLineString;
-    QgsPolygon mPolygon;
+    QgsGeometry mGeometry;
     bool mHideLastMarker = false;
 
     Qgs3DMapSettings *mMapSettings = nullptr; // not owned

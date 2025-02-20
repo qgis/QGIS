@@ -22,7 +22,6 @@
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
 #include "qgsvertexid.h"
-#include "qgslinestring.h"
 #include "qgssymbollayer.h"
 #include "qgs3dmapsettings.h"
 #include "qgstessellator.h"
@@ -40,7 +39,9 @@
 #endif
 
 #include "qgs3dutils.h"
+#include "qgslinestring.h"
 #include "qgsmessagelog.h"
+#include "qgspolygon.h"
 #include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
 
@@ -304,62 +305,88 @@ bool QgsRubberBand3D::polygonFillEnabled() const
 
 void QgsRubberBand3D::reset()
 {
-  mLineString.clear();
-  mPolygon.clear();
+  mGeometry.set( nullptr );
   updateGeometry();
 }
 
 void QgsRubberBand3D::addPoint( const QgsPoint &pt )
 {
-  mLineString.addVertex( pt );
-  if ( mGeometryType == Qgis::GeometryType::Polygon && mLineString.numPoints() >= 3 )
-    mPolygon = QgsPolygon( new QgsLineString( mLineString ) );
-  else
-    mPolygon.clear();
+  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
+  {
+    QgsLineString *exteriorRing = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
+    const int lastVertexIndex = exteriorRing->numPoints() - 2;
+    exteriorRing->insertVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
+  }
+  else if ( QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
+  {
+    lineString->addVertex( pt );
+    // transform linestring to polygon if we have enough vertices
+    if ( mGeometryType == Qgis::GeometryType::Polygon && lineString->numPoints() >= 3 )
+    {
+      mGeometry.set( new QgsPolygon( lineString->clone() ) );
+    }
+  }
+  else if ( !mGeometry.get() )
+  {
+    mGeometry.set( new QgsLineString( QVector<QgsPoint> { pt } ) );
+  }
 
   updateGeometry();
 }
 
-void QgsRubberBand3D::setPoints( const QgsLineString &points )
+void QgsRubberBand3D::setGeometry( const QgsGeometry &geometry )
 {
-  mLineString = points;
-  if ( mGeometryType == Qgis::GeometryType::Polygon && mLineString.numPoints() >= 3 )
-    mPolygon = QgsPolygon( new QgsLineString( mLineString ) );
-  else
-    mPolygon.clear();
-
-  updateGeometry();
-}
-
-void QgsRubberBand3D::setPolygon( const QgsPolygon &polygon )
-{
-  mPolygon = polygon;
-
-  const QgsLineString *exteriorRing = dynamic_cast<QgsLineString *>( mPolygon.exteriorRing() );
-  mLineString = *exteriorRing;
+  mGeometry = geometry;
 
   updateGeometry();
 }
 
 void QgsRubberBand3D::removeLastPoint()
 {
-  const int lastVertexIndex = mLineString.numPoints() - 1;
-  mLineString.deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
-  if ( mGeometryType == Qgis::GeometryType::Polygon && mLineString.numPoints() >= 3 )
-    mPolygon = QgsPolygon( new QgsLineString( mLineString ) );
+  QgsLineString *lineString = nullptr;
+  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
+  {
+    lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
+    const int lastVertexIndex = lineString->numPoints() - 2;
+    lineString->deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
+  }
+  else if ( ( lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) ) )
+  {
+    const int lastVertexIndex = lineString->numPoints() - 1;
+    lineString->deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
+  }
   else
-    mPolygon.clear();
+  {
+    return;
+  }
+
+  if ( lineString->numPoints() < 3 && !qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
+  {
+    mGeometry.set( new QgsLineString( *lineString ) );
+  }
+
   updateGeometry();
 }
 
 void QgsRubberBand3D::moveLastPoint( const QgsPoint &pt )
 {
-  const int lastVertexIndex = mLineString.numPoints() - 1;
-  mLineString.moveVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
-  if ( mGeometryType == Qgis::GeometryType::Polygon && mLineString.numPoints() >= 3 )
-    mPolygon = QgsPolygon( new QgsLineString( mLineString ) );
+  QgsLineString *lineString = nullptr;
+  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
+  {
+    lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
+    const int lastVertexIndex = lineString->numPoints() - 2;
+    lineString->moveVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
+  }
+  else if ( ( lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) ) )
+  {
+    const int lastVertexIndex = lineString->numPoints() - 1;
+    lineString->moveVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
+  }
   else
-    mPolygon.clear();
+  {
+    return;
+  }
+
   updateGeometry();
 }
 
@@ -368,8 +395,18 @@ void QgsRubberBand3D::updateGeometry()
   QgsLineVertexData lineData;
   lineData.withAdjacency = true;
   lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mMapSettings->origin() );
-  const bool closed = mGeometryType == Qgis::GeometryType::Polygon;
-  lineData.addLineString( mLineString, 0, closed );
+  if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
+  {
+    QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing()->clone() );
+    const int lastVertexIndex = lineString->numPoints() - 1;
+    lineString->deleteVertex( QgsVertexId( 0, 0, lastVertexIndex ) );
+    lineData.addLineString( *lineString, 0, true );
+  }
+  else if ( const QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
+  {
+    lineData.addLineString( *lineString, 0, false );
+  }
+
 
   if ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon )
   {
@@ -388,19 +425,27 @@ void QgsRubberBand3D::updateGeometry()
   mMarkerGeometry->setPoints( lineData.vertices );
   mMarkerGeometryRenderer->setVertexCount( lineData.vertices.count() );
 
+
   if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
-    QgsTessellator tessellator( mMapSettings->origin().x(), mMapSettings->origin().y(), true );
-    tessellator.setOutputZUp( true );
-    tessellator.addPolygon( mPolygon, 0 );
-    if ( !tessellator.error().isEmpty() )
+    if ( const QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
     {
-      QgsMessageLog::logMessage( tessellator.error(), QObject::tr( "3D" ) );
+      QgsTessellator tessellator( mMapSettings->origin().x(), mMapSettings->origin().y(), true );
+      tessellator.setOutputZUp( true );
+      tessellator.addPolygon( *polygon, 0 );
+      if ( !tessellator.error().isEmpty() )
+      {
+        QgsMessageLog::logMessage( tessellator.error(), QObject::tr( "3D" ) );
+      }
+      // extract vertex buffer data from tessellator
+      const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
+      const int vertexCount = data.count() / tessellator.stride();
+      mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
     }
-    // extract vertex buffer data from tessellator
-    const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
-    const int vertexCount = data.count() / tessellator.stride();
-    mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
+    else
+    {
+      mPolygonGeometry->setData( QByteArray(), 0, QVector<QgsFeatureId>(), QVector<uint>() );
+    }
   }
 }
 
