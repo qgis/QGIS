@@ -39,11 +39,38 @@ bool QgsPythonRunner::run( const QString &command, const QString &messageOnError
   }
 }
 
+bool QgsPythonRunner::runFile( const QString &filename, const QString &messageOnError )
+{
+  if ( sInstance )
+  {
+    QgsDebugMsgLevel( "Running " + filename, 3 );
+    return sInstance->runFileCommand( filename, messageOnError );
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "Unable to run Python command: runner not available!" ) );
+    return false;
+  }
+}
+
 bool QgsPythonRunner::eval( const QString &command, QString &result )
 {
   if ( sInstance )
   {
     return sInstance->evalCommand( command, result );
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "Unable to run Python command: runner not available!" ) );
+    return false;
+  }
+}
+
+bool QgsPythonRunner::setArgv( const QStringList &arguments, const QString &messageOnError )
+{
+  if ( sInstance )
+  {
+    return sInstance->setArgvCommand( arguments, messageOnError );
   }
   else
   {
