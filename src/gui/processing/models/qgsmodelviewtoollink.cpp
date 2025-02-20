@@ -100,16 +100,13 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   // ReOrder in out socket
   // always fix on the input end receiving
-  if ( mTo->isInput() )
+  if ( !mTo->isInput() )
   {
-    component_from = mFrom->component();
-    child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mTo->component() );
+    std::swap( mFrom, mTo );
   }
-  else
-  {
-    component_from = mTo->component();
-    child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFrom->component() );
-  }
+
+  component_from = mFrom->component();
+  child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mTo->component() );
 
 
   const QgsProcessingParameterDefinition *toParam = child_to->algorithm()->parameterDefinitions().at( mTo->index() );
@@ -151,7 +148,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   emit view() -> endCommand();
   // Redraw
   emit scene() -> rebuildRequired();
-
 }
 
 bool QgsModelViewToolLink::allowItemInteraction()
@@ -196,7 +192,6 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
         case Qgis::ProcessingModelChildParameterSource::ModelParameter:
         case Qgis::ProcessingModelChildParameterSource::ChildOutput:
         {
-
           old_source = source;
           QgsProcessingModelChildAlgorithm *_alg;
           // This is not so nice to have the UI tangled gotta think of a better abstraction later
@@ -205,7 +200,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           {
             if ( QgsModelDesignerSocketGraphicItem *output_socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
             {
-              if ( (_alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( output_socket->component() ) ))
+              if ( ( _alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( output_socket->component() ) ) )
               {
                 if ( source.outputChildId() != _alg->childId() || output_socket->isInput() )
                 {
