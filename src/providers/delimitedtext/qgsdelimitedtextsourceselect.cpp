@@ -136,8 +136,8 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
       return;
     }
   }
-  std::unique_ptr<QgsDelimitedTextFile> mFile( std::make_unique<QgsDelimitedTextFile>() );
-  if ( !loadDelimitedFileDefinition( mFile.get() ) )
+  QgsDelimitedTextFile mFile;
+  if ( !loadDelimitedFileDefinition( mFile ) )
   {
     QMessageBox::warning( this, tr( "Invalid delimited text file" ), tr( "Please enter a valid file and delimiter" ) );
     return;
@@ -146,7 +146,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   cancelScanTask();
 
   //Build the delimited text URI from the user provided information
-  const QString datasourceUrl { url( mFile.get() ) };
+  const QString datasourceUrl { url( mFile ) };
 
   // store the settings
   saveSettings();
@@ -341,28 +341,28 @@ void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString &filename 
 }
 
 
-bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition( QgsDelimitedTextFile *file )
+bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition( QgsDelimitedTextFile &file )
 {
-  file->setFileName( mFileWidget->filePath() );
-  file->setEncoding( cmbEncoding->currentText() );
+  file.setFileName( mFileWidget->filePath() );
+  file.setEncoding( cmbEncoding->currentText() );
   if ( delimiterChars->isChecked() )
   {
-    file->setTypeCSV( selectedChars(), txtQuoteChars->text(), txtEscapeChars->text() );
+    file.setTypeCSV( selectedChars(), txtQuoteChars->text(), txtEscapeChars->text() );
   }
   else if ( delimiterRegexp->isChecked() )
   {
-    file->setTypeRegexp( txtDelimiterRegexp->text() );
+    file.setTypeRegexp( txtDelimiterRegexp->text() );
   }
   else
   {
-    file->setTypeCSV();
+    file.setTypeCSV();
   }
-  file->setSkipLines( rowCounter->value() );
-  file->setUseHeader( cbxUseHeader->isChecked() );
-  file->setDiscardEmptyFields( cbxSkipEmptyFields->isChecked() );
-  file->setTrimFields( cbxTrimFields->isChecked() );
-  file->setMaxFields( mMaxFields );
-  return file->isValid();
+  file.setSkipLines( rowCounter->value() );
+  file.setUseHeader( cbxUseHeader->isChecked() );
+  file.setDiscardEmptyFields( cbxSkipEmptyFields->isChecked() );
+  file.setTrimFields( cbxTrimFields->isChecked() );
+  file.setMaxFields( mMaxFields );
+  return file.isValid();
 }
 
 
@@ -395,8 +395,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   tblSample->clear();
   tblSample->setColumnCount( 0 );
   tblSample->setRowCount( 0 );
-  std::unique_ptr<QgsDelimitedTextFile> mFile( std::make_unique<QgsDelimitedTextFile>() );
-  if ( !loadDelimitedFileDefinition( mFile.get() ) )
+  QgsDelimitedTextFile mFile;
+  if ( !loadDelimitedFileDefinition( mFile ) )
     return;
 
   // Put a sample set of records into the sample box.  Also while scanning assess suitability of
@@ -413,7 +413,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   while ( counter < mExampleRowCount )
   {
-    const QgsDelimitedTextFile::Status status = mFile->nextRecord( values );
+    const QgsDelimitedTextFile::Status status = mFile.nextRecord( values );
     if ( status == QgsDelimitedTextFile::RecordEOF )
       break;
     if ( status != QgsDelimitedTextFile::RecordOk )
@@ -488,7 +488,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   }
 
 
-  QStringList fieldList = mFile->fieldNames();
+  QStringList fieldList = mFile.fieldNames();
 
   if ( isEmpty.size() < fieldList.size() )
   {
@@ -537,7 +537,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // Run the scan in a separate thread
   cancelScanTask();
 
-  mScanTask = new QgsDelimitedTextFileScanTask( url( mFile.get(), /* skip overridden types */ true ) );
+  mScanTask = new QgsDelimitedTextFileScanTask( url( mFile, /* skip overridden types */ true ) );
   mCancelButton->show();
   connect( mScanTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [=]( const QgsFields &fields ) {
     updateFieldTypes( fields );
@@ -745,7 +745,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     message = tr( "At least one delimiter character must be specified" );
   }
 
-  std::unique_ptr<QgsDelimitedTextFile> mFile( std::make_unique<QgsDelimitedTextFile>() );
+  QgsDelimitedTextFile mFile;
   if ( message.isEmpty() && delimiterRegexp->isChecked() )
   {
     const QRegularExpression re( txtDelimiterRegexp->text() );
@@ -764,7 +764,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     // continue...
   }
   // Hopefully won't hit this none-specific message, but just in case ...
-  else if ( !loadDelimitedFileDefinition( mFile.get() ) )
+  else if ( !loadDelimitedFileDefinition( mFile ) )
   {
     message = tr( "Definition of filename and delimiters is not valid" );
   }
@@ -861,9 +861,9 @@ void QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility()
   textLabelCrs->setVisible( !geomTypeNone->isChecked() );
 }
 
-QString QgsDelimitedTextSourceSelect::url( QgsDelimitedTextFile *file, bool skipOverriddenTypes )
+QString QgsDelimitedTextSourceSelect::url( QgsDelimitedTextFile &file, bool skipOverriddenTypes )
 {
-  QUrl url = file->url();
+  QUrl url = file.url();
   QUrlQuery query( url );
 
   query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
@@ -969,7 +969,7 @@ void QgsDelimitedTextSourceSelect::cancelScanTask()
   if ( mScanTask )
   {
     mScanTask->cancel();
-    mScanTask = nullptr;
+    mScanTask.clear();
   }
 }
 
