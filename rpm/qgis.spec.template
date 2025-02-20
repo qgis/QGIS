@@ -179,6 +179,7 @@ Requires:       gdal-python3
 Requires:       gdal-python-tools
 Requires:       python3-jinja2
 Requires:       python3-OWSLib
+Requires:       python3-packaging
 Requires:       python3-psycopg2
 Requires:       python3-pygments
 Requires:       python3-PyYAML
