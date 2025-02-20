@@ -538,19 +538,6 @@
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
-//
-// Conditional Includes
-//
-#ifdef HAVE_PGCONFIG
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#include <pg_config.h>
-#else
-#define PG_VERSION "unknown"
-#endif
 
 #include <sqlite3.h>
 
@@ -5579,7 +5566,7 @@ QString QgisApp::getVersionString()
   // postgres
   versionString += QStringLiteral( "<td>%1</td><td>" ).arg( tr( "PostgreSQL client version" ) );
 #ifdef HAVE_POSTGRESQL
-  versionString += QStringLiteral( PG_VERSION );
+  versionString += QStringLiteral( POSTGRESQL_VERSION );
 #else
   versionString += tr( "No support" );
 #endif
