@@ -21,17 +21,6 @@ Contains detailed styling information relating to how a layout legend should be 
 %End
   public:
 
-    enum Style /BaseType=IntEnum/
-    {
-      Undefined,
-      Hidden,
-      Title,
-      Group,
-      Subgroup,
-      Symbol,
-      SymbolLabel,
-    };
-
 
     enum Side /BaseType=IntEnum/
     {
@@ -163,7 +152,15 @@ Reads the component's style definition from an XML element.
 .. seealso:: :py:func:`writeXml`
 %End
 
-    static QString styleName( Style s );
+    void updateDataDefinedProperties( QgsRenderContext &context );
+%Docstring
+Updates any data-defined properties in the style, using the specified
+render ``context``.
+
+.. versionadded:: 3.42
+%End
+
+    static QString styleName( Qgis::LegendComponent s );
 %Docstring
 Returns the name for a style component as a string.
 
@@ -174,14 +171,14 @@ This is a non-localised version, for internal use.
 .. seealso:: :py:func:`styleLabel`
 %End
 
-    static Style styleFromName( const QString &styleName );
+    static Qgis::LegendComponent styleFromName( const QString &styleName );
 %Docstring
 Returns the style from name string.
 
 .. seealso:: :py:func:`styleName`
 %End
 
-    static QString styleLabel( Style s );
+    static QString styleLabel( Qgis::LegendComponent s );
 %Docstring
 Returns a translated string representing a style component, for use in UI.
 

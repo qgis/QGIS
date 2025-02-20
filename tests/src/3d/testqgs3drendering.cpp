@@ -31,6 +31,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
+#include "qgsflatterrainsettings.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsline3dsymbol.h"
@@ -282,9 +283,12 @@ void TestQgs3DRendering::testFlatTerrain()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs(), map->transformContext() );
-  map->setTerrainGenerator( flatTerrain );
+  QgsFlatTerrainSettings *flatTerrainSettings = new QgsFlatTerrainSettings;
+  map->setTerrainSettings( flatTerrainSettings );
+
+  std::unique_ptr<QgsTerrainGenerator> generator = flatTerrainSettings->createTerrainGenerator( Qgs3DRenderContext::fromMapSettings( map ) );
+  QVERIFY( dynamic_cast<QgsFlatTerrainGenerator *>( generator.get() )->isValid() );
+  QCOMPARE( dynamic_cast<QgsFlatTerrainGenerator *>( generator.get() )->crs(), map->crs() );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );

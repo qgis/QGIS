@@ -91,7 +91,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
   private:
-    bool loadDelimitedFileDefinition();
+    bool loadDelimitedFileDefinition( QgsDelimitedTextFile &file );
     void updateFieldLists();
     QString selectedChars();
     void setSelectedChars( const QString &delimiters );
@@ -102,7 +102,6 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString &xname, const QString &yname );
 
   private:
-    std::unique_ptr<QgsDelimitedTextFile> mFile;
     int mExampleRowCount = 20;
     int mBadRowCount = 0;
     QgsFields mFields;                    //!< Stores the fields as returned by the provider to determine if their types were overridden
@@ -116,7 +115,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QButtonGroup *bgGeomType = nullptr;
     void showHelp();
     void updateCrsWidgetVisibility();
-    QString url( bool skipOverriddenTypes = false );
+    QString url( QgsDelimitedTextFile &file, bool skipOverriddenTypes = false );
 
   public slots:
     void addButtonClicked() override;

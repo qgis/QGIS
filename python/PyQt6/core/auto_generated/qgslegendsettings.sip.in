@@ -26,6 +26,14 @@ The content of the legend is driven by the :py:class:`QgsLegendModel` class.
   public:
     QgsLegendSettings();
 
+    void updateDataDefinedProperties( QgsRenderContext &context );
+%Docstring
+Updates any data-defined properties in the settings, using the specified
+render ``context``.
+
+.. versionadded:: 3.42
+%End
+
     void setTitle( const QString &t );
 %Docstring
 Sets the title for the legend, which will be rendered above all legend items.
@@ -55,14 +63,14 @@ Sets the ``alignment`` of the legend title.
 %End
 
 
-    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    QgsLegendStyle style( Qgis::LegendComponent s ) const;
 %Docstring
 Returns the style for a legend component.
 
 .. seealso:: :py:func:`setStyle`
 %End
 
-    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
+    void setStyle( Qgis::LegendComponent s, const QgsLegendStyle &style );
 %Docstring
 Sets the ``style`` for a legend component.
 

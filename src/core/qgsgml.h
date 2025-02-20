@@ -244,9 +244,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     int pointsFromPosListString( QList<QgsPointXY> &points, const QString &coordString, int dimension ) const;
 
     int pointsFromString( QList<QgsPointXY> &points, const QString &coordString ) const;
-    int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPointXY & ) const;
-    int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const;
-    int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const;
+    int getPointWKB( QByteArray &wkbPtr, const QgsPointXY & ) const;
+    int getLineWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const;
+    int getRingWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const;
 
     /**
      * Creates a multiline from the information in mCurrentWKBFragments and
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString mCurrentFeatureId;
     int mFeatureCount;
     //! The total WKB for a feature
-    QgsWkbPtr mCurrentWKB;
+    QByteArray mCurrentWKB;
     QgsRectangle mCurrentExtent;
     bool mBoundedByNullFound;
 
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsGmlStreamingParser
      * polygons, only one nested list is used. For multipolygons, both nested lists
      * are used
     */
-    QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
+    QList< QList< QByteArray > > mCurrentWKBFragments;
     QString mAttributeName;
     int mAttributeDepth = -1;
     bool mAttributeValIsNested = false;

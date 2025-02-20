@@ -1521,7 +1521,9 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   QMutexLocker locker( sGlobalMutex() );
   for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
   {
-    if ( iter.key().dsName == dsName )
+    const DatasetIdentification dsId = iter.key();
+
+    if ( dsId.dsName == dsName )
     {
       // Browse through this list, to look for a DatasetWithLayers*
       // instance that don't use yet our layer of interest
@@ -1549,7 +1551,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
           errCause = QObject::tr( "Cannot find layer %1." ).arg( layerIndex );
           return nullptr;
         }
-        return getLayer( dsName, iter.key().updateMode, iter.key().options, layerName, errCause, true );
+        return getLayer( dsName, dsId.updateMode, dsId.options, layerName, errCause, true );
       }
     }
   }

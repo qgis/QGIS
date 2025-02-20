@@ -11,6 +11,7 @@ __author__ = "Maxim Rylov"
 __date__ = "2019-11-21"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
+from datetime import datetime, timedelta
 from hdbcli import dbapi
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 
@@ -198,8 +199,25 @@ class QgsHanaProviderUtils:
         )
 
     @staticmethod
-    def cleanUp(conn, schema_name):
-        QgsHanaProviderUtils.dropSchemaIfExists(conn, schema_name)
+    def dropOldTestSchemas(conn, schema_prefix):
+        try:
+            assert conn
+            cursor = conn.cursor()
+            assert cursor
+            sql = f"""SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE SCHEMA_NAME
+                      LIKE '{schema_prefix.replace('_', '__')}__%' ESCAPE '_' AND
+                      LOCALTOUTC(CREATE_TIME) < ?"""
+            cursor.execute(sql, datetime.now() - timedelta(days=1))
+            rows = cursor.fetchall()
+            cursor.close()
+
+            for row in rows:
+                QgsHanaProviderUtils.executeSQL(
+                    conn, f'DROP SCHEMA "{row["SCHEMA_NAME"]}" CASCADE'
+                )
+        except Exception as ex:
+            print(f"Unable to drop old test schemas. Error: {ex}")
+            pass
 
     @staticmethod
     def generateSchemaName(conn, prefix):

@@ -48,6 +48,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   p->setRenderHint( QPainter::Antialiasing );
 
   bool enabled = true;
+  int scale = 1;
   QgsPointXY worldCoords;
   int id = -1;
   const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
@@ -55,6 +56,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   if ( mDataPoint )
   {
     enabled = mDataPoint->isEnabled();
+    scale = mDataPoint->isHovered() ? 2 : 1;
     worldCoords = mDataPoint->destinationPoint();
     id = mDataPoint->id();
   }
@@ -63,7 +65,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   // draw the point
   p->setPen( Qt::black );
   p->setBrush( mPointBrush );
-  p->drawEllipse( -2, -2, 5, 5 );
+  p->drawEllipse( -2 * scale, -2 * scale, 5 * scale, 5 * scale );
 
   // Don't draw point tip for temporary points
   if ( id < 0 )
@@ -140,7 +142,7 @@ QRectF QgsGCPCanvasItem::boundingRect() const
   }
 
   const QRectF residualArrowRect( QPointF( residualLeft, residualTop ), QPointF( residualRight, residualBottom ) );
-  const QRectF markerRect( -2, -2, mTextBounds.width() + 6, mTextBounds.height() + 6 );
+  const QRectF markerRect( -4, -4, mTextBounds.width() + 10, mTextBounds.height() + 10 );
   QRectF boundingRect = residualArrowRect.united( markerRect );
   if ( !mTextBoxRect.isNull() )
   {

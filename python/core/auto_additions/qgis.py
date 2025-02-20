@@ -7675,6 +7675,46 @@ Qgis.LayerTreeFilterFlag.__doc__ = """Layer tree filter flags.
 Qgis.LayerTreeFilterFlag.baseClass = Qgis
 Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLegendStyle.Style = Qgis.LegendComponent
+# monkey patching scoped based enum
+QgsLegendStyle.Undefined = Qgis.LegendComponent.Undefined
+QgsLegendStyle.Undefined.is_monkey_patched = True
+QgsLegendStyle.Undefined.__doc__ = "Should not happen, only if corrupted project file"
+QgsLegendStyle.Hidden = Qgis.LegendComponent.Hidden
+QgsLegendStyle.Hidden.is_monkey_patched = True
+QgsLegendStyle.Hidden.__doc__ = "Special style, item is hidden including margins around"
+QgsLegendStyle.Title = Qgis.LegendComponent.Title
+QgsLegendStyle.Title.is_monkey_patched = True
+QgsLegendStyle.Title.__doc__ = "Legend title"
+QgsLegendStyle.Group = Qgis.LegendComponent.Group
+QgsLegendStyle.Group.is_monkey_patched = True
+QgsLegendStyle.Group.__doc__ = "Legend group title"
+QgsLegendStyle.Subgroup = Qgis.LegendComponent.Subgroup
+QgsLegendStyle.Subgroup.is_monkey_patched = True
+QgsLegendStyle.Subgroup.__doc__ = "Legend subgroup title"
+QgsLegendStyle.Symbol = Qgis.LegendComponent.Symbol
+QgsLegendStyle.Symbol.is_monkey_patched = True
+QgsLegendStyle.Symbol.__doc__ = "Symbol icon (excluding label)"
+QgsLegendStyle.SymbolLabel = Qgis.LegendComponent.SymbolLabel
+QgsLegendStyle.SymbolLabel.is_monkey_patched = True
+QgsLegendStyle.SymbolLabel.__doc__ = "Symbol label (excluding icon)"
+Qgis.LegendComponent.__doc__ = """Component of legends which can be styled.
+
+Prior to QGIS 3.42 this was available as :py:class:`QgsLegendStyle`.Style
+
+.. versionadded:: 3.42
+
+* ``Undefined``: Should not happen, only if corrupted project file
+* ``Hidden``: Special style, item is hidden including margins around
+* ``Title``: Legend title
+* ``Group``: Legend group title
+* ``Subgroup``: Legend subgroup title
+* ``Symbol``: Symbol icon (excluding label)
+* ``SymbolLabel``: Symbol label (excluding icon)
+
+"""
+# --
+Qgis.LegendComponent.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
 Qgis.LegendJsonRenderFlag.__doc__ = """Legend JSON export flags.
@@ -7730,6 +7770,7 @@ Qgis.MapLayerActionTargets.baseClass = Qgis
 MapLayerActionTargets = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
+Qgis.MapLayerActionFlag.EnableOnlyWhenHasGeometry.__doc__ = "Action should be shown only for layers with geometry, \n.. versionadded:: 3.42"
 Qgis.MapLayerActionFlag.__doc__ = """Map layer action flags.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
@@ -7737,6 +7778,10 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
 .. versionadded:: 3.30
 
 * ``EnabledOnlyWhenEditable``: Action should be shown only for editable layers
+* ``EnableOnlyWhenHasGeometry``: Action should be shown only for layers with geometry,
+
+  .. versionadded:: 3.42
+
 
 """
 # --

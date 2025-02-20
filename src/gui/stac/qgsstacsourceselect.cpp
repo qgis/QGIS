@@ -67,8 +67,6 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   connect( mStac, &QgsStacController::finishedItemCollectionRequest, this, &QgsStacSourceSelect::onItemCollectionRequestFinished );
   connect( mStac, &QgsStacController::finishedCollectionsRequest, this, &QgsStacSourceSelect::onCollectionsRequestFinished );
 
-  connect( mFiltersButton, &QToolButton::clicked, this, &QgsStacSourceSelect::openSearchParametersDialog );
-
   mItemsView->setModel( mItemsModel );
   mItemsView->setItemDelegate( new QgsStacItemDelegate );
   mItemsView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
@@ -81,7 +79,11 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
   connect( mFootprintsCheckBox, &QCheckBox::clicked, this, &QgsStacSourceSelect::showFootprints );
 
-  mParametersDialog = new QgsStacSearchParametersDialog( mapCanvas(), this );
+  mParametersDialog = new QgsStacSearchParametersDialog( mStac, mapCanvas(), this );
+
+  connect( mFiltersButton, &QToolButton::clicked, mParametersDialog, &QgsStacSearchParametersDialog::open );
+  connect( mParametersDialog, &QgsStacSearchParametersDialog::finished, this, &QgsStacSourceSelect::onSearchParametersDialogClosed );
+
   mFiltersLabel->clear();
 }
 
@@ -162,12 +164,12 @@ void QgsStacSourceSelect::btnConnect_clicked()
   const QgsStacConnection::Data connection = QgsStacConnection::connection( cmbConnections->currentText() );
 
   mStac->setAuthCfg( connection.authCfg );
-  mCollectionsUrl.clear();
   mSearchUrl.clear();
   mNextPageUrl.clear();
   mItemsModel->clear();
   qDeleteAll( mRubberBands );
   mRubberBands.clear();
+  mCollectionsPageCounter = 0;
   mStatusLabel->setText( tr( "Connecting…" ) );
   mStac->cancelPendingAsyncRequests();
   mStac->fetchStacObjectAsync( connection.url );
@@ -277,8 +279,7 @@ void QgsStacSourceSelect::cmbConnections_currentTextChanged( const QString &text
 void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished object request %1" ).arg( requestId ), 2 );
-  std::unique_ptr<QgsStacObject> obj( mStac->takeStacObject( requestId ) );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj.get() );
+  std::unique_ptr<QgsStacCatalog> cat( mStac->takeStacObject< QgsStacCatalog >( requestId ) );
 
   if ( !cat )
   {
@@ -289,6 +290,7 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
   const bool supportsCollections = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/collections" ) );
   const bool supportsSearch = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/item-search" ) );
   QgsDebugMsgLevel( QStringLiteral( "STAC catalog supports API: %1" ).arg( supportsCollections && supportsSearch ), 2 );
+  QString collectionsUrl;
 
   if ( supportsCollections && supportsSearch )
   {
@@ -297,24 +299,24 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
       // collections endpoint should have a "data" relation according to spec but some servers don't
       // so let's be less strict and only check the href
       if ( l.href().endsWith( "/collections" ) )
-        mCollectionsUrl = l.href();
+        collectionsUrl = l.href();
       else if ( l.relation() == "search" )
         mSearchUrl = l.href();
 
-      if ( !mCollectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
+      if ( !collectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
         break;
     }
   }
 
-  if ( mCollectionsUrl.isEmpty() || mSearchUrl.isEmpty() )
+  if ( collectionsUrl.isEmpty() || mSearchUrl.isEmpty() )
   {
     mStatusLabel->setText( tr( "Server does not support STAC search API" ) );
   }
   else
   {
-    mStatusLabel->setText( tr( "Fetching Collections…" ) );
-    mStac->cancelPendingAsyncRequests();
-    mStac->fetchCollectionsAsync( mCollectionsUrl );
+    mStac->fetchCollectionsAsync( collectionsUrl );
+    mParametersDialog->clearCollections();
+    mStatusLabel->setText( tr( "Fetching collections…" ) );
   }
 }
 
@@ -326,14 +328,24 @@ void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString e
   if ( !cols )
   {
     mStatusLabel->setText( error );
-    mParametersDialog->setCollections( {} );
-    updateFilterPreview();
     return;
   }
 
   const QVector<QgsStacCollection *> vcols = cols->takeCollections();
-  mParametersDialog->setCollections( vcols );
+  mParametersDialog->appendCollections( vcols );
   mItemsModel->setCollections( vcols );
+
+  // Let's try to grab the first 5 pages of /collections endpoint before searching
+  // In most cases all collections will be returned in the first page but some servers are weird
+  if ( mCollectionsPageCounter < 5 && !cols->nextUrl().isEmpty() )
+  {
+    ++mCollectionsPageCounter;
+    mStac->fetchCollectionsAsync( cols->nextUrl() );
+    return;
+  }
+
+  mParametersDialog->setCollectionsUrl( cols->nextUrl().toString() );
+
   mStatusLabel->setText( tr( "Searching…" ) );
   mFiltersButton->setEnabled( true );
   updateFilterPreview();
@@ -393,25 +405,16 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
 
 void QgsStacSourceSelect::search()
 {
+  QUrlQuery q;
+
   QStringList collections;
   if ( mParametersDialog->hasCollectionsFilter() )
   {
     const QSet<QString> collectionsSet = mParametersDialog->selectedCollections();
     collections = QStringList( collectionsSet.constBegin(), collectionsSet.constEnd() );
+    const QList<QPair<QString, QString>> collectionsParameters = { qMakePair( QStringLiteral( "collections" ), collections.join( "," ) ) };
+    q.setQueryItems( collectionsParameters );
   }
-  else
-  {
-    const QVector<QgsStacCollection *> allCollections = mParametersDialog->collections();
-    for ( QgsStacCollection *col : allCollections )
-    {
-      collections.append( col->id() );
-    }
-  }
-
-  QUrlQuery q;
-
-  QList<QPair<QString, QString>> collectionsParameters = { qMakePair( QStringLiteral( "collections" ), collections.join( "," ) ) };
-  q.setQueryItems( collectionsParameters );
 
   if ( mParametersDialog->hasSpatialFilter() )
   {
@@ -454,15 +457,15 @@ void QgsStacSourceSelect::search()
   mStac->fetchItemCollectionAsync( searchUrl );
 }
 
-void QgsStacSourceSelect::openSearchParametersDialog()
+void QgsStacSourceSelect::onSearchParametersDialogClosed( int result )
 {
-  if ( mParametersDialog->exec() == QDialog::Rejected )
+  if ( result == QDialog::Rejected )
     return;
 
   mItemsModel->clear();
+  mItemsModel->setCollections( mParametersDialog->collections() );
   qDeleteAll( mRubberBands );
   mRubberBands.clear();
-  mItemsModel->setCollections( mParametersDialog->collections() );
   mNextPageUrl.clear();
   mStatusLabel->setText( tr( "Searching…" ) );
   updateFilterPreview();
