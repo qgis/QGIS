@@ -48,7 +48,7 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
     if ( (socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) ))
     {
       // snap
-      if ( mFrom != socket && mFrom->edge() != socket->edge() )
+      if ( mFromSocket != socket && mFromSocket->edge() != socket->edge() )
       {
         socket->modelHoverEnterEvent( event );
         QPointF rubberEndPos = socket->mapToScene( socket->getPosition() );
@@ -56,7 +56,6 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
         
         break;
       }
-      qDebug() << "should trigger socket->modelHoverEnterEvent( event );";
     }
   }
 
@@ -81,24 +80,24 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate
   QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
 
-  mTo = nullptr;
+  mToSocket = nullptr;
 
   for ( QGraphicsItem *item : items )
   {
     if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
     {
-      mTo = socket;
+      mToSocket = socket;
     }
   }
 
   // Do nothing if cursor don't land on another socket
-  if ( mTo == nullptr )
+  if ( mToSocket == nullptr )
   {
     return;
   }
 
   // Do nothing if from socket and to socket are both input or both output
-  if ( mFrom->edge() == mTo->edge() )
+  if ( mFromSocket->edge() == mToSocket->edge() )
   {
     return;
   }
@@ -112,21 +111,21 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   // ReOrder in out socket
   // always fix on the input end receiving
-  if ( !mTo->isInput() )
+  if ( !mToSocket->isInput() )
   {
-    std::swap( mFrom, mTo );
+    std::swap( mFromSocket, mToSocket );
   }
 
-  component_from = mFrom->component();
-  child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mTo->component() );
+  component_from = mFromSocket->component();
+  child_to = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mToSocket->component() );
 
 
-  const QgsProcessingParameterDefinition *toParam = child_to->algorithm()->parameterDefinitions().at( mTo->index() );
+  const QgsProcessingParameterDefinition *toParam = child_to->algorithm()->parameterDefinitions().at( mToSocket->index() );
 
   QgsProcessingModelChildParameterSource source;
   if ( QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( component_from ) )
   {
-    QString outputName = child_from->algorithm()->outputDefinitions().at( mFrom->index() )->name();
+    QString outputName = child_from->algorithm()->outputDefinitions().at( mFromSocket->index() )->name();
     source = QgsProcessingModelChildParameterSource::fromChildOutput( child_from->childId(), outputName );
   }
   else if ( QgsProcessingModelParameter *param_from = dynamic_cast<QgsProcessingModelParameter *>( component_from ) )
@@ -171,7 +170,7 @@ void QgsModelViewToolLink::activate()
 {
   mPreviousViewTool = view()->tool();
 
-  QPointF rubberStartPos = mFrom->mapToScene( mFrom->getPosition() );
+  QPointF rubberStartPos = mFromSocket->mapToScene( mFromSocket->getPosition() );
   mBezierRubberBand->start( rubberStartPos, Qt::KeyboardModifiers() );
 
   QgsModelViewTool::activate();
@@ -185,12 +184,12 @@ void QgsModelViewToolLink::deactivate()
 
 void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *socket )
 {
-  mFrom = socket;
+  mFromSocket = socket;
 
-  if ( mFrom->isInput() )
+  if ( mFromSocket->isInput() )
   {
-    QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFrom->component() );
-    const QgsProcessingParameterDefinition *param = child_from->algorithm()->parameterDefinitions().at( mFrom->index() );
+    QgsProcessingModelChildAlgorithm *child_from = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFromSocket->component() );
+    const QgsProcessingParameterDefinition *param = child_from->algorithm()->parameterDefinitions().at( mFromSocket->index() );
 
     auto current_sources = child_from->parameterSources().value( param->name() );
 
@@ -220,7 +219,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
                 }
                 if ( output_socket->index() == _alg->algorithm()->outputDefinitionIndex( source.outputName() ) )
                 {
-                  mFrom = output_socket;
+                  mFromSocket = output_socket;
                   emit view() -> beginCommand( "Edit link" );
                 }
               }
@@ -228,7 +227,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
               {
                 if ( source.parameterName() == _param->parameterName() )
                 {
-                  mFrom = output_socket;
+                  mFromSocket = output_socket;
                   emit view() -> beginCommand( "Edit link" );
                 }
               }
@@ -260,7 +259,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             socket_index = 0;
           }
 
-          mFrom = item->outSocketAt( socket_index );
+          mFromSocket = item->outSocketAt( socket_index );
         }
 
 

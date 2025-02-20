@@ -200,7 +200,6 @@ QgsModelViewBezierRubberBand::~QgsModelViewBezierRubberBand()
 
 void QgsModelViewBezierRubberBand::start( QPointF position, Qt::KeyboardModifiers )
 {
-  // QTransform t;
   mRubberBandItem = new QGraphicsPathItem();
   mRubberBandItem->setBrush( Qt::NoBrush );
   mRubberBandItem->setPen( pen() );

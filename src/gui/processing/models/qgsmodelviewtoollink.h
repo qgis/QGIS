@@ -55,8 +55,8 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
 
   private:
     std::unique_ptr<QgsModelViewBezierRubberBand> mBezierRubberBand;
-    QgsModelDesignerSocketGraphicItem *mFrom;
-    QgsModelDesignerSocketGraphicItem *mTo;
+    QgsModelDesignerSocketGraphicItem *mFromSocket;
+    QgsModelDesignerSocketGraphicItem *mToSocket;
 
     QgsModelDesignerSocketGraphicItem *mLastHoveredSocket = nullptr;
     
