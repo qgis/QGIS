@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if dpkg -s qgis-plugin-grass >/dev/null 2>&1; then
+if dpkg -s qgis-plugin-grass{QGISPOSTFIX} >/dev/null 2>&1; then
 	if [ "$LD_LIBRARY_PATH" = "" ]; then
 		LD_LIBRARY_PATH=/usr/lib/{GRASS}/lib
 	else
@@ -8,7 +8,7 @@ if dpkg -s qgis-plugin-grass >/dev/null 2>&1; then
 	fi
 fi
 
-if dpkg -s qgis-oracle-provider >/dev/null 2>&1; then
+if dpkg -s qgis-oracle-provider{QGISPOSTFIX} >/dev/null 2>&1; then
 	if [ "$LD_LIBRARY_PATH" = "" ]; then
 		LD_LIBRARY_PATH={ORACLE_LIBDIR}
 	else
