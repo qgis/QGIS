@@ -240,7 +240,7 @@ void QgsCameraController::readXml( const QDomElement &elem )
   setLookingAtPoint( QgsVector3D( x, elev, y ), dist, pitch, yaw );
 }
 
-double QgsCameraController::sampleDepthBuffer( int px, int py )
+double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int py )
 {
   double depth = 1;
 
@@ -249,9 +249,9 @@ double QgsCameraController::sampleDepthBuffer( int px, int py )
   {
     for ( int y = py - 3; y <= py + 3; ++y )
     {
-      if ( mDepthBufferImage.valid( x, y ) )
+      if ( buffer.valid( x, y ) )
       {
-        depth = std::min( depth, Qgs3DUtils::decodeDepth( mDepthBufferImage.pixel( x, y ) ) );
+        depth = std::min( depth, Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) ) );
       }
     }
   }
@@ -259,18 +259,14 @@ double QgsCameraController::sampleDepthBuffer( int px, int py )
   if ( depth < 1 )
     return depth;
 
-  // Cache the computed depth, since averaging over all pixels can be expensive
-  if ( mDepthBufferNonVoidAverage != -1 )
-    return mDepthBufferNonVoidAverage;
-
   // Returns the average of depth values that are not 1 (void area)
   depth = 0;
   int samplesCount = 0;
-  for ( int x = 0; x < mDepthBufferImage.width(); ++x )
+  for ( int x = 0; x < buffer.width(); ++x )
   {
-    for ( int y = 0; y < mDepthBufferImage.height(); ++y )
+    for ( int y = 0; y < buffer.height(); ++y )
     {
-      double d = Qgs3DUtils::decodeDepth( mDepthBufferImage.pixel( x, y ) );
+      double d = Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) );
       if ( d < 1 )
       {
         depth += d;
@@ -284,8 +280,6 @@ double QgsCameraController::sampleDepthBuffer( int px, int py )
     depth = 1.0;
   else
     depth /= samplesCount;
-
-  mDepthBufferNonVoidAverage = depth;
 
   return depth;
 }
@@ -325,7 +319,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 
 bool QgsCameraController::screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *mCameraBefore, double &depth, QVector3D &worldPosition )
 {
-  depth = sampleDepthBuffer( position.x(), position.y() );
+  depth = sampleDepthBuffer( mDepthBufferImage, position.x(), position.y() );
   if ( !std::isfinite( depth ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: depth is NaN or Inf. This should not happen." ), 2 );
@@ -1032,7 +1026,6 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
 {
   mDepthBufferImage = depthImage;
   mDepthBufferIsReady = true;
-  mDepthBufferNonVoidAverage = -1;
 
   if ( mCurrentOperation == MouseOperation::ZoomWheel )
   {
