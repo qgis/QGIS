@@ -15879,10 +15879,10 @@ QgsSettingsRegistry.removeSubRegistry: src/core/settings/qgssettingsregistry.h#L
 QgsSettingsRegistry.settingsEntry: src/core/settings/qgssettingsregistry.h#L55
 QgsSettingsRegistry: src/core/settings/qgssettingsregistry.h#L38
 QgsSettingsRegistryCore: src/core/settings/qgssettingsregistrycore.h#L43
-QgsSettingsTree.createPluginTreeNode: src/core/settings/qgssettingstree.h#L80
-QgsSettingsTree.node: src/core/settings/qgssettingstree.h#L75
+QgsSettingsTree.createPluginTreeNode: src/core/settings/qgssettingstree.h#L81
+QgsSettingsTree.node: src/core/settings/qgssettingstree.h#L76
 QgsSettingsTree.treeRoot: src/core/settings/qgssettingstree.h#L38
-QgsSettingsTree.unregisterPluginTreeNode: src/core/settings/qgssettingstree.h#L86
+QgsSettingsTree.unregisterPluginTreeNode: src/core/settings/qgssettingstree.h#L87
 QgsSettingsTree: src/core/settings/qgssettingstree.h#L30
 QgsSettingsTreeNamedListNode.deleteAllItems: src/core/settings/qgssettingstreenode.h#L240
 QgsSettingsTreeNamedListNode.deleteItem: src/core/settings/qgssettingstreenode.h#L232
