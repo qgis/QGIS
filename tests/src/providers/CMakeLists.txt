@@ -20,6 +20,11 @@ include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
 )
 
+if (WITH_INTERNAL_LAZPERF)
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/external/lazperf
+  )
+endif()
 
 #############################################################
 # Tests:
