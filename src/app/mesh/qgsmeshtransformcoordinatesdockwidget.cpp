@@ -56,7 +56,16 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
   connect( mButtonPreview, &QToolButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::calculate );
   connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::apply );
   connect( mButtonImport, &QToolButton::toggled, this, &QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked );
-  connect( mGetZValuesButton, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::updateZValuesFromTerrain );
+
+  connect( mCheckBoxZ, &QCheckBox::toggled, this, [=]( const bool checked ) {
+    if ( checked )
+      mCheckBoxZFromProjectTerrain->setChecked( !checked );
+  } );
+  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, [=]( const bool checked ) {
+    if ( checked )
+      mCheckBoxZ->setChecked( !checked );
+  } );
+  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, &QgsMeshTransformCoordinatesDockWidget::updateButton );
 }
 
 QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
@@ -104,8 +113,6 @@ void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const
     }
   }
 
-  mGetZValuesButton->setDisabled( vertexIndexes.empty() );
-
   importVertexCoordinates();
   updateButton();
   emit calculationUpdated();
@@ -120,6 +127,7 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
   mTransformVertices.clear();
   mTransformVertices.setInputVertices( mInputVertices );
   mTransformVertices.setExpressions( mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(), mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(), mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString() );
+  mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
   QgsExpressionContext context;
   context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
 
@@ -133,6 +141,7 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
 
 void QgsMeshTransformCoordinatesDockWidget::updateButton()
 {
+  bool modifyXYZSelected = false;
   mButtonApply->setEnabled( false );
   bool isCalculable = mInputLayer && !mInputVertices.isEmpty();
   if ( isCalculable )
@@ -143,11 +152,21 @@ void QgsMeshTransformCoordinatesDockWidget::updateButton()
 
     if ( isCalculable )
     {
+      modifyXYZSelected = true;
+    }
+
+    if ( isCalculable )
+    {
       for ( int i = 0; i < mCheckBoxes.count(); ++i )
       {
         bool checked = mCheckBoxes.at( i )->isChecked();
         isCalculable &= !checked || mExpressionLineEdits.at( i )->isValidExpression();
       }
+    }
+
+    if ( !modifyXYZSelected && mCheckBoxZFromProjectTerrain->isChecked() )
+    {
+      isCalculable = true;
     }
   }
 
