@@ -1,0 +1,8 @@
+usr/share/common-licenses/GPL-2       usr/share/qgis/doc/LICENSE
+usr/share/javascript/jquery/jquery.js usr/share/qgis/doc/jquery-min.js
+usr/share/javascript/leaflet          usr/share/qgis/doc/leaflet
+#qt6#usr/share/qgis/doc               usr/share/qgis-qt6/doc
+#qt6#usr/share/qgis/resources         usr/share/qgis-qt6/resources
+#qt6#usr/share/qgis/svg               usr/share/qgis-qt6/svg
+#qt6#usr/share/qgis/i18n              usr/share/qgis-qt6/i18n
+#qt6#usr/share/qgis/images            usr/share/qgis-qt6/images
