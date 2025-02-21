@@ -266,14 +266,11 @@ double QgsCameraController::sampleDepthBuffer( int px, int py )
   // Returns the average of depth values that are not 1 (void area)
   depth = 0;
   int samplesCount = 0;
-  // Make sure we can do the cast
-  Q_ASSERT( mDepthBufferImage.format() == QImage::Format_RGB32 );
-  for ( int y = 0; y < mDepthBufferImage.height(); ++y )
+  for ( int x = 0; x < mDepthBufferImage.width(); ++x )
   {
-    const QRgb *line = reinterpret_cast<const QRgb *>( mDepthBufferImage.constScanLine( y ) );
-    for ( int x = 0; x < mDepthBufferImage.width(); ++x )
+    for ( int y = 0; y < mDepthBufferImage.height(); ++y )
     {
-      double d = Qgs3DUtils::decodeDepth( line[x] );
+      double d = Qgs3DUtils::decodeDepth( mDepthBufferImage.pixel( x, y ) );
       if ( d < 1 )
       {
         depth += d;
