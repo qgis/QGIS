@@ -1043,9 +1043,6 @@ if (WITH_INTERNAL_POLY2TRI)
 endif ()
 
 file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
-if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
-  string(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
-endif()
 string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -2334,6 +2331,12 @@ set(IMAGE_RCCS ../../images/images.qrc)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_core PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_core${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_core${QGISPOSTFIX}
+  )
+endif()
 
 if(USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_core PRIVATE $<$<COMPILE_LANGUAGE:CXX>:qgis.h>)

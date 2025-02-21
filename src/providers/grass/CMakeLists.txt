@@ -65,6 +65,13 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ${GRASS_LIBRARY_UIS_H}
     )
 
+    if (QGISPOSTFIX)
+      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+         RUNTIME_OUTPUT_NAME qgisgrass${GRASS_BUILD_VERSION}${QGISPOSTFIX}
+         LIBRARY_OUTPUT_NAME qgisgrass${GRASS_BUILD_VERSION}${QGISPOSTFIX}
+      )
+    endif()
+
     # require c++17
     target_compile_features(qgisgrass${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
 

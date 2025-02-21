@@ -535,6 +535,12 @@ endif()
 # qgis_analysis library
 
 add_library(qgis_analysis ${LIBRARY_TYPE} ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_analysis PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_analysis${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_analysis${QGISPOSTFIX}
+  )
+endif()
 
 if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_analysis PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)

@@ -534,11 +534,22 @@ endif()
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_app PROPERTIES
+     RUNTIME_OUTPUT_NAME qgis_app${QGISPOSTFIX}
+     LIBRARY_OUTPUT_NAME qgis_app${QGISPOSTFIX}
+  )
+  set_target_properties(${QGIS_APP_NAME} PROPERTIES
+     RUNTIME_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
+     LIBRARY_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
+  )
+endif()
 
 # require c++17
 target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
 endif()
