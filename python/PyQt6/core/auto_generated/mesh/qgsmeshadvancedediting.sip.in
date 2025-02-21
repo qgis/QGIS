@@ -159,9 +159,9 @@ If ``layer`` is not the same than the one used to make the calculation, this wil
 %Docstring
 Sets if Z values for vertices should be obtained from project terrain, instead of expression.
 
-@param enable
+:param enable:
 
-@since QGIS 3.42
+.. versionadded:: 3.42
 %End
 
 };
