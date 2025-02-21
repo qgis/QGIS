@@ -143,9 +143,17 @@ QVariant QgsQueryResultModel::data( const QModelIndex &index, int role ) const
 
 QVariant QgsQueryResultModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if ( orientation == Qt::Orientation::Horizontal && role == Qt::ItemDataRole::DisplayRole && section < mColumns.count() )
+  if ( orientation == Qt::Orientation::Horizontal && section < mColumns.count() )
   {
-    return mColumns.at( section );
+    switch ( role )
+    {
+      case Qt::ItemDataRole::DisplayRole:
+      case Qt::ItemDataRole::ToolTipRole:
+        return mColumns.at( section );
+
+      default:
+        break;
+    }
   }
   return QAbstractTableModel::headerData( section, orientation, role );
 }
