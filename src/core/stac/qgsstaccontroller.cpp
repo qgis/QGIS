@@ -104,7 +104,7 @@ void QgsStacController::handleStacObjectReply()
   parser.setData( data );
   parser.setBaseUrl( reply->url() );
 
-  QgsStacObject *object = nullptr;
+  std::unique_ptr< QgsStacObject > object;
   switch ( parser.type() )
   {
     case QgsStacObject::Type::Catalog:
@@ -120,7 +120,7 @@ void QgsStacController::handleStacObjectReply()
       object = nullptr;
       break;
   }
-  mFetchedStacObjects.insert( requestId, object );
+  mFetchedStacObjects.insert( requestId, object.release() );
   emit finishedStacObjectRequest( requestId, parser.error() );
   reply->deleteLater();
   mReplies.removeOne( reply );
@@ -148,62 +148,34 @@ void QgsStacController::handleItemCollectionReply()
   parser.setData( data );
   parser.setBaseUrl( reply->url() );
 
-  QgsStacItemCollection *fc = parser.itemCollection();
-  mFetchedItemCollections.insert( requestId, fc );
+  std::unique_ptr<QgsStacItemCollection> fc = parser.itemCollection();
+  mFetchedItemCollections.insert( requestId, fc.release() );
   emit finishedItemCollectionRequest( requestId, parser.error() );
   reply->deleteLater();
   mReplies.removeOne( reply );
 }
 
-std::unique_ptr< QgsStacObject > QgsStacController::takeStacObject( int requestId )
+template<class T>
+std::unique_ptr<T> QgsStacController::takeStacObject( int requestId )
 {
   std::unique_ptr< QgsStacObject > obj( mFetchedStacObjects.take( requestId ) );
-  return obj;
+
+  if ( T *downCastObj = dynamic_cast< T * >( obj.get() ) )
+  {
+    ( void )obj.release();
+    return std::unique_ptr< T >( downCastObj );
+  }
+
+  return nullptr;
 }
+template CORE_EXPORT std::unique_ptr< QgsStacItem > QgsStacController::takeStacObject<QgsStacItem>( int requestId );
+template CORE_EXPORT std::unique_ptr< QgsStacCatalog > QgsStacController::takeStacObject<QgsStacCatalog>( int requestId );
+template CORE_EXPORT std::unique_ptr< QgsStacObject > QgsStacController::takeStacObject<QgsStacObject>( int requestId );
 
 std::unique_ptr< QgsStacItemCollection > QgsStacController::takeItemCollection( int requestId )
 {
   std::unique_ptr< QgsStacItemCollection > col( mFetchedItemCollections.take( requestId ) );
   return col;
-}
-
-std::unique_ptr< QgsStacObject > QgsStacController::fetchStacObject( const QUrl &url, QString *error )
-{
-  QgsNetworkReplyContent content = fetchBlocking( url );
-
-  if ( content.error() != QNetworkReply::NoError )
-  {
-    if ( error )
-      *error = content.errorString();
-
-    return nullptr;
-  }
-
-  const QByteArray data = content.content();
-
-  QgsStacParser parser;
-  parser.setData( data );
-  parser.setBaseUrl( url );
-  std::unique_ptr< QgsStacObject > object;
-  switch ( parser.type() )
-  {
-    case QgsStacObject::Type::Catalog:
-      object.reset( parser.catalog() );
-      break;
-    case QgsStacObject::Type::Collection:
-      object.reset( parser.collection() );
-      break;
-    case QgsStacObject::Type::Item:
-      object.reset( parser.item() );
-      break;
-    case QgsStacObject::Type::Unknown:
-      break;
-  }
-
-  if ( error )
-    *error = parser.error();
-
-  return object;
 }
 
 std::unique_ptr< QgsStacItemCollection > QgsStacController::fetchItemCollection( const QUrl &url, QString *error )
@@ -283,7 +255,7 @@ void QgsStacController::setAuthCfg( const QString &authCfg )
   mAuthCfg = authCfg;
 }
 
-QgsStacCatalog *QgsStacController::openLocalCatalog( const QString &fileName ) const
+std::unique_ptr<QgsStacCatalog> QgsStacController::openLocalCatalog( const QString &fileName ) const
 {
   QFile file( fileName );
   const bool ok = file.open( QIODevice::ReadOnly );
@@ -300,7 +272,7 @@ QgsStacCatalog *QgsStacController::openLocalCatalog( const QString &fileName ) c
 }
 
 
-QgsStacCollection *QgsStacController::openLocalCollection( const QString &fileName ) const
+std::unique_ptr<QgsStacCollection> QgsStacController::openLocalCollection( const QString &fileName ) const
 {
   QFile file( fileName );
   const bool ok = file.open( QIODevice::ReadOnly );
@@ -316,7 +288,7 @@ QgsStacCollection *QgsStacController::openLocalCollection( const QString &fileNa
   return parser.collection();
 }
 
-QgsStacItem *QgsStacController::openLocalItem( const QString &fileName ) const
+std::unique_ptr<QgsStacItem> QgsStacController::openLocalItem( const QString &fileName ) const
 {
   QFile file( fileName );
   const bool ok = file.open( QIODevice::ReadOnly );
@@ -331,3 +303,58 @@ QgsStacItem *QgsStacController::openLocalItem( const QString &fileName ) const
   parser.setBaseUrl( fileName );
   return parser.item();
 }
+
+template<class T>
+std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString *error )
+{
+  QgsNetworkReplyContent content = fetchBlocking( url );
+
+  if ( content.error() != QNetworkReply::NoError )
+  {
+    if ( error )
+      *error = content.errorString();
+
+    return nullptr;
+  }
+
+  const QByteArray data = content.content();
+
+  QgsStacParser parser;
+  parser.setData( data );
+  parser.setBaseUrl( url );
+  std::unique_ptr< QgsStacObject > object;
+  switch ( parser.type() )
+  {
+    case QgsStacObject::Type::Catalog:
+      object = parser.catalog();
+      break;
+    case QgsStacObject::Type::Collection:
+      object = parser.collection();
+      break;
+    case QgsStacObject::Type::Item:
+      object = parser.item();
+      break;
+    case QgsStacObject::Type::Unknown:
+      break;
+  }
+
+  std::unique_ptr< T > res;
+  if ( T *castObject = dynamic_cast< T * >( object.get() ) )
+  {
+    ( void )object.release();
+    res.reset( castObject );
+  }
+  else
+  {
+    QgsDebugError( "Retrieved STAC object could not be cast to expected type" );
+  }
+
+  if ( error )
+    *error = parser.error();
+
+  return res;
+}
+
+template CORE_EXPORT std::unique_ptr< QgsStacItem > QgsStacController::fetchStacObject<QgsStacItem>( const QUrl &url, QString *error );
+template CORE_EXPORT std::unique_ptr< QgsStacCollection > QgsStacController::fetchStacObject<QgsStacCollection>( const QUrl &url, QString *error );
+template CORE_EXPORT std::unique_ptr< QgsStacCatalog > QgsStacController::fetchStacObject<QgsStacCatalog>( const QUrl &url, QString *error );

@@ -59,28 +59,28 @@ class QgsStacParser
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned catalog
      */
-    QgsStacCatalog *catalog();
+    std::unique_ptr< QgsStacCatalog > catalog();
 
     /**
      * Returns the parsed STAC Collection
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned collection
      */
-    QgsStacCollection *collection();
+    std::unique_ptr< QgsStacCollection > collection();
 
     /**
      * Returns the parsed STAC Item
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned item
      */
-    QgsStacItem *item();
+    std::unique_ptr< QgsStacItem > item();
 
     /**
      * Returns the parsed STAC API Item Collection
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned item collection
      */
-    QgsStacItemCollection *itemCollection();
+    std::unique_ptr< QgsStacItemCollection > itemCollection();
 
     /**
      * Returns the parsed STAC API Collections
@@ -96,9 +96,9 @@ class QgsStacParser
     QString error() const;
 
   private:
-    QgsStacItem *parseItem( const nlohmann::json &data );
-    QgsStacCatalog *parseCatalog( const nlohmann::json &data );
-    QgsStacCollection *parseCollection( const nlohmann::json &data );
+    std::unique_ptr< QgsStacItem > parseItem( const nlohmann::json &data );
+    std::unique_ptr< QgsStacCatalog > parseCatalog( const nlohmann::json &data );
+    std::unique_ptr< QgsStacCollection > parseCollection( const nlohmann::json &data );
 
     QVector< QgsStacLink > parseLinks( const nlohmann::json &data );
     QMap< QString, QgsStacAsset > parseAssets( const nlohmann::json &data );

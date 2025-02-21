@@ -69,12 +69,12 @@ QString QgsStacParser::error() const
   return mError;
 }
 
-QgsStacCatalog *QgsStacParser::catalog()
+std::unique_ptr<QgsStacCatalog> QgsStacParser::catalog()
 {
   return parseCatalog( mData );
 }
 
-QgsStacCatalog *QgsStacParser::parseCatalog( const nlohmann::json &data )
+std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::json &data )
 {
   try
   {
@@ -118,7 +118,7 @@ QgsStacCatalog *QgsStacParser::parseCatalog( const nlohmann::json &data )
       catalog->setStacExtensions( extensions );
     }
 
-    return catalog.release();
+    return catalog;
   }
   catch ( nlohmann::json::exception &ex )
   {
@@ -128,12 +128,12 @@ QgsStacCatalog *QgsStacParser::parseCatalog( const nlohmann::json &data )
   }
 }
 
-QgsStacCollection *QgsStacParser::collection()
+std::unique_ptr<QgsStacCollection> QgsStacParser::collection()
 {
   return parseCollection( mData );
 }
 
-QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
+std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohmann::json &data )
 {
   try
   {
@@ -281,7 +281,7 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
       collection->setAssets( assets );
     }
 
-    return collection.release();
+    return collection;
   }
   catch ( nlohmann::json::exception &ex )
   {
@@ -291,12 +291,12 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
   }
 }
 
-QgsStacItem *QgsStacParser::item()
+std::unique_ptr<QgsStacItem> QgsStacParser::item()
 {
   return parseItem( mData );
 }
 
-QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
+std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &data )
 {
   try
   {
@@ -379,7 +379,7 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
     if ( data.contains( "collection" ) )
       item->setCollection( getString( data["collection"] ) );
 
-    return item.release();
+    return item;
   }
   catch ( nlohmann::json::exception &ex )
   {
@@ -464,7 +464,7 @@ QString QgsStacParser::getString( const nlohmann::json &data )
   return data.is_null() ? QString() : QString::fromStdString( data );
 }
 
-QgsStacItemCollection *QgsStacParser::itemCollection()
+std::unique_ptr<QgsStacItemCollection> QgsStacParser::itemCollection()
 {
   std::vector< std::unique_ptr<QgsStacItem> > items;
   QVector< QgsStacLink > links;
@@ -497,7 +497,7 @@ QgsStacItemCollection *QgsStacParser::itemCollection()
       rawItems.append( i.release() );
   }
 
-  return new QgsStacItemCollection( rawItems, links, numberMatched );
+  return std::make_unique< QgsStacItemCollection >( rawItems, links, numberMatched );
 }
 
 QgsStacCollections *QgsStacParser::collections()
