@@ -137,18 +137,13 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
       mMergePolicyComboBox->addItem( tr( "Use Sum" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::Sum ) );
       mMergePolicyComboBox->addItem( tr( "Use Maximum Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::MaximumValue ) );
       mMergePolicyComboBox->addItem( tr( "Use Minimum Value" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::MinimumValue ) );
-      mMergePolicyComboBox->addItem( tr( "Skip Attribute" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::SkipAttribute ) );
 
       if ( mLayer->geometryType() != Qgis::GeometryType::Point )
-      {
         mMergePolicyComboBox->addItem( tr( "Use Average Weighted by Geometry" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::GeometryWeighted ) );
-      }
     }
 
-    if ( mLayer->geometryType() != Qgis::GeometryType::Point )
-    {
-      mMergePolicyComboBox->addItem( tr( "Use Largest Feature" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::LargestGeometry ) );
-    }
+    mMergePolicyComboBox->addItem( tr( "Use Largest Feature" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::LargestGeometry ) );
+    mMergePolicyComboBox->addItem( tr( "Skip Attribute" ), QVariant::fromValue( Qgis::FieldDomainMergePolicy::SkipAttribute ) );
   }
   else
   {

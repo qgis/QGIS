@@ -249,6 +249,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
     bool setToManual = false;
 
     const QgsField field = mVectorLayer->fields().at( idx );
+    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, j ) );
 
     switch ( field.mergePolicy() )
     {
@@ -257,14 +258,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
         if ( !field.isNumeric() )
           break;
 
-        const double sum = std::accumulate( mFeatureList.constBegin(), mFeatureList.constEnd(), 0.0, [idx]( double sum, const QgsFeature &f ) {
-          return sum + f.attribute( idx ).toDouble();
-        } );
-
-        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, sum );
-        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, sum );
-        setToManual = true;
-
+        if ( currentComboBox )
+          currentComboBox->setCurrentIndex( currentComboBox->findData( static_cast<int>( Qgis::Statistic::Sum ) ) );
         break;
       }
 
@@ -343,26 +338,67 @@ void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
 
       case Qgis::FieldDomainMergePolicy::LargestGeometry:
       {
-        if ( mVectorLayer->geometryType() == Qgis::GeometryType::Unknown || mVectorLayer->geometryType() == Qgis::GeometryType::Null || mVectorLayer->geometryType() == Qgis::GeometryType::Point )
+        if ( mVectorLayer->geometryType() == Qgis::GeometryType::Unknown || mVectorLayer->geometryType() == Qgis::GeometryType::Null )
           break;
 
-        std::function<double( const QgsGeometry & )> getSize = mVectorLayer->geometryType() == Qgis::GeometryType::Polygon ? &QgsGeometry::area : &QgsGeometry::length;
+        QgsFeatureId largestFeatureId = FID_NULL;
 
-        QList<QgsFeature>::iterator largestSelectedFeature = std::max_element( mFeatureList.begin(), mFeatureList.end(), [&getSize]( const QgsFeature &a, const QgsFeature &b ) -> bool {
-          return getSize( a.geometry() ) < getSize( b.geometry() );
-        } );
+        if ( mVectorLayer->geometryType() == Qgis::GeometryType::Point )
+        {
+          QList<QgsFeature>::iterator largestSelectedFeature = std::max_element( mFeatureList.begin(), mFeatureList.end(), []( const QgsFeature &a, const QgsFeature &b ) -> bool {
+            return a.geometry().constGet()->partCount() < b.geometry().constGet()->partCount();
+          } );
 
-        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, largestSelectedFeature->attribute( idx ) );
-        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, largestSelectedFeature->attribute( idx ) );
-        setToManual = true;
+          largestFeatureId = largestSelectedFeature->id();
+        }
+        else
+        {
+          std::function<double( const QgsGeometry & )> getSize = mVectorLayer->geometryType() == Qgis::GeometryType::Polygon ? &QgsGeometry::area : &QgsGeometry::length;
+
+          QList<QgsFeature>::iterator largestSelectedFeature = std::max_element( mFeatureList.begin(), mFeatureList.end(), [&getSize]( const QgsFeature &a, const QgsFeature &b ) -> bool {
+            return getSize( a.geometry() ) < getSize( b.geometry() );
+          } );
+
+          largestFeatureId = largestSelectedFeature->id();
+        }
+
+        if ( largestFeatureId == FID_NULL )
+          break;
+
+        if ( currentComboBox )
+          currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( largestFeatureId ) ) ) );
+
+        break;
+      }
+
+      case Qgis::FieldDomainMergePolicy::MinimumValue:
+      {
+        if ( currentComboBox )
+          currentComboBox->setCurrentIndex( currentComboBox->findData( static_cast<int>( Qgis::Statistic::Min ) ) );
+
+        break;
+      }
+
+      case Qgis::FieldDomainMergePolicy::MaximumValue:
+      {
+        if ( currentComboBox )
+          currentComboBox->setCurrentIndex( currentComboBox->findData( static_cast<int>( Qgis::Statistic::Max ) ) );
+
+        break;
+      }
+
+      case Qgis::FieldDomainMergePolicy::SkipAttribute:
+      {
+        if ( currentComboBox )
+          currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
+
+        break;
       }
       break;
     }
 
-
     if ( setToManual )
     {
-      QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, j ) );
       if ( currentComboBox )
       {
         currentComboBox->blockSignals( true );
