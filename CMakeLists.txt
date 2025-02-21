@@ -18,16 +18,17 @@ endif()
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
-set(WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
+set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
-set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
-set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+set (QGISPOSTFIX "" CACHE STRING "Optional postfix to apply to public shared objects and executables")
 
 if(NOT SDK_PATH STREQUAL "")
   message(STATUS "Building with SDK -- ${SDK_PATH}")
@@ -41,9 +42,9 @@ elseif(WITH_VCPKG)
   message(STATUS "Building local dependencies with VCPKG --")
   set(VCPKG_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/vcpkg_installed")
   include(VcpkgToolchain)
-else(NOT SDK_PATH STREQUAL "")
+else()
   message(STATUS "Building with system libraries --")
-endif(NOT SDK_PATH STREQUAL "")
+endif()
 
 
 if(WITH_VCPKG)
