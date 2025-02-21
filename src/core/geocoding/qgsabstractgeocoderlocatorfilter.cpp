@@ -65,7 +65,6 @@ void QgsAbstractGeocoderLocatorFilter::fetchResults( const QString &string, cons
     QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
 
     nominatimGeocoder->setCountryCodes( countryCodes );
-    qDebug() << "Updated country codes for Nominatim:" << countryCodes;
   }
 
   const QList< QgsGeocoderResult > results = mGeocoder->geocodeString( string, geocodeContext, feedback );
