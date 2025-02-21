@@ -1,5 +1,58 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.42 'Münster'?
+
+This release has following new features:
+
+- Symbology: Add configurable extent buffer to symbols
+- Labelling: Raster labeling
+- Labelling: Custom tab distances for labels
+- Labelling: Support CSS background property in labels/text renderer
+- Labelling: Support CSS margins for block elements in HTML labels
+- Labelling: Support CSS line-height in HTML labels
+- Mesh: Mesh Render Extent Settings
+- Mesh: Mesh editing delaunay refinement
+- Mesh: Dataset group controls for mesh layers
+- Mesh: Mesh selection actions
+- Mesh: Elevation assignment modes for added mesh vertices
+- 3D Features: Debug widget for 3D views
+- Point Clouds: Virtual point cloud overviews in 2D
+- Print Layouts: Double-clicking a mouse handle for a layout label resizes to fit text
+- Print Layouts: Action on double click layout item
+- Print Layouts: Layout better node item creation
+- Print Layouts: Apply layout page size to all pages
+- Print Layouts: New quality parameter for layout JPG exports
+- Digitising: Highlight Trim/Extend plane of intersection
+- Data Management: Enable snapping in Georeferencer
+- Data Management: Data Source Manager STAC enhancements
+- Forms and Widgets: Additional sorting options on value relation widget
+- Processing: Processing metadata tools
+- Processing: Expression based hover content in Scatterplots
+- Processing: Add option to include 'layer' and 'path' attributes in Merge Vector Layers tool
+- Processing: Move Geometry Checker into processing tools
+- Processing: Add title, axis titles, and logarithmic axes to plots
+- Processing: Raster zonal min/max algorithm
+- Processing: Algorithm to extract min/max pixel from raster
+- Processing: New algorithm to generate elevation profile images
+- Processing: New Mesh: Surface to Polygon Algorithm
+- Profile Plots: Introduce custom tolerance for vector layers
+- Data Providers: Execute SQL from layer context menu
+- Programmability: Expose QgsGeos class to PyQGIS
+- Programmability: Make Z and M values accessible via QgsGeometry.as_numpy()
+- Programmability: Python console interactive help
+- Notable Fixes: Bug fixes by Even Rouault (Spatialys)
+- Notable Fixes: Bug fixes by Alessandro Pasotti (QCooperative)
+- Notable Fixes: Bug fixes by Julien Cabieces (Oslandia)
+- Notable Fixes: Bug fixes by Jacky Volpes (Oslandia)
+- Notable Fixes: Bug fixes by Nyall Dawson (North Road)
+- Notable Fixes: Bug fixes by Alexander Bruy (QCooperative)
+- Notable Fixes: Bug fixes by Mathieu Pellerin (OPENGIS)
+- Notable Fixes: Bug fixes by Stefanos Natsis (LutraConsulting)
+- Notable Fixes: Bug Fixes by Loïc Bartoletti (Oslandia)
+- Notable Fixes: Bug Fixes by Germán Carrillo (OPENGIS)
+-
+
+
 # What's new in Version 3.40 'Bratislava'?
 
 This release has following new features:

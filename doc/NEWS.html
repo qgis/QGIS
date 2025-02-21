@@ -60,6 +60,10 @@
     img {
       max-width: 100%;
     }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
     h1, h2, h3, h4, h5, h6 {
       margin-top: 1.4em;
     }
@@ -170,6 +174,9 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#whats-new-in-version-3.42-münster"
+id="toc-whats-new-in-version-3.42-münster">What’s new in Version 3.42
+‘Münster’?</a></li>
 <li><a href="#whats-new-in-version-3.40-bratislava"
 id="toc-whats-new-in-version-3.40-bratislava">What’s new in Version 3.40
 ‘Bratislava’?</a></li>
@@ -354,6 +361,65 @@ id="toc-version-0.0.3-alpha-august-10-2002">Version 0.0.3-alpha August
 </ul>
 </nav>
 <p>Change history for the QGIS Project</p>
+<h1 id="whats-new-in-version-3.42-münster">What’s new in Version 3.42
+‘Münster’?</h1>
+<p>This release has following new features:</p>
+<ul>
+<li>Symbology: Add configurable extent buffer to symbols</li>
+<li>Labelling: Raster labeling</li>
+<li>Labelling: Custom tab distances for labels</li>
+<li>Labelling: Support CSS background property in labels/text
+renderer</li>
+<li>Labelling: Support CSS margins for block elements in HTML
+labels</li>
+<li>Labelling: Support CSS line-height in HTML labels</li>
+<li>Mesh: Mesh Render Extent Settings</li>
+<li>Mesh: Mesh editing delaunay refinement</li>
+<li>Mesh: Dataset group controls for mesh layers</li>
+<li>Mesh: Mesh selection actions</li>
+<li>Mesh: Elevation assignment modes for added mesh vertices</li>
+<li>3D Features: Debug widget for 3D views</li>
+<li>Point Clouds: Virtual point cloud overviews in 2D</li>
+<li>Print Layouts: Double-clicking a mouse handle for a layout label
+resizes to fit text</li>
+<li>Print Layouts: Action on double click layout item</li>
+<li>Print Layouts: Layout better node item creation</li>
+<li>Print Layouts: Apply layout page size to all pages</li>
+<li>Print Layouts: New quality parameter for layout JPG exports</li>
+<li>Digitising: Highlight Trim/Extend plane of intersection</li>
+<li>Data Management: Enable snapping in Georeferencer</li>
+<li>Data Management: Data Source Manager STAC enhancements</li>
+<li>Forms and Widgets: Additional sorting options on value relation
+widget</li>
+<li>Processing: Processing metadata tools</li>
+<li>Processing: Expression based hover content in Scatterplots</li>
+<li>Processing: Add option to include ‘layer’ and ‘path’ attributes in
+Merge Vector Layers tool</li>
+<li>Processing: Move Geometry Checker into processing tools</li>
+<li>Processing: Add title, axis titles, and logarithmic axes to
+plots</li>
+<li>Processing: Raster zonal min/max algorithm</li>
+<li>Processing: Algorithm to extract min/max pixel from raster</li>
+<li>Processing: New algorithm to generate elevation profile images</li>
+<li>Processing: New Mesh: Surface to Polygon Algorithm</li>
+<li>Profile Plots: Introduce custom tolerance for vector layers</li>
+<li>Data Providers: Execute SQL from layer context menu</li>
+<li>Programmability: Expose QgsGeos class to PyQGIS</li>
+<li>Programmability: Make Z and M values accessible via
+QgsGeometry.as_numpy()</li>
+<li>Programmability: Python console interactive help</li>
+<li>Notable Fixes: Bug fixes by Even Rouault (Spatialys)</li>
+<li>Notable Fixes: Bug fixes by Alessandro Pasotti (QCooperative)</li>
+<li>Notable Fixes: Bug fixes by Julien Cabieces (Oslandia)</li>
+<li>Notable Fixes: Bug fixes by Jacky Volpes (Oslandia)</li>
+<li>Notable Fixes: Bug fixes by Nyall Dawson (North Road)</li>
+<li>Notable Fixes: Bug fixes by Alexander Bruy (QCooperative)</li>
+<li>Notable Fixes: Bug fixes by Mathieu Pellerin (OPENGIS)</li>
+<li>Notable Fixes: Bug fixes by Stefanos Natsis (LutraConsulting)</li>
+<li>Notable Fixes: Bug Fixes by Loïc Bartoletti (Oslandia)</li>
+<li>Notable Fixes: Bug Fixes by Germán Carrillo (OPENGIS)</li>
+<li></li>
+</ul>
 <h1 id="whats-new-in-version-3.40-bratislava">What’s new in Version 3.40
 ‘Bratislava’?</h1>
 <p>This release has following new features:</p>
@@ -4164,9 +4230,10 @@ crash</li>
 <li>minor code change; commented out superfluous code</li>
 </ul>
 <p>2004-08-26 [mcoletti] 0.4.0devel21 Now explicitly check for command
-line arguments via $# instead of $@. Using $@ caused the script to crash
-when more than one command line argument was passed in. (E.g.,
-specifying multiple files for CVS commits.)</p>
+line arguments via $# instead of <span
+class="math inline">@.<em>U</em><em>s</em><em>i</em><em>n</em><em>g</em></span>@
+caused the script to crash when more than one command line argument was
+passed in. (E.g., specifying multiple files for CVS commits.)</p>
 <p>2004-08-25 [mcoletti] 0.4.0devel20 Now explicitly use
 QgsMapLayerRegistry instance instead of data members. (Of which two both
 referred to the same instance.)</p>
