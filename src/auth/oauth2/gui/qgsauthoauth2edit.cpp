@@ -756,7 +756,6 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
   leClientSecret->setVisible( !pkce );
   leClientSecret->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
 
-
   lblUsername->setVisible( resowner );
   leUsername->setVisible( resowner );
   if ( !resowner )

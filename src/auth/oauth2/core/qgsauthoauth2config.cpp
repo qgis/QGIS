@@ -311,6 +311,10 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
   {
     mValid = ( !tokenUrl().isEmpty() && !username().isEmpty() && !password().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
   }
+  else if ( mGrantFlow == GrantFlow::ClientCredentials )
+  {
+    mValid = ( !tokenUrl().isEmpty() && !clientId().isEmpty() && !clientSecret().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
+  }
 
   if ( mValid != oldvalid )
     emit validityChanged( mValid );
