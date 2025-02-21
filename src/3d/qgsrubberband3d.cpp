@@ -408,7 +408,7 @@ void QgsRubberBand3D::updateGeometry()
   }
 
 
-  if ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon )
+  if ( mEdgesEnabled && ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon ) )
   {
     mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
     mIndexAttribute->buffer()->setData( lineData.createIndexBuffer() );
