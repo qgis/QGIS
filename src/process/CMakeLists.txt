@@ -16,6 +16,9 @@ endif()
 # Build
 
 add_executable (qgis_process MACOSX_BUNDLE ${QGIS_PROCESS_SRCS})
+if (QGISPOSTFIX)
+  set_target_properties(qgis_process PROPERTIES RUNTIME_OUTPUT_NAME qgis_process${QGISPOSTFIX})
+endif()
 
 # require c++17
 target_compile_features(qgis_process PRIVATE cxx_std_17)

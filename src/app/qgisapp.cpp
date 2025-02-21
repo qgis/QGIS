@@ -540,9 +540,6 @@
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
 
-//
-// Conditional Includes
-//
 #include <sqlite3.h>
 
 #ifdef HAVE_SPATIALITE
@@ -12232,7 +12229,7 @@ void QgisApp::loadPythonSupport()
 {
   QgsScopedRuntimeProfile profile( tr( "Loading Python support" ) );
 
-  QString pythonlibName( QStringLiteral( "qgispython" ) );
+  QString pythonlibName( QStringLiteral( "qgispython" QGISPOSTFIX ) );
 #if defined( Q_OS_UNIX )
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif

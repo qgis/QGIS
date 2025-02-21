@@ -85,6 +85,12 @@ if (WITH_SERVER_PLUGINS)
 endif()
 
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_server PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_server${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_server${QGISPOSTFIX}
+  )
+endif()
 
 if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_server PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
@@ -154,6 +160,10 @@ set(QGIS_SERVER_TESTRCCS ../../tests/testdata/testdata.qrc)
 
 add_executable(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCCS})
 add_executable(qgis_mapserver qgis_mapserver.cpp ${QGIS_SERVER_TESTRCCS})
+if (QGISPOSTFIX)
+  set_target_properties(qgis_mapserv.fcgi PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserv${QGISPOSTFIX}.fcgi)
+  set_target_properties(qgis_mapserver PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserver${QGISPOSTFIX})
+endif()
 
 # require c++17
 target_compile_features(qgis_mapserv.fcgi PRIVATE cxx_std_17)

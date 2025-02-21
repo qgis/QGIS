@@ -37,6 +37,9 @@ add_executable(${QGIS_QUICK_APP_NAME}
     ${QGIS_QUICK_APP_SRCS}
     ${QGIS_QUICK_APP_MOC_SRCS}
 )
+if (QGISPOSTFIX)
+  set_target_properties(qgis_quickapp PROPERTIES RUNTIME_OUTPUT_NAME qgis_quickapp${QGISPOSTFIX})
+endif()
 
 target_compile_features(${QGIS_QUICK_APP_NAME} PRIVATE cxx_std_17)
 
