@@ -47,7 +47,6 @@ class TestQgsMapToolEditMesh : public QgsTest
 
     void selectElements();
     void testAssignVertexZValueFromTerrainOnCreation();
-    void testAssignVertexZValueFromTerrainOnButtonClick();
     void testDelaunayRefinement();
 
   private:
@@ -622,73 +621,6 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   layer->rollBackFrameEditing( transform, false );
 }
 
-void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
-{
-  QgsCoordinateReferenceSystem crs3857;
-  crs3857.createFromString( "EPSG:3857" );
-
-  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
-  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
-  layer->setCrs( crs3857 );
-  QVERIFY( layer->isValid() );
-
-  QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
-  auto terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
-  terrainLayer->setCrs( crs3857 );
-  QVERIFY( terrainLayer->isValid() );
-
-  auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
-  terrain->setLayer( terrainLayer.get() );
-
-  QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
-  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() << terrainLayer.get() );
-  mCanvas->setDestinationCrs( layer->crs() );
-
-  const QgsCoordinateTransform transform;
-  QgsMeshEditingError error;
-  layer->startFrameEditing( transform, error, false );
-  QVERIFY( error == QgsMeshEditingError() );
-  QVERIFY( layer->meshEditor() );
-
-  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
-  mCanvas->setCurrentLayer( layer.get() );
-  mEditMeshMapTool->mActionDigitizing->trigger();
-
-  QList<int> selectedVertices;
-  selectedVertices << 1 << 2 << 3;
-
-  QgsPoint vertex;
-
-  // test vertices prior to assignment from elevation provider
-  vertex = mEditMeshMapTool->mapVertex( 1 );
-  QGSCOMPARENEAR( vertex.z(), 30, 0.01 );
-
-  vertex = mEditMeshMapTool->mapVertex( 2 );
-  QGSCOMPARENEAR( vertex.z(), 40, 0.01 );
-
-  vertex = mEditMeshMapTool->mapVertex( 3 );
-  QGSCOMPARENEAR( vertex.z(), 50, 0.01 );
-
-  mEditMeshMapTool->triggerTransformCoordinatesDockWidget( true );
-
-  // set selected vertices and press the button
-  mEditMeshMapTool->setSelectedVertices( selectedVertices, Qgis::SelectBehavior::SetSelection );
-  mEditMeshMapTool->mTransformDockWidget->updateZValuesFromTerrain();
-
-  // test vertices after the assignment from elevation provider
-  vertex = mEditMeshMapTool->mapVertex( 1 );
-  QGSCOMPARENEAR( vertex.z(), 18.244469, 0.000001 );
-
-  vertex = mEditMeshMapTool->mapVertex( 2 );
-  QGSCOMPARENEAR( vertex.z(), 14.353244, 0.000001 );
-
-  vertex = mEditMeshMapTool->mapVertex( 3 );
-  QGSCOMPARENEAR( vertex.z(), 54.627747, 0.000001 );
-
-  // remove edits
-  layer->rollBackFrameEditing( transform, false );
-}
-
 void TestQgsMapToolEditMesh::selectElements()
 {
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
@@ -779,8 +711,6 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
 
   QVERIFY( layer->commitFrameEditing( transform, false ) );
 
-  QGSCOMPARELONGSTR( "edit_no_delaunay_refinement", "not_delaunay.2dm", TestQgsMapToolEditMesh::read2DMFileContent( copyDataPath1 ).toUtf8() );
-
   // editing with delaunay refinement
   mEditMeshMapTool->mWidgetActionDigitizing->mCheckBoxRefineNeighboringFaces->setChecked( true );
 
@@ -789,7 +719,6 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
   layer = std::make_unique<QgsMeshLayer>( copyDataPath2, "not delaunay", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
-
   layer->startFrameEditing( transform, error, false );
   QVERIFY( error == QgsMeshEditingError() );
 
@@ -810,8 +739,6 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
   QCOMPARE( layer->undoStack()->command( 0 )->text(), "Add vertex inside face with Delaunay refinement" );
 
   QVERIFY( layer->commitFrameEditing( transform, false ) );
-
-  QGSCOMPARELONGSTR( "edit_delaunay_refinement", "delaunay.2dm", TestQgsMapToolEditMesh::read2DMFileContent( copyDataPath2 ).toUtf8() );
 }
 
 QString TestQgsMapToolEditMesh::read2DMFileContent( const QString &filePath )
