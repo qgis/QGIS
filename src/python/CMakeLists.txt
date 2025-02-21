@@ -30,6 +30,13 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_python.h
  )
 
+if (QGISPOSTFIX)
+  set_target_properties(qgispython PROPERTIES
+    RUNTIME_OUTPUT_NAME qgispython${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgispython${QGISPOSTFIX}
+  )
+endif()
+
 install(TARGETS qgispython
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
