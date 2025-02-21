@@ -96,6 +96,7 @@ set_target_properties(qgis_server PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 target_compile_features(qgis_server PRIVATE cxx_std_17)
 
 target_include_directories(qgis_server SYSTEM PUBLIC
+  ${CMAKE_SOURCE_DIR}/external/inja
   ${FCGI_INCLUDE_DIR}
 )
 

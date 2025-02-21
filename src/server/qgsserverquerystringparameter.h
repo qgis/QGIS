@@ -23,12 +23,9 @@
 #include <QVariant>
 #include <QObject>
 
-
-#include <nlohmann/json.hpp>
-
 #ifndef SIP_RUN
+#include <nlohmann/json.hpp>
 using namespace nlohmann;
-#endif
 
 
 class QgsServerApiBadRequestException;

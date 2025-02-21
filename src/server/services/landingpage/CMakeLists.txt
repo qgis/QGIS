@@ -2,7 +2,7 @@
 # Files
 
 set (LANDINGPAGE_SRCS
-  ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
+  ${CMAKE_SOURCE_DIR}/external/inja/inja/inja.hpp
   qgslandingpage.cpp
   qgslandingpageutils.cpp
   qgslandingpagehandlers.cpp
