@@ -594,7 +594,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DOverview()
   // There is a bug in overview rendering, which doesn't render overview right away, it needs to get out of camera view
   // and back in. Then it renders correctly
   scene->cameraController()->moveView( mVpcLayer->extent().width(), mVpcLayer->extent().height() );
-  scene->cameraController()->resetView( 90 );
+  scene->cameraController()->resetView( 120 );
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
