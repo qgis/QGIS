@@ -572,7 +572,6 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       if ( mCurrentOperation != MouseOperation::ZoomWheel )
       {
         setMouseParameters( MouseOperation::ZoomWheel );
-        // The actual zooming will happen after we get a new depth buffer
       }
       else
       {
