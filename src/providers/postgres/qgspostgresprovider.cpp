@@ -5688,10 +5688,8 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[QStringLiteral( "authcfg" )] = dsUri.authConfigId();
   if ( dsUri.wkbType() != Qgis::WkbType::Unknown )
     uriParts[QStringLiteral( "type" )] = static_cast<quint32>( dsUri.wkbType() );
-
   if ( uri.contains( QStringLiteral( "selectatid=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[QStringLiteral( "selectatid" )] = !dsUri.selectAtIdDisabled();
-
   if ( !dsUri.table().isEmpty() )
     uriParts[QStringLiteral( "table" )] = dsUri.table();
   if ( !dsUri.schema().isEmpty() )
@@ -5700,15 +5698,14 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri ) const
     uriParts[QStringLiteral( "key" )] = dsUri.keyColumn();
   if ( !dsUri.srid().isEmpty() )
     uriParts[QStringLiteral( "srid" )] = dsUri.srid();
-
   if ( uri.contains( QStringLiteral( "estimatedmetadata=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[QStringLiteral( "estimatedmetadata" )] = dsUri.useEstimatedMetadata();
-
   if ( uri.contains( QStringLiteral( "sslmode=" ), Qt::CaseSensitivity::CaseInsensitive ) )
     uriParts[QStringLiteral( "sslmode" )] = dsUri.sslMode();
-
   if ( !dsUri.sql().isEmpty() )
     uriParts[QStringLiteral( "sql" )] = dsUri.sql();
+  if ( !dsUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).isEmpty() )
+    uriParts[QStringLiteral( "checkPrimaryKeyUnicity" )] = dsUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) );
   if ( !dsUri.geometryColumn().isEmpty() )
     uriParts[QStringLiteral( "geometrycolumn" )] = dsUri.geometryColumn();
 
