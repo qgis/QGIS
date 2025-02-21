@@ -25,7 +25,9 @@
 #include "qgstransformeffect.h"
 #include "qgsmeshforcebypolylines.h"
 #include "qgslinestring.h"
-
+#include "qgsrasterlayer.h"
+#include "qgsterrainprovider.h"
+#include "qgsprojectelevationproperties.h"
 
 class TestQgsMeshEditor : public QObject
 {
@@ -65,6 +67,8 @@ class TestQgsMeshEditor : public QObject
     void forceByLine();
 
     void particularCases();
+
+    void testAssignVertexZValueFromTerrain();
 };
 
 
@@ -2484,5 +2488,61 @@ void TestQgsMeshEditor::forceByLine()
   QCOMPARE( meshLayer->nativeMesh()->faceCount(), initialFaceCount + 31 );
 }
 
+void TestQgsMeshEditor::testAssignVertexZValueFromTerrain()
+{
+  QgsCoordinateReferenceSystem crs3857;
+  crs3857.createFromString( "EPSG:3857" );
+
+  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+
+  QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
+  auto terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  terrainLayer->setCrs( crs3857 );
+  QVERIFY( terrainLayer->isValid() );
+
+  auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  terrain->setLayer( terrainLayer.get() );
+
+  QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  layer->startFrameEditing( transform, error, false );
+
+  QList<int> selectedVertices;
+  selectedVertices << 1 << 2 << 3;
+
+  QgsMeshTransformVerticesByExpression transformVertex;
+
+  transformVertex.setZFromTerrain( true );
+
+  // no input set
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  transformVertex.setInputVertices( selectedVertices );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+
+  QGSCOMPARENEAR( transformVertex.mOldZValues.at( 0 ), 30, 0.1 );
+  QGSCOMPARENEAR( transformVertex.mOldZValues.at( 1 ), 40, 0.1 );
+  QGSCOMPARENEAR( transformVertex.mOldZValues.at( 2 ), 50, 0.1 );
+
+  QGSCOMPARENEAR( transformVertex.mNewZValues.at( 0 ), 18.244469, 0.000001 );
+  QGSCOMPARENEAR( transformVertex.mNewZValues.at( 1 ), 14.353244, 0.000001 );
+  QGSCOMPARENEAR( transformVertex.mNewZValues.at( 2 ), 54.627747, 0.000001 );
+
+  layer->meshEditor()->advancedEdit( &transformVertex );
+
+  QgsMesh &mesh = *layer->nativeMesh();
+
+  QGSCOMPARENEAR( mesh.vertices.at( 1 ).z(), 18.244469, 0.000001 );
+  QGSCOMPARENEAR( mesh.vertices.at( 2 ).z(), 14.353244, 0.000001 );
+  QGSCOMPARENEAR( mesh.vertices.at( 3 ).z(), 54.627747, 0.000001 );
+
+  layer->undoStack()->undo();
+}
 QGSTEST_MAIN( TestQgsMeshEditor )
 #include "testqgsmesheditor.moc"
