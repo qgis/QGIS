@@ -1,4 +1,3 @@
-usr/include/qgis/*
 usr/lib/libqgis_3d.so
 usr/lib/libqgis_analysis.so
 usr/lib/libqgis_app.so
@@ -8,4 +7,5 @@ usr/lib/libqgis_native.so
 usr/lib/libqgis_server.so
 usr/lib/libqgisgrass?.so
 usr/lib/libqgispython.so
+usr/include/qgis
 usr/share/qgis/FindQGIS.cmake
