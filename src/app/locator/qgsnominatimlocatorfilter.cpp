@@ -17,6 +17,8 @@
 
 #include "qgsnominatimlocatorfilter.h"
 #include "moc_qgsnominatimlocatorfilter.cpp"
+#include "qgsgeocoder.h"
+#include "qgslocatorfilter.h"
 #include "qgssettings.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
@@ -56,4 +58,31 @@ void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
     QgisApp::instance()->messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Info );
   }
   QgsGeocoderLocatorFilter::triggerResult( result );
+}
+
+void QgsNominatimLocatorFilter::openConfigWidget( QWidget *parent )
+{
+  auto dlg = std::make_unique<QDialog>( parent );
+  dlg->setWindowTitle( "Nominatim Geocoder Country Codes" );
+
+  QFormLayout *formLayout = new QFormLayout;
+  QLineEdit *countryCodesEdit = new QLineEdit( dlg.get() );
+
+  // Load existing settings
+  QgsSettings settings;
+  countryCodesEdit->setText( settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString() );
+
+  formLayout->addRow( tr( "Two letter Country Codes (comma-separated):" ), countryCodesEdit );
+  QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
+  formLayout->addRow( buttonbBox );
+  dlg->setLayout( formLayout );
+
+  // Save settings when dialog accepted
+  connect( buttonbBox, &QDialogButtonBox::accepted, dlg.get(), [&]() {
+    settings.setValue( "locator_filters/nominatim_geocoder/country_codes", countryCodesEdit->text().trimmed(), QgsSettings::App );
+    dlg->accept();
+  } );
+
+  connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );
+  dlg->exec();
 }

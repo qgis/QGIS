@@ -31,6 +31,8 @@ class APP_EXPORT QgsNominatimLocatorFilter : public QgsGeocoderLocatorFilter
     QgsNominatimLocatorFilter *clone() const override SIP_FACTORY;
 
     void triggerResult( const QgsLocatorResult &result ) override;
+    bool hasConfigWidget() const override { return true; }
+    void openConfigWidget( QWidget *parent ) override;
 };
 
 #endif // QGSNOMINATIMLOCATORFILTERS_H
