@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[o:qgis:p:QGIS:r:qgis-application]
+[o:qgis:p:QGIS:r:release-3_42-qgis-application]
 file_filter    = i18n/qgis_<lang>.ts
 source_file    = i18n/qgis_en.ts
 source_lang    = en
