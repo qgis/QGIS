@@ -75,10 +75,9 @@ void TestQgsStac::testParseLocalCatalog()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "catalog.json" ) ) );
   QgsStacController c;
-  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
-  QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
-  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj.get() );
+  std::unique_ptr< QgsStacCatalog > cat = c.fetchStacObject< QgsStacCatalog >( url.toString() );
+  QVERIFY( cat );
+  QCOMPARE( cat->type(), QgsStacObject::Type::Catalog );
 
   QVERIFY( cat );
   QCOMPARE( cat->id(), QLatin1String( "examples" ) );
@@ -103,10 +102,9 @@ void TestQgsStac::testParseLocalCollection()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collection.json" ) ) );
   QgsStacController c;
-  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
-  QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
-  QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj.get() );
+  std::unique_ptr< QgsStacCollection > col = c.fetchStacObject< QgsStacCollection >( url.toString() );
+  QVERIFY( col );
+  QCOMPARE( col->type(), QgsStacObject::Type::Collection );
 
   QVERIFY( col );
   QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );
@@ -151,10 +149,9 @@ void TestQgsStac::testParseLocalItem()
 {
   const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "core-item.json" ) ) );
   QgsStacController c;
-  std::unique_ptr< QgsStacObject > obj = c.fetchStacObject( url.toString() );
-  QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Item );
-  QgsStacItem *item = dynamic_cast<QgsStacItem *>( obj.get() );
+  std::unique_ptr< QgsStacItem > item = c.fetchStacObject< QgsStacItem >( url.toString() );
+  QVERIFY( item );
+  QCOMPARE( item->type(), QgsStacObject::Type::Item );
 
   QVERIFY( item );
   QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
