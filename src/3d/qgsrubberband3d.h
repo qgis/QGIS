@@ -35,11 +35,11 @@
 //
 
 
+class QgsAbstract3DEngine;
 class QgsPoint;
 class QgsPhongMaterialSettings;
 class QgsMaterial;
 class QgsTessellatedPolygonGeometry;
-class QgsWindow3DEngine;
 class QgsLineMaterial;
 class Qgs3DMapSettings;
 class QgsBillboardGeometry;
@@ -94,7 +94,7 @@ class _3D_EXPORT QgsRubberBand3D
       Circle
     };
 
-    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+    QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
     ~QgsRubberBand3D();
 
     //! Returns the rubber band width in pixels
@@ -205,7 +205,7 @@ class _3D_EXPORT QgsRubberBand3D
     void updateGeometry();
     void updateMarkerMaterial();
     void setupMarker( Qt3DCore::QEntity *parentEntity );
-    void setupLine( Qt3DCore::QEntity *parentEntity, QgsWindow3DEngine *engine );
+    void setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine );
     void setupPolygon( Qt3DCore::QEntity *parentEntity );
 
     const float DEFAULT_POLYGON_OPACITY = 0.25;
@@ -214,7 +214,7 @@ class _3D_EXPORT QgsRubberBand3D
     bool mHideLastMarker = false;
 
     Qgs3DMapSettings *mMapSettings = nullptr; // not owned
-    QgsWindow3DEngine *mEngine = nullptr;
+    QgsAbstract3DEngine *mEngine = nullptr;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Line;
 
     //! point and vertex marker type
