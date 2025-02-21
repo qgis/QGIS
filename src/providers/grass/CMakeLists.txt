@@ -3,7 +3,6 @@
 # Build
 
 include_directories(
-
   ${CMAKE_BINARY_DIR}/src/providers/grass
   ${CMAKE_CURRENT_BINARY_DIR}
 )

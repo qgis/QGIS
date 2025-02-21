@@ -693,6 +693,7 @@ endif()
 
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
+  target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 endif()
 
 if(MSVC)

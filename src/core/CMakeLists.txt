@@ -2212,20 +2212,20 @@ endif()
 # the OS X framework target
 
 if (HAVE_OPENCL)
-    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
         qgsopenclutils.cpp
-    )
-    set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-        qgsopenclutils.h
-    )
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+  )
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+      qgsopenclutils.h
+  )
+  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if (WITH_EPT)
   include_directories(providers/ept)
 
   include_directories(SYSTEM
-    ${ZSTD_INCLUDE_DIR}
+      ${ZSTD_INCLUDE_DIR}
   )
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2267,32 +2267,32 @@ endif()
 
 if (WITH_EPT OR WITH_COPC)
   if (LazPerf_FOUND)
-  # Use system laz-perf
-  include_directories(SYSTEM
-    ${LazPerf_INCLUDE_DIR}
-  )
+    # Use system laz-perf
+    include_directories(SYSTEM
+      ${LazPerf_INCLUDE_DIR}
+    )
   else()
-  # Use embedded laz-perf from external/laz-perf
-  include_directories(SYSTEM
-  )
+    include_directories(SYSTEM
+      ${CMAKE_SOURCE_DIR}/external/lazperf/
+    )
 
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
-  )
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/lazperf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/readers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/writers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/vlr.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_gpstime10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_nir14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
+    )
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2442,7 +2442,6 @@ target_include_directories(qgis_core PUBLIC
   vector
   vectortile
   web
-  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
@@ -2492,7 +2491,7 @@ if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
   install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 
   if(WITH_INTERNAL_NLOHMANN_JSON)
-    install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
+    install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
   endif()
 else()
 
@@ -2561,7 +2560,6 @@ target_link_libraries(qgis_core
   ${ZLIB_LIBRARIES}
   ${EXIV2_LIBRARY}
   PROJ::proj
-  nlohmann_json::nlohmann_json
 )
 
 if(BUILD_WITH_QT6)
@@ -2663,7 +2661,7 @@ if (WITH_QTSERIALPORT)
   )
 endif()
 
-target_compile_definitions(qgis_core PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_core PRIVATE "QT_NO_FOREACH")
 target_compile_definitions(qgis_core PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 # clang-tidy

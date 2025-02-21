@@ -122,21 +122,21 @@ set(UNTWINE_INCLUDE_DIRS
 if (NOT LazPerf_FOUND)
   set(UNTWINE_SRCS
     ${UNTWINE_SRCS}
-    ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/lazperf.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/readers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/vlr.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/writers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_gpstime10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_nir14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
   )
 endif()
 
@@ -185,13 +185,6 @@ target_link_libraries (untwine
   Threads::Threads
 )
 target_include_directories(untwine PRIVATE ${UNTWINE_OS_DIR} ${UNTWINE_INCLUDE_DIRS})
-
-if (LazPerf_FOUND)
-  # Use system laz-perf
-  target_include_directories(untwine PRIVATE ${LazPerf_INCLUDE_DIR})
-else()
-  target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external)
-endif()
 
 if (PDAL_2_5_OR_HIGHER)
   add_executable(pdal_wrench ${PDAL_WRENCH_SRCS})
@@ -274,6 +267,17 @@ if (WITH_GUI)
     qgis_gui
   )
   add_dependencies(provider_pdal_gui_a ui)
+endif()
+
+if (LazPerf_FOUND)
+  # Use system laz-perf
+  target_include_directories(provider_pdal PRIVATE ${LazPerf_INCLUDE_DIR})
+  target_include_directories(provider_pdal_a PRIVATE ${LazPerf_INCLUDE_DIR})
+  target_include_directories(untwine PRIVATE ${LazPerf_INCLUDE_DIR})
+else()
+  target_include_directories(provider_pdal PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
+  target_include_directories(provider_pdal_a PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
+  target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
 endif()
 
 install(TARGETS provider_pdal

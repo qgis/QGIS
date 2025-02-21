@@ -8,7 +8,6 @@ ADD_FLEX_BISON_DEPENDENCY(QgsRasterCalcLexer QgsRasterCalcParser)
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
 
-
   ${FLEX_QgsRasterCalcLexer_OUTPUTS}
   ${BISON_QgsRasterCalcParser_OUTPUTS}
 
@@ -559,11 +558,13 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/external/tinygltf
 
   ${CMAKE_BINARY_DIR}/src/analysis
-
-  if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
-     ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
-  endif()
 )
+
+if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
+  target_include_directories(qgis_analysis PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+  )
+endif()
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis

@@ -50,10 +50,7 @@ set(QGIS_GUI_UI_HDRS ${QGIS_UIS_H} PARENT_SCOPE)
 add_custom_target(ui ALL DEPENDS ${QGIS_UIS_H})
 
 # target_sources for custom targets only available in cmake 3.20 and above,
-# debian bullseye still has 3.18
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.20")
 target_sources(ui
   PRIVATE
     qgsplaybackcontrollerwidgetbase.ui
 )
-endif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.20")

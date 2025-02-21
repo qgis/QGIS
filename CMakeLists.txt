@@ -1192,6 +1192,12 @@ endif()
 configure_file(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
 include_directories(${CMAKE_BINARY_DIR})
 
+if(WITH_INTERNAL_NLOHMANN_JSON)
+  include_directories(SYSTEM
+    ${CMAKE_SOURCE_DIR}/external/nlohmann
+  )
+endif()
+
 #############################################################
 # create qgsversion.h
 include(CreateQgsVersion)

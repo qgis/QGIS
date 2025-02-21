@@ -352,7 +352,11 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QMetaType::Type type
     const auto jObj( json::parse( json.toStdString() ) );
     if ( ! jObj.is_array() )
     {
+#if NLOHMANN_JSON_VERSION_MAJOR > 3 || (NLOHMANN_JSON_VERSION_MAJOR == 3 && NLOHMANN_JSON_VERSION_MINOR >= 11)
+      throw json::parse_error::create( 0, 0, QStringLiteral( "JSON value must be an array" ).toStdString(), &jObj );
+#else
       throw json::parse_error::create( 0, 0, QStringLiteral( "JSON value must be an array" ).toStdString() );
+#endif
     }
     for ( const auto &item : jObj )
     {
