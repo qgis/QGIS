@@ -221,7 +221,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     enum class AppOption : int
     {
-      NoOption = 0,         //! No Option
+      NoOption = 0,              //! No Option
       RestorePlugins = 1 << 0,   //! Automatically restore and load previously enabled plugins.
       SkipBadLayers = 1 << 1,    //! Skip loading layers that are detected as problematic.
       SkipVersionCheck = 1 << 2, //! Bypass the version compatibility check during startup.
