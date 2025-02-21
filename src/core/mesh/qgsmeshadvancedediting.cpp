@@ -22,7 +22,9 @@
 #include "qgsmeshlayer.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsproject.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
 
 QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
@@ -657,12 +659,24 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
   }
 
   QgsExpression expressionZ;
-  if ( calcZ )
+  if ( calcZ || mZFromTerrain )
   {
     expressionZ = QgsExpression( mExpressionZ );
     expressionZ.prepare( &context );
     mNewZValues.reserve( inputCount );
     mOldZValues.reserve( inputCount );
+  }
+
+  QgsCoordinateTransform transformation;
+  const QgsAbstractTerrainProvider *terrainProvider = nullptr;
+
+  if ( mZFromTerrain )
+  {
+    terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
+    if ( terrainProvider )
+    {
+      transformation = QgsCoordinateTransform( layer->crs(), terrainProvider->crs(), QgsProject::instance() );
+    }
   }
 
   for ( int i = 0; i < mInputVertices.count(); ++i )
@@ -721,7 +735,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
         return false;
     }
 
-    if ( calcZ )
+    if ( calcZ && !mZFromTerrain )
     {
       double z = std::numeric_limits<double>::quiet_NaN();
       if ( zvar.isValid() )
@@ -733,6 +747,38 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 
       mNewZValues.append( z );
       mOldZValues.append( vert.z() );
+    }
+
+    if ( mZFromTerrain )
+    {
+      if ( terrainProvider )
+      {
+        QgsPointXY point;
+        bool vertexTransformed;
+        double elevation;
+
+        try
+        {
+          point = transformation.transform( vert.x(), vert.y() );
+          vertexTransformed = true;
+        }
+        catch ( const QgsCsException & )
+        {
+          vertexTransformed = false;
+        }
+
+        if ( vertexTransformed )
+        {
+          elevation = terrainProvider->heightAt( point.x(), point.y() );
+          // if elevation at terrain provider is NaN, use the original vertex Z value
+          if ( std::isnan( elevation ) )
+          {
+            elevation = vert.z();
+          }
+          mNewZValues.append( elevation );
+          mOldZValues.append( vert.z() );
+        }
+      }
     }
   }
 
@@ -788,4 +834,9 @@ QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertex( QgsMeshLa
   }
   else
     return layer->nativeMesh()->vertex( vertexIndex );
+}
+
+void QgsMeshTransformVerticesByExpression::setZFromTerrain( bool enable )
+{
+  mZFromTerrain = enable;
 }

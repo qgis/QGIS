@@ -190,11 +190,21 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      */
     QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
 
+    /**
+     * Sets if Z values for vertices should be obtained from project terrain, instead of expression.
+     *
+     * @param enable
+     *
+     * @since QGIS 3.42
+     */
+    void setZFromTerrain( bool enable );
+
   private:
     QString mExpressionX;
     QString mExpressionY;
     QString mExpressionZ;
     QHash<int, int> mChangingVertexMap;
+    bool mZFromTerrain = false;
 
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 

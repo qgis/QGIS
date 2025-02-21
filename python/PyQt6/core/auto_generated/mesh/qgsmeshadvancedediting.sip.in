@@ -155,6 +155,15 @@ Returns the transformed vertex from its index ``vertexIndex`` for the mesh ``lay
 If ``layer`` is not the same than the one used to make the calculation, this will create an undefined behavior
 %End
 
+    void setZFromTerrain( bool enable );
+%Docstring
+Sets if Z values for vertices should be obtained from project terrain, instead of expression.
+
+@param enable
+
+@since QGIS 3.42
+%End
+
 };
 
 /************************************************************************
