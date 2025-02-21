@@ -51,6 +51,12 @@ add_library(qgis_quick_plugin ${LIBRARY_TYPE}
     ${QGIS_QUICK_PLUGIN_MOC_SRCS}
     ${QGIS_QUICK_PLUGIN_RESOURCES}
 )
+if(QGISPOSTFIX)
+  set_target_properties(qgis_quick_plugin PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_quick_plugin${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_quick_plugin${QGISPOSTFIX}
+  )
+endif()
 
 # require c++17
 target_compile_features(qgis_quick_plugin PRIVATE cxx_std_17)
