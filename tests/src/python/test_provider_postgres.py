@@ -3535,6 +3535,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 "table": "copas1",
                 "type": 6,
                 "username": "myuser",
+                "checkPrimaryKeyUnicity": "1",
             },
         )
 
@@ -3556,6 +3557,27 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 }
             ),
             "dbname='qgis_tests' user='myuser' srid=3763 estimatedmetadata='true' host='localhost' key='id' port='5432' sslmode='disable' type='MultiPolygon' table=\"public\".\"copas1\" (geom)",
+        )
+
+        self.assertEqual(
+            md.encodeUri(
+                {
+                    "dbname": "qgis_tests",
+                    "estimatedmetadata": True,
+                    "geometrycolumn": "geom",
+                    "host": "localhost",
+                    "key": "id",
+                    "port": "5432",
+                    "schema": "public",
+                    "srid": "3763",
+                    "sslmode": 1,
+                    "table": "copas1",
+                    "type": 6,
+                    "username": "myuser",
+                    "checkPrimaryKeyUnicity": "1",
+                }
+            ),
+            "dbname='qgis_tests' user='myuser' srid=3763 estimatedmetadata='true' host='localhost' key='id' port='5432' sslmode='disable' type='MultiPolygon' checkPrimaryKeyUnicity='1' table=\"public\".\"copas1\" (geom)",
         )
 
         self.assertEqual(
