@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QFont>
+#include <QPalette>
 
 #include "qgslocatormodel.h"
 #include "moc_qgslocatormodel.cpp"
@@ -115,11 +116,12 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     }
 
     case Qt::FontRole:
+    {
       if ( index.column() == Name )
       {
         QFont font;
+        font.setBold( entry.type == EntryType::Filter );
         font.setItalic( entry.type == EntryType::Group );
-        font.setBold( entry.type != EntryType::Result );
         return font;
       }
       else
@@ -127,6 +129,18 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return QVariant();
       }
       break;
+    }
+
+    case Qt::BackgroundRole:
+    {
+      return entry.type == EntryType::Result ? QPalette().base() : QPalette().alternateBase();
+    }
+
+    case Qt::ForegroundRole:
+    {
+      return QPalette().text();
+    }
+
 
     case Qt::DecorationRole:
       switch ( static_cast<Column>( index.column() ) )
