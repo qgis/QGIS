@@ -86,9 +86,11 @@ endif()
 IF(BUILD_WITH_QT6)
   SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
   SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
+  SET(pyqtdist "PyQt6")
 ELSE()
   SET(QSCI_SIP_MOD_NAME Qsci/qscimod5.sip)
   SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+  SET(pyqtdist "PyQt5")
 ENDIF()
 
 set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
@@ -127,6 +129,7 @@ if(NOT WITH_QTWEBENGINE)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_WEBENGINE_SIP)
 endif()
 
+
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
   set(sipabi "")
@@ -136,8 +139,44 @@ else()
   set(sipabi "\n[tool.sip.project]\nabi-version = \"12.16\"")
 endif()
 
+set(toml "
+# Specify the build system.
+[build-system]
+requires = [\"sip >=5.0.0, <7\", \"PyQt-builder >=1.6, <2\"]
+build-backend = \"sipbuild.api\"
+${sipabi}
+
+")
+
+if(${SIP_VERSION_STR} VERSION_LESS 6.8.0)
+  set(toml "${toml}
+[tool.sip.metadata]
+name = \"QGIS\"
+version = \"${COMPLETE_VERSION}\"
+summary = \"Python bindings for QGIS\"
+home-page = \"https://qgis.org\"
+author = \"The QGIS Community\"
+license = \"GPL v2\"
+requires-dist = \"${pyqtdist}\"
+")
+else()
+  set(toml "${toml}
+[project]
+name = \"QGIS\"
+version = \"${COMPLETE_VERSION}\"
+description = \"Python bindings for QGIS\"
+authors = [ \{name = \"The QGIS Community\"\} ]
+license = \{file = \"${CMAKE_SOURCE_DIR}/COPYING\"\}
+dependencies = [\"${pyqtdist}\"]
+
+[project.urls]
+Homepage = \"https://qgis.org\"
+")
+endif()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/core/project.py @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml @ONLY)
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml.temp" "${toml}")
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml)
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 set(SIP_CORE_CPP_FILES ${cpp_files})
@@ -195,7 +234,8 @@ if (WITH_GUI)
   endif()
 
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gui/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/gui/project.py @ONLY)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gui/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/gui/pyproject.toml @ONLY)
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/gui/pyproject.toml.temp" "${toml}")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/gui/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/gui/pyproject.toml)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._gui gui/gui.sip "${sip_files_gui}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip ${cpp_files} "" qgis_core qgis_gui)
 endif()
@@ -218,7 +258,8 @@ if (WITH_3D)
   endif()
 
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/3d/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/3d/project.py @ONLY)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/3d/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml @ONLY)
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp" "${toml}")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._3d_p 3d/3d.sip "${sip_files_3d}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._3d_p 3d/3d.sip ${cpp_files} "" qgis_core qgis_3d)
 endif()
@@ -227,7 +268,7 @@ endif()
 if (WITH_SERVER AND WITH_SERVER_PLUGINS)
   include_directories(
     ../src/server
-   ${CMAKE_BINARY_DIR}/src/server
+    ${CMAKE_BINARY_DIR}/src/server
   )
 
   set(PY_MODULES ${PY_MODULES} server)
@@ -246,7 +287,8 @@ if (WITH_SERVER AND WITH_SERVER_PLUGINS)
   endif()
 
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/server/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/server/project.py @ONLY)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/server/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/server/pyproject.toml @ONLY)
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/server/pyproject.toml.temp" "${toml}")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/server/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/server/pyproject.toml)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._server server/server.sip "${sip_files_server}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._server server/server.sip ${cpp_files} "" qgis_core qgis_server)
 endif()
@@ -261,7 +303,6 @@ if(WITH_ANALYSIS)
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
-
   )
 
   if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
@@ -286,7 +327,8 @@ if(WITH_ANALYSIS)
   endif()
 
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/analysis/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/analysis/project.py @ONLY)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/analysis/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/analysis/pyproject.toml @ONLY)
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/analysis/pyproject.toml.temp" "${toml}")
+  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/analysis/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/analysis/pyproject.toml)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._analysis analysis/analysis.sip "${sip_files_analysis}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
 endif()
