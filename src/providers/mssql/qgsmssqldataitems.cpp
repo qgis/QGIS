@@ -234,7 +234,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
         {
           if ( !mColumnTypeThread )
           {
-            mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( mService, mHost, mDatabase, mUsername, mPassword, true /* use estimated metadata */ );
+            mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( mService, mHost, mDatabase, mUsername, mPassword, true /* use estimated metadata */, disableInvalidGeometryHandling );
 
             connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType, this, &QgsMssqlConnectionItem::setLayerType );
             connect( this, &QgsMssqlConnectionItem::addGeometryColumn, mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );
