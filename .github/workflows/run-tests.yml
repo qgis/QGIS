@@ -240,7 +240,7 @@ jobs:
     strategy:
       matrix:
         qt-version: [5, 6]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
+        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA, SQLSERVER]
 
         include:
           - qt-version: 5
@@ -262,6 +262,9 @@ jobs:
 
           - qt-version: 6
             test-batch: POSTGRES
+
+          - qt-version: 6
+            test-batch: SQLSERVER
 
       fail-fast: false
 
@@ -348,6 +351,7 @@ jobs:
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
+                     || ( [[ ${{ matrix.test-batch }} == "SQLSERVER" ]] && echo "docker-compose-testing-mssql.yml" ) \
                      || echo "docker-compose-testing.yml" )
           [[ ${{ matrix.test-batch }} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
           echo "TEST_BATCH=$TEST_BATCH"

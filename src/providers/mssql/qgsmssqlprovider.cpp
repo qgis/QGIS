@@ -425,7 +425,7 @@ void QgsMssqlProvider::loadFields()
     }
   }
 
-  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = N%1, @table_owner = %2" ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
+  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = %1, @table_owner = %2" ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
   if ( !LoggedExec( query, sql3 ) )
   {
     pushError( query.lastError().text() );
@@ -528,7 +528,7 @@ void QgsMssqlProvider::loadFields()
   {
     query.clear();
     query.setForwardOnly( true );
-    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
+    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = %1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
     if ( !LoggedExec( query, sql4 ) )
     {
       QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
@@ -619,7 +619,7 @@ QString QgsMssqlProvider::quotedValue( const QVariant &value )
       if ( v.contains( '\\' ) )
         return v.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "N'" ).append( '\'' );
       else
-        return v.prepend( '\'' ).append( '\'' );
+        return v.prepend( "N'" ).append( '\'' );
   }
 }
 
@@ -2502,6 +2502,13 @@ Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer( const QStri
   );
 }
 
+
+QString buildfTableCatalogClause( const QgsDataSourceUri &dsUri )
+{
+  return QStringLiteral( "f_table_catalog%1" ).arg( dsUri.database().isEmpty() ? QStringLiteral( " IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsMssqlProvider::quotedValue( dsUri.database() ) ) );
+}
+
+
 bool QgsMssqlProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
 {
   errorCause.clear();
@@ -2535,12 +2542,12 @@ bool QgsMssqlProviderMetadata::styleExists( const QString &uri, const QString &s
   query.setForwardOnly( true );
   const QString checkQuery = QString( "SELECT styleName"
                                       " FROM layer_styles"
-                                      " WHERE f_table_catalog=%1"
+                                      " WHERE %1"
                                       " AND f_table_schema=%2"
                                       " AND f_table_name=%3"
                                       " AND f_geometry_column=%4"
                                       " AND styleName=%5" )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+                               .arg( buildfTableCatalogClause( dsUri ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
@@ -2650,12 +2657,12 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
 
   const QString checkQuery = QStringLiteral( "SELECT styleName"
                                              " FROM layer_styles"
-                                             " WHERE f_table_catalog=%1"
+                                             " WHERE %1"
                                              " AND f_table_schema=%2"
                                              " AND f_table_name=%3"
                                              " AND f_geometry_column=%4"
                                              " AND styleName=%5" )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+                               .arg( buildfTableCatalogClause( dsUri ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
@@ -2676,7 +2683,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
                    ",styleSLD=%3"
                    ",description=%4"
                    ",owner=%5"
-                   " WHERE f_table_catalog=%6"
+                   " WHERE %6"
                    " AND f_table_schema=%7"
                    " AND f_table_name=%8"
                    " AND f_geometry_column=%9"
@@ -2686,7 +2693,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
             .arg( QgsMssqlProvider::quotedValue( sldStyle ) )
             .arg( QgsMssqlProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
             .arg( QgsMssqlProvider::quotedValue( dsUri.username() ) )
-            .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+            .arg( buildfTableCatalogClause( dsUri ) )
             .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
             .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
             .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
@@ -2696,11 +2703,11 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
   {
     const QString removeDefaultSql = QString( "UPDATE layer_styles "
                                               " SET useAsDefault=0"
-                                              " WHERE f_table_catalog=%1"
+                                              " WHERE %1"
                                               " AND f_table_schema=%2"
                                               " AND f_table_name=%3"
                                               " AND f_geometry_column=%4" )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+                                       .arg( buildfTableCatalogClause( dsUri ) )
                                        .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                                        .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                        .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
@@ -2764,12 +2771,12 @@ QString QgsMssqlProviderMetadata::loadStoredStyle( const QString &uri, QString &
 
   const QString selectQmlQuery = QString( "SELECT top 1 styleName, styleQML"
                                           " FROM layer_styles"
-                                          " WHERE f_table_catalog=%1"
+                                          " WHERE %1"
                                           " AND f_table_schema=%2"
                                           " AND f_table_name=%3"
                                           " AND f_geometry_column=%4"
                                           " ORDER BY useAsDefault desc" )
-                                   .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+                                   .arg( buildfTableCatalogClause( dsUri ) )
                                    .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                                    .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                    .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
@@ -2823,14 +2830,16 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
     return -1;
   }
 
+  const QString fTableCatalogClause = buildfTableCatalogClause( dsUri );
+
   const QString selectRelatedQuery = QString( "SELECT id,styleName,description"
                                               " FROM layer_styles "
-                                              " WHERE f_table_catalog=%1"
+                                              " WHERE %1"
                                               " AND f_table_schema=%2"
                                               " AND f_table_name=%3"
                                               " AND f_geometry_column=%4"
                                               " ORDER BY useasdefault DESC, update_time DESC" )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+                                       .arg( fTableCatalogClause )
                                        .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                                        .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                        .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
@@ -2853,9 +2862,9 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
   }
   const QString selectOthersQuery = QString( "SELECT id,styleName,description"
                                              " FROM layer_styles "
-                                             " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4)"
+                                             " WHERE NOT (%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4)"
                                              " ORDER BY update_time DESC" )
-                                      .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
+                                      .arg( fTableCatalogClause )
                                       .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                                       .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                                       .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
