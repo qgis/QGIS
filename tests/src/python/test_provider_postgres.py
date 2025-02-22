@@ -3577,7 +3577,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                     "checkPrimaryKeyUnicity": "1",
                 }
             ),
-            "dbname='qgis_tests' user='myuser' srid=3763 estimatedmetadata='true' host='localhost' key='id' port='5432' sslmode='disable' type='MultiPolygon' checkPrimaryKeyUnicity='1' table=\"public\".\"copas1\" (geom)",
+            "dbname='qgis_tests' user='myuser' srid=3763 checkPrimaryKeyUnicity='1' estimatedmetadata='true' host='localhost' key='id' port='5432' sslmode='disable' type='MultiPolygon' table=\"public\".\"copas1\" (geom)",
         )
 
         self.assertEqual(
