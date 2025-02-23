@@ -81,8 +81,6 @@ class QgsMssqlDatabase
 
     QSqlQuery createQuery();
 
-    static QMetaType::Type decodeSqlType( const QString &sqlTypeName );
-
     struct FieldDetails
     {
         QgsFields attributeFields;

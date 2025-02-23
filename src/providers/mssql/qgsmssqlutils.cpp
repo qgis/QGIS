@@ -15,6 +15,7 @@
 
 #include "qgsmssqlutils.h"
 #include "qgsvariantutils.h"
+#include "qgslogger.h"
 
 QString QgsMssqlUtils::quotedValue( const QVariant &value )
 {
@@ -45,4 +46,56 @@ QString QgsMssqlUtils::quotedValue( const QVariant &value )
 QString QgsMssqlUtils::quotedIdentifier( const QString &value )
 {
   return QStringLiteral( "[%1]" ).arg( value );
+}
+
+QMetaType::Type QgsMssqlUtils::convertSqlFieldType( const QString &sqlTypeName )
+{
+  QMetaType::Type type = QMetaType::Type::UnknownType;
+  // cloned branches are intentional here for improved readability
+  // NOLINTBEGIN(bugprone-branch-clone)
+  if ( sqlTypeName.startsWith( QLatin1String( "decimal" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "numeric" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "real" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "float" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::Double;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "char" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "nchar" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "varchar" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "nvarchar" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "text" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "ntext" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::QString;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "smallint" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "int" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "bit" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "tinyint" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::Int;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "bigint" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::LongLong;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "binary" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "varbinary" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "image" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::QByteArray;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "datetime" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "smalldatetime" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "datetime2" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::QDateTime;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "date" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::QDate;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::QString;
+  }
+  else if ( sqlTypeName.startsWith( QLatin1String( "time" ), Qt::CaseInsensitive ) )
+  {
+    type = QMetaType::Type::QTime;
+  }
+  else
+  {
+    QgsDebugError( QStringLiteral( "Unknown field type: %1" ).arg( sqlTypeName ) );
+    // Everything else just dumped as a string.
+    type = QMetaType::Type::QString;
+  }
+  // NOLINTEND(bugprone-branch-clone)
+
+  return type;
 }
