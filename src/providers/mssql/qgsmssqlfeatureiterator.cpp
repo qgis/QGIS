@@ -156,11 +156,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   // build sql statement
 
   // note: 'SELECT ' is added later, to account for 'SELECT TOP...' type queries
-  QString delim;
-  for ( auto idx : mSource->mPrimaryKeyAttrs )
+  QStringList selectColumns;
+  for ( int idx : mSource->mPrimaryKeyAttrs )
   {
-    mStatement += QStringLiteral( "%1[%2]" ).arg( delim, mSource->mFields.at( idx ).name() );
-    delim = ',';
+    selectColumns << QgsMssqlUtils::quotedIdentifier( mSource->mFields.at( idx ).name() );
   }
 
   mAttributesToFetch << mSource->mPrimaryKeyAttrs;
@@ -193,7 +192,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     if ( mSource->mPrimaryKeyAttrs.contains( i ) )
       continue;
 
-    mStatement += QStringLiteral( ",[%1]" ).arg( mSource->mFields.at( i ).name() );
+    selectColumns << QgsMssqlUtils::quotedIdentifier( mSource->mFields.at( i ).name() );
 
     mAttributesToFetch.append( i );
   }
@@ -205,8 +204,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
        )
        && mSource->isSpatial() )
   {
-    mStatement += QStringLiteral( ",[%1]" ).arg( mSource->mGeometryColName );
+    selectColumns << QgsMssqlUtils::quotedIdentifier( mSource->mGeometryColName );
   }
+
+  mStatement = selectColumns.join( ',' );
 
   mStatement += QStringLiteral( " FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
 
