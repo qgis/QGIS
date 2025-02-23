@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmssqlgeomcolumntypethread.h"
+#include "qgsmssqldatabase.h"
 
 /**
  * \ingroup UnitTests
@@ -53,6 +54,7 @@ class TestQgsMssqlProvider : public QObject
     void testGeomTypeResolutionValidNoWorkaround();
     void testGeomTypeResolutionInvalid();
     void testGeomTypeResolutionInvalidNoWorkaround();
+    void testFieldsForTable();
 
   private:
     QString mDbConn;
@@ -400,6 +402,43 @@ void TestQgsMssqlProvider::testGeomTypeResolutionInvalidNoWorkaround()
   QCOMPARE( result.isGeography, false );
   QCOMPARE( result.sql, QString() );
   QCOMPARE( result.isView, false );
+}
+
+void TestQgsMssqlProvider::testFieldsForTable()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
+
+  QgsMssqlDatabase::FieldDetails details;
+  QString error;
+  QVERIFY( db->loadFields( details, QStringLiteral( "qgis_test" ), QStringLiteral( "someData" ), error ) );
+  QCOMPARE( error, QString() );
+  QCOMPARE( details.attributeFields.size(), 8 );
+  QCOMPARE( details.attributeFields.at( 0 ).name(), QStringLiteral( "pk" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 0 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).name(), QStringLiteral( "cnt" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 1 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 2 ).typeName(), QStringLiteral( "ntext" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).name(), QStringLiteral( "name2" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 3 ).typeName(), QStringLiteral( "ntext" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).name(), QStringLiteral( "num_char" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 4 ).typeName(), QStringLiteral( "ntext" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).name(), QStringLiteral( "dt" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).type(), QVariant::DateTime );
+  QCOMPARE( details.attributeFields.at( 5 ).typeName(), QStringLiteral( "datetime" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).name(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).type(), QVariant::Date );
+  QCOMPARE( details.attributeFields.at( 6 ).typeName(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).type(), QVariant::Time );
+  QCOMPARE( details.attributeFields.at( 7 ).typeName(), QStringLiteral( "time" ) );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )

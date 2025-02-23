@@ -19,6 +19,8 @@
 #include <QString>
 #include <QVariant>
 
+class QgsField;
+
 /**
  * Contains utility functions for working with Microsoft SQL Server databases.
  */
@@ -36,9 +38,14 @@ class QgsMssqlUtils
     static QString quotedIdentifier( const QString &identifier );
 
     /**
-     * Converts a SQL Server field type name string to the equivalent QVariant type.
+     * Converts a SQL Server field system type string to the equivalent QVariant type.
      */
-    static QMetaType::Type convertSqlFieldType( const QString &sqlTypeName );
+    static QMetaType::Type convertSqlFieldType( const QString &systemTypeName );
+
+    /**
+     * Creates the equivalent QgsField corresponding to the properties of a SQL Server field.
+     */
+    static QgsField createField( const QString &name, const QString &systemTypeName, int length, int precision, int scale, bool nullable, bool unique, bool readOnly );
 };
 
 
