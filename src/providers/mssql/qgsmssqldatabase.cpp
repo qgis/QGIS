@@ -20,6 +20,7 @@
 #include "qgsvariantutils.h"
 #include "qgsmssqlprovider.h"
 #include "qgsdbquerylog.h"
+#include "qgsmssqlutils.h"
 
 #include <QCoreApplication>
 #include <QtDebug>
@@ -251,7 +252,7 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
     const QString sql2 { QStringLiteral( "SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS TC"
                                          " INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CC ON TC.CONSTRAINT_NAME = CC.CONSTRAINT_NAME"
                                          " WHERE TC.CONSTRAINT_SCHEMA = %1 AND TC.TABLE_NAME = %2 AND TC.CONSTRAINT_TYPE = 'unique'" )
-                           .arg( QgsMssqlProvider::quotedValue( schema ), QgsMssqlProvider::quotedValue( tableName ) ) };
+                           .arg( QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedValue( tableName ) ) };
     if ( !LoggedExec( query, sql2 ) )
     {
       error = query.lastError().text();
@@ -264,7 +265,7 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
     }
   }
 
-  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = %1, @table_owner = %2" ).arg( QgsMssqlProvider::quotedValue( tableName ), QgsMssqlProvider::quotedValue( schema ) ) };
+  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = %1, @table_owner = %2" ).arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
   if ( !LoggedExec( query, sql3 ) )
   {
     error = query.lastError().text();
@@ -367,7 +368,7 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
   {
     query.clear();
     query.setForwardOnly( true );
-    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = %1, @table_owner = %2 " ).arg( QgsMssqlProvider::quotedValue( tableName ), QgsMssqlProvider::quotedValue( schema ) ) };
+    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = %1, @table_owner = %2 " ).arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
     if ( !LoggedExec( query, sql4 ) )
     {
       QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );

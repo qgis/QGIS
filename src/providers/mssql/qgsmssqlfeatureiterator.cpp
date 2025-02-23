@@ -19,6 +19,7 @@
 #include "qgsmssqlexpressioncompiler.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqltransaction.h"
+#include "qgsmssqlutils.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
@@ -35,8 +36,6 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
   , mDisableInvalidGeometryHandling( source->mDisableInvalidGeometryHandling )
 {
-  mClosed = false;
-
   mParser.mIsGeography = mSource->mIsGeography;
 
   mTransform = mRequest.calculateTransform( mSource->mCrs );
@@ -124,7 +123,7 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
         for ( int i = 0; i < mSource->mPrimaryKeyAttrs.size(); ++i )
         {
           const QgsField &fld = mSource->mFields.at( mSource->mPrimaryKeyAttrs[i] );
-          whereClause += QStringLiteral( "%1[%2]=%3" ).arg( delim, fld.name(), QgsMssqlProvider::quotedValue( pkVals[i] ) );
+          whereClause += QStringLiteral( "%1[%2]=%3" ).arg( delim, fld.name(), QgsMssqlUtils::quotedValue( pkVals[i] ) );
           delim = QStringLiteral( " AND " );
         }
 
@@ -277,7 +276,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
           if ( QgsVariantUtils::isNull( key[i] ) )
             expr = QString( "[%1] IS NULL" ).arg( colName );
           else
-            expr = QString( "[%1]=%2" ).arg( colName, QgsMssqlProvider::quotedValue( key[i] ) );
+            expr = QString( "[%1]=%2" ).arg( colName, QgsMssqlUtils::quotedValue( key[i] ) );
 
           mStatement += QStringLiteral( "%1%2" ).arg( delim, expr );
           delim = " AND ";
