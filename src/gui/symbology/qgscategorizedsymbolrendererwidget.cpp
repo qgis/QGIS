@@ -1097,20 +1097,20 @@ QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QSt
   if ( idx == -1 )
   {
     // Lets assume it's an expression
-    QgsExpression *expression = new QgsExpression( attrName );
+    QgsExpression expression = QgsExpression( attrName );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
             << QgsExpressionContextUtils::atlasScope( nullptr )
             << QgsExpressionContextUtils::layerScope( mLayer );
 
-    expression->prepare( &context );
+    expression.prepare( &context );
     QgsFeatureIterator fit = mLayer->getFeatures();
     QgsFeature feature;
     while ( fit.nextFeature( feature ) )
     {
       context.setFeature( feature );
-      const QVariant value = expression->evaluate( &context );
+      const QVariant value = expression.evaluate( &context );
       if ( uniqueValues.contains( value ) )
         continue;
       uniqueValues << value;
