@@ -344,6 +344,79 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
   return true;
 }
 
+bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &query, QString &error )
+{
+  error.clear();
+
+  details.attributeFields.clear();
+  details.defaultValues.clear();
+  details.computedColumns.clear();
+
+  // get field spec
+  QSqlQuery dbQuery = createQuery();
+  dbQuery.setForwardOnly( true );
+
+  // TODO SQL server >= 2012 only!
+
+  const QString sql { QStringLiteral( R"raw(
+    EXEC sp_describe_first_result_set
+      %1
+    )raw" )
+                        .arg( QgsMssqlUtils::quotedValue( query ) ) };
+  if ( !LoggedExec( dbQuery, sql ) )
+  {
+    error = dbQuery.lastError().text();
+    return false;
+  }
+
+  int fieldIndex = 0;
+  while ( dbQuery.next() )
+  {
+    fieldIndex++;
+
+    // consider all columns as computed
+    // NOTE: for some queries some fields are updateable. We can determine this through the "is_updateable" column in sp_describe_first_result_set
+    // However the provider has no way to selectively say some columns are updateable but not others, so we treat all queries as completely read-only
+    const int columnOrdinal = dbQuery.value( 1 ).toInt();
+    if ( columnOrdinal != fieldIndex )
+    {
+      QgsDebugError( QStringLiteral( "sp_describe_first_result_set returned out of order results!" ) );
+    }
+
+    const bool isHidden = dbQuery.value( 0 ).toInt();
+    if ( isHidden )
+      continue;
+
+    QString name = dbQuery.value( 2 ).toString();
+    if ( name.isEmpty() )
+      name = QStringLiteral( "col%1" ).arg( fieldIndex );
+
+    const bool isNullable = dbQuery.value( 3 ).toInt();
+    const QString systemTypeName = dbQuery.value( 5 ).toString();
+    const int maxLength = dbQuery.value( 6 ).toInt();
+    const int precision = dbQuery.value( 7 ).toInt();
+    const int scale = dbQuery.value( 8 ).toInt();
+
+
+    // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
+    // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
+    if ( ( details.geometryColumnName.isEmpty() && ( systemTypeName == QLatin1String( "geometry" ) || systemTypeName == QLatin1String( "geography" ) ) )
+         || name == details.geometryColumnName )
+    {
+      details.geometryColumnName = name;
+      details.geometryColumnType = systemTypeName;
+      details.isGeography = systemTypeName == QLatin1String( "geography" );
+    }
+    else
+    {
+      const QgsField field = QgsMssqlUtils::createField( name, systemTypeName, maxLength, precision, scale, isNullable, false, true );
+      details.attributeFields.append( field );
+    }
+  }
+
+  return true;
+}
+
 
 // -------------------
 
