@@ -126,13 +126,26 @@ class CORE_EXPORT QgsHttpHeaders
     bool updateMap( QVariantMap &map ) const;
 
     /**
-     * \brief Updates a \a map by adding all the HTTP headers
+     * \brief Updates a DOM element by adding all the HTTP headers
      *
      * KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
      *
+     * \param el DOM element
+     * \return TRUE if the update succeed
+     * \deprecated QGIS 3.42. Will be removed in QGIS 4.0.
+     */
+    Q_DECL_DEPRECATED bool updateDomElement( QDomElement &el ) const SIP_DEPRECATED;
+
+    /**
+     * \brief Updates a DOM element by adding all the HTTP headers
+     *
+     * KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+     *
+     * \param el DOM element
+     * \param[out] namespaceDeclarations Map of (prefix, URI) tuples for namespaces used by el.
      * \return TRUE if the update succeed
      */
-    bool updateDomElement( QDomElement &el ) const;
+    bool updateDomElement( QDomElement &el, QMap<QString, QString> &namespaceDeclarations ) const SIP_SKIP;
 
     /**
      * \brief Loads headers from the \a settings
@@ -182,6 +195,9 @@ class CORE_EXPORT QgsHttpHeaders
 
     QgsHttpHeaders &operator = ( const QMap<QString, QVariant> &headers ) SIP_SKIP;
 
+    bool operator==( const QgsHttpHeaders &other ) const;
+    bool operator!=( const QgsHttpHeaders &other ) const;
+
     /**
      * \brief insert a \a key with the specific \a value
      * \param key a key to add
@@ -211,3 +227,4 @@ class CORE_EXPORT QgsHttpHeaders
 };
 
 #endif // QGSHTTPHEADERS_H
+

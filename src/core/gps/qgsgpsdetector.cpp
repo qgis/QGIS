@@ -175,7 +175,7 @@ void QgsGpsDetector::advance()
     else
     {
 #if defined( HAVE_QTSERIALPORT )
-      std::unique_ptr< QSerialPort > serial = std::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
+      auto serial = std::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
 

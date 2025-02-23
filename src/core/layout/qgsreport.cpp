@@ -32,7 +32,7 @@ QIcon QgsReport::icon() const
 
 QgsReport *QgsReport::clone() const
 {
-  std::unique_ptr< QgsReport > copy = std::make_unique< QgsReport >( mProject );
+  auto copy = std::make_unique< QgsReport >( mProject );
   copyCommonProperties( copy.get() );
   return copy.release();
 }

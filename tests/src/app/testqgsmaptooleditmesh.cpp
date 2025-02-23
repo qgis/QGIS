@@ -409,16 +409,16 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   crs3857.createFromString( "EPSG:3857" );
 
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
 
   QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
-  std::unique_ptr<QgsRasterLayer> terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  auto terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
   terrainLayer->setCrs( crs3857 );
   QVERIFY( terrainLayer->isValid() );
 
-  std::unique_ptr<QgsRasterDemTerrainProvider> terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
   terrain->setLayer( terrainLayer.get() );
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
@@ -628,16 +628,16 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
   crs3857.createFromString( "EPSG:3857" );
 
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
 
   QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
-  std::unique_ptr<QgsRasterLayer> terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  auto terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
   terrainLayer->setCrs( crs3857 );
   QVERIFY( terrainLayer->isValid() );
 
-  std::unique_ptr<QgsRasterDemTerrainProvider> terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
   terrain->setLayer( terrainLayer.get() );
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
@@ -692,7 +692,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
 void TestQgsMapToolEditMesh::selectElements()
 {
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
   QVERIFY( layer->isValid() );
 
   const QgsCoordinateTransform transform;
@@ -753,7 +753,7 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
 
   const QString copyDataPath1 = copyTestData( originalDataPath ); // copy of data to be edited
 
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( copyDataPath1, "not delaunay", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( copyDataPath1, "not delaunay", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
 
@@ -779,7 +779,16 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
 
   QVERIFY( layer->commitFrameEditing( transform, false ) );
 
-  QGSCOMPARELONGSTR( "edit_no_delaunay_refinement", "not_delaunay.2dm", TestQgsMapToolEditMesh::read2DMFileContent( copyDataPath1 ).toUtf8() );
+  QCOMPARE( layer->nativeMesh()->face( 0 ), QVector<int>() << 1 << 4 << 0 );
+  QCOMPARE( layer->nativeMesh()->face( 1 ), QVector<int>() << 1 << 3 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 2 ), QVector<int>() << 5 << 2 << 0 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 3 ), QVector<int>() << 2 << 6 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 4 ), QVector<int>() << 5 << 7 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 5 ), QVector<int>() << 6 << 2 << 7 );
+  QCOMPARE( layer->nativeMesh()->face( 6 ), QVector<int>() << 7 << 8 << 6 );
+  QCOMPARE( layer->nativeMesh()->face( 7 ), QVector<int>() << 9 << 0 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 8 ), QVector<int>() << 9 << 2 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 9 ), QVector<int>() << 9 << 1 << 0 );
 
   // editing with delaunay refinement
   mEditMeshMapTool->mWidgetActionDigitizing->mCheckBoxRefineNeighboringFaces->setChecked( true );
@@ -789,7 +798,6 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
   layer = std::make_unique<QgsMeshLayer>( copyDataPath2, "not delaunay", "mdal" );
   layer->setCrs( crs3857 );
   QVERIFY( layer->isValid() );
-
   layer->startFrameEditing( transform, error, false );
   QVERIFY( error == QgsMeshEditingError() );
 
@@ -811,7 +819,16 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
 
   QVERIFY( layer->commitFrameEditing( transform, false ) );
 
-  QGSCOMPARELONGSTR( "edit_delaunay_refinement", "delaunay.2dm", TestQgsMapToolEditMesh::read2DMFileContent( copyDataPath2 ).toUtf8() );
+  QCOMPARE( layer->nativeMesh()->face( 0 ), QVector<int>() << 5 << 2 << 0 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 1 ), QVector<int>() << 5 << 7 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 2 ), QVector<int>() << 6 << 2 << 7 );
+  QCOMPARE( layer->nativeMesh()->face( 3 ), QVector<int>() << 7 << 8 << 6 );
+  QCOMPARE( layer->nativeMesh()->face( 4 ), QVector<int>() << 9 << 0 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 5 ), QVector<int>() << 9 << 1 << 0 );
+  QCOMPARE( layer->nativeMesh()->face( 6 ), QVector<int>() << 9 << 6 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 7 ), QVector<int>() << 6 << 9 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 8 ), QVector<int>() << 3 << 0 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 9 ), QVector<int>() << 0 << 3 << 4 );
 }
 
 QString TestQgsMapToolEditMesh::read2DMFileContent( const QString &filePath )

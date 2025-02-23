@@ -46,7 +46,7 @@ void QgsProviderSublayerModelGroup::populateFromSublayers( const QList<QgsProvid
         QgsProviderSublayerModelGroup *nextChild = groupNode->findGroup( currentPath.constLast() );
         if ( !nextChild )
         {
-          std::unique_ptr< QgsProviderSublayerModelGroup > newNode = std::make_unique< QgsProviderSublayerModelGroup >( currentPath.constLast() );
+          auto newNode = std::make_unique< QgsProviderSublayerModelGroup >( currentPath.constLast() );
           groupNode = qgis::down_cast< QgsProviderSublayerModelGroup * >( groupNode->addChild( std::move( newNode ) ) );
         }
         else

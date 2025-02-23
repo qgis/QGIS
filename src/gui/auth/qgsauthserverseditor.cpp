@@ -303,7 +303,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !QgsApplication::authManager()->removeSslCertCustomConfig( digest, hostport ) )
   {
-    messageBar()->pushMessage( tr( "ERROR removing SSL custom config from authentication database for host:port, id %1:" ).arg( hostport, digest ), Qgis::MessageLevel::Critical );
+    messageBar()->pushMessage( tr( "ERROR removing SSL custom config from authentication storage for host:port, id %1:" ).arg( hostport, digest ), Qgis::MessageLevel::Critical );
     return;
   }
 

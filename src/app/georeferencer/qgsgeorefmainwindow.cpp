@@ -76,27 +76,27 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgslayoutexporter.h"
 
-const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QObject::tr( "Last used georeferencer resampling method" ) );
+const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QStringLiteral( "Last used georeferencer resampling method" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingCompressionMethod = new QgsSettingsEntryString( QStringLiteral( "compression-method" ), sTreeGeoreferencer, QStringLiteral( "NONE" ), QObject::tr( "Last used georeferencer compression method" ) );
+const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( QStringLiteral( "creation-options" ), sTreeGeoreferencer, QStringList(), QStringLiteral( "Last used georeferencer raster creation options" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QObject::tr( "Last used georeferencer use-zero-as-transparent option" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QStringLiteral( "Last used georeferencer use-zero-as-transparent option" ) );
 
-const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QObject::tr( "Last used georeferencer transform method" ) );
+const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QStringLiteral( "Last used georeferencer transform method" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QObject::tr( "Whether georeferencer should automatically save .points files" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QStringLiteral( "Whether georeferencer should automatically save .points files" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QObject::tr( "Whether georeferencer should automatically load results into the current project" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QStringLiteral( "Whether georeferencer should automatically load results into the current project" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used folder for georeferencer source files" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used raster file filter for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used raster file filter for georeferencer source files" ) );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QObject::tr( "Last used georeferencer target CRS" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used georeferencer target CRS" ) );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( QStringLiteral( "snapping-enabled" ), sTreeGeoreferencer, false, QObject::tr( "Snapping enabled." ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( QStringLiteral( "snapping-enabled" ), sTreeGeoreferencer, false, QStringLiteral( "Snapping enabled." ) );
 
-const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( QStringLiteral( "snapping-types" ), sTreeGeoreferencer, Qgis::SnappingType::Vertex, QObject::tr( "Snapping types." ) );
+const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( QStringLiteral( "snapping-types" ), sTreeGeoreferencer, Qgis::SnappingType::Vertex, QStringLiteral( "Snapping types." ) );
 
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
@@ -145,6 +145,19 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   if ( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
   {
     dockThisWindow( true );
+  }
+}
+
+void QgsGeoreferencerMainWindow::showGeoreferencer()
+{
+  if ( mDock )
+  {
+    mDock->setUserVisible( true );
+  }
+  else
+  {
+    show();
+    setFocus();
   }
 }
 
@@ -454,7 +467,7 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
   d.setCreateWorldFileOnly( mCreateWorldFileOnly );
   d.setTransformMethod( mTransformMethod );
   d.setResamplingMethod( mResamplingMethod );
-  d.setCompressionMethod( mCompressionMethod );
+  d.setCreationOptions( mCreationOptions.join( ' ' ) );
   d.setPdfMapFilename( mPdfOutputMapFile );
   d.setPdfReportFilename( mPdfOutputFile );
   d.setSaveGcpPoints( mSaveGcp );
@@ -472,7 +485,7 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
   mTargetCrs = d.targetCrs();
   mTransformMethod = d.transformMethod();
   mResamplingMethod = d.resamplingMethod();
-  mCompressionMethod = d.compressionMethod();
+  mCreationOptions = d.creationOptions();
   mModifiedFileName = d.destinationFilename();
   mPdfOutputMapFile = d.pdfMapFilename();
   mPdfOutputFile = d.pdfReportFilename();
@@ -534,7 +547,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
           int order = polynomialOrder( mTransformMethod );
           if ( order != 0 )
           {
-            gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order, mUserResX, mUserResY );
+            gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCreationOptions, mUseZeroForTrans, order, mUserResX, mUserResY );
             showGDALScript( QStringList() << translateCommand << gdalwarpCommand );
           }
           else
@@ -678,28 +691,16 @@ void QgsGeoreferencerMainWindow::addPoint( const QgsPointXY &sourceCoords, const
   }
 }
 
-void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
+void QgsGeoreferencerMainWindow::deletePoint( const QgsPointXY &p )
 {
-  QgsGeorefDataPoint *dataPoint = nullptr;
-  double lastPickedDistance = -1.0;
-  for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
+  QgsGeorefDataPoint *point = findPoint( p, QgsGcpPoint::PointType::Source );
+  if ( point )
   {
-    QgsGeorefDataPoint *pt = *it;
-    double distance = 0.0;
-    if ( pt->contains( coords, QgsGcpPoint::PointType::Source, distance ) ) // first operand for removing from GCP table
-    {
-      if ( lastPickedDistance < 0 || lastPickedDistance > distance )
-      {
-        dataPoint = *it;
-        lastPickedDistance = distance;
-      }
-    }
-  }
+    // At this stage, the hovered point will be the one being deleted
+    mHoveredPoint = nullptr;
 
-  if ( dataPoint )
-  {
-    mPoints.removeAll( dataPoint );
-    delete dataPoint;
+    mPoints.removeAll( point );
+    delete point;
     mGCPListWidget->setGCPList( &mPoints );
     mCanvas->refresh();
     updateGeorefTransform();
@@ -715,11 +716,9 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( int theGCPIndex )
   updateGeorefTransform();
 }
 
-void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
+QgsGeorefDataPoint *QgsGeoreferencerMainWindow::findPoint( const QgsPointXY &p, QgsGcpPoint::PointType pointType )
 {
-  const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
-  QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
-
+  QgsGeorefDataPoint *point = nullptr;
   double lastPickedDistance = -1.0;
   for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
@@ -729,37 +728,137 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
       if ( lastPickedDistance < 0.0 || lastPickedDistance > distance )
       {
         lastPickedDistance = distance;
-        mvPoint = *it;
+        point = *it;
       }
+    }
+  }
+
+  return point;
+}
+
+void QgsGeoreferencerMainWindow::selectPoint( const QgsPointXY &p )
+{
+  const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
+  QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
+
+  mvPoint = findPoint( p, pointType );
+  if ( mvPoint )
+  {
+    if ( mHoveredPoint )
+    {
+      mHoveredPoint->setHovered( false );
+      mHoveredPoint = nullptr;
+    }
+
+    if ( pointType == QgsGcpPoint::PointType::Source )
+    {
+      mToolMovePoint->setStartPoint( mvPoint->sourcePoint() );
+    }
+    else
+    {
+      mToolMovePointQgis->setStartPoint( mvPoint->destinationPoint() );
     }
   }
 }
 
-void QgsGeoreferencerMainWindow::movePoint( QPoint canvasPixels )
+void QgsGeoreferencerMainWindow::hoverPoint( const QgsPointXY &p )
+{
+  QgsGeorefDataPoint *point = findPoint( p, QgsGcpPoint::PointType::Source );
+  if ( point )
+  {
+    point->setHovered( true );
+  }
+  if ( mHoveredPoint && point != mHoveredPoint )
+  {
+    mHoveredPoint->setHovered( false );
+  }
+  mHoveredPoint = point;
+}
+
+void QgsGeoreferencerMainWindow::movePoint( const QgsPointXY &p )
 {
   const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
   QgsGeorefDataPoint *&mvPoint = pointType == QgsGcpPoint::PointType::Source ? mMovingPoint : mMovingPointQgis;
 
   if ( mvPoint )
   {
-    mvPoint->moveTo( canvasPixels, pointType );
+    mvPoint->moveTo( p, pointType );
     mGCPListWidget->updateResiduals();
+  }
+  else
+  {
+    QgsGeorefDataPoint *point = findPoint( p, pointType );
+    if ( point )
+    {
+      point->setHovered( true );
+    }
+    if ( mHoveredPoint && point != mHoveredPoint )
+    {
+      mHoveredPoint->setHovered( false );
+    }
+    mHoveredPoint = point;
   }
 }
 
-void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
+void QgsGeoreferencerMainWindow::releasePoint( const QgsPointXY &p )
 {
-  Q_UNUSED( p )
-  mGCPListWidget->updateResiduals();
-  // Get Map Sender
-  if ( sender() == mToolMovePoint )
+  const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
+  if ( pointType == QgsGcpPoint::PointType::Source )
   {
+    mToolMovePoint->setStartPoint( QgsPointXY() );
     mMovingPoint = nullptr;
   }
   else
   {
+    mToolMovePointQgis->setStartPoint( QgsPointXY() );
     mMovingPointQgis = nullptr;
   }
+
+  QgsGeorefDataPoint *point = findPoint( p, pointType );
+  if ( point )
+  {
+    point->setHovered( true );
+  }
+  if ( mHoveredPoint && point != mHoveredPoint )
+  {
+    mHoveredPoint->setHovered( false );
+  }
+  mHoveredPoint = point;
+}
+
+void QgsGeoreferencerMainWindow::cancelPoint( const QgsPointXY &p )
+{
+  const QgsGcpPoint::PointType pointType = sender() == mToolMovePoint ? QgsGcpPoint::PointType::Source : QgsGcpPoint::PointType::Destination;
+  if ( pointType == QgsGcpPoint::PointType::Source )
+  {
+    if ( mMovingPoint )
+    {
+      mMovingPoint->setSourcePoint( mToolMovePoint->startPoint() );
+    }
+    mToolMovePoint->setStartPoint( QgsPointXY() );
+    mMovingPoint = nullptr;
+  }
+  else
+  {
+    if ( mMovingPointQgis )
+    {
+      mMovingPointQgis->setDestinationPoint( mToolMovePointQgis->startPoint() );
+    }
+    mToolMovePointQgis->setStartPoint( QgsPointXY() );
+    mMovingPointQgis = nullptr;
+  }
+  mGCPListWidget->updateResiduals();
+
+  QgsGeorefDataPoint *point = findPoint( p, pointType );
+  if ( point )
+  {
+    point->setHovered( true );
+  }
+  if ( mHoveredPoint && point != mHoveredPoint )
+  {
+    mHoveredPoint->setHovered( false );
+  }
+  mHoveredPoint = point;
 }
 
 void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &sourceCoordinates )
@@ -1072,7 +1171,7 @@ void QgsGeoreferencerMainWindow::createActions()
   connect( mActionFullHistogramStretch, &QAction::triggered, this, &QgsGeoreferencerMainWindow::fullHistogramStretch );
   mActionFullHistogramStretch->setEnabled( false );
 
-  mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( QStringLiteral( "CTRL+Q" ) ) << QKeySequence( Qt::Key_Escape ) );
+  mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( QStringLiteral( "CTRL+Q" ) ) );
   connect( mActionQuit, &QAction::triggered, this, &QWidget::close );
 }
 
@@ -1184,20 +1283,46 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mToolDeletePoint = new QgsGeorefToolDeletePoint( mCanvas );
   mToolDeletePoint->setAction( mActionDeletePoint );
-  connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::deleteDataPoint, this, static_cast<void ( QgsGeoreferencerMainWindow::* )( QPoint )>( &QgsGeoreferencerMainWindow::deleteDataPoint ) );
+  connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::hoverPoint, this, &QgsGeoreferencerMainWindow::hoverPoint );
+  connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::deletePoint, this, &QgsGeoreferencerMainWindow::deletePoint );
+  connect( mToolDeletePoint, &QgsMapTool::deactivated, this, [=] {
+    if ( mHoveredPoint )
+    {
+      mHoveredPoint->setHovered( false );
+      mHoveredPoint = nullptr;
+    }
+  } );
 
   mToolMovePoint = new QgsGeorefToolMovePoint( mCanvas );
   mToolMovePoint->setAction( mActionMoveGCPPoint );
-  connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointPressed, this, &QgsGeoreferencerMainWindow::selectPoint );
-  connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointMoved, this, &QgsGeoreferencerMainWindow::movePoint );
-  connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointReleased, this, &QgsGeoreferencerMainWindow::releasePoint );
+  connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointBeginMove, this, &QgsGeoreferencerMainWindow::selectPoint );
+  connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointMoving, this, &QgsGeoreferencerMainWindow::movePoint );
+  connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointEndMove, this, &QgsGeoreferencerMainWindow::releasePoint );
+  connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointCancelMove, this, &QgsGeoreferencerMainWindow::cancelPoint );
+  connect( mToolMovePoint, &QgsMapTool::deactivated, this, [=] {
+    mMovingPoint = nullptr;
+    if ( mHoveredPoint )
+    {
+      mHoveredPoint->setHovered( false );
+      mHoveredPoint = nullptr;
+    }
+  } );
 
   // Point in QGIS Map
   mToolMovePointQgis = new QgsGeorefToolMovePoint( QgisApp::instance()->mapCanvas() );
   mToolMovePointQgis->setAction( mActionMoveGCPPoint );
-  connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointPressed, this, &QgsGeoreferencerMainWindow::selectPoint );
-  connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointMoved, this, &QgsGeoreferencerMainWindow::movePoint );
-  connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointReleased, this, &QgsGeoreferencerMainWindow::releasePoint );
+  connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointBeginMove, this, &QgsGeoreferencerMainWindow::selectPoint );
+  connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointMoving, this, &QgsGeoreferencerMainWindow::movePoint );
+  connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointEndMove, this, &QgsGeoreferencerMainWindow::releasePoint );
+  connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointCancelMove, this, &QgsGeoreferencerMainWindow::cancelPoint );
+  connect( mToolMovePointQgis, &QgsMapTool::deactivated, this, [=] {
+    mMovingPointQgis = nullptr;
+    if ( mHoveredPoint )
+    {
+      mHoveredPoint->setHovered( false );
+      mHoveredPoint = nullptr;
+    }
+  } );
 
   QgsSettings s;
   double zoomFactor = s.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
@@ -1256,7 +1381,7 @@ void QgsGeoreferencerMainWindow::createDockWidgets()
   dockWidgetGCPpoints->setWidget( mGCPListWidget );
 
   connect( mGCPListWidget, &QgsGCPListWidget::jumpToGCP, this, &QgsGeoreferencerMainWindow::recenterOnPoint );
-  connect( mGCPListWidget, static_cast<void ( QgsGCPListWidget::* )( int )>( &QgsGCPListWidget::deleteDataPoint ), this, static_cast<void ( QgsGeoreferencerMainWindow::* )( int )>( &QgsGeoreferencerMainWindow::deleteDataPoint ) );
+  connect( mGCPListWidget, static_cast<void ( QgsGCPListWidget::* )( int )>( &QgsGCPListWidget::deleteDataPoint ), this, &QgsGeoreferencerMainWindow::deleteDataPoint );
   connect( mGCPListWidget, &QgsGCPListWidget::pointEnabled, this, &QgsGeoreferencerMainWindow::updateGeorefTransform );
 }
 
@@ -1440,7 +1565,7 @@ void QgsGeoreferencerMainWindow::readSettings()
 
   // warp options
   mResamplingMethod = settingResamplingMethod->value();
-  mCompressionMethod = settingCompressionMethod->value();
+  mCreationOptions = settingCreationOptions->value();
   mUseZeroForTrans = settingUseZeroForTransparent->value();
   mTransformMethod = settingTransformMethod->value();
   mSaveGcp = settingSaveGcps->value();
@@ -1455,7 +1580,7 @@ void QgsGeoreferencerMainWindow::writeSettings()
 
   settingTransformMethod->setValue( mTransformMethod );
   settingResamplingMethod->setValue( mResamplingMethod );
-  settingCompressionMethod->setValue( mCompressionMethod );
+  settingCreationOptions->setValue( mCreationOptions );
   settingUseZeroForTransparent->setValue( mUseZeroForTrans );
   settingSaveGcps->setValue( mSaveGcp );
   settingLoadInProject->setValue( mLoadInQgis );
@@ -1597,13 +1722,13 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
     mGeorefTransform,
     mResamplingMethod,
     mUseZeroForTrans,
-    mCompressionMethod,
+    mCreationOptions,
     mTargetCrs,
     mUserResX,
     mUserResY
   );
 
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
   connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
     progressDialog->setValue( static_cast<int>( progress ) );
@@ -1663,7 +1788,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
 {
   QgsVectorWarperTask *task = new QgsVectorWarperTask( mTransformMethod, mPoints.asPoints(), mTargetCrs, qobject_cast<QgsVectorLayer *>( mLayer.get() ), mModifiedFileName );
 
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Georeferencing layer…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Georeferencer" ) );
   connect( task, &QgsTask::progressChanged, progressDialog.get(), [&]( double progress ) {
     progressDialog->setValue( static_cast<int>( progress ) );
@@ -1839,7 +1964,7 @@ bool QgsGeoreferencerMainWindow::writePDFMapFile( const QString &fileName, const
 
   //create layout
   QgsLayout layout( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page = std::make_unique<QgsLayoutItemPage>( &layout );
 
   double leftMargin = 8;
   double topMargin = 8;
@@ -1906,10 +2031,10 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   //create layout A4 with 300 dpi
   QgsLayout layout( QgsProject::instance() );
 
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page = std::make_unique<QgsLayoutItemPage>( &layout );
   page->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page.release() );
-  std::unique_ptr<QgsLayoutItemPage> page2 = std::make_unique<QgsLayoutItemPage>( &layout );
+  auto page2 = std::make_unique<QgsLayoutItemPage>( &layout );
   page2->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page2.release() );
 
@@ -2267,7 +2392,7 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
-QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order, double targetResX, double targetResY )
+QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QStringList &options, bool useZeroForTrans, int order, double targetResX, double targetResY )
 {
   QStringList gdalCommand;
   gdalCommand << QStringLiteral( "gdalwarp" ) << QStringLiteral( "-r" ) << resampling;
@@ -2282,7 +2407,12 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
     // Otherwise, use thin plate spline interpolation
     gdalCommand << QStringLiteral( "-tps" );
   }
-  gdalCommand << "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
+
+  for ( const QString &option : options )
+  {
+    gdalCommand << QStringLiteral( "-co %1" ).arg( option );
+  }
+  gdalCommand << ( useZeroForTrans ? "-dstalpha" : "" );
 
   if ( targetResX != 0.0 && targetResY != 0.0 )
   {

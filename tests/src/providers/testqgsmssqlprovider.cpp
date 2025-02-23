@@ -26,8 +26,8 @@
 #include "qgsmssqltransaction.h"
 #include "qgsmssqlconnection.h"
 #include "qgsvectorlayer.h"
-//#include "qgsmssqldatabase.h"
 #include "qgsproject.h"
+#include "qgsmssqlgeomcolumntypethread.h"
 
 /**
  * \ingroup UnitTests
@@ -49,6 +49,10 @@ class TestQgsMssqlProvider : public QObject
 
     void transactionTwoLayers();
     void transactionUndoRedo();
+    void testGeomTypeResolutionValid();
+    void testGeomTypeResolutionValidNoWorkaround();
+    void testGeomTypeResolutionInvalid();
+    void testGeomTypeResolutionInvalidNoWorkaround();
 
   private:
     QString mDbConn;
@@ -65,7 +69,7 @@ void TestQgsMssqlProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' " );
+  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='QGIStestSQLServer1234' " );
 
   mSomeDataWktGeom << QStringLiteral( "Point (-70.33199999999999363 66.32999999999999829)" )
                    << QStringLiteral( "Point (-68.20000000000000284 70.79999999999999716)" )
@@ -281,6 +285,121 @@ void TestQgsMssqlProvider::transactionUndoRedo()
   vectorLayerPoint1->rollBack();
 
   // 2. with transaction, try to add a feature to the first layer -> both layers are affected
+}
+
+void TestQgsMssqlProvider::testGeomTypeResolutionValid()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // with invalid geometry handling workaround:
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, false );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "someData" );
+  layerProperty.geometryColName = QStringLiteral( "geom" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  QCOMPARE( result.type, QStringLiteral( "POINT" ) );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "someData" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "geom" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QStringLiteral( "4326" ) );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
+}
+
+void TestQgsMssqlProvider::testGeomTypeResolutionValidNoWorkaround()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // WITHOUT invalid geometry handling workaround:
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, true );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "someData" );
+  layerProperty.geometryColName = QStringLiteral( "geom" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  QCOMPARE( result.type, QStringLiteral( "POINT" ) );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "someData" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "geom" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QStringLiteral( "4326" ) );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
+}
+
+
+void TestQgsMssqlProvider::testGeomTypeResolutionInvalid()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // with invalid geometry handling workaround:
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, false );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "invalid_polys" );
+  layerProperty.geometryColName = QStringLiteral( "ogr_geometry" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  QCOMPARE( result.type, QStringLiteral( "MULTIPOLYGON,POLYGON" ) );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "invalid_polys" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "ogr_geometry" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QStringLiteral( "4167,4167" ) );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
+}
+
+void TestQgsMssqlProvider::testGeomTypeResolutionInvalidNoWorkaround()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  // WITHOUT invalid geometry handling workaround.
+  // We expect this to fail
+  QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, true );
+
+  QgsMssqlLayerProperty layerProperty;
+  layerProperty.schemaName = QStringLiteral( "qgis_test" );
+  layerProperty.tableName = QStringLiteral( "invalid_polys" );
+  layerProperty.geometryColName = QStringLiteral( "ogr_geometry" );
+  thread.addGeometryColumn( layerProperty );
+
+  thread.run();
+  const QList<QgsMssqlLayerProperty> results = thread.results();
+  QCOMPARE( results.size(), 1 );
+  const QgsMssqlLayerProperty result = results.at( 0 );
+  // geometry type resolution will fail because of unhandled exception raised by SQL Server
+  QCOMPARE( result.type, QString() );
+  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
+  QCOMPARE( result.tableName, QStringLiteral( "invalid_polys" ) );
+  QCOMPARE( result.geometryColName, QStringLiteral( "ogr_geometry" ) );
+  QCOMPARE( result.pkCols.size(), 0 );
+  QCOMPARE( result.srid, QString() );
+  QCOMPARE( result.isGeography, false );
+  QCOMPARE( result.sql, QString() );
+  QCOMPARE( result.isView, false );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )

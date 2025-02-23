@@ -59,6 +59,7 @@
 #include "qgsdockablewidgethelper.h"
 #include "qgsrubberband.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 
 #include <QWidget>
 #include <QActionGroup>
@@ -68,6 +69,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   , mCanvasName( name )
 {
   const QgsSettings setting;
+
+  mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
+  mToolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
 
   QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( isDocked ) );
@@ -79,21 +83,59 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   // Editing toolbar
   mEditingToolBar = new QToolBar( this );
+  mEditingToolBar->setWindowTitle( tr( "Editing Toolbar" ) );
   mEditingToolBar->setVisible( false );
 
-  QAction *actionPointCloudChangeAttributeTool = mEditingToolBar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
+  mPointCloudEditingToolbar = new QToolBar( this );
+
+  mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ), tr( "Toggle editing" ), this );
+  mActionToggleEditing->setCheckable( true );
+  connect( mActionToggleEditing, &QAction::triggered, this, [] { QgisApp::instance()->toggleEditing( QgisApp::instance()->activeLayer() ); } );
+  mActionUndo = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ), tr( "Undo" ), this );
+  mActionRedo = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ), tr( "Redo" ), this );
+
+  mEditingToolBar->addAction( mActionToggleEditing );
+  mEditingToolBar->addAction( mActionUndo );
+  mEditingToolBar->addAction( mActionRedo );
+  mEditingToolBar->addSeparator();
+  mEditingToolBar->addWidget( mPointCloudEditingToolbar );
+
+  QAction *actionPointCloudChangeAttributeTool = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mActionSelectPolygon.svg" ) ), tr( "Change Point Cloud Attribute" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
   actionPointCloudChangeAttributeTool->setCheckable( true );
 
-  mEditingToolBar->addWidget( new QLabel( tr( "Attribute" ) ) );
+  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
   mCboChangeAttribute = new QComboBox();
-  mEditingToolBar->addWidget( mCboChangeAttribute );
+  mPointCloudEditingToolbar->addWidget( mCboChangeAttribute );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
-  mEditingToolBar->addWidget( new QLabel( tr( "Value" ) ) );
-  mEditingToolBar->addWidget( mSpinChangeAttributeValue );
+  mSpinChangeAttributeValue->setShowClearButton( false );
+  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Value" ) ) );
+  mSpinChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mSpinChangeAttributeValue );
+  mSpinChangeAttributeValueAction->setVisible( false );
+  mCboChangeAttributeValue = new QComboBox();
+  mCboChangeAttributeValue->setEditable( true );
+  mClassValidator = new ClassValidator( this );
+  mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
+
   QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ), this, [this] { mEditingToolBar->setVisible( !mEditingToolBar->isVisible() ); } );
   actionEditingToolbar->setCheckable( true );
   connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
-  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { onPointCloudChangeAttributeSettingsChanged(); } );
+  connect( mCboChangeAttributeValue, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [this]( const QString &text ) {
+    double newValue = 0;
+    if ( mCboChangeAttributeValue->isEditable() )
+    {
+      const QStringList split = text.split( ' ' );
+      if ( !split.isEmpty() )
+      {
+        newValue = split.constFirst().toDouble();
+      }
+    }
+    else
+    {
+      newValue = mCboChangeAttributeValue->currentData().toDouble();
+    }
+    mMapToolPointCloudChangeAttribute->setNewValue( newValue );
+  } );
+  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { mMapToolPointCloudChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() ); } );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction(
     QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
@@ -258,7 +300,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
   mMapToolPointCloudChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
-  onPointCloudChangeAttributeSettingsChanged();
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -326,7 +367,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   onTotalPendingJobsCountChanged();
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), isDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::RespectSetting );
+
   if ( QDialog *dialog = mDockableWidgetHelper->dialog() )
   {
     QFontMetrics fm( font() );
@@ -343,6 +385,24 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
+
+  QList<QAction *> toolbarMenuActions;
+  // Set action names so that they can be used in customization
+  for ( QToolBar *toolBar : { mEditingToolBar } )
+  {
+    toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
+    toolbarMenuActions << toolBar->toggleViewAction();
+  }
+
+  // sort actions in toolbar menu
+  std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), []( QAction *a, QAction *b ) {
+    return QString::localeAwareCompare( a->text(), b->text() ) < 0;
+  } );
+
+  mToolbarMenu->addActions( toolbarMenuActions );
+
+  toolBar->installEventFilter( this );
+  mEditingToolBar->installEventFilter( this );
 }
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
@@ -418,22 +478,25 @@ void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
   mDockableWidgetHelper->setWindowTitle( name );
 }
 
-void Qgs3DMapCanvasWidget::enableEditingTools( bool enable )
-{
-  mEditingToolBar->setEnabled( enable );
-}
-
 void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
 {
+  mActionUndo->disconnect();
+  mActionRedo->disconnect();
+
   if ( !layer || layer->type() != Qgis::LayerType::PointCloud )
   {
-    enableEditingTools( false );
+    mPointCloudEditingToolbar->setEnabled( false );
+    mActionToggleEditing->setEnabled( false );
+    mActionToggleEditing->setChecked( false );
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
 
     if ( mCanvas->mapTool() == mMapToolPointCloudChangeAttribute )
       mCanvas->setMapTool( nullptr );
 
     return;
   }
+
 
   QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
   const QVector<QgsPointCloudAttribute> attributes = pcLayer->attributes().attributes();
@@ -446,10 +509,43 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
 
     whileBlocking( mCboChangeAttribute )->addItem( attribute.name() );
   }
-  if ( mCboChangeAttribute->findText( previousAttribute ) != -1 )
-    mCboChangeAttribute->setCurrentText( previousAttribute );
 
-  enableEditingTools( pcLayer->isEditable() );
+  int index = mCboChangeAttribute->findText( previousAttribute );
+  if ( index < 0 )
+    index = mCboChangeAttribute->findText( QStringLiteral( "Classification" ) );
+  mCboChangeAttribute->setCurrentIndex( std::max( index, 0 ) );
+
+  mActionToggleEditing->setEnabled( pcLayer->supportsEditing() );
+  mActionToggleEditing->setChecked( pcLayer->isEditable() );
+  connect( mActionUndo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::undo );
+  connect( mActionRedo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::redo );
+  mActionUndo->setEnabled( pcLayer->undoStack()->canUndo() );
+  mActionRedo->setEnabled( pcLayer->undoStack()->canRedo() );
+  connect( pcLayer->undoStack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
+  connect( pcLayer->undoStack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
+  mPointCloudEditingToolbar->setEnabled( pcLayer->isEditable() );
+  // Re-parse the class values when the renderer changes - renderer3DChanged() is not fired when only the renderer symbol is changed
+  connect( pcLayer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged );
+}
+
+bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( qobject_cast< QToolBar * >( watched ) )
+  {
+    if ( event->type() != QEvent::MouseButtonPress )
+      return QObject::eventFilter( watched, event );
+
+    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+    if ( !mouseEvent )
+      return QObject::eventFilter( watched, event );
+
+    if ( mouseEvent->button() != Qt::RightButton )
+      return QObject::eventFilter( watched, event );
+
+    mToolbarMenu->exec( mouseEvent->globalPos() );
+    return false;
+  }
+  return QObject::eventFilter( watched, event );
 }
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )
@@ -807,47 +903,31 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
 {
   const QString attributeName = mCboChangeAttribute->currentText();
 
-  if ( attributeName == QLatin1String( "Intensity" ) )
+  mSpinChangeAttributeValue->setSuffix( QString() );
+  bool useComboBox = false;
+
+  if ( attributeName == QLatin1String( "Intensity" ) || attributeName == QLatin1String( "PointSourceId" ) || attributeName == QLatin1String( "Red" ) || attributeName == QLatin1String( "Green" ) || attributeName == QLatin1String( "Blue" ) || attributeName == QLatin1String( "Infrared" ) )
   {
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( 65535 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
-  else if ( attributeName == QLatin1String( "ReturnNumber" ) )
+  else if ( attributeName == QLatin1String( "ReturnNumber" ) || attributeName == QLatin1String( "NumberOfReturns" ) )
   {
     mSpinChangeAttributeValue->setMinimum( 0 );
     mSpinChangeAttributeValue->setMaximum( 15 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
-  else if ( attributeName == QLatin1String( "NumberOfReturns" ) )
+  else if ( attributeName == QLatin1String( "Synthetic" ) || attributeName == QLatin1String( "KeyPoint" ) || attributeName == QLatin1String( "Withheld" ) || attributeName == QLatin1String( "Overlap" ) || attributeName == QLatin1String( "ScanDirectionFlag" ) || attributeName == QLatin1String( "EdgeOfFlightLine" ) )
   {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 15 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Synthetic" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "KeyPoint" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Withheld" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Overlap" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
+    useComboBox = true;
+    const int oldIndex = mCboChangeAttributeValue->currentIndex();
+    QgsSignalBlocker< QComboBox > blocker( mCboChangeAttributeValue );
+    mCboChangeAttributeValue->clear();
+    mCboChangeAttributeValue->addItem( tr( "False" ), 0 );
+    mCboChangeAttributeValue->addItem( tr( "True" ), 1 );
+    mCboChangeAttributeValue->setEditable( false );
+    mCboChangeAttributeValue->setCurrentIndex( std::min( oldIndex, 1 ) );
   }
   else if ( attributeName == QLatin1String( "ScannerChannel" ) )
   {
@@ -855,23 +935,69 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setMaximum( 3 );
     mSpinChangeAttributeValue->setDecimals( 0 );
   }
-  else if ( attributeName == QLatin1String( "ScanDirectionFlag" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "EdgeOfFlightLine" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 1 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
   else if ( attributeName == QLatin1String( "Classification" ) )
   {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 255 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
+    useComboBox = true;
+    const QStringList split = mCboChangeAttributeValue->currentText().split( ' ' );
+    const int oldValue = split.isEmpty() ? 0 : split.constFirst().toInt();
+
+    whileBlocking( mCboChangeAttributeValue )->clear();
+    // We will fill the combobox with all available classes from the Classification renderer (may have changed names) and the layer statistics
+    // Users will be able to manually type in any other class number too.
+    QMap<int, QString> lasCodes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
+    QMap<int, QString> classes;
+
+    QgsPointCloudLayer *layer = qobject_cast<QgsPointCloudLayer *>( QgisApp::instance()->activeLayer() );
+    if ( layer )
+    {
+      QgsAbstract3DRenderer *r = layer->renderer3D();
+      // if there's a clsasification renderer, let's use the classes' labels
+      if ( QgsPointCloudLayer3DRenderer *cr = dynamic_cast<QgsPointCloudLayer3DRenderer *>( r ) )
+      {
+        const QgsPointCloud3DSymbol *s = cr->symbol();
+        if ( const QgsClassificationPointCloud3DSymbol *cs = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( s ) )
+        {
+          if ( cs->attribute() == QLatin1String( "Classification" ) )
+          {
+            for ( const QgsPointCloudCategory &c : cs->categoriesList() )
+            {
+              classes[c.value()] = c.label();
+            }
+          }
+        }
+      }
+
+      // then add missing classes from the layer stats too
+      const QMap<int, int> statisticsClasses = layer->statistics().availableClasses( QStringLiteral( "Classification" ) );
+      for ( auto it = statisticsClasses.constBegin(); it != statisticsClasses.constEnd(); ++it )
+      {
+        if ( !classes.contains( it.key() ) )
+          classes[it.key()] = lasCodes[it.key()];
+      }
+      for ( auto it = classes.constBegin(); it != classes.constEnd(); ++it )
+      {
+        // populate the combobox
+        whileBlocking( mCboChangeAttributeValue )->addItem( QStringLiteral( "%1 (%2)" ).arg( it.key() ).arg( it.value() ), it.key() );
+        // and also update the labels in the full list of classes, which will be used in the editable combobox validator.
+        lasCodes[it.key()] = it.value();
+      }
+    }
+    // new values (manually edited) will be added after a separator
+    mCboChangeAttributeValue->insertSeparator( mCboChangeAttributeValue->count() );
+    mClassValidator->setClasses( lasCodes );
+    mCboChangeAttributeValue->setEditable( true );
+    mCboChangeAttributeValue->setValidator( mClassValidator );
+    mCboChangeAttributeValue->setCompleter( nullptr );
+
+    // Try to reselect last selected value
+    for ( int i = 0; i < mCboChangeAttributeValue->count(); ++i )
+    {
+      if ( mCboChangeAttributeValue->itemText( i ).startsWith( QStringLiteral( "%1 " ).arg( oldValue ) ) )
+      {
+        mCboChangeAttributeValue->setCurrentIndex( i );
+        break;
+      }
+    }
   }
   else if ( attributeName == QLatin1String( "UserData" ) )
   {
@@ -881,15 +1007,10 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
   }
   else if ( attributeName == QLatin1String( "ScanAngleRank" ) )
   {
-    mSpinChangeAttributeValue->setMinimum( -30'000 );
-    mSpinChangeAttributeValue->setMaximum( 30'000 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "PointSourceId" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
+    mSpinChangeAttributeValue->setMinimum( -180 );
+    mSpinChangeAttributeValue->setMaximum( 180 );
+    mSpinChangeAttributeValue->setDecimals( 3 );
+    mSpinChangeAttributeValue->setSuffix( QStringLiteral( " %1" ).arg( tr( "degrees" ) ) );
   }
   else if ( attributeName == QLatin1String( "GpsTime" ) )
   {
@@ -897,34 +1018,30 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setMaximum( std::numeric_limits<double>::max() );
     mSpinChangeAttributeValue->setDecimals( 42 );
   }
-  else if ( attributeName == QLatin1String( "Red" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Green" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Blue" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == QLatin1String( "Infrared" ) )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
 
   mMapToolPointCloudChangeAttribute->setAttribute( attributeName );
-  // TODO: validate values for attribute
-  mMapToolPointCloudChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() );
+  double newValue = 0;
+  if ( useComboBox && mCboChangeAttributeValue->isEditable() )
+  {
+    // read class integer
+    const QStringList split = mCboChangeAttributeValue->currentText().split( ' ' );
+    if ( !split.isEmpty() )
+      newValue = split.constFirst().toDouble();
+  }
+  else if ( useComboBox )
+  {
+    // read true/false combo box
+    newValue = mCboChangeAttributeValue->currentData().toDouble();
+  }
+  else
+  {
+    // read the spinbox value
+    newValue = mSpinChangeAttributeValue->value();
+  }
+  mMapToolPointCloudChangeAttribute->setNewValue( newValue );
+
+  mCboChangeAttributeValueAction->setVisible( useComboBox );
+  mSpinChangeAttributeValueAction->setVisible( !useComboBox );
 }
 
 void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()
@@ -950,4 +1067,46 @@ void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
     mMainCanvas->unsetMapTool( mMapToolExtent.get() );
+}
+
+ClassValidator::ClassValidator( QWidget *parent )
+  : QValidator( parent )
+{
+  mRx = QRegularExpression( QStringLiteral( "([0-9]{1,3})" ) );
+}
+
+QValidator::State ClassValidator::validate( QString &input, int &pos ) const
+{
+  QRegularExpressionMatch match = mRx.match( input );
+  const QString number = match.captured();
+  bool ok;
+  const int n = number.toInt( &ok );
+
+  if ( !ok && pos == 0 )
+  {
+    input.clear();
+    return QValidator::State::Intermediate;
+  }
+
+  if ( !ok )
+    return QValidator::State::Invalid;
+  if ( n < 0 || n > 255 )
+    return QValidator::State::Invalid;
+  if ( mClasses.contains( n ) )
+  {
+    input = QStringLiteral( "%1 (%2)" ).arg( n ).arg( mClasses[n] );
+    if ( pos > number.size() )
+      pos = number.size();
+    return QValidator::State::Acceptable;
+  }
+  return QValidator::State::Intermediate;
+}
+
+void ClassValidator::fixup( QString &input ) const
+{
+  QRegularExpressionMatch match = mRx.match( input );
+  const QString number = match.captured();
+  bool ok;
+  const int n = number.toInt( &ok );
+  input = QStringLiteral( "%1 (%2)" ).arg( n ).arg( mClasses[n] );
 }

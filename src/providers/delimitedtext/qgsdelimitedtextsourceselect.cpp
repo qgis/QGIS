@@ -37,7 +37,6 @@ const int MAX_SAMPLE_LENGTH = 200;
 
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mFile( std::make_unique<QgsDelimitedTextFile>() )
   , mSettingsKey( QStringLiteral( "/Plugin-DelimitedText" ) )
 {
   setupUi( this );
@@ -67,7 +66,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   mBooleanFalse->setEnabled( !mBooleanTrue->text().isEmpty() );
   updateFieldsAndEnable();
 
-  connect( txtLayerName, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::enableAccept );
   connect( cmbEncoding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
   connect( delimiterCSV, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
@@ -119,12 +117,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 void QgsDelimitedTextSourceSelect::addButtonClicked()
 {
   // The following conditions should not be hit! OK will not be enabled...
-  if ( txtLayerName->text().isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "No layer name" ), tr( "Please enter a layer name before adding the layer to the map" ) );
-    txtLayerName->setFocus();
-    return;
-  }
   if ( delimiterChars->isChecked() )
   {
     if ( selectedChars().isEmpty() )
@@ -144,7 +136,8 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
       return;
     }
   }
-  if ( !mFile->isValid() )
+  QgsDelimitedTextFile mFile;
+  if ( !loadDelimitedFileDefinition( mFile ) )
   {
     QMessageBox::warning( this, tr( "Invalid delimited text file" ), tr( "Please enter a valid file and delimiter" ) );
     return;
@@ -153,23 +146,23 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   cancelScanTask();
 
   //Build the delimited text URI from the user provided information
-  const QString datasourceUrl { url() };
+  const QString datasourceUrl { url( mFile ) };
 
   // store the settings
   saveSettings();
   saveSettingsForFile( mFileWidget->filePath() );
 
+  const QString layerName = QFileInfo( mFileWidget->filePath() ).completeBaseName();
 
   // add the layer to the map
   Q_NOWARN_DEPRECATED_PUSH
-  emit addVectorLayer( datasourceUrl, txtLayerName->text() );
+  emit addVectorLayer( datasourceUrl, layerName );
   Q_NOWARN_DEPRECATED_POP
-  emit addLayer( Qgis::LayerType::Vector, datasourceUrl, txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
+  emit addLayer( Qgis::LayerType::Vector, datasourceUrl, layerName, QStringLiteral( "delimitedtext" ) );
 
   // clear the file and layer name show something has happened, ready for another file
 
   mFileWidget->setFilePath( QString() );
-  txtLayerName->setText( QString() );
 
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
   {
@@ -348,28 +341,28 @@ void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString &filename 
 }
 
 
-bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
+bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition( QgsDelimitedTextFile &file )
 {
-  mFile->setFileName( mFileWidget->filePath() );
-  mFile->setEncoding( cmbEncoding->currentText() );
+  file.setFileName( mFileWidget->filePath() );
+  file.setEncoding( cmbEncoding->currentText() );
   if ( delimiterChars->isChecked() )
   {
-    mFile->setTypeCSV( selectedChars(), txtQuoteChars->text(), txtEscapeChars->text() );
+    file.setTypeCSV( selectedChars(), txtQuoteChars->text(), txtEscapeChars->text() );
   }
   else if ( delimiterRegexp->isChecked() )
   {
-    mFile->setTypeRegexp( txtDelimiterRegexp->text() );
+    file.setTypeRegexp( txtDelimiterRegexp->text() );
   }
   else
   {
-    mFile->setTypeCSV();
+    file.setTypeCSV();
   }
-  mFile->setSkipLines( rowCounter->value() );
-  mFile->setUseHeader( cbxUseHeader->isChecked() );
-  mFile->setDiscardEmptyFields( cbxSkipEmptyFields->isChecked() );
-  mFile->setTrimFields( cbxTrimFields->isChecked() );
-  mFile->setMaxFields( mMaxFields );
-  return mFile->isValid();
+  file.setSkipLines( rowCounter->value() );
+  file.setUseHeader( cbxUseHeader->isChecked() );
+  file.setDiscardEmptyFields( cbxSkipEmptyFields->isChecked() );
+  file.setTrimFields( cbxTrimFields->isChecked() );
+  file.setMaxFields( mMaxFields );
+  return file.isValid();
 }
 
 
@@ -402,8 +395,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   tblSample->clear();
   tblSample->setColumnCount( 0 );
   tblSample->setRowCount( 0 );
-
-  if ( !loadDelimitedFileDefinition() )
+  QgsDelimitedTextFile mFile;
+  if ( !loadDelimitedFileDefinition( mFile ) )
     return;
 
   // Put a sample set of records into the sample box.  Also while scanning assess suitability of
@@ -420,7 +413,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   while ( counter < mExampleRowCount )
   {
-    const QgsDelimitedTextFile::Status status = mFile->nextRecord( values );
+    const QgsDelimitedTextFile::Status status = mFile.nextRecord( values );
     if ( status == QgsDelimitedTextFile::RecordEOF )
       break;
     if ( status != QgsDelimitedTextFile::RecordOk )
@@ -495,7 +488,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   }
 
 
-  QStringList fieldList = mFile->fieldNames();
+  QStringList fieldList = mFile.fieldNames();
 
   if ( isEmpty.size() < fieldList.size() )
   {
@@ -544,7 +537,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // Run the scan in a separate thread
   cancelScanTask();
 
-  mScanTask = new QgsDelimitedTextFileScanTask( url( /* skip overridden types */ true ) );
+  mScanTask = new QgsDelimitedTextFileScanTask( url( mFile, /* skip overridden types */ true ) );
   mCancelButton->show();
   connect( mScanTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [=]( const QgsFields &fields ) {
     updateFieldTypes( fields );
@@ -722,7 +715,6 @@ void QgsDelimitedTextSourceSelect::updateFileName()
     settings.setValue( mSettingsKey + "/text_path", finfo.path() );
   }
 
-  txtLayerName->setText( finfo.completeBaseName() );
   loadSettingsForFile( filename );
   updateFieldsAndEnable();
 }
@@ -748,15 +740,12 @@ bool QgsDelimitedTextSourceSelect::validate()
   {
     message = tr( "File %1 does not exist" ).arg( mFileWidget->filePath() );
   }
-  else if ( txtLayerName->text().isEmpty() )
-  {
-    message = tr( "Please enter a layer name" );
-  }
   else if ( delimiterChars->isChecked() && selectedChars().isEmpty() )
   {
     message = tr( "At least one delimiter character must be specified" );
   }
 
+  QgsDelimitedTextFile mFile;
   if ( message.isEmpty() && delimiterRegexp->isChecked() )
   {
     const QRegularExpression re( txtDelimiterRegexp->text() );
@@ -775,7 +764,7 @@ bool QgsDelimitedTextSourceSelect::validate()
     // continue...
   }
   // Hopefully won't hit this none-specific message, but just in case ...
-  else if ( !mFile->isValid() )
+  else if ( !loadDelimitedFileDefinition( mFile ) )
   {
     message = tr( "Definition of filename and delimiters is not valid" );
   }
@@ -872,9 +861,9 @@ void QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility()
   textLabelCrs->setVisible( !geomTypeNone->isChecked() );
 }
 
-QString QgsDelimitedTextSourceSelect::url( bool skipOverriddenTypes )
+QString QgsDelimitedTextSourceSelect::url( QgsDelimitedTextFile &file, bool skipOverriddenTypes )
 {
-  QUrl url = mFile->url();
+  QUrl url = file.url();
   QUrlQuery query( url );
 
   query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
@@ -980,7 +969,7 @@ void QgsDelimitedTextSourceSelect::cancelScanTask()
   if ( mScanTask )
   {
     mScanTask->cancel();
-    mScanTask = nullptr;
+    mScanTask.clear();
   }
 }
 

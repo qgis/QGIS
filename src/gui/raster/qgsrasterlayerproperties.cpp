@@ -816,6 +816,9 @@ void QgsRasterLayerProperties::sync()
     mInvertColorsCheck->setChecked( hueSaturationFilter->invertColors() );
   }
 
+  // Resampling
+  mResamplingUtils.refreshWidgetsFromLayer();
+
   mRefreshSettingsWidget->syncToLayer();
 
   QgsDebugMsgLevel( QStringLiteral( "populate general tab" ), 3 );
@@ -1091,7 +1094,7 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
 {
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
 
-  std::unique_ptr<QgsRasterBlockFeedback> feedback( new QgsRasterBlockFeedback() );
+  auto feedback = std::make_unique<QgsRasterBlockFeedback>();
 
   connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mPyramidProgress, &QProgressBar::setValue );
   //

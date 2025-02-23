@@ -990,7 +990,7 @@ void TestQgsMeshLayer::test_path()
   datasetFile.copy( dir1.filePath( QStringLiteral( "dataseGroup.dat" ) ) );
 
   QString meshLayerUri = QStringLiteral( "2DM:\"" ) + dir1.filePath( QStringLiteral( "quad_and_triangle.2dm" ) ) + QStringLiteral( "\"" );
-  std::unique_ptr<QgsMeshLayer> meshLayer = std::make_unique<QgsMeshLayer>(
+  auto meshLayer = std::make_unique<QgsMeshLayer>(
     meshLayerUri,
     QStringLiteral( "mesh layer" ),
     QStringLiteral( "mdal" )
@@ -1473,7 +1473,7 @@ void TestQgsMeshLayer::test_dataset_group_item_tree_item()
   const QgsReadWriteContext context;
   const QDomElement rootElement = rootItem->writeXml( doc, context );
 
-  std::unique_ptr<QgsMeshDatasetGroupTreeItem> otherRoot( new QgsMeshDatasetGroupTreeItem( rootElement, context ) );
+  auto otherRoot = std::make_unique<QgsMeshDatasetGroupTreeItem>( rootElement, context );
 
   for ( int i = 0; i < rootItem->totalChildCount(); ++i )
     QCOMPARE( otherRoot->childFromDatasetGroupIndex( i )->name(), names.at( i ) );
@@ -1640,7 +1640,7 @@ void TestQgsMeshLayer::test_memory_dataset_group_1d()
 
 void TestQgsMeshLayer::test_memoryproviderdataset_invalid_values()
 {
-  std::unique_ptr<QgsMeshLayer> memoryLayer = std::make_unique<QgsMeshLayer>( readFile( "/quad_and_triangle.txt" ), "Triangle and Quad Memory", "mesh_memory" );
+  auto memoryLayer = std::make_unique<QgsMeshLayer>( readFile( "/quad_and_triangle.txt" ), "Triangle and Quad Memory", "mesh_memory" );
   memoryLayer->addDatasets( readFile( "/quad_and_triangle_face_scalar_invalid_values.txt" ) );
   memoryLayer->addDatasets( readFile( "/quad_and_triangle_face_vector_invalid_values.txt" ) );
 
@@ -1965,7 +1965,7 @@ void TestQgsMeshLayer::testSetDataSourceRetainStyle()
   const QString uri( mDataDir + "/quad_and_triangle.2dm" );
 
   // start with a layer with valid path
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "Triangle and Quad MDAL", "mdal" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "Triangle and Quad MDAL", "mdal" );
   QVERIFY( layer->isValid() );
 
   // ensure a default renderer is set automatically
@@ -2022,7 +2022,7 @@ void TestQgsMeshLayer::keepDatasetIndexConsistency()
 
   QFile::copy( uri_1, uri );
   // start with a layer with valid path
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->datasetGroupCount(), 4 );
 
@@ -2113,8 +2113,8 @@ void TestQgsMeshLayer::symbologyConsistencyWithName()
   const QString uri_1( mDataDir + QStringLiteral( "/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water level", "Depth" and "Velocity"
   const QString uri_2( mDataDir + QStringLiteral( "/mesh_z_ws_d.nc" ) );     //exactly the same mesh except without "Velocity"
 
-  std::unique_ptr<QgsMeshLayer> layer_1 = std::make_unique<QgsMeshLayer>( uri_1, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
-  std::unique_ptr<QgsMeshLayer> layer_2 = std::make_unique<QgsMeshLayer>( uri_2, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  auto layer_1 = std::make_unique<QgsMeshLayer>( uri_1, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  auto layer_2 = std::make_unique<QgsMeshLayer>( uri_2, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
 
   QMap<QString, int> nameToindex_1;
   QList<int> indexes = layer_1->datasetGroupsIndexes();
@@ -2288,7 +2288,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
 
   QFile::copy( uri_1, uri );
   // start with a layer with valid path
-  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
 
   QgsMeshLayerTemporalProperties *temporalProperties = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() );

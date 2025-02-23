@@ -35,6 +35,8 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsLayerTreeGroup,
     QgsLayerTreeNode,
+    QgsLayerTreeRegistryBridge,
+    QgsProject,
 )
 from qgis.utils import iface
 
@@ -203,7 +205,9 @@ def handleAlgorithmResults(
     )
     i = 0
 
-    added_layers: list[tuple[Optional[QgsLayerTreeGroup], QgsLayerTreeLayer]] = []
+    added_layers: list[
+        tuple[QgsMapLayer, Optional[QgsLayerTreeGroup], QgsLayerTreeLayer, QgsProject]
+    ] = []
     layers_to_post_process: list[
         tuple[QgsMapLayer, QgsProcessingContext.LayerDetails]
     ] = []
@@ -237,12 +241,17 @@ def handleAlgorithmResults(
                 # output layer already exists in the destination project
                 owned_map_layer = context.temporaryLayerStore().takeMapLayer(layer)
                 if owned_map_layer:
-                    details.project.addMapLayer(owned_map_layer, False)
-
                     # we don't add the layer to the tree yet -- that's done
                     # later, after we've sorted all added layers
                     layer_tree_layer = create_layer_tree_layer(owned_map_layer, details)
-                    added_layers.append((results_group, layer_tree_layer))
+                    added_layers.append(
+                        (
+                            owned_map_layer,
+                            results_group,
+                            layer_tree_layer,
+                            details.project,
+                        )
+                    )
 
                 if details.postProcessor():
                     # we defer calling the postProcessor set in the context
@@ -268,7 +277,7 @@ def handleAlgorithmResults(
 
     # sort added layer tree layers
     sorted_layer_tree_layers = sorted(
-        added_layers, key=lambda x: x[1].customProperty(SORT_ORDER_CUSTOM_PROPERTY, 0)
+        added_layers, key=lambda x: x[2].customProperty(SORT_ORDER_CUSTOM_PROPERTY, 0)
     )
     have_set_active_layer = False
 
@@ -277,10 +286,21 @@ def handleAlgorithmResults(
         current_selected_node = iface.layerTreeView().currentNode()
         iface.layerTreeView().setUpdatesEnabled(False)
 
-    for group, layer_node in sorted_layer_tree_layers:
+    for layer, group, layer_node, project in sorted_layer_tree_layers:
+        if not project:
+            project = context.project()
+
+        # store the current insertion point to restore it later
+        previous_insertion_point = None
+        if project:
+            previous_insertion_point = (
+                project.layerTreeRegistryBridge().layerInsertionPoint()
+            )
+
         layer_node.removeCustomProperty(SORT_ORDER_CUSTOM_PROPERTY)
+        insertion_point: Optional[QgsLayerTreeRegistryBridge.InsertionPoint] = None
         if group is not None:
-            group.insertChildNode(0, layer_node)
+            insertion_point = QgsLayerTreeRegistryBridge.InsertionPoint(group, 0)
         else:
             # no destination group for this layer, so should be placed
             # above the current layer
@@ -289,15 +309,32 @@ def handleAlgorithmResults(
                 current_node_index = current_node_group.children().index(
                     current_selected_node
                 )
-                current_node_group.insertChildNode(current_node_index, layer_node)
+                insertion_point = QgsLayerTreeRegistryBridge.InsertionPoint(
+                    current_node_group, current_node_index
+                )
             elif isinstance(current_selected_node, QgsLayerTreeGroup):
-                current_selected_node.insertChildNode(0, layer_node)
-            elif context.project():
-                context.project().layerTreeRoot().insertChildNode(0, layer_node)
+                insertion_point = QgsLayerTreeRegistryBridge.InsertionPoint(
+                    current_selected_node, 0
+                )
+            elif project:
+                insertion_point = QgsLayerTreeRegistryBridge.InsertionPoint(
+                    project.layerTreeRoot(), 0
+                )
+
+        if project and insertion_point:
+            project.layerTreeRegistryBridge().setLayerInsertionPoint(insertion_point)
+
+        project.addMapLayer(layer_node.layer())
 
         if not have_set_active_layer and iface is not None:
             iface.setActiveLayer(layer_node.layer())
             have_set_active_layer = True
+
+        # reset to the previous insertion point
+        if project:
+            project.layerTreeRegistryBridge().setLayerInsertionPoint(
+                previous_insertion_point
+            )
 
     # all layers have been added to the layer tree, so safe to call
     # postProcessors now

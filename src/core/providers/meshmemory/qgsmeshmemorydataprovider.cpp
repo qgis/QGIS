@@ -182,7 +182,7 @@ bool QgsMeshMemoryDataProvider::splitDatasetSections( const QString &uri, QgsMes
   {
     if ( !success )
       break;
-    std::shared_ptr<QgsMeshMemoryDataset> dataset = std::make_shared<QgsMeshMemoryDataset>();
+    auto dataset = std::make_shared<QgsMeshMemoryDataset>();
     success = addDatasetValues( sections[i], dataset, datasetGroup.isScalar() );
     if ( success )
       success = checkDatasetValidity( dataset, datasetGroup.dataType() );

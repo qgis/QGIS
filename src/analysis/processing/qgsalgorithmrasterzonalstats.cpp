@@ -55,7 +55,7 @@ void QgsRasterLayerZonalStatsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "ZONES" ), QObject::tr( "Zones layer" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "ZONES_BAND" ), QObject::tr( "Zones band number" ), 1, QStringLiteral( "ZONES" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterEnum> refParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ), QStringList() << QObject::tr( "Input layer" ) << QObject::tr( "Zones layer" ), false, 0 );
+  auto refParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ), QStringList() << QObject::tr( "Input layer" ) << QObject::tr( "Zones layer" ), false, 0 );
   refParam->setFlags( refParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( refParam.release() );
 

@@ -384,6 +384,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   bool useGeometryColumns = QgsMssqlConnection::geometryColumnsOnly( cmbConnections->currentText() );
   const bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
   const bool estimateMetadata = QgsMssqlConnection::useEstimatedMetadata( cmbConnections->currentText() );
+  const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
 
   mConnInfo = "dbname='" + database + '\'';
   if ( !host.isEmpty() )
@@ -455,7 +456,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       {
         if ( type == QLatin1String( "GEOMETRY" ) || type.isNull() || srid.isEmpty() )
         {
-          addSearchGeometryColumn( service, host, database, username, password, layer, estimateMetadata );
+          addSearchGeometryColumn( service, host, database, username, password, layer, estimateMetadata, disableInvalidGeometryHandling );
           type.clear();
           srid.clear();
         }
@@ -547,7 +548,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsMssqlTableModel::DbtmTable ) )->text();
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
+  auto vlayer = std::make_unique<QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -562,12 +563,12 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   }
 }
 
-void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata )
+void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata, bool disableInvalidGeometryHandling )
 {
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
   {
-    mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( service, host, database, username, password, estimateMetadata );
+    mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( service, host, database, username, password, estimateMetadata, disableInvalidGeometryHandling );
 
     connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType, this, &QgsMssqlSourceSelect::setLayerType );
     connect( this, &QgsMssqlSourceSelect::addGeometryColumn, mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );

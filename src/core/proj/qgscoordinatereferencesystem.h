@@ -48,23 +48,12 @@ class QgsProjOperation;
 struct PJconsts;
 typedef struct PJconsts PJ;
 
-#if PROJ_VERSION_MAJOR>=8
 struct pj_ctx;
 typedef struct pj_ctx PJ_CONTEXT;
-#else
-struct projCtx_t;
-typedef struct projCtx_t PJ_CONTEXT;
-#endif
 #endif
 
 // forward declaration for sqlite3
 typedef struct sqlite3 sqlite3 SIP_SKIP;
-
-#ifdef DEBUG
-typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH SIP_SKIP;
-#else
-typedef void *OGRSpatialReferenceH SIP_SKIP;
-#endif
 
 class QgsCoordinateReferenceSystem;
 typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SKIP;
@@ -776,24 +765,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \note In the case of a compound crs, this method will always return the datum ensemble for the horizontal component.
      *
-     * \warning This method requires PROJ 8.0 or later
-     *
-     * \throws QgsNotSupportedException on QGIS builds based on PROJ 7 or earlier.
-     *
      * \since QGIS 3.20
      */
-    QgsDatumEnsemble datumEnsemble() const SIP_THROW( QgsNotSupportedException );
+    QgsDatumEnsemble datumEnsemble() const;
 
     /**
      * Attempts to retrieve the name of the celestial body associated with the CRS (e.g. "Earth").
      *
-     * \warning This method requires PROJ 8.1 or later
-     *
-     * \throws QgsNotSupportedException on QGIS builds based on PROJ 8.0 or earlier.
-     *
      * \since QGIS 3.20
      */
-    QString celestialBodyName() const SIP_THROW( QgsNotSupportedException );
+    QString celestialBodyName() const;
 
     /**
      * Sets the coordinate \a epoch, as a decimal year.

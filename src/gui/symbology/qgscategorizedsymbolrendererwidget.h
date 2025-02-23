@@ -165,6 +165,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void deleteCategories();
     void deleteAllCategories();
 
+    /**
+     * Deletes unused categories from the widget which are not used by the layer renderer.
+     */
+    void deleteUnusedCategories();
+
     void showSymbolLevels();
 
     void rowsMoved();
@@ -234,6 +239,13 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void changeCategorySymbol();
     //! Applies current symbol to selected categories, or to all categories if none is selected
     void applyChangeToSymbol();
+
+    /**
+     * Returns the list of unique values in the current widget's layer for attribute name \a attrName.
+     *
+     * Called by addCategories() and deleteUnusedCategories()
+     */
+    QList<QVariant> layerUniqueValues( const QString &attrName );
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();

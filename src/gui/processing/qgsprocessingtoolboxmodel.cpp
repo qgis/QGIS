@@ -146,7 +146,7 @@ void QgsProcessingToolboxModel::rebuild()
 
   if ( mRecentLog )
   {
-    std::unique_ptr<QgsProcessingToolboxModelRecentNode> recentNode = std::make_unique<QgsProcessingToolboxModelRecentNode>();
+    auto recentNode = std::make_unique<QgsProcessingToolboxModelRecentNode>();
     // cppcheck-suppress danglingLifetime
     mRecentNode = recentNode.get();
     mRootNode->addChildNode( recentNode.release() );
@@ -155,7 +155,7 @@ void QgsProcessingToolboxModel::rebuild()
 
   if ( mFavoriteManager )
   {
-    std::unique_ptr<QgsProcessingToolboxModelFavoriteNode> favoriteNode = std::make_unique<QgsProcessingToolboxModelFavoriteNode>();
+    auto favoriteNode = std::make_unique<QgsProcessingToolboxModelFavoriteNode>();
     // cppcheck-suppress danglingLifetime
     mFavoriteNode = favoriteNode.get();
     mRootNode->addChildNode( favoriteNode.release() );
@@ -218,7 +218,7 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
   for ( const QgsProcessingAlgorithm *algorithm : std::as_const( recentAlgorithms ) )
   {
-    std::unique_ptr<QgsProcessingToolboxModelAlgorithmNode> algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
+    auto algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
     mRecentNode->addChildNode( algorithmNode.release() );
   }
 
@@ -278,7 +278,7 @@ void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
 
   for ( const QgsProcessingAlgorithm *algorithm : std::as_const( favoriteAlgorithms ) )
   {
-    std::unique_ptr<QgsProcessingToolboxModelAlgorithmNode> algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
+    auto algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
     mFavoriteNode->addChildNode( algorithmNode.release() );
   }
 
@@ -353,7 +353,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   QgsProcessingToolboxModelNode *parentNode = nullptr;
   if ( !isTopLevelProvider( provider->id() ) )
   {
-    std::unique_ptr<QgsProcessingToolboxModelProviderNode> node = std::make_unique<QgsProcessingToolboxModelProviderNode>( provider );
+    auto node = std::make_unique<QgsProcessingToolboxModelProviderNode>( provider );
     parentNode = node.get();
     mRootNode->addChildNode( node.release() );
   }
@@ -365,7 +365,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   const QList<const QgsProcessingAlgorithm *> algorithms = provider->algorithms();
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
-    std::unique_ptr<QgsProcessingToolboxModelAlgorithmNode> algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
+    auto algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
 
     const QString groupId = algorithm->groupId();
     if ( !groupId.isEmpty() )
@@ -666,7 +666,7 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
     QByteArray encodedData;
     QDataStream stream( &encodedData, QIODevice::WriteOnly | QIODevice::Truncate );
 
-    std::unique_ptr<QMimeData> mimeData = std::make_unique<QMimeData>();
+    auto mimeData = std::make_unique<QMimeData>();
     const QgsProcessingAlgorithm *algorithm = algorithmForIndex( indexes.at( 0 ) );
     if ( algorithm )
     {

@@ -88,9 +88,9 @@ Append new error message.
 
     bool isEmpty() const;
 %Docstring
-Test if any error is set.
+Test if no error is set.
 
-:return: ``True`` if contains error
+:return: ``False`` if contains error
 %End
 
     QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;

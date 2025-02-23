@@ -49,32 +49,39 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   }
   else if ( QgsArcGisRestConnectionItem *connectionItem = qobject_cast<QgsArcGisRestConnectionItem *>( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [connectionItem] { refreshConnection( connectionItem ); } );
-    menu->addAction( actionRefresh );
-
-    menu->addSeparator();
-
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsArcGisRestConnectionItem *> arcgisConnectionItems = QgsDataItem::filteredItems<QgsArcGisRestConnectionItem>( selection );
+
+    if ( arcgisConnectionItems.size() == 1 )
+    {
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, this, [connectionItem] { refreshConnection( connectionItem ); } );
+      menu->addAction( actionRefresh );
+
+      menu->addSeparator();
+
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( arcgisConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [arcgisConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( arcgisConnectionItems, []( const QString &connectionName ) { QgsArcGisConnectionSettings::sTreeConnectionArcgis->deleteItem( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
 
-    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [=] {
-      QDesktopServices::openUrl( QUrl( connectionItem->url() ) );
-    } );
-    menu->addAction( viewInfo );
+    if ( arcgisConnectionItems.size() == 1 )
+    {
+      QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+      connect( viewInfo, &QAction::triggered, this, [=] {
+        QDesktopServices::openUrl( QUrl( connectionItem->url() ) );
+      } );
+      menu->addAction( viewInfo );
+    }
   }
   else if ( QgsArcGisRestFolderItem *folderItem = qobject_cast<QgsArcGisRestFolderItem *>( item ) )
   {
@@ -240,7 +247,7 @@ void QgsArcGisRestDataItemGuiProvider::addFilteredLayer( const QgsMimeDataUtils:
     const QString sql = w->expressionText();
     ds.setSql( sql );
 
-    std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( ds.uri( false ), uri.name, QStringLiteral( "arcgisfeatureserver" ) );
+    auto layer = std::make_unique<QgsVectorLayer>( ds.uri( false ), uri.name, QStringLiteral( "arcgisfeatureserver" ) );
     QgsProject::instance()->addMapLayer( layer.release() );
   }
 }

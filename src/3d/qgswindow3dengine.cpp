@@ -99,7 +99,7 @@ void QgsWindow3DEngine::setSize( QSize s )
 
   mMapCanvas3D->setWidth( mSize.width() );
   mMapCanvas3D->setHeight( mSize.height() );
-  mFrameGraph->setSize( mSize );
+  mFrameGraph->setSize( mSize * mMapCanvas3D->devicePixelRatio() );
   camera()->setAspectRatio( float( mSize.width() ) / float( mSize.height() ) );
   emit sizeChanged();
 }

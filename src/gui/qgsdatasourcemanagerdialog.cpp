@@ -302,7 +302,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   connect( dlg, &QgsAbstractDataSourceWidget::replaceVectorLayer, this, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer );
   // Common
   connect( dlg, &QgsAbstractDataSourceWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
-  connect( this, &QgsDataSourceManagerDialog::providerDialogsRefreshRequested, dlg, &QgsAbstractDataSourceWidget::refresh );
+  connect( this, &QgsDataSourceManagerDialog::providerDialogsRefreshRequested, dlg, &QgsAbstractDataSourceWidget::refresh, Qt::ConnectionType::QueuedConnection );
 
   // Message
   connect( dlg, &QgsAbstractDataSourceWidget::pushMessage, this, [=]( const QString &title, const QString &message, const Qgis::MessageLevel level ) {

@@ -244,7 +244,7 @@ QgsLabelingEngineRuleMinimumDistanceLabelToFeature::~QgsLabelingEngineRuleMinimu
 
 QgsLabelingEngineRuleMinimumDistanceLabelToFeature *QgsLabelingEngineRuleMinimumDistanceLabelToFeature::clone() const
 {
-  std::unique_ptr< QgsLabelingEngineRuleMinimumDistanceLabelToFeature> res = std::make_unique< QgsLabelingEngineRuleMinimumDistanceLabelToFeature >();
+  auto res = std::make_unique< QgsLabelingEngineRuleMinimumDistanceLabelToFeature >();
   copyCommonProperties( res.get() );
   return res.release();
 }
@@ -288,7 +288,7 @@ QgsLabelingEngineRuleMaximumDistanceLabelToFeature::~QgsLabelingEngineRuleMaximu
 
 QgsLabelingEngineRuleMaximumDistanceLabelToFeature *QgsLabelingEngineRuleMaximumDistanceLabelToFeature::clone() const
 {
-  std::unique_ptr< QgsLabelingEngineRuleMaximumDistanceLabelToFeature > res = std::make_unique< QgsLabelingEngineRuleMaximumDistanceLabelToFeature >();
+  auto res = std::make_unique< QgsLabelingEngineRuleMaximumDistanceLabelToFeature >();
   copyCommonProperties( res.get() );
   return res.release();
 }
@@ -328,7 +328,7 @@ QgsLabelingEngineRuleMinimumDistanceLabelToLabel::~QgsLabelingEngineRuleMinimumD
 
 QgsLabelingEngineRuleMinimumDistanceLabelToLabel *QgsLabelingEngineRuleMinimumDistanceLabelToLabel::clone() const
 {
-  std::unique_ptr< QgsLabelingEngineRuleMinimumDistanceLabelToLabel> res = std::make_unique< QgsLabelingEngineRuleMinimumDistanceLabelToLabel >();
+  auto res = std::make_unique< QgsLabelingEngineRuleMinimumDistanceLabelToLabel >();
   copyCommonProperties( res.get() );
   res->mLabeledLayer = mLabeledLayer;
   res->mTargetLayer = mTargetLayer;
@@ -496,7 +496,7 @@ QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::~QgsLabelingEngineRuleAvoidLa
 
 QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::clone() const
 {
-  std::unique_ptr< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature> res = std::make_unique< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature >();
+  auto res = std::make_unique< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature >();
   copyCommonProperties( res.get() );
   res->mLabeledLayer = mLabeledLayer;
   res->mTargetLayer = mTargetLayer;

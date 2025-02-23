@@ -1,0 +1,5 @@
+{
+  "name": "CRS",
+  "type": "group",
+  "description": "This group contains functions to operate on coordinate reference system objects."
+}

@@ -2720,8 +2720,8 @@ void QgsLayoutDesignerDialog::printAtlas()
   printSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Printing maps…" ), tr( "Abort" ), 0, 100, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Printing maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Printing Atlas" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
@@ -2910,8 +2910,8 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3056,8 +3056,8 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3262,8 +3262,8 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
 
@@ -3383,8 +3383,8 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering report…" ), tr( "Abort" ), 0, 0, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering report…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3492,8 +3492,8 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3613,8 +3613,8 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   pdfSettings.rasterizeWholeImage = rasterize;
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
@@ -3706,8 +3706,8 @@ void QgsLayoutDesignerDialog::printReport()
   printSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   QString error;
-  std::unique_ptr<QgsFeedback> feedback = std::make_unique<QgsFeedback>();
-  std::unique_ptr<QProgressDialog> progressDialog = std::make_unique<QProgressDialog>( tr( "Printing maps…" ), tr( "Abort" ), 0, 0, this );
+  auto feedback = std::make_unique<QgsFeedback>();
+  auto progressDialog = std::make_unique<QProgressDialog>( tr( "Printing maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Printing Report" ) );
 
   QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
@@ -3998,7 +3998,7 @@ void QgsLayoutDesignerDialog::initializeRegistry()
 {
   sInitializedRegistry = true;
   auto createPageWidget = ( []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
-    std::unique_ptr<QgsLayoutPagePropertiesWidget> newWidget = std::make_unique<QgsLayoutPagePropertiesWidget>( nullptr, item );
+    auto newWidget = std::make_unique<QgsLayoutPagePropertiesWidget>( nullptr, item );
     return newWidget.release();
   } );
 
@@ -4330,7 +4330,6 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool disableRasterTiles = false;
   bool simplify = true;
   bool geospatialPdf = false;
-  bool useOgcBestPracticeFormat = false;
   bool losslessImages = false;
   QStringList exportThemes;
   QStringList geospatialPdfLayerOrder;
@@ -4344,7 +4343,6 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
     simplify = mLayout->customProperty( QStringLiteral( "pdfSimplify" ), 1 ).toBool();
     geospatialPdf = mLayout->customProperty( QStringLiteral( "pdfCreateGeoPdf" ), 0 ).toBool();
-    useOgcBestPracticeFormat = mLayout->customProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), 0 ).toBool();
     const QString themes = mLayout->customProperty( QStringLiteral( "pdfExportThemes" ) ).toString();
     if ( !themes.isEmpty() )
       exportThemes = themes.split( QStringLiteral( "~~~" ) );
@@ -4396,7 +4394,6 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setRasterTilingDisabled( disableRasterTiles );
   dialog.setGeometriesSimplified( simplify );
   dialog.setExportGeospatialPdf( geospatialPdf );
-  dialog.setUseOgcBestPracticeFormat( useOgcBestPracticeFormat );
   dialog.setExportThemes( exportThemes );
   dialog.setLosslessImageExport( losslessImages );
   dialog.setOpenAfterExporting( QgsLayoutExporter::settingOpenAfterExportingPdf->value() );
@@ -4411,7 +4408,6 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   simplify = dialog.geometriesSimplified();
   Qgis::TextRenderFormat textRenderFormat = dialog.textRenderFormat();
   geospatialPdf = dialog.exportGeospatialPdf();
-  useOgcBestPracticeFormat = dialog.useOgcBestPracticeFormat();
   exportThemes = dialog.exportThemes();
   geospatialPdfLayerOrder = dialog.geospatialPdfLayerOrder();
   losslessImages = dialog.losslessImageExport();
@@ -4427,7 +4423,6 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfTextFormat" ), static_cast<int>( textRenderFormat ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfSimplify" ), simplify ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfCreateGeoPdf" ), geospatialPdf ? 1 : 0 );
-    mLayout->setCustomProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), useOgcBestPracticeFormat ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QLatin1String( "~~~" ) ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geospatialPdfLayerOrder.join( QLatin1String( "~~~" ) ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfGroupOrder" ), dialog.geospatialPdfGroupOrder() );
@@ -4440,8 +4435,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
   settings.writeGeoPdf = geospatialPdf;
-  settings.useOgcBestPracticeFormatGeoreferencing = useOgcBestPracticeFormat;
-  settings.useIso32000ExtensionFormatGeoreferencing = !useOgcBestPracticeFormat;
+  settings.useIso32000ExtensionFormatGeoreferencing = true;
   settings.exportThemes = exportThemes;
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 

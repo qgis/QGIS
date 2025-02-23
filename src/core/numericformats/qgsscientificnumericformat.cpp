@@ -50,7 +50,7 @@ QgsNumericFormat *QgsScientificNumericFormat::clone() const
 
 QgsNumericFormat *QgsScientificNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsScientificNumericFormat > res = std::make_unique< QgsScientificNumericFormat >();
+  auto res = std::make_unique< QgsScientificNumericFormat >();
   res->setConfiguration( configuration, context );
   res->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
   return res.release();

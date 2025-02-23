@@ -68,13 +68,13 @@ class APP_EXPORT QgsImageWarper
      * \param georefTransform specifies the warp transformation which should be applied to \a input.
      * \param resampling specifies image resampling algorithm to use.
      * \param useZeroAsTrans specifies whether to mark transparent areas with a value of "zero".
-     * \param compression image compression method
+     * \param options raster creation options
      * \param crs output file CRS
      * \param feedback optional feedback object
      * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      */
-    Result warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX = 0.0, double destResY = 0.0 );
+    Result warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX = 0.0, double destResY = 0.0 );
 
   private:
     struct TransformChain
@@ -101,7 +101,7 @@ class APP_EXPORT QgsImageWarper
 
     bool openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling, const GDALTransformerFunc &pfnTransform, gdal::dataset_unique_ptr &hSrcDS, gdal::warp_options_unique_ptr &psWarpOptions ) const;
 
-    bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs );
+    bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs );
 
     //! \brief GDAL progress callback, used to display warping progress via a QProgressDialog
     static int CPL_STDCALL updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg );
@@ -123,12 +123,12 @@ class QgsImageWarperTask : public QgsTask
      * \param georefTransform specifies the warp transformation which should be applied to \a input.
      * \param resampling specifies image resampling algorithm to use.
      * \param useZeroAsTrans specifies whether to mark transparent areas with a value of "zero".
-     * \param compression image compression method
+     * \param options raster creation options
      * \param crs output file CRS
      * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      */
-    QgsImageWarperTask( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, QgsImageWarper::ResamplingMethod resampling, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs, double destResX = 0.0, double destResY = 0.0 );
+    QgsImageWarperTask( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, QgsImageWarper::ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, double destResX = 0.0, double destResY = 0.0 );
 
     void cancel() override;
 
@@ -146,7 +146,7 @@ class QgsImageWarperTask : public QgsTask
     std::unique_ptr<QgsGeorefTransform> mTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod = QgsImageWarper::ResamplingMethod::Bilinear;
     bool mUseZeroAsTrans = false;
-    QString mCompression;
+    QStringList mCreationOptions;
     QgsCoordinateReferenceSystem mDestinationCrs;
     double mDestinationResX = 0;
     double mDestinationResY = 0;

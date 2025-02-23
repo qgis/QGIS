@@ -14,10 +14,12 @@ case $SCRIPT_DIR in
         ;;
 esac
 
+SRC_DIR=${1:-${SCRIPT_DIR}/../src}
+
 LOG_FILE=/tmp/cppcheck_qgis.txt
 
 rm -f ${LOG_FILE}
-echo "Checking ${SCRIPT_DIR}/../src ..."
+echo "Checking ${SRC_DIR} ..."
 
 # qgsgcptransformer.cpp causes an effective hang on newer cppcheck!
 
@@ -51,7 +53,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DBUILTIN_UNREACHABLE="__builtin_unreachable();" \
          -i src/analysis/georeferencing/qgsgcptransformer.cpp \
          -j $(nproc) \
-         ${SCRIPT_DIR}/../src \
+         ${SRC_DIR} \
          >>${LOG_FILE} 2>&1 &
 
 PID=$!

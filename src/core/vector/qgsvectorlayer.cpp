@@ -1366,12 +1366,9 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
 
   bool success = mEditBuffer->addFeature( feature );
 
-  if ( success )
+  if ( success && mJoinBuffer->containsJoins() )
   {
-    updateExtents();
-
-    if ( mJoinBuffer->containsJoins() )
-      success = mJoinBuffer->addFeature( feature );
+    success = mJoinBuffer->addFeature( feature );
   }
 
   return success;
@@ -3820,14 +3817,7 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteCont
   if ( !mEditBuffer )
     return false;
 
-  bool res = deleteFeatureCascade( fid, context );
-
-  if ( res )
-  {
-    updateExtents();
-  }
-
-  return res;
+  return deleteFeatureCascade( fid, context );
 }
 
 bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context )
@@ -4407,7 +4397,7 @@ void QgsVectorLayer::destroyEditCommand()
   // and delete, so we add a dummy obsolete command to force this to occur.
   // Pushing the new command deletes the destroyed one, and since the new
   // command is obsolete it's automatically deleted by the undo stack.
-  std::unique_ptr< QUndoCommand > command = std::make_unique< QUndoCommand >();
+  auto command = std::make_unique< QUndoCommand >();
   command->setObsolete( true );
   undoStack()->push( command.release() );
 
@@ -5080,7 +5070,7 @@ void QgsVectorLayer::createEditBuffer()
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::invalidateSymbolCountedFlag );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::layerModified ); // TODO[MD]: necessary?
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
-  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsVectorLayer::featureAdded );
+  connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsVectorLayer::onFeatureAdded );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureDeleted, this, &QgsVectorLayer::onFeatureDeleted );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::geometryChanged, this, &QgsVectorLayer::geometryChanged );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::attributeValueChanged, this, &QgsVectorLayer::attributeValueChanged );
@@ -5966,9 +5956,20 @@ void QgsVectorLayer::onJoinedFieldsChanged()
   updateFields();
 }
 
+void QgsVectorLayer::onFeatureAdded( QgsFeatureId fid )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  updateExtents();
+
+  emit featureAdded( fid );
+}
+
 void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  updateExtents();
 
   if ( mEditCommandActive  || mCommitChangesActive )
   {

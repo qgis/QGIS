@@ -460,7 +460,7 @@ bool QgsAttributeForm::saveEdits( QString *error )
           n++;
         }
 
-        std::unique_ptr<QgsVectorLayerToolsContext> context = std::make_unique<QgsVectorLayerToolsContext>();
+        auto context = std::make_unique<QgsVectorLayerToolsContext>();
         QgsExpressionContext expressionContext = createExpressionContext( updatedFeature );
         context->setExpressionContext( &expressionContext );
         success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues, false, context.get() );

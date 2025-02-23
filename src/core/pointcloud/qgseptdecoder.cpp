@@ -75,11 +75,11 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
   }
 
   int skippedPoints = 0;
-  std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
-        count,
-        requestedAttributes,
-        data, scale, offset
-      );
+  auto block = std::make_unique< QgsPointCloudBlock >(
+                 count,
+                 requestedAttributes,
+                 data, scale, offset
+               );
 
   const bool filterIsValid = filterExpression.isValid();
   if ( !filterExpression.prepare( block.get() ) && filterIsValid )

@@ -457,7 +457,7 @@ void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
       if ( p == sourcePage )
         continue;
 
-      std::unique_ptr< QgsLayoutGuide> newGuide( new QgsLayoutGuide( guide->orientation(), guide->position(), mPageCollection->page( p ) ) );
+      auto newGuide = std::make_unique<QgsLayoutGuide>( guide->orientation(), guide->position(), mPageCollection->page( p ) );
       newGuide->setLayout( mLayout );
       if ( newGuide->item()->isVisible() )
       {
@@ -579,7 +579,7 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
     double pos = element.attribute( QStringLiteral( "position" ), QStringLiteral( "0" ) ).toDouble();
     Qgis::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
     int page = element.attribute( QStringLiteral( "page" ), QStringLiteral( "0" ) ).toInt();
-    std::unique_ptr< QgsLayoutGuide > guide( new QgsLayoutGuide( orientation, QgsLayoutMeasurement( pos, unit ), mPageCollection->page( page ) ) );
+    auto guide = std::make_unique<QgsLayoutGuide>( orientation, QgsLayoutMeasurement( pos, unit ), mPageCollection->page( page ) );
     guide->update();
     addGuide( guide.release() );
   }

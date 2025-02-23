@@ -214,42 +214,47 @@ namespace QgsWms
        * Converts the parameter into a list of strings and keeps empty parts
        * Default style value is an empty string
        * \param delimiter The character used for delimiting
+       * \param skipEmptyParts for splitting
        * \returns A list of strings
        * \since QGIS 3.8
        */
-      QStringList toStyleList( const char delimiter = ',' ) const;
+      QStringList toStyleList( const char delimiter = ',', bool skipEmptyParts = false ) const;
 
       /**
        * Converts the parameter into a list of geometries.
        * \param delimiter The character delimiting string geometries
+       * \param skipEmptyParts for splitting
        * \returns A list of geometries
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<QgsGeometry> toGeomList( const char delimiter = ',' ) const;
+      QList<QgsGeometry> toGeomList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a list of integers.
        * \param delimiter The character delimiting string integers
+       * \param skipEmptyParts for splitting
        * \returns A list of integers
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<int> toIntList( const char delimiter = ',' ) const;
+      QList<int> toIntList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a list of doubles.
        * \param delimiter The character delimiting string doubles
+       * \param skipEmptyParts for splitting
        * \returns A list of doubles
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<double> toDoubleList( const char delimiter = ',' ) const;
+      QList<double> toDoubleList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a list of colors.
        * \param delimiter The character delimiting string colors
+       * \param skipEmptyParts for splitting
        * \returns A list of colors
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<QColor> toColorList( const char delimiter = ',' ) const;
+      QList<QColor> toColorList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a rectangle.
@@ -1471,6 +1476,7 @@ namespace QgsWms
       /**
        * Returns true if OGC best practice georeferencing shall be used
        * \since QGIS 3.32
+       * \deprecated QGIS 3.42. Will always return false starting with 3.42. Only ISO 32000 georeferencing is handled.
        */
       bool pdfUseOgcBestPracticeFormatGeoreferencing() const;
 
@@ -1530,7 +1536,7 @@ namespace QgsWms
       QgsWmsParameter idParameter( QgsWmsParameter::Name name, int id ) const;
 
       void raiseError( const QString &msg ) const;
-      void log( const QString &msg ) const;
+      void log( const QString &msg, const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() ) const;
 
       QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
 

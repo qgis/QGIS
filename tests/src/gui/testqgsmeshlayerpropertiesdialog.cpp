@@ -85,7 +85,7 @@ void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
 void TestQgsMeshLayerPropertiesDialog::testCrs()
 {
   QgsMapCanvas mapCanvas;
-  std::unique_ptr<QgsMeshLayerProperties> dialog = std::make_unique<QgsMeshLayerProperties>( mpMeshLayer, &mapCanvas );
+  auto dialog = std::make_unique<QgsMeshLayerProperties>( mpMeshLayer, &mapCanvas );
   QCOMPARE( dialog->mCrsSelector->crs(), mpMeshLayer->crs() );
   const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( 27700 );
   dialog->mCrsSelector->setCrs( crs );

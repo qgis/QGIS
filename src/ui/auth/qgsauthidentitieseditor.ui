@@ -55,7 +55,7 @@
        <item>
         <widget class="QToolButton" name="btnAddIdentity">
          <property name="toolTip">
-          <string>Import identity bundle to authentication database</string>
+          <string>Import identity bundle to authentication storage</string>
          </property>
          <property name="text">
           <string/>
@@ -69,7 +69,7 @@
        <item>
         <widget class="QToolButton" name="btnRemoveIdentity">
          <property name="toolTip">
-          <string>Remove identity bundle from authentication database</string>
+          <string>Remove identity bundle from authentication storage</string>
          </property>
          <property name="text">
           <string/>

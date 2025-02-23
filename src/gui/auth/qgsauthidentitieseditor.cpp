@@ -278,7 +278,7 @@ void QgsAuthIdentitiesEditor::btnAddIdentity_clicked()
       const QPair<QSslCertificate, QSslKey> &bundle( dlg->certBundleToImport() );
       if ( !QgsApplication::authManager()->storeCertIdentity( bundle.first, bundle.second ) )
       {
-        messageBar()->pushMessage( tr( "ERROR storing identity bundle in authentication database." ), Qgis::MessageLevel::Critical );
+        messageBar()->pushMessage( tr( "ERROR storing identity bundle in authentication storage." ), Qgis::MessageLevel::Critical );
       }
       populateIdentitiesView();
       mRootCertIdentItem->setExpanded( true );
@@ -326,7 +326,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( !QgsApplication::authManager()->removeCertIdentity( digest ) )
   {
-    messageBar()->pushMessage( tr( "ERROR removing cert identity from authentication database for id %1:" ).arg( digest ), Qgis::MessageLevel::Critical );
+    messageBar()->pushMessage( tr( "ERROR removing cert identity from authentication storage for id %1:" ).arg( digest ), Qgis::MessageLevel::Critical );
     return;
   }
 

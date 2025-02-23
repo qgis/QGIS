@@ -2370,7 +2370,7 @@ void TestQgsCircularString::append()
   QVERIFY( cs.isEmpty() );
   QCOMPARE( cs.numPoints(), 0 );
 
-  std::unique_ptr<QgsCircularString> toAppend( new QgsCircularString() );
+  auto toAppend = std::make_unique<QgsCircularString>();
   cs.append( toAppend.get() );
 
   QVERIFY( cs.isEmpty() );
@@ -2428,7 +2428,7 @@ void TestQgsCircularString::appendZM()
 {
   //check dimensionality is inherited from append line if initially empty
   QgsCircularString cs;
-  std::unique_ptr<QgsCircularString> toAppend( new QgsCircularString() );
+  auto toAppend = std::make_unique<QgsCircularString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 41, 42, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 53, 54 ) );
   cs.append( toAppend.get() );
 

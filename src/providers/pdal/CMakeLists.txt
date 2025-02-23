@@ -14,6 +14,13 @@ set(PDAL_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
+IF(MSVC)
+  set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
+    PROPERTIES COMPILE_FLAGS "/DUNICODE"
+  )
+endif()
+
 set(PDAL_HDRS
   qgspdalprovider.h
   qgspdalindexingtask.h
@@ -46,6 +53,8 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Reprocessor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.cpp
 
+  ${CMAKE_SOURCE_DIR}/external/untwine/prep/FilePrep.cpp
+
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ThreadPool.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Untwine.cpp
@@ -71,9 +80,12 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Reprocessor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.hpp
 
+  ${CMAKE_SOURCE_DIR}/external/untwine/prep/FilePrep.hpp
+
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Common.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FatalError.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FileDimInfo.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FileInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/GridKey.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Point.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.hpp
@@ -99,6 +111,7 @@ configure_file(${CMAKE_SOURCE_DIR}/external/untwine/untwine/Config.hpp.in ${CMAK
 
 set(UNTWINE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine
+  ${CMAKE_SOURCE_DIR}/external/untwine/prep
   ${CMAKE_SOURCE_DIR}/external/untwine/epf
   ${CMAKE_SOURCE_DIR}/external/untwine/bu
   ${CMAKE_SOURCE_DIR}/external/untwine

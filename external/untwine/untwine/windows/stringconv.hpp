@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-#include <untwine/FatalError.hpp>
+#include "../FatalError.hpp"
 
 namespace untwine
 {

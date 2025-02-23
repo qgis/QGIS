@@ -55,14 +55,6 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex()
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsEptPointCloudIndex::clone() const
-{
-  QgsEptPointCloudIndex *clone = new QgsEptPointCloudIndex;
-  QMutexLocker locker( &mHierarchyMutex );
-  copyCommonProperties( clone );
-  return std::unique_ptr<QgsAbstractPointCloudIndex>( clone );
-}
-
 void QgsEptPointCloudIndex::load( const QString &urlString )
 {
   QUrl url = urlString;
@@ -358,7 +350,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
   mRootBounds = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 
-#ifdef QGIS_DEBUG
+#ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
   QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
   QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
@@ -398,7 +390,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPo
     // we need to create a copy of the expression to pass to the decoder
     // as the same QgsPointCloudExpression object mighgt be concurrently
     // used on another thread, for example in a 3d view
-    QgsPointCloudExpression filterExpression = mFilterExpression;
+    QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
     QgsPointCloudAttributeCollection requestAttributes = request.attributes();
     requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
     QgsRectangle filterRect = request.filterRect();
@@ -459,7 +451,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
   // we need to create a copy of the expression to pass to the decoder
   // as the same QgsPointCloudExpression object might be concurrently
   // used on another thread, for example in a 3d view
-  QgsPointCloudExpression filterExpression = mFilterExpression;
+  QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
   return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect() );
@@ -649,23 +641,6 @@ bool QgsEptPointCloudIndex::isValid() const
 Qgis::PointCloudAccessType QgsEptPointCloudIndex::accessType() const
 {
   return mAccessType;
-}
-
-void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destination ) const
-{
-  QgsAbstractPointCloudIndex::copyCommonProperties( destination );
-
-  // QgsEptPointCloudIndex specific fields
-  destination->mIsValid = mIsValid;
-  destination->mAccessType = mAccessType;
-  destination->mDataType = mDataType;
-  destination->mUrlDirectoryPart = mUrlDirectoryPart;
-  destination->mWkt = mWkt;
-  destination->mHierarchyNodes = mHierarchyNodes;
-  destination->mPointCount = mPointCount;
-  destination->mMetadataStats = mMetadataStats;
-  destination->mAttributeClasses = mAttributeClasses;
-  destination->mOriginalMetadata = mOriginalMetadata;
 }
 
 #undef PROVIDER_KEY

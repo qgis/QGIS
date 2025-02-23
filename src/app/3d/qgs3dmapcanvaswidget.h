@@ -49,9 +49,24 @@ class QgsMessageBar;
 class QgsRubberBand;
 class QgsDoubleSpinBox;
 
+//! Helper validator for classification classes
+class ClassValidator : public QValidator
+{
+  public:
+    ClassValidator( QWidget *parent );
+    QValidator::State validate( QString &input, int &pos ) const override;
+    void fixup( QString &input ) const override;
+    void setClasses( const QMap<int, QString> &classes ) { mClasses = classes; }
+
+  private:
+    QMap<int, QString> mClasses;
+    QRegularExpression mRx;
+};
+
 class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 {
     Q_OBJECT
+
   public:
     Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
     ~Qgs3DMapCanvasWidget();
@@ -74,9 +89,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void showAnimationWidget() { mActionAnim->trigger(); }
 
-    void enableEditingTools( bool enable );
-
     void updateLayerRelatedActions( QgsMapLayer *layer );
+
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
 
   private slots:
     void resetView();
@@ -144,6 +160,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionCamera = nullptr;
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
+    QAction *mActionToggleEditing = nullptr;
+    QAction *mActionUndo = nullptr;
+    QAction *mActionRedo = nullptr;
+    QToolBar *mPointCloudEditingToolbar = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
     QObjectUniquePtr<QgsRubberBand> mViewExtentHighlight;
@@ -160,7 +180,13 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     QToolBar *mEditingToolBar = nullptr;
     QComboBox *mCboChangeAttribute = nullptr;
+    QComboBox *mCboChangeAttributeValue = nullptr;
+    ClassValidator *mClassValidator = nullptr;
     QgsDoubleSpinBox *mSpinChangeAttributeValue = nullptr;
+    QAction *mCboChangeAttributeValueAction = nullptr;
+    QAction *mSpinChangeAttributeValueAction = nullptr;
+
+    QMenu *mToolbarMenu = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

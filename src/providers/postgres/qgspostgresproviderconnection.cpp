@@ -441,7 +441,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     }
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
+    auto res = std::make_unique<QgsPostgresResult>( conn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
@@ -876,7 +876,7 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
   if ( !options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
-    tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( sanitizeSqlForQueryLayer( options.sql ) ) );
   }
   else
   {
@@ -892,7 +892,7 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
     {
       sqlId++;
     }
-    tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS _uid%1_, * FROM (%2\n) AS _subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
+    tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS _uid%1_, * FROM (%2\n) AS _subq_%3_\n)" ).arg( QString::number( pkId ), sanitizeSqlForQueryLayer( options.sql ), QString::number( sqlId ) ) );
   }
 
   if ( !options.geometryColumn.isEmpty() )

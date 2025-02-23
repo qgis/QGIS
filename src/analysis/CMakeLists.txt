@@ -483,6 +483,13 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   include_directories(
     ${CMAKE_SOURCE_DIR}/external/untwine/api
   )
+
+  IF(MSVC)
+    set_source_files_properties(
+      ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
+      PROPERTIES COMPILE_FLAGS "/DUNICODE"
+    )
+  endif()
 endif()
 
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})

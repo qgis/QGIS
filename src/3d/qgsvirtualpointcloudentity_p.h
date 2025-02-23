@@ -88,14 +88,11 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     //! Returns a pointer to the associated layer's provider
     QgsVirtualPointCloudProvider *provider() const;
 
-    //! Returns the bounding box for sub index i
-    QgsAABB boundingBox( int i ) const;
-
     QgsPointCloudLayer *mLayer = nullptr;
     QMap<int, QgsChunkedEntity *> mChunkedEntitiesMap;
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
     QgsPointCloudLayerChunkedEntity *mOverviewEntity = nullptr;
-    QList<QgsAABB> mBboxes;
+    QList<QgsBox3D> mBboxes;
     QgsCoordinateTransform mCoordinateTransform;
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     double mZValueScale = 1.0;

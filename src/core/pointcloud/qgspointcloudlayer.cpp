@@ -136,8 +136,7 @@ QgsAbstractProfileGenerator *QgsPointCloudLayer::createProfileGenerator( const Q
 
 QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider()
 {
-  // BAD! 2D rendering of point clouds is NOT thread safe
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mDataProvider.get();
 }
@@ -1012,9 +1011,11 @@ bool QgsPointCloudLayer::commitChanges( bool stopEditing )
     if ( !mEditIndex.commitChanges( &mCommitError ) )
       return false;
 
-    emit layerModified();
-    triggerRepaint();
+    // emitting layerModified() is not required as that's done automatically
+    // when undo stack index changes
   }
+
+  undoStack()->clear();
 
   if ( stopEditing )
   {
@@ -1037,10 +1038,21 @@ bool QgsPointCloudLayer::rollBack()
   if ( !mEditIndex )
     return false;
 
+  const QList<QgsPointCloudNodeId> updatedNodes = mEditIndex.updatedNodes();
+
   undoStack()->clear();
 
   mEditIndex = QgsPointCloudIndex();
   emit editingStopped();
+
+  if ( !updatedNodes.isEmpty() )
+  {
+    for ( const QgsPointCloudNodeId &n : updatedNodes )
+      emit chunkAttributeValuesChanged( n );
+
+    // emitting layerModified() is not required as that's done automatically
+    // when undo stack index changes
+  }
 
   return true;
 }
@@ -1112,14 +1124,14 @@ bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, con
        sortedPoints.constLast() >= mEditIndex.getNode( n ).pointCount() )
     return false;
 
-  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( mEditIndex, n, sortedPoints, attribute, value ) );
+  undoStack()->push( new QgsPointCloudLayerUndoCommandChangeAttribute( this, n, sortedPoints, attribute, value ) );
 
   return true;
 }
 
 QgsPointCloudIndex QgsPointCloudLayer::index() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
   if ( mEditIndex )
     return mEditIndex;
 

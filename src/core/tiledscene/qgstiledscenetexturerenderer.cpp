@@ -34,7 +34,7 @@ QString QgsTiledSceneTextureRenderer::type() const
 
 QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
 {
-  std::unique_ptr< QgsTiledSceneTextureRenderer > res = std::make_unique< QgsTiledSceneTextureRenderer >();
+  auto res = std::make_unique< QgsTiledSceneTextureRenderer >();
   res->setFillSymbol( mFillSymbol->clone() );
 
   copyCommonProperties( res.get() );
@@ -44,7 +44,7 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
 
 QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsTiledSceneTextureRenderer > r = std::make_unique< QgsTiledSceneTextureRenderer >();
+  auto r = std::make_unique< QgsTiledSceneTextureRenderer >();
   {
     const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "fillSymbol" ) );
     if ( !fillSymbolElem.isNull() )

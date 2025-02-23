@@ -855,7 +855,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
 
   const qgssize pixelSize = static_cast<qgssize>( QgsRasterBlock::typeSize( mInput->dataType( bandNo ) ) );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock = std::make_unique< QgsRasterBlock >( input->dataType(), width, height );
+  auto outputBlock = std::make_unique< QgsRasterBlock >( input->dataType(), width, height );
   QgsRasterBlock *output = outputBlock.get();
 
   if ( input->hasNoDataValue() )

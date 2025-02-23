@@ -1361,7 +1361,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
         mapPoly2TriPointToVertex.insert( holeToFill[i], holeVertices.at( i ) );
       }
 
-      std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( holeToFill ) );
+      auto cdt = std::make_unique<p2t::CDT>( holeToFill );
 
       cdt->Triangulate();
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
@@ -2398,7 +2398,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::insertVertexInFacesEdge( int fac
         mapPoly2TriPointToVertex.insert( faceToFill[i], newBoundary.at( i ) );
       }
 
-      std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( faceToFill ) );
+      auto cdt = std::make_unique<p2t::CDT>( faceToFill );
       cdt->Triangulate();
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
       QVector<QgsMeshFace> newFaces( triangles.size() );

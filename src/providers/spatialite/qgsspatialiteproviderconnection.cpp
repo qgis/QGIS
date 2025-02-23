@@ -134,7 +134,7 @@ QgsVectorLayer *QgsSpatiaLiteProviderConnection::createSqlVectorLayer( const Qgs
   QgsDataSourceUri tUri( uri() );
 
   tUri.setSql( options.filter );
-  tUri.setTable( '(' + options.sql + ')' );
+  tUri.setTable( '(' + sanitizeSqlForQueryLayer( options.sql ) + ')' );
 
   if ( !options.geometryColumn.isEmpty() )
   {
@@ -354,7 +354,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
         property.setTableName( tableName );
         // Create a layer and get information from it
         // Use OGR because it's way faster
-        std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( dsUri.database() + "|layername=" + dsUri.table(), QString(), QLatin1String( "ogr" ), QgsVectorLayer::LayerOptions( false, true ) );
+        auto vl = std::make_unique<QgsVectorLayer>( dsUri.database() + "|layername=" + dsUri.table(), QString(), QLatin1String( "ogr" ), QgsVectorLayer::LayerOptions( false, true ) );
         if ( vl->isValid() )
         {
           if ( vl->isSpatial() )

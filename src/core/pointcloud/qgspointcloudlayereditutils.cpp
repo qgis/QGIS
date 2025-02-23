@@ -83,7 +83,7 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
   }
   else if ( attributeName == QLatin1String( "ScanAngleRank" ) )  // short
   {
-    qint16 newValueShort = static_cast<qint16>( newValue );
+    qint16 newValueShort = static_cast<qint16>( std::round( newValue / 0.006 ) );  // copc stores angle in 0.006deg increments
     memcpy( pointBuffer + 18, &newValueShort, sizeof( qint16 ) );
   }
   else if ( attributeName == QLatin1String( "PointSourceId" ) )  // unsigned short
@@ -161,32 +161,6 @@ QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudInde
   return QByteArray( ( const char * ) data.data(), ( int ) data.size() ); // QByteArray makes a deep copy
 }
 
-
-QByteArray QgsPointCloudLayerEditUtils::dataForAttributes( const QgsPointCloudAttributeCollection &allAttributes, const QByteArray &data, const QgsPointCloudRequest &request )
-{
-  const QVector<QgsPointCloudAttribute> attributes = allAttributes.attributes();
-  const int nPoints = data.size() / allAttributes.pointRecordSize();
-  const char *ptr = data.data();
-
-  QByteArray outData;
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    for ( const QgsPointCloudAttribute &attr : attributes )
-    {
-      if ( request.attributes().indexOf( attr.name() ) >= 0 )
-      {
-        outData.append( ptr, attr.size() );
-      }
-      ptr += attr.size();
-    }
-  }
-
-  //
-  Q_ASSERT( nPoints == outData.size() / request.attributes().pointRecordSize() );
-
-  return outData;
-}
-
 bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttribute &attribute, double value )
 {
   const QString name = attribute.name().toUpper();
@@ -208,7 +182,7 @@ bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttr
   if ( name == QLatin1String( "USERDATA" ) )
     return value >= 0 && value <= 255;
   if ( name == QLatin1String( "SCANANGLERANK" ) )
-    return value >= -30'000 && value <= 30'000;
+    return value >= -180 && value <= 180;
   if ( name == QLatin1String( "POINTSOURCEID" ) )
     return value >= 0 && value <= 65535;
   if ( name == QLatin1String( "GPSTIME" ) )

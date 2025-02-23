@@ -95,6 +95,8 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbFeaturePaging->addItem( tr( "Disabled" ) );
   connect( cmbFeaturePaging, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged );
 
+  cbxWmsIgnoreReportedLayerExtents->setChecked( settingsIgnoreReportedLayerExtentsDefault->value() );
+
   if ( !connectionName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -155,8 +157,6 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mGroupBox->layout()->removeWidget( lblTilePixelRatio );
     }
   }
-
-  cbxWmsIgnoreReportedLayerExtents->setChecked( settingsIgnoreReportedLayerExtentsDefault->value() );
 
   if ( !( flags & FlagShowTestConnection ) )
   {

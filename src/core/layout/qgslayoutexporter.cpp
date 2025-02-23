@@ -716,7 +716,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       details.layerOrder = geospatialPdfExporter->layerOrder();
       details.layerTreeGroupOrder = geospatialPdfExporter->layerTreeGroupOrder();
       details.includeFeatures = settings.includeGeoPdfFeatures;
-      details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
       details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
 
       if ( !geospatialPdfExporter->finalize( pdfComponents, filePath, details ) )

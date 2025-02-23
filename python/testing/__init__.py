@@ -27,6 +27,7 @@ import os
 import sys
 import tempfile
 import unittest
+import hashlib
 from pathlib import Path
 from typing import Optional, Tuple, Union
 from warnings import warn
@@ -337,6 +338,36 @@ class QgisTestCase(unittest.TestCase):
                 )
                 and not "LC_ALL: cannot change locale" in e
             ]
+        )
+
+    @staticmethod
+    def sanitize_local_url(endpoint: str, query: str) -> str:
+        """
+        Sanitizes a URL to a local file path. Matches logic in c++ code so that
+        remote URLs can be mocked to local test files.
+        """
+        if not os.path.exists(endpoint):
+            os.makedirs(endpoint)
+
+        if query.startswith("/query"):
+            query = query[len("/query") :]
+            endpoint = endpoint + "_query"
+
+        if len(endpoint + query) > 150:
+            ret = endpoint + hashlib.md5(query.encode()).hexdigest()
+            # print('Before: ' + endpoint + query)
+            # print('After:  ' + ret)
+            return ret
+        return endpoint + query.replace("?", "_").replace("&", "_").replace(
+            "<", "_"
+        ).replace(">", "_").replace('"', "_").replace("'", "_").replace(
+            " ", "_"
+        ).replace(
+            ":", "_"
+        ).replace(
+            "/", "_"
+        ).replace(
+            "\n", "_"
         )
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):

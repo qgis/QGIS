@@ -52,7 +52,7 @@ QString QgsCoverageValidateAlgorithm::groupId() const
 void QgsCoverageValidateAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  std::unique_ptr<QgsProcessingParameterDistance> gapWidthParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "GAP_WIDTH" ), QObject::tr( "Gap width" ), 0.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
+  auto gapWidthParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "GAP_WIDTH" ), QObject::tr( "Gap width" ), 0.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
   gapWidthParam->setHelp( QObject::tr( "The maximum width of gaps to detect" ) );
   addParameter( gapWidthParam.release() );
 

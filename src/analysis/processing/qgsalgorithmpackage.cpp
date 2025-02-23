@@ -457,7 +457,7 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   {
     if ( saveStyles )
     {
-      std::unique_ptr<QgsVectorLayer> res = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( newFilename, newLayer ) );
+      auto res = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( newFilename, newLayer ) );
       if ( res )
       {
         QString errorMsg;

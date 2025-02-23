@@ -362,7 +362,7 @@ void TestQgsEllipse::toString()
 
 void TestQgsEllipse::toLineString()
 {
-  std::unique_ptr<QgsLineString> ls( new QgsLineString() );
+  auto ls = std::make_unique<QgsLineString>();
 
   ls.reset( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toLineString( 2 ) );
   QVERIFY( ls->isEmpty() ); // segments too low
@@ -379,7 +379,7 @@ void TestQgsEllipse::toLineString()
 
 void TestQgsEllipse::toPolygon()
 {
-  std::unique_ptr<QgsPolygon> poly( new QgsPolygon() );
+  auto poly = std::make_unique<QgsPolygon>();
 
   poly.reset( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toPolygon( 2 ) );
   QVERIFY( poly->isEmpty() ); // segments too low

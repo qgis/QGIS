@@ -22,6 +22,8 @@ try:
     QgsSymbolLayerUtils.decodeBrushStyle = staticmethod(QgsSymbolLayerUtils.decodeBrushStyle)
     QgsSymbolLayerUtils.encodeSldBrushStyle = staticmethod(QgsSymbolLayerUtils.encodeSldBrushStyle)
     QgsSymbolLayerUtils.decodeSldBrushStyle = staticmethod(QgsSymbolLayerUtils.decodeSldBrushStyle)
+    QgsSymbolLayerUtils.penCapStyleToEndCapStyle = staticmethod(QgsSymbolLayerUtils.penCapStyleToEndCapStyle)
+    QgsSymbolLayerUtils.penJoinStyleToJoinStyle = staticmethod(QgsSymbolLayerUtils.penJoinStyleToJoinStyle)
     QgsSymbolLayerUtils.hasSldSymbolizer = staticmethod(QgsSymbolLayerUtils.hasSldSymbolizer)
     QgsSymbolLayerUtils.decodeCoordinateReference = staticmethod(QgsSymbolLayerUtils.decodeCoordinateReference)
     QgsSymbolLayerUtils.encodeCoordinateReference = staticmethod(QgsSymbolLayerUtils.encodeCoordinateReference)
@@ -161,6 +163,7 @@ try:
     QgsSymbolLayerUtils.tileSize = staticmethod(QgsSymbolLayerUtils.tileSize)
     QgsSymbolLayerUtils.clearSymbolLayerIds = staticmethod(QgsSymbolLayerUtils.clearSymbolLayerIds)
     QgsSymbolLayerUtils.resetSymbolLayerIds = staticmethod(QgsSymbolLayerUtils.resetSymbolLayerIds)
+    QgsSymbolLayerUtils.clearSymbolLayerMasks = staticmethod(QgsSymbolLayerUtils.clearSymbolLayerMasks)
     QgsSymbolLayerUtils.collectSymbolLayerClipGeometries = staticmethod(QgsSymbolLayerUtils.collectSymbolLayerClipGeometries)
     QgsSymbolLayerUtils.__group__ = ['symbology']
 except (NameError, AttributeError):

@@ -236,7 +236,7 @@ struct MapIndexedPointCloudNode
     const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
     const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
     const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
-    std::unique_ptr< QgsGeos > extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
+    auto extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
     extentEngine->prepareGeometry();
 
     std::optional<bool> copcTimeFlag = std::nullopt;
@@ -264,7 +264,7 @@ struct MapIndexedPointCloudNode
           // here we check the flag set in header to determine if we need to
           // parse the time as GPS week time or GPS adjusted standard time
           // however often times the flag is set wrong, so we determine if the value is bigger than the maximum amount of seconds in week then it has to be adjusted standard time
-          if ( copcTimeFlag.value() || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
+          if ( *copcTimeFlag || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
           {
             const QString utcTime = gpsBaseTime.addSecs( static_cast<qint64>( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + 1e9 ) ).toString( Qt::ISODate );
             pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];

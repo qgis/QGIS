@@ -783,6 +783,15 @@ The development version
       TiledScene,
     };
 
+    enum class UriCleaningFlag /BaseType=IntFlag/
+    {
+      RemoveCredentials,
+      RedactCredentials,
+    };
+
+    typedef QFlags<Qgis::UriCleaningFlag> UriCleaningFlags;
+
+
     enum class SublayerQueryFlag /BaseType=IntFlag/
     {
       FastScan,
@@ -2423,6 +2432,16 @@ The development version
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
 
 
+    enum class LegendComponent /BaseType=IntEnum/
+      {
+      Undefined,
+      Hidden,
+      Title,
+      Group,
+      Subgroup,
+      Symbol,
+      SymbolLabel,
+    };
 
     enum class LegendJsonRenderFlag /BaseType=IntFlag/
     {
@@ -2452,6 +2471,7 @@ The development version
     enum class MapLayerActionFlag /BaseType=IntFlag/
     {
       EnabledOnlyWhenEditable,
+      EnableOnlyWhenHasGeometry,
     };
 
     typedef QFlags<Qgis::MapLayerActionFlag> MapLayerActionFlags;
@@ -3262,6 +3282,14 @@ The development version
       RenderOverviewAndExtents
     };
 
+    enum class SegmentCalculationMethod /BaseType=IntEnum/
+    {
+      Standard,
+      Adaptive,
+      AreaError,
+      ConstantDensity
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3405,6 +3433,8 @@ QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, 
 QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
 
 QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
+
+QFlags<Qgis::UriCleaningFlag> operator|(Qgis::UriCleaningFlag f1, QFlags<Qgis::UriCleaningFlag> f2);
 
 QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
 

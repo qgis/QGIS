@@ -244,12 +244,12 @@ void QgsEllipse::pointsInternal( unsigned int segments, QVector<double> &x, QVec
   const double sinAzimuth = std::sin( azimuth );
   for ( double it : t )
   {
-    *xOut++ = centerX +
-              mSemiMajorAxis * std::cos( it ) * cosAzimuth -
-              mSemiMinorAxis * std::sin( it ) * sinAzimuth;
-    *yOut++ = centerY +
-              mSemiMajorAxis * std::cos( it ) * sinAzimuth +
-              mSemiMinorAxis * std::sin( it ) * cosAzimuth;
+    const double cosT{ std::cos( it ) };
+    const double sinT{ std::sin( it ) };
+    *xOut++ = centerX + mSemiMajorAxis * cosT * cosAzimuth -
+              mSemiMinorAxis * sinT * sinAzimuth;
+    *yOut++ = centerY + mSemiMajorAxis * cosT * sinAzimuth +
+              mSemiMinorAxis * sinT * cosAzimuth;
     if ( zOut )
       *zOut++ = centerZ;
     if ( mOut )
@@ -259,7 +259,7 @@ void QgsEllipse::pointsInternal( unsigned int segments, QVector<double> &x, QVec
 
 QgsPolygon *QgsEllipse::toPolygon( unsigned int segments ) const
 {
-  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+  auto polygon = std::make_unique<QgsPolygon>();
   if ( segments < 3 )
   {
     return polygon.release();
@@ -337,7 +337,7 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
 
 QgsPolygon *QgsEllipse::orientedBoundingBox() const
 {
-  std::unique_ptr<QgsPolygon> ombb( new QgsPolygon() );
+  auto ombb = std::make_unique<QgsPolygon>();
   if ( isEmpty() )
   {
     return ombb.release();

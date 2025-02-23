@@ -3332,7 +3332,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG "
+                    "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -3353,7 +3353,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -a_nodata 9999.0 -ot Float32 -of JPEG "
+                    "-l polys2 -a id -ts 0 0 -a_nodata 9999.0 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -3374,7 +3374,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -init 0.0 -ot Float32 -of JPEG "
+                    "-l polys2 -a id -ts 0 0 -init 0.0 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -3395,7 +3395,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -a_nodata 0.0 -ot Float32 -of JPEG "
+                    "-l polys2 -a id -ts 0 0 -a_nodata 0.0 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -3416,7 +3416,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -at -add "
+                    "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG -at -add "
                     + source
                     + " "
                     + outdir
@@ -3433,7 +3433,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG "
+                    "-l pointsz -3d -ts 0 0 -ot Float32 -of JPEG "
                     + sourceZ
                     + " "
                     + outdir
@@ -3455,7 +3455,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG "
+                    "-l pointsz -3d -ts 0 0 -ot Float32 -of JPEG "
                     + sourceZ
                     + " "
                     + outdir
@@ -3477,7 +3477,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -te -1.0 -3.0 10.0 6.0 -ot Float32 -of JPEG "
+                    "-l polys2 -a id -ts 0 0 -te -1.0 -3.0 10.0 6.0 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -3498,7 +3498,31 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -te -1.000000001857055 -2.9999999963940835 10.000000000604244 5.99999999960471 -ot Float32 -of JPEG "
+                    "-l polys2 -a id -ts 0 0 -te -1.000000001857055 -2.9999999963940835 10.000000000604246 5.999999999604708 -ot Float32 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+
+            # truncate HEIGHT and WIDTH floats
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": source,
+                        "FIELD": "id",
+                        "UNITS": 0,
+                        "WIDTH": 100.4,
+                        "HEIGHT": 200.6,
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_rasterize",
+                    "-l polys2 -a id -ts 100 200 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -3520,7 +3544,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     ),
                     [
                         "gdal_rasterize",
-                        "-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y "
+                        "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y "
                         + source
                         + " "
                         + outdir
@@ -3540,7 +3564,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_rasterize",
-                    "-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG --config X Y --config Z A "
+                    "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG --config X Y --config Z A "
                     + source
                     + " "
                     + outdir

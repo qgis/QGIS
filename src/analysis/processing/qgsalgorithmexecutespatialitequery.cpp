@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmexecutepostgisquery.cpp
+                         qgsalgorithmexecutespatialitequery.cpp
                          ---------------------
     begin                : May 2020
     copyright            : (C) 2020 by Alexander Bruy
@@ -50,7 +50,7 @@ QString QgsExecuteSpatialiteQueryAlgorithm::groupId() const
 
 QString QgsExecuteSpatialiteQueryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Executes a SQL command on a SpatiaLite database." );
+  return QObject::tr( "Executes a SQL command on a SpatiaLite database. The database is determined by an input layer or file." );
 }
 
 QgsExecuteSpatialiteQueryAlgorithm *QgsExecuteSpatialiteQueryAlgorithm::createInstance() const
@@ -60,13 +60,13 @@ QgsExecuteSpatialiteQueryAlgorithm *QgsExecuteSpatialiteQueryAlgorithm::createIn
 
 void QgsExecuteSpatialiteQueryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "DATABASE" ), QObject::tr( "Database layer (or file)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "SQL" ), QObject::tr( "SQL query" ), QVariant(), true ) );
 }
 
 QVariantMap QgsExecuteSpatialiteQueryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  //Q_UNUSED( feedback );
+  Q_UNUSED( feedback );
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "DATABASE" ), context );
   QString databaseUri = layer->dataProvider()->dataSourceUri();
   QgsDataSourceUri uri( databaseUri );
@@ -80,7 +80,6 @@ QVariantMap QgsExecuteSpatialiteQueryAlgorithm::processAlgorithm( const QVariant
     uri = QgsDataSourceUri( QStringLiteral( "dbname='%1'" ).arg( databaseUri ) );
   }
 
-  feedback->pushInfo( databaseUri );
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   try
   {

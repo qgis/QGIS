@@ -78,7 +78,7 @@ void QgsExtractLabelsAlgorithm::initAlgorithm( const QVariantMap & )
     QObject::tr( "Map scale" )
   ) );
 
-  std::unique_ptr<QgsProcessingParameterMapTheme> mapThemeParameter = std::make_unique<QgsProcessingParameterMapTheme>(
+  auto mapThemeParameter = std::make_unique<QgsProcessingParameterMapTheme>(
     QStringLiteral( "MAP_THEME" ),
     QObject::tr( "Map theme" ),
     QVariant(), true
@@ -92,7 +92,7 @@ void QgsExtractLabelsAlgorithm::initAlgorithm( const QVariantMap & )
     QVariant( true )
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> dpiParameter = std::make_unique<QgsProcessingParameterNumber>(
+  auto dpiParameter = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "DPI" ),
     QObject::tr( "Map resolution (in DPI)" ),
     Qgis::ProcessingNumberParameterType::Double,

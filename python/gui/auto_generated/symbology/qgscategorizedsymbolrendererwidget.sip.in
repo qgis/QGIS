@@ -66,6 +66,11 @@ Applies the color ramp passed on by the color ramp button
     void deleteCategories();
     void deleteAllCategories();
 
+    void deleteUnusedCategories();
+%Docstring
+Deletes unused categories from the widget which are not used by the layer renderer.
+%End
+
     void showSymbolLevels();
 
     void rowsMoved();
@@ -123,6 +128,13 @@ Changes the selected symbols alone for the change button, if there is a selectio
     void applyChangeToSymbol();
 %Docstring
 Applies current symbol to selected categories, or to all categories if none is selected
+%End
+
+    QList<QVariant> layerUniqueValues( const QString &attrName );
+%Docstring
+Returns the list of unique values in the current widget's layer for attribute name ``attrName``.
+
+Called by :py:func:`~QgsCategorizedSymbolRendererWidget.addCategories` and :py:func:`~QgsCategorizedSymbolRendererWidget.deleteUnusedCategories`
 %End
 
     virtual QList<QgsSymbol *> selectedSymbols();

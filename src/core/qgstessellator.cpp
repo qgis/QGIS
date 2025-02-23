@@ -680,7 +680,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mNoZ ? nullptr : &z );
     polylinesToDelete << polyline;
 
-    std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( polyline ) );
+    auto cdt = std::make_unique<p2t::CDT>( polyline );
 
     // polygon holes
     for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
@@ -817,7 +817,7 @@ int QgsTessellator::dataVerticesCount() const
 
 std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
 {
-  std::unique_ptr< QgsMultiPolygon > mp = std::make_unique< QgsMultiPolygon >();
+  auto mp = std::make_unique< QgsMultiPolygon >();
   const auto nVals = mData.size();
   mp->reserve( nVals / 9 );
   for ( auto i = decltype( nVals ) {0}; i + 8 < nVals; i += 9 )

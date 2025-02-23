@@ -96,8 +96,7 @@ QgsSensorThingsSharedData::QgsSensorThingsSharedData( const QString &uri )
     mGeometryType = Qgis::WkbType::NoGeometry;
   }
 
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( uri );
+  const QgsDataSourceUri dsUri( uri );
   mAuthCfg = dsUri.authConfigId();
   mHeaders = dsUri.httpHeaders();
 

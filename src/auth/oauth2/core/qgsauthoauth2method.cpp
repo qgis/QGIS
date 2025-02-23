@@ -603,7 +603,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
 
   // do loading of method config into oauth2 config
 
-  std::unique_ptr<QgsAuthOAuth2Config> config( new QgsAuthOAuth2Config() );
+  auto config = std::make_unique<QgsAuthOAuth2Config>();
   if ( configmap.contains( QStringLiteral( "oauth2config" ) ) )
   {
     const QByteArray configtxt = configmap.value( QStringLiteral( "oauth2config" ) ).toUtf8();

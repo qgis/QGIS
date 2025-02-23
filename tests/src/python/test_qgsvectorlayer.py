@@ -320,6 +320,39 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         myCount = myLayer.featureCount()
         self.assertEqual(myCount, 6)
 
+    def test_attribute_iteration(self):
+        layer = QgsVectorLayer(
+            self.get_test_data_path("lines.shp").as_posix(), "Lines", "ogr"
+        )
+        self.assertTrue(layer.isValid())
+        all_attrs = [
+            [attr for attr in feat.attributes()] for feat in layer.getFeatures()
+        ]
+        self.assertCountEqual(
+            all_attrs,
+            [
+                ["Highway", 1.0],
+                ["Highway", 1.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+            ],
+        )
+
+        all_attrs = [[attr for attr in feat] for feat in layer.getFeatures()]
+        self.assertCountEqual(
+            all_attrs,
+            [
+                ["Highway", 1.0],
+                ["Highway", 1.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+            ],
+        )
+
     # undo stack
     def testUndoStack(self):
         layer = createLayerWithOnePoint()
@@ -701,6 +734,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         def checkAfter():
             self.assertEqual(layer.featureCount(), 1)
+            self.assertEqual(layer.extent(), QgsRectangle(1, 2, 1, 2))
 
             # check select+nextFeature
             f = next(layer.getFeatures())
@@ -712,6 +746,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         def checkBefore():
             self.assertEqual(layer.featureCount(), 0)
+            self.assertEqual(layer.extent(), QgsRectangle())
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
@@ -721,10 +756,15 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         spy = QSignalSpy(layer.layerModified)
         repaint_spy = QSignalSpy(layer.repaintRequested)
+        feature_added_spy = QSignalSpy(layer.featureAdded)
+        feature_deleted_spy = QSignalSpy(layer.featureDeleted)
 
         # try to add feature without editing mode
         self.assertFalse(layer.addFeature(feat))
         self.assertEqual(len(repaint_spy), 0)
+        self.assertEqual(len(feature_added_spy), 0)
+        self.assertEqual(len(feature_deleted_spy), 0)
+        self.assertEqual(layer.extent(), QgsRectangle())
 
         # add feature
         layer.startEditing()
@@ -733,6 +773,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         bad_feature = QgsFeature()
         self.assertFalse(layer.addFeature(bad_feature))
         self.assertEqual(len(repaint_spy), 0)
+        self.assertEqual(len(feature_added_spy), 0)
+        self.assertEqual(len(feature_deleted_spy), 0)
+        self.assertEqual(layer.extent(), QgsRectangle())
 
         self.assertEqual(len(spy), 0)
 
@@ -741,12 +784,16 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(repaint_spy), 1)
+        self.assertEqual(len(feature_added_spy), 1)
+        self.assertEqual(len(feature_deleted_spy), 0)
 
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 0)
 
         # now try undo/redo
         layer.undoStack().undo()
+        self.assertEqual(len(feature_added_spy), 1)
+        self.assertEqual(len(feature_deleted_spy), 1)
         checkBefore()
         self.assertEqual(len(spy), 2)
         self.assertEqual(len(repaint_spy), 2)
@@ -756,6 +803,8 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         self.assertEqual(len(spy), 3)
         self.assertEqual(len(repaint_spy), 3)
+        self.assertEqual(len(feature_added_spy), 2)
+        self.assertEqual(len(feature_deleted_spy), 1)
 
         self.assertTrue(layer.commitChanges())
 

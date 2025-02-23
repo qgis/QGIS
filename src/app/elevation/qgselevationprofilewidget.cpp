@@ -457,7 +457,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   } );
   setLayout( layout );
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( true, mCanvasName, this, QgisApp::instance(), Qt::BottomDockWidgetArea, QStringList(), true );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), QgsDockableWidgetHelper::OpeningMode::RespectSetting, false, Qt::DockWidgetArea::BottomDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
+
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock Elevation Profile View" ) );
   toolBar->addWidget( toggleButton );
@@ -971,18 +972,18 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
 
     QgsSymbolLayerList layers;
 
-    std::unique_ptr<QgsSimpleLineSymbolLayer> bottomLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+    auto bottomLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
     bottomLayer->setWidth( 0.8 );
     bottomLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
     bottomLayer->setColor( QColor( 40, 40, 40, 100 ) );
     bottomLayer->setPenCapStyle( Qt::PenCapStyle::FlatCap );
     layers.append( bottomLayer.release() );
 
-    std::unique_ptr<QgsMarkerLineSymbolLayer> arrowLayer = std::make_unique<QgsMarkerLineSymbolLayer>();
+    auto arrowLayer = std::make_unique<QgsMarkerLineSymbolLayer>();
     arrowLayer->setPlacements( Qgis::MarkerLinePlacement::CentralPoint );
 
     QgsSymbolLayerList markerLayers;
-    std::unique_ptr<QgsSimpleMarkerSymbolLayer> arrowSymbolLayer = std::make_unique<QgsSimpleMarkerSymbolLayer>( Qgis::MarkerShape::EquilateralTriangle );
+    auto arrowSymbolLayer = std::make_unique<QgsSimpleMarkerSymbolLayer>( Qgis::MarkerShape::EquilateralTriangle );
     arrowSymbolLayer->setSize( 4 );
     arrowSymbolLayer->setAngle( 90 );
     arrowSymbolLayer->setSizeUnit( Qgis::RenderUnit::Millimeters );
@@ -991,12 +992,12 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
     arrowSymbolLayer->setStrokeWidth( 0.2 );
     markerLayers.append( arrowSymbolLayer.release() );
 
-    std::unique_ptr<QgsMarkerSymbol> markerSymbol = std::make_unique<QgsMarkerSymbol>( markerLayers );
+    auto markerSymbol = std::make_unique<QgsMarkerSymbol>( markerLayers );
     arrowLayer->setSubSymbol( markerSymbol.release() );
 
     layers.append( arrowLayer.release() );
 
-    std::unique_ptr<QgsSimpleLineSymbolLayer> topLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
+    auto topLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
     topLayer->setWidth( 0.4 );
     topLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
     topLayer->setColor( QColor( 255, 255, 255, 255 ) );
@@ -1004,7 +1005,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
     topLayer->setPenCapStyle( Qt::PenCapStyle::FlatCap );
     layers.append( topLayer.release() );
 
-    std::unique_ptr<QgsLineSymbol> symbol = std::make_unique<QgsLineSymbol>( layers );
+    auto symbol = std::make_unique<QgsLineSymbol>( layers );
 
     mRubberBand->setSymbol( symbol.release() );
     mRubberBand->updatePosition();
@@ -1023,12 +1024,12 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
 
       QgsSymbolLayerList layers;
 
-      std::unique_ptr<QgsSimpleFillSymbolLayer> bottomLayer = std::make_unique<QgsSimpleFillSymbolLayer>();
+      auto bottomLayer = std::make_unique<QgsSimpleFillSymbolLayer>();
       bottomLayer->setColor( QColor( 40, 40, 40, 50 ) );
       bottomLayer->setStrokeColor( QColor( 255, 255, 255, 150 ) );
       layers.append( bottomLayer.release() );
 
-      std::unique_ptr<QgsFillSymbol> symbol = std::make_unique<QgsFillSymbol>( layers );
+      auto symbol = std::make_unique<QgsFillSymbol>( layers );
       mToleranceRubberBand->setSymbol( symbol.release() );
     }
 

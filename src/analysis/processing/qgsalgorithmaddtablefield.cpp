@@ -99,7 +99,7 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
     icons << QgsFields::iconForFieldType( type.first, type.second );
   }
 
-  std::unique_ptr<QgsProcessingParameterEnum> fieldTypes = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ), typeStrings, false, 0 );
+  auto fieldTypes = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ), typeStrings, false, 0 );
   fieldTypes->setMetadata(
     { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
     }

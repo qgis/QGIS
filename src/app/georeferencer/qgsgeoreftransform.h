@@ -40,6 +40,9 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
     QgsGeorefTransform();
     ~QgsGeorefTransform() override;
 
+    //! shallow copy constructor
+    QgsGeorefTransform( const QgsGeorefTransform &other );
+
     /**
      * Switches the used transform type to the given parametrisation.
      */
@@ -116,8 +119,6 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
     bool getOriginScaleRotation( QgsPointXY &origin, double &scaleX, double &scaleY, double &rotation ) const;
 
   private:
-    // shallow copy constructor
-    QgsGeorefTransform( const QgsGeorefTransform &other );
     QgsGeorefTransform &operator=( const QgsGeorefTransform & ) = delete;
 
     bool transformPrivate( const QgsPointXY &src, QgsPointXY &dst, bool inverseTransform ) const;

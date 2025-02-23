@@ -1689,8 +1689,8 @@ void TestQgsValueRelationWidgetWrapper::testAllowMultiColumns()
   QFile::copy( myFileName + "/provider/test_json.gpkg", myTempDirName + "/test_json.gpkg" );
   const QString myTempFileName = myTempDirName + "/test_json.gpkg";
   const QFileInfo myMapFileInfo( myTempFileName );
-  std::unique_ptr<QgsVectorLayer> vl_text( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) ) );
-  std::unique_ptr<QgsVectorLayer> vl_authors( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) ) );
+  auto vl_text = std::make_unique<QgsVectorLayer>( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) );
+  auto vl_authors = std::make_unique<QgsVectorLayer>( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) );
   QVERIFY( vl_text->isValid() );
   QVERIFY( vl_authors->isValid() );
 
@@ -1737,8 +1737,8 @@ void TestQgsValueRelationWidgetWrapper::testAllowMultiAndCompleter()
   QFile::copy( myFileName + "/provider/test_json.gpkg", myTempDirName + "/test_json.gpkg" );
   const QString myTempFileName = myTempDirName + "/test_json.gpkg";
   const QFileInfo myMapFileInfo( myTempFileName );
-  std::unique_ptr<QgsVectorLayer> vl_text( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) ) );
-  std::unique_ptr<QgsVectorLayer> vl_authors( new QgsVectorLayer( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) ) );
+  auto vl_text = std::make_unique<QgsVectorLayer>( myMapFileInfo.filePath() + "|layername=foo", "test", QStringLiteral( "ogr" ) );
+  auto vl_authors = std::make_unique<QgsVectorLayer>( myMapFileInfo.filePath() + "|layername=author", "test", QStringLiteral( "ogr" ) );
   QVERIFY( vl_text->isValid() );
   QVERIFY( vl_authors->isValid() );
 
@@ -1885,14 +1885,14 @@ void TestQgsValueRelationWidgetWrapper::testGroup()
 
 void TestQgsValueRelationWidgetWrapper::testMultiEditMode()
 {
-  std::unique_ptr<QgsVectorLayer> people = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=firstname:string&field=fullname:string" ), QStringLiteral( "people" ), QStringLiteral( "memory" ) );
+  auto people = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=firstname:string&field=fullname:string" ), QStringLiteral( "people" ), QStringLiteral( "memory" ) );
 
   QgsFeature ft( people->dataProvider()->fields(), 1 );
   ft.setAttribute( QStringLiteral( "firstname" ), QStringLiteral( "Jhon" ) );
   ft.setAttribute( QStringLiteral( "fullname" ), QStringLiteral( "Jhon Carpenter" ) );
   people->dataProvider()->addFeature( ft );
 
-  std::unique_ptr<QgsVectorLayer> famous = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=name:string" ), QStringLiteral( "famous" ), QStringLiteral( "memory" ) );
+  auto famous = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=name:string" ), QStringLiteral( "famous" ), QStringLiteral( "memory" ) );
 
   const QStringList famousNames { QStringLiteral( "Jhon Carpenter" ), QStringLiteral( "Jhon F. Kennedy" ), QStringLiteral( "Jhon Lennon" ), QStringLiteral( "Paul Mc Cartney" ) };
   for ( const QString &name : famousNames )

@@ -173,7 +173,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
       destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != Qgis::GeometryType::Null ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsgLevel( "URI " + destUri.uri(), 2 );
 
-      std::unique_ptr<QgsVectorLayerExporterTask> exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), QVariantMap(), owner ) );
+      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), QVariantMap(), owner );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connItem, [=]() {

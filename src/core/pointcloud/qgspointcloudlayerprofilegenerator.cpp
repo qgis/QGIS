@@ -341,6 +341,8 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
 
 QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
   : mLayer( layer )
+  , mIndex( layer->index() )
+  , mSubIndexes( layer->dataProvider()->subIndexes() )
   , mLayerAttributes( layer->attributes() )
   , mRenderer( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->respectLayerColors() && mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
   , mMaximumScreenError( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenError() )
@@ -361,10 +363,10 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mZScale( layer->elevationProperties()->zScale() )
   , mStepDistance( request.stepDistance() )
 {
-  if ( mLayer->index() )
+  if ( mIndex )
   {
-    mScale = mLayer->index().scale();
-    mOffset = mLayer->index().offset();
+    mScale = mIndex.scale();
+    mOffset = mIndex.offset();
   }
 }
 
@@ -386,17 +388,13 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   if ( !mLayer || !mProfileCurve || mFeedback->isCanceled() )
     return false;
 
-  // this is not AT ALL thread safe, but it's what QgsPointCloudLayerRenderer does !
-  // TODO: fix when QgsPointCloudLayerRenderer is made thread safe to use same approach
-
   QVector<QgsPointCloudIndex> indexes;
-  QgsPointCloudIndex mainIndex = mLayer->index();
-  if ( mainIndex && mainIndex.isValid() )
-    indexes.append( mainIndex );
+  if ( mIndex && mIndex.isValid() )
+    indexes.append( mIndex );
 
   // Gather all relevant sub-indexes
   const QgsRectangle profileCurveBbox = mProfileCurve->boundingBox();
-  for ( const QgsPointCloudSubIndex &subidx : mLayer->dataProvider()->subIndexes() )
+  for ( const QgsPointCloudSubIndex &subidx : mSubIndexes )
   {
     QgsPointCloudIndex index = subidx.index();
     if ( index && index.isValid() && subidx.polygonBounds().intersects( profileCurveBbox ) )

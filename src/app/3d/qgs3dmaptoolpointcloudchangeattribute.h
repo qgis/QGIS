@@ -20,13 +20,13 @@
 #include "qgspointxy.h"
 #include "qgsgeometry.h"
 #include "qgspointcloudindex.h"
-#include "qgschunknode.h"
 
 #include <QMatrix4x4>
 #include <QVector>
 
 class QgsRubberBand3D;
 class QgsPointCloudLayer;
+class QgsGeos;
 
 
 struct MapToPixel3D
@@ -35,13 +35,21 @@ struct MapToPixel3D
     QgsVector3D origin; // shift of world coordinates
     QSize canvasSize;
 
-    QPointF transform( double x, double y, double z ) const
+    QPointF transform( double x, double y, double z, bool *isInView = nullptr ) const
     {
-      QVector4D cClip = VP * QVector4D( x - origin.x(), y - origin.y(), z - origin.z(), 1 );
-      float xNdc = cClip.x() / cClip.w();
-      float yNdc = cClip.y() / cClip.w();
-      float xScreen = ( xNdc + 1 ) * 0.5 * canvasSize.width();
-      float yScreen = ( -yNdc + 1 ) * 0.5 * canvasSize.height();
+      QVector4D cClip = VP * QVector4D( static_cast<float>( x - origin.x() ), static_cast<float>( y - origin.y() ), static_cast<float>( z - origin.z() ), 1 );
+      // normalized device coordinates (-1 to +1)
+      // z == -1 is near plane, z == +1 is far plane
+      const float xNdc = cClip.x() / cClip.w();
+      const float yNdc = cClip.y() / cClip.w();
+      const float zNdc = cClip.z() / cClip.w();
+      if ( isInView )
+        *isInView = !( zNdc < -1 || zNdc > 1 || yNdc < -1 || yNdc > 1 || zNdc < -1 || xNdc > 1 );
+
+      // window / sceen space coordinates
+      const float xScreen = ( xNdc + 1 ) * 0.5f * static_cast<float>( canvasSize.width() );
+      const float yScreen = ( -yNdc + 1 ) * 0.5f * static_cast<float>( canvasSize.height() );
+
       return QPointF( xScreen, yScreen );
     }
 };
@@ -75,9 +83,9 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     void run();
     void restart();
     QgsPoint screenPointToMap( const QPoint &pos ) const;
-    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const;
-    static QVector<int> selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsChunkNode *ch, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex &pcIndex );
-    static QgsGeometry box3DToPolygonInScreenSpace( QgsBox3D box, const MapToPixel3D &mapToPixel3D );
+    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon ) const;
+    QVector<int> selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudLayer *layer ) const;
+    static QgsGeometry box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D );
 
     QVector<QgsPointXY> mScreenPoints;
     QgsRubberBand3D *mPolygonRubberBand = nullptr;

@@ -108,6 +108,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testLeftAlignTextRightAlignSymbol();
     void testCenterAlignTextRightAlignSymbol();
     void testRightAlignTextRightAlignSymbol();
+    void testDataDefinedTextFormat();
 
     void testGroupHeadingSpacing();
     void testGroupIndentSetup();
@@ -171,12 +172,12 @@ class TestQgsLegendRenderer : public QgsTest
 
     static void setStandardTestFont( QgsLegendSettings &settings, const QString &style = QStringLiteral( "Roman" ) )
     {
-      for ( const QgsLegendStyle::Style st :
+      for ( const Qgis::LegendComponent st :
             {
-              QgsLegendStyle::Title,
-              QgsLegendStyle::Group,
-              QgsLegendStyle::Subgroup,
-              QgsLegendStyle::SymbolLabel
+              Qgis::LegendComponent::Title,
+              Qgis::LegendComponent::Group,
+              Qgis::LegendComponent::Subgroup,
+              Qgis::LegendComponent::SymbolLabel
             } )
       {
         QFont font( QgsFontUtils::getStandardTestFont( style ) );
@@ -307,7 +308,7 @@ void TestQgsLegendRenderer::init()
 
   mRL = new QgsRasterLayer( QString( tempFileName ), QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
 
-  std::unique_ptr<TestRasterRenderer> rasterRenderer( new TestRasterRenderer( mRL->dataProvider(), 1, { QgsPalettedRasterRenderer::Class( 1, QColor( 0, 0, 0 ), QStringLiteral( "1" ) ), QgsPalettedRasterRenderer::Class( 2, QColor( 255, 255, 255 ), QStringLiteral( "2" ) ) } ) );
+  auto rasterRenderer = std::make_unique<TestRasterRenderer>( mRL->dataProvider(), 1, QgsPalettedRasterRenderer::ClassData { QgsPalettedRasterRenderer::Class( 1, QColor( 0, 0, 0 ), QStringLiteral( "1" ) ), QgsPalettedRasterRenderer::Class( 2, QColor( 255, 255, 255 ), QStringLiteral( "2" ) ) } );
   mRL->setRenderer( rasterRenderer.release() );
 
   QgsProject::instance()->addMapLayer( mRL );
@@ -462,8 +463,8 @@ void TestQgsLegendRenderer::testOverrideSizeSmall()
   legendModel.refreshLayerLegend( layer );
 
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, 0 );
-  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Bottom, 0 );
+  settings.rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Top, 0 );
+  settings.rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Bottom, 0 );
   settings.setMinimumSymbolSize( 5 );
   settings.setMaximumSymbolSize( 9 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
@@ -484,20 +485,20 @@ void TestQgsLegendRenderer::testSpacing()
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
 
-  settings.rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Left, 7 );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Left, 11 );
-  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Left, 5 );
+  settings.rstyle( Qgis::LegendComponent::Group ).setMargin( QgsLegendStyle::Left, 7 );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Left, 11 );
+  settings.rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Left, 5 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignLeft );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignLeft );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignLeft );
 
   QImage res = renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_left_align_side_space" ) ) );
 
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignRight );
   settings.setSymbolAlignment( Qt::AlignRight );
 
   res = renderLegend( &legendModel, settings );
@@ -615,13 +616,13 @@ void TestQgsLegendRenderer::testOverrideSymbol()
 
   QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL2 );
 
-  std::unique_ptr<QgsFillSymbol> sym2 = std::make_unique<QgsFillSymbol>();
+  auto sym2 = std::make_unique<QgsFillSymbol>();
   sym2->setColor( Qt::red );
 
   QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
   qgis::down_cast<QgsSymbolLegendNode *>( embeddedNode )->setCustomSymbol( sym2.release() );
 
-  std::unique_ptr<QgsMarkerSymbol> sym3 = std::make_unique<QgsMarkerSymbol>();
+  auto sym3 = std::make_unique<QgsMarkerSymbol>();
   sym3->setColor( QColor( 0, 150, 0 ) );
   sym3->setSize( 6 );
 
@@ -647,9 +648,9 @@ void TestQgsLegendRenderer::testCenterAlignText()
 
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignHCenter );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignHCenter );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignHCenter );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignHCenter );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignHCenter );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignHCenter );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
   QImage res = renderLegend( &legendModel, settings );
@@ -672,9 +673,9 @@ void TestQgsLegendRenderer::testLeftAlignTextRightAlignSymbol()
 
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignLeft );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignLeft );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignLeft );
   settings.setSymbolAlignment( Qt::AlignRight );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
@@ -698,9 +699,9 @@ void TestQgsLegendRenderer::testCenterAlignTextRightAlignSymbol()
 
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignHCenter );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignHCenter );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignHCenter );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignHCenter );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignHCenter );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignHCenter );
   settings.setSymbolAlignment( Qt::AlignRight );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
@@ -724,9 +725,9 @@ void TestQgsLegendRenderer::testRightAlignTextRightAlignSymbol()
 
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignRight );
   settings.setSymbolAlignment( Qt::AlignRight );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
@@ -737,6 +738,46 @@ void TestQgsLegendRenderer::testRightAlignTextRightAlignSymbol()
 
   res = renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_two_cols_right_align_symbol_right_align_text" ) ) );
+}
+
+void TestQgsLegendRenderer::testDataDefinedTextFormat()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+
+  setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  QgsTextFormat format = settings.style( Qgis::LegendComponent::Group ).textFormat();
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( "@text_color_group" ) );
+  settings.rstyle( Qgis::LegendComponent::Group ).setTextFormat( format );
+
+  format = settings.style( Qgis::LegendComponent::Subgroup ).textFormat();
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( "@text_color_subgroup" ) );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setTextFormat( format );
+
+  format = settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( "@text_color_symbol_label" ) );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setTextFormat( format );
+
+  QgsExpressionContext context;
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( QStringLiteral( "text_color_group" ), QStringLiteral( "255,0,0" ) );
+  scope->setVariable( QStringLiteral( "text_color_subgroup" ), QStringLiteral( "0,255,255" ) );
+  scope->setVariable( QStringLiteral( "text_color_symbol_label" ), QStringLiteral( "255,0,255" ) );
+  context.appendScope( scope );
+
+  QgsRenderContext rc;
+  rc.setExpressionContext( context );
+  settings.updateDataDefinedProperties( rc );
+
+  QImage res = renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "data_defined_text_format" ) ) );
 }
 
 void TestQgsLegendRenderer::testGroupHeadingSpacing()
@@ -750,10 +791,10 @@ void TestQgsLegendRenderer::testGroupHeadingSpacing()
 
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, 5 );
-  settings.rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Bottom, 17 );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, 13 );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Bottom, 9 );
+  settings.rstyle( Qgis::LegendComponent::Group ).setMargin( QgsLegendStyle::Top, 5 );
+  settings.rstyle( Qgis::LegendComponent::Group ).setMargin( QgsLegendStyle::Bottom, 17 );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Top, 13 );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Bottom, 9 );
   settings.setSymbolAlignment( Qt::AlignRight );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
@@ -788,8 +829,8 @@ void TestQgsLegendRenderer::testGroupIndentDefault()
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  settings.rstyle( Qgis::LegendComponent::Group ).setIndent( 10 );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setIndent( 5 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
   QImage res = renderLegend( &legendModel, settings );
@@ -807,12 +848,12 @@ void TestQgsLegendRenderer::testGroupIndentRT()
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  settings.rstyle( Qgis::LegendComponent::Group ).setIndent( 10 );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setIndent( 5 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignRight );
 
   QImage res = renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_group_indent_right_align_text" ) ) );
@@ -829,12 +870,12 @@ void TestQgsLegendRenderer::testGroupIndentRS()
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  settings.rstyle( Qgis::LegendComponent::Group ).setIndent( 10 );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setIndent( 5 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignLeft );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignLeft );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignLeft );
   settings.setSymbolAlignment( Qt::AlignRight );
 
   QImage res = renderLegend( &legendModel, settings );
@@ -852,12 +893,12 @@ void TestQgsLegendRenderer::testGroupIndentRSRT()
   catRenderer->updateCategorySymbol( 0, sym );
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  settings.rstyle( Qgis::LegendComponent::Group ).setIndent( 10 );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setIndent( 5 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignRight );
   settings.setSymbolAlignment( Qt::AlignRight );
 
   QImage res = renderLegend( &legendModel, settings );
@@ -875,9 +916,9 @@ void TestQgsLegendRenderer::testRightAlignText()
 
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
-  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignRight );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
   QImage res = renderLegend( &legendModel, settings );
@@ -912,7 +953,7 @@ void TestQgsLegendRenderer::testMapUnits()
   sym->setSizeUnit( Qgis::RenderUnit::Millimeters );
   catRenderer->updateCategorySymbol( 2, sym );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( mVL3 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1074,7 +1115,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
 
   const QString testName = QStringLiteral( "legend_filter_by_map_dupe" );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1101,7 +1142,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsFillSymbol *sym = new QgsFillSymbol();
   sym->setColor( Qt::cyan );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
 
   QList<QgsVectorLayer *> layers;
   for ( int i = 1; i <= itemCount; ++i )
@@ -1117,7 +1158,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsLayerTreeModel legendModel( root.get() );
   QgsLegendSettings settings;
   settings.setColumnCount( columnCount );
-  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpacing );
+  settings.rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpacing );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   const QImage res = renderLegend( &legendModel, settings );
   const bool result = _verifyImage( res, testName );
@@ -1305,7 +1346,7 @@ void TestQgsLegendRenderer::testRasterStroke()
 {
   const QString testName = QStringLiteral( "legend_raster_border" );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( mRL );
 
   QgsLayerTreeModel legendModel( root.get() );
@@ -1392,7 +1433,7 @@ void TestQgsLegendRenderer::testFilterByExpressionWithContext()
 {
   const QString testName = QStringLiteral( "legend_filter_by_expression_context" );
 
-  std::unique_ptr<QgsLayerTree> root = std::make_unique<QgsLayerTree>();
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( mVL3 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1405,7 +1446,7 @@ void TestQgsLegendRenderer::testFilterByExpressionWithContext()
 
 
   QgsExpressionContext context;
-  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "test_scope" ) );
+  auto scope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "test_scope" ) );
   scope->setVariable( QStringLiteral( "test_var" ), QStringLiteral( "test_value" ) );
   context.appendScope( scope.release() );
 
@@ -1480,7 +1521,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1515,9 +1556,9 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
   layer->setRendererSettings( rendererSettings );
 
-  std::unique_ptr<QgsLayerTree> root( std::make_unique<QgsLayerTree>() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( layer );
-  std::unique_ptr<QgsLayerTreeModel> legendModel( std::make_unique<QgsLayerTreeModel>( root.get() ) );
+  auto legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
 
   QgsLegendSettings settings;
 
@@ -1598,7 +1639,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -1925,7 +1966,7 @@ void TestQgsLegendRenderer::testColumnsMixedSymbolSize()
   QgsMarkerSymbol *sym = new QgsMarkerSymbol();
   sym->setColor( Qt::cyan );
 
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
 
   QList<QgsVectorLayer *> layers;
   for ( double size : { 4, 5, 16 } )
@@ -1942,7 +1983,7 @@ void TestQgsLegendRenderer::testColumnsMixedSymbolSize()
   QgsLayerTreeModel legendModel( root.get() );
   QgsLegendSettings settings;
   settings.setColumnCount( 2 );
-  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, 9 );
+  settings.rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Side::Top, 9 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   const QImage res = renderLegend( &legendModel, settings );
 
@@ -2140,7 +2181,7 @@ void TestQgsLegendRenderer::testLabelLegend()
 
 void TestQgsLegendRenderer::testHeatmap()
 {
-  std::unique_ptr<QgsLayerTree> root( new QgsLayerTree() );
+  auto root = std::make_unique<QgsLayerTree>();
 
   QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Points" ), QStringLiteral( "Points" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( vl );
@@ -2163,7 +2204,7 @@ void TestQgsLegendRenderer::testHeatmap()
 
   QgsLayerTreeModel legendModel( root.get() );
   QgsLegendSettings settings;
-  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, 9 );
+  settings.rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Side::Top, 9 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   const QImage res = renderLegend( &legendModel, settings );
 

@@ -32,7 +32,7 @@ QgsMeshTerrainSettings::~QgsMeshTerrainSettings() = default;
 
 QgsMeshTerrainSettings *QgsMeshTerrainSettings::clone() const
 {
-  std::unique_ptr<QgsMeshTerrainSettings> cloned = std::make_unique<QgsMeshTerrainSettings>();
+  auto cloned = std::make_unique<QgsMeshTerrainSettings>();
   cloned->mSymbol.reset( mSymbol->clone() );
   cloned->mLayer = mLayer;
   cloned->copyCommonProperties( this );
@@ -97,7 +97,7 @@ bool QgsMeshTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) c
 
 std::unique_ptr<QgsTerrainGenerator> QgsMeshTerrainSettings::createTerrainGenerator( const Qgs3DRenderContext &context ) const
 {
-  std::unique_ptr<QgsMeshTerrainGenerator> generator = std::make_unique<QgsMeshTerrainGenerator>();
+  auto generator = std::make_unique<QgsMeshTerrainGenerator>();
   generator->setLayer( layer() );
   std::unique_ptr<QgsMesh3DSymbol> symbol( mSymbol->clone() );
   symbol->setVerticalScale( verticalScale() );

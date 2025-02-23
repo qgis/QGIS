@@ -161,6 +161,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     QList<int> dataTypes;
     dataTypes = static_cast<QgsProcessingParameterMapLayer *>( mParameter.get() )->dataTypes();
 
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) )
+      filters |= Qgis::LayerFilter::VectorLayer;
     if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) )
       filters |= Qgis::LayerFilter::HasGeometry;
     if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) )
@@ -221,7 +223,9 @@ QgsProcessingMapLayerComboBox::~QgsProcessingMapLayerComboBox() = default;
 void QgsProcessingMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
   if ( layer || mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
+  {
     mCombo->setLayer( layer );
+  }
 }
 
 QgsMapLayer *QgsProcessingMapLayerComboBox::currentLayer()

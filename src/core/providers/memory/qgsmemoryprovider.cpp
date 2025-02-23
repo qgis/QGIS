@@ -682,6 +682,9 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         continue;
 
       QVariant attrValue = it2.value();
+      if ( attrValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
+
       // Check attribute conversion
       const bool conversionError { ! QgsVariantUtils::isNull( attrValue )
                                    && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
@@ -804,9 +807,14 @@ Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
 
 Qgis::VectorProviderCapabilities QgsMemoryProvider::capabilities() const
 {
-  return Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeGeometries |
-         Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::CreateSpatialIndex |
-         Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::FastTruncate;
+  Qgis::VectorProviderCapabilities caps { Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures |
+                                          Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes |
+                                          Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::FastTruncate };
+  if ( mWkbType != Qgis::WkbType::NoGeometry )
+  {
+    caps |=  Qgis::VectorProviderCapability::CreateSpatialIndex | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::ChangeGeometries ;
+  }
+  return caps;
 }
 
 bool QgsMemoryProvider::truncate()

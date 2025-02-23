@@ -134,7 +134,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
 
   for ( const QgsDatumTransform::TransformDetails &transform : std::as_const( mDatumTransforms ) )
   {
-    std::unique_ptr<QTableWidgetItem> item = std::make_unique<QTableWidgetItem>();
+    auto item = std::make_unique<QTableWidgetItem>();
     item->setData( ProjRole, transform.proj );
     item->setData( AvailableRole, transform.isAvailable );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );

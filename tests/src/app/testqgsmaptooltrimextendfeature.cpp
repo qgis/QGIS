@@ -234,7 +234,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       //       |           + (2,1) |
       // (0,0) +-------------------+ (3,0)
       mCanvas->setCurrentLayer( vlPolygon.get() );
-      std::unique_ptr<QgsMapToolTrimExtendFeature> tool( new QgsMapToolTrimExtendFeature( mCanvas ) );
+      auto tool = std::make_unique<QgsMapToolTrimExtendFeature>( mCanvas );
 
       vlPolygon->startEditing();
       // Limit
@@ -298,7 +298,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
        *      |
        */
       mCanvas->setCurrentLayer( vlMultiLine.get() );
-      std::unique_ptr<QgsMapToolTrimExtendFeature> tool( new QgsMapToolTrimExtendFeature( mCanvas ) );
+      auto tool = std::make_unique<QgsMapToolTrimExtendFeature>( mCanvas );
 
       vlMultiLine->startEditing();
       // Limit
@@ -450,7 +450,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       (0 5 100)      (3 5 5)
       */
       mCanvas->setCurrentLayer( vlLineZ.get() );
-      std::unique_ptr<QgsMapToolTrimExtendFeature> tool( new QgsMapToolTrimExtendFeature( mCanvas ) );
+      auto tool = std::make_unique<QgsMapToolTrimExtendFeature>( mCanvas );
 
       vlLineZ->startEditing();
       // Limit
@@ -507,7 +507,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       QgsProject::instance()->setTopologicalEditing( true );
 
       mCanvas->setCurrentLayer( vlTopoEdit.get() );
-      std::unique_ptr<QgsMapToolTrimExtendFeature> tool( new QgsMapToolTrimExtendFeature( mCanvas ) );
+      auto tool = std::make_unique<QgsMapToolTrimExtendFeature>( mCanvas );
 
       vlTopoLimit->startEditing();
       vlTopoEdit->startEditing();
@@ -572,7 +572,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
        *                        + (5, 0)
        */
       mCanvas->setCurrentLayer( vlMultiExtend.get() );
-      std::unique_ptr<QgsMapToolTrimExtendFeature> tool( new QgsMapToolTrimExtendFeature( mCanvas ) );
+      auto tool = std::make_unique<QgsMapToolTrimExtendFeature>( mCanvas );
 
       vlMultiExtend->startEditing();
       // Limit

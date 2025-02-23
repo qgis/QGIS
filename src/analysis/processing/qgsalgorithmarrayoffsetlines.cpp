@@ -72,13 +72,13 @@ QgsCreateArrayOffsetLinesAlgorithm *QgsCreateArrayOffsetLinesAlgorithm::createIn
 
 void QgsCreateArrayOffsetLinesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> count = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1 );
+  auto count = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1 );
   count->setIsDynamic( true );
   count->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   count->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( count.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> offset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "OFFSET" ), QObject::tr( "Offset step distance" ), 1.0, QStringLiteral( "INPUT" ) );
+  auto offset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "OFFSET" ), QObject::tr( "Offset step distance" ), 1.0, QStringLiteral( "INPUT" ) );
   offset->setIsDynamic( true );
   offset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "OFFSET" ), QObject::tr( "Step distance" ), QgsPropertyDefinition::Double ) );
   offset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

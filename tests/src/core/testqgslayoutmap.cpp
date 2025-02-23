@@ -1927,7 +1927,7 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
 void TestQgsLayoutMap::testTemporal()
 {
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemMap> map = std::make_unique<QgsLayoutItemMap>( &l );
+  auto map = std::make_unique<QgsLayoutItemMap>( &l );
   const QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
   const QDateTime end = begin.addSecs( 3600 );
 
@@ -2049,7 +2049,7 @@ void TestQgsLayoutMap::testLabelResults()
 void TestQgsLayoutMap::testZRange()
 {
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemMap> map = std::make_unique<QgsLayoutItemMap>( &l );
+  auto map = std::make_unique<QgsLayoutItemMap>( &l );
 
   QgsMapSettings settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
   QVERIFY( settings.zRange().isInfinite() );

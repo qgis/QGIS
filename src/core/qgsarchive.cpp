@@ -76,9 +76,18 @@ bool QgsArchive::zip( const QString &filename )
     return false;
   }
 
+  QString target {filename};
+
   // remove existing zip file
-  if ( QFile::exists( filename ) )
-    QFile::remove( filename );
+  if ( QFile::exists( target ) )
+  {
+    // If symlink -> we want to write to its target instead
+    const QFileInfo targetFileInfo( target );
+    target = targetFileInfo.canonicalFilePath();
+    // If target still exists, remove (might not exist if was a dangling symlink)
+    if ( QFile::exists( target ) )
+      QFile::remove( target );
+  }
 
 #ifdef Q_OS_WIN
   // Clear temporary flag (see GH #32118)
@@ -94,9 +103,9 @@ bool QgsArchive::zip( const QString &filename )
 #endif // Q_OS_WIN
 
   // save zip archive
-  if ( ! tmpFile.rename( filename ) )
+  if ( ! tmpFile.rename( target ) )
   {
-    const QString err = QObject::tr( "Unable to save zip file '%1'" ).arg( filename );
+    const QString err = QObject::tr( "Unable to save zip file '%1'" ).arg( target );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
     return false;
   }

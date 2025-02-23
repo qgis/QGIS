@@ -219,7 +219,7 @@ void QgsStyleManagerDialog::init()
   downloadButton->setToolTip( tr( "Download new styles from the online QGIS style repository" ) );
   downloadButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFindReplace.svg" ) ) );
   connect( downloadButton, &QPushButton::clicked, this, [=] {
-    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://plugins.qgis.org/styles" ) ) );
+    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://hub.qgis.org/styles/" ) ) );
   } );
 
   mMessageBar = new QgsMessageBar();

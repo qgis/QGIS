@@ -235,7 +235,7 @@ QString QgsAwsS3ExternalStorage::displayName() const
 
 QgsExternalStorageStoredContent *QgsAwsS3ExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {
-  std::unique_ptr<QgsHttpExternalStorageStoredContent> storedContent = std::make_unique<QgsHttpExternalStorageStoredContent>( filePath, url, authcfg );
+  auto storedContent = std::make_unique<QgsHttpExternalStorageStoredContent>( filePath, url, authcfg );
   storedContent->setPrepareRequestHandler( []( QNetworkRequest & request, QFile * f )
   {
     QCryptographicHash payloadCrypto( QCryptographicHash::Sha256 );

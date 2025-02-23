@@ -72,7 +72,7 @@ QgsNumericFormat *QgsPercentageNumericFormat::clone() const
 
 QgsNumericFormat *QgsPercentageNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsPercentageNumericFormat > res = std::make_unique< QgsPercentageNumericFormat >();
+  auto res = std::make_unique< QgsPercentageNumericFormat >();
   res->setConfiguration( configuration, context );
   res->mInputValues = static_cast< InputValues >( configuration.value( QStringLiteral( "input_values" ), static_cast< int >( ValuesArePercentage ) ).toInt() );
   res->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );

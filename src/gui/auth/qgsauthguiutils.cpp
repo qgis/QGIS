@@ -197,20 +197,43 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, QWidget *paren
   // get new password via dialog; do current password verification in-dialog
   QString newpass;
   QString oldpass;
+
   bool keepbackup = false;
   QgsMasterPasswordResetDialog dlg( parent );
 
-  if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
-    return;
-  }
-
   QString backuppath;
-  if ( !QgsApplication::authManager()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
+  // if password helper enabled and user is using the default random generated password, then
+  // just fill this in automatically (the user will have NO idea what this is!)
+  if ( QgsApplication::authManager()->verifyStoredPasswordHelperPassword()
+       && ( QgsApplication::authManager()->masterPasswordIsSet() || QgsApplication::authManager()->setMasterPassword( true ) )
+       && QgsAuthManager::settingsUsingGeneratedRandomPassword->value() )
   {
-    msg = QObject::tr( "Master password FAILED to be reset" );
-    level = Qgis::MessageLevel::Warning;
+    dlg.oldPasswordLineEdit()->setText( QStringLiteral( "***************" ) );
+    dlg.oldPasswordLineEdit()->setEnabled( false );
+    dlg.oldPasswordLineEdit()->setToolTip( QObject::tr( "Existing password has been automatically read from the %1" ).arg( QgsAuthManager::passwordHelperDisplayName() ) );
+    if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
+      return;
+    }
+    if ( !QgsApplication::authManager()->resetMasterPasswordUsingStoredPasswordHelper( newpass, keepbackup, &backuppath ) )
+    {
+      msg = QObject::tr( "Master password FAILED to be reset" );
+      level = Qgis::MessageLevel::Warning;
+    }
+  }
+  else
+  {
+    if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Master password reset: input canceled by user" ), 2 );
+      return;
+    }
+    if ( !QgsApplication::authManager()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
+    {
+      msg = QObject::tr( "Master password FAILED to be reset" );
+      level = Qgis::MessageLevel::Warning;
+    }
   }
 
   if ( !backuppath.isEmpty() )
@@ -331,7 +354,7 @@ QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title,
 
 void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *parent )
 {
-  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from your %1?" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( QMessageBox::warning( parent, QObject::tr( "Delete Password" ), QObject::tr( "Do you really want to delete the master password from the %1?" ).arg( QgsAuthManager::passwordHelperDisplayName() ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -344,8 +367,8 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
   }
   else
   {
-    msg = QObject::tr( "Master password was successfully deleted from your %1" )
-            .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+    msg = QObject::tr( "Master password was successfully deleted from the %1" )
+            .arg( QgsAuthManager::passwordHelperDisplayName() );
 
     level = Qgis::MessageLevel::Info;
   }
@@ -353,39 +376,13 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, QWidget *pare
   msgbar->pushMessage( QObject::tr( "Password helper delete" ), msg, level );
 }
 
-void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar )
-{
-  QString msg;
-  Qgis::MessageLevel level;
-  if ( !QgsApplication::authManager()->masterPasswordIsSet() )
-  {
-    msg = QObject::tr( "Master password is not set and cannot be stored in your %1." )
-            .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
-    level = Qgis::MessageLevel::Warning;
-  }
-  else if ( !QgsApplication::authManager()->passwordHelperSync() )
-  {
-    msg = QgsApplication::authManager()->passwordHelperErrorMessage();
-    level = Qgis::MessageLevel::Warning;
-  }
-  else
-  {
-    msg = QObject::tr( "Master password has been successfully stored in your %1." )
-            .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
-
-    level = Qgis::MessageLevel::Info;
-  }
-  msgbar->clearWidgets();
-  msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, level );
-}
-
 void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar )
 {
   QgsApplication::authManager()->setPasswordHelperEnabled( enabled );
   const QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME )
+                                  .arg( QgsAuthManager::passwordHelperDisplayName() )
                               : QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
-                                  .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+                                  .arg( QgsAuthManager::passwordHelperDisplayName() );
   msgbar->clearWidgets();
   msgbar->pushMessage( QObject::tr( "Password helper write" ), msg, Qgis::MessageLevel::Info );
 }

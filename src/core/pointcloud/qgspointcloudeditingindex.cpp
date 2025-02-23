@@ -47,11 +47,6 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mIsValid = true;
 }
 
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsPointCloudEditingIndex::clone() const
-{
-  return nullptr;
-}
-
 void QgsPointCloudEditingIndex::load( const QString & )
 {
   return;
@@ -92,6 +87,16 @@ QgsPointCloudNode QgsPointCloudEditingIndex::getNode( const QgsPointCloudNodeId 
   return mIndex.getNode( id );
 }
 
+bool QgsPointCloudEditingIndex::setSubsetString( const QString &subset )
+{
+  return mIndex.setSubsetString( subset );
+}
+
+QString QgsPointCloudEditingIndex::subsetString() const
+{
+  return mIndex.subsetString();
+}
+
 std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
   if ( mEditedNodeData.contains( n ) )
@@ -99,7 +104,7 @@ std::unique_ptr< QgsPointCloudBlock > QgsPointCloudEditingIndex::nodeData( const
     // we need to create a copy of the expression to pass to the decoder
     // as the same QgsPointCloudExpression object mighgt be concurrently
     // used on another thread, for example in a 3d view
-    QgsPointCloudExpression filterExpression = mFilterExpression;
+    QgsPointCloudExpression filterExpression = QgsPointCloudExpression( request.ignoreIndexFilterEnabled() ? QString() : subsetString() );
     QgsPointCloudAttributeCollection requestAttributes = request.attributes();
     requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
@@ -188,6 +193,11 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
 bool QgsPointCloudEditingIndex::isModified() const
 {
   return !mEditedNodeData.isEmpty();
+}
+
+QList<QgsPointCloudNodeId> QgsPointCloudEditingIndex::updatedNodes() const
+{
+  return mEditedNodeData.keys();
 }
 
 bool QgsPointCloudEditingIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data )

@@ -2549,6 +2549,22 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterT
 # --
 Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.UriCleaningFlag.RemoveCredentials.__doc__ = "Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag."
+Qgis.UriCleaningFlag.RedactCredentials.__doc__ = "Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag."
+Qgis.UriCleaningFlag.__doc__ = """Flags for cleaning layer URIs.
+
+.. versionadded:: 3.42
+
+* ``RemoveCredentials``: Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag.
+* ``RedactCredentials``: Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag.
+
+"""
+# --
+Qgis.UriCleaningFlag.baseClass = Qgis
+Qgis.UriCleaningFlags = lambda flags=0: Qgis.UriCleaningFlag(flags)
+Qgis.UriCleaningFlags.baseClass = Qgis
+UriCleaningFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
@@ -7733,6 +7749,46 @@ Qgis.LayerTreeFilterFlag.baseClass = Qgis
 Qgis.LayerTreeFilterFlags = lambda flags=0: Qgis.LayerTreeFilterFlag(flags)
 Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLegendStyle.Style = Qgis.LegendComponent
+# monkey patching scoped based enum
+QgsLegendStyle.Undefined = Qgis.LegendComponent.Undefined
+QgsLegendStyle.Undefined.is_monkey_patched = True
+QgsLegendStyle.Undefined.__doc__ = "Should not happen, only if corrupted project file"
+QgsLegendStyle.Hidden = Qgis.LegendComponent.Hidden
+QgsLegendStyle.Hidden.is_monkey_patched = True
+QgsLegendStyle.Hidden.__doc__ = "Special style, item is hidden including margins around"
+QgsLegendStyle.Title = Qgis.LegendComponent.Title
+QgsLegendStyle.Title.is_monkey_patched = True
+QgsLegendStyle.Title.__doc__ = "Legend title"
+QgsLegendStyle.Group = Qgis.LegendComponent.Group
+QgsLegendStyle.Group.is_monkey_patched = True
+QgsLegendStyle.Group.__doc__ = "Legend group title"
+QgsLegendStyle.Subgroup = Qgis.LegendComponent.Subgroup
+QgsLegendStyle.Subgroup.is_monkey_patched = True
+QgsLegendStyle.Subgroup.__doc__ = "Legend subgroup title"
+QgsLegendStyle.Symbol = Qgis.LegendComponent.Symbol
+QgsLegendStyle.Symbol.is_monkey_patched = True
+QgsLegendStyle.Symbol.__doc__ = "Symbol icon (excluding label)"
+QgsLegendStyle.SymbolLabel = Qgis.LegendComponent.SymbolLabel
+QgsLegendStyle.SymbolLabel.is_monkey_patched = True
+QgsLegendStyle.SymbolLabel.__doc__ = "Symbol label (excluding icon)"
+Qgis.LegendComponent.__doc__ = """Component of legends which can be styled.
+
+Prior to QGIS 3.42 this was available as :py:class:`QgsLegendStyle`.Style
+
+.. versionadded:: 3.42
+
+* ``Undefined``: Should not happen, only if corrupted project file
+* ``Hidden``: Special style, item is hidden including margins around
+* ``Title``: Legend title
+* ``Group``: Legend group title
+* ``Subgroup``: Legend subgroup title
+* ``Symbol``: Symbol icon (excluding label)
+* ``SymbolLabel``: Symbol label (excluding icon)
+
+"""
+# --
+Qgis.LegendComponent.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
 Qgis.LegendJsonRenderFlag.__doc__ = """Legend JSON export flags.
@@ -7790,6 +7846,7 @@ Qgis.MapLayerActionTargets.baseClass = Qgis
 MapLayerActionTargets = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
+Qgis.MapLayerActionFlag.EnableOnlyWhenHasGeometry.__doc__ = "Action should be shown only for layers with geometry, \n.. versionadded:: 3.42"
 Qgis.MapLayerActionFlag.__doc__ = """Map layer action flags.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
@@ -7797,6 +7854,10 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
 .. versionadded:: 3.30
 
 * ``EnabledOnlyWhenEditable``: Action should be shown only for editable layers
+* ``EnableOnlyWhenHasGeometry``: Action should be shown only for layers with geometry,
+
+  .. versionadded:: 3.42
+
 
 """
 # --
@@ -11145,6 +11206,23 @@ Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
 """
 # --
 Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SegmentCalculationMethod.Standard.__doc__ = "Standard sagitta-based calculation"
+Qgis.SegmentCalculationMethod.Adaptive.__doc__ = "Adaptive calculation based on radius size"
+Qgis.SegmentCalculationMethod.AreaError.__doc__ = "Calculation based on area error"
+Qgis.SegmentCalculationMethod.ConstantDensity.__doc__ = "Simple calculation with constant segment density"
+Qgis.SegmentCalculationMethod.__doc__ = """brief Method used to calculate the number of segments for circle approximation
+
+.. versionadded:: 3.44
+
+* ``Standard``: Standard sagitta-based calculation
+* ``Adaptive``: Adaptive calculation based on radius size
+* ``AreaError``: Calculation based on area error
+* ``ConstantDensity``: Simple calculation with constant segment density
+
+"""
+# --
+Qgis.SegmentCalculationMethod.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.'}
     Qgis.version = staticmethod(Qgis.version)

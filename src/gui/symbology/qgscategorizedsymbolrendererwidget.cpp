@@ -708,6 +708,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( btnAddCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::addCategories );
   connect( btnDeleteCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteCategories );
   connect( btnDeleteAllCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteAllCategories );
+  connect( btnDeleteUnusedCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteUnusedCategories );
   connect( btnAddCategory, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::addCategory );
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsCategorizedSymbolRendererWidget::applyColorRamp );
@@ -900,34 +901,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
   const QString attrName = mExpressionWidget->currentField();
-  const int idx = mLayer->fields().lookupField( attrName );
-  QList<QVariant> uniqueValues;
-  if ( idx == -1 )
-  {
-    // Lets assume it's an expression
-    QgsExpression *expression = new QgsExpression( attrName );
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::atlasScope( nullptr )
-            << QgsExpressionContextUtils::layerScope( mLayer );
-
-    expression->prepare( &context );
-    QgsFeatureIterator fit = mLayer->getFeatures();
-    QgsFeature feature;
-    while ( fit.nextFeature( feature ) )
-    {
-      context.setFeature( feature );
-      const QVariant value = expression->evaluate( &context );
-      if ( uniqueValues.contains( value ) )
-        continue;
-      uniqueValues << value;
-    }
-  }
-  else
-  {
-    uniqueValues = qgis::setToList( mLayer->uniqueValues( idx ) );
-  }
+  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
 
   // ask to abort if too many classes
   if ( uniqueValues.size() >= 1000 )
@@ -1031,7 +1005,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   */
 
   // recreate renderer
-  std::unique_ptr<QgsCategorizedSymbolRenderer> r = std::make_unique<QgsCategorizedSymbolRenderer>( attrName, cats );
+  auto r = std::make_unique<QgsCategorizedSymbolRenderer>( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
   std::unique_ptr<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
   if ( ramp )
@@ -1091,6 +1065,62 @@ void QgsCategorizedSymbolRendererWidget::deleteAllCategories()
 {
   mModel->removeAllRows();
   emit widgetChanged();
+}
+
+void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
+{
+  if ( !mRenderer )
+    return;
+  const QString attrName = mExpressionWidget->currentField();
+  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
+
+  const QgsCategoryList catList = mRenderer->categories();
+
+  QList<int> unusedIndexes;
+
+  for ( int i = 0; i < catList.size(); ++i )
+  {
+    const QgsRendererCategory cat = catList.at( i );
+    if ( !uniqueValues.contains( cat.value() ) )
+    {
+      unusedIndexes.append( i );
+    }
+  }
+  mModel->deleteRows( unusedIndexes );
+  emit widgetChanged();
+}
+
+QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QString &attrName )
+{
+  const int idx = mLayer->fields().lookupField( attrName );
+  QList<QVariant> uniqueValues;
+  if ( idx == -1 )
+  {
+    // Lets assume it's an expression
+    QgsExpression expression = QgsExpression( attrName );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::atlasScope( nullptr )
+            << QgsExpressionContextUtils::layerScope( mLayer );
+
+    expression.prepare( &context );
+    QgsFeatureIterator fit = mLayer->getFeatures();
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
+    {
+      context.setFeature( feature );
+      const QVariant value = expression.evaluate( &context );
+      if ( uniqueValues.contains( value ) )
+        continue;
+      uniqueValues << value;
+    }
+  }
+  else
+  {
+    uniqueValues = qgis::setToList( mLayer->uniqueValues( idx ) );
+  }
+  return uniqueValues;
 }
 
 void QgsCategorizedSymbolRendererWidget::addCategory()
