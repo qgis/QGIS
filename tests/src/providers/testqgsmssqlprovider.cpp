@@ -55,6 +55,7 @@ class TestQgsMssqlProvider : public QObject
     void testGeomTypeResolutionInvalid();
     void testGeomTypeResolutionInvalidNoWorkaround();
     void testFieldsForTable();
+    void testFieldsForQuery();
 
   private:
     QString mDbConn;
@@ -439,6 +440,58 @@ void TestQgsMssqlProvider::testFieldsForTable()
   QCOMPARE( details.attributeFields.at( 7 ).name(), QStringLiteral( "time" ) );
   QCOMPARE( details.attributeFields.at( 7 ).type(), QVariant::Time );
   QCOMPARE( details.attributeFields.at( 7 ).typeName(), QStringLiteral( "time" ) );
+}
+
+void TestQgsMssqlProvider::testFieldsForQuery()
+{
+  QgsDataSourceUri uri( mDbConn );
+
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
+
+  QgsMssqlDatabase::FieldDetails details;
+  QString error;
+  QVERIFY( db->loadQueryFields( details, QStringLiteral( "SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS _uid1_, concat('a', cnt ) as b, cast(cnt as numeric)/100 as c, * FROM [qgis_test].[someData]" ), error ) );
+  QCOMPARE( error, QString() );
+  QCOMPARE( details.attributeFields.size(), 11 );
+
+  QCOMPARE( details.attributeFields.at( 0 ).name(), QStringLiteral( "_uid1_" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).type(), QVariant::LongLong );
+  QCOMPARE( details.attributeFields.at( 0 ).typeName(), QStringLiteral( "bigint" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).name(), QStringLiteral( "b" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 1 ).typeName(), QStringLiteral( "varchar(13)" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).name(), QStringLiteral( "c" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).type(), QVariant::Double );
+  QCOMPARE( details.attributeFields.at( 2 ).typeName(), QStringLiteral( "numeric(24,6)" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).length(), 24 );
+  QCOMPARE( details.attributeFields.at( 3 ).name(), QStringLiteral( "pk" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 3 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).name(), QStringLiteral( "cnt" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).type(), QVariant::Int );
+  QCOMPARE( details.attributeFields.at( 4 ).typeName(), QStringLiteral( "int" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 5 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).name(), QStringLiteral( "name2" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 6 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).name(), QStringLiteral( "num_char" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).type(), QVariant::String );
+  QCOMPARE( details.attributeFields.at( 7 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
+  QCOMPARE( details.attributeFields.at( 8 ).name(), QStringLiteral( "dt" ) );
+  QCOMPARE( details.attributeFields.at( 8 ).type(), QVariant::DateTime );
+  QCOMPARE( details.attributeFields.at( 8 ).typeName(), QStringLiteral( "datetime" ) );
+  QCOMPARE( details.attributeFields.at( 9 ).name(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 9 ).type(), QVariant::Date );
+  QCOMPARE( details.attributeFields.at( 9 ).typeName(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 10 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( details.attributeFields.at( 10 ).type(), QVariant::Time );
+  QCOMPARE( details.attributeFields.at( 10 ).typeName(), QStringLiteral( "time(7)" ) );
+
+  QCOMPARE( details.geometryColumnName, QStringLiteral( "geom" ) );
+  QCOMPARE( details.geometryColumnType, QStringLiteral( "geometry" ) );
+  QVERIFY( !details.isGeography );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )

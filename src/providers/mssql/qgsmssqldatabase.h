@@ -93,7 +93,15 @@ class QgsMssqlDatabase
         QList<int> primaryKeyAttrs;
     };
 
+    /**
+     * Loads the field details  corresponding to the specified \a schema and \a tableName.
+     */
     bool loadFields( FieldDetails &details, const QString &schema, const QString &tableName, QString &error );
+
+    /**
+     * Loads the field details corresponding to the specified SQL \a query.
+     */
+    bool loadQueryFields( FieldDetails &details, const QString &query, QString &error );
 
   private:
     QgsMssqlDatabase( const QSqlDatabase &db, const QgsDataSourceUri &uri, bool transaction );
