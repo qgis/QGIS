@@ -128,10 +128,6 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     // Parse type name and num coordinates as stored in geometry_columns table and returns normalized (M, Z or ZM) type name
     static QString typeFromMetadata( const QString &typeName, int numCoords );
 
-    //! Convert values to quoted values for database work
-    static QString quotedValue( const QVariant &value );
-    static QString quotedIdentifier( const QString &value );
-
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
 
