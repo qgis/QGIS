@@ -1090,7 +1090,7 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
   emit widgetChanged();
 }
 
-QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QString attrName )
+QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QString &attrName )
 {
   const int idx = mLayer->fields().lookupField( attrName );
   QList<QVariant> uniqueValues;
