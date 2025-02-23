@@ -34,6 +34,11 @@ class QgsMssqlUtils
      * Returns a quoted string version of a database \a identifier, for safe use in a SQL query.
      */
     static QString quotedIdentifier( const QString &identifier );
+
+    /**
+     * Converts a SQL Server field type name string to the equivalent QVariant type.
+     */
+    static QMetaType::Type convertSqlFieldType( const QString &sqlTypeName );
 };
 
 
