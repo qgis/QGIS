@@ -238,7 +238,6 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
     }
     else
     {
-      const QMetaType::Type sqlType = QgsMssqlUtils::convertSqlFieldType( sqlTypeName );
       if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
       {
         details.primaryKeyType = PrimaryKeyType::Int;
@@ -251,46 +250,14 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
         pkCandidates << colName;
       }
 
-      QgsField field;
-      if ( sqlType == QMetaType::Type::QString )
-      {
-        // Field length in chars is column 7 ("Length") of the sp_columns output,
-        // except for uniqueidentifiers which must use column 6 ("Precision").
-        int length = query.value( sqlTypeName.startsWith( QStringLiteral( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
-        if ( sqlTypeName.startsWith( QLatin1Char( 'n' ) ) )
-        {
-          length = length / 2;
-        }
-        field = QgsField( colName, sqlType, sqlTypeName, length );
-      }
-      else if ( sqlType == QMetaType::Type::Double )
-      {
-        field = QgsField( colName, sqlType, sqlTypeName, query.value( QStringLiteral( "PRECISION" ) ).toInt(), sqlTypeName == QLatin1String( "decimal" ) || sqlTypeName == QLatin1String( "numeric" ) ? query.value( QStringLiteral( "SCALE" ) ).toInt() : -1 );
-      }
-      else if ( sqlType == QMetaType::Type::QDate || sqlType == QMetaType::Type::QDateTime || sqlType == QMetaType::Type::QTime )
-      {
-        field = QgsField( colName, sqlType, sqlTypeName, -1, -1 );
-      }
-      else
-      {
-        field = QgsField( colName, sqlType, sqlTypeName );
-      }
-
-      // Field nullable
+      const int precision = query.value( 6 ).toInt();
+      const int length = query.value( 7 ).toInt();
+      const int scale = query.value( QStringLiteral( "SCALE" ) ).toInt();
       const bool nullable = query.value( QStringLiteral( "NULLABLE" ) ).toBool();
+      const bool unique = setColumnUnique.contains( colName );
+      const bool readOnly = columnIsIdentity;
 
-      // Set constraints
-      QgsFieldConstraints constraints;
-      if ( !nullable )
-        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-      if ( setColumnUnique.contains( colName ) )
-        constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-      field.setConstraints( constraints );
-
-      if ( columnIsIdentity )
-      {
-        field.setReadOnly( true );
-      }
+      const QgsField field = QgsMssqlUtils::createField( colName, sqlTypeName, length, precision, scale, nullable, unique, readOnly );
 
       details.attributeFields.append( field );
 
