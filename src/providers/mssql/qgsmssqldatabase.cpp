@@ -168,6 +168,8 @@ QSqlQuery QgsMssqlDatabase::createQuery()
 QMetaType::Type QgsMssqlDatabase::decodeSqlType( const QString &sqlTypeName )
 {
   QMetaType::Type type = QMetaType::Type::UnknownType;
+  // cloned branches are intentional here for improved readability
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( sqlTypeName.startsWith( QLatin1String( "decimal" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "numeric" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "real" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "float" ), Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::Double;
@@ -210,6 +212,7 @@ QMetaType::Type QgsMssqlDatabase::decodeSqlType( const QString &sqlTypeName )
     // Everything else just dumped as a string.
     type = QMetaType::Type::QString;
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   return type;
 }
