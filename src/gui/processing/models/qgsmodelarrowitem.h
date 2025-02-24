@@ -40,7 +40,7 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     {
       Circle,
       ArrowHead,
-      None
+      NoMarker
     };
 
     /**

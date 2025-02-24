@@ -165,7 +165,7 @@ class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBa
 /**
  * \ingroup gui
  * \brief QgsModelViewBezierRubberBand is a bezier curve rubber band for use within QgsModelGraphicsView widgets.
- * \since QGIS 3.14
+ * \since QGIS 3.44
  */
 class GUI_EXPORT QgsModelViewBezierRubberBand : public QgsModelViewRubberBand
 {

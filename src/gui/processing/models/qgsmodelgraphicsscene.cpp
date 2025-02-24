@@ -186,11 +186,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
             {
-              arrow = new QgsModelArrowItem( link.item, QgsModelArrowItem::Marker::None, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, QgsModelArrowItem::Marker::Circle );
+              arrow = new QgsModelArrowItem( link.item, QgsModelArrowItem::Marker::NoMarker, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, QgsModelArrowItem::Marker::Circle );
             }
             else
             {
-              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true, QgsModelArrowItem::Marker::None, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, true, QgsModelArrowItem::Marker::None );
+              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true, QgsModelArrowItem::Marker::NoMarker, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, true, QgsModelArrowItem::Marker::NoMarker );
             }
             addItem( arrow );
           }

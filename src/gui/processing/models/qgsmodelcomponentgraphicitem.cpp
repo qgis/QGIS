@@ -514,7 +514,7 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
 
 
   bool collapsed = mComponent->linksCollapsed( Qt::TopEdge );
-  for ( QgsModelDesignerSocketGraphicItem *socket : mInSockets )
+  for ( QgsModelDesignerSocketGraphicItem *socket : std::as_const( mInSockets ) )
   {
     const QPointF pt = linkPoint( Qt::TopEdge, socket->index(), true );
     socket->setPosition( pt );
@@ -522,16 +522,12 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
   }
 
   collapsed = mComponent->linksCollapsed( Qt::BottomEdge );
-  for ( QgsModelDesignerSocketGraphicItem *socket : mOutSockets )
+  for ( QgsModelDesignerSocketGraphicItem *socket : std::as_const( mOutSockets ) )
   {
     const QPointF pt = linkPoint( Qt::BottomEdge, socket->index(), false );
     socket->setPosition( pt );
     socket->setVisible( !collapsed );
   }
-  // Add a specific function ?
-  // void QgsModelComponentGraphicItem::updateSocketsPositions()
-  // {
-  // }
 }
 
 QSizeF QgsModelComponentGraphicItem::itemSize() const
@@ -838,10 +834,6 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
   {
     QString text = this->model()->parameterDefinition( parameter->parameterName() )->type();
     return truncatedTextForItem( text );
-    // return truncatedTextForItem(QStringLiteral( "lorem:" ) + parameter->description() + parameter->parameterName());
-    // const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const SIP_HOLDGIL;
-
-    //return model()->parameterDefinition(  parameter->parameterName())->description();
   }
 
 

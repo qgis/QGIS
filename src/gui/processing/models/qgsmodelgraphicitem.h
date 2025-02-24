@@ -71,7 +71,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 #endif
 
     /**
-     * Gets the button's position.
+     * Returns the button's position.
      */
     QPointF getPosition() { return mPosition; };
 
@@ -184,10 +184,10 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
 
   private:
-    QgsModelComponentGraphicItem *mComponentItem;
-    QgsProcessingModelComponent *mComponent;
-    int mIndex;
-    Qt::Edge mEdge;
+    QgsModelComponentGraphicItem *mComponentItem = nullptr;
+    QgsProcessingModelComponent *mComponent = nullptr;
+    int mIndex = -1;
+    Qt::Edge mEdge = Qt::Edge::TopEdge;
 };
 
 ///@endcond

@@ -185,14 +185,16 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 
   painter->setRenderHint( QPainter::Antialiasing );
 
-  static const float display_size = 3.2;
-  painter->drawEllipse( getPosition(), display_size, display_size );
+  constexpr float DISPLAY_SIZE = 3.2;
+  painter->drawEllipse( getPosition(), DISPLAY_SIZE, DISPLAY_SIZE );
   /* Uncomment to display bounding box */
-  // painter->save();
-  // painter->setPen( QPen() );
-  // painter->setBrush( QBrush() );
-  // painter->drawRect( boundingRect() );
-  // painter->restore();
+#if 0
+  painter->save();
+  painter->setPen( QPen() );
+  painter->setBrush( QBrush() );
+  painter->drawRect( boundingRect() );
+  painter->restore();
+#endif
 }
 
 ///@endcond
