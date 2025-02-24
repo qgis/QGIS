@@ -209,7 +209,14 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   mStatement = selectColumns.join( ',' );
 
-  mStatement += QStringLiteral( " FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
+  if ( !mSource->mQuery.isEmpty() )
+  {
+    mStatement += QStringLiteral( " FROM (%1) _subquery" ).arg( mSource->mQuery );
+  }
+  else
+  {
+    mStatement += QStringLiteral( " FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
+  }
 
   bool filterAdded = false;
   // set spatial filter
@@ -702,6 +709,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
+  , mQuery( p->mQuery )
   , mUserName( p->mUserName )
   , mPassword( p->mPassword )
   , mService( p->mService )

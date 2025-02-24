@@ -62,7 +62,9 @@ class FeatureSourceTestCase:
     def testFields(self):
         fields = self.source.fields()
         for f in ("pk", "cnt", "name", "name2", "num_char"):
-            self.assertGreaterEqual(fields.lookupField(f), 0)
+            self.assertGreaterEqual(
+                fields.lookupField(f), 0, f"Could not find field {f}"
+            )
 
     def testGetFeatures(
         self,
