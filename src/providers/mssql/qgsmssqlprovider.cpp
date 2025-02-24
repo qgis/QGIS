@@ -1859,6 +1859,9 @@ bool QgsMssqlProvider::createSpatialIndex()
 
   if ( mGeometryColType == QLatin1String( "geometry" ) )
   {
+    if ( mExtent.isNull() )
+      return false;
+
     statement += QStringLiteral( " USING GEOMETRY_GRID WITH (BOUNDING_BOX =(%1, %2, %3, %4))" ).arg( QString::number( mExtent.xMinimum() ), QString::number( mExtent.yMinimum() ), QString::number( mExtent.xMaximum() ), QString::number( mExtent.yMaximum() ) );
   }
   else
