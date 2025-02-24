@@ -68,6 +68,8 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsProviderSqlQueryBuilder *queryBuilder() const override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;

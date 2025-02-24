@@ -30,6 +30,7 @@
 #include "qgsmssqlsqlquerybuilder.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsvectorlayer.h"
 #include <QIcon>
 
 #include <chrono>
@@ -89,6 +90,7 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::DropSchema,
     Capability::CreateSchema,
     Capability::ExecuteSql,
+    Capability::SqlLayers,
     Capability::Tables,
     Capability::Schemas,
     Capability::Spatial,
@@ -640,4 +642,116 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlProviderConnection::nativeTypes
 QgsProviderSqlQueryBuilder *QgsMssqlProviderConnection::queryBuilder() const
 {
   return new QgsMsSqlSqlQueryBuilder();
+}
+
+QgsVectorLayer *QgsMssqlProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const
+{
+  // Precondition
+  if ( options.sql.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
+  }
+
+  QgsDataSourceUri tUri( uri() );
+
+  tUri.setSql( options.filter );
+  tUri.disableSelectAtId( options.disableSelectAtId );
+
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( sanitizeSqlForQueryLayer( options.sql ) ) );
+  }
+  else
+  {
+    int pkId { 0 };
+    while ( options.sql.contains( QStringLiteral( "_uid%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      pkId++;
+    }
+    tUri.setKeyColumn( QStringLiteral( "_uid%1_" ).arg( pkId ) );
+
+    int sqlId { 0 };
+    while ( options.sql.contains( QStringLiteral( "_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      sqlId++;
+    }
+    tUri.setTable( QStringLiteral( "(SELECT row_number() OVER (ORDER BY (SELECT NULL)) AS _uid%1_, * FROM (%2\n) AS _subq_%3_\n)" ).arg( QString::number( pkId ), sanitizeSqlForQueryLayer( options.sql ), QString::number( sqlId ) ) );
+  }
+
+  if ( !options.geometryColumn.isEmpty() )
+  {
+    tUri.setGeometryColumn( options.geometryColumn );
+
+    const QString limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? QStringLiteral( "AND ROWNUM < 100" ) : QString() };
+    const QString sql = QStringLiteral( "SELECT %3"
+                                        " UPPER(%1.STGeometryType()),"
+                                        " %1.STSrid,"
+                                        " %1.HasZ,"
+                                        " %1.HasM"
+                                        " FROM (%2) AS _subq_"
+                                        " WHERE %1 IS NOT NULL %4"
+                                        " GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM" )
+                          .arg( QgsMssqlUtils::quotedIdentifier( options.geometryColumn ), sanitizeSqlForQueryLayer( options.sql ), tUri.useEstimatedMetadata() ? "TOP 1" : "", options.filter.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( options.filter ) );
+
+    try
+    {
+      const QList<QList<QVariant>> candidates { executeSql( sql ) };
+
+      QStringList types;
+      QStringList srids;
+
+      for ( const QList<QVariant> &row : std::as_const( candidates ) )
+      {
+        const bool hasZ { row[2].toString() == '1' };
+        const bool hasM { row[3].toString() == '1' };
+        const int dimensions { 2 + ( ( hasZ && hasM ) ? 2 : ( ( hasZ || hasM ) ? 1 : 0 ) ) };
+        QString typeName { row[0].toString().toUpper() };
+        if ( typeName.isEmpty() )
+          continue;
+
+        if ( hasM && !typeName.endsWith( 'M' ) )
+        {
+          typeName.append( 'M' );
+        }
+        const QString type { QgsMssqlProvider::typeFromMetadata( typeName, dimensions ) };
+        const QString srid = row[1].toString();
+
+        if ( type.isEmpty() )
+          continue;
+
+        types << type;
+        srids << srid;
+      }
+
+      if ( !srids.isEmpty() )
+        tUri.setSrid( srids.at( 0 ) );
+
+      if ( !types.isEmpty() )
+      {
+        tUri.setWkbType( QgsMssqlUtils::wkbTypeFromGeometryType( types.at( 0 ) ) );
+      }
+    }
+    catch ( QgsProviderConnectionException &e )
+    {
+      QgsDebugError( e.what() );
+    }
+  }
+
+  QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
+  vectorLayerOptions.skipCrsValidation = true;
+  return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
+}
+
+QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )
+{
+  SqlVectorLayerOptions options;
+  const QgsDataSourceUri tUri( layerSource );
+  options.primaryKeyColumns = tUri.keyColumn().split( ',' );
+  options.disableSelectAtId = tUri.selectAtIdDisabled();
+  options.geometryColumn = tUri.geometryColumn();
+  options.filter = tUri.sql();
+  const QString trimmedTable { tUri.table().trimmed() };
+  options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
+  return options;
 }
