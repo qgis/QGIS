@@ -47,7 +47,7 @@ for the button. The button will be rendered at the specified ``position`` and ``
 
 
 
-    const QPointF getPosition();
+    QPointF getPosition();
 %Docstring
 Gets the button's position.
 %End
@@ -145,8 +145,6 @@ The sockets will be rendered at the specified ``position``
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
-
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
 
     int index();

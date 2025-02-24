@@ -113,7 +113,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * HACK : Ugly workaround to expose the compatible sources for a parameter definition ( QgsProcessingParameterDefinition)
      * Idealy we should no rely on any UI-related function to get this
      * 
-     * \see also QgsProcessingModelAlgorithm::availableSourcesForChild
+     * see also QgsProcessingModelAlgorithm::availableSourcesForChild
      *
      * The available sources are created on widget creation in \see populateSources
      */

@@ -86,7 +86,7 @@ from :py:class:`QgsProcessing`.SourceType.
 HACK : Ugly workaround to expose the compatible sources for a parameter definition ( :py:class:`QgsProcessingParameterDefinition`)
 Idealy we should no rely on any UI-related function to get this
 
-.. seealso:: :py:func:`also` QgsProcessingModelAlgorithm.availableSourcesForChild
+see also :py:class:`QgsProcessingModelAlgorithm`.availableSourcesForChild
 
 The available sources are created on widget creation in :py:func:`populateSources`
 %End
