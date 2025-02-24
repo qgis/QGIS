@@ -683,7 +683,6 @@ QgsVectorLayer *QgsMssqlProviderConnection::createSqlVectorLayer( const SqlVecto
   {
     tUri.setGeometryColumn( options.geometryColumn );
 
-    const QString limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? QStringLiteral( "AND ROWNUM < 100" ) : QString() };
     const QString sql = QStringLiteral( "SELECT %3"
                                         " UPPER(%1.STGeometryType()),"
                                         " %1.STSrid,"
