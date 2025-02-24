@@ -148,13 +148,13 @@ class _3D_EXPORT QgsRubberBand3D
      * Sets whether to show markers on vertices
      * \since QGIS 3.44
      */
-    void setMarkerEnabled( bool enable );
+    void setMarkersEnabled( bool enable );
 
     /**
      * Returns whether markers are being shown on vertices
      * \since QGIS 3.44
      */
-    bool markerEnabled() const;
+    bool hasMarkersEnabled() const;
 
     /**
      * Sets whether to show edges
@@ -166,31 +166,30 @@ class _3D_EXPORT QgsRubberBand3D
        * Returns whether edges are shown
        * \since QGIS 3.44
        */
-    bool edgesEnabled() const;
+    bool hasEdgesEnabled() const;
 
     /**
        * Sets whether to show polygon fill
        * \since QGIS 3.44
        */
-    void setPolygonFillEnabled( bool enable );
+    void setFillEnabled( bool enable );
 
     /**
        * Returns whether polygon fill is shown
        * \since QGIS 3.44
        */
-    bool polygonFillEnabled() const;
+    bool hasFillEnabled() const;
 
     void reset();
 
     void addPoint( const QgsPoint &pt );
 
     /**
-     * Sets the geometry of rubberband
+     * Sets the geometry and \a GeometryType of rubberband
      *
-     * \note Function doesn't set \a GeometryType
      * \since QGIS 3.44
      */
-    void setGeometry( const QgsGeometry &geometry );
+    void setGeometry( const QgsGeometry &geometry, Qgis::GeometryType geometryType );
 
     void removeLastPoint();
 
