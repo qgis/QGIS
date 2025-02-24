@@ -145,7 +145,6 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
      */
     void setQuery( const QString &sql );
 
-
   public slots:
 
     /**
