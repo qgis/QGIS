@@ -56,6 +56,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     // current layer name
     QString mSchemaName;
     QString mTableName;
+    QString mQuery;
 
     // login
     QString mUserName;

@@ -67,6 +67,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     void updateExtents() override;
     QString storageType() const override;
     QStringList subLayers() const override;
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
@@ -176,6 +177,9 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     mutable QgsRectangle mExtent;
 
     bool mValid = false;
+
+    bool mIsQuery = false;
+    QString mQuery;
 
     bool mUseWkb = false;
     bool mUseEstimatedMetadata = false;
