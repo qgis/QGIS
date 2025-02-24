@@ -117,14 +117,14 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
   DECLARE @table nvarchar(50)
   DECLARE @schema nvarchar(50)
 
-  set @database = N%1
-  set @table = N%2
-  set @schema = N%3
+  set @database = %1
+  set @table = %2
+  set @schema = %3
 
   DECLARE @sql nvarchar(255)
   WHILE EXISTS(select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_CATALOG = @database and TABLE_NAME = @table AND TABLE_SCHEMA = @schema )
   BEGIN
-      select    @sql = 'ALTER TABLE ' + @table + ' DROP CONSTRAINT ' + CONSTRAINT_NAME
+      select    @sql = 'ALTER TABLE [' + @schema + '].[' + @table + '] DROP CONSTRAINT [' + CONSTRAINT_NAME + ']'
       from    INFORMATION_SCHEMA.TABLE_CONSTRAINTS
       where    constraint_catalog = @database and
               table_name = @table and table_schema = @schema
@@ -360,7 +360,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
 
   if ( useGeometryColumnsOnly )
   {
-    query += QStringLiteral( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns WHERE f_table_schema = N%1" )
+    query += QStringLiteral( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns WHERE f_table_schema = %1" )
                .arg( QgsMssqlProvider::quotedValue( schema ) );
   }
   else
@@ -375,7 +375,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                 JOIN sys.schemas
                                   ON sys.objects.schema_id = sys.schemas.schema_id
                                 WHERE
-                                  sys.schemas.name = N%1
+                                  sys.schemas.name = %1
                                   AND (sys.types.name = 'geometry' OR sys.types.name = 'geography')
                                   AND (sys.objects.type = 'U' OR sys.objects.type = 'V')
                              )raw" )
@@ -391,7 +391,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                JOIN sys.schemas
                                   ON sys.objects.schema_id = sys.schemas.schema_id
                              WHERE
-                               sys.schemas.name = N%1
+                               sys.schemas.name = %1
                                AND NOT EXISTS
                                 (SELECT *
                                   FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id

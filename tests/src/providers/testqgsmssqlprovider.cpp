@@ -69,7 +69,7 @@ void TestQgsMssqlProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' " );
+  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='QGIStestSQLServer1234' " );
 
   mSomeDataWktGeom << QStringLiteral( "Point (-70.33199999999999363 66.32999999999999829)" )
                    << QStringLiteral( "Point (-68.20000000000000284 70.79999999999999716)" )
