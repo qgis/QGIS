@@ -32,6 +32,7 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
     QgsProviderConnectionException,
+    QgsVectorDataProvider,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -73,10 +74,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         )
         assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error().message()
         cls.poly_provider = cls.poly_vl.dataProvider()
-
-        # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            del cls.getEditableLayer
 
         # Use connections API
         md = QgsProviderRegistry.instance().providerMetadata("mssql")
@@ -228,25 +225,45 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         }
         return filters
 
-    def testGetFeaturesUncompiled(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
+    def testAddFeatureAllNull(self):
+        # overridden from base test because of non-null primary key, with no default clause
+        if not getattr(self, "getEditableLayer", None):
             return
-        super().testGetFeaturesUncompiled()
 
-    def testGetFeaturesExp(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            return
-        super().testGetFeaturesExp()
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
 
-    def testOrderBy(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            return
-        super().testOrderBy()
+        f1 = QgsFeature()
+        f1.setAttributes([8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL])
+        f1.setGeometry(QgsGeometry.fromWkt("Point (-72.345 71.987)"))
 
-    def testOrderByCompiled(self):
-        if os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"):
-            return
-        super().testOrderByCompiled()
+        if (
+            l.dataProvider().capabilities()
+            & QgsVectorDataProvider.Capability.AddFeatures
+        ):
+            # expect success
+            result, added = l.dataProvider().addFeatures([f1])
+            self.assertTrue(
+                result,
+                "Provider reported AddFeatures capability, but returned False to addFeatures",
+            )
+
+            # check result
+            f_new = next(
+                l.dataProvider().getFeatures(
+                    QgsFeatureRequest().setFilterFid(added[0].id())
+                )
+            )
+            self.assertEqual(
+                f_new.attributes(),
+                [8, NULL, NULL, NULL, NULL, NULL, NULL, NULL],
+            )
+        else:
+            # expect fail
+            self.assertFalse(
+                l.dataProvider().addFeatures([f1]),
+                "Provider reported no AddFeatures capability, but returned true to addFeatures",
+            )
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
@@ -311,9 +328,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         self.assertIsInstance(f.attributes()[dec_idx], float)
         self.assertEqual(f.attributes()[dec_idx], 1.123)
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"), "Failing on Travis"
-    )
     def testCreateLayer(self):
         layer = QgsVectorLayer(
             "Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
@@ -361,9 +375,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ["Point (1 2)", "", "Point (3 2)", "Point (4 3)"])
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"), "Failing on Travis"
-    )
     def testCreateLayerMultiPoint(self):
         layer = QgsVectorLayer(
             "MultiPoint?crs=epsg:3111&field=id:integer&field=fldtxt:string&field=fldint:integer",
@@ -403,9 +414,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ["MultiPoint ((1 2),(3 4))", "", "MultiPoint ((7 8))"])
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"), "Failing on Travis"
-    )
     def testCurveGeometries(self):
         geomtypes = [
             "CompoundCurveM",
@@ -422,15 +430,15 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
             "CircularString",
         ]
         geoms = [
-            "CompoundCurveM ((0 -23.43778 10, 0 23.43778 10),CircularStringM (0 23.43778 10, -45 33.43778 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularStringM (-90 -23.43778 10, -45 -23.43778 10, 0 -23.43778 10))",
-            "CurvePolygonM (CompoundCurveM ((0 -23.43778 10, 0 -15.43778 10, 0 23.43778 10),CircularStringM (0 23.43778 10, -45 100 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularStringM (-90 -23.43778 10, -45 -16.43778 10, 0 -23.43778 10)),CompoundCurveM (CircularStringM (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
-            "CircularStringM (0 0 10, 0.14644660940672 0.35355339059327 10, 0.5 0.5 10, 0.85355339059327 0.35355339059327 10, 1 0 10, 0.85355339059327 -0.35355339059327 10, 0.5 -0.5 10, 0.14644660940672 -0.35355339059327 10, 0 0 10)",
-            "CompoundCurveZM ((0 -23.43778 2 10, 0 23.43778 2 10),CircularStringZM (0 23.43778 2 10, -45 33.43778 2 10, -90 23.43778 2 10),(-90 23.43778 2 10, -90 -23.43778 2 10),CircularStringZM (-90 -23.43778 2 10, -45 -23.43778 2 10, 0 -23.43778 2 10))",
-            "CurvePolygonZM (CompoundCurveZM ((0 -23.43778 5 10, 0 -15.43778 8 10, 0 23.43778 6 10),CircularStringZM (0 23.43778 6 10, -45 100 6 10, -90 23.43778 6 10),(-90 23.43778 6 10, -90 -23.43778 5 10),CircularStringZM (-90 -23.43778 5 10, -45 -16.43778 5 10, 0 -23.43778 5 10)),CompoundCurveZM (CircularStringZM (-30 0 10 10, -48 -12 10 10, -60 0 10 10, -48 -6 10 10, -30 0 10 10)))",
-            "CircularStringZM (0 0 1 10, 0.14644660940672 0.35355339059327 1 10, 0.5 0.5 1 10, 0.85355339059327 0.35355339059327 1 10, 1 0 1 10, 0.85355339059327 -0.35355339059327 1 10, 0.5 -0.5 1 10, 0.14644660940672 -0.35355339059327 1 10, 0 0 1 10)",
-            "CompoundCurveZ ((0 -23.43778 2, 0 23.43778 2),CircularStringZ (0 23.43778 2, -45 33.43778 2, -90 23.43778 2),(-90 23.43778 2, -90 -23.43778 2),CircularStringZ (-90 -23.43778 2, -45 -23.43778 2, 0 -23.43778 2))",
-            "CurvePolygonZ (CompoundCurveZ ((0 -23.43778 5, 0 -15.43778 8, 0 23.43778 6),CircularStringZ (0 23.43778 6, -45 100 6, -90 23.43778 6),(-90 23.43778 6, -90 -23.43778 5),CircularStringZ (-90 -23.43778 5, -45 -16.43778 5, 0 -23.43778 5)),CompoundCurveZ (CircularStringZ (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
-            "CircularStringZ (0 0 1, 0.14644660940672 0.35355339059327 1, 0.5 0.5 1, 0.85355339059327 0.35355339059327 1, 1 0 1, 0.85355339059327 -0.35355339059327 1, 0.5 -0.5 1, 0.14644660940672 -0.35355339059327 1, 0 0 1)",
+            "CompoundCurve M ((0 -23.43778 10, 0 23.43778 10),CircularString M (0 23.43778 10, -45 33.43778 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularString M (-90 -23.43778 10, -45 -23.43778 10, 0 -23.43778 10))",
+            "CurvePolygon M (CompoundCurve M ((0 -23.43778 10, 0 -15.43778 10, 0 23.43778 10),CircularString M (0 23.43778 10, -45 100 10, -90 23.43778 10),(-90 23.43778 10, -90 -23.43778 10),CircularString M (-90 -23.43778 10, -45 -16.43778 10, 0 -23.43778 10)),CompoundCurve M (CircularString M (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
+            "CircularString M (0 0 10, 0.14644660940672 0.35355339059327 10, 0.5 0.5 10, 0.85355339059327 0.35355339059327 10, 1 0 10, 0.85355339059327 -0.35355339059327 10, 0.5 -0.5 10, 0.14644660940672 -0.35355339059327 10, 0 0 10)",
+            "CompoundCurve ZM ((0 -23.43778 2 10, 0 23.43778 2 10),CircularString ZM (0 23.43778 2 10, -45 33.43778 2 10, -90 23.43778 2 10),(-90 23.43778 2 10, -90 -23.43778 2 10),CircularString ZM (-90 -23.43778 2 10, -45 -23.43778 2 10, 0 -23.43778 2 10))",
+            "CurvePolygon ZM (CompoundCurve ZM ((0 -23.43778 5 10, 0 -15.43778 8 10, 0 23.43778 6 10),CircularString ZM (0 23.43778 6 10, -45 100 6 10, -90 23.43778 6 10),(-90 23.43778 6 10, -90 -23.43778 5 10),CircularString ZM (-90 -23.43778 5 10, -45 -16.43778 5 10, 0 -23.43778 5 10)),CompoundCurve ZM (CircularString ZM (-30 0 10 10, -48 -12 10 10, -60 0 10 10, -48 -6 10 10, -30 0 10 10)))",
+            "CircularString ZM (0 0 1 10, 0.14644660940672 0.35355339059327 1 10, 0.5 0.5 1 10, 0.85355339059327 0.35355339059327 1 10, 1 0 1 10, 0.85355339059327 -0.35355339059327 1 10, 0.5 -0.5 1 10, 0.14644660940672 -0.35355339059327 1 10, 0 0 1 10)",
+            "CompoundCurve Z ((0 -23.43778 2, 0 23.43778 2),CircularString Z (0 23.43778 2, -45 33.43778 2, -90 23.43778 2),(-90 23.43778 2, -90 -23.43778 2),CircularString Z (-90 -23.43778 2, -45 -23.43778 2, 0 -23.43778 2))",
+            "CurvePolygon Z (CompoundCurve Z ((0 -23.43778 5, 0 -15.43778 8, 0 23.43778 6),CircularString Z (0 23.43778 6, -45 100 6, -90 23.43778 6),(-90 23.43778 6, -90 -23.43778 5),CircularString Z (-90 -23.43778 5, -45 -16.43778 5, 0 -23.43778 5)),CompoundCurve Z (CircularString Z (-30 0 10, -48 -12 10, -60 0 10, -48 -6 10, -30 0 10)))",
+            "CircularString Z (0 0 1, 0.14644660940672 0.35355339059327 1, 0.5 0.5 1, 0.85355339059327 0.35355339059327 1, 1 0 1, 0.85355339059327 -0.35355339059327 1, 0.5 -0.5 1, 0.14644660940672 -0.35355339059327 1, 0 0 1)",
             "CompoundCurve ((0 -23.43778, 0 23.43778),CircularString (0 23.43778, -45 33.43778, -90 23.43778),(-90 23.43778, -90 -23.43778),CircularString (-90 -23.43778, -45 -23.43778, 0 -23.43778))",
             "CurvePolygon (CompoundCurve ((0 -23.43778, 0 -15.43778, 0 23.43778),CircularString (0 23.43778, -45 100, -90 23.43778),(-90 23.43778, -90 -23.43778),CircularString (-90 -23.43778, -45 -16.43778, 0 -23.43778)),CompoundCurve (CircularString (-30 0, -48 -12, -60 0, -48 -6, -30 0)))",
             "CircularString (0 0, 0.14644660940672 0.35355339059327, 0.5 0.5, 0.85355339059327 0.35355339059327, 1 0, 0.85355339059327 -0.35355339059327, 0.5 -0.5, 0.14644660940672 -0.35355339059327, 0 0)",
@@ -442,18 +450,26 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
             layer = QgsVectorLayer(
                 geomtypes[idx] + "?crs=epsg:4326", "addfeat", "memory"
             )
+            self.assertTrue(layer.isValid())
             pr = layer.dataProvider()
-            pr.addFeatures([f])
+            self.assertTrue(pr.addFeatures([f]))
             uri = (
                 self.dbconn
                 + ' table="qgis_test"."new_table_curvegeom_'
                 + str(idx)
                 + '" sql='
             )
+
+            self.conn_api.dropVectorTable("qgis_test", f"new_table_curvegeom_{idx}")
+
             error, message = QgsVectorLayerExporter.exportLayer(
                 layer, uri, "mssql", QgsCoordinateReferenceSystem("EPSG:4326")
             )
-            self.assertEqual(error, QgsVectorLayerExporter.ExportError.NoError)
+            self.assertEqual(
+                error,
+                QgsVectorLayerExporter.ExportError.NoError,
+                f"got {error} for {t}",
+            )
             new_layer = QgsVectorLayer(uri, "new", "mssql")
             self.assertTrue(new_layer.isValid())
             self.assertEqual(new_layer.wkbType(), g.wkbType())
