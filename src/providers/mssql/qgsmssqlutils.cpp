@@ -17,6 +17,7 @@
 #include "qgsvariantutils.h"
 #include "qgslogger.h"
 #include "qgsfield.h"
+#include "qgswkbtypes.h"
 
 QString QgsMssqlUtils::quotedValue( const QVariant &value )
 {
@@ -154,4 +155,9 @@ QgsField QgsMssqlUtils::createField( const QString &name, const QString &systemT
     field.setReadOnly( true );
   }
   return field;
+}
+
+Qgis::WkbType QgsMssqlUtils::wkbTypeFromGeometryType( const QString &type )
+{
+  return QgsWkbTypes::parseType( type.toUpper() );
 }

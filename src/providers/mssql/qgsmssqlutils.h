@@ -18,6 +18,7 @@
 
 #include <QString>
 #include <QVariant>
+#include "qgis.h"
 
 class QgsField;
 
@@ -46,6 +47,11 @@ class QgsMssqlUtils
      * Creates the equivalent QgsField corresponding to the properties of a SQL Server field.
      */
     static QgsField createField( const QString &name, const QString &systemTypeName, int length, int precision, int scale, bool nullable, bool unique, bool readOnly );
+
+    /**
+     * Converts the string values from .STGeometryType() to a QGIS WKB type.
+     */
+    static Qgis::WkbType wkbTypeFromGeometryType( const QString &type );
 };
 
 
