@@ -270,13 +270,13 @@ Qt::PenStyle QgsRubberBand3D::markerOutlineStyle() const
   return mMarkerOutlineStyle;
 }
 
-void QgsRubberBand3D::setMarkerEnabled( const bool enable )
+void QgsRubberBand3D::setMarkersEnabled( const bool enable )
 {
   mMarkerEnabled = enable;
   updateMarkerMaterial();
 }
 
-bool QgsRubberBand3D::markerEnabled() const
+bool QgsRubberBand3D::hasMarkersEnabled() const
 {
   return mMarkerEnabled;
 }
@@ -287,18 +287,18 @@ void QgsRubberBand3D::setEdgesEnabled( const bool enable )
   setColor( mColor );
 }
 
-bool QgsRubberBand3D::edgesEnabled() const
+bool QgsRubberBand3D::hasEdgesEnabled() const
 {
   return mEdgesEnabled;
 }
 
-void QgsRubberBand3D::setPolygonFillEnabled( const bool enable )
+void QgsRubberBand3D::setFillEnabled( const bool enable )
 {
   mPolygonFillEnabled = enable;
   setColor( mColor );
 }
 
-bool QgsRubberBand3D::polygonFillEnabled() const
+bool QgsRubberBand3D::hasFillEnabled() const
 {
   return mPolygonFillEnabled;
 }
@@ -334,9 +334,10 @@ void QgsRubberBand3D::addPoint( const QgsPoint &pt )
   updateGeometry();
 }
 
-void QgsRubberBand3D::setGeometry( const QgsGeometry &geometry )
+void QgsRubberBand3D::setGeometry( const QgsGeometry &geometry, const Qgis::GeometryType geometryType )
 {
   mGeometry = geometry;
+  mGeometryType = geometryType;
 
   updateGeometry();
 }

@@ -132,7 +132,7 @@ void TestQgsRubberBand3DRendering::testRubberBandLine()
   engine.setRootEntity( scene );
 
   QgsRubberBand3D pointRubberBand( *map, &engine, engine.frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Line );
-  pointRubberBand.setGeometry( QgsGeometry( mPoints->clone() ) );
+  pointRubberBand.setGeometry( QgsGeometry( mPoints->clone() ), Qgis::GeometryType::Line );
 
   scene->cameraController()->resetView( 90 );
   Qgs3DUtils::captureSceneImage( engine, scene );
@@ -162,7 +162,7 @@ void TestQgsRubberBand3DRendering::testRubberBandPolygon()
   engine.setRootEntity( scene );
 
   QgsRubberBand3D pointRubberBand( *map, &engine, engine.frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon );
-  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ) );
+  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ), Qgis::GeometryType::Polygon );
 
   scene->cameraController()->resetView( 90 );
   Qgs3DUtils::captureSceneImage( engine, scene );
@@ -192,8 +192,10 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenMarker()
   engine.setRootEntity( scene );
 
   QgsRubberBand3D pointRubberBand( *map, &engine, engine.frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon );
-  pointRubberBand.setMarkerEnabled( false );
-  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ) );
+  pointRubberBand.setMarkersEnabled( false );
+  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ), Qgis::GeometryType::Polygon );
+
+  QVERIFY( !pointRubberBand.hasMarkersEnabled() );
 
   scene->cameraController()->resetView( 90 );
   Qgs3DUtils::captureSceneImage( engine, scene );
@@ -224,7 +226,7 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenLastMarker()
 
   QgsRubberBand3D pointRubberBand( *map, &engine, engine.frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Line );
   pointRubberBand.setHideLastMarker( true );
-  pointRubberBand.setGeometry( QgsGeometry( mPoints->clone() ) );
+  pointRubberBand.setGeometry( QgsGeometry( mPoints->clone() ), Qgis::GeometryType::Line );
 
   scene->cameraController()->resetView( 90 );
   Qgs3DUtils::captureSceneImage( engine, scene );
@@ -255,7 +257,9 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenEdges()
 
   QgsRubberBand3D pointRubberBand( *map, &engine, engine.frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon );
   pointRubberBand.setEdgesEnabled( false );
-  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ) );
+  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ), Qgis::GeometryType::Polygon );
+
+  QVERIFY( !pointRubberBand.hasEdgesEnabled() );
 
   scene->cameraController()->resetView( 90 );
   Qgs3DUtils::captureSceneImage( engine, scene );
@@ -285,8 +289,10 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenPolygonFill()
   engine.setRootEntity( scene );
 
   QgsRubberBand3D pointRubberBand( *map, &engine, engine.frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon );
-  pointRubberBand.setPolygonFillEnabled( false );
-  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ) );
+  pointRubberBand.setFillEnabled( false );
+  pointRubberBand.setGeometry( QgsGeometry( new QgsPolygon( mPoints->clone() ) ), Qgis::GeometryType::Polygon );
+
+  QVERIFY( !pointRubberBand.hasFillEnabled() );
 
   scene->cameraController()->resetView( 90 );
   Qgs3DUtils::captureSceneImage( engine, scene );
