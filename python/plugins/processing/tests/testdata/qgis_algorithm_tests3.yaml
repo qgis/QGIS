@@ -178,7 +178,7 @@ tests:
           geometry:
             normalize: True
 
-  - algorithm: qgis:checkvalidity
+  - algorithm: native:checkvalidity
     name: Check validity polygon ring self intersection
     params:
       INPUT_LAYER:
@@ -209,7 +209,7 @@ tests:
             fid: skip
           ignore_crs_check: true
 
-  - algorithm: qgis:checkvalidity
+  - algorithm: native:checkvalidity
     name: Check validity polygon ring self intersection, ignoring self intersections
     params:
       IGNORE_RING_SELF_INTERSECTION: true

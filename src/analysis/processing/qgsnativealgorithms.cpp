@@ -73,6 +73,7 @@
 #include "qgsalgorithmcheckgeometrymultipart.h"
 #include "qgsalgorithmcheckgeometrydegeneratepolygon.h"
 #include "qgsalgorithmcheckgeometrycontained.h"
+#include "qgsalgorithmcheckvalidity.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconcavehull.h"
 #include "qgsalgorithmconditionalbranch.h"
@@ -357,6 +358,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCellStatisticsPercentRankFromRasterAlgorithm() );
   addAlgorithm( new QgsCellStatisticsPercentRankFromValueAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
+  addAlgorithm( new QgsCheckValidityAlgorithm() );
   addAlgorithm( new QgsGeometryCheckSegmentLengthAlgorithm() );
   addAlgorithm( new QgsGeometryCheckAngleAlgorithm() );
   addAlgorithm( new QgsGeometryCheckAreaAlgorithm() );
