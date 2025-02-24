@@ -40,6 +40,8 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   // Unsure :/
   // mSqlEditor->setLineNumbersVisible( true );
 
+  mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
+
   mQueryResultsTableView->hide();
   mQueryResultsTableView->setItemDelegate( new QgsQueryResultItemDelegate( mQueryResultsTableView ) );
   mQueryResultsTableView->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -54,9 +56,23 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   vl->addWidget( mCodeEditorWidget );
   mSqlEditorContainer->setLayout( vl );
 
+  connect( mActionCut, &QAction::triggered, mSqlEditor, &QgsCodeEditor::cut );
+  connect( mActionCopy, &QAction::triggered, mSqlEditor, &QgsCodeEditor::copy );
+  connect( mActionPaste, &QAction::triggered, mSqlEditor, &QgsCodeEditor::paste );
+  connect( mActionUndo, &QAction::triggered, mSqlEditor, &QgsCodeEditor::undo );
+  connect( mActionRedo, &QAction::triggered, mSqlEditor, &QgsCodeEditor::redo );
+  mActionUndo->setEnabled( false );
+  mActionRedo->setEnabled( false );
+
+  connect( mActionFindReplace, &QAction::toggled, mCodeEditorWidget, &QgsCodeEditorWidget::setSearchBarVisible );
+  connect( mCodeEditorWidget, &QgsCodeEditorWidget::searchBarToggled, mActionFindReplace, &QAction::setChecked );
+
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
-  connect( mClearButton, &QPushButton::pressed, this, [=] {
+
+  connect( mActionClear, &QAction::triggered, this, [=] {
     mSqlEditor->setText( QString() );
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
   } );
   connect( mLoadLayerPushButton, &QPushButton::pressed, this, [=] {
     if ( mConnection )
@@ -65,6 +81,10 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
     }
   } );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
+
+  connect( mSqlEditor, &QgsCodeEditorSQL::copyAvailable, mActionCut, &QAction::setEnabled );
+  connect( mSqlEditor, &QgsCodeEditorSQL::copyAvailable, mActionCopy, &QAction::setEnabled );
+
   connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [=] {
     mExecuteButton->setText( mSqlEditor->selectedText().isEmpty() ? tr( "Execute" ) : tr( "Execute Selection" ) );
   } );
@@ -232,7 +252,9 @@ void QgsQueryResultWidget::updateButtons()
   mFilterToolButton->setEnabled( mFirstRowFetched );
   const bool isEmpty = mSqlEditor->text().isEmpty();
   mExecuteButton->setEnabled( !isEmpty );
-  mClearButton->setEnabled( !isEmpty );
+  mActionClear->setEnabled( !isEmpty );
+  mActionUndo->setEnabled( mSqlEditor->isUndoAvailable() );
+  mActionRedo->setEnabled( mSqlEditor->isRedoAvailable() );
   mLoadAsNewLayerGroupBox->setVisible( mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
   mLoadAsNewLayerGroupBox->setEnabled(
     mSqlErrorMessage.isEmpty() && mFirstRowFetched
@@ -559,6 +581,9 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
 void QgsQueryResultWidget::setQuery( const QString &sql )
 {
   mSqlEditor->setText( sql );
+  // from the QScintilla docs, calling setText clears undo history!
+  mActionUndo->setEnabled( false );
+  mActionRedo->setEnabled( false );
 }
 
 void QgsQueryResultWidget::notify( const QString &title, const QString &text, Qgis::MessageLevel level )

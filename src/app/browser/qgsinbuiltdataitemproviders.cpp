@@ -2022,6 +2022,7 @@ void QgsDatabaseItemGuiProvider::openSqlDialog( const QString &connectionUri, co
 
   QgsGui::enableAutoGeometryRestore( dialog );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
+  dialog->setStyleSheet( QgisApp::instance()->styleSheet() );
 
   QgsQueryResultWidget *widget { new QgsQueryResultWidget( nullptr, conn.release() ) };
   widget->setQuery( query );

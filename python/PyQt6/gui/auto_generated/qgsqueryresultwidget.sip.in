@@ -68,7 +68,6 @@ Sets the connection to ``connection``, ownership is transferred to the widget.
 Convenience method to set the SQL editor text to ``sql``.
 %End
 
-
   public slots:
 
     void notify( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info );

@@ -316,6 +316,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                 queryResultWidget->executeQuery();
                 queryResultWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
                 dialog.layout()->addWidget( queryResultWidget );
+                dialog.setStyleSheet( QgisApp::instance()->styleSheet() );
 
                 connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer, this]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
                   ( void ) this;
