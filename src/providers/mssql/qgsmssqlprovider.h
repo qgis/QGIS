@@ -21,6 +21,11 @@
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
+#include "qgsmssqldatabase.h"
+#include "qgsdatasourceuri.h"
+#include "qgsgeometry.h"
+#include "qgsmssqlgeometryparser.h"
 
 #include <QStringList>
 #include <QFile>
@@ -29,7 +34,6 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
-#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
@@ -39,18 +43,6 @@ class QTextStream;
 class QgsMssqlFeatureIterator;
 class QgsMssqlSharedData;
 class QgsMssqlTransaction;
-class QgsMssqlDatabase;
-
-#include "qgsdatasourceuri.h"
-#include "qgsgeometry.h"
-#include "qgsmssqlgeometryparser.h"
-
-enum QgsMssqlPrimaryKeyType
-{
-  PktUnknown,
-  PktInt,
-  PktFidMap
-};
 
 /**
  * \class QgsMssqlProvider
@@ -170,7 +162,6 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
   protected:
     //! Loads fields from input file to member attributeFields
-    QMetaType::Type DecodeSqlType( const QString &sqlTypeName );
     void loadFields();
     void loadMetadata();
 
@@ -201,7 +192,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
       *
       * Data type for the primary key
       */
-    QgsMssqlPrimaryKeyType mPrimaryKeyType = PktUnknown;
+    QgsMssqlDatabase::PrimaryKeyType mPrimaryKeyType = QgsMssqlDatabase::PrimaryKeyType::Unknown;
 
     /**
      * List of primary key attributes for fetching features.
