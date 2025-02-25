@@ -74,7 +74,7 @@ QVariant QgsTextEditWrapper::value() const
 
   if ( !QgsVariantUtils::isNull( defaultValue() ) && v == defaultValue().toString() )
   {
-    return defaultValue();
+    return QVariant::fromValue( QgsUnsetAttributeValue( defaultValue().toString() ) );
   }
 
   QVariant res( v );
@@ -301,6 +301,10 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   else if ( val.userType() == QMetaType::Type::Double && std::isnan( val.toDouble() ) )
   {
     v = QgsApplication::nullRepresentation();
+  }
+  else if ( val.userType() == qMetaTypeId<QgsUnsetAttributeValue>() )
+  {
+    v = defaultValue().toString();
   }
   else
   {
