@@ -61,7 +61,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="mainLayout">
      <property name="leftMargin">
       <number>6</number>
      </property>
@@ -78,7 +78,7 @@
       <widget class="QWidget" name="mSqlEditorContainer" native="true"/>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1,0">
+      <layout class="QHBoxLayout" name="progressLayout" stretch="0,0,0,1,0">
        <item>
         <widget class="QPushButton" name="mExecuteButton">
          <property name="enabled">

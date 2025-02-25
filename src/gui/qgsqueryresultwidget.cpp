@@ -48,6 +48,9 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   // mSqlEditor->setLineNumbersVisible( true );
 
   mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
+  // explicitly needed for some reason (Qt 5.15)
+  mainLayout->setSpacing( 6 );
+  progressLayout->setSpacing( 6 );
 
   mQueryResultsTableView->hide();
   mQueryResultsTableView->setItemDelegate( new QgsQueryResultItemDelegate( mQueryResultsTableView ) );
