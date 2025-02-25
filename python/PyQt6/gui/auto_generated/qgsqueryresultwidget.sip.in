@@ -35,6 +35,7 @@ be used in different contexts like when updating the SQL of an existing query la
 #include "qgsqueryresultwidget.h"
 %End
   public:
+
     enum class QueryWidgetMode /BaseType=IntFlag/
     {
       SqlQueryMode,
@@ -67,6 +68,7 @@ Sets the connection to ``connection``, ownership is transferred to the widget.
 %Docstring
 Convenience method to set the SQL editor text to ``sql``.
 %End
+
 
   public slots:
 
@@ -124,6 +126,79 @@ Emitted when the first batch of results has been fetched.
 
    If the query returns no results this signal is not emitted.
 %End
+
+
+};
+
+class QgsQueryResultDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog which allows users to enter and run an SQL query on a
+DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`).
+
+.. note::
+
+   the ownership of the connection is transferred to the dialog.
+
+.. seealso:: :py:class:`QgsQueryResultWidget`
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsqueryresultwidget.h"
+%End
+  public:
+    QgsQueryResultDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0, QWidget *parent = 0 );
+%Docstring
+Constructor for QgsQueryResultDialog.
+
+Ownership of the ``connection`` is transferred to the dialog.
+%End
+
+    QgsQueryResultWidget *resultWidget();
+%Docstring
+Returns the :py:class:`QgsQueryResultWidget` shown in the dialog.
+%End
+
+    virtual void closeEvent( QCloseEvent *event );
+
+
+};
+
+class QgsQueryResultMainWindow : QMainWindow
+{
+%Docstring(signature="appended")
+A main window which allows users to enter and run an SQL query on a
+DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`).
+
+.. note::
+
+   the ownership of the connection is transferred to the window.
+
+.. seealso:: :py:class:`QgsQueryResultWidget`
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsqueryresultwidget.h"
+%End
+  public:
+    QgsQueryResultMainWindow( QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0, const QString &identifierName = QString() );
+%Docstring
+Constructor for QgsQueryResultMainWindow.
+
+Ownership of the ``connection`` is transferred to the window.
+%End
+
+    QgsQueryResultWidget *resultWidget();
+%Docstring
+Returns the :py:class:`QgsQueryResultWidget` shown in the window.
+%End
+
+    virtual void closeEvent( QCloseEvent *event );
+
 
 };
 

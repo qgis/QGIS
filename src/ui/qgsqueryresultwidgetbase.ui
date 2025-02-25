@@ -39,6 +39,10 @@
      </property>
      <item>
       <widget class="QToolBar" name="mToolBar">
+       <addaction name="mActionOpenQuery"/>
+       <addaction name="mActionSaveQuery"/>
+       <addaction name="mActionSaveQueryAs"/>
+       <addaction name="separator"/>
        <addaction name="mActionCut"/>
        <addaction name="mActionCopy"/>
        <addaction name="mActionPaste"/>
@@ -348,6 +352,51 @@
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionOpenQuery">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Query…</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Query</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="mActionSaveQuery">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Query…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Query</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="mActionSaveQueryAs">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSaveAs.svg</normaloff>:/images/themes/default/mActionFileSaveAs.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Query as…</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Query as</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>
