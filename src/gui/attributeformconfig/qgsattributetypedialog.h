@@ -276,7 +276,7 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
      *
      * \see setMergePolicy()
      *
-     * \since QGIS 3.42
+     * \since QGIS 3.44
      */
     Qgis::FieldDomainMergePolicy mergePolicy() const;
 
@@ -285,7 +285,7 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
      *
      * \see mergePolicy()
      *
-     * \since QGIS 3.42
+     * \since QGIS 3.44
      */
     void setMergePolicy( Qgis::FieldDomainMergePolicy policy );
 
