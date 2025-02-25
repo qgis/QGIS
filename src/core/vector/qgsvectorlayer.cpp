@@ -2689,15 +2689,18 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         if ( widgetType == QStringLiteral( "ValueMap" ) )
         {
           QList<QVariant> translatedValueList;
-          const QList<QVariant> valueList = optionsMap[ QStringLiteral( "map" ) ].toList();
-          for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+          if ( optionsMap[ QStringLiteral( "map" ) ].canConvert<QVariantList>() )
           {
-            QMap<QString, QVariant> translatedValueMap;
-            QString translatedKey = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), valueList[i].toMap().constBegin().key() );
-            translatedValueMap[translatedKey] = valueList[i].toMap().constBegin().value();
-            translatedValueList.append( translatedValueMap );
+            const QList<QVariant> valueList = optionsMap[ QStringLiteral( "map" )].toList();
+            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            {
+              QMap<QString, QVariant> translatedValueMap;
+              QString translatedKey = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), valueList[i].toMap().constBegin().key() );
+              translatedValueMap.insert( translatedKey, valueList[i].toMap().constBegin().value() );
+              translatedValueList.append( translatedValueMap );
+            }
+            optionsMap.insert( QStringLiteral( "map" ), translatedValueList );
           }
-          optionsMap[ QStringLiteral( "map" ) ] = translatedValueList;
         }
         QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
         mFieldWidgetSetups[fieldName] = setup;
