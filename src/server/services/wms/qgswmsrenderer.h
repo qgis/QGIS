@@ -129,7 +129,7 @@ namespace QgsWms
        * takes ownership of the image object).
        * \since QGIS 3.8
        */
-      QImage *getMap();
+      std::unique_ptr<QImage> getMap();
 
       /**
        * Returns the map as DXF data
@@ -169,7 +169,7 @@ namespace QgsWms
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
 
       // Rendering step for layers
-      QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image ) const;
+      QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage *image ) const;
 
       // Rendering step for annotations
       void annotationsRendering( QPainter *painter, const QgsMapSettings &mapSettings ) const;
