@@ -72,7 +72,7 @@ void QgsNominatimLocatorFilter::openConfigWidget( QWidget *parent )
   QgsSettings settings;
   countryCodesEdit->setText( settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString() );
 
-  formLayout->addRow( tr( "Two letter Country Codes (comma-separated):" ), countryCodesEdit );
+  formLayout->addRow( tr( "Two letter Country Codes (comma-separated)" ), countryCodesEdit );
   QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
   formLayout->addRow( buttonbBox );
   dlg->setLayout( formLayout );
