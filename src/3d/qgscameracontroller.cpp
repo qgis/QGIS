@@ -179,11 +179,9 @@ void QgsCameraController::setViewFromTop( float worldX, float worldY, float dist
   camPose.setDistanceFromCenterPoint( distance );
   camPose.setHeadingAngle( yaw );
 
-  // a basic setup to make frustum depth range long enough that it does not cull everything
-  mCamera->setNearPlane( distance / 2 );
-  mCamera->setFarPlane( distance * 2 );
-
-  setCameraPose( camPose );
+  // we force the updateCameraNearFarPlanes() in Qgs3DMapScene to properly set the planes
+  mCameraPose = camPose;
+  updateCameraFromPose();
 }
 
 QgsVector3D QgsCameraController::lookingAtPoint() const
