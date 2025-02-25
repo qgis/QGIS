@@ -3541,6 +3541,8 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
     m->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( props[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
   if ( props.contains( QStringLiteral( "vertical_anchor_point" ) ) )
     m->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
+  if ( props.contains( QStringLiteral( "vertical_anchor_mode" ) ) )
+    m->setVerticalAnchorMode( VerticalAnchorMode( props[ QStringLiteral( "vertical_anchor_mode" )].toInt() ) );
 
   m->restoreOldDataDefinedProperties( props );
 
@@ -3595,7 +3597,21 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
   mFontMetrics.reset( new QFontMetrics( mFont ) );
   mChrWidth = mFontMetrics->horizontalAdvance( mString );
-  mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+
+  double centerOfCharBound = mFontMetrics->boundingRect( mString.at( 0 ) ).bottom() - mFontMetrics->boundingRect( mString.at( 0 ) ).height() / 2.0;
+
+  switch ( mVerticalAnchorMode )
+  {
+    case VerticalAnchorMode::Bounds:
+      mChrOffset = QPointF( mChrWidth / 2.0, centerOfCharBound );
+      break;
+    case VerticalAnchorMode::Baseline:
+      mChrOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
+      break;
+    case VerticalAnchorMode::Legacy:
+      mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+  }
+
   mOrigSize = mSize; // save in case the size would be data defined
 
   // use caching only when not using a data defined character
@@ -3628,7 +3644,19 @@ QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &con
     if ( stringToRender != mString )
     {
       charWidth = mFontMetrics->horizontalAdvance( stringToRender );
-      charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+      const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+      double centerOfCharBound = mFontMetrics->boundingRect( mString.at( 0 ) ).bottom() - mFontMetrics->boundingRect( mString.at( 0 ) ).height() / 2.0;
+      switch ( mVerticalAnchorMode )
+      {
+        case VerticalAnchorMode::Bounds:
+          charOffset = QPointF( charWidth / 2.0, centerOfCharBound );
+          break;
+        case VerticalAnchorMode::Baseline:
+          charOffset = QPointF( charWidth / 2.0, -sizePixels / 2.0 );
+          break;
+        case VerticalAnchorMode::Legacy:
+          charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+      }
     }
   }
   return stringToRender;
@@ -3796,11 +3824,18 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   const QString charToRender = characterToRender( context, chrOffset, chrWidth );
 
   const double sizeToRender = calculateSize( context );
+  double sizeToCalculateOffsets = sizeToRender;
+
+  if ( mVerticalAnchorMode == VerticalAnchorMode::Bounds )
+  {
+    // when we use the bounds, the font metrics used are already scaled. To be able to deal with this, they should not be scaled, so we scale them back beforehand.
+    sizeToCalculateOffsets = context.renderContext().convertFromPainterUnits( mFontMetrics->boundingRect( mString.at( 0 ) ).height(), mSizeUnit );
+  }
 
   bool hasDataDefinedRotation = false;
   QPointF offset;
   double angle = 0;
-  calculateOffsetAndRotation( context, sizeToRender, hasDataDefinedRotation, offset, angle );
+  calculateOffsetAndRotation( context, sizeToCalculateOffsets, hasDataDefinedRotation, offset, angle );
 
   p->translate( point.x() + offset.x(), point.y() + offset.y() );
 
@@ -3858,6 +3893,7 @@ QVariantMap QgsFontMarkerSymbolLayer::properties() const
   props[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
   props[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   props[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
+  props[QStringLiteral( "vertical_anchor_mode" )] = static_cast< int >( mVerticalAnchorMode );
   return props;
 }
 
@@ -3877,6 +3913,7 @@ QgsFontMarkerSymbolLayer *QgsFontMarkerSymbolLayer::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  m->setVerticalAnchorMode( mVerticalAnchorMode );
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;
