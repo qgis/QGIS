@@ -28,9 +28,16 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgscodeeditorwidget.h"
+#include "qgsfileutils.h"
 
 #include <QClipboard>
 #include <QShortcut>
+#include <QFileDialog>
+#include <QMessageBox>
+
+///@cond PRIVATE
+const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeSqlQueries, QString(), QStringLiteral( "Last used folder for SQL source files" ) );
+///@endcond PRIVATE
 
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
   : QWidget( parent )
@@ -56,6 +63,10 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   vl->addWidget( mCodeEditorWidget );
   mSqlEditorContainer->setLayout( vl );
 
+  connect( mActionOpenQuery, &QAction::triggered, this, &QgsQueryResultWidget::openQuery );
+  connect( mActionSaveQuery, &QAction::triggered, this, [this] { saveQuery( false ); } );
+  connect( mActionSaveQueryAs, &QAction::triggered, this, [this] { saveQuery( true ); } );
+
   connect( mActionCut, &QAction::triggered, mSqlEditor, &QgsCodeEditor::cut );
   connect( mActionCopy, &QAction::triggered, mSqlEditor, &QgsCodeEditor::copy );
   connect( mActionPaste, &QAction::triggered, mSqlEditor, &QgsCodeEditor::paste );
@@ -66,6 +77,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   connect( mActionFindReplace, &QAction::toggled, mCodeEditorWidget, &QgsCodeEditorWidget::setSearchBarVisible );
   connect( mCodeEditorWidget, &QgsCodeEditorWidget::searchBarToggled, mActionFindReplace, &QAction::setChecked );
+  connect( mSqlEditor, &QgsCodeEditor::modificationChanged, this, &QgsQueryResultWidget::setHasChanged );
 
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
 
@@ -139,6 +151,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( copySelection, &QShortcut::activated, this, &QgsQueryResultWidget::copySelection );
 
   setConnection( connection );
+  setHasChanged( false );
 }
 
 QgsQueryResultWidget::~QgsQueryResultWidget()
@@ -517,9 +530,72 @@ void QgsQueryResultWidget::copyResults( int fromRow, int toRow, int fromColumn, 
   }
 }
 
+void QgsQueryResultWidget::openQuery()
+{
+  if ( !mCodeEditorWidget->filePath().isEmpty() && mHasChangedFileContents )
+  {
+    if ( QMessageBox::warning( this, tr( "Unsaved Changes" ), tr( "There are unsaved changes in the query. Continue?" ), QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No, QMessageBox::StandardButton::No ) == QMessageBox::StandardButton::No )
+      return;
+  }
+
+  QString initialDir = settingLastSourceFolder->value();
+  if ( initialDir.isEmpty() )
+    initialDir = QDir::homePath();
+
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Open Query" ), initialDir, tr( "SQL queries (*.sql *.SQL)" ) + QStringLiteral( ";;" ) + QObject::tr( "All files" ) + QStringLiteral( " (*.*)" ) );
+
+  if ( fileName.isEmpty() )
+    return;
+
+  QFileInfo fi( fileName );
+  settingLastSourceFolder->setValue( fi.path() );
+
+  QgsTemporaryCursorOverride cursor( Qt::CursorShape::WaitCursor );
+
+  mCodeEditorWidget->loadFile( fileName );
+  setHasChanged( false );
+}
+
+void QgsQueryResultWidget::saveQuery( bool saveAs )
+{
+  if ( mCodeEditorWidget->filePath().isEmpty() || saveAs )
+  {
+    QString selectedFilter;
+
+    QString initialDir = settingLastSourceFolder->value();
+    if ( initialDir.isEmpty() )
+      initialDir = QDir::homePath();
+
+    QString newPath = QFileDialog::getSaveFileName(
+      this,
+      tr( "Save Query" ),
+      initialDir,
+      tr( "SQL queries (*.sql *.SQL)" ) + QStringLiteral( ";;" ) + QObject::tr( "All files" ) + QStringLiteral( " (*.*)" ),
+      &selectedFilter
+    );
+
+    if ( !newPath.isEmpty() )
+    {
+      QFileInfo fi( newPath );
+      settingLastSourceFolder->setValue( fi.path() );
+
+      if ( !selectedFilter.contains( QStringLiteral( "*.*)" ) ) )
+        newPath = QgsFileUtils::ensureFileNameHasExtension( newPath, { QStringLiteral( "sql" ) } );
+      mCodeEditorWidget->save( newPath );
+      setHasChanged( false );
+    }
+  }
+  else if ( !mCodeEditorWidget->filePath().isEmpty() )
+  {
+    mCodeEditorWidget->save();
+    setHasChanged( false );
+  }
+}
+
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const
 {
-  mSqlVectorLayerOptions.sql = mSqlEditor->text().replace( QRegularExpression( ";\\s*$" ), QString() );
+  const thread_local QRegularExpression rx( QStringLiteral( ";\\s*$" ) );
+  mSqlVectorLayerOptions.sql = mSqlEditor->text().replace( rx, QString() );
   mSqlVectorLayerOptions.filter = mFilterLineEdit->text();
   mSqlVectorLayerOptions.primaryKeyColumns = mPkColumnsComboBox->checkedItems();
   mSqlVectorLayerOptions.geometryColumn = mGeometryColumnComboBox->currentText();
@@ -586,11 +662,72 @@ void QgsQueryResultWidget::setQuery( const QString &sql )
   mActionRedo->setEnabled( false );
 }
 
+
+bool QgsQueryResultWidget::promptUnsavedChanges()
+{
+  if ( !mCodeEditorWidget->filePath().isEmpty() && mHasChangedFileContents )
+  {
+    const QMessageBox::StandardButton ret = QMessageBox::question(
+      this,
+      tr( "Save Query?" ),
+      tr(
+        "There are unsaved changes in this query. Do you want to save those?"
+      ),
+      QMessageBox::StandardButton::Save
+        | QMessageBox::StandardButton::Cancel
+        | QMessageBox::StandardButton::Discard,
+      QMessageBox::StandardButton::Cancel
+    );
+
+    if ( ret == QMessageBox::StandardButton::Save )
+    {
+      saveQuery( false );
+      return true;
+    }
+    else if ( ret == QMessageBox::StandardButton::Discard )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    return true;
+  }
+}
+
+
 void QgsQueryResultWidget::notify( const QString &title, const QString &text, Qgis::MessageLevel level )
 {
   mMessageBar->pushMessage( title, text, level );
 }
 
+
+void QgsQueryResultWidget::setHasChanged( bool hasChanged )
+{
+  mHasChangedFileContents = hasChanged;
+  mActionSaveQuery->setEnabled( hasChanged );
+  updateDialogTitle();
+}
+
+void QgsQueryResultWidget::updateDialogTitle()
+{
+  QString fileName;
+  if ( !mCodeEditorWidget->filePath().isEmpty() )
+  {
+    const QFileInfo fi( mCodeEditorWidget->filePath() );
+    fileName = fi.fileName();
+    if ( mHasChangedFileContents )
+    {
+      fileName.prepend( '*' );
+    }
+  }
+
+  emit requestDialogTitleUpdate( fileName );
+}
 
 ///@cond private
 
@@ -732,3 +869,81 @@ QString QgsQueryResultItemDelegate::displayText( const QVariant &value, const QL
 }
 
 ///@endcond private
+
+//
+// QgsQueryResultDialog
+//
+
+QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
+  : QDialog( parent )
+{
+  setObjectName( QStringLiteral( "QgsQueryResultDialog" ) );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mWidget = new QgsQueryResultWidget( this, connection );
+  QVBoxLayout *l = new QVBoxLayout();
+  l->setContentsMargins( 0, 0, 0, 0 );
+  l->addWidget( mWidget );
+  setLayout( l );
+}
+
+void QgsQueryResultDialog::closeEvent( QCloseEvent *event )
+{
+  if ( !mWidget->promptUnsavedChanges() )
+  {
+    event->ignore();
+  }
+  else
+  {
+    event->accept();
+  }
+}
+
+//
+// QgsQueryResultMainWindow
+//
+
+QgsQueryResultMainWindow::QgsQueryResultMainWindow( QgsAbstractDatabaseProviderConnection *connection, const QString &identifierName )
+  : mIdentifierName( identifierName )
+{
+  setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mWidget = new QgsQueryResultWidget( nullptr, connection );
+  setCentralWidget( mWidget );
+
+  connect( mWidget, &QgsQueryResultWidget::requestDialogTitleUpdate, this, &QgsQueryResultMainWindow::updateWindowTitle );
+
+  updateWindowTitle( QString() );
+}
+
+void QgsQueryResultMainWindow::closeEvent( QCloseEvent *event )
+{
+  if ( !mWidget->promptUnsavedChanges() )
+  {
+    event->ignore();
+  }
+  else
+  {
+    event->accept();
+  }
+}
+
+void QgsQueryResultMainWindow::updateWindowTitle( const QString &fileName )
+{
+  if ( fileName.isEmpty() )
+  {
+    if ( !mIdentifierName.isEmpty() )
+      setWindowTitle( tr( "%1 — Execute SQL" ).arg( mIdentifierName ) );
+    else
+      setWindowTitle( tr( "Execute SQL" ) );
+  }
+  else
+  {
+    if ( !mIdentifierName.isEmpty() )
+      setWindowTitle( tr( "%1 — %2 — Execute SQL" ).arg( fileName, mIdentifierName ) );
+    else
+      setWindowTitle( tr( "%1 — Execute SQL" ).arg( fileName ) );
+  }
+}
