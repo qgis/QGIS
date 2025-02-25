@@ -667,7 +667,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
-      //register aliases and fields
+      //register aliases and widget settings
       const QgsFields fields = vlayer->fields();
       for ( const QgsField &field : fields )
       {
@@ -679,9 +679,18 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
         translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
 
-        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueRelation" ) )
+        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueRelation" ) )
         {
           translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
+        }
+        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueMap" ) )
+        {
+          const QList<QVariant> valueList = field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
+
+          for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+          {
+            translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( vlayer->id(), field.name() ), valueList[i].toMap().constBegin().key() );
+          }
         }
       }
 
