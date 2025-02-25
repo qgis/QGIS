@@ -160,7 +160,6 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   double minCellSizeX = 1e9;
   double minCellSizeY = 1e9;
-  std::map<QString, std::unique_ptr<QgsRasterBlock>> inputBlocks;
   for ( QgsMapLayer *layer : mLayers )
   {
     QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
@@ -174,8 +173,6 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     minCellSizeX = std::min( minCellSizeX, ( extent.xMaximum() - extent.xMinimum() ) / rLayer->width() );
     minCellSizeY = std::min( minCellSizeY, ( extent.yMaximum() - extent.yMinimum() ) / rLayer->height() );
-
-    inputBlocks[rLayer->id()] = std::make_unique<QgsRasterBlock>();
   }
 
   double outputCellSizeX = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
@@ -202,6 +199,29 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
   provider->setNoDataValue( 1, outputNoData );
 
+  std::map<QString, std::unique_ptr<QgsRasterInterface>> inputInterfaces;
+  std::map<QString, std::unique_ptr<QgsRasterBlock>> inputBlocks;
+  for ( QgsMapLayer *layer : mLayers )
+  {
+    QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
+    if ( rLayer->crs() != outputCrs )
+    {
+      QgsRasterProjector *projector = new QgsRasterProjector();
+      projector->setCrs( rLayer->crs(), outputCrs, context.transformContext() );
+      projector->setInput( rLayer->dataProvider() );
+      projector->setPrecision( QgsRasterProjector::Exact );
+      inputInterfaces[rLayer->id()].reset( projector );
+    }
+    else
+    {
+      inputInterfaces[rLayer->id()].reset( rLayer->dataProvider()->clone() );
+    }
+    inputBlocks[rLayer->id()] = std::make_unique<QgsRasterBlock>();
+  }
+
+  std::unique_ptr<QgsRasterIterator> rasterIterator = std::make_unique<QgsRasterIterator>( inputInterfaces[mLayers.at( 0 )->id()].get() );
+  rasterIterator->startRasterRead( 1, cols, rows, outputExtent );
+  qgssize rasterIteratorCount = rasterIterator->blockCount();
 
   std::vector<std::unique_ptr<QgsRasterBlock>> outputBlocks;
   for ( int i = 0; i < mRanks.size(); i++ )
@@ -209,80 +229,73 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
     outputBlocks.push_back( std::make_unique<QgsRasterBlock>() );
   }
 
-  const double step = rows > 0 ? 100.0 / rows : 1;
-  for ( int row = 0; row < rows; row++ )
+
+  const double step = rasterIteratorCount > 0 ? 100.0 / rasterIteratorCount : 0;
+  for ( qgssize it = 0; it < rasterIteratorCount; it++ )
   {
     if ( feedback->isCanceled() )
     {
       break;
     }
+    feedback->setProgress( it * step );
+
+    int iterLeft = 0;
+    int iterTop = 0;
+    int iterCols = 0;
+    int iterRows = 0;
+    QgsRectangle blockExtent;
+    rasterIterator->next( 1, iterCols, iterRows, iterLeft, iterTop, blockExtent );
+
+    for ( const auto &inputInterface : inputInterfaces )
+    {
+      inputBlocks[inputInterface.first].reset( inputInterface.second->block( 1, blockExtent, iterCols, iterRows ) );
+    }
 
     for ( int i = 0; i < mRanks.size(); i++ )
     {
-      outputBlocks[i].reset( new QgsRasterBlock( outputDataType, cols, 1 ) );
+      outputBlocks[i].reset( new QgsRasterBlock( outputDataType, iterCols, iterRows ) );
       outputBlocks[i]->setNoDataValue( outputNoData );
     }
 
-    // Calculates the rect for a single row read
-    QgsRectangle rowExtent( outputExtent );
-    rowExtent.setYMaximum( rowExtent.yMaximum() - outputCellSizeY * row );
-    rowExtent.setYMinimum( rowExtent.yMaximum() - outputCellSizeY );
-
-    for ( QgsMapLayer *layer : mLayers )
+    for ( int row = 0; row < iterRows; row++ )
     {
-      QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
-
-      if ( rLayer->crs() != outputCrs )
+      for ( int col = 0; col < iterCols; col++ )
       {
-        QgsRasterProjector proj;
-        proj.setCrs( rLayer->crs(), outputCrs, context.transformContext() );
-        proj.setInput( rLayer->dataProvider() );
-        proj.setPrecision( QgsRasterProjector::Exact );
-        inputBlocks[rLayer->id()].reset( proj.block( 1, rowExtent, cols, 1 ) );
-      }
-      else
-      {
-        inputBlocks[rLayer->id()].reset( rLayer->dataProvider()->block( 1, rowExtent, cols, 1 ) );
-      }
-    }
-
-    for ( int col = 0; col < cols; col++ )
-    {
-      QList<double> values;
-      for ( const auto &inputBlock : inputBlocks )
-      {
-        bool isNoData = false;
-        const double value = inputBlock.second->valueAndNoData( 0, col, isNoData );
-        if ( !isNoData )
+        QList<double> values;
+        for ( const auto &inputBlock : inputBlocks )
         {
-          values << value;
+          bool isNoData = false;
+          const double value = inputBlock.second->valueAndNoData( row, col, isNoData );
+          if ( !isNoData )
+          {
+            values << value;
+          }
+          else if ( outputNoDataOverride )
+          {
+            values.clear();
+            break;
+          }
         }
-        else if ( outputNoDataOverride )
-        {
-          values.clear();
-          break;
-        }
-      }
-      std::sort( values.begin(), values.end() );
+        std::sort( values.begin(), values.end() );
 
-      for ( int i = 0; i < mRanks.size(); i++ )
-      {
-        if ( values.size() >= std::abs( mRanks[i] ) )
+        for ( int i = 0; i < mRanks.size(); i++ )
         {
-          outputBlocks[i]->setValue( 0, col, values.at( mRanks[i] > 0 ? mRanks[i] - 1 : values.size() + mRanks[i] ) );
-        }
-        else
-        {
-          outputBlocks[i]->setValue( 0, col, outputNoData );
+          if ( values.size() >= std::abs( mRanks[i] ) )
+          {
+            outputBlocks[i]->setValue( row, col, values.at( mRanks[i] > 0 ? mRanks[i] - 1 : values.size() + mRanks[i] ) );
+          }
+          else
+          {
+            outputBlocks[i]->setValue( row, col, outputNoData );
+          }
         }
       }
     }
 
     for ( int i = 0; i < mRanks.size(); i++ )
     {
-      provider->writeBlock( outputBlocks[i].get(), i + 1, 0, row );
+      provider->writeBlock( outputBlocks[i].get(), i + 1, iterLeft, iterTop );
     }
-    feedback->setProgress( row * step );
   }
 
   qDeleteAll( mLayers );
