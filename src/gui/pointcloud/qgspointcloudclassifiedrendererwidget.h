@@ -70,6 +70,9 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererModel : public QAbstractItemMode
   signals:
     void categoriesChanged();
 
+    //! Informs views that categories were moved (e.g., via mCategories.move()) in the model.
+    void rowsMoved();
+
   private:
     QgsPointCloudCategoryList mCategories;
     QMap<int, float> mPercentages;
@@ -126,6 +129,7 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget : public QgsPointCloudRen
     void changeCategoryColor();
     void changeCategoryOpacity();
     void changeCategoryPointSize();
+    void rowsMoved();
 
   private:
     //! Sets default category and available classes
