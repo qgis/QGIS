@@ -3819,6 +3819,10 @@ bool QgsSymbolLayerUtils::saveColorsToGpl( QFile &file, const QString &paletteNa
   }
 
   QTextStream stream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  stream.setCodec( "UTF-8" );
+#endif
+
   stream << "GIMP Palette" << Qt::endl;
   if ( paletteName.isEmpty() )
   {
@@ -3857,6 +3861,9 @@ QgsNamedColorList QgsSymbolLayerUtils::importColorsFromGpl( QFile &file, bool &o
   }
 
   QTextStream in( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  in.setCodec( "UTF-8" );
+#endif
 
   QString line = in.readLine();
   if ( !line.startsWith( QLatin1String( "GIMP Palette" ) ) )
