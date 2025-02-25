@@ -152,14 +152,16 @@ QVector<int> Qgs3DMapToolPaintBrush::selectedPointsInNode( const QgsGeometry &se
 void Qgs3DMapToolPaintBrush::activate()
 {
   mCanvas->cameraController()->setInputHandlersEnabled( false );
-  mSelectionRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point, true ) );
+  mSelectionRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point ) );
+  mSelectionRubberBand->setMarkerOutlineStyle( Qt::PenStyle::DotLine );
   mSelectionRubberBand->setWidth( 32 );
   mSelectionRubberBand->setOutlineColor( mSelectionRubberBand->color() );
   mSelectionRubberBand->setColor( QColorConstants::Transparent );
   mSelectionRubberBand->addPoint( Qgs3DUtils::screenPointToMapCoordinates( QCursor::pos(), *mCanvas ) );
   mIsActive = true;
   mHighlighterRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon ) );
-  mHighlighterRubberBand->setMarkerType( QgsRubberBand3D::None );
+  mHighlighterRubberBand->setMarkersEnabled( false );
+  mHighlighterRubberBand->setEdgesEnabled( false );
 }
 
 void Qgs3DMapToolPaintBrush::deactivate()
@@ -203,7 +205,7 @@ void Qgs3DMapToolPaintBrush::generateHighlightArea()
   };
   searchPolygon->addZValue( 0 );
   searchPolygon->transformVertices( transform );
-  mHighlighterRubberBand->setPolygon( *searchPolygon );
+  mHighlighterRubberBand->setGeometry( QgsGeometry( searchPolygon->clone() ) );
 }
 
 void Qgs3DMapToolPaintBrush::mousePressEvent( QMouseEvent *event )
