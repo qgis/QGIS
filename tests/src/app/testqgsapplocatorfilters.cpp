@@ -33,6 +33,23 @@
 #include <QClipboard>
 
 
+struct Result
+{
+    Result( QString displayString, const QgsPointXY &point, double scale = 0 )
+      : displayString( displayString )
+      , point( point )
+      , scale( scale )
+    {}
+
+    QString displayString;
+    QgsPointXY point;
+    double scale = 0;
+};
+
+typedef QList<Result> Results;
+
+Q_DECLARE_METATYPE( Results )
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the field calculator
@@ -42,21 +59,6 @@ class TestQgsAppLocatorFilters : public QObject
     Q_OBJECT
 
   public:
-    struct Result
-    {
-        Result( QString displayString, const QgsPointXY &point, double scale = 0 )
-          : displayString( displayString )
-          , point( point )
-          , scale( scale )
-        {}
-
-        QString displayString;
-        QgsPointXY point;
-        double scale = 0;
-    };
-
-    typedef QList<Result> Results;
-
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -376,6 +378,8 @@ QList<QgsLocatorResult> TestQgsAppLocatorFilters::gatherResults( QgsLocatorFilte
 
 void TestQgsAppLocatorFilters::testGoto_data()
 {
+  qRegisterMetaType<Results>( "Results" );
+
   QTest::addColumn<QString>( "string" );
   QTest::addColumn<Results>( "expected" );
 
