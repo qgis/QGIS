@@ -2298,6 +2298,14 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
     case Qgis::FieldDomainMergePolicy::Sum:
       OGR_FldDomain_SetMergePolicy( res, OFDMP_SUM );
       break;
+
+    case Qgis::FieldDomainMergePolicy::UnsetField:
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+    case Qgis::FieldDomainMergePolicy::SetToNull:
+      // not supported
+      break;
   }
 
   switch ( domain->splitPolicy() )

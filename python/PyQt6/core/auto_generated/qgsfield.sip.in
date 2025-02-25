@@ -533,6 +533,26 @@ be handled during a duplicate operation.
 .. versionadded:: 3.38
 %End
 
+    Qgis::FieldDomainMergePolicy mergePolicy() const /HoldGIL/;
+%Docstring
+Returns the field's merge policy, which indicates how field values should
+be handled during a merge operation.
+
+.. seealso:: :py:func:`setMergePolicy`
+
+.. versionadded:: 3.44
+%End
+
+    void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) /HoldGIL/;
+%Docstring
+Sets the field's merge ``policy``, which indicates how field values should
+be handled during a merge operation.
+
+.. seealso:: :py:func:`mergePolicy`
+
+.. versionadded:: 3.44
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );

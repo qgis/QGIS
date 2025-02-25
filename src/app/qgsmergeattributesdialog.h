@@ -42,7 +42,7 @@ class APP_EXPORT QgsMergeAttributesDialog : public QDialog, private Ui::QgsMerge
     };
 
 
-    QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, bool skipAll = false, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsMergeAttributesDialog() override;
 
     QgsAttributes mergedAttributes() const;
@@ -82,7 +82,7 @@ class APP_EXPORT QgsMergeAttributesDialog : public QDialog, private Ui::QgsMerge
 
   private:
     QgsMergeAttributesDialog(); //default constructor forbidden
-    void createTableWidgetContents();
+    void createTableWidgetContents( bool skipAll );
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
     //! Create new combo box with the options for featureXX / mean / min / max

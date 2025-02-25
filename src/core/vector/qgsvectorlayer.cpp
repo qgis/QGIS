@@ -2245,6 +2245,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     {
       mAttributeDuplicatePolicy[ field.name() ] = field.duplicatePolicy();
     }
+    if ( !mAttributeMergePolicy.contains( field.name() ) )
+    {
+      mAttributeMergePolicy[ field.name() ] = field.mergePolicy();
+    }
   }
 
   if ( profile )
@@ -2585,6 +2589,19 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QString field = duplicatePolicyElem.attribute( QStringLiteral( "field" ) );
         const Qgis::FieldDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDuplicatePolicy::Duplicate );
         mAttributeDuplicatePolicy.insert( field, policy );
+      }
+    }
+
+    const QDomNode mergePoliciesNode = layerNode.namedItem( QStringLiteral( "mergePolicies" ) );
+    if ( !mergePoliciesNode.isNull() )
+    {
+      const QDomNodeList mergePolicyNodeList = mergePoliciesNode.toElement().elementsByTagName( QStringLiteral( "policy" ) );
+      for ( int i = 0; i < mergePolicyNodeList.size(); ++i )
+      {
+        const QDomElement mergePolicyElem = mergePolicyNodeList.at( i ).toElement();
+        const QString field = mergePolicyElem.attribute( QStringLiteral( "field" ) );
+        const Qgis::FieldDomainMergePolicy policy = qgsEnumKeyToValue( mergePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainMergePolicy::DefaultValue );
+        mAttributeMergePolicy.insert( field, policy );
       }
     }
 
@@ -3122,6 +3139,19 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       node.appendChild( duplicatePoliciesElement );
     }
 
+    //merge policies
+    {
+      QDomElement mergePoliciesElement = doc.createElement( QStringLiteral( "mergePolicies" ) );
+      for ( const QgsField &field : std::as_const( mFields ) )
+      {
+        QDomElement mergePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+        mergePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+        mergePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.mergePolicy() ) );
+        mergePoliciesElement.appendChild( mergePolicyElem );
+      }
+      node.appendChild( mergePoliciesElement );
+    }
+
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
     for ( const QgsField &field : std::as_const( mFields ) )
@@ -3641,6 +3671,20 @@ void QgsVectorLayer::setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePol
   emit layerModified(); // TODO[MD]: should have a different signal?
 }
 
+void QgsVectorLayer::setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( index < 0 || index >= fields().count() )
+    return;
+
+  const QString name = fields().at( index ).name();
+
+  mAttributeMergePolicy.insert( name, policy );
+  mFields[ index ].setMergePolicy( policy );
+  mEditFormConfig.setFields( mFields );
+  emit layerModified(); // TODO[MD]: should have a different signal?
+}
 
 QSet<QString> QgsVectorLayer::excludeAttributesWms() const
 {
@@ -4521,6 +4565,15 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[ index ].setDuplicatePolicy( duplicatePolicyIt.value() );
+  }
+
+  for ( auto mergePolicyIt = mAttributeMergePolicy.constBegin(); mergePolicyIt != mAttributeMergePolicy.constEnd(); ++mergePolicyIt )
+  {
+    int index = mFields.lookupField( mergePolicyIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[ index ].setMergePolicy( mergePolicyIt.value() );
   }
 
   // Update configuration flags

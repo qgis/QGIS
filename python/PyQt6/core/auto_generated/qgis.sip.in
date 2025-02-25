@@ -2112,6 +2112,11 @@ The development version
       DefaultValue,
       Sum,
       GeometryWeighted,
+      UnsetField,
+      LargestGeometry,
+      MinimumValue,
+      MaximumValue,
+      SetToNull,
     };
 
     enum class FieldDuplicatePolicy /BaseType=IntEnum/
