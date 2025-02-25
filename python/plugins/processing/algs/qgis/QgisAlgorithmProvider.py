@@ -27,7 +27,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from .BarPlot import BarPlot
 from .BoxPlot import BoxPlot
-from .Climb import Climb
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .FieldPyculator import FieldsPyculator
@@ -89,7 +88,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         algs = [
             BarPlot(),
             BoxPlot(),
-            Climb(),
             EliminateSelection(),
             ExecuteSQL(),
             FieldsPyculator(),

@@ -7,13 +7,6 @@ qgis:barplot: >
 qgis:boxplot: >
   This algorithm creates a box plot from a category and a layer field.
 
-qgis:climbalongline: >
-  This algorithm calculates the total climb and descent along line geometries.
-
-  Input layers must have Z values present. If Z values are not available, the "Drape" (set Z value from raster) algorithm may be used to add Z values from a DEM layer.
-
-  The output layer is a copy of the input layer with additional fields that contain the total climb, total descent, the minimum elevation and the maximum elevation for each line geometry. If the input layer contains fields with the same names as these added fields, they will be renamed (field names will be altered to "name_2", "name_3", etc, finding the first non-duplicate name).
-
 qgis:concavehull: >
   This algorithm computes the concave hull of the features in an input layer.
 
