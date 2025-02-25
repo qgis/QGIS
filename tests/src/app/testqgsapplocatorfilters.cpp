@@ -41,21 +41,7 @@ class TestQgsAppLocatorFilters : public QObject
 {
     Q_OBJECT
 
-  private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void testCalculator();
-    void testLayers();
-    void testLayouts();
-    void testSearchActiveLayer();
-    void testActiveLayerFieldRestriction();
-    void testActiveLayerCompletion();
-    void testSearchAllLayers();
-    void testSearchAllLayersPrioritizeExactMatch();
-    void testGoto();
-    void testGoto_data();
-
-  private:
+  public:
     struct Result
     {
         Result( QString displayString, const QgsPointXY &point, double scale = 0 )
@@ -71,6 +57,21 @@ class TestQgsAppLocatorFilters : public QObject
 
     typedef QList<Result> Results;
 
+  private slots:
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void testCalculator();
+    void testLayers();
+    void testLayouts();
+    void testSearchActiveLayer();
+    void testActiveLayerFieldRestriction();
+    void testActiveLayerCompletion();
+    void testSearchAllLayers();
+    void testSearchAllLayersPrioritizeExactMatch();
+    void testGoto();
+    void testGoto_data();
+
+  private:
     QgisApp *mQgisApp = nullptr;
 
     QList<QgsLocatorResult> gatherResults( QgsLocatorFilter *filter, const QString &string, const QgsLocatorContext &context );
