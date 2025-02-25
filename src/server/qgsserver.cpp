@@ -396,47 +396,64 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
 
     try
     {
-      // TODO: split parse input into plain parse and processing from specific services
-      requestHandler.parseInput();
-    }
-    catch ( QgsMapServiceException &e )
-    {
-      QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-      requestHandler.setServiceException( e );
-    }
+      if ( response.feedback() && response.feedback()->isCanceled() )
+      {
+        throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
+      }
 
-    // Set the request handler into the interface for plugins to manipulate it
-    sServerInterface->setRequestHandler( &requestHandler );
+      try
+      {
+        // TODO: split parse input into plain parse and processing from specific services
+        requestHandler.parseInput();
+      }
+      catch ( QgsMapServiceException &e )
+      {
+        QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+        requestHandler.setServiceException( e );
+      }
 
-    // Initialize configfilepath so that is is available
-    // before calling plugin methods
-    // Note that plugins may still change that value using
-    // setConfigFilePath() interface method
-    if ( !project )
-    {
-      const QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
-      sServerInterface->setConfigFilePath( configFilePath );
-    }
-    else
-    {
-      sServerInterface->setConfigFilePath( project->fileName() );
-    }
+      // Set the request handler into the interface for plugins to manipulate it
+      sServerInterface->setRequestHandler( &requestHandler );
 
-    // Call requestReady() method (if enabled)
-    // This may also throw exceptions if there are errors in python plugins code
-    try
-    {
-      responseDecorator.start();
+      // Initialize configfilepath so that is is available
+      // before calling plugin methods
+      // Note that plugins may still change that value using
+      // setConfigFilePath() interface method
+      if ( !project )
+      {
+        const QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
+        sServerInterface->setConfigFilePath( configFilePath );
+      }
+      else
+      {
+        sServerInterface->setConfigFilePath( project->fileName() );
+      }
+
+      if ( response.feedback() && response.feedback()->isCanceled() )
+      {
+        throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
+      }
+      // Call requestReady() method (if enabled)
+      // This may also throw exceptions if there are errors in python plugins code
+      try
+      {
+        responseDecorator.start();
+      }
+      catch ( QgsException &ex )
+      {
+        // Internal server error
+        response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+        QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+      }
     }
-    catch ( QgsException &ex )
+    catch ( QgsServerException &ex ) // thrown by "Remote socket has been closed!"
     {
-      // Internal server error
-      response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
-      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+      QString format;
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
     }
 
     // Plugins may have set exceptions
-    if ( !requestHandler.exceptionRaised() )
+    if ( !requestHandler.exceptionRaised() && ( !response.feedback() || !response.feedback()->isCanceled() ) )
     {
       try
       {
@@ -479,6 +496,11 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
         // TODO: QGIS 4 fix the OWS services and treat them as APIs
         QgsServerApi *api = nullptr;
+
+        if ( response.feedback() && response.feedback()->isCanceled() )
+        {
+          throw QgsServerException( QStringLiteral( "Remote socket has been closed!" ) );
+        }
 
         if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
         {
