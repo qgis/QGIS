@@ -439,6 +439,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     bool mCacheGeometry = true;
     bool mFullCache = false;
+    bool mCacheRequestCompleted = false;
     QList<QgsAbstractCacheIndex *> mCacheIndices;
 
     QgsAttributeList mCachedAttributes;

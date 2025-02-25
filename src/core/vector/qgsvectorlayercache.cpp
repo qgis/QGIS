@@ -104,6 +104,8 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
     // Add a little more than necessary...
     setCacheSize( mLayer->featureCount() + 100 );
 
+    mCacheRequestCompleted = false;
+
     // Initialize the cache...
     QgsFeatureIterator it( new QgsCachedFeatureWriterIterator( this, QgsFeatureRequest()
                            .setSubsetOfAttributes( mCachedAttributes )
@@ -276,6 +278,8 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
       mFullCache = true;
     }
   }
+
+  mCacheRequestCompleted = true;
 }
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
@@ -388,12 +392,13 @@ void QgsVectorLayerCache::layerDeleted()
 
 void QgsVectorLayerCache::invalidate()
 {
-  if ( ! mCache.isEmpty() )
+  if ( ! mCache.isEmpty() || mCacheRequestCompleted )
   {
     mCache.clear();
     mCacheOrderedKeys.clear();
     mCacheUnorderedKeys.clear();
     mFullCache = false;
+    mCacheRequestCompleted = false;
     emit invalidated();
   }
 }
@@ -499,6 +504,8 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
         myRequest.setFlags( myRequest.flags().setFlag( Qgis::FeatureRequestFlag::SubsetOfAttributes, false ) );
       }
     }
+
+    mCacheRequestCompleted = false;
 
     it = QgsFeatureIterator( new QgsCachedFeatureWriterIterator( this, myRequest ) );
   }
