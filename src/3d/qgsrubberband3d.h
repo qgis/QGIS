@@ -17,6 +17,7 @@
 #define QGSRUBBERBAND3D_H
 
 #include "qgis_3d.h"
+#include "qgsgeometry.h"
 
 #include <QColor>
 
@@ -33,9 +34,12 @@
 // version without notice, or even be removed.
 //
 
-#include "qgslinestring.h"
 
-class QgsWindow3DEngine;
+class QgsAbstract3DEngine;
+class QgsPoint;
+class QgsPhongMaterialSettings;
+class QgsMaterial;
+class QgsTessellatedPolygonGeometry;
 class QgsLineMaterial;
 class Qgs3DMapSettings;
 class QgsBillboardGeometry;
@@ -70,7 +74,7 @@ namespace Qt3DRender
  * class will be attached to the parentEntity given in the constructor (normally this
  * should be the root entity, i.e. map scene object).
  *
- * \note Currently only supports multi point and linestring geometry.
+ * \note Currently only supports multi point, linestring and polygon geometry.
  * \since QGIS 3.20
  */
 class _3D_EXPORT QgsRubberBand3D
@@ -79,7 +83,6 @@ class _3D_EXPORT QgsRubberBand3D
     //! Icons
     enum MarkerType
     {
-
       /**
        * A box is used to highlight points (□)
        */
@@ -91,7 +94,7 @@ class _3D_EXPORT QgsRubberBand3D
       Circle
     };
 
-    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+    QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
     ~QgsRubberBand3D();
 
     //! Returns the rubber band width in pixels
@@ -107,6 +110,18 @@ class _3D_EXPORT QgsRubberBand3D
     void setColor( QColor color );
 
     /**
+     * Returns the rubber band outline color
+     * \since QGIS 3.44
+     */
+    QColor outlineColor() const;
+
+    /**
+     * Sets the rubber band outline color
+     * \since QGIS 3.44
+     */
+    void setOutlineColor( QColor color );
+
+    /**
      * Sets the \a marker type to highlight point geometries and line vertices.
      */
     void setMarkerType( MarkerType marker );
@@ -116,49 +131,118 @@ class _3D_EXPORT QgsRubberBand3D
      */
     MarkerType markerType() const;
 
+    /**
+     * Sets the marker outline style
+     * \note Default value is solid line
+     * \since QGIS 3.44
+     */
+    void setMarkerOutlineStyle( Qt::PenStyle style );
+
+    /**
+     * Returns current marker outline style used by rubberband.
+     * \since QGIS 3.44
+     */
+    Qt::PenStyle markerOutlineStyle() const;
+
+    /**
+     * Sets whether to show markers on vertices
+     * \since QGIS 3.44
+     */
+    void setMarkersEnabled( bool enable );
+
+    /**
+     * Returns whether markers are being shown on vertices
+     * \since QGIS 3.44
+     */
+    bool hasMarkersEnabled() const;
+
+    /**
+     * Sets whether to show edges
+     * \since QGIS 3.44
+     */
+    void setEdgesEnabled( bool enable );
+
+    /**
+       * Returns whether edges are shown
+       * \since QGIS 3.44
+       */
+    bool hasEdgesEnabled() const;
+
+    /**
+       * Sets whether to show polygon fill
+       * \since QGIS 3.44
+       */
+    void setFillEnabled( bool enable );
+
+    /**
+       * Returns whether polygon fill is shown
+       * \since QGIS 3.44
+       */
+    bool hasFillEnabled() const;
+
     void reset();
 
     void addPoint( const QgsPoint &pt );
 
-    void setPoints( const QgsLineString &points );
+    /**
+     * Sets the geometry and \a GeometryType of rubberband
+     *
+     * \since QGIS 3.44
+     */
+    void setGeometry( const QgsGeometry &geometry );
 
     void removeLastPoint();
 
     void moveLastPoint( const QgsPoint &pt );
 
     //! Sets whether the marker on the last vertex is displayed. We typically do not want it displayed while it is still tracked by the mouse.
-    void setHideLastMarker( bool hide ) { mHideLastMarker = hide; }
+    void setHideLastMarker( const bool hide ) { mHideLastMarker = hide; }
 
-    bool isEmpty() const { return mLineString.isEmpty(); }
+    bool isEmpty() const { return mGeometry.isEmpty(); }
 
   private:
     void updateGeometry();
     void updateMarkerMaterial();
+    void setupMarker( Qt3DCore::QEntity *parentEntity );
+    void setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine );
+    void setupPolygon( Qt3DCore::QEntity *parentEntity );
 
-  private:
-    QgsLineString mLineString;
+    const float DEFAULT_POLYGON_OPACITY = 0.25;
+
+    QgsGeometry mGeometry;
     bool mHideLastMarker = false;
 
     Qgs3DMapSettings *mMapSettings = nullptr; // not owned
-    QgsWindow3DEngine *mEngine = nullptr;
+    QgsAbstract3DEngine *mEngine = nullptr;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Line;
 
     //! point and vertex marker type
     MarkerType mMarkerType = Circle;
     float mWidth = 3.f;
     QColor mColor = Qt::red;
+    QColor mOutlineColor;
+    Qt::PenStyle mMarkerOutlineStyle = Qt::PenStyle::SolidLine;
 
-    Qt3DCore::QEntity *mLineEntity = nullptr;   // owned by parentEntity (from constructor)
-    Qt3DCore::QEntity *mMarkerEntity = nullptr; // owned by parentEntity (from constructor)
+    bool mMarkerEnabled = true;
+    bool mEdgesEnabled = true;
+    bool mPolygonFillEnabled = true;
+
+    Qt3DCore::QEntity *mLineEntity = nullptr;    // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mPolygonEntity = nullptr; // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mMarkerEntity = nullptr;  // owned by parentEntity (from constructor)
+
+    // all these are owned by mPolygonEntity
+    QgsTessellatedPolygonGeometry *mPolygonGeometry = nullptr;
+    QgsMaterial *mPolygonMaterial = nullptr;
 
     // all these are owned by mLineEntity
-    Qt3DRender::QGeometryRenderer *mLineGeomRenderer = nullptr;
+    Qt3DRender::QGeometryRenderer *mLineGeometryRenderer = nullptr;
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QGeometry *mGeometry = nullptr;
+    Qt3DRender::QGeometry *mLineGeometry = nullptr;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
 #else
-    Qt3DCore::QGeometry *mGeometry = nullptr;
+    Qt3DCore::QGeometry *mLineGeometry = nullptr;
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mIndexAttribute = nullptr;
 #endif
