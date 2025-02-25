@@ -93,6 +93,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometrymultipart.cpp
   processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp
   processing/qgsalgorithmcheckgeometrycontained.cpp
+  processing/qgsalgorithmclimb.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
   processing/qgsalgorithmconditionalbranch.cpp

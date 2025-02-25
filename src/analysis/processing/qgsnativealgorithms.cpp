@@ -74,6 +74,7 @@
 #include "qgsalgorithmcheckgeometrydegeneratepolygon.h"
 #include "qgsalgorithmcheckgeometrycontained.h"
 #include "qgsalgorithmcheckvalidity.h"
+#include "qgsalgorithmclimb.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconcavehull.h"
 #include "qgsalgorithmconditionalbranch.h"
@@ -380,6 +381,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGeometryCheckMultipartAlgorithm() );
   addAlgorithm( new QgsGeometryCheckDegeneratePolygonAlgorithm() );
   addAlgorithm( new QgsGeometryCheckContainedAlgorithm() );
+  addAlgorithm( new QgsClimbAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );

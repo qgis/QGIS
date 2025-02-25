@@ -2636,7 +2636,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:climbalongline
+  - algorithm: native:climbalongline
     name: Climb line layer with DTM
     params:
       INPUT:
