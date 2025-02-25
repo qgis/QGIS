@@ -263,6 +263,7 @@ QgsRubberBand3D::MarkerType QgsRubberBand3D::markerType() const
 void QgsRubberBand3D::setMarkerOutlineStyle( const Qt::PenStyle style )
 {
   mMarkerOutlineStyle = style;
+  setMarkerType( markerType() );
 }
 
 Qt::PenStyle QgsRubberBand3D::markerOutlineStyle() const
@@ -334,10 +335,10 @@ void QgsRubberBand3D::addPoint( const QgsPoint &pt )
   updateGeometry();
 }
 
-void QgsRubberBand3D::setGeometry( const QgsGeometry &geometry, const Qgis::GeometryType geometryType )
+void QgsRubberBand3D::setGeometry( const QgsGeometry &geometry )
 {
   mGeometry = geometry;
-  mGeometryType = geometryType;
+  mGeometryType = geometry.type();
 
   updateGeometry();
 }
