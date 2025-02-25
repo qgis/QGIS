@@ -189,7 +189,7 @@ class _3D_EXPORT QgsRubberBand3D
      *
      * \since QGIS 3.44
      */
-    void setGeometry( const QgsGeometry &geometry, Qgis::GeometryType geometryType );
+    void setGeometry( const QgsGeometry &geometry );
 
     void removeLastPoint();
 
