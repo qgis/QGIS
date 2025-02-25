@@ -65,7 +65,7 @@ void QgsNominatimLocatorFilter::openConfigWidget( QWidget *parent )
   auto dlg = std::make_unique<QDialog>( parent );
   dlg->setWindowTitle( "Nominatim Geocoder Country Codes" );
 
-  QFormLayout *formLayout = new QFormLayout;
+  QGridLayout *formLayout = new QGridLayout;
   QLineEdit *countryCodesEdit = new QLineEdit( dlg.get() );
 
   // Load existing settings
