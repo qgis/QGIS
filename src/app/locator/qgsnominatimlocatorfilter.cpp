@@ -19,6 +19,7 @@
 #include "moc_qgsnominatimlocatorfilter.cpp"
 #include "qgsgeocoder.h"
 #include "qgslocatorfilter.h"
+#include "qgsnominatimgeocoder.h"
 #include "qgssettings.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
@@ -35,11 +36,15 @@ QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geoc
   setUseWithoutPrefix( false );
 }
 
-QgsNominatimLocatorFilter *QgsNominatimLocatorFilter::clone() const
+void QgsNominatimLocatorFilter::fetchResults(const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback)
 {
-  auto filter = std::make_unique< QgsNominatimLocatorFilter >( geocoder(), mCanvas );
-  filter->setFetchResultsDelay( fetchResultsDelay() );
-  return filter.release();
+  QgsSettings settings;
+  QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
+
+  QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( geocoder() );
+  nominatimGeocoder->setCountryCodes( countryCodes );
+
+  QgsAbstractGeocoderLocatorFilter::fetchResults( string, context, feedback);
 }
 
 void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
@@ -65,17 +70,20 @@ void QgsNominatimLocatorFilter::openConfigWidget( QWidget *parent )
   auto dlg = std::make_unique<QDialog>( parent );
   dlg->setWindowTitle( "Nominatim Geocoder Country Codes" );
 
-  QGridLayout *formLayout = new QGridLayout;
+  QGridLayout *layout = new QGridLayout;
+  layout->setSizeConstraint(QLayout::SetFixedSize);
+  QLabel *label = new QLabel( tr( "Two letter Country Codes (comma-separated)" ) );
   QLineEdit *countryCodesEdit = new QLineEdit( dlg.get() );
 
   // Load existing settings
   QgsSettings settings;
   countryCodesEdit->setText( settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString() );
 
-  formLayout->addRow( tr( "Two letter Country Codes (comma-separated)" ), countryCodesEdit );
+  layout->addWidget( label );
+  layout->addWidget( countryCodesEdit );
   QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
-  formLayout->addRow( buttonbBox );
-  dlg->setLayout( formLayout );
+  layout->addWidget( buttonbBox );
+  dlg->setLayout( layout );
 
   // Save settings when dialog accepted
   connect( buttonbBox, &QDialogButtonBox::accepted, dlg.get(), [&]() {
