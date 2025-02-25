@@ -17,8 +17,6 @@
 #include "moc_qgsabstractgeocoderlocatorfilter.cpp"
 #include "qgsgeocoder.h"
 #include "qgsgeocodercontext.h"
-#include "qgsnominatimgeocoder.h"
-#include "qgssettings.h"
 
 QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, const QgsRectangle &boundingBox )
   : mName( name )
@@ -47,25 +45,9 @@ QString QgsAbstractGeocoderLocatorFilter::prefix() const
 
 void QgsAbstractGeocoderLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
-  if ( !mGeocoder )
-  {
-    return;
-  }
-
   QgsGeocoderContext geocodeContext( context.transformContext );
   geocodeContext.setAreaOfInterest( QgsGeometry::fromRect( context.targetExtent ) );
   geocodeContext.setAreaOfInterestCrs( context.targetExtentCrs );
-
-  // Check if we have QgsNominatimLocatorFilter instance
-  QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( mGeocoder );
-  if ( nominatimGeocoder )
-  {
-    // Read countryCodes from settings
-    QgsSettings settings;
-    QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
-
-    nominatimGeocoder->setCountryCodes( countryCodes );
-  }
 
   const QList< QgsGeocoderResult > results = mGeocoder->geocodeString( string, geocodeContext, feedback );
   for ( const QgsGeocoderResult &result : results )
