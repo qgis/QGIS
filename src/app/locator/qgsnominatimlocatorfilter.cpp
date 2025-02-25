@@ -36,7 +36,7 @@ QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geoc
   setUseWithoutPrefix( false );
 }
 
-void QgsNominatimLocatorFilter::fetchResults(const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback)
+void QgsNominatimLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
   QgsSettings settings;
   QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
@@ -44,7 +44,7 @@ void QgsNominatimLocatorFilter::fetchResults(const QString &string, const QgsLoc
   QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( geocoder() );
   nominatimGeocoder->setCountryCodes( countryCodes );
 
-  QgsAbstractGeocoderLocatorFilter::fetchResults( string, context, feedback);
+  QgsAbstractGeocoderLocatorFilter::fetchResults( string, context, feedback );
 }
 
 void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
@@ -71,7 +71,7 @@ void QgsNominatimLocatorFilter::openConfigWidget( QWidget *parent )
   dlg->setWindowTitle( "Nominatim Geocoder Country Codes" );
 
   QGridLayout *layout = new QGridLayout;
-  layout->setSizeConstraint(QLayout::SetFixedSize);
+  layout->setSizeConstraint( QLayout::SetFixedSize );
   QLabel *label = new QLabel( tr( "Two letter Country Codes (comma-separated)" ) );
   QLineEdit *countryCodesEdit = new QLineEdit( dlg.get() );
 
