@@ -16,7 +16,6 @@
 #ifndef QGS3DMAPCANVASWIDGET_H
 #define QGS3DMAPCANVASWIDGET_H
 
-#include "qgsdockwidget.h"
 #include "qgis_app.h"
 #include "qobjectuniqueptr.h"
 #include "qgsrectangle.h"
@@ -24,11 +23,12 @@
 #include <QComboBox>
 #include <QMenu>
 #include <QPointer>
-#include <QToolButton>
 #include <QToolBar>
 
 #define SIP_NO_FILE
 
+
+class Qgs3DMapToolPaintBrush;
 class QLabel;
 class QProgressBar;
 
@@ -102,6 +102,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void cameraControl();
     void identify();
     void measureLine();
+    void paintBrush();
     void changePointCloudAttribute();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
@@ -140,6 +141,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
+    Qgs3DMapToolPaintBrush *mMapToolPaintBrush = nullptr;
     Qgs3DMapToolPointCloudChangeAttribute *mMapToolPointCloudChangeAttribute = nullptr;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     QgsMapTool *mMapToolPrevious = nullptr;
@@ -147,6 +149,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QMenu *mMapThemeMenu = nullptr;
     QMenu *mCameraMenu = nullptr;
     QMenu *mEffectsMenu = nullptr;
+    QMenu *mEditingToolsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
@@ -163,6 +166,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionToggleEditing = nullptr;
     QAction *mActionUndo = nullptr;
     QAction *mActionRedo = nullptr;
+    QAction *mEditingToolsAction = nullptr;
     QToolBar *mPointCloudEditingToolbar = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;

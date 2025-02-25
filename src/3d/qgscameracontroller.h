@@ -17,6 +17,7 @@
 #define QGSCAMERACONTROLLER_H
 
 #include "qgis_3d.h"
+#include "qgscamerapose.h"
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
@@ -38,8 +39,6 @@ namespace Qt3DRender
 }
 
 #endif
-
-#include "qgscamerapose.h"
 
 class QDomDocument;
 class QDomElement;
@@ -224,6 +223,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      * \since QGIS 3.42
      */
     void setInputHandlersEnabled( bool enable ) { mInputHandlersEnabled = enable; }
+
+    /**
+     * Returns whether the camera controller responds to mouse and keyboard events
+     * \since QGIS 3.44
+     */
+    bool inputHandlersEnabled() const { return mInputHandlersEnabled; }
 
   public slots:
 
