@@ -29,7 +29,6 @@ from .BarPlot import BarPlot
 from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
-from .DefineProjection import DefineProjection
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -94,7 +93,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             BoxPlot(),
             CheckValidity(),
             Climb(),
-            DefineProjection(),
             EliminateSelection(),
             ExecuteSQL(),
             ExportGeometryInfo(),
