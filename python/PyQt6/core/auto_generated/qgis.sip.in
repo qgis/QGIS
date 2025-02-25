@@ -2116,7 +2116,7 @@ The development version
       LargestGeometry,
       MinimumValue,
       MaximumValue,
-      SkipAttribute,
+      SetToNull,
     };
 
     enum class FieldDuplicatePolicy /BaseType=IntEnum/

@@ -387,7 +387,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents( bool skipAll )
         break;
       }
 
-      case Qgis::FieldDomainMergePolicy::SkipAttribute:
+      case Qgis::FieldDomainMergePolicy::SetToNull:
       {
         if ( currentComboBox )
           currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );

@@ -247,7 +247,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       ml.setFieldMergePolicy( 3, Qgis::FieldDomainMergePolicy::LargestGeometry );
       ml.setFieldMergePolicy( 4, Qgis::FieldDomainMergePolicy::MinimumValue );
       ml.setFieldMergePolicy( 5, Qgis::FieldDomainMergePolicy::MaximumValue );
-      ml.setFieldMergePolicy( 6, Qgis::FieldDomainMergePolicy::SkipAttribute );
+      ml.setFieldMergePolicy( 6, Qgis::FieldDomainMergePolicy::SetToNull );
       ml.setFieldMergePolicy( 7, Qgis::FieldDomainMergePolicy::UnsetField );
 
       // verify that policies have been correctly set
@@ -258,7 +258,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       QCOMPARE( ml.fields().field( 3 ).mergePolicy(), Qgis::FieldDomainMergePolicy::LargestGeometry );
       QCOMPARE( ml.fields().field( 4 ).mergePolicy(), Qgis::FieldDomainMergePolicy::MinimumValue );
       QCOMPARE( ml.fields().field( 5 ).mergePolicy(), Qgis::FieldDomainMergePolicy::MaximumValue );
-      QCOMPARE( ml.fields().field( 6 ).mergePolicy(), Qgis::FieldDomainMergePolicy::SkipAttribute );
+      QCOMPARE( ml.fields().field( 6 ).mergePolicy(), Qgis::FieldDomainMergePolicy::SetToNull );
       QCOMPARE( ml.fields().field( 7 ).mergePolicy(), Qgis::FieldDomainMergePolicy::UnsetField );
 
       // Create features

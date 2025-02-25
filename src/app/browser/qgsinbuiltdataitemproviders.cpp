@@ -2256,7 +2256,7 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
     case Qgis::FieldDomainMergePolicy::MinimumValue:
       metadata += tr( "Minimum value" );
       break;
-    case Qgis::FieldDomainMergePolicy::SkipAttribute:
+    case Qgis::FieldDomainMergePolicy::SetToNull:
       metadata += tr( "Skip attribute" );
       break;
   }

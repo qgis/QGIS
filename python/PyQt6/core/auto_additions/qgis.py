@@ -6932,7 +6932,7 @@ Qgis.FieldDomainMergePolicy.UnsetField.__doc__ = "Clears the field value so that
 Qgis.FieldDomainMergePolicy.LargestGeometry.__doc__ = "Use value from the feature with the largest geometry \n.. versionadded:: 3.44"
 Qgis.FieldDomainMergePolicy.MinimumValue.__doc__ = "Use the minimum value from the features-to-be-merged \n.. versionadded:: 3.44"
 Qgis.FieldDomainMergePolicy.MaximumValue.__doc__ = "Use the maximum value from the features-to-be-merged \n.. versionadded:: 3.44"
-Qgis.FieldDomainMergePolicy.SkipAttribute.__doc__ = "Use a null value \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.SetToNull.__doc__ = "Use a null value \n.. versionadded:: 3.44"
 Qgis.FieldDomainMergePolicy.__doc__ = """Merge policy for field domains.
 
 When a feature is built by merging multiple features, defines how the value of
@@ -6959,7 +6959,7 @@ attributes following the domain are computed.
 
   .. versionadded:: 3.44
 
-* ``SkipAttribute``: Use a null value
+* ``SetToNull``: Use a null value
 
   .. versionadded:: 3.44
 
