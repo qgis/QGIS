@@ -155,6 +155,17 @@ void TestQgsTranslateProject::createTsFile()
   //Sheepwalk
   QVERIFY( tsFileContent.contains( "<source>Sheepwalk</source>" ) );
 
+  //WIDGETS
+  //ValueRelation value
+  QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationvalue</name>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+
+  //ValueMap with descriptions
+  QVERIFY( tsFileContent.contains( ":fields:Name:valuemapdescriptions</name>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Arterial road</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Highway road</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>nothing</source>" ) );
+
   tsFile.close();
 }
 
@@ -231,6 +242,21 @@ void TestQgsTranslateProject::translateProject()
   QCOMPARE( QgsProject::instance()->relationManager()->relation( QStringLiteral( "points_240_Importance_lines_a677_Value" ) ).name(), QStringLiteral( "Piste" ) );
   //Sheepwalk -> Schafweide
   QCOMPARE( QgsProject::instance()->relationManager()->relation( QStringLiteral( "points_240_Importance_lines_a677_Value_1" ) ).name(), QStringLiteral( "Schafweide" ) );
+
+  //WIDGETS
+  //ValueRelation value is not anymore Name but Runwayid
+  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString(), QStringLiteral( "Runwayid" ) );
+
+  //ValueMap with descriptions
+  const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" };
+  const QList<QVariant> valueList = lines_fields.field( QStringLiteral( "Name" ) ).editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
+  QList<QString> stringValueList;
+  for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+  {
+    stringValueList.append( valueList[i].toMap().constBegin().key() );
+  }
+
+  QCOMPARE( stringValueList, expectedStringValueList );
 
   QString deProjectFileName( TEST_DATA_DIR );
   deProjectFileName = deProjectFileName + "/project_translation/points_translation_de.qgs";
