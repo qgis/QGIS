@@ -2222,7 +2222,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
           }
           if ( widgetType == QStringLiteral( "ValueMap" ) )
           {
-            if ( optionsMap[QStringLiteral( "map" )].canConvert<QVariantList>() )
+            if ( optionsMap[QStringLiteral( "map" )].canConvert<QList<QVariant>>() )
             {
               QList<QVariant> translatedValueList;
               const QList<QVariant> valueList = optionsMap[QStringLiteral( "map" )].toList();
