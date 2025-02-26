@@ -40,10 +40,9 @@ class TestQgsFeature(QgisTestCase):
         feat.initAttributes(1)
         feat.setAttribute(0, "text")
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
-        myId = feat.id()
-        myExpectedId = 0
-        myMessage = f"\nExpected: {myExpectedId}\nGot: {myId}"
-        assert myId == myExpectedId, myMessage
+        self.assertEqual(feat.id(), 0)
+        self.assertEqual(feat.attributes(), ["text"])
+        self.assertEqual(feat.geometry().asWkt(), "Point (123 456)")
 
     def test_FeatureDefaultConstructor(self):
         """Test for FID_IS_NULL default constructors See: https://github.com/qgis/QGIS/issues/36962"""
@@ -138,9 +137,7 @@ class TestQgsFeature(QgisTestCase):
         feat = QgsFeature()
         fit.nextFeature(feat)
         fit.close()
-        myValidValue = feat.isValid()
-        myMessage = f"\nExpected: True\nGot: {myValidValue}"
-        assert myValidValue, myMessage
+        self.assertTrue(feat.isValid())
 
     def test_Validity(self):
         f = QgsFeature()
@@ -170,21 +167,14 @@ class TestQgsFeature(QgisTestCase):
         feat = QgsFeature()
         fit.nextFeature(feat)
         fit.close()
-        myAttributes = feat.attributes()
-        myExpectedAttributes = ["Highway", 1]
-
-        # Only for printing purposes
-        myExpectedAttributes = ["Highway", 1]
-        myMessage = f"\nExpected: {myExpectedAttributes}\nGot: {myAttributes}"
-
-        assert myAttributes == myExpectedAttributes, myMessage
+        self.assertEqual(feat.attributes(), ["Highway", 1])
 
     def test_SetAttributes(self):
         feat = QgsFeature()
         feat.initAttributes(1)
         feat.setAttributes([0])
         feat.setAttributes([NULL])
-        assert [NULL] == feat.attributes()
+        self.assertEqual(feat.attributes(), [NULL])
 
         # Test different type of attributes
         attributes = [
@@ -203,6 +193,7 @@ class TestQgsFeature(QgisTestCase):
         feat.initAttributes(len(attributes))
         feat.setAttributes(attributes)
         self.assertEqual(feat.attributes(), attributes)
+        self.assertEqual([attr for attr in feat.attributes()], attributes)
 
     def test_setAttribute(self):
         feat = QgsFeature()
@@ -291,10 +282,7 @@ class TestQgsFeature(QgisTestCase):
         feat[1] = "text2"
         feat[2] = "text3"
         feat.deleteAttribute(1)
-        myAttrs = [feat[0], feat[1]]
-        myExpectedAttrs = ["text1", "text3"]
-        myMessage = f"\nExpected: {str(myExpectedAttrs)}\nGot: {str(myAttrs)}"
-        assert myAttrs == myExpectedAttrs, myMessage
+        self.assertEqual([feat[0], feat[1]], ["text1", "text3"])
 
     def test_DeleteAttributeByName(self):
         fields = QgsFields()
@@ -315,10 +303,7 @@ class TestQgsFeature(QgisTestCase):
     def test_SetGeometry(self):
         feat = QgsFeature()
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
-        myGeometry = feat.geometry()
-        myExpectedGeometry = "!None"
-        myMessage = f"\nExpected: {myExpectedGeometry}\nGot: {myGeometry}"
-        assert myGeometry is not None, myMessage
+        self.assertEqual(feat.geometry().asWkt(), "Point (123 456)")
 
         # set from QgsAbstractGeometry
         feat.setGeometry(QgsPoint(12, 34))

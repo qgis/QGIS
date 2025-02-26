@@ -19,6 +19,7 @@
 #include "qgsmssqlexpressioncompiler.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqltransaction.h"
+#include "qgsmssqlutils.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
@@ -35,8 +36,6 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
   , mDisableInvalidGeometryHandling( source->mDisableInvalidGeometryHandling )
 {
-  mClosed = false;
-
   mParser.mIsGeography = mSource->mIsGeography;
 
   mTransform = mRequest.calculateTransform( mSource->mCrs );
@@ -106,12 +105,12 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
 
   switch ( mSource->mPrimaryKeyType )
   {
-    case PktInt:
+    case QgsMssqlDatabase::PrimaryKeyType::Int:
       Q_ASSERT( mSource->mPrimaryKeyAttrs.size() == 1 );
       whereClause = QStringLiteral( "[%1]=%2" ).arg( mSource->mFields.at( mSource->mPrimaryKeyAttrs[0] ).name(), FID_TO_STRING( featureId ) );
       break;
 
-    case PktFidMap:
+    case QgsMssqlDatabase::PrimaryKeyType::FidMap:
     {
       const QVariantList &pkVals = mSource->mShared->lookupKey( featureId );
       if ( !pkVals.isEmpty() )
@@ -124,7 +123,7 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
         for ( int i = 0; i < mSource->mPrimaryKeyAttrs.size(); ++i )
         {
           const QgsField &fld = mSource->mFields.at( mSource->mPrimaryKeyAttrs[i] );
-          whereClause += QStringLiteral( "%1[%2]=%3" ).arg( delim, fld.name(), QgsMssqlProvider::quotedValue( pkVals[i] ) );
+          whereClause += QStringLiteral( "%1[%2]=%3" ).arg( delim, fld.name(), QgsMssqlUtils::quotedValue( pkVals[i] ) );
           delim = QStringLiteral( " AND " );
         }
 
@@ -138,7 +137,7 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
     }
     break;
 
-    default:
+    case QgsMssqlDatabase::PrimaryKeyType::Unknown:
       Q_ASSERT( !"FAILURE: Primary key unknown" );
       whereClause = QStringLiteral( "NULL IS NOT NULL" );
       break;
@@ -157,11 +156,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   // build sql statement
 
   // note: 'SELECT ' is added later, to account for 'SELECT TOP...' type queries
-  QString delim;
-  for ( auto idx : mSource->mPrimaryKeyAttrs )
+  QStringList selectColumns;
+  for ( int idx : mSource->mPrimaryKeyAttrs )
   {
-    mStatement += QStringLiteral( "%1[%2]" ).arg( delim, mSource->mFields.at( idx ).name() );
-    delim = ',';
+    selectColumns << QgsMssqlUtils::quotedIdentifier( mSource->mFields.at( idx ).name() );
   }
 
   mAttributesToFetch << mSource->mPrimaryKeyAttrs;
@@ -194,7 +192,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     if ( mSource->mPrimaryKeyAttrs.contains( i ) )
       continue;
 
-    mStatement += QStringLiteral( ",[%1]" ).arg( mSource->mFields.at( i ).name() );
+    selectColumns << QgsMssqlUtils::quotedIdentifier( mSource->mFields.at( i ).name() );
 
     mAttributesToFetch.append( i );
   }
@@ -206,10 +204,19 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
        )
        && mSource->isSpatial() )
   {
-    mStatement += QStringLiteral( ",[%1]" ).arg( mSource->mGeometryColName );
+    selectColumns << QgsMssqlUtils::quotedIdentifier( mSource->mGeometryColName );
   }
 
-  mStatement += QStringLiteral( " FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
+  mStatement = selectColumns.join( ',' );
+
+  if ( !mSource->mQuery.isEmpty() )
+  {
+    mStatement += QStringLiteral( " FROM (%1) _subquery" ).arg( mSource->mQuery );
+  }
+  else
+  {
+    mStatement += QStringLiteral( " FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
+  }
 
   bool filterAdded = false;
   // set spatial filter
@@ -258,11 +265,11 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     else
       mStatement += QLatin1String( " AND " );
 
-    if ( mSource->mPrimaryKeyType == PktInt )
+    if ( mSource->mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::Int )
     {
       mStatement += QStringLiteral( "[%1]=%2" ).arg( mSource->mFields[mSource->mPrimaryKeyAttrs[0]].name(), FID_TO_STRING( request.filterFid() ) );
     }
-    else if ( mSource->mPrimaryKeyType == PktFidMap )
+    else if ( mSource->mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::FidMap )
     {
       QVariantList key = mSource->mShared->lookupKey( request.filterFid() );
       if ( !key.isEmpty() )
@@ -277,7 +284,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
           if ( QgsVariantUtils::isNull( key[i] ) )
             expr = QString( "[%1] IS NULL" ).arg( colName );
           else
-            expr = QString( "[%1]=%2" ).arg( colName, QgsMssqlProvider::quotedValue( key[i] ) );
+            expr = QString( "[%1]=%2" ).arg( colName, QgsMssqlUtils::quotedValue( key[i] ) );
 
           mStatement += QStringLiteral( "%1%2" ).arg( delim, expr );
           delim = " AND ";
@@ -297,7 +304,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     else
       mStatement += QLatin1String( " AND " );
 
-    if ( mSource->mPrimaryKeyType == PktInt )
+    if ( mSource->mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::Int )
     {
       QString delim;
       QString colName = mSource->mFields[mSource->mPrimaryKeyAttrs[0]].name();
@@ -512,14 +519,14 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 
     switch ( mSource->mPrimaryKeyType )
     {
-      case PktInt:
+      case QgsMssqlDatabase::PrimaryKeyType::Int:
         // get 64bit integer from result
         fid = mQuery->record().value( mSource->mFields.at( mSource->mPrimaryKeyAttrs.value( 0 ) ).name() ).toLongLong();
         if ( mAttributesToFetch.contains( mSource->mPrimaryKeyAttrs.value( 0 ) ) )
           feature.setAttribute( mSource->mPrimaryKeyAttrs.value( 0 ), fid );
         break;
 
-      case PktFidMap:
+      case QgsMssqlDatabase::PrimaryKeyType::FidMap:
       {
         QVariantList primaryKeyVals;
         for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
@@ -541,7 +548,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       }
       break;
 
-      case PktUnknown:
+      case QgsMssqlDatabase::PrimaryKeyType::Unknown:
         Q_ASSERT( !"FAILURE: cannot get feature with unknown primary key" );
         return false;
     }
@@ -702,6 +709,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
+  , mQuery( p->mQuery )
   , mUserName( p->mUserName )
   , mPassword( p->mPassword )
   , mService( p->mService )

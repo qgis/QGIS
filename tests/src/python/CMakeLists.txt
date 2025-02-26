@@ -605,7 +605,7 @@ if (ENABLE_MSSQLTEST)
   ADD_PYTHON_TEST(PyQgsMssqlProvider test_provider_mssql.py)
   ADD_PYTHON_TEST(PyQgsProviderConnectionMssql test_qgsproviderconnection_mssql.py)
   ADD_PYTHON_TEST(PyQgsStyleStorageMssql test_stylestorage_mssql.py)
-  SET_TESTS_PROPERTIES(PyQgsMssqlProvider PyQgsProviderConnectionMssql PyQgsStyleStorageMssql PROPERTIES LABELS "MSSQL")
+  SET_TESTS_PROPERTIES(PyQgsMssqlProvider PyQgsProviderConnectionMssql PyQgsStyleStorageMssql PROPERTIES LABELS "SQLSERVER")
 endif()
 
 if (ENABLE_ORACLETEST)

@@ -108,12 +108,13 @@ QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelInd
 
 Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex &index ) const
 {
+  // Flat list, to ease drop handling valid indexes are not dropEnabled
   if ( !index.isValid() || !mRenderer )
   {
     return Qt::ItemIsDropEnabled;
   }
 
-  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
+  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable;
   if ( index.column() == 1 )
   {
     const QgsRendererCategory category = mRenderer->categories().value( index.row() );
@@ -398,8 +399,8 @@ QMimeData *QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList &i
 
 bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row )
   Q_UNUSED( column )
+  Q_UNUSED( parent ) // Unused because only invalid indexes have Qt::ItemIsDropEnabled
   if ( action != Qt::MoveAction )
     return true;
 
@@ -417,7 +418,11 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
     rows.append( r );
   }
 
-  int to = parent.row();
+  // Items may come unsorted depending on selecion order
+  std::sort( rows.begin(), rows.end() );
+
+  int to = row;
+
   // to is -1 if dragged outside items, i.e. below any item,
   // then move to the last position
   if ( to == -1 )
@@ -708,6 +713,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( btnAddCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::addCategories );
   connect( btnDeleteCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteCategories );
   connect( btnDeleteAllCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteAllCategories );
+  connect( btnDeleteUnusedCategories, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::deleteUnusedCategories );
   connect( btnAddCategory, &QAbstractButton::clicked, this, &QgsCategorizedSymbolRendererWidget::addCategory );
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsCategorizedSymbolRendererWidget::applyColorRamp );
@@ -900,34 +906,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
   const QString attrName = mExpressionWidget->currentField();
-  const int idx = mLayer->fields().lookupField( attrName );
-  QList<QVariant> uniqueValues;
-  if ( idx == -1 )
-  {
-    // Lets assume it's an expression
-    QgsExpression *expression = new QgsExpression( attrName );
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::atlasScope( nullptr )
-            << QgsExpressionContextUtils::layerScope( mLayer );
-
-    expression->prepare( &context );
-    QgsFeatureIterator fit = mLayer->getFeatures();
-    QgsFeature feature;
-    while ( fit.nextFeature( feature ) )
-    {
-      context.setFeature( feature );
-      const QVariant value = expression->evaluate( &context );
-      if ( uniqueValues.contains( value ) )
-        continue;
-      uniqueValues << value;
-    }
-  }
-  else
-  {
-    uniqueValues = qgis::setToList( mLayer->uniqueValues( idx ) );
-  }
+  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
 
   // ask to abort if too many classes
   if ( uniqueValues.size() >= 1000 )
@@ -1091,6 +1070,62 @@ void QgsCategorizedSymbolRendererWidget::deleteAllCategories()
 {
   mModel->removeAllRows();
   emit widgetChanged();
+}
+
+void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
+{
+  if ( !mRenderer )
+    return;
+  const QString attrName = mExpressionWidget->currentField();
+  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
+
+  const QgsCategoryList catList = mRenderer->categories();
+
+  QList<int> unusedIndexes;
+
+  for ( int i = 0; i < catList.size(); ++i )
+  {
+    const QgsRendererCategory cat = catList.at( i );
+    if ( !uniqueValues.contains( cat.value() ) )
+    {
+      unusedIndexes.append( i );
+    }
+  }
+  mModel->deleteRows( unusedIndexes );
+  emit widgetChanged();
+}
+
+QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QString &attrName )
+{
+  const int idx = mLayer->fields().lookupField( attrName );
+  QList<QVariant> uniqueValues;
+  if ( idx == -1 )
+  {
+    // Lets assume it's an expression
+    QgsExpression expression = QgsExpression( attrName );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::atlasScope( nullptr )
+            << QgsExpressionContextUtils::layerScope( mLayer );
+
+    expression.prepare( &context );
+    QgsFeatureIterator fit = mLayer->getFeatures();
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
+    {
+      context.setFeature( feature );
+      const QVariant value = expression.evaluate( &context );
+      if ( uniqueValues.contains( value ) )
+        continue;
+      uniqueValues << value;
+    }
+  }
+  else
+  {
+    uniqueValues = qgis::setToList( mLayer->uniqueValues( idx ) );
+  }
+  return uniqueValues;
 }
 
 void QgsCategorizedSymbolRendererWidget::addCategory()

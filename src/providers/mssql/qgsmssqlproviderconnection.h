@@ -60,18 +60,23 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     void dropSchema( const QString &name, bool force = false ) const override;
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
+    QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QStringList schemas() const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsProviderSqlQueryBuilder *queryBuilder() const override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const;
 
     static const QStringList EXTRA_CONNECTION_PARAMETERS;
 };

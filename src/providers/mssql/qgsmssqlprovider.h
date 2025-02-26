@@ -21,6 +21,11 @@
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
+#include "qgsmssqldatabase.h"
+#include "qgsdatasourceuri.h"
+#include "qgsgeometry.h"
+#include "qgsmssqlgeometryparser.h"
 
 #include <QStringList>
 #include <QFile>
@@ -29,7 +34,6 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
-#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
@@ -39,18 +43,6 @@ class QTextStream;
 class QgsMssqlFeatureIterator;
 class QgsMssqlSharedData;
 class QgsMssqlTransaction;
-class QgsMssqlDatabase;
-
-#include "qgsdatasourceuri.h"
-#include "qgsgeometry.h"
-#include "qgsmssqlgeometryparser.h"
-
-enum QgsMssqlPrimaryKeyType
-{
-  PktUnknown,
-  PktInt,
-  PktFidMap
-};
 
 /**
  * \class QgsMssqlProvider
@@ -75,6 +67,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     void updateExtents() override;
     QString storageType() const override;
     QStringList subLayers() const override;
+    Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
@@ -136,10 +129,6 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     // Parse type name and num coordinates as stored in geometry_columns table and returns normalized (M, Z or ZM) type name
     static QString typeFromMetadata( const QString &typeName, int numCoords );
 
-    //! Convert values to quoted values for database work
-    static QString quotedValue( const QVariant &value );
-    static QString quotedIdentifier( const QString &value );
-
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
 
@@ -170,7 +159,6 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
   protected:
     //! Loads fields from input file to member attributeFields
-    QMetaType::Type DecodeSqlType( const QString &sqlTypeName );
     void loadFields();
     void loadMetadata();
 
@@ -190,6 +178,9 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     bool mValid = false;
 
+    bool mIsQuery = false;
+    QString mQuery;
+
     bool mUseWkb = false;
     bool mUseEstimatedMetadata = false;
     bool mSkipFailures = false;
@@ -201,7 +192,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
       *
       * Data type for the primary key
       */
-    QgsMssqlPrimaryKeyType mPrimaryKeyType = PktUnknown;
+    QgsMssqlDatabase::PrimaryKeyType mPrimaryKeyType = QgsMssqlDatabase::PrimaryKeyType::Unknown;
 
     /**
      * List of primary key attributes for fetching features.

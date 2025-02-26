@@ -31,9 +31,9 @@ struct QgsMssqlLayerProperty
     QString geometryColName;
     QStringList pkCols;
     QString srid;
-    bool isGeography;
+    bool isGeography = false;
     QString sql;
-    bool isView;
+    bool isView = false;
 };
 
 
@@ -86,8 +86,6 @@ class QgsMssqlTableModel : public QgsAbstractDbTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata, bool disableInvalidGeometryHandling );
-
-    static Qgis::WkbType wkbTypeFromMssql( QString dbType );
 
     void setConnectionName( const QString &connectionName );
 

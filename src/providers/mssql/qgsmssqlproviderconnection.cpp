@@ -20,6 +20,7 @@
 #include "qgsmssqlproviderconnection.h"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
+#include "qgsmssqlutils.h"
 #include "qgssettings.h"
 #include "qgsmssqlprovider.h"
 #include "qgsexception.h"
@@ -29,6 +30,7 @@
 #include "qgsmssqlsqlquerybuilder.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsvectorlayer.h"
 #include <QIcon>
 
 #include <chrono>
@@ -88,6 +90,7 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::DropSchema,
     Capability::CreateSchema,
     Capability::ExecuteSql,
+    Capability::SqlLayers,
     Capability::Tables,
     Capability::Schemas,
     Capability::Spatial,
@@ -117,14 +120,14 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
   DECLARE @table nvarchar(50)
   DECLARE @schema nvarchar(50)
 
-  set @database = N%1
-  set @table = N%2
-  set @schema = N%3
+  set @database = %1
+  set @table = %2
+  set @schema = %3
 
   DECLARE @sql nvarchar(255)
   WHILE EXISTS(select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_CATALOG = @database and TABLE_NAME = @table AND TABLE_SCHEMA = @schema )
   BEGIN
-      select    @sql = 'ALTER TABLE ' + @table + ' DROP CONSTRAINT ' + CONSTRAINT_NAME
+      select    @sql = 'ALTER TABLE [' + @schema + '].[' + @table + '] DROP CONSTRAINT [' + CONSTRAINT_NAME + ']'
       from    INFORMATION_SCHEMA.TABLE_CONSTRAINTS
       where    constraint_catalog = @database and
               table_name = @table and table_schema = @schema
@@ -137,8 +140,8 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
      DELETE FROM geometry_columns WHERE f_table_schema = @schema AND f_table_name = @table
 
   )raw" )
-                        .arg( QgsMssqlProvider::quotedValue( QStringLiteral( "master" ) ), // in my testing docker, it is 'master' instead of QgsMssqlProvider::quotedValue( QgsDataSourceUri( uri() ).database() ),
-                              QgsMssqlProvider::quotedValue( name ), QgsMssqlProvider::quotedValue( schema ), QgsMssqlProvider::quotedIdentifier( name ), QgsMssqlProvider::quotedIdentifier( schema ) ) };
+                        .arg( QgsMssqlUtils::quotedValue( QStringLiteral( "master" ) ), // in my testing docker, it is 'master' instead of QgsMssqlUtils::quotedValue( QgsDataSourceUri( uri() ).database() ),
+                              QgsMssqlUtils::quotedValue( name ), QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedIdentifier( schema ) ) };
 
   executeSqlPrivate( sql );
 }
@@ -193,7 +196,7 @@ void QgsMssqlProviderConnection::createSchema( const QString &schemaName ) const
 {
   checkCapability( Capability::CreateSchema );
   executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
-                       .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
+                       .arg( QgsMssqlUtils::quotedIdentifier( schemaName ) ) );
 }
 
 void QgsMssqlProviderConnection::dropSchema( const QString &schemaName, bool force ) const
@@ -211,7 +214,7 @@ void QgsMssqlProviderConnection::dropSchema( const QString &schemaName, bool for
     }
   }
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1" )
-                       .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
+                       .arg( QgsMssqlUtils::quotedIdentifier( schemaName ) ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -330,8 +333,26 @@ long long QgssMssqlProviderResultIterator::rowCountPrivate() const
   return mQuery->size();
 }
 
+QgsAbstractDatabaseProviderConnection::TableProperty QgsMssqlProviderConnection::table( const QString &schema, const QString &table, QgsFeedback *feedback ) const
+{
+  const QList<QgsMssqlProviderConnection::TableProperty> properties { tablesPrivate( schema, table, TableFlags(), feedback ) };
+  if ( !properties.empty() )
+  {
+    return properties.first();
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                            .arg( table, schema ) );
+  }
+}
 
 QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
+{
+  return tablesPrivate( schema, QString(), flags, feedback );
+}
+
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsMssqlProviderConnection::tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsMssqlProviderConnection::TableProperty> tables;
@@ -339,14 +360,14 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   const QgsDataSourceUri dsUri { uri() };
 
   // Defaults to false
-  const bool useGeometryColumnsOnly { dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) };
+  const bool useGeometryColumnsOnly { !table.isEmpty() && ( dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) ) };
 
   // Defaults to true
   const bool useEstimatedMetadata { !dsUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) || ( dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' ) };
 
   // Defaults to true because we want to list all tables if flags are not set
   bool allowGeometrylessTables;
-  if ( flags == 0 )
+  if ( flags == 0 || !table.isEmpty() )
   {
     allowGeometrylessTables = true;
   }
@@ -354,13 +375,19 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   {
     allowGeometrylessTables = flags.testFlag( TableFlag::Aspatial );
   }
+  const bool disableInvalidGeometryHandling = dsUri.hasParam( QStringLiteral( "disableInvalidGeometryHandling" ) ) && dsUri.param( QStringLiteral( "disableInvalidGeometryHandling" ) ).toInt();
+  QString tableNameFilter;
+  if ( !table.isEmpty() )
+  {
+    tableNameFilter = QStringLiteral( " AND sys.objects.name = %1" ).arg( QgsMssqlUtils::quotedValue( table ) );
+  }
 
   QString query { QStringLiteral( "SELECT " ) };
 
   if ( useGeometryColumnsOnly )
   {
-    query += QStringLiteral( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns WHERE f_table_schema = N%1" )
-               .arg( QgsMssqlProvider::quotedValue( schema ) );
+    query += QStringLiteral( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns WHERE f_table_schema = %1" )
+               .arg( QgsMssqlUtils::quotedValue( schema ) );
   }
   else
   {
@@ -374,11 +401,11 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                 JOIN sys.schemas
                                   ON sys.objects.schema_id = sys.schemas.schema_id
                                 WHERE
-                                  sys.schemas.name = N%1
+                                  sys.schemas.name = %1 %2
                                   AND (sys.types.name = 'geometry' OR sys.types.name = 'geography')
                                   AND (sys.objects.type = 'U' OR sys.objects.type = 'V')
                              )raw" )
-               .arg( QgsMssqlProvider::quotedValue( schema ) );
+               .arg( QgsMssqlUtils::quotedValue( schema ), tableNameFilter );
   }
 
   if ( allowGeometrylessTables )
@@ -390,7 +417,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                JOIN sys.schemas
                                   ON sys.objects.schema_id = sys.schemas.schema_id
                              WHERE
-                               sys.schemas.name = N%1
+                               sys.schemas.name = %1 %2
                                AND NOT EXISTS
                                 (SELECT *
                                   FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id
@@ -398,7 +425,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                     AND sys.objects.object_id = sc1.object_id )
                                AND (sys.objects.type = 'U' OR sys.objects.type = 'V')
                              )raw" )
-               .arg( QgsMssqlProvider::quotedValue( schema ) );
+               .arg( QgsMssqlUtils::quotedValue( schema ), tableNameFilter );
   }
 
   const QList<QVariantList> results { executeSqlPrivate( query, false ).rows() };
@@ -422,18 +449,32 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     if ( !table.geometryColumn().isEmpty() )
     {
       // Fetch geom cols
-      const QString geomColSql {
-        QStringLiteral( R"raw(
-                        SELECT %4 UPPER( %1.STGeometryType()), %1.STSrid,
+      QString geomColSql;
+
+      if ( disableInvalidGeometryHandling )
+      {
+        // this query will fail if the table contains invalid geometries
+        geomColSql = QStringLiteral( R"raw(
+SELECT %4 UPPER( %1.STGeometryType()), %1.STSrid,
                             %1.HasZ, %1.HasM
                         FROM %2.%3
                         WHERE %1 IS NOT NULL
                         GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM
-                        )raw" )
-          .arg( QgsMssqlProvider::quotedIdentifier( table.geometryColumn() ), QgsMssqlProvider::quotedIdentifier( table.schema() ), QgsMssqlProvider::quotedIdentifier( table.tableName() ), useEstimatedMetadata ? "TOP 1" : "" )
-      };
 
-      // This may fail for invalid geometries
+                        )raw" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( table.geometryColumn() ), QgsMssqlUtils::quotedIdentifier( table.schema() ), QgsMssqlUtils::quotedIdentifier( table.tableName() ), useEstimatedMetadata ? "TOP 1" : "" );
+      }
+      else
+      {
+        geomColSql = QStringLiteral( R"raw(
+                        SELECT type, srid, hasz, hasm FROM
+                            (SELECT %4 UPPER((CASE WHEN %1.STIsValid() = 0 THEN %1.MakeValid() ELSE %1 END).STGeometryType()) as type,
+                             %1.STSrid as srid, %1.HasZ as hasz, %1.HasM as hasm FROM %2.%3 WHERE %1 IS NOT NULL) AS a
+                        GROUP BY type, srid, hasz, hasm
+                        )raw" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( table.geometryColumn() ), QgsMssqlUtils::quotedIdentifier( table.schema() ), QgsMssqlUtils::quotedIdentifier( table.tableName() ), useEstimatedMetadata ? "TOP 1" : "" );
+      }
+
       try
       {
         const auto geomColResults { executeSqlPrivate( geomColSql ).rows() };
@@ -454,7 +495,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
       }
       catch ( QgsProviderConnectionException &ex )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Error retrieving geometry type for '%1' on table %2.%3:\n%4" ).arg( table.geometryColumn(), QgsMssqlProvider::quotedIdentifier( table.schema() ), QgsMssqlProvider::quotedIdentifier( table.tableName() ), ex.what() ), QStringLiteral( "MSSQL" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "Error retrieving geometry type for '%1' on table %2.%3:\n%4" ).arg( table.geometryColumn(), QgsMssqlUtils::quotedIdentifier( table.schema() ), QgsMssqlUtils::quotedIdentifier( table.tableName() ), ex.what() ), QStringLiteral( "MSSQL" ), Qgis::MessageLevel::Warning );
       }
     }
     else
@@ -470,6 +511,35 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   return tables;
 }
 
+QgsFields QgsMssqlProviderConnection::fields( const QString &schema, const QString &table, QgsFeedback *feedback ) const
+{
+  if ( feedback && feedback->isCanceled() )
+  {
+    return QgsFields();
+  }
+
+  const QgsDataSourceUri dsUri { uri() };
+
+  // connect to database
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
+  if ( !db->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
+                                            .arg( uri(), db->errorText() ) );
+  }
+
+  QgsMssqlDatabase::FieldDetails details;
+
+  QString error;
+  const bool result = db->loadFields( details, schema, table, error );
+  if ( !result )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information: %1" ).arg( error ) );
+  }
+
+  return details.attributeFields;
+}
+
 QStringList QgsMssqlProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
@@ -477,7 +547,6 @@ QStringList QgsMssqlProviderConnection::schemas() const
 
   const QgsDataSourceUri connUri( uri() );
 
-  const QgsDataSourceUri dsUri { uri() };
   const QString sql {
     QStringLiteral(
       R"raw(
@@ -573,4 +642,115 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlProviderConnection::nativeTypes
 QgsProviderSqlQueryBuilder *QgsMssqlProviderConnection::queryBuilder() const
 {
   return new QgsMsSqlSqlQueryBuilder();
+}
+
+QgsVectorLayer *QgsMssqlProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const
+{
+  // Precondition
+  if ( options.sql.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
+  }
+
+  QgsDataSourceUri tUri( uri() );
+
+  tUri.setSql( options.filter );
+  tUri.disableSelectAtId( options.disableSelectAtId );
+
+  if ( !options.primaryKeyColumns.isEmpty() )
+  {
+    tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( sanitizeSqlForQueryLayer( options.sql ) ) );
+  }
+  else
+  {
+    int pkId { 0 };
+    while ( options.sql.contains( QStringLiteral( "_uid%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      pkId++;
+    }
+    tUri.setKeyColumn( QStringLiteral( "_uid%1_" ).arg( pkId ) );
+
+    int sqlId { 0 };
+    while ( options.sql.contains( QStringLiteral( "_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      sqlId++;
+    }
+    tUri.setTable( QStringLiteral( "(SELECT row_number() OVER (ORDER BY (SELECT NULL)) AS _uid%1_, * FROM (%2\n) AS _subq_%3_\n)" ).arg( QString::number( pkId ), sanitizeSqlForQueryLayer( options.sql ), QString::number( sqlId ) ) );
+  }
+
+  if ( !options.geometryColumn.isEmpty() )
+  {
+    tUri.setGeometryColumn( options.geometryColumn );
+
+    const QString sql = QStringLiteral( "SELECT %3"
+                                        " UPPER(%1.STGeometryType()),"
+                                        " %1.STSrid,"
+                                        " %1.HasZ,"
+                                        " %1.HasM"
+                                        " FROM (%2) AS _subq_"
+                                        " WHERE %1 IS NOT NULL %4"
+                                        " GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM" )
+                          .arg( QgsMssqlUtils::quotedIdentifier( options.geometryColumn ), sanitizeSqlForQueryLayer( options.sql ), tUri.useEstimatedMetadata() ? "TOP 1" : "", options.filter.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( options.filter ) );
+
+    try
+    {
+      const QList<QList<QVariant>> candidates { executeSql( sql ) };
+
+      QStringList types;
+      QStringList srids;
+
+      for ( const QList<QVariant> &row : std::as_const( candidates ) )
+      {
+        const bool hasZ { row[2].toString() == '1' };
+        const bool hasM { row[3].toString() == '1' };
+        const int dimensions { 2 + ( ( hasZ && hasM ) ? 2 : ( ( hasZ || hasM ) ? 1 : 0 ) ) };
+        QString typeName { row[0].toString().toUpper() };
+        if ( typeName.isEmpty() )
+          continue;
+
+        if ( hasM && !typeName.endsWith( 'M' ) )
+        {
+          typeName.append( 'M' );
+        }
+        const QString type { QgsMssqlProvider::typeFromMetadata( typeName, dimensions ) };
+        const QString srid = row[1].toString();
+
+        if ( type.isEmpty() )
+          continue;
+
+        types << type;
+        srids << srid;
+      }
+
+      if ( !srids.isEmpty() )
+        tUri.setSrid( srids.at( 0 ) );
+
+      if ( !types.isEmpty() )
+      {
+        tUri.setWkbType( QgsMssqlUtils::wkbTypeFromGeometryType( types.at( 0 ) ) );
+      }
+    }
+    catch ( QgsProviderConnectionException &e )
+    {
+      QgsDebugError( e.what() );
+    }
+  }
+
+  QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
+  vectorLayerOptions.skipCrsValidation = true;
+  return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
+}
+
+QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )
+{
+  SqlVectorLayerOptions options;
+  const QgsDataSourceUri tUri( layerSource );
+  options.primaryKeyColumns = tUri.keyColumn().split( ',' );
+  options.disableSelectAtId = tUri.selectAtIdDisabled();
+  options.geometryColumn = tUri.geometryColumn();
+  options.filter = tUri.sql();
+  const QString trimmedTable { tUri.table().trimmed() };
+  options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
+  return options;
 }

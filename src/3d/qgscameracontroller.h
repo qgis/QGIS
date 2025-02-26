@@ -326,7 +326,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
      * If the value is 1, the average depth of all non void pixels is returned instead.
      */
-    double sampleDepthBuffer( int px, int py );
+    double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
 #ifndef SIP_RUN
     //! Converts screen point to world position
@@ -350,9 +350,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
-    // -1 when unset
-    // TODO: Change to std::optional<double>
-    double mDepthBufferNonVoidAverage = -1;
 
     std::unique_ptr<Qt3DRender::QCamera> mCameraBefore;
 
@@ -387,9 +384,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     // 3D world's origin in map coordinates
     QgsVector3D mOrigin;
-
-    //! Did camera change since last frame? Need to know if we should emit cameraChanged().
-    bool mCameraChanged = false;
 
     // To test the cameracontroller
     friend class TestQgs3DRendering;

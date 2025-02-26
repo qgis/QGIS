@@ -323,6 +323,18 @@ void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunk
     {
       cancelActiveJob( node->updater() );
     }
+    else if ( node->state() == QgsChunkNode::Skeleton || node->state() == QgsChunkNode::QueuedForLoad )
+    {
+      // there is not much to update yet
+      continue;
+    }
+    else if ( node->state() == QgsChunkNode::Loading )
+    {
+      // let's cancel the current loading job and queue for loading again
+      cancelActiveJob( node->loader() );
+      requestResidency( node );
+      continue;
+    }
 
     Q_ASSERT( node->state() == QgsChunkNode::Loaded );
 

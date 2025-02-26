@@ -711,6 +711,17 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
 
   QVERIFY( layer->commitFrameEditing( transform, false ) );
 
+  QCOMPARE( layer->nativeMesh()->face( 0 ), QVector<int>() << 1 << 4 << 0 );
+  QCOMPARE( layer->nativeMesh()->face( 1 ), QVector<int>() << 1 << 3 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 2 ), QVector<int>() << 5 << 2 << 0 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 3 ), QVector<int>() << 2 << 6 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 4 ), QVector<int>() << 5 << 7 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 5 ), QVector<int>() << 6 << 2 << 7 );
+  QCOMPARE( layer->nativeMesh()->face( 6 ), QVector<int>() << 7 << 8 << 6 );
+  QCOMPARE( layer->nativeMesh()->face( 7 ), QVector<int>() << 9 << 0 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 8 ), QVector<int>() << 9 << 2 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 9 ), QVector<int>() << 9 << 1 << 0 );
+
   // editing with delaunay refinement
   mEditMeshMapTool->mWidgetActionDigitizing->mCheckBoxRefineNeighboringFaces->setChecked( true );
 
@@ -739,6 +750,17 @@ void TestQgsMapToolEditMesh::testDelaunayRefinement()
   QCOMPARE( layer->undoStack()->command( 0 )->text(), "Add vertex inside face with Delaunay refinement" );
 
   QVERIFY( layer->commitFrameEditing( transform, false ) );
+
+  QCOMPARE( layer->nativeMesh()->face( 0 ), QVector<int>() << 5 << 2 << 0 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 1 ), QVector<int>() << 5 << 7 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 2 ), QVector<int>() << 6 << 2 << 7 );
+  QCOMPARE( layer->nativeMesh()->face( 3 ), QVector<int>() << 7 << 8 << 6 );
+  QCOMPARE( layer->nativeMesh()->face( 4 ), QVector<int>() << 9 << 0 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 5 ), QVector<int>() << 9 << 1 << 0 );
+  QCOMPARE( layer->nativeMesh()->face( 6 ), QVector<int>() << 9 << 6 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 7 ), QVector<int>() << 6 << 9 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 8 ), QVector<int>() << 3 << 0 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 9 ), QVector<int>() << 0 << 3 << 4 );
 }
 
 QString TestQgsMapToolEditMesh::read2DMFileContent( const QString &filePath )

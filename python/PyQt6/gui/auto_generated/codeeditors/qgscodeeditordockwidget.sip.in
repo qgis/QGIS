@@ -27,7 +27,7 @@ A custom dock widget for code editors.
 #include "qgscodeeditordockwidget.h"
 %End
   public:
-    QgsCodeEditorDockWidget( const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
+    QgsCodeEditorDockWidget( const QString &dockId = QString(), bool usePersistentWidget = false );
 %Docstring
 Constructor for QgsCodeEditorDockWidget, with the specified window geometry settings key.
 

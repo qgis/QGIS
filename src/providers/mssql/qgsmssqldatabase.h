@@ -25,6 +25,9 @@
 
 #include <memory>
 
+#include "qgsfields.h"
+#include "qgsdatasourceuri.h"
+
 class QgsDataSourceUri;
 
 /**
@@ -43,6 +46,13 @@ class QgsDataSourceUri;
 class QgsMssqlDatabase
 {
   public:
+    enum class PrimaryKeyType
+    {
+      Unknown,
+      Int,
+      FidMap
+    };
+
     /**
      * Tries to connect to a MSSQL database and returns shared pointer to the connection. On success,
      * the returned database object (QSqlDatabase) is already open and it is not necessary to call open().
@@ -54,6 +64,7 @@ class QgsMssqlDatabase
      */
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &uri, bool transaction = false );
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
+    static std::shared_ptr<QgsMssqlDatabase> connectDb( const QgsDataSourceUri &uri, bool transaction = false );
 
     /////
 
@@ -68,10 +79,38 @@ class QgsMssqlDatabase
     //! Returns whether this connection is used in a transaction
     bool hasTransaction() const { return mTransaction; }
 
+    QSqlQuery createQuery();
+
+    struct FieldDetails
+    {
+        QgsFields attributeFields;
+        QMap<int, QString> defaultValues;
+        QList<QString> computedColumns;
+        QString geometryColumnName;
+        QString geometryColumnType;
+        bool isGeography = false;
+        PrimaryKeyType primaryKeyType = PrimaryKeyType::Unknown;
+        QList<int> primaryKeyAttrs;
+    };
+
+    /**
+     * Loads the field details  corresponding to the specified \a schema and \a tableName.
+     */
+    bool loadFields( FieldDetails &details, const QString &schema, const QString &tableName, QString &error );
+
+    /**
+     * Loads the field details corresponding to the specified SQL \a query.
+     */
+    bool loadQueryFields( FieldDetails &details, const QString &query, QString &error );
+
   private:
-    QgsMssqlDatabase( const QSqlDatabase &db, bool transaction );
+    QgsMssqlDatabase( const QSqlDatabase &db, const QgsDataSourceUri &uri, bool transaction );
+
+    bool execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin = QString() ) const;
 
     QSqlDatabase mDB;
+    QgsDataSourceUri mUri;
+
     bool mTransaction = false;
     //! locking for transactions because with transaction enabled, one connection may be shared among multiple threads
     std::unique_ptr<QRecursiveMutex> mTransactionMutex;

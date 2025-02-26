@@ -122,7 +122,7 @@ static MDAL::DateTime convertToDateTime( const std::string strDateTime )
 {
   //HECRAS format date is 01JAN2000
 
-  auto data = MDAL::split( strDateTime, " " );
+  auto data = MDAL::split( strDateTime, ' ' );
   if ( data.size() < 2 )
     return MDAL::DateTime();
 

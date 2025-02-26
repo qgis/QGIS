@@ -2010,24 +2010,13 @@ void QgsDatabaseItemGuiProvider::openSqlDialog( const QString &connectionUri, co
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-  // Create the SQL dialog: this might become an independent class dialog in the future, for now
-  // we are still prototyping the features that this dialog will have.
-
-  QMainWindow *dialog = new QMainWindow();
-  dialog->setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
-  if ( !identifierName.isEmpty() )
-    dialog->setWindowTitle( tr( "%1 — Execute SQL" ).arg( identifierName ) );
-  else
-    dialog->setWindowTitle( tr( "Execute SQL" ) );
-
-  QgsGui::enableAutoGeometryRestore( dialog );
+  QgsQueryResultMainWindow *dialog = new QgsQueryResultMainWindow( conn.release(), identifierName );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
+  dialog->setStyleSheet( QgisApp::instance()->styleSheet() );
 
-  QgsQueryResultWidget *widget { new QgsQueryResultWidget( nullptr, conn.release() ) };
-  widget->setQuery( query );
-  dialog->setCentralWidget( widget );
+  dialog->resultWidget()->setQuery( query );
 
-  connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [provider, connectionUri, context]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
+  connect( dialog->resultWidget(), &QgsQueryResultWidget::createSqlVectorLayer, dialog, [provider, connectionUri, context]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
     QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( provider ) };
     if ( !md )
       return;

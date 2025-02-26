@@ -30,7 +30,7 @@ class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
 
         super().setUp()
 
-        dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
+        dbconn = "service='testsqlserver' user=sa password='QGIStestSQLServer1234' "
         if "QGIS_MSSQLTEST_DB" in os.environ:
             dbconn = os.environ["QGIS_MSSQLTEST_DB"]
 
