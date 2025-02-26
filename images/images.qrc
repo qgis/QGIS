@@ -1016,6 +1016,7 @@
         <file>themes/default/stacked-diagram.svg</file>
         <file>themes/default/mIconStac.svg</file>
         <file>themes/default/mIconQt.svg</file>
+        <file>themes/default/mIconStoredQueries.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -29,11 +29,14 @@
 #include "qgsprovidermetadata.h"
 #include "qgscodeeditorwidget.h"
 #include "qgsfileutils.h"
+#include "qgsstoredquerymanager.h"
+#include "qgsproject.h"
 
 #include <QClipboard>
 #include <QShortcut>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QInputDialog>
 
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeSqlQueries, QString(), QStringLiteral( "Last used folder for SQL source files" ) );
@@ -48,6 +51,16 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   // mSqlEditor->setLineNumbersVisible( true );
 
   mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
+
+  mPresetQueryMenu = new QMenu( this );
+  connect( mPresetQueryMenu, &QMenu::aboutToShow, this, &QgsQueryResultWidget::populatePresetQueryMenu );
+
+  QToolButton *presetQueryButton = new QToolButton();
+  presetQueryButton->setMenu( mPresetQueryMenu );
+  presetQueryButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ) );
+  presetQueryButton->setPopupMode( QToolButton::InstantPopup );
+  mToolBar->addWidget( presetQueryButton );
+
   // explicitly needed for some reason (Qt 5.15)
   mainLayout->setSpacing( 6 );
   progressLayout->setSpacing( 6 );
@@ -730,6 +743,77 @@ void QgsQueryResultWidget::updateDialogTitle()
   }
 
   emit requestDialogTitleUpdate( fileName );
+}
+
+void QgsQueryResultWidget::populatePresetQueryMenu()
+{
+  mPresetQueryMenu->clear();
+
+  QMenu *storeQueryMenu = new QMenu( tr( "Store Current Query" ), mPresetQueryMenu );
+  mPresetQueryMenu->addMenu( storeQueryMenu );
+  QAction *storeInProfileAction = new QAction( tr( "In User Profile…" ), storeQueryMenu );
+  storeQueryMenu->addAction( storeInProfileAction );
+  storeInProfileAction->setEnabled( !mSqlEditor->text().isEmpty() );
+  connect( storeInProfileAction, &QAction::triggered, this, [this] {
+    storeCurrentQuery( Qgis::QueryStorageBackend::LocalProfile );
+  } );
+  QAction *storeInProjectAction = new QAction( tr( "In Current Project…" ), storeQueryMenu );
+  storeQueryMenu->addAction( storeInProjectAction );
+  storeInProjectAction->setEnabled( !mSqlEditor->text().isEmpty() );
+  connect( storeInProjectAction, &QAction::triggered, this, [this] {
+    storeCurrentQuery( Qgis::QueryStorageBackend::CurrentProject );
+  } );
+
+
+  const QList< QgsStoredQueryManager::QueryDetails > storedQueries = QgsGui::storedQueryManager()->allQueries();
+  if ( !storedQueries.isEmpty() )
+  {
+    mPresetQueryMenu->addSeparator();
+    for ( const QgsStoredQueryManager::QueryDetails &query : storedQueries )
+    {
+      QAction *action = new QAction( query.name, mPresetQueryMenu );
+      mPresetQueryMenu->addAction( action );
+      connect( action, &QAction::triggered, this, [this, query] {
+        mSqlEditor->insertText( query.definition );
+      } );
+    }
+
+    mPresetQueryMenu->addSeparator();
+
+    QMenu *removeQueryMenu = new QMenu( tr( "Removed Stored Query" ), mPresetQueryMenu );
+    mPresetQueryMenu->addMenu( removeQueryMenu );
+
+    for ( const QgsStoredQueryManager::QueryDetails &query : storedQueries )
+    {
+      QAction *action = new QAction( tr( "%1…" ).arg( query.name ), mPresetQueryMenu );
+      removeQueryMenu->addAction( action );
+      connect( action, &QAction::triggered, this, [this, query] {
+        const QMessageBox::StandardButton res = QMessageBox::question( this, tr( "Remove Stored Query" ), tr( "Are you sure you want to remove the stored query “%1”?" ).arg( query.name ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+        if ( res == QMessageBox::Yes )
+        {
+          QgsGui::storedQueryManager()->removeQuery( query.name, query.backend );
+          if ( query.backend == Qgis::QueryStorageBackend::CurrentProject )
+          {
+            QgsProject::instance()->setDirty();
+          }
+        }
+      } );
+    }
+  }
+}
+
+void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend )
+{
+  bool ok;
+  const QString name = QInputDialog::getText( this, tr( "Query Name" ), tr( "Name for the stored query" ), QLineEdit::Normal, QString(), &ok );
+  if ( !ok || name.isEmpty() )
+    return;
+
+  QgsGui::storedQueryManager()->storeQuery( name, mSqlEditor->text(), backend );
+  if ( backend == Qgis::QueryStorageBackend::CurrentProject )
+  {
+    QgsProject::instance()->setDirty();
+  }
 }
 
 ///@cond private
