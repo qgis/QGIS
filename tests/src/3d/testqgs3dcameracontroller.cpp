@@ -267,15 +267,15 @@ void TestQgs3DCameraController::testZoomWheel()
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
   QImage depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -1381.3, 1036.7, 1.0 ), 5.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -479.2, 359.4, 1.6 ), 5.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 5.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -428.79, 321.59, 0.049 ), 5.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1723.55, 5.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
@@ -516,7 +516,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
 
@@ -524,8 +524,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 312.936, -950.772, -125.381 ), 3.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 109.8, -329.4, -43.3 ), 3.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 3.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 98.4, -294.6, -38.7 ), 3.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1723.55, 3.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
@@ -560,9 +560,9 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 26.9, 7.3, 5.4 ), 2.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 28.25, 7.70, 5.75 ), 2.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -43.2, -9.1, -11.1 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -45.84, -9.70, -11.83 ), 1.0 );
   diffPitch = scene->cameraController()->pitch() - initialPitch;
   diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 2.5, 0.1 );
@@ -807,7 +807,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
 
@@ -815,8 +815,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 4.8, -4.4, 9.9 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -615.5, 116.2, 3.4 ), 4.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 2.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -650.47, 123.10, 3.10 ), 4.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1723.55, 2.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
