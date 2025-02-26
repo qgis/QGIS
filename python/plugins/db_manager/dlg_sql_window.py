@@ -47,7 +47,15 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.Qsci import QsciAPIs, QsciScintilla
 
-from qgis.core import QgsProject, QgsApplication, QgsTask, QgsSettings, QgsMapLayerType
+from qgis.core import (
+    Qgis,
+    QgsProject,
+    QgsApplication,
+    QgsTask,
+    QgsSettings,
+    QgsMapLayerType,
+)
+from qgis.gui import QgsGui
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
@@ -263,16 +271,10 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
 
-        names = []
-        entries = QgsProject.instance().subkeyList("DBManager", "savedQueries")
-        for entry in entries:
-            name = QgsProject.instance().readEntry(
-                "DBManager", "savedQueries/" + entry + "/name"
-            )[0]
-            names.append(name)
+        queries = QgsGui.storedQueryManager().allQueries()
+        for query in queries:
+            self.presetCombo.addItem(query.name, query.definition)
 
-        for name in sorted(names):
-            self.presetCombo.addItem(name)
         self.presetCombo.setCurrentIndex(-1)
 
     def storePreset(self):
@@ -280,17 +282,14 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query == "":
             return
         name = str(self.presetName.text())
-        QgsProject.instance().writeEntry(
-            "DBManager", "savedQueries/" + self.getQueryHash(name) + "/name", name
+
+        QgsGui.storedQueryManager().storeQuery(
+            name, query, Qgis.QueryStorageBackend.CurrentProject
         )
-        QgsProject.instance().writeEntry(
-            "DBManager", "savedQueries/" + self.getQueryHash(name) + "/query", query
-        )
+        self.updatePresetsCombobox()
+
         index = self.presetCombo.findText(name)
-        if index == -1:
-            self.presetCombo.addItem(name)
-            self.presetCombo.setCurrentIndex(self.presetCombo.count() - 1)
-        else:
+        if index != -1:
             self.presetCombo.setCurrentIndex(index)
 
     def saveAsFilePreset(self):
@@ -335,16 +334,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry(
-            "DBManager", "savedQueries/" + self.getQueryHash(name)
+        QgsGui.storedQueryManager().removeQuery(
+            name, Qgis.QueryStorageBackend.CurrentProject
         )
-        self.presetCombo.removeItem(self.presetCombo.findText(name))
-        self.presetCombo.setCurrentIndex(-1)
+        self.updatePresetsCombobox()
 
-    def loadPreset(self, name):
-        query = QgsProject.instance().readEntry(
-            "DBManager", "savedQueries/" + self.getQueryHash(name) + "/query"
-        )[0]
+    def loadPreset(self, _):
+        query = self.presetCombo.currentData()
         self.editSql.setText(query)
 
     def loadAsLayerToggled(self, checked):
