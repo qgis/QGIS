@@ -20,8 +20,6 @@
 #include "qgis_gui.h"
 #include "qgssettingstree.h"
 
-///@cond NOT_STABLE
-
 /**
  * \ingroup gui
  * \brief A manager for stored SQL queries.
@@ -137,6 +135,5 @@ class GUI_EXPORT QgsStoredQueryManager : public QObject
     static QString getQueryHash( const QString &name );
 };
 
-///@endcond
 
 #endif // QGSSTOREDQUERYMANAGER_H
