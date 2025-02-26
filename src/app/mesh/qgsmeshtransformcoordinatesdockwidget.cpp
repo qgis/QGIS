@@ -131,12 +131,9 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
   if ( mCheckBoxZFromProjectTerrain->isChecked() )
   {
     mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
-    mIsResultValid = mTransformVertices.calculate( mInputLayer, QgsProject::instance() );
   }
-  else
-  {
-    mIsResultValid = mTransformVertices.calculate( mInputLayer );
-  }
+
+  mIsResultValid = mTransformVertices.calculate( mInputLayer, QgsProject::instance() );
 
   mIsCalculated = true;
   mButtonApply->setEnabled( mIsResultValid );
