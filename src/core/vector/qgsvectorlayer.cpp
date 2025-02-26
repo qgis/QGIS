@@ -2681,7 +2681,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
         const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
         QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-        // translate widged configuration strings
+        // translate widget configuration strings
         if ( widgetType == QStringLiteral( "ValueRelation" ) )
         {
           optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
