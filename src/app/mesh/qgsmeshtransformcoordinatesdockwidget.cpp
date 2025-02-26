@@ -127,11 +127,16 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
   mTransformVertices.clear();
   mTransformVertices.setInputVertices( mInputVertices );
   mTransformVertices.setExpressions( mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(), mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(), mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString() );
-  mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
-  QgsExpressionContext context;
-  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
 
-  mIsResultValid = mTransformVertices.calculate( mInputLayer );
+  if ( mCheckBoxZFromProjectTerrain->isChecked() )
+  {
+    mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
+    mIsResultValid = mTransformVertices.calculate( mInputLayer, QgsProject::instance() );
+  }
+  else
+  {
+    mIsResultValid = mTransformVertices.calculate( mInputLayer );
+  }
 
   mIsCalculated = true;
   mButtonApply->setEnabled( mIsResultValid );
