@@ -1932,6 +1932,12 @@ The development version
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
 
+    enum class QueryStorageBackend /BaseType=IntEnum/
+    {
+      LocalProfile,
+      CurrentProject,
+    };
+
     enum class ProcessingSourceType /BaseType=IntEnum/
       {
       MapLayer,

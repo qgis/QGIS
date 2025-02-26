@@ -3343,6 +3343,18 @@ class CORE_EXPORT Qgis
     Q_FLAG( HistoryProviderBackends )
 
     /**
+     * Stored query storage backends.
+     *
+     * \since QGIS 3.44
+     */
+    enum class QueryStorageBackend : int
+    {
+      LocalProfile, //!< Local user profile
+      CurrentProject, //!< Current QGIS project
+    };
+    Q_ENUM( QueryStorageBackend )
+
+    /**
      * Processing data source types.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessing::SourceType

@@ -6187,6 +6187,19 @@ Qgis.HistoryProviderBackend.baseClass = Qgis
 Qgis.HistoryProviderBackends = lambda flags=0: Qgis.HistoryProviderBackend(flags)
 Qgis.HistoryProviderBackends.baseClass = Qgis
 HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.QueryStorageBackend.LocalProfile.__doc__ = "Local user profile"
+Qgis.QueryStorageBackend.CurrentProject.__doc__ = "Current QGIS project"
+Qgis.QueryStorageBackend.__doc__ = """Stored query storage backends.
+
+.. versionadded:: 3.44
+
+* ``LocalProfile``: Local user profile
+* ``CurrentProject``: Current QGIS project
+
+"""
+# --
+Qgis.QueryStorageBackend.baseClass = Qgis
 QgsProcessing.SourceType = Qgis.ProcessingSourceType
 # monkey patching scoped based enum
 QgsProcessing.TypeMapLayer = Qgis.ProcessingSourceType.MapLayer
