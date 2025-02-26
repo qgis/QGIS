@@ -2688,9 +2688,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         }
         if ( widgetType == QStringLiteral( "ValueMap" ) )
         {
-          QList<QVariant> translatedValueList;
-          if ( optionsMap[ QStringLiteral( "map" ) ].canConvert<QVariantList>() )
+          if ( optionsMap[ QStringLiteral( "map" ) ].canConvert<QList<QVariant>>() )
           {
+            QList<QVariant> translatedValueList;
             const QList<QVariant> valueList = optionsMap[ QStringLiteral( "map" )].toList();
             for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
             {

@@ -685,11 +685,14 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
         }
         if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueMap" ) )
         {
-          const QList<QVariant> valueList = field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
-
-          for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+          if ( field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).canConvert<QList<QVariant>>() )
           {
-            translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( vlayer->id(), field.name() ), valueList[i].toMap().constBegin().key() );
+            const QList<QVariant> valueList = field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
+
+            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            {
+              translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( vlayer->id(), field.name() ), valueList[i].toMap().constBegin().key() );
+            }
           }
         }
       }
