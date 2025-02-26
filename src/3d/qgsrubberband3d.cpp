@@ -315,7 +315,7 @@ void QgsRubberBand3D::addPoint( const QgsPoint &pt )
   if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometry.constGet() ) )
   {
     QgsLineString *exteriorRing = qgsgeometry_cast<QgsLineString *>( polygon->exteriorRing() );
-    const int lastVertexIndex = exteriorRing->numPoints() - 2;
+    const int lastVertexIndex = exteriorRing->numPoints() - 1;
     exteriorRing->insertVertex( QgsVertexId( 0, 0, lastVertexIndex ), pt );
   }
   else if ( QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( mGeometry.constGet() ) )
