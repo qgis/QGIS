@@ -258,7 +258,10 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
       break;
     }
 
-    provider->writeBlock( &block, 1, 0, i );
+    if ( !provider->writeBlock( &block, 1, 0, i ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
     feedback->setProgress( i * step );
   }
 

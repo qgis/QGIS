@@ -201,7 +201,10 @@ QVariantMap QgsRandomRasterAlgorithmBase::processAlgorithm( const QVariantMap &p
       default:
         break;
     }
-    provider->writeBlock( &block, 1, 0, row );
+    if ( !provider->writeBlock( &block, 1, 0, row ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
     feedback->setProgress( row * step );
   }
 

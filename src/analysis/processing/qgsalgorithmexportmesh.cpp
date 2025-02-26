@@ -885,7 +885,10 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
         &rasterBlockFeedBack
       ) );
 
-      rasterDataProvider->writeBlock( block.get(), i + 1 );
+      if ( !rasterDataProvider->writeBlock( block.get(), i + 1 ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( rasterDataProvider->error().summary() ) );
+      }
       rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
     }
     else
