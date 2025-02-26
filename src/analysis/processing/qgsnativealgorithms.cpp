@@ -83,6 +83,7 @@
 #include "qgsalgorithmexporttospreadsheet.h"
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
+#include "qgsalgorithmexportgeometryattributes.h"
 #include "qgsalgorithmexportlayersinformation.h"
 #include "qgsalgorithmexporttopostgresql.h"
 #include "qgsalgorithmextendlines.h"
@@ -369,6 +370,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExecuteSpatialiteQueryAlgorithm() );
   addAlgorithm( new QgsExplodeAlgorithm() );
   addAlgorithm( new QgsExplodeHstoreAlgorithm() );
+  addAlgorithm( new QgsExportGeometryAttributesAlgorithm() );
   addAlgorithm( new QgsExportLayersInformationAlgorithm() );
   addAlgorithm( new QgsExportLayerMetadataAlgorithm() );
   addAlgorithm( new QgsExportMeshVerticesAlgorithm );
