@@ -2520,11 +2520,11 @@ void TestQgsMeshEditor::testAssignVertexZValueFromTerrain()
   transformVertex.setZFromTerrain( true );
 
   // no input set
-  QVERIFY( !transformVertex.calculate( layer.get() ) );
+  QVERIFY( !transformVertex.calculate( layer.get(), QgsProject::instance() ) );
 
   transformVertex.setInputVertices( selectedVertices );
 
-  QVERIFY( transformVertex.calculate( layer.get() ) );
+  QVERIFY( transformVertex.calculate( layer.get(), QgsProject::instance() ) );
 
   QGSCOMPARENEAR( transformVertex.mOldZValues.at( 0 ), 30, 0.1 );
   QGSCOMPARENEAR( transformVertex.mOldZValues.at( 1 ), 40, 0.1 );
