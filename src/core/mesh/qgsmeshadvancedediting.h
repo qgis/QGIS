@@ -180,8 +180,11 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      *
      * \note this method not apply new vertices to the mesh layer but only store the calculated transformation
      *       that can be apply later with QgsMeshEditor::advancedEdit()
+     *
+     * \param layer
+     * \param project QgsProject if it is necessary for the calculation ( for example with \see setZFromTerrain() ) \since QGIS 3.44
      */
-    bool calculate( QgsMeshLayer *layer );
+    bool calculate( QgsMeshLayer *layer, QgsProject *project = nullptr );
 
     /**
      * Returns the transformed vertex from its index \a vertexIndex for the mesh \a layer

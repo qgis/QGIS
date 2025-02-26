@@ -137,7 +137,7 @@ Sets the expressions for the coordinates transformation.
    Expressions are optional for each coordinate, the coordinate will not be transformed if the string is void.
 %End
 
-    bool calculate( QgsMeshLayer *layer );
+    bool calculate( QgsMeshLayer *layer, QgsProject *project = 0 );
 %Docstring
 Calculates the transformed vertices of the mesh ``layer``, returns ``False`` if this leads to topological or geometrical errors.
 The mesh layer must be in edit mode.
@@ -146,6 +146,10 @@ The mesh layer must be in edit mode.
 
    this method not apply new vertices to the mesh layer but only store the calculated transformation
    that can be apply later with :py:func:`QgsMeshEditor.advancedEdit()`
+
+:param layer:
+
+.. versionadded:: 3.44
 %End
 
     QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;

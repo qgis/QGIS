@@ -612,7 +612,7 @@ QString QgsMeshEditRefineFaces::text() const
   return QObject::tr( "Refine %n face(s)", nullptr, mInputFaces.count() );
 }
 
-bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
+bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsProject *project )
 {
   if ( !layer || !layer->meshEditor() || !layer->nativeMesh() )
     return false;
@@ -672,10 +672,13 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 
   if ( mZFromTerrain )
   {
-    terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
-    if ( terrainProvider )
+    if ( project )
     {
-      transformation = QgsCoordinateTransform( layer->crs(), terrainProvider->crs(), QgsProject::instance() );
+      terrainProvider = project->elevationProperties()->terrainProvider();
+      if ( terrainProvider )
+      {
+        transformation = QgsCoordinateTransform( layer->crs(), terrainProvider->crs(), project );
+      }
     }
   }
 
