@@ -36,10 +36,9 @@ QgsLocatorFilter *QgsGeocoderLocatorFilter::clone() const
 void QgsGeocoderLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
   // Check if we have QgsNominatimLocatorFilter instance, since can't override method inside QgsNominatimLocatorFilter class
-  QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>(geocoder() );
+  QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( geocoder() );
   if ( nominatimGeocoder )
   {
-
     // Read countryCodes from settings
     QgsSettings settings;
     QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
