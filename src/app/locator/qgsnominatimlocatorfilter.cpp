@@ -19,7 +19,6 @@
 #include "moc_qgsnominatimlocatorfilter.cpp"
 #include "qgsgeocoder.h"
 #include "qgslocatorfilter.h"
-#include "qgsnominatimgeocoder.h"
 #include "qgssettings.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
@@ -34,17 +33,6 @@ QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geoc
 {
   setFetchResultsDelay( 1000 );
   setUseWithoutPrefix( false );
-}
-
-void QgsNominatimLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
-{
-  QgsSettings settings;
-  QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
-
-  QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( geocoder() );
-  nominatimGeocoder->setCountryCodes( countryCodes );
-
-  QgsAbstractGeocoderLocatorFilter::fetchResults( string, context, feedback );
 }
 
 void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
