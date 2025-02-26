@@ -165,7 +165,7 @@ Sets if Z values for vertices should be obtained from project terrain, instead o
 
 :param enable:
 
-.. versionadded:: 3.42
+.. versionadded:: 3.44
 %End
 
 };

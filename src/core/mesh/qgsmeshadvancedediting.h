@@ -198,7 +198,7 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      *
      * \param enable
      *
-     * \since QGIS 3.42
+     * \since QGIS 3.44
      */
     void setZFromTerrain( bool enable );
 
