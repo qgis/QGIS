@@ -59,7 +59,7 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
     }
   }
 
-  if ( !socket && !mLastHoveredSocket && !mLastHoveredSocket && socket != mLastHoveredSocket )
+  if ( !socket && mLastHoveredSocket && socket != mLastHoveredSocket )
   {
     mLastHoveredSocket->modelHoverLeaveEvent( event );
     mLastHoveredSocket = nullptr;
