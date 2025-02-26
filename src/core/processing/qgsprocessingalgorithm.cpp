@@ -514,19 +514,6 @@ QgsProcessingParameterDefinitions QgsProcessingAlgorithm::destinationParameterDe
   return result;
 }
 
-
-int QgsProcessingAlgorithm::outputDefinitionIndex( const QString &name ) const
-{
-  int index = 0;
-  for ( const QgsProcessingOutputDefinition *def : mOutputs )
-  {
-    if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
-      return index;
-    index++;
-  }
-  return -1;
-}
-
 const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( const QString &name ) const
 {
   for ( const QgsProcessingOutputDefinition *def : mOutputs )

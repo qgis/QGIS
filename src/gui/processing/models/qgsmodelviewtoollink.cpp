@@ -220,7 +220,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
                 {
                   continue;
                 }
-                if ( outputSocket->index() == _alg->algorithm()->outputDefinitionIndex( source.outputName() ) )
+                int outputIndexForSourceName = QgsProcessingUtils::outputDefinitionIndex(_alg->algorithm(), source.outputName() );
+                if ( outputSocket->index() == outputIndexForSourceName )
                 {
                   mFromSocket = outputSocket;
                   emit view() -> beginCommand( tr( "Edit link" ) );
@@ -254,7 +255,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput )
           {
             item = scene()->childAlgorithmItem( oldSource.outputChildId() );
-            socket_index = _alg->algorithm()->outputDefinitionIndex( source.outputName() );
+            socket_index = QgsProcessingUtils::outputDefinitionIndex(_alg->algorithm(), source.outputName());
           }
           else if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter )
           {

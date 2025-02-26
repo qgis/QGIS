@@ -146,11 +146,23 @@ The sockets will be rendered at the specified ``position``
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
+    int index() const;
+%Docstring
+Returns the index of this socket in either QgsModelDesignerSocketGraphicItem.mInSockets 
+or QgsModelDesignerSocketGraphicItem.mOutSockets array
+%End
+    Qt::Edge edge() const;
+%Docstring
+Returns on which edge this socket is:
+* Qt.Edge.TopEdge for input socket
+* Qt.Edge.BottomEdge for output socket
+%End
+    bool isInput() const;
+%Docstring
+Returns whether the socket is an input socket or not
 
-    int index();
-
-    bool isInput();
-
+Convenient function around mEdge member
+%End
     QgsProcessingModelComponent *component();
 %Docstring
 Return the component associated to the socket */

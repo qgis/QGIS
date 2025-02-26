@@ -281,15 +281,7 @@ manner.
 
 .. seealso:: :py:func:`outputDefinitions`
 %End
-
-    int outputDefinitionIndex( const QString &name ) const /HoldGIL/;
-%Docstring
-Returns the index matching the output by ``name``. Matching is done in a case-insensitive
-manner.
-
-.. seealso:: :py:func:`outputDefinitions`
-%End
-
+    
     bool hasHtmlOutputs() const /HoldGIL/;
 %Docstring
 Returns ``True`` if this algorithm generates HTML outputs.

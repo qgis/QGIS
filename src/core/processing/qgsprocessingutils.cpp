@@ -1361,6 +1361,17 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   return s;
 }
 
+int QgsProcessingUtils::outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) {
+  int index = 0;
+  for ( const QgsProcessingOutputDefinition *def : algorithm->outputDefinitions() )
+  {
+    if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
+      return index;
+    index++;
+  }
+  return -1;
+}
+
 QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QString *layerName,
     long long featureLimit, const QString &filterExpression, bool renameFid )
 {

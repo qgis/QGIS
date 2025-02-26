@@ -437,6 +437,12 @@ Returns a HTML formatted version of the help text encoded in a variant ``map`` f
 a specified ``algorithm``.
 %End
 
+    static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) /HoldGIL/;
+%Docstring
+Returns the index of the output matching ``name`` for a specifierd ``algorithm``. 
+Matching is done in a case-insensitive manner.
+%End
+
     static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
         bool selectedFeaturesOnly,
         const QString &baseName,
