@@ -442,6 +442,17 @@ void QgsModelGraphicsView::endMacroCommand()
   emit macroCommandEnded();
 }
 
+void QgsModelGraphicsView::beginCommand( const QString &text )
+{
+  emit CommandBegun( text );
+}
+
+void QgsModelGraphicsView::endCommand()
+{
+  emit CommandEnded();
+}
+
+
 void QgsModelGraphicsView::snapSelected()
 {
   QgsModelGraphicsScene *s = modelScene();
@@ -481,7 +492,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   if ( operation == ClipboardCut )
   {
     emit macroCommandStarted( tr( "Cut Items" ) );
-    emit beginCommand( QString() );
+    emit CommandBegun( QString() );
   }
 
   QList<QVariant> paramComponents;
@@ -589,7 +600,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   if ( operation == ClipboardCut )
   {
     emit deleteSelectedItems();
-    emit endCommand();
+    emit CommandEnded();
     emit macroCommandEnded();
   }
 
@@ -632,7 +643,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         }
       }
 
-      emit beginCommand( tr( "Paste Items" ) );
+      beginCommand( tr( "Paste Items" ) );
 
       QRectF pastedBounds;
 
@@ -801,7 +812,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         }
       }
 
-      emit endCommand();
+      emit CommandEnded();
     }
   }
 

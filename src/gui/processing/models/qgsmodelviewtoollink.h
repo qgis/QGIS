@@ -53,6 +53,12 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
      */
     void setFromSocket( QgsModelDesignerSocketGraphicItem *socket );
 
+  signals:
+    /**
+     * Emitted when a change was made to the model that requires a full rebuild of the scene.
+     */
+    void requestRebuildRequired();
+
   private:
     std::unique_ptr<QgsModelViewBezierRubberBand> mBezierRubberBand;
     QgsModelDesignerSocketGraphicItem *mFromSocket = nullptr;

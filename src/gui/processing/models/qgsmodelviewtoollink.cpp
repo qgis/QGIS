@@ -33,6 +33,8 @@ QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
 
   mBezierRubberBand->setBrush( QBrush( QColor( 0, 0, 0, 63 ) ) );
   mBezierRubberBand->setPen( QPen( QBrush( QColor( 0, 0, 0, 100 ) ), 0, Qt::SolidLine ) );
+
+  connect( this, &QgsModelViewToolLink::requestRebuildRequired, scene(), &QgsModelGraphicsScene::rebuildRequired );
 }
 
 void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
@@ -105,7 +107,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     return;
   }
 
-  emit view() -> beginCommand( tr( "Edit link" ) );
+  view()->beginCommand( tr( "Edit link" ) );
 
   QList<QgsProcessingModelChildParameterSource> sources;
 
@@ -159,9 +161,9 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   //We need to pass the update child algorithm to the model
   scene()->model()->setChildAlgorithm( *childTo );
 
-  emit view() -> endCommand();
+  view()->endCommand();
   // Redraw
-  emit scene() -> rebuildRequired();
+  emit requestRebuildRequired();
 }
 
 bool QgsModelViewToolLink::allowItemInteraction()
@@ -220,11 +222,11 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
                 {
                   continue;
                 }
-                int outputIndexForSourceName = QgsProcessingUtils::outputDefinitionIndex(_alg->algorithm(), source.outputName() );
+                int outputIndexForSourceName = QgsProcessingUtils::outputDefinitionIndex( _alg->algorithm(), source.outputName() );
                 if ( outputSocket->index() == outputIndexForSourceName )
                 {
                   mFromSocket = outputSocket;
-                  emit view() -> beginCommand( tr( "Edit link" ) );
+                  view()->beginCommand( tr( "Edit link" ) );
                 }
               }
               else if ( QgsProcessingModelParameter *_param = dynamic_cast<QgsProcessingModelParameter *>( outputSocket->component() ) )
@@ -232,7 +234,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
                 if ( source.parameterName() == _param->parameterName() )
                 {
                   mFromSocket = outputSocket;
-                  emit view() -> beginCommand( tr( "Edit link" ) );
+                  view()->beginCommand( tr( "Edit link" ) );
                 }
               }
             }
@@ -247,7 +249,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           //We need to pass the update child algorithm to the model
           scene()->model()->setChildAlgorithm( *childFrom );
           // Redraw
-          emit scene() -> rebuildRequired();
+          emit requestRebuildRequired();
 
           //Get Socket from Source alg / source parameter
           QgsModelComponentGraphicItem *item = nullptr;
@@ -255,7 +257,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput )
           {
             item = scene()->childAlgorithmItem( oldSource.outputChildId() );
-            socket_index = QgsProcessingUtils::outputDefinitionIndex(_alg->algorithm(), source.outputName());
+            socket_index = QgsProcessingUtils::outputDefinitionIndex( _alg->algorithm(), source.outputName() );
           }
           else if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter )
           {

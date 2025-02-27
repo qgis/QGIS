@@ -109,6 +109,16 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     void endMacroCommand();
 
+    /**
+     * Starts a single undo command
+     */
+    void beginCommand( const QString &text );
+
+    /**
+     * Ends a single undo command 
+     */
+    void endCommand();
+
 
     //! Clipboard operations
     enum ClipboardOperation
@@ -197,12 +207,12 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     /**
      * Emitted when an undo command is started in the view.
      */
-    void beginCommand( const QString &text );
+    void CommandBegun( const QString &text );
 
     /**
      * Emitted when an undo command in the view has ended.
      */
-    void endCommand();
+    void CommandEnded();
 
     /**
      * Emitted when the selected items should be deleted;
