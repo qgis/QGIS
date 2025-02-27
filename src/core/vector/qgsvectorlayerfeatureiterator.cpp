@@ -1231,6 +1231,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   request.setSubsetOfAttributes( joinedAttributeIndices );
   request.setFilterExpression( subsetString );
   request.setLimit( 1 );
+  request.setRequestMayBeNested( true );
   QgsFeatureIterator fi = joinSource->getFeatures( request );
 
   // get first feature
