@@ -220,7 +220,7 @@ bool QgsVectorLayerCache::featureAtIdWithAllAttributes( QgsFeatureId featureId, 
   return featureFound;
 }
 
-bool QgsVectorLayerCache::featureAtIdWithAllAttributesAndGeometry( QgsFeatureId featureId, QgsFeature &feature, bool skipCache )
+bool QgsVectorLayerCache::completeFeatureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache )
 {
   bool featureFound = false;
 
