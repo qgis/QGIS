@@ -59,10 +59,14 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
 
     QgsLocatorFilter *clone() const override SIP_FACTORY;
 
+  protected:
+    /**
+     * Associated map canvas
+     */
+    QgsMapCanvas *mCanvas = nullptr;
+
   private:
     void handleGeocodeResult( const QgsGeocoderResult &result ) override;
-
-    QgsMapCanvas *mCanvas = nullptr;
 };
 
 #endif // QGSGEOCODERLOCATORFILTER_H
