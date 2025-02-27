@@ -427,7 +427,7 @@ Returns a string name of the operating system QGIS is running on.
 .. seealso:: :py:func:`platform`
 %End
 
-    static int systemMemorySizeMb();
+    static unsigned long systemMemorySizeMb();
 %Docstring
 Returns the size of the system memory (RAM) in megabytes.
 
