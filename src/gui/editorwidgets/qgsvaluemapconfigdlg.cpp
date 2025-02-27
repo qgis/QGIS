@@ -387,7 +387,9 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
   }
 
   QTextStream s( &f );
-  s.setAutoDetectUnicode( true );
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+  s.setCodec( "UTF-8" );
+#endif
 
   const thread_local QRegularExpression re( "(?:^\"|[;,]\")(\"\"|[\\w\\W]*?)(?=\"[;,]|\"$)|(?:^(?!\")|[;,](?!\"))([^;,]*?)(?=$|[;,])|(\\r\\n|\\n)" );
   QList<QPair<QString, QVariant>> map;
@@ -402,11 +404,11 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
       ceils << match.capturedTexts().last().trimmed().replace( QLatin1String( "\"\"" ), QLatin1String( "\"" ) );
     }
 
-    if ( ceils.size() != 2 )
+    if ( ceils.size() == 0 )
       continue;
 
     QString key = ceils[0];
-    QString val = ceils[1];
+    QString val = ceils.size() == 2 ? ceils[1] : QString();
     if ( key == QgsApplication::nullRepresentation() )
       key = QgsValueMapFieldFormatter::NULL_VALUE;
     map.append( qMakePair( key, val ) );
