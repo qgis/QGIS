@@ -59,11 +59,11 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
 
   connect( mCheckBoxZ, &QCheckBox::toggled, this, [=]( const bool checked ) {
     if ( checked )
-      mCheckBoxZFromProjectTerrain->setChecked( !checked );
+      mCheckBoxZFromProjectTerrain->setChecked( false );
   } );
   connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, [=]( const bool checked ) {
     if ( checked )
-      mCheckBoxZ->setChecked( !checked );
+      mCheckBoxZ->setChecked( false );
   } );
   connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, &QgsMeshTransformCoordinatesDockWidget::updateButton );
 }
@@ -128,10 +128,7 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
   mTransformVertices.setInputVertices( mInputVertices );
   mTransformVertices.setExpressions( mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(), mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(), mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString() );
 
-  if ( mCheckBoxZFromProjectTerrain->isChecked() )
-  {
-    mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
-  }
+  mTransformVertices.setZFromTerrain( mCheckBoxZFromProjectTerrain->isChecked() );
 
   mIsResultValid = mTransformVertices.calculate( mInputLayer, QgsProject::instance() );
 
