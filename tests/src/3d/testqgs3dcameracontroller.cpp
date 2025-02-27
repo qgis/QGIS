@@ -1177,8 +1177,11 @@ void TestQgs3DCameraController::waitForNearPlane( QgsOffscreen3DEngine &engine, 
   // XXX: Sometimes the near/far planes aren't calculated correctly, so they're
   // left at the too-deep default. This causes the rest of the test to fail in
   // weird ways every once in a while, so loop until we get good values.
+  size_t i = 0;
   do
   {
+    QVERIFY2( i++ < 10, "Near plane not set properly even after multiple tries" );
+
     // Force recalcualtion of near/far planes.
     scene->cameraController()->mCameraChanged = true;
 
