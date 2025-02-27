@@ -41,7 +41,7 @@
     <item row="4" column="0">
      <widget class="QCheckBox" name="mCheckBoxZFromProjectTerrain">
       <property name="text">
-       <string>Get Z value from project terrain</string>
+       <string>Get Z value from the project terrain</string>
       </property>
      </widget>
     </item>
