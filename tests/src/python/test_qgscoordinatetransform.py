@@ -127,6 +127,51 @@ class TestQgsCoordinateTransform(QgisTestCase):
             myTransformedExtentReverse.yMinimum(), myExtent.yMinimum()
         )
 
+    def test_transform_bounding_box_grid(self):
+        """
+        This test assumes the ca_nrc_NA83SCRS.tif grid is available on the system!
+        """
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4269"),
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            QgsCoordinateTransformContext(),
+        )
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                -123.65020876249999,
+                45.987175336410544,
+                -101.22289073749998,
+                62.961980263589439,
+            )
+        )
+        self.assertAlmostEqual(res.xMinimum(), -13764678, -2)
+        self.assertAlmostEqual(res.yMinimum(), 5778294, -2)
+        self.assertAlmostEqual(res.xMaximum(), -11268080, -2)
+        self.assertAlmostEqual(res.yMaximum(), 9090934, -2)
+
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4269"),
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            QgsCoordinateTransformContext(),
+        )
+        # force use of grid shift operation. This will fail as the source rect is outside of the grid bounds, but we should silently
+        # fall back to the non-grid operation
+        transform.setCoordinateOperation(
+            "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=hgridshift +grids=ca_nrc_NA83SCRS.tif +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"
+        )
+        res = transform.transformBoundingBox(
+            QgsRectangle(
+                -123.65020876249999,
+                45.987175336410544,
+                -101.22289073749998,
+                62.961980263589439,
+            )
+        )
+        self.assertAlmostEqual(res.xMinimum(), -13764678, -2)
+        self.assertAlmostEqual(res.yMinimum(), 5778294, -2)
+        self.assertAlmostEqual(res.xMaximum(), -11268080, -2)
+        self.assertAlmostEqual(res.yMaximum(), 9090934, -2)
+
     def testContextProj6(self):
         """
         Various tests to ensure that datum transforms are correctly set respecting context

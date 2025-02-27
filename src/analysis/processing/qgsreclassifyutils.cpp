@@ -101,7 +101,10 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
         }
       }
     }
-    destinationRaster->writeBlock( reclassifiedBlock.get(), 1, iterLeft, iterTop );
+    if ( !destinationRaster->writeBlock( reclassifiedBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRaster->error().summary() ) );
+    }
   }
   destinationRaster->setEditable( false );
 }

@@ -223,10 +223,12 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
     void openQuery();
     void saveQuery( bool saveAs );
     void setHasChanged( bool hasChanged );
+    void populatePresetQueryMenu();
 
   private:
     QgsCodeEditorWidget *mCodeEditorWidget = nullptr;
     QgsCodeEditorSQL *mSqlEditor = nullptr;
+    QMenu *mPresetQueryMenu = nullptr;
 
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;
     std::unique_ptr<QgsQueryResultModel> mModel;
@@ -272,7 +274,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
 
     void updateDialogTitle();
-
+    void storeCurrentQuery( Qgis::QueryStorageBackend backend );
 
     friend class TestQgsQueryResultWidget;
 };
