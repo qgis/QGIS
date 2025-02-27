@@ -268,28 +268,38 @@ Transforms a ``point`` from screen coordinates to map coordinates.
 %End
 
   signals:
-    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
+
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
-emit a message
+Emitted when a ``message`` should be shown to the user in the application message bar.
+
+.. seealso:: :py:func:`messageDiscarded`
 %End
 
     void messageDiscarded();
 %Docstring
-emit signal to clear previous message
+Emitted when the previous message from the tool should be cleared from the application message bar.
+
+.. seealso:: :py:func:`messageEmitted`
 %End
 
     void activated();
 %Docstring
-signal emitted once the map tool is activated
+Emitted when the map tool is activated.
+
+.. seealso:: :py:func:`deactivated`
 %End
 
     void deactivated();
 %Docstring
-signal emitted once the map tool is deactivated
+Emitted when the map tool is deactivated.
+
+.. seealso:: :py:func:`activated`
 %End
 
     void reactivated();
 %Docstring
+Emitted when the map tool is activated, while it is already active.
 
 .. versionadded:: 3.32
 %End
