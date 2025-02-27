@@ -15,6 +15,7 @@
 
 #include "qgscameracontroller.h"
 #include "moc_qgscameracontroller.cpp"
+#include "qgseventtracing.h"
 #include "qgsvector3d.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
@@ -301,6 +302,8 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
   if ( !mInputHandlersEnabled )
     return;
+
+  QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), QStringLiteral( "QgsCameraController::onPositionChanged" ) );
 
   switch ( mCameraNavigationMode )
   {
