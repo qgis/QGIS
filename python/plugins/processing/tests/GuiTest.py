@@ -22,16 +22,20 @@ __copyright__ = "(C) 2017, Nyall Dawson"
 import os
 import unittest
 from qgis.testing import start_app, QgisTestCase
+from time import sleep
+import tempfile
+
+from processing.gui.BatchPanel import BatchPanel
+from processing.gui.ParametersPanel import ParametersPanel
 from qgis.core import (
+    Qgis,
     QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingAlgorithm,
+    QgsProcessingUtils,
     QgsCoordinateReferenceSystem,
     QgsProcessingParameterMatrix,
-    QgsProcessingOutputLayerDefinition,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingParameterFileDestination,
-    QgsProcessingParameterFolderDestination,
-    QgsProcessingParameterVectorDestination,
-    QgsProcessingParameterRasterDestination,
+    QgsTaskManager,
     QgsProcessingParameterRange,
     QgsFeature,
     QgsProcessingModelAlgorithm,
@@ -103,6 +107,106 @@ class AlgorithmDialogTest(QgisTestCase):
         )
         a = AlgorithmDialog(alg)
         self.assertEqual(a.mainWidget().algorithm(), alg)
+
+    def testIndividualProcessingContext(self):
+
+        with tempfile.TemporaryDirectory() as tempdir:
+
+            context_normal = QgsProcessingContext()
+            context_normal.setProject(QgsProject.instance())
+
+            lyr0 = QgsVectorLayer(f'{testDataPath}/custom/overlay1_a.geojson')
+            lyr1 = QgsVectorLayer(f'{testDataPath}/custom/points.shp')
+            self.assertTrue(lyr0.isValid())
+            self.assertTrue(lyr1.isValid())
+
+            # add polygon layer to QgsProject.instance()
+            # and use the point layer in user-defined context only.
+            # algorithm results with polygons show that the user-context was not used right
+            QgsProject.instance().addMapLayer(lyr0)
+
+            def create_context_project():
+                p = QgsProject()
+                p.setTitle('MyProject')
+                p.addMapLayer(lyr1)
+
+                c = QgsProcessingContext()
+                c.setProject(p)
+                return c, p
+
+            myContext, myProject = create_context_project()
+
+            alg = QgsApplication.processingRegistry().createAlgorithmById(
+                "native:centroids"
+            )
+            self.assertIsInstance(alg, QgsProcessingAlgorithm)
+
+            if False:
+                # test AlgorithmDialog
+                d = AlgorithmDialog(alg, context = myContext)
+                d.runAlgorithm()
+                # wait until algorithm has been executed
+                while not d.wasExecuted():
+                    QgsApplication.instance().processEvents()
+
+                result = d.results()
+                d.close()
+                del d
+
+                result_lyr1 = QgsProcessingUtils.mapLayerFromString(result['OUTPUT'], myContext)
+                result_lyr2 = QgsProcessingUtils.mapLayerFromString(result['OUTPUT'], context_normal)
+
+                self.assertEqual(len(QgsProject.instance().mapLayers()), 1)
+                self.assertIsInstance(result_lyr1, QgsVectorLayer)
+                self.assertTrue(result_lyr1.isValid())
+                self.assertEqual(result_lyr1.wkbType(), Qgis.WkbType.Point)
+                self.assertTrue(result_lyr2 is None)
+
+                del context_normal
+                del result_lyr1
+                del result_lyr2
+
+            # test BatchAlgorithmDialog
+            if True:
+                myContext, myProject = create_context_project()
+
+                d = BatchAlgorithmDialog(alg)
+                panel: BatchPanel = d.mainWidget()
+                panel.show()
+                for r in range(3):
+                    panel.addRow()
+
+                result_paths = []
+                for row in range(len(panel.wrappers)):
+                    col = panel.parameter_to_column['OUTPUT']
+                    widget = panel.tblParameters.cellWidget(row + 1, col)
+                    expected_path = f'{tempdir}/myoutput{row+1}.gpkg'
+                    widget.setValue(expected_path)
+                    result_paths.append(expected_path)
+
+                d.runAlgorithm()
+                d.exec_()
+                tm: QgsTaskManager = QgsApplication.instance().taskManager()
+                # wait until algorithms have been executed
+
+                QgsApplication.instance().processEvents()
+                while tm.count() > 0:
+                    sleep(1)
+                    QgsApplication.instance().processEvents()
+                d.close()
+                del d
+                self.assertEqual(len(QgsProject.instance().mapLayers()), 1)
+                for p in result_paths:
+                    layer = QgsVectorLayer(p)
+                    self.assertTrue(layer.isValid())
+                    self.assertEqual(layer.wkbType(), Qgis.WkbType.Point)
+                    del layer
+
+
+            # cleanup
+            QgsProject.instance().removeAllMapLayers()
+            del lyr1
+            del lyr0
 
 
 class WrappersTest(QgisTestCase):

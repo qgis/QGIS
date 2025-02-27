@@ -48,16 +48,16 @@ from processing.tools.dataobjects import createContext
 
 class ParametersPanel(QgsProcessingParametersWidget):
 
-    def __init__(self, parent, alg, in_place=False, active_layer=None):
+    def __init__(self, parent, alg, in_place=False, active_layer=None, context=None, iface=iface):
         super().__init__(alg, parent)
         self.in_place = in_place
         self.active_layer = active_layer
 
         self.wrappers = {}
-
+        self.iface = iface
         self.extra_parameters = {}
 
-        self.processing_context = createContext()
+        self.processing_context = createContext(parent_context=context, iface=iface)
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
@@ -72,8 +72,8 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
         self.initWidgets()
 
-        QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
-        QgsProject.instance().layersWillBeRemoved.connect(self.layerRegistryChanged)
+        self.processing_context.project().layerWasAdded.connect(self.layerRegistryChanged)
+        self.processing_context.project().layersWillBeRemoved.connect(self.layerRegistryChanged)
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):
@@ -86,11 +86,11 @@ class ParametersPanel(QgsProcessingParametersWidget):
         super().initWidgets()
 
         widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setBrowserModel(iface.browserModel())
-            widget_context.setActiveLayer(iface.activeLayer())
+        widget_context.setProject(self.processing_context.project())
+        if self.iface is not None:
+            widget_context.setMapCanvas(self.iface.mapCanvas())
+            widget_context.setBrowserModel(self.iface.browserModel())
+            widget_context.setActiveLayer(self.iface.activeLayer())
 
         widget_context.setMessageBar(self.parent().messageBar())
         if isinstance(self.algorithm(), QgsProcessingModelAlgorithm):

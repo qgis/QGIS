@@ -19,6 +19,8 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
+# monkey patch Python specific Processing API into stable qgis.processing module
+import qgis.processing
 from processing.tools.dataobjects import *  # NOQA
 from processing.tools.dataobjects import createContext
 from processing.tools.general import *  # NOQA
@@ -29,12 +31,9 @@ from processing.tools.general import (
     createAlgorithmDialog,
     execAlgorithmDialog,
 )
-from processing.tools.vector import *  # NOQA
 from processing.tools.raster import *  # NOQA
 from processing.tools.system import *  # NOQA
-
-# monkey patch Python specific Processing API into stable qgis.processing module
-import qgis.processing
+from processing.tools.vector import *  # NOQA
 
 algorithmHelp.__doc__ = qgis.processing.algorithmHelp.__doc__
 qgis.processing.algorithmHelp = algorithmHelp

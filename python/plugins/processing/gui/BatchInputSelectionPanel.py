@@ -21,6 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 from pathlib import Path
+from typing import Optional
 
 from qgis.PyQt.QtCore import pyqtSignal, QCoreApplication
 from qgis.PyQt.QtWidgets import (
@@ -59,12 +60,13 @@ from processing.tools import dataobjects
 class BatchInputSelectionPanel(QWidget):
     valueChanged = pyqtSignal()
 
-    def __init__(self, param, row, col, dialog):
+    def __init__(self, param, row, col, dialog, project: Optional[QgsProject] = None):
         super().__init__(None)
         self.param = param
         self.dialog = dialog
         self.row = row
         self.col = col
+        self.project = project if isinstance(project, QgsProject) else QgsProject.instance()
         self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
@@ -127,23 +129,21 @@ class BatchInputSelectionPanel(QWidget):
             isinstance(self.param, QgsProcessingParameterMultipleLayers)
             and self.param.layerType() == QgsProcessing.SourceType.TypeRaster
         ):
-            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+            layers = QgsProcessingUtils.compatibleRasterLayers(self.project)
         elif isinstance(self.param, QgsProcessingParameterVectorLayer):
-            layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+            layers = QgsProcessingUtils.compatibleVectorLayers(self.project)
         elif isinstance(self.param, QgsProcessingParameterMapLayer):
-            layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
+            layers = QgsProcessingUtils.compatibleLayers(self.project)
         elif isinstance(self.param, QgsProcessingParameterMeshLayer) or (
             isinstance(self.param, QgsProcessingParameterMultipleLayers)
             and self.param.layerType() == QgsProcessing.SourceType.TypeMesh
         ):
-            layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
+            layers = QgsProcessingUtils.compatibleMeshLayers(self.project)
         elif isinstance(self.param, QgsProcessingParameterPointCloudLayer) or (
             isinstance(self.param, QgsProcessingParameterMultipleLayers)
             and self.param.layerType() == QgsProcessing.SourceType.TypePointCloud
         ):
-            layers = QgsProcessingUtils.compatiblePointCloudLayers(
-                QgsProject.instance()
-            )
+            layers = QgsProcessingUtils.compatiblePointCloudLayers(self.project)
         else:
             datatypes = [QgsProcessing.SourceType.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
@@ -152,13 +152,9 @@ class BatchInputSelectionPanel(QWidget):
                 datatypes = [self.param.layerType()]
 
             if QgsProcessing.SourceType.TypeVectorAnyGeometry not in datatypes:
-                layers = QgsProcessingUtils.compatibleVectorLayers(
-                    QgsProject.instance(), datatypes
-                )
+                layers = QgsProcessingUtils.compatibleVectorLayers(self.project, datatypes)
             else:
-                layers = QgsProcessingUtils.compatibleVectorLayers(
-                    QgsProject.instance()
-                )
+                layers = QgsProcessingUtils.compatibleVectorLayers(self.project)
 
         dlg = MultipleInputDialog([layer.name() for layer in layers])
         dlg.exec()

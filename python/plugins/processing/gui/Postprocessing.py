@@ -23,6 +23,7 @@ import traceback
 from typing import Dict, List, Optional, Tuple
 
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.gui import QgisInterface
 from qgis.core import (
     Qgis,
     QgsProcessingFeedback,
@@ -193,6 +194,7 @@ def handleAlgorithmResults(
     context: QgsProcessingContext,
     feedback: Optional[QgsProcessingFeedback] = None,
     parameters: Optional[dict] = None,
+    iface: Optional[QgisInterface] = iface
 ):
     if not parameters:
         parameters = {}
@@ -287,7 +289,7 @@ def handleAlgorithmResults(
         iface.layerTreeView().setUpdatesEnabled(False)
 
     for layer, group, layer_node, project in sorted_layer_tree_layers:
-        if not project:
+        if context.project():
             project = context.project()
 
         # store the current insertion point to restore it later

@@ -21,15 +21,17 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import codecs
 import time
+from typing import Optional
 
 from qgis.core import (
+    QgsProcessingContext,
     QgsProcessingOutputHtml,
     QgsProcessingOutputNumber,
     QgsProcessingOutputString,
     QgsProcessingOutputBoolean,
     QgsProject,
 )
-from qgis.gui import QgsProcessingBatchAlgorithmDialogBase
+from qgis.gui import QgsProcessingBatchAlgorithmDialogBase, QgisInterface
 from qgis.utils import iface
 
 from processing.core.ProcessingResults import resultsList
@@ -41,17 +43,21 @@ from processing.tools.system import getTempFilename
 
 class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
 
-    def __init__(self, alg, parent=None):
+    def __init__(self, alg, parent=None,
+                 context: Optional[QgsProcessingContext] = None,
+                 iface: Optional[QgisInterface] = iface):
         super().__init__(parent)
 
+        self.parent_context = context
+        self.iface = iface
+        self.context = None
         self.setAlgorithm(alg)
 
         self.setWindowTitle(
             self.tr("Batch Processing - {0}").format(self.algorithm().displayName())
         )
-        self.setMainWidget(BatchPanel(self, self.algorithm()))
+        self.setMainWidget(BatchPanel(self, self.algorithm(), context=self.parent_context))
 
-        self.context = None
         self.hideShortHelp()
 
     def runAsSingle(self):
@@ -59,30 +65,35 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
 
         from processing.gui.AlgorithmDialog import AlgorithmDialog
 
-        dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
+        dlg = AlgorithmDialog(self.algorithm().create(),
+                              parent=self.iface.mainWindow() if isinstance(self.iface, QgisInterface) else None,
+                              context=self.parent_context,
+                              iface=self.iface)
         dlg.show()
         dlg.exec()
 
     def processingContext(self):
         if self.context is None:
             self.feedback = self.createFeedback()
-            self.context = dataobjects.createContext(self.feedback)
+            self.context = dataobjects.createContext(self.feedback, parent_context=self.parent_context)
             self.context.setLogLevel(self.logLevel())
         return self.context
 
     def createContext(self, feedback):
-        return dataobjects.createContext(feedback)
+        return dataobjects.createContext(feedback, parent_context=self.parent_context)
 
     def runAlgorithm(self):
         alg_parameters = []
 
         load_layers = self.mainWidget().checkLoadLayersOnCompletion.isChecked()
-        project = QgsProject.instance() if load_layers else None
-
+        context = self.processingContext()
+        project = context.project() if load_layers else None
         for row in range(self.mainWidget().batchRowCount()):
+            ctx = QgsProcessingContext()
+            ctx.copyThreadSafeSettings(context)
             parameters, ok = self.mainWidget().parametersForRow(
                 row=row,
-                context=self.processingContext(),
+                context=ctx,
                 destinationProject=project,
                 warnOnInvalid=True,
             )
@@ -94,7 +105,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         self.execute(alg_parameters)
 
     def handleAlgorithmResults(self, algorithm, context, feedback, parameters):
-        handleAlgorithmResults(algorithm, context, feedback, parameters)
+        handleAlgorithmResults(algorithm, context, feedback, parameters, iface=self.iface)
 
     def loadHtmlResults(self, results, num):
         for out in self.algorithm().outputDefinitions():
