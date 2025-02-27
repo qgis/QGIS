@@ -109,7 +109,7 @@ Returns the graphic item corresponding to the specified group box ``uuid``.
 %Docstring
 Returns the graphic item corresponding to the specified  specified child algorithm
 %End
-    
+
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
 %Docstring
 Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to the specified child algorithm

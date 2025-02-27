@@ -122,7 +122,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Returns the graphic item corresponding to the specified  specified child algorithm
      */
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
-    
+
     /**
      * Returns the QgsModelComponentGraphicItem corresponding to the specified child algorithm
      */
