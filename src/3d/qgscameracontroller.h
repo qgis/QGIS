@@ -352,7 +352,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     QImage mDepthBufferImage;
     // -1 when unset
     // TODO: Change to std::optional<double>
-    double mDepthBufferNonVoidAverage;
+    double mDepthBufferNonVoidAverage = -1;
 
     std::unique_ptr<Qt3DRender::QCamera> mCameraBefore;
 
