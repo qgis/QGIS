@@ -672,13 +672,13 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
 
   if ( mZFromTerrain && project )
   {
-      terrainProvider = project->elevationProperties()->terrainProvider();
-      if ( terrainProvider )
-      {
-        transformation = QgsCoordinateTransform( layer->crs(), terrainProvider->crs(), project );
-      }
+    terrainProvider = project->elevationProperties()->terrainProvider();
+    if ( terrainProvider )
+    {
+      transformation = QgsCoordinateTransform( layer->crs(), terrainProvider->crs(), project );
     }
   }
+
 
   for ( int i = 0; i < mInputVertices.count(); ++i )
   {
