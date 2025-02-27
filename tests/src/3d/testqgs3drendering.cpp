@@ -2118,6 +2118,7 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_1", "depth_wheel_action_1", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.7, -185.5, 224.6 ), 1.0 );
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -6.8, -38.6, 46.7 ), 1.0 );
@@ -2135,6 +2136,7 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_2", "depth_wheel_action_2", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.5, -184.7, 223.5 ), 1.0 );
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -12.1, -69.0, 83.5 ), 1.0 );
@@ -2152,6 +2154,7 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_3", "depth_wheel_action_3", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.4, -184.1, 222.8 ), 1.0 );
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -29.0, -164.9, 199.6 ), 1.0 );
