@@ -408,7 +408,7 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
       continue;
 
     QString key = ceils[0];
-    QString val = ceils.size() == 2 ? ceils[1] : QString();
+    QString val = ceils.size() == 2 ? ceils[1] : QString( "" );
     if ( key == QgsApplication::nullRepresentation() )
       key = QgsValueMapFieldFormatter::NULL_VALUE;
     map.append( qMakePair( key, val ) );
