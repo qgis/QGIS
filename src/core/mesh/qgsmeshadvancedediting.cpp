@@ -670,10 +670,8 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
   QgsCoordinateTransform transformation;
   const QgsAbstractTerrainProvider *terrainProvider = nullptr;
 
-  if ( mZFromTerrain )
+  if ( mZFromTerrain && project )
   {
-    if ( project )
-    {
       terrainProvider = project->elevationProperties()->terrainProvider();
       if ( terrainProvider )
       {
