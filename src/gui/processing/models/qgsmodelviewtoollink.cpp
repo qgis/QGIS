@@ -121,7 +121,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
    *    - From an output socket to an input socket
    * 
    * In the code, we always come back to the first case
-   */ 
+   */
   if ( !mToSocket->isInput() )
   {
     std::swap( mFromSocket, mToSocket );
