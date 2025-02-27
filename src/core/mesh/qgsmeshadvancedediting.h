@@ -196,6 +196,9 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
     /**
      * Sets if Z values for vertices should be obtained from project terrain, instead of expression.
      *
+     * \note If \a enable is True, the Z value of the vertex will be obtained from the terrain of the project.
+     * The optional parameter \a project is necessary for function calculate ( \see calculate() ).
+     *
      * \param enable
      *
      * \since QGIS 3.44

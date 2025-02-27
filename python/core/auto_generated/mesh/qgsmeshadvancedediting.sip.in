@@ -163,6 +163,11 @@ If ``layer`` is not the same than the one used to make the calculation, this wil
 %Docstring
 Sets if Z values for vertices should be obtained from project terrain, instead of expression.
 
+.. note::
+
+   If ``enable`` is True, the Z value of the vertex will be obtained from the terrain of the project.
+   The optional parameter ``project`` is necessary for function calculate ( :py:func:`calculate` ).
+
 :param enable:
 
 .. versionadded:: 3.44
