@@ -181,18 +181,18 @@ Returns the set of feature IDs for features which are cached.
 .. seealso:: :py:func:`isFidCached`
 %End
 
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
+    bool featureAtId( QgsFeatureId featureId, QgsFeature &feature /Out/, bool skipCache = false );
 %Docstring
 Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
 
 :param featureId: The id of the feature to query
-:param feature: The result of the operation will be written to this feature
 :param skipCache: Will query the layer regardless if the feature is in the cache already
 
-:return: ``True`` in case of success
+:return: - ``True`` in case of success
+         - feature: The result of the operation will be written to this feature
 %End
 
-    bool featureAtIdWithAllAttributes( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
+    bool featureAtIdWithAllAttributes( QgsFeatureId featureId, QgsFeature &feature /Out/, bool skipCache = false );
 %Docstring
 Gets the feature at the given feature id with all attributes, if the cached feature
 already contains all attributes, calling this function has the same effect as calling
@@ -201,17 +201,17 @@ already contains all attributes, calling this function has the same effect as ca
 Considers the changed, added, deleted and permanent features
 
 :param featureId: The id of the feature to query
-:param feature: The result of the operation will be written to this feature
 :param skipCache: Will query the layer regardless if the feature is in the cache already
 
-:return: ``True`` in case of success
+:return: - ``True`` in case of success
+         - feature: The result of the operation will be written to this feature
 
 .. seealso:: :py:func:`featureAtId`
 
 .. versionadded:: 3.32
 %End
 
-    bool featureAtIdWithAllAttributesAndGeometry( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
+    bool completeFeatureAtId( QgsFeatureId featureId, QgsFeature &feature /Out/, bool skipCache = false );
 %Docstring
 Gets the feature at the given feature id with all attributes and geometry, if the cached feature
 already contains all attributes and geometry, calling this function has the same effect as calling
@@ -220,14 +220,14 @@ already contains all attributes and geometry, calling this function has the same
 Considers the changed, added, deleted and permanent features
 
 :param featureId: The id of the feature to query
-:param feature: The result of the operation will be written to this feature
 :param skipCache: Will query the layer regardless if the feature is in the cache already
 
-:return: ``True`` in case of success
+:return: - ``True`` in case of success
+         - feature: The result of the operation will be written to this feature
 
 .. seealso:: :py:func:`featureAtId`
 
-.. versionadded:: 3.42
+.. versionadded:: 3.44
 %End
 
     bool removeCachedFeature( QgsFeatureId fid );
