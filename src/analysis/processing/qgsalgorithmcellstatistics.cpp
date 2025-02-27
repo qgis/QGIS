@@ -369,7 +369,10 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }
@@ -511,7 +514,10 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }
@@ -645,7 +651,10 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }
@@ -793,7 +802,10 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }

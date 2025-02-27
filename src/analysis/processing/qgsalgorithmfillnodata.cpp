@@ -149,7 +149,10 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     if ( !filledRasterBlock->hasNoDataValue() )
     {
-      destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+      if ( !destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+      }
       continue;
     }
 
@@ -163,7 +166,10 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
           filledRasterBlock->setValue( row, column, mFillValue );
       }
     }
-    destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+    }
   }
   destinationRasterProvider->setEditable( false );
 

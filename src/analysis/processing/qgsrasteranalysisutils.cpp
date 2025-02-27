@@ -275,7 +275,10 @@ void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRast
         outputBlock->setValue( row, column, resIsNoData ? outputNoDataValue : ( res ? 1 : 0 ) );
       }
     }
-    destinationRaster->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !destinationRaster->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRaster->error().summary() ) );
+    }
   }
   destinationRaster->setEditable( false );
 }
