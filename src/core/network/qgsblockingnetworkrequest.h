@@ -257,19 +257,10 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
   private :
 
-    enum Method
-    {
-      Get,
-      Post,
-      Head,
-      Put,
-      Delete
-    };
-
     //! The reply to the request
     QNetworkReply *mReply = nullptr;
 
-    Method mMethod = Get;
+    Qgis::HttpMethod mMethod = Qgis::HttpMethod::Get;
 
     //! payload data used in PUT/POST request
     QIODevice *mPayloadData;
@@ -304,7 +295,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
     QPointer< QgsFeedback > mFeedback;
 
-    ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr, RequestFlags requestFlags = RequestFlags() );
+    ErrorCode doRequest( Qgis::HttpMethod method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr, RequestFlags requestFlags = RequestFlags() );
 
     QString errorMessageFailedAuth();
 
