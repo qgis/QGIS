@@ -64,6 +64,8 @@ class TestVectorLayerCache : public QObject
 
     void onCommittedFeaturesAdded( const QString &, const QgsFeatureList & );
 
+    void testCompleteFeatureAtId();
+
   private:
     QgsVectorLayerCache *mVectorLayerCache = nullptr;
     QgsCacheIndexFeatureId *mFeatureIdIndex = nullptr;
@@ -491,6 +493,40 @@ void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, con
 {
   Q_UNUSED( layerId )
   mAddedFeatures.append( features );
+}
+
+void TestVectorLayerCache::testCompleteFeatureAtId()
+{
+  QgsVectorLayerCache cache( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
+  // cache only attributes
+  cache.setCacheGeometry( false );
+  cache.invalidate();
+  cache.setFullCache( true );
+
+  QgsFeature f;
+  QgsFeatureIterator it = cache.getFeatures();
+  it.nextFeature( f );
+
+  QVERIFY( cache.isFidCached( f.id() ) );
+  QVERIFY( cache.mCache[f.id()]->allAttributesFetched() );
+  QVERIFY( !cache.mCache[f.id()]->geometryFetched() );
+
+  cache.featureAtIdWithAllAttributes( 0, f );
+  QVERIFY( cache.mCache[0]->allAttributesFetched() );
+  QVERIFY( !cache.mCache[0]->geometryFetched() );
+  QVERIFY( !f.attribute( 0 ).isNull() );
+  QVERIFY( !f.attribute( 1 ).isNull() );
+  QVERIFY( !f.attribute( 2 ).isNull() );
+  QVERIFY( f.geometry().isNull() );
+
+  cache.completeFeatureAtId( 0, f );
+  QVERIFY( cache.isFidCached( 0 ) );
+  QVERIFY( cache.mCache[0]->allAttributesFetched() );
+  QVERIFY( cache.mCache[0]->geometryFetched() );
+  QVERIFY( !f.attribute( 0 ).isNull() );
+  QVERIFY( !f.attribute( 1 ).isNull() );
+  QVERIFY( !f.attribute( 2 ).isNull() );
+  QVERIFY( !f.geometry().isNull() );
 }
 
 QGSTEST_MAIN( TestVectorLayerCache )

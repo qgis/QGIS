@@ -119,7 +119,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   {
     QgsFeature feat;
 
-    mFilterModel->layerCache()->featureAtIdWithAllAttributesAndGeometry( idxToFid( index ), feat );
+    mFilterModel->layerCache()->completeFeatureAtId( idxToFid( index ), feat );
 
     return QVariant::fromValue( feat );
   }
