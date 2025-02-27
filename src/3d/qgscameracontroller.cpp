@@ -161,6 +161,12 @@ void QgsCameraController::zoomCameraAroundPivot( const QVector3D &oldCameraPosit
 void QgsCameraController::frameTriggered( float dt )
 {
   Q_UNUSED( dt )
+
+  if ( mCameraChanged )
+  {
+    emit cameraChanged();
+    mCameraChanged = false;
+  }
 }
 
 void QgsCameraController::resetView( float distance )
@@ -282,7 +288,7 @@ void QgsCameraController::updateCameraFromPose()
   if ( mCamera )
     mCameraPose.updateCamera( mCamera );
 
-  emit cameraChanged();
+  mCameraChanged = true;
 }
 
 void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
