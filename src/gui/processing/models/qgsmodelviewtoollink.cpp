@@ -114,8 +114,14 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   QgsProcessingModelComponent *componentFrom = nullptr;
   QgsProcessingModelChildAlgorithm *childTo = nullptr;
 
-  // ReOrder in out socket
-  // always fix on the input end receiving
+  /**
+   * Reorder input and output socket
+   * Wether the user dragged :
+   *    - From an input socket to an output socket
+   *    - From an output socket to an input socket
+   * 
+   * In the code, we always come back to the first case
+   */ 
   if ( !mToSocket->isInput() )
   {
     std::swap( mFromSocket, mToSocket );
