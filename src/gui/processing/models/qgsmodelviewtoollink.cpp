@@ -116,7 +116,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   /**
    * Reorder input and output socket
-   * Wether the user dragged :
+   * whether the user dragged :
    *    - From an input socket to an output socket
    *    - From an output socket to an input socket
    * 

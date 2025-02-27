@@ -428,7 +428,7 @@ class CORE_EXPORT QgsProcessingUtils
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
 
     /**
-     * Returns the index of the output matching \a name for a specifierd \a algorithm. 
+     * Returns the index of the output matching \a name for a specified \a algorithm. 
      * Matching is done in a case-insensitive manner.
      */
     static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;
