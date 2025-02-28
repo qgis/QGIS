@@ -15,6 +15,7 @@
 
 #include "qgscameracontroller.h"
 #include "moc_qgscameracontroller.cpp"
+#include "qgseventtracing.h"
 #include "qgsvector3d.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
@@ -161,6 +162,12 @@ void QgsCameraController::zoomCameraAroundPivot( const QVector3D &oldCameraPosit
 void QgsCameraController::frameTriggered( float dt )
 {
   Q_UNUSED( dt )
+
+  if ( mCameraChanged )
+  {
+    emit cameraChanged();
+    mCameraChanged = false;
+  }
 }
 
 void QgsCameraController::resetView( float distance )
@@ -233,7 +240,7 @@ void QgsCameraController::readXml( const QDomElement &elem )
   setLookingAtPoint( QgsVector3D( x, elev, y ), dist, pitch, yaw );
 }
 
-double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int py )
+double QgsCameraController::sampleDepthBuffer( int px, int py )
 {
   double depth = 1;
 
@@ -242,9 +249,9 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
   {
     for ( int y = py - 3; y <= py + 3; ++y )
     {
-      if ( buffer.valid( x, y ) )
+      if ( mDepthBufferImage.valid( x, y ) )
       {
-        depth = std::min( depth, Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) ) );
+        depth = std::min( depth, Qgs3DUtils::decodeDepth( mDepthBufferImage.pixel( x, y ) ) );
       }
     }
   }
@@ -252,14 +259,21 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
   if ( depth < 1 )
     return depth;
 
+  // Cache the computed depth, since averaging over all pixels can be expensive
+  if ( mDepthBufferNonVoidAverage != -1 )
+    return mDepthBufferNonVoidAverage;
+
   // Returns the average of depth values that are not 1 (void area)
   depth = 0;
   int samplesCount = 0;
-  for ( int x = 0; x < buffer.width(); ++x )
+  // Make sure we can do the cast
+  Q_ASSERT( mDepthBufferImage.format() == QImage::Format_RGB32 );
+  for ( int y = 0; y < mDepthBufferImage.height(); ++y )
   {
-    for ( int y = 0; y < buffer.height(); ++y )
+    const QRgb *line = reinterpret_cast<const QRgb *>( mDepthBufferImage.constScanLine( y ) );
+    for ( int x = 0; x < mDepthBufferImage.width(); ++x )
     {
-      double d = Qgs3DUtils::decodeDepth( buffer.pixel( x, y ) );
+      double d = Qgs3DUtils::decodeDepth( line[x] );
       if ( d < 1 )
       {
         depth += d;
@@ -274,6 +288,8 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
   else
     depth /= samplesCount;
 
+  mDepthBufferNonVoidAverage = depth;
+
   return depth;
 }
 
@@ -282,7 +298,7 @@ void QgsCameraController::updateCameraFromPose()
   if ( mCamera )
     mCameraPose.updateCamera( mCamera );
 
-  emit cameraChanged();
+  mCameraChanged = true;
 }
 
 void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
@@ -295,6 +311,8 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
   if ( !mInputHandlersEnabled )
     return;
+
+  QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), QStringLiteral( "QgsCameraController::onPositionChanged" ) );
 
   switch ( mCameraNavigationMode )
   {
@@ -310,7 +328,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 
 bool QgsCameraController::screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *mCameraBefore, double &depth, QVector3D &worldPosition )
 {
-  depth = sampleDepthBuffer( mDepthBufferImage, position.x(), position.y() );
+  depth = sampleDepthBuffer( position.x(), position.y() );
   if ( !std::isfinite( depth ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: depth is NaN or Inf. This should not happen." ), 2 );
@@ -557,6 +575,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       if ( mCurrentOperation != MouseOperation::ZoomWheel )
       {
         setMouseParameters( MouseOperation::ZoomWheel );
+        // The actual zooming will happen after we get a new depth buffer
       }
       else
       {
@@ -1017,6 +1036,7 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
 {
   mDepthBufferImage = depthImage;
   mDepthBufferIsReady = true;
+  mDepthBufferNonVoidAverage = -1;
 
   if ( mCurrentOperation == MouseOperation::ZoomWheel )
   {
