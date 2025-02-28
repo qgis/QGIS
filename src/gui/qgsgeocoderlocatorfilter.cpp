@@ -18,7 +18,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
 #include "qgsgeocoderresult.h"
-#include "qgsnominatimgeocoder.h"
 
 QgsGeocoderLocatorFilter::QgsGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas, const QgsRectangle &boundingBox )
   : QgsAbstractGeocoderLocatorFilter( name, displayName, prefix, geocoder, boundingBox )
@@ -31,23 +30,6 @@ QgsLocatorFilter *QgsGeocoderLocatorFilter::clone() const
   QgsLocatorFilter *filter = new QgsGeocoderLocatorFilter( name(), displayName(), prefix(), geocoder(), mCanvas );
   filter->setFetchResultsDelay( fetchResultsDelay() );
   return filter;
-}
-
-void QgsGeocoderLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
-{
-  // Check if we have QgsNominatimLocatorFilter instance, since can't override method inside QgsNominatimLocatorFilter class
-  QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( geocoder() );
-  if ( nominatimGeocoder )
-  {
-    // Read countryCodes from settings
-    QgsSettings settings;
-    QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
-
-    nominatimGeocoder->setCountryCodes( countryCodes );
-  }
-
-  // Pass control to base class
-  QgsAbstractGeocoderLocatorFilter::fetchResults( string, context, feedback );
 }
 
 void QgsGeocoderLocatorFilter::handleGeocodeResult( const QgsGeocoderResult &result )
