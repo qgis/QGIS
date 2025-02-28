@@ -103,6 +103,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
   QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Polygon selector" ), this, &Qgs3DMapCanvasWidget::polygonTool );
   QAction *actionPaintBrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Paint Brush Selector" ), this, &Qgs3DMapCanvasWidget::paintBrush );
+  QAction *actionAboveLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionArrowUp.svg" ) ) ), tr( "Above Line Selector" ), this, &Qgs3DMapCanvasWidget::aboveLineTool );
+  QAction *actionBelowLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionArrowDown.svg" ) ) ), tr( "Below Line Selector" ), this, &Qgs3DMapCanvasWidget::belowLineTool );
 
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
@@ -165,6 +167,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionGroup->addAction( actionMeasurementTool );
   actionGroup->addAction( actionPaintBrush );
   actionGroup->addAction( actionPointCloudChangeAttributeTool );
+  actionGroup->addAction( actionAboveLineTool );
+  actionGroup->addAction( actionBelowLineTool );
   actionGroup->setExclusive( true );
 
   mActionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ), tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
@@ -491,7 +495,33 @@ void Qgs3DMapCanvasWidget::polygonTool()
     return;
 
   mCanvas->setMapTool( nullptr );
-  mMapToolChangeAttribute.reset( new Qgs3DMapToolPolygon( mCanvas ) );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPolygon( mCanvas, Qgs3DMapToolPolygon::Polygon ) );
+  onPointCloudChangeAttributeSettingsChanged();
+  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
+  mEditingToolsAction->setIcon( action->icon() );
+}
+
+void Qgs3DMapCanvasWidget::aboveLineTool()
+{
+  const QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( nullptr );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPolygon( mCanvas, Qgs3DMapToolPolygon::AboveLinePolygon ) );
+  onPointCloudChangeAttributeSettingsChanged();
+  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
+  mEditingToolsAction->setIcon( action->icon() );
+}
+
+void Qgs3DMapCanvasWidget::belowLineTool()
+{
+  const QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( nullptr );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPolygon( mCanvas, Qgs3DMapToolPolygon::BelowLinePolygon ) );
   onPointCloudChangeAttributeSettingsChanged();
   mCanvas->setMapTool( mMapToolChangeAttribute.get() );
   mEditingToolsAction->setIcon( action->icon() );

@@ -28,7 +28,21 @@ class Qgs3DMapToolPolygon : public Qgs3DMapToolPointCloudChangeAttribute
     Q_OBJECT
 
   public:
-    Qgs3DMapToolPolygon( Qgs3DMapCanvas *canvas );
+    /**
+     * Tool types used by \a Qgs3DMapToolPolygon
+     * \since QGIS 3.44
+     */
+    enum ToolType
+    {
+      //! Polygon defined by vertices
+      Polygon,
+      //! Polygon defined by 2 vertices and canvas top edge
+      AboveLinePolygon,
+      //! Polygon defined by 2 vertices and canvas bottom edge
+      BelowLinePolygon,
+    };
+
+    Qgs3DMapToolPolygon( Qgs3DMapCanvas *canvas, ToolType type );
     ~Qgs3DMapToolPolygon() override;
 
     void activate() override;
@@ -48,8 +62,10 @@ class Qgs3DMapToolPolygon : public Qgs3DMapToolPointCloudChangeAttribute
 
     QVector<QgsPointXY> mScreenPoints;
     QgsRubberBand3D *mPolygonRubberBand = nullptr;
+    QgsRubberBand3D *mLineRubberBand = nullptr;
     QPoint mClickPoint;
     bool mIsMoving = false;
+    ToolType mToolType;
 };
 
 

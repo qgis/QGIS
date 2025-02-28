@@ -104,6 +104,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void measureLine();
     void paintBrush();
     void polygonTool();
+    void aboveLineTool();
+    void belowLineTool();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
