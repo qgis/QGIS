@@ -509,9 +509,6 @@ a matching category was found. This can be used to differentiate between
 ``None`` returned as a result of no matching category vs ``None`` as a result
 of disabled categories.
 
-.. note::
-
-   available in Python bindings as symbolForValue2
 %End
 
   private:

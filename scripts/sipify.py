@@ -127,6 +127,7 @@ class Context:
         self.static_methods = defaultdict(dict)
         self.current_signal_args = []
         self.signal_arguments = defaultdict(dict)
+        self.method_py_name: Optional[str] = None
 
     def current_fully_qualified_class_name(self) -> str:
         return ".".join(
@@ -1144,6 +1145,8 @@ def remove_sip_pyargremove(input_string: str) -> str:
 def fix_annotations(line):
     global CONTEXT
 
+    CONTEXT.method_py_name = None
+
     # Get removed params to be able to drop them out of the API doc
     removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE", line)
     if CONTEXT.is_qt6:
@@ -1156,6 +1159,10 @@ def fix_annotations(line):
     for param in _out_params:
         CONTEXT.skipped_params_out.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_out[-1]}")
+
+    py_name_match = re.match(r"^.*SIP_PYNAME\(\s*(.+?)\s*\)\s*;$", line)
+    if py_name_match:
+        CONTEXT.method_py_name = py_name_match.group(1)
 
     # Printed annotations
     replacements = {
@@ -2887,6 +2894,26 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 while comment_line_idx < len(comment_lines):
                     comment_line = comment_lines[comment_line_idx]
                     comment_line_idx += 1
+
+                    if ".. note::" in comment_line and CONTEXT.method_py_name:
+                        is_pyname_note = False
+                        seek_forward = comment_line_idx + 1
+                        while seek_forward < len(comment_lines):
+                            seek_forward_line = comment_lines[seek_forward]
+                            if not seek_forward_line:
+                                break
+                            if (
+                                CONTEXT.method_py_name in seek_forward_line
+                                and "python" in seek_forward_line.lower()
+                            ):
+                                is_pyname_note = True
+                            seek_forward += 1
+
+                        if is_pyname_note:
+                            # skip it, we don't need it in the PyQGIS docs!
+                            comment_line_idx = seek_forward
+                            continue
+
                     if (
                         "versionadded:" in comment_line or "deprecated:" in comment_line
                     ) and out_params:
