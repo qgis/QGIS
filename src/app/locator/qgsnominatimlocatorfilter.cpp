@@ -24,10 +24,12 @@
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
 #include "qgisapp.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QDesktopServices>
 #include <QPushButton>
 
+const QgsSettingsEntryString *QgsNominatimLocatorFilter::settingCountryCodes = new QgsSettingsEntryString( QStringLiteral( "country-codes" ), sTreeAppLocatorFilters, QString(), QStringLiteral( "Country codes" ) );
 
 QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas )
   : QgsGeocoderLocatorFilter( QStringLiteral( "nominatimgeocoder" ), tr( "Nominatim Geocoder" ), QStringLiteral( ">" ), geocoder, canvas )
@@ -45,8 +47,7 @@ QgsNominatimLocatorFilter *QgsNominatimLocatorFilter::clone() const
 
 void QgsNominatimLocatorFilter::fetchResults(const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback)
 {
-  QgsSettings settings;
-  QString countryCodes = settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString().trimmed();
+  QString countryCodes = settingCountryCodes->value( this->name() );
 
   QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( geocoder() );
   nominatimGeocoder->setCountryCodes( countryCodes );
@@ -83,8 +84,7 @@ void QgsNominatimLocatorFilter::openConfigWidget( QWidget *parent )
   QLineEdit *countryCodesEdit = new QLineEdit( dlg.get() );
 
   // Load existing settings
-  QgsSettings settings;
-  countryCodesEdit->setText( settings.value( "locator_filters/nominatim_geocoder/country_codes", "", QgsSettings::App ).toString() );
+  countryCodesEdit->setText( settingCountryCodes->value( this->name() ) );
 
   layout->addWidget( label );
   layout->addWidget( countryCodesEdit );
@@ -94,7 +94,7 @@ void QgsNominatimLocatorFilter::openConfigWidget( QWidget *parent )
 
   // Save settings when dialog accepted
   connect( buttonbBox, &QDialogButtonBox::accepted, dlg.get(), [&]() {
-    settings.setValue( "locator_filters/nominatim_geocoder/country_codes", countryCodesEdit->text().trimmed(), QgsSettings::App );
+    settingCountryCodes->setValue( countryCodesEdit->text().trimmed(), this->name() );
     dlg->accept();
   } );
 

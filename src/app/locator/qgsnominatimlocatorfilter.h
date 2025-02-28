@@ -27,6 +27,9 @@ class APP_EXPORT QgsNominatimLocatorFilter : public QgsGeocoderLocatorFilter
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryString *settingCountryCodes;
+
     QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas );
     QgsNominatimLocatorFilter *clone() const override SIP_FACTORY;
 

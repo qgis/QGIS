@@ -25,6 +25,7 @@
 #include "qgis_core.h"
 #include "qgslocatorcontext.h"
 #include "qgslogger.h"
+#include "qgssettingstree.h"
 
 class QgsFeedback;
 class QgsLocatorFilter;
@@ -177,6 +178,10 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     Q_OBJECT
 
   public:
+
+#ifndef SIP_RUN
+    static inline QgsSettingsTreeNamedListNode *sTreeAppLocatorFilters = QgsSettingsTree::sTreeApp->createNamedListNode( QStringLiteral( "locator-filters" ) );
+#endif
 
     //! Filter priority. Controls the order of results in the locator.
     enum Priority
