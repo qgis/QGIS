@@ -20,10 +20,10 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import sys
+from typing import Optional
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     Qgis,
-    QgsApplication,
     QgsFeatureSink,
     QgsProcessingFeedback,
     QgsProcessingUtils,
@@ -32,18 +32,16 @@ from qgis.core import (
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingFeatureSource,
     QgsProcessingParameters,
-    QgsProject,
     QgsFeatureRequest,
     QgsFeature,
     QgsExpression,
-    QgsWkbTypes,
-    QgsGeometry,
     QgsVectorLayerUtils,
     QgsVectorLayer,
 )
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
-from qgis.utils import iface
+from qgis.gui import QgisInterface
+from qgis.utils import iface as qgis_iface
 
 
 def execute(alg, parameters, context=None, feedback=None, catch_exceptions=True):
@@ -364,7 +362,7 @@ def execute_in_place_run(
     return False, {}
 
 
-def execute_in_place(alg, parameters, context=None, feedback=None):
+def execute_in_place(alg, parameters, context=None, feedback=None, iface: Optional[QgisInterface] = None):
     """Executes an algorithm modifying features in-place, if the INPUT
     parameter is not defined, the current active layer will be used as
     INPUT.
@@ -377,11 +375,14 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     :param context: QgsProcessingContext, optional
     :param feedback: feedback, defaults to None
     :param feedback: QgsProcessingFeedback, optional
+    :param iface: QgisInterface, options, defaults to standard QgisInterface (from qgis.utils import iface)
     :raises QgsProcessingException: raised when the layer is not editable or the layer cannot be found in the current project
     :return: a tuple with true if success and results
     :rtype: tuple
     """
 
+    if iface is None:
+        iface = qgis_iface
     if feedback is None:
         feedback = QgsProcessingFeedback()
     if context is None:
@@ -423,12 +424,14 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     return ok, results
 
 
-def executeIterating(alg, parameters, paramToIter, context, feedback):
+def executeIterating(alg, parameters, paramToIter, context, feedback, iface: Optional[QgisInterface] = None):
     # Generate all single-feature layers
     parameter_definition = alg.parameterDefinition(paramToIter)
     if not parameter_definition:
         return False
 
+    if iface is None:
+        iface = qgis_iface
     iter_source = QgsProcessingParameters.parameterAsSource(
         parameter_definition, parameters, context
     )
@@ -487,7 +490,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
         if not ret:
             return False
 
-    handleAlgorithmResults(alg, context, feedback)
+    handleAlgorithmResults(alg, context, feedback, iface=iface)
     return True
 
 

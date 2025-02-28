@@ -66,7 +66,7 @@ class BatchInputSelectionPanel(QWidget):
         self.dialog = dialog
         self.row = row
         self.col = col
-        self.project = project if isinstance(project, QgsProject) else QgsProject.instance()
+        self.project: QgsProject = project if isinstance(project, QgsProject) else QgsProject.instance()
         self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)

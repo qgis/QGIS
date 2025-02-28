@@ -57,7 +57,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
         self.iface = iface
         self.extra_parameters = {}
 
-        self.processing_context = createContext(parent_context=context, iface=iface)
+        self.processing_context = createContext(context=context, iface=iface)
 
         class ContextGenerator(QgsProcessingContextGenerator):
 

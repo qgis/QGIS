@@ -40,7 +40,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsSublayersDialog, QgisInterface
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.utils import iface
+from qgis.utils import iface as iface_qgis
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -58,13 +58,19 @@ TYPE_TABLE = 5
 # changing this signature? make sure you update the signature in
 # python/processing/__init__.py too!
 # Docstring for this function is in python/processing/__init__.py
-def createContext(feedback: Optional[QgsProcessingFeedback]=None,
-                  parent_context: Optional[QgsProcessingContext]=None,
-                  iface: Optional[QgisInterface]=iface):
-    context = QgsProcessingContext()
-    if parent_context:
-        context.copyThreadSafeSettings(parent_context)
+def createContext(feedback: Optional[QgsProcessingFeedback] = None,
+                  context: Optional[QgsProcessingContext] = None,
+                  iface: Optional[QgisInterface] = None):
+
+    if iface is None:
+        iface = iface_qgis
+
+    if context:
+        context2 = QgsProcessingContext()
+        context2.copyThreadSafeSettings(context)
+        context = context2
     else:
+        context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
 
     if feedback:
@@ -98,7 +104,11 @@ def createContext(feedback: Optional[QgsProcessingFeedback]=None,
     return context
 
 
-def createExpressionContext(iface: Optional[QgisInterface] = iface):
+def createExpressionContext(iface: Optional[QgisInterface] = None):
+
+    if iface is None:
+        iface = iface_qgis
+
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
     context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))

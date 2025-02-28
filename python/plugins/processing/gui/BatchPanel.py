@@ -23,12 +23,11 @@ import os
 import json
 import warnings
 from pathlib import Path
-from typing import Optional, List, Dict
+from typing import Optional
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
-    QComboBox,
     QHeaderView,
     QFileDialog,
     QMessageBox,
@@ -54,7 +53,7 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsSettings,
-    QgsProperty,  # NOQA - must be here for saved file evaluation
+    QgsProperty, # NOQA - must be here for saved file evaluation
     QgsProject,
     QgsFeatureRequest,  # NOQA - must be here for saved file evaluation
     QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
@@ -546,7 +545,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
         self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
 
-        self.processing_context = dataobjects.createContext(parent_context=self.parent_context)
+        self.processing_context = dataobjects.createContext(context=self.parent_context)
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
@@ -681,7 +680,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         """
         Loads the newer version 3.40 batch parameter JSON format
         """
-        context = dataobjects.createContext(parent_context=self.parent_context)
+        context = dataobjects.createContext(context=self.parent_context)
         rows: list = values.get(self.ROWS, [])
 
         self.clear()
@@ -728,7 +727,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             return
 
         self.clear()
-        context = dataobjects.createContext(parent_context=self.parent_context)
+        context = dataobjects.createContext(context=self.parent_context)
         try:
             for row, alg in enumerate(values):
                 self.addRow()
@@ -761,7 +760,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
 
     def save(self):
         row_parameters = []
-        context = dataobjects.createContext(parent_context=self.parent_context)
+        context = dataobjects.createContext(context=self.parent_context)
         for row in range(self.batchRowCount()):
             this_row_params = {}
             this_row_outputs = {}
@@ -869,7 +868,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.tblParameters.setUpdatesEnabled(False)
         self.tblParameters.setRowCount(self.tblParameters.rowCount() + nb)
 
-        context = dataobjects.createContext(parent_context=self.parent_context)
+        context = dataobjects.createContext(context=self.parent_context)
 
         wrappers = {}
         row = self.tblParameters.rowCount() - nb
@@ -933,8 +932,8 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             if (
                 param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced
                 and not (
-                    param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
-                )
+                param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
+            )
             ):
                 self.tblParameters.setColumnHidden(
                     self.parameter_to_column[param.name()], not checked

@@ -29,7 +29,6 @@ from qgis.core import (
     QgsProcessingOutputNumber,
     QgsProcessingOutputString,
     QgsProcessingOutputBoolean,
-    QgsProject,
 )
 from qgis.gui import QgsProcessingBatchAlgorithmDialogBase, QgisInterface
 from qgis.utils import iface
@@ -75,12 +74,12 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
     def processingContext(self):
         if self.context is None:
             self.feedback = self.createFeedback()
-            self.context = dataobjects.createContext(self.feedback, parent_context=self.parent_context)
+            self.context = dataobjects.createContext(self.feedback, context=self.parent_context)
             self.context.setLogLevel(self.logLevel())
         return self.context
 
     def createContext(self, feedback):
-        return dataobjects.createContext(feedback, parent_context=self.parent_context)
+        return dataobjects.createContext(feedback, context=self.parent_context)
 
     def runAlgorithm(self):
         alg_parameters = []

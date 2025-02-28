@@ -21,13 +21,11 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import shutil
 import os
-import sys
-from typing import List
+from typing import Optional
 from functools import partial
 
 from qgis.core import (
     QgsApplication,
-    QgsProcessingUtils,
     QgsProcessingModelAlgorithm,
     QgsProcessingAlgorithm,
     QgsDataItemProvider,
@@ -36,17 +34,18 @@ from qgis.core import (
     QgsMapLayerType,
     QgsMimeDataUtils,
     QgsSettings,
+    QgsProcessingContext,
 )
 from qgis.gui import (
     QgsGui,
     QgsOptionsWidgetFactory,
     QgsCustomDropHandler,
     QgsProcessingHistoryDialog,
+    QgisInterface,
 )
 from qgis.PyQt.QtCore import (
     QObject,
     Qt,
-    QItemSelectionModel,
     QCoreApplication,
     QDir,
     QFileInfo,
@@ -54,7 +53,7 @@ from qgis.PyQt.QtCore import (
     QMetaObject,
 )
 from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
-from qgis.PyQt.QtGui import QIcon, QKeySequence
+from qgis.PyQt.QtGui import QKeySequence
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
@@ -82,7 +81,6 @@ from processing.gui.menus import (
     createButtons,
     removeButtons,
 )
-from processing.core.ProcessingResults import resultsList
 
 pluginPath = os.path.dirname(__file__)
 
@@ -421,7 +419,9 @@ class ProcessingPlugin(QObject):
                 )
 
     @pyqtSlot(str, QWidget, bool, bool)
-    def executeAlgorithm(self, alg_id, parent, in_place=False, as_batch=False):
+    def executeAlgorithm(self, alg_id, parent, in_place=False, as_batch=False,
+                         context: Optional[QgsProcessingContext] = None,
+                         iface: Optional[QgisInterface] = None):
         """Executes a project model with GUI interaction if needed.
 
         :param alg_id: algorithm id
@@ -432,7 +432,15 @@ class ProcessingPlugin(QObject):
         :type in_place: bool, optional
         :param as_batch: execute as batch flag, defaults to False
         :type as_batch: bool, optional
+        :param context: alternative processing context, e.g. to allow users to select layers that are not
+                        available in QgsProject.instance()
+        :type context: QgsProcessingContext, optional
+        :param iface: alternative QgisInterface, defaults to standard QgisInterface (QGIS Main GUI)
+        :type iface: QgisInterface, optional
         """
+
+        if iface is None:
+            iface = self.iface
 
         config = {}
         if in_place:
@@ -459,7 +467,7 @@ class ProcessingPlugin(QObject):
                 return
 
             if as_batch:
-                dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
+                dlg = BatchAlgorithmDialog(alg, iface.mainWindow(), context=context, iface=iface)
                 dlg.show()
                 dlg.exec()
             else:
@@ -473,8 +481,8 @@ class ProcessingPlugin(QObject):
                     if d.name() not in (in_place_input_parameter_name, "OUTPUT")
                 ]:
                     parameters = {}
-                    feedback = MessageBarProgress(algname=alg.displayName())
-                    ok, results = execute_in_place(alg, parameters, feedback=feedback)
+                    feedback = MessageBarProgress(algname=alg.displayName(), messagebar=iface.messageBar())
+                    ok, results = execute_in_place(alg, parameters, context=context, feedback=feedback, iface=iface)
                     if ok:
                         iface.messageBar().pushSuccess(
                             "",
@@ -491,7 +499,8 @@ class ProcessingPlugin(QObject):
                     dlg = alg.createCustomParametersWidget(parent)
 
                     if not dlg:
-                        dlg = AlgorithmDialog(alg, in_place, iface.mainWindow())
+                        dlg = AlgorithmDialog(alg, in_place, context=context, iface=iface)
+
                     canvas = iface.mapCanvas()
                     prevMapTool = canvas.mapTool()
                     dlg.show()
@@ -507,10 +516,10 @@ class ProcessingPlugin(QObject):
                             pass
                 else:
                     feedback = MessageBarProgress(algname=alg.displayName())
-                    context = dataobjects.createContext(feedback)
+                    context = dataobjects.createContext(feedback, context=context)
                     parameters = {}
                     ret, results = execute(alg, parameters, context, feedback)
-                    handleAlgorithmResults(alg, context, feedback)
+                    handleAlgorithmResults(alg, context, feedback, iface=iface)
                     feedback.close()
 
     def sync_in_place_button_state(self, layer=None):
