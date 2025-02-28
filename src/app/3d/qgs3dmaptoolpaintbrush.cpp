@@ -15,139 +15,34 @@
 
 #include "qgs3dmaptoolpaintbrush.h"
 #include "moc_qgs3dmaptoolpaintbrush.cpp"
+#include "qgs3deditutils.h"
 #include "qgsrubberband3d.h"
-#include "qgs3dmapcanvas.h"
-#include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
-#include "qgschunknode.h"
 #include "qgswindow3dengine.h"
 #include "qgsframegraph.h"
+#include "qgsgeometry.h"
 #include "qgsguiutils.h"
-#include "qgsmultipoint.h"
-#include "qgspointcloudlayer.h"
-#include "qgs3dmaptoolpointcloudchangeattribute.h"
-#include "qgisapp.h"
+#include "qgslinestring.h"
 
-#include <QCursor>
-#include <QMouseEvent>
 
 class QgsPointCloudAttribute;
 Qgs3DMapToolPaintBrush::Qgs3DMapToolPaintBrush( Qgs3DMapCanvas *canvas )
-  : Qgs3DMapTool( canvas )
+  : Qgs3DMapToolPointCloudChangeAttribute( canvas )
 {
 }
 
 Qgs3DMapToolPaintBrush::~Qgs3DMapToolPaintBrush() = default;
 
-void Qgs3DMapToolPaintBrush::processSelection() const
+void Qgs3DMapToolPaintBrush::run()
 {
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
 
   const QgsGeometry searchSkeleton = QgsGeometry( new QgsLineString( mDragPositions ) );
   const QgsGeometry searchPolygon = searchSkeleton.buffer( mSelectionRubberBand->width() / 2, 37 );
-
-  QgsMapLayer *mapLayer = QgisApp::instance()->activeLayer();
-  Q_ASSERT( mapLayer->type() == Qgis::LayerType::PointCloud );
-  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
-  const SelectedPoints sel = searchPoints( pcLayer, searchPolygon );
-
-  int offset;
-  const QgsPointCloudAttribute *attribute = pcLayer->attributes().find( mAttributeName, offset );
-
-  pcLayer->undoStack()->beginMacro( tr( "Change attribute values" ) );
-  for ( auto it = sel.begin(); it != sel.end(); ++it )
-  {
-    pcLayer->changeAttributeValue( it.key(), it.value(), *attribute, mNewValue );
-  }
-  pcLayer->undoStack()->endMacro();
+  Qgs3DEditUtils::changeAttributeValue( searchPolygon, mAttributeName, mNewValue, *mCanvas );
 }
 
-SelectedPoints Qgs3DMapToolPaintBrush::searchPoints( QgsPointCloudLayer *layer, const QgsGeometry &searchPolygon ) const
-{
-  SelectedPoints result;
-
-  MapToPixel3D mapToPixel3D;
-  mapToPixel3D.VP = mCanvas->camera()->projectionMatrix() * mCanvas->camera()->viewMatrix();
-  mapToPixel3D.origin = mCanvas->mapSettings()->origin();
-  mapToPixel3D.canvasSize = mCanvas->size();
-
-  QgsPointCloudIndex pcIndex = layer->index();
-  const QVector<const QgsChunkNode *> chunks = mCanvas->scene()->getLayerActiveChunkNodes( layer );
-  for ( const QgsChunkNode *chunk : chunks )
-  {
-    // check whether the hull intersects the search polygon
-    const QgsGeometry hull = box3DToPolygonInScreenSpace( chunk->box3D(), mapToPixel3D );
-    if ( !hull.intersects( searchPolygon ) )
-      continue;
-
-    const QVector<int> pts = selectedPointsInNode( searchPolygon, chunk, mapToPixel3D, pcIndex );
-    if ( !pts.isEmpty() )
-    {
-      const QgsPointCloudNodeId n( chunk->tileId().d, chunk->tileId().x, chunk->tileId().y, chunk->tileId().z );
-      result.insert( n, pts );
-    }
-  }
-  return result;
-}
-
-QgsGeometry Qgs3DMapToolPaintBrush::box3DToPolygonInScreenSpace( const QgsBox3D &box, const MapToPixel3D &mapToPixel3D )
-{
-  QVector<QgsPointXY> pts;
-  for ( QgsVector3D c : box.corners() )
-  {
-    const QPointF pt = mapToPixel3D.transform( c.x(), c.y(), c.z() );
-    pts.append( QgsPointXY( pt.x(), pt.y() ) );
-  }
-
-  // TODO: maybe we should only do rectangle check rather than (more precise) convex hull?
-
-  // combine into QgsMultiPoint + apply convex hull
-  const QgsGeometry g( new QgsMultiPoint( pts ) );
-  return g.convexHull();
-}
-
-QVector<int> Qgs3DMapToolPaintBrush::selectedPointsInNode( const QgsGeometry &searchPolygon, const QgsChunkNode *ch, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex &pcIndex )
-{
-  QVector<int> selected;
-
-  const QgsPointCloudNodeId n( ch->tileId().d, ch->tileId().x, ch->tileId().y, ch->tileId().z );
-  QgsPointCloudRequest request;
-  // TODO: apply filtering (if any)
-  request.setAttributes( pcIndex.attributes() );
-
-  // TODO: reuse cached block(s) if possible
-
-  const std::unique_ptr block( pcIndex.nodeData( n, request ) );
-  if ( !block )
-    return selected;
-
-  const QgsVector3D blockScale = block->scale();
-  const QgsVector3D blockOffset = block->offset();
-
-  const char *ptr = block->data();
-  const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
-  const std::size_t recordSize = blockAttributes.pointRecordSize();
-  int xOffset = 0, yOffset = 0, zOffset = 0;
-  const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
-  const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
-  const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
-  for ( int i = 0; i < block->pointCount(); ++i )
-  {
-    // get map coordinates
-    double x, y, z;
-    QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
-
-    // project to screen (map coords -> world coords -> clip coords -> NDC -> screen coords)
-    const QPointF ptScreen = mapToPixel3D.transform( x, y, z );
-
-    if ( searchPolygon.intersects( QgsGeometry( new QgsPoint( ptScreen.x(), ptScreen.y() ) ) ) )
-    {
-      selected.append( i );
-    }
-  }
-  return selected;
-}
 
 void Qgs3DMapToolPaintBrush::activate()
 {
@@ -166,7 +61,7 @@ void Qgs3DMapToolPaintBrush::activate()
 
 void Qgs3DMapToolPaintBrush::deactivate()
 {
-  reset();
+  restart();
   mSelectionRubberBand.reset();
   mIsActive = false;
   mCanvas->cameraController()->setInputHandlersEnabled( true );
@@ -177,21 +72,11 @@ QCursor Qgs3DMapToolPaintBrush::cursor() const
   return Qt::CrossCursor;
 }
 
-void Qgs3DMapToolPaintBrush::reset()
+void Qgs3DMapToolPaintBrush::restart()
 {
   mDragPositions.clear();
   mHighlighterRubberBand->reset();
   mIsClicked = false;
-}
-
-void Qgs3DMapToolPaintBrush::setAttribute( const QString &attribute )
-{
-  mAttributeName = attribute;
-}
-
-void Qgs3DMapToolPaintBrush::setNewValue( double value )
-{
-  mNewValue = value;
 }
 
 void Qgs3DMapToolPaintBrush::generateHighlightArea()
@@ -223,7 +108,7 @@ void Qgs3DMapToolPaintBrush::mouseReleaseEvent( QMouseEvent *event )
   {
     mDragPositions.append( QgsPointXY( event->x(), event->y() ) );
     mHighlighterRubberBand->reset();
-    processSelection();
+    run();
     mDragPositions.clear();
   }
   mIsClicked = false;
@@ -268,7 +153,7 @@ void Qgs3DMapToolPaintBrush::keyPressEvent( QKeyEvent *event )
 {
   if ( mIsClicked && event->key() == Qt::Key_Escape )
   {
-    reset();
+    restart();
   }
 
   if ( !mIsClicked && event->key() == Qt::Key_Space )

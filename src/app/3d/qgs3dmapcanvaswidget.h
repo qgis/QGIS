@@ -69,20 +69,20 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
   public:
     Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
-    ~Qgs3DMapCanvasWidget();
+    ~Qgs3DMapCanvasWidget() override;
 
     //! takes ownership
     void setMapSettings( Qgs3DMapSettings *map );
 
     void setMainCanvas( QgsMapCanvas *canvas );
 
-    Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
+    Qgs3DMapCanvas *mapCanvas3D() const { return mCanvas; }
 
-    Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
+    Qgs3DAnimationWidget *animationWidget() const { return mAnimationWidget; }
 
-    Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
+    Qgs3DMapToolMeasureLine *measurementLineTool() const { return mMapToolMeasureLine; }
 
-    QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
+    QgsDockableWidgetHelper *dockableWidgetHelper() const { return mDockableWidgetHelper; }
 
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
@@ -103,7 +103,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void identify();
     void measureLine();
     void paintBrush();
-    void changePointCloudAttribute();
+    void polygonTool();
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
@@ -141,8 +141,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
-    Qgs3DMapToolPaintBrush *mMapToolPaintBrush = nullptr;
-    Qgs3DMapToolPointCloudChangeAttribute *mMapToolPointCloudChangeAttribute = nullptr;
+    std::unique_ptr<Qgs3DMapToolPointCloudChangeAttribute> mMapToolChangeAttribute;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     QgsMapTool *mMapToolPrevious = nullptr;
     QMenu *mExportMenu = nullptr;
@@ -156,7 +155,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEnableAmbientOcclusion = nullptr;
     QAction *mActionSync2DNavTo3D = nullptr;
     QAction *mActionSync3DNavTo2D = nullptr;
-    QAction *mShowFrustumPolyogon = nullptr;
+    QAction *mShowFrustumPolygon = nullptr;
     QAction *mActionAnim = nullptr;
     QAction *mActionExport = nullptr;
     QAction *mActionMapThemes = nullptr;
