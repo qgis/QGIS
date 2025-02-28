@@ -53,6 +53,7 @@
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgs3dmaptoolpaintbrush.h"
+#include "qgs3dmaptoolpolygon.h"
 
 #include "qgsdockablewidgethelper.h"
 #include "qgsrubberband.h"
@@ -100,7 +101,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolBar->addAction( mEditingToolsAction );
   QToolButton *editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
-  QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Polygon selector" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttribute );
+  QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Polygon selector" ), this, &Qgs3DMapCanvasWidget::polygonTool );
   QAction *actionPaintBrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Paint Brush Selector" ), this, &Qgs3DMapCanvasWidget::paintBrush );
 
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
@@ -134,9 +135,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     {
       newValue = mCboChangeAttributeValue->currentData().toDouble();
     }
-    mMapToolPointCloudChangeAttribute->setNewValue( newValue );
+    mMapToolChangeAttribute->setNewValue( newValue );
   } );
-  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { mMapToolPointCloudChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() ); } );
+  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { mMapToolChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() ); } );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction(
     QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
@@ -226,12 +227,12 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mCameraMenu->addAction( mActionSync3DNavTo2D );
 
-  mShowFrustumPolyogon = new QAction( tr( "Show Visible Camera Area in 2D Map View" ), this );
-  mShowFrustumPolyogon->setCheckable( true );
-  connect( mShowFrustumPolyogon, &QAction::triggered, this, [=]( bool enabled ) {
+  mShowFrustumPolygon = new QAction( tr( "Show Visible Camera Area in 2D Map View" ), this );
+  mShowFrustumPolygon->setCheckable( true );
+  connect( mShowFrustumPolygon, &QAction::triggered, this, [=]( bool enabled ) {
     mCanvas->mapSettings()->setViewFrustumVisualizationEnabled( enabled );
   } );
-  mCameraMenu->addAction( mShowFrustumPolyogon );
+  mCameraMenu->addAction( mShowFrustumPolygon );
 
   mActionSetSceneExtent = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ), tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
   mActionSetSceneExtent->setCheckable( true );
@@ -301,9 +302,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
-  mMapToolPaintBrush = new Qgs3DMapToolPaintBrush( mCanvas );
-
-  mMapToolPointCloudChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPointCloudChangeAttribute( mCanvas ) );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -473,17 +472,23 @@ void Qgs3DMapCanvasWidget::paintBrush()
   if ( !action )
     return;
 
-  mCanvas->setMapTool( mMapToolPaintBrush );
+  mCanvas->setMapTool( nullptr );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPaintBrush( mCanvas ) );
+  onPointCloudChangeAttributeSettingsChanged();
+  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
   mEditingToolsAction->setIcon( action->icon() );
 }
 
-void Qgs3DMapCanvasWidget::changePointCloudAttribute()
+void Qgs3DMapCanvasWidget::polygonTool()
 {
-  QAction *action = qobject_cast<QAction *>( sender() );
+  const QAction *action = qobject_cast<QAction *>( sender() );
   if ( !action )
     return;
 
-  mCanvas->setMapTool( mMapToolPointCloudChangeAttribute );
+  mCanvas->setMapTool( nullptr );
+  mMapToolChangeAttribute.reset( new Qgs3DMapToolPolygon( mCanvas ) );
+  onPointCloudChangeAttributeSettingsChanged();
+  mCanvas->setMapTool( mMapToolChangeAttribute.get() );
   mEditingToolsAction->setIcon( action->icon() );
 }
 
@@ -565,14 +570,14 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
   return QObject::eventFilter( watched, event );
 }
 
-void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )
+void Qgs3DMapCanvasWidget::toggleNavigationWidget( const bool visibility )
 {
   mNavigationWidget->setVisible( visibility );
   QgsSettings setting;
   setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
 }
 
-void Qgs3DMapCanvasWidget::toggleFpsCounter( bool visibility )
+void Qgs3DMapCanvasWidget::toggleFpsCounter( const bool visibility )
 {
   mLabelFpsCounter->setVisible( visibility );
 }
@@ -597,7 +602,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
-  whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
+  whileBlocking( mShowFrustumPolygon )->setChecked( map->viewFrustumVisualizationEnabled() );
 
   mCanvas->setMapSettings( map );
   connect( map, &Qgs3DMapSettings::showDebugPanelChanged, this, qOverload<bool>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
@@ -727,7 +732,7 @@ void Qgs3DMapCanvasWidget::configure()
   whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
-  whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
+  whileBlocking( mShowFrustumPolygon )->setChecked( map->viewFrustumVisualizationEnabled() );
 }
 
 void Qgs3DMapCanvasWidget::exportScene()
@@ -1036,7 +1041,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     mSpinChangeAttributeValue->setDecimals( 42 );
   }
 
-  mMapToolPointCloudChangeAttribute->setAttribute( attributeName );
+  mMapToolChangeAttribute->setAttribute( attributeName );
   double newValue = 0;
   if ( useComboBox && mCboChangeAttributeValue->isEditable() )
   {
@@ -1055,7 +1060,7 @@ void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
     // read the spinbox value
     newValue = mSpinChangeAttributeValue->value();
   }
-  mMapToolPointCloudChangeAttribute->setNewValue( newValue );
+  mMapToolChangeAttribute->setNewValue( newValue );
 
   mCboChangeAttributeValueAction->setVisible( useComboBox );
   mSpinChangeAttributeValueAction->setVisible( !useComboBox );

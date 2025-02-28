@@ -344,12 +344,14 @@ if (WITH_3D)
     3d/qgs3danimationwidget.cpp
     3d/qgs3danimationexportdialog.cpp
     3d/qgs3dapputils.cpp
+    3d/qgs3deditutils.cpp
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
     3d/qgs3dmaptoolpaintbrush.cpp
     3d/qgs3dmaptoolpointcloudchangeattribute.cpp
+    3d/qgs3dmaptoolpolygon.cpp
     3d/qgs3dmeasuredialog.cpp
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
