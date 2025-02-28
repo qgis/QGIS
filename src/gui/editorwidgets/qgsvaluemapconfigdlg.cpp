@@ -246,6 +246,11 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
 QString QgsValueMapConfigDlg::checkValueLength( const QString &value )
 {
+  if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
+  {
+    return value;
+  }
+
   if ( layer()->fields().exists( field() ) )
   {
     const QgsField mappedField { layer()->fields().field( field() ) };
