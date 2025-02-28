@@ -78,16 +78,10 @@ Returns a list of all ranges used in the classification.
     void addClass( const QgsRendererRange &range ) /PyName=addClassRange/;
 %Docstring
 
-.. note::
-
-   available in Python bindings as addClassRange
 %End
     void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
 %Docstring
 
-.. note::
-
-   available in Python bindings as addClassLowerUpper
 %End
 
     void addBreak( double breakValue, bool updateSymbols = true );

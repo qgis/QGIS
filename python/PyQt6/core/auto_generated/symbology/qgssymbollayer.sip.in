@@ -1091,9 +1091,6 @@ and any displacement required to align with the marker's anchor point.
 :param offsetX: will be set to required horizontal offset (in painter units)
 :param offsetY: will be set to required vertical offset (in painter units)
 
-.. note::
-
-   available in Python as markerOffsetWithWidthAndHeight
 %End
 
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
@@ -1102,9 +1099,6 @@ and any displacement required to align with the marker's anchor point.
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
 %Docstring
 
-.. note::
-
-   available in Python bindings as markerOffset2
 %End
 
     static QPointF _rotatedOffset( QPointF offset, double angle );

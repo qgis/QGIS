@@ -314,9 +314,6 @@ Constructor takes a map canvas as a parameter.
 %Docstring
 Transforms a ``point`` from map coordinates to ``layer`` coordinates.
 
-.. note::
-
-   This method is available in the Python bindings as toLayerCoordinatesV2.
 %End
 
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
@@ -338,9 +335,6 @@ Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is d
 %Docstring
 Transforms a ``point`` from ``layer`` coordinates to map coordinates (which is different in case reprojection is used).
 
-.. note::
-
-   This method is available in the Python bindings as toMapCoordinatesV2.
 %End
 
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );

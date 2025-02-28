@@ -938,9 +938,6 @@ Adds a new island polygon to a multipolygon feature
 
 :return: OperationResult a result code: success or reason of failure
 
-.. note::
-
-   available in python bindings as addPartGeometry
 %End
 
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;

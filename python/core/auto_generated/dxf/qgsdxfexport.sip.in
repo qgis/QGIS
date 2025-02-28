@@ -317,9 +317,6 @@ Write a tuple of group code and integer value
 :param code: group code
 :param i: integer value
 
-.. note::
-
-   available in Python bindings as writeGroupInt
 %End
 
     void writeGroup( int code, long long i ) /PyName=writeGroupLong/;
@@ -329,9 +326,6 @@ Write a tuple of group code and long value
 :param code: group code
 :param i: integer value
 
-.. note::
-
-   available in Python bindings as writeGroupLong
 %End
 
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;
@@ -341,9 +335,6 @@ Write a group code with a floating point value
 :param code: group code
 :param d: floating point value
 
-.. note::
-
-   available in Python bindings as writeGroupDouble
 %End
 
     void writeGroup( int code, const QString &s );
@@ -361,9 +352,6 @@ Write a group code with a point
 :param code: group code
 :param p: point value
 
-.. note::
-
-   available in Python bindings as writeGroupPointV2
 %End
 
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
@@ -431,9 +419,6 @@ Write line (as a polyline)
 %Docstring
 Write point
 
-.. note::
-
-   available in Python bindings as writePointV2
 %End
 
     void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) /PyName=writeFillCircleV2/;
@@ -449,18 +434,12 @@ Write filled circle (as hatch)
 %Docstring
 Write circle (as polyline)
 
-.. note::
-
-   available in Python bindings as writeCircleV2
 %End
 
     void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) /PyName=writeTextV2/;
 %Docstring
 Write text (TEXT)
 
-.. note::
-
-   available in Python bindings as writeTextV2
 %End
 
     void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
