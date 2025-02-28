@@ -411,6 +411,11 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
   delete mDockableWidgetHelper;
+  // we don't want canvas to reset the map tool as it is managed by unique_ptr
+  if ( mMapToolChangeAttribute.get() == mCanvas->mapTool() )
+  {
+    mCanvas->setMapTool( nullptr );
+  }
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
