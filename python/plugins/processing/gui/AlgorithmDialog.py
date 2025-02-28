@@ -58,9 +58,14 @@ from processing.tools import dataobjects
 
 class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
-    def __init__(self, alg, in_place=False, parent=None,
-                 context: Optional[QgsProcessingContext] = None,
-                 iface: Optional[QgisInterface] = iface):
+    def __init__(
+        self,
+        alg,
+        in_place=False,
+        parent=None,
+        context: Optional[QgsProcessingContext] = None,
+        iface: Optional[QgisInterface] = iface,
+    ):
         super().__init__(parent)
 
         self.feedback_dialog = None
@@ -111,7 +116,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.updateRunButtonVisibility()
 
     def getParametersPanel(self, alg, parent):
-        panel = ParametersPanel(parent, alg, self.in_place, self.active_layer, context=self.parent_context)
+        panel = ParametersPanel(
+            parent, alg, self.in_place, self.active_layer, context=self.parent_context
+        )
         return panel
 
     def runAsBatch(self):
@@ -183,14 +190,18 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def processingContext(self):
         if self.context is None:
             self.feedback = self.createFeedback()
-            self.context = dataobjects.createContext(self.feedback, context=self.parent_context)
+            self.context = dataobjects.createContext(
+                self.feedback, context=self.parent_context
+            )
 
         self.applyContextOverrides(self.context)
         return self.context
 
     def runAlgorithm(self):
         self.feedback = self.createFeedback()
-        self.context = dataobjects.createContext(self.feedback, context=self.parent_context)
+        self.context = dataobjects.createContext(
+            self.feedback, context=self.parent_context
+        )
         self.applyContextOverrides(self.context)
         self.algorithmAboutToRun.emit(self.context)
 

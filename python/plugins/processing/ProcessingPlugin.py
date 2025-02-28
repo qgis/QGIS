@@ -419,9 +419,15 @@ class ProcessingPlugin(QObject):
                 )
 
     @pyqtSlot(str, QWidget, bool, bool)
-    def executeAlgorithm(self, alg_id, parent, in_place=False, as_batch=False,
-                         context: Optional[QgsProcessingContext] = None,
-                         iface: Optional[QgisInterface] = None):
+    def executeAlgorithm(
+        self,
+        alg_id,
+        parent,
+        in_place=False,
+        as_batch=False,
+        context: Optional[QgsProcessingContext] = None,
+        iface: Optional[QgisInterface] = None,
+    ):
         """Executes a project model with GUI interaction if needed.
 
         :param alg_id: algorithm id
@@ -467,7 +473,9 @@ class ProcessingPlugin(QObject):
                 return
 
             if as_batch:
-                dlg = BatchAlgorithmDialog(alg, iface.mainWindow(), context=context, iface=iface)
+                dlg = BatchAlgorithmDialog(
+                    alg, iface.mainWindow(), context=context, iface=iface
+                )
                 dlg.show()
                 dlg.exec()
             else:
@@ -481,8 +489,12 @@ class ProcessingPlugin(QObject):
                     if d.name() not in (in_place_input_parameter_name, "OUTPUT")
                 ]:
                     parameters = {}
-                    feedback = MessageBarProgress(algname=alg.displayName(), messagebar=iface.messageBar())
-                    ok, results = execute_in_place(alg, parameters, context=context, feedback=feedback, iface=iface)
+                    feedback = MessageBarProgress(
+                        algname=alg.displayName(), messagebar=iface.messageBar()
+                    )
+                    ok, results = execute_in_place(
+                        alg, parameters, context=context, feedback=feedback, iface=iface
+                    )
                     if ok:
                         iface.messageBar().pushSuccess(
                             "",
@@ -499,7 +511,9 @@ class ProcessingPlugin(QObject):
                     dlg = alg.createCustomParametersWidget(parent)
 
                     if not dlg:
-                        dlg = AlgorithmDialog(alg, in_place, context=context, iface=iface)
+                        dlg = AlgorithmDialog(
+                            alg, in_place, context=context, iface=iface
+                        )
 
                     canvas = iface.mapCanvas()
                     prevMapTool = canvas.mapTool()

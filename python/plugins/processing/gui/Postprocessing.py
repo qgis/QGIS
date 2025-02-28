@@ -194,7 +194,7 @@ def handleAlgorithmResults(
     context: QgsProcessingContext,
     feedback: Optional[QgsProcessingFeedback] = None,
     parameters: Optional[dict] = None,
-    iface: Optional[QgisInterface] = iface
+    iface: Optional[QgisInterface] = iface,
 ):
     if not parameters:
         parameters = {}

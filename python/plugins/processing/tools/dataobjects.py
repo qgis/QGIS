@@ -58,9 +58,11 @@ TYPE_TABLE = 5
 # changing this signature? make sure you update the signature in
 # python/processing/__init__.py too!
 # Docstring for this function is in python/processing/__init__.py
-def createContext(feedback: Optional[QgsProcessingFeedback] = None,
-                  context: Optional[QgsProcessingContext] = None,
-                  iface: Optional[QgisInterface] = None):
+def createContext(
+    feedback: Optional[QgsProcessingFeedback] = None,
+    context: Optional[QgsProcessingContext] = None,
+    iface: Optional[QgisInterface] = None,
+):
 
     if iface is None:
         iface = iface_qgis

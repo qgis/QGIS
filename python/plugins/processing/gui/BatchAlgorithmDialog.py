@@ -42,9 +42,13 @@ from processing.tools.system import getTempFilename
 
 class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
 
-    def __init__(self, alg, parent=None,
-                 context: Optional[QgsProcessingContext] = None,
-                 iface: Optional[QgisInterface] = iface):
+    def __init__(
+        self,
+        alg,
+        parent=None,
+        context: Optional[QgsProcessingContext] = None,
+        iface: Optional[QgisInterface] = iface,
+    ):
         super().__init__(parent)
 
         self.parent_context = context
@@ -55,7 +59,9 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         self.setWindowTitle(
             self.tr("Batch Processing - {0}").format(self.algorithm().displayName())
         )
-        self.setMainWidget(BatchPanel(self, self.algorithm(), context=self.parent_context))
+        self.setMainWidget(
+            BatchPanel(self, self.algorithm(), context=self.parent_context)
+        )
 
         self.hideShortHelp()
 
@@ -64,17 +70,25 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
 
         from processing.gui.AlgorithmDialog import AlgorithmDialog
 
-        dlg = AlgorithmDialog(self.algorithm().create(),
-                              parent=self.iface.mainWindow() if isinstance(self.iface, QgisInterface) else None,
-                              context=self.parent_context,
-                              iface=self.iface)
+        dlg = AlgorithmDialog(
+            self.algorithm().create(),
+            parent=(
+                self.iface.mainWindow()
+                if isinstance(self.iface, QgisInterface)
+                else None
+            ),
+            context=self.parent_context,
+            iface=self.iface,
+        )
         dlg.show()
         dlg.exec()
 
     def processingContext(self):
         if self.context is None:
             self.feedback = self.createFeedback()
-            self.context = dataobjects.createContext(self.feedback, context=self.parent_context)
+            self.context = dataobjects.createContext(
+                self.feedback, context=self.parent_context
+            )
             self.context.setLogLevel(self.logLevel())
         return self.context
 
@@ -104,7 +118,9 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         self.execute(alg_parameters)
 
     def handleAlgorithmResults(self, algorithm, context, feedback, parameters):
-        handleAlgorithmResults(algorithm, context, feedback, parameters, iface=self.iface)
+        handleAlgorithmResults(
+            algorithm, context, feedback, parameters, iface=self.iface
+        )
 
     def loadHtmlResults(self, results, num):
         for out in self.algorithm().outputDefinitions():

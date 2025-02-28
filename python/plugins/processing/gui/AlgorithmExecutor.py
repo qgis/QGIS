@@ -362,7 +362,9 @@ def execute_in_place_run(
     return False, {}
 
 
-def execute_in_place(alg, parameters, context=None, feedback=None, iface: Optional[QgisInterface] = None):
+def execute_in_place(
+    alg, parameters, context=None, feedback=None, iface: Optional[QgisInterface] = None
+):
     """Executes an algorithm modifying features in-place, if the INPUT
     parameter is not defined, the current active layer will be used as
     INPUT.
@@ -424,7 +426,14 @@ def execute_in_place(alg, parameters, context=None, feedback=None, iface: Option
     return ok, results
 
 
-def executeIterating(alg, parameters, paramToIter, context, feedback, iface: Optional[QgisInterface] = None):
+def executeIterating(
+    alg,
+    parameters,
+    paramToIter,
+    context,
+    feedback,
+    iface: Optional[QgisInterface] = None,
+):
     # Generate all single-feature layers
     parameter_definition = alg.parameterDefinition(paramToIter)
     if not parameter_definition:

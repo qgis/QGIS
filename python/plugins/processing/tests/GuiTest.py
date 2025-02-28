@@ -119,9 +119,11 @@ class AlgorithmDialogTest(QgisTestCase):
             context_normal = QgsProcessingContext()
             context_normal.setProject(QgsProject.instance())
 
-            lyr0 = QgsVectorLayer(f'{testDataPath}/points_lines.gpkg|layername=lines')
-            lyr1 = QgsVectorLayer(f'{testDataPath}/points_lines.gpkg|layername=points')
-            self.assertTrue(lyr0.isValid() and lyr0.wkbType() == Qgis.WkbType.LineString)
+            lyr0 = QgsVectorLayer(f"{testDataPath}/points_lines.gpkg|layername=lines")
+            lyr1 = QgsVectorLayer(f"{testDataPath}/points_lines.gpkg|layername=points")
+            self.assertTrue(
+                lyr0.isValid() and lyr0.wkbType() == Qgis.WkbType.LineString
+            )
             self.assertTrue(lyr1.isValid() and lyr1.wkbType() == Qgis.WkbType.Point)
 
             # add polygon layer to QgsProject.instance()
@@ -131,7 +133,7 @@ class AlgorithmDialogTest(QgisTestCase):
 
             def create_context_project():
                 p = QgsProject()
-                p.setTitle('MyProject')
+                p.setTitle("MyProject")
                 p.addMapLayer(lyr1)
 
                 c = QgsProcessingContext()
@@ -140,7 +142,9 @@ class AlgorithmDialogTest(QgisTestCase):
 
             if True:
                 myContext1, myProject1 = create_context_project()
-                alg = QgsApplication.processingRegistry().createAlgorithmById("native:savefeatures")
+                alg = QgsApplication.processingRegistry().createAlgorithmById(
+                    "native:savefeatures"
+                )
                 self.assertIsInstance(alg, QgsProcessingAlgorithm)
 
                 # test AlgorithmDialog
@@ -152,21 +156,28 @@ class AlgorithmDialogTest(QgisTestCase):
 
                 result = d1.results()
 
-                result_lyr = QgsProcessingUtils.mapLayerFromString(result['OUTPUT'], myContext1)
+                result_lyr = QgsProcessingUtils.mapLayerFromString(
+                    result["OUTPUT"], myContext1
+                )
 
                 self.assertEqual(len(QgsProject.instance().mapLayers()), 1)
                 self.assertIsInstance(result_lyr, QgsVectorLayer)
                 self.assertTrue(result_lyr.isValid())
-                self.assertEqual(result_lyr.wkbType(), Qgis.WkbType.Point,
-                                 msg=f'Expected point geometry, but got {result_lyr.wkbType()}. '
-                                     f'Default input from wrong processing context?')
+                self.assertEqual(
+                    result_lyr.wkbType(),
+                    Qgis.WkbType.Point,
+                    msg=f"Expected point geometry, but got {result_lyr.wkbType()}. "
+                    f"Default input from wrong processing context?",
+                )
 
                 # d.close()
 
             # test BatchAlgorithmDialog
             if True:
                 myContext2, myProject2 = create_context_project()
-                alg2 = QgsApplication.processingRegistry().createAlgorithmById("native:savefeatures")
+                alg2 = QgsApplication.processingRegistry().createAlgorithmById(
+                    "native:savefeatures"
+                )
                 d2 = BatchAlgorithmDialog(alg2, context=myContext2)
                 panel: BatchPanel = d2.mainWidget()
                 panel.show()
@@ -175,9 +186,9 @@ class AlgorithmDialogTest(QgisTestCase):
 
                 result_paths = []
                 for row in range(len(panel.wrappers)):
-                    col = panel.parameter_to_column['OUTPUT']
+                    col = panel.parameter_to_column["OUTPUT"]
                     widget = panel.tblParameters.cellWidget(row + 1, col)
-                    expected_path = f'{tempdir}/myoutput{row + 1}.geojson'
+                    expected_path = f"{tempdir}/myoutput{row + 1}.geojson"
                     widget.setValue(expected_path)
                     result_paths.append(expected_path)
 
@@ -202,12 +213,13 @@ class AlgorithmDialogTest(QgisTestCase):
             # cleanup
             QgsProject.instance().removeAllMapLayers()
 
-    @unittest.skipIf(QgisTestCase.is_ci_run(),
-                     'Blocking widgets that require a user interaction')
+    @unittest.skipIf(
+        QgisTestCase.is_ci_run(), "Blocking widgets that require a user interaction"
+    )
     def testProcessingPlugin_executeAlgorithm(self):
 
-        lyr0 = QgsVectorLayer(f'{testDataPath}/points_lines.gpkg|layername=lines')
-        lyr1 = QgsVectorLayer(f'{testDataPath}/points_lines.gpkg|layername=points')
+        lyr0 = QgsVectorLayer(f"{testDataPath}/points_lines.gpkg|layername=lines")
+        lyr1 = QgsVectorLayer(f"{testDataPath}/points_lines.gpkg|layername=points")
 
         lyr0.selectByIds(lyr0.allFeatureIds()[0:2])
 
@@ -245,15 +257,15 @@ class AlgorithmDialogTest(QgisTestCase):
                 return self.mActiveLayer
 
         normalIface = MyInterface()
-        normalIface.mainWindow().setWindowTitle('Normal Iface')
+        normalIface.mainWindow().setWindowTitle("Normal Iface")
         normalIface.mainWindow().show()
         normalIface.project().addMapLayer(lyr0)
         normalIface.setActiveLayer(lyr0)
 
         myIface = MyInterface()
-        myIface.mainWindow().setWindowTitle('MyIface')
+        myIface.mainWindow().setWindowTitle("MyIface")
         myIface.mProject = QgsProject()
-        myIface.mProject.setTitle('My Project')
+        myIface.mProject.setTitle("My Project")
         myIface.project().addMapLayer(lyr1)
         myIface.mainWindow().show()
 
@@ -261,7 +273,7 @@ class AlgorithmDialogTest(QgisTestCase):
 
         # this algorithm create a copy of the selected features
         # the iface.activeLayer() is automatically chosen as INPUT
-        alg_id = 'native:saveselectedfeatures'
+        alg_id = "native:saveselectedfeatures"
 
         myContext = QgsProcessingContext()
         myContext.setProject(myIface.project())
@@ -283,7 +295,14 @@ class AlgorithmDialogTest(QgisTestCase):
 
         # run algorithm with none-standard iface & context
         # requires to click "run", then "close" manually
-        p.executeAlgorithm(alg_id, None, in_place=False, as_batch=False, context=myContext, iface=myIface)
+        p.executeAlgorithm(
+            alg_id,
+            None,
+            in_place=False,
+            as_batch=False,
+            context=myContext,
+            iface=myIface,
+        )
 
         self.assertEqual(len(myIface.project().mapLayers()), 2)
         self.assertEqual(len(normalIface.project().mapLayers()), 2)

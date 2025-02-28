@@ -53,7 +53,7 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsSettings,
-    QgsProperty, # NOQA - must be here for saved file evaluation
+    QgsProperty,  # NOQA - must be here for saved file evaluation
     QgsProject,
     QgsFeatureRequest,  # NOQA - must be here for saved file evaluation
     QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
@@ -510,9 +510,13 @@ class BatchPanel(QgsPanelWidget, WIDGET):
     FORMAT = "format"
     CURRENT_FORMAT = "batch_3.40"
 
-    def __init__(self, parent, alg,
-                 context: Optional[QgsProcessingContext] = None,
-                 iface: Optional[QgisInterface] = iface):
+    def __init__(
+        self,
+        parent,
+        alg,
+        context: Optional[QgsProcessingContext] = None,
+        iface: Optional[QgisInterface] = iface,
+    ):
         super().__init__(None)
         self.setupUi(self)
 
@@ -893,8 +897,9 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 self.tblParameters.setCellWidget(
                     row,
                     column,
-                    BatchOutputSelectionPanel(out, self.alg, row, column, self,
-                                              project=context.project()),
+                    BatchOutputSelectionPanel(
+                        out, self.alg, row, column, self, project=context.project()
+                    ),
                 )
 
             for wrapper in list(wrappers.values()):
@@ -932,8 +937,8 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             if (
                 param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced
                 and not (
-                param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
-            )
+                    param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
+                )
             ):
                 self.tblParameters.setColumnHidden(
                     self.parameter_to_column[param.name()], not checked

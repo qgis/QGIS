@@ -51,15 +51,18 @@ from processing.gui.AutofillDialog import AutofillDialog
 
 class BatchOutputSelectionPanel(QWidget):
 
-    def __init__(self, output, alg, row, col, panel,
-                 project: Optional[QgsProject] = None):
+    def __init__(
+        self, output, alg, row, col, panel, project: Optional[QgsProject] = None
+    ):
         super().__init__(None)
         self.alg = alg
         self.row = row
         self.col = col
         self.output = output
         self.panel = panel
-        self.project = project if isinstance(project, QgsProject) else QgsProject.instance()
+        self.project = (
+            project if isinstance(project, QgsProject) else QgsProject.instance()
+        )
         self.table = self.panel.tblParameters
         self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)

@@ -48,7 +48,9 @@ from processing.tools.dataobjects import createContext
 
 class ParametersPanel(QgsProcessingParametersWidget):
 
-    def __init__(self, parent, alg, in_place=False, active_layer=None, context=None, iface=iface):
+    def __init__(
+        self, parent, alg, in_place=False, active_layer=None, context=None, iface=iface
+    ):
         super().__init__(alg, parent)
         self.in_place = in_place
         self.active_layer = active_layer
@@ -72,8 +74,12 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
         self.initWidgets()
 
-        self.processing_context.project().layerWasAdded.connect(self.layerRegistryChanged)
-        self.processing_context.project().layersWillBeRemoved.connect(self.layerRegistryChanged)
+        self.processing_context.project().layerWasAdded.connect(
+            self.layerRegistryChanged
+        )
+        self.processing_context.project().layersWillBeRemoved.connect(
+            self.layerRegistryChanged
+        )
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):

@@ -66,7 +66,9 @@ class BatchInputSelectionPanel(QWidget):
         self.dialog = dialog
         self.row = row
         self.col = col
-        self.project: QgsProject = project if isinstance(project, QgsProject) else QgsProject.instance()
+        self.project: QgsProject = (
+            project if isinstance(project, QgsProject) else QgsProject.instance()
+        )
         self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
@@ -152,7 +154,9 @@ class BatchInputSelectionPanel(QWidget):
                 datatypes = [self.param.layerType()]
 
             if QgsProcessing.SourceType.TypeVectorAnyGeometry not in datatypes:
-                layers = QgsProcessingUtils.compatibleVectorLayers(self.project, datatypes)
+                layers = QgsProcessingUtils.compatibleVectorLayers(
+                    self.project, datatypes
+                )
             else:
                 layers = QgsProcessingUtils.compatibleVectorLayers(self.project)
 
