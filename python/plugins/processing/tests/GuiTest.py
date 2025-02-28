@@ -20,33 +20,14 @@ __date__ = "August 2017"
 __copyright__ = "(C) 2017, Nyall Dawson"
 
 import os
-import unittest
-from qgis.testing import start_app, QgisTestCase
-from time import sleep
 import tempfile
-
-from processing.gui.BatchPanel import BatchPanel
-from processing.gui.ParametersPanel import ParametersPanel
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsProcessingContext,
-    QgsProcessingAlgorithm,
-    QgsProcessingUtils,
-    QgsCoordinateReferenceSystem,
-    QgsProcessingParameterMatrix,
-    QgsTaskManager,
-    QgsProcessingParameterRange,
-    QgsFeature,
-    QgsProcessingModelAlgorithm,
-    QgsUnitTypes,
-    QgsProject,
-)
-from qgis.analysis import QgsNativeAlgorithms
+import unittest
+from time import sleep
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
+from processing.gui.BatchPanel import BatchPanel
+from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.wrappers import (
     BandWidgetWrapper,
     BooleanWidgetWrapper,
@@ -92,6 +73,24 @@ from processing.gui.wrappers import (
     VectorLayerWidgetWrapper,
     WidgetWrapperFactory,
 )
+from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
+from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingAlgorithm,
+    QgsProcessingUtils,
+    QgsCoordinateReferenceSystem,
+    QgsProcessingParameterMatrix,
+    QgsTaskManager,
+    QgsProcessingParameterRange,
+    QgsFeature,
+    QgsProcessingModelAlgorithm,
+    QgsUnitTypes,
+    QgsProject,
+)
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
@@ -109,16 +108,19 @@ class AlgorithmDialogTest(QgisTestCase):
         self.assertEqual(a.mainWidget().algorithm(), alg)
 
     def testIndividualProcessingContext(self):
-
+        """
+        Test if we can use a self-defined QgsProcessingContext to provide input layers
+        Addresses https://github.com/qgis/QGIS/issues/60764
+        """
         with tempfile.TemporaryDirectory() as tempdir:
 
             context_normal = QgsProcessingContext()
             context_normal.setProject(QgsProject.instance())
 
-            lyr0 = QgsVectorLayer(f'{testDataPath}/custom/overlay1_a.geojson')
-            lyr1 = QgsVectorLayer(f'{testDataPath}/custom/points.shp')
-            self.assertTrue(lyr0.isValid())
-            self.assertTrue(lyr1.isValid())
+            lyr0 = QgsVectorLayer(f'{testDataPath}/points_lines.gpkg|layername=lines')
+            lyr1 = QgsVectorLayer(f'{testDataPath}/points_lines.gpkg|layername=points')
+            self.assertTrue(lyr0.isValid() and lyr0.wkbType() == Qgis.WkbType.LineString)
+            self.assertTrue(lyr1.isValid() and lyr1.wkbType() == Qgis.WkbType.Point)
 
             # add polygon layer to QgsProject.instance()
             # and use the point layer in user-defined context only.
@@ -134,44 +136,37 @@ class AlgorithmDialogTest(QgisTestCase):
                 c.setProject(p)
                 return c, p
 
-            myContext, myProject = create_context_project()
+            if True:
+                myContext1, myProject1 = create_context_project()
+                alg = QgsApplication.processingRegistry().createAlgorithmById("native:savefeatures")
+                self.assertIsInstance(alg, QgsProcessingAlgorithm)
 
-            alg = QgsApplication.processingRegistry().createAlgorithmById(
-                "native:centroids"
-            )
-            self.assertIsInstance(alg, QgsProcessingAlgorithm)
-
-            if False:
                 # test AlgorithmDialog
-                d = AlgorithmDialog(alg, context = myContext)
-                d.runAlgorithm()
+                d1 = AlgorithmDialog(alg, context=myContext1)
+                d1.runAlgorithm()
                 # wait until algorithm has been executed
-                while not d.wasExecuted():
+                while not d1.wasExecuted():
                     QgsApplication.instance().processEvents()
 
-                result = d.results()
-                d.close()
-                del d
+                result = d1.results()
 
-                result_lyr1 = QgsProcessingUtils.mapLayerFromString(result['OUTPUT'], myContext)
-                result_lyr2 = QgsProcessingUtils.mapLayerFromString(result['OUTPUT'], context_normal)
+                result_lyr = QgsProcessingUtils.mapLayerFromString(result['OUTPUT'], myContext1)
 
                 self.assertEqual(len(QgsProject.instance().mapLayers()), 1)
-                self.assertIsInstance(result_lyr1, QgsVectorLayer)
-                self.assertTrue(result_lyr1.isValid())
-                self.assertEqual(result_lyr1.wkbType(), Qgis.WkbType.Point)
-                self.assertTrue(result_lyr2 is None)
+                self.assertIsInstance(result_lyr, QgsVectorLayer)
+                self.assertTrue(result_lyr.isValid())
+                self.assertEqual(result_lyr.wkbType(), Qgis.WkbType.Point,
+                                 msg=f'Expected point geometry, but got {result_lyr.wkbType()}. '
+                                     f'Default input from wrong processing context?')
 
-                del context_normal
-                del result_lyr1
-                del result_lyr2
+                # d.close()
 
             # test BatchAlgorithmDialog
             if True:
-                myContext, myProject = create_context_project()
-
-                d = BatchAlgorithmDialog(alg)
-                panel: BatchPanel = d.mainWidget()
+                myContext2, myProject2 = create_context_project()
+                alg2 = QgsApplication.processingRegistry().createAlgorithmById("native:savefeatures")
+                d2 = BatchAlgorithmDialog(alg2, context=myContext2)
+                panel: BatchPanel = d2.mainWidget()
                 panel.show()
                 for r in range(3):
                     panel.addRow()
@@ -180,12 +175,12 @@ class AlgorithmDialogTest(QgisTestCase):
                 for row in range(len(panel.wrappers)):
                     col = panel.parameter_to_column['OUTPUT']
                     widget = panel.tblParameters.cellWidget(row + 1, col)
-                    expected_path = f'{tempdir}/myoutput{row+1}.gpkg'
+                    expected_path = f'{tempdir}/myoutput{row + 1}.geojson'
                     widget.setValue(expected_path)
                     result_paths.append(expected_path)
 
-                d.runAlgorithm()
-                d.exec_()
+                d2.runAlgorithm()
+                # d.exec_()
                 tm: QgsTaskManager = QgsApplication.instance().taskManager()
                 # wait until algorithms have been executed
 
@@ -193,20 +188,19 @@ class AlgorithmDialogTest(QgisTestCase):
                 while tm.count() > 0:
                     sleep(1)
                     QgsApplication.instance().processEvents()
-                d.close()
-                del d
+
                 self.assertEqual(len(QgsProject.instance().mapLayers()), 1)
+                self.assertEqual(len(result_paths), 4)
                 for p in result_paths:
                     layer = QgsVectorLayer(p)
                     self.assertTrue(layer.isValid())
                     self.assertEqual(layer.wkbType(), Qgis.WkbType.Point)
                     del layer
 
+                d2.close()
 
             # cleanup
             QgsProject.instance().removeAllMapLayers()
-            del lyr1
-            del lyr0
 
 
 class WrappersTest(QgisTestCase):
