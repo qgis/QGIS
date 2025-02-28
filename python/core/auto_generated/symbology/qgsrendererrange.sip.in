@@ -214,9 +214,6 @@ class QgsRendererRangeLabelFormat /Deprecated="Since 3.10. Use QgsClassification
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
 %Docstring
 
-.. note::
-
-   labelForLowerUpper in Python bindings
 %End
     QString labelForRange( const QgsRendererRange &range ) const;
     QString formatNumber( double value ) const;
