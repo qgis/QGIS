@@ -10,7 +10,6 @@ on:
       - master
       - release-**
       - queued_ltr_backports
-      - processing_context
     paths:
     - 'src/**'
     - 'external/**'
