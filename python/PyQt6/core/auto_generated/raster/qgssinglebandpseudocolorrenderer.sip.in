@@ -52,9 +52,6 @@ Returns the raster shader
     const QgsRasterShader *shader() const /PyName=constShader/;
 %Docstring
 
-.. note::
-
-   available in Python as constShader
 %End
 
     virtual bool canCreateRasterAttributeTable( ) const;
