@@ -103,8 +103,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
   QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Select by Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon );
   QAction *actionPaintbrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Select by Paintbrush" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush );
-  QAction *actionAboveLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionArrowUp.svg" ) ) ), tr( "Select by Above Line Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine );
-  QAction *actionBelowLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionArrowDown.svg" ) ) ), tr( "Select by Below Line Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine );
+  QAction *actionAboveLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectAboveLine.svg" ) ) ), tr( "Select by Above Line Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine );
+  QAction *actionBelowLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectBelowLine.svg" ) ) ), tr( "Select by Below Line Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine );
 
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
