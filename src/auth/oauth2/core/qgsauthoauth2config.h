@@ -167,10 +167,12 @@ class QgsAuthOAuth2Config : public QObject
     QString customHeader() const { return mCustomHeader; }
 
     /**
-     * Returns the extra tokens that will be added into the header for header access methods where
-     * the map key represents the token name and the associated value the header name to be used.
+     * Returns the extra tokens that will be added into the header for header access methods.
      * 
-     * \since QGIS 3.42
+     * The map key represents the response field to take the token from, and the associated value the header
+     * name to be used for subsequent requests.
+     * 
+     * \since QGIS 3.44
      */
     QVariantMap extraTokens() const { return mExtraTokens; }
 
@@ -326,10 +328,12 @@ class QgsAuthOAuth2Config : public QObject
     void setCustomHeader( const QString &header );
 
     /**
-     * Sets the extra \a tokens that will be added into the header for header access methods where
-     * the map key represents the token name and the associated value the header name to be used.
+     * Sets the extra \a tokens that will be added into the header for header access methods.
      * 
-     * \since QGIS 3.42
+     * The map key represents the response field to take the token from, and the associated value the header
+     * name to be used for subsequent requests.
+     * 
+     * \since QGIS 3.44
      */
     void setExtraTokens( const QVariantMap &tokens );
 
@@ -397,7 +401,7 @@ class QgsAuthOAuth2Config : public QObject
 
     /**
      * Emitted when the extra tokens header list has changed
-     * \since QGIS 3.42
+     * \since QGIS 3.44
      */
     void extraTokensChanged( const QVariantMap & );
 

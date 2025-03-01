@@ -986,7 +986,7 @@ QVariantMap QgsAuthOAuth2Edit::extraTokens() const
     {
       continue;
     }
-    extraTokens.insert( mExtraTokensTable->item( i, 0 )->text(), QVariant( mExtraTokensTable->item( i, 1 )->text() ) );
+    extraTokens.insert( mExtraTokensTable->item( i, 1 )->text(), QVariant( mExtraTokensTable->item( i, 0 )->text() ) );
   }
   return extraTokens;
 }
@@ -1043,7 +1043,7 @@ void QgsAuthOAuth2Edit::populateExtraTokens( const QVariantMap &tokens, bool app
   QVariantMap::const_iterator i = tokens.constBegin();
   while ( i != tokens.constEnd() )
   {
-    addExtraTokenRow( i.key(), i.value().toString() );
+    addExtraTokenRow( i.value().toString(), i.key() );
     ++i;
   }
   mExtraTokensTable->blockSignals( false );
