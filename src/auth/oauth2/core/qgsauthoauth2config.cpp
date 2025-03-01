@@ -233,10 +233,11 @@ void QgsAuthOAuth2Config::setCustomHeader( const QString &header )
 
 void QgsAuthOAuth2Config::setExtraTokens( const QVariantMap &tokens )
 {
-  const QVariantMap preval( mExtraTokens );
+  if ( mExtraTokens == tokens )
+    return;
+
   mExtraTokens = tokens;
-  if ( preval != tokens )
-    emit extraTokensChanged( mExtraTokens );
+  emit extraTokensChanged( mExtraTokens );
 }
 
 void QgsAuthOAuth2Config::setRequestTimeout( int value )

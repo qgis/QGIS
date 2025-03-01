@@ -646,7 +646,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Extra token(s) header</string>
+               <string>Extra token header(s)</string>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
@@ -707,12 +707,12 @@
                 </attribute>
                 <column>
                  <property name="text">
-                  <string>Token</string>
+                  <string>Header Name</string>
                  </property>
                 </column>
                 <column>
                  <property name="text">
-                  <string>Header name</string>
+                  <string>Token Response Field</string>
                  </property>
                 </column>
                 <property name="toolTip">
