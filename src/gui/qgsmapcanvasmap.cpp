@@ -83,9 +83,11 @@ void QgsMapCanvasMap::paint( QPainter *painter )
   QList<QPair<QImage, QgsRectangle>>::const_iterator imIt = mPreviewImages.constBegin();
   for ( ; imIt != mPreviewImages.constEnd(); ++imIt )
   {
-    const QPointF ul = toCanvasCoordinates( QgsPoint( imIt->second.xMinimum() + offsetX, imIt->second.yMaximum() + offsetY ) );
-    const QPointF lr = toCanvasCoordinates( QgsPoint( imIt->second.xMaximum() + offsetX, imIt->second.yMinimum() + offsetY ) );
-    painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
+    const QgsPointXY extentCenter = imIt->second.center();
+    const QPointF canvasCenter = toCanvasCoordinates( QgsPoint( extentCenter.x() + offsetX, extentCenter.y() + offsetY ) );
+    const double imageWidth = imIt->first.width();
+    const double imageHeight = imIt->first.height();
+    painter->drawImage( QRectF( canvasCenter.x() - imageWidth / 2, canvasCenter.y() - imageHeight / 2, imageWidth, imageHeight ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
 
   if ( scale )
