@@ -47,7 +47,7 @@ class QgsRasterRankAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     QList<int> mRanks;
-    QList<QgsMapLayer *> mLayers;
+    std::vector<std::unique_ptr<QgsMapLayer>> mLayers;
 };
 
 ///@endcond PRIVATE

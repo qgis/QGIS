@@ -1952,7 +1952,7 @@ void TestQgsProcessingAlgsPt1::rasterRank()
 
   QVariantMap parameters;
 
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << testDataPath + "/raster/rank1.tif" << testDataPath + "/raster/rank2.tif" << testDataPath + "/raster/rank3.tif" << testDataPath + "/raster/rank4.tif" );
+  parameters.insert( QStringLiteral( "INPUT_RASTERS" ), QStringList() << testDataPath + "/raster/rank1.tif" << testDataPath + "/raster/rank2.tif" << testDataPath + "/raster/rank3.tif" << testDataPath + "/raster/rank4.tif" );
   parameters.insert( QStringLiteral( "RANKS" ), ranks );
   parameters.insert( QStringLiteral( "NODATA_HANDLING" ), nodataHandling );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
