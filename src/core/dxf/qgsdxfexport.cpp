@@ -319,7 +319,7 @@ void QgsDxfExport::writeHeader( const QString &codepage )
 
   // ACADVER
   writeGroup( 9, QStringLiteral( "$ACADVER" ) );
-  writeGroup( 1, QStringLiteral( "AC1015" ) );
+  writeGroup( 1, QStringLiteral( "AC1018" ) );
 
   // EXTMIN
   writeGroup( 9, QStringLiteral( "$EXTMIN" ) );
