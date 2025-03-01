@@ -103,8 +103,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
   QAction *actionPointCloudChangeAttributeTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectPolygon.svg" ) ) ), tr( "Polygon selector" ), this, &Qgs3DMapCanvasWidget::polygonTool );
   QAction *actionPaintBrush = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "propertyicons/rendering.svg" ) ) ), tr( "Paint Brush Selector" ), this, &Qgs3DMapCanvasWidget::paintBrush );
-  QAction *actionAboveLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionArrowUp.svg" ) ) ), tr( "Above Line Selector" ), this, &Qgs3DMapCanvasWidget::aboveLineTool );
-  QAction *actionBelowLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionArrowDown.svg" ) ) ), tr( "Below Line Selector" ), this, &Qgs3DMapCanvasWidget::belowLineTool );
+  QAction *actionAboveLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectAboveLine.svg" ) ) ), tr( "Above Line Selector" ), this, &Qgs3DMapCanvasWidget::aboveLineTool );
+  QAction *actionBelowLineTool = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( QStringLiteral( "mActionSelectBelowLine.svg" ) ) ), tr( "Below Line Selector" ), this, &Qgs3DMapCanvasWidget::belowLineTool );
 
   mEditingToolBar->addWidget( mPointCloudEditingToolbar );
   mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
