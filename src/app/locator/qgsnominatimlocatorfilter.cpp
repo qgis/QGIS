@@ -45,14 +45,14 @@ QgsNominatimLocatorFilter *QgsNominatimLocatorFilter::clone() const
   return filter.release();
 }
 
-void QgsNominatimLocatorFilter::fetchResults(const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback)
+void QgsNominatimLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
   QString countryCodes = settingCountryCodes->value( this->name() );
 
   QgsNominatimGeocoder *nominatimGeocoder = dynamic_cast<QgsNominatimGeocoder *>( geocoder() );
   nominatimGeocoder->setCountryCodes( countryCodes );
 
-  QgsAbstractGeocoderLocatorFilter::fetchResults( string, context, feedback);
+  QgsAbstractGeocoderLocatorFilter::fetchResults( string, context, feedback );
 }
 
 void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
