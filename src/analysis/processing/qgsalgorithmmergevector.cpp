@@ -179,6 +179,13 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
             destField.setLength( 0 );
             destField.setPrecision( 0 );
           }
+          else if ( destField.type() == QMetaType::Type::QString && destField.length() < sourceField.length() )
+          {
+            feedback->pushWarning( QObject::tr( "%1 field in layer %2 has different field length than the destination layer (%3 vs %4). "
+                                                "%1 field length will be extended to match the maximun of the two." )
+                                     .arg( sourceField.name(), layerName, QString::number( sourceField.length() ), QString::number( destField.length() ) ) );
+            destField.setLength( sourceField.length() );
+          }
           break;
         }
       }
