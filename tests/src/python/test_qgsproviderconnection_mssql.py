@@ -21,6 +21,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFields,
     QgsAbstractDatabaseProviderConnection,
+    QgsProviderConnectionException,
 )
 from qgis.testing import unittest
 
@@ -318,6 +319,45 @@ class TestPyQgsProviderConnectionMssql(
         self.assertEqual(
             vl.dataProvider().crs(), QgsCoordinateReferenceSystem("EPSG:4326")
         )
+
+    def test_validate_query_layer(self):
+        """Test validating query layers"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        # valid query
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT pk as pk, pk * 2 as computed, geom as geometry FROM qgis_test.someData WHERE pk < 3"
+        ok, message = conn.validateSqlVectorLayer(options)
+        self.assertTrue(ok)
+        self.assertFalse(message)
+
+        # one unnamed column
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT pk as pk, pk * 2, geom as geometry FROM qgis_test.someData WHERE pk < 3"
+        ok, message = conn.validateSqlVectorLayer(options)
+        self.assertFalse(ok)
+        self.assertEqual(
+            message,
+            'Column 2 is unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an "AS column_name" argument for this column.',
+        )
+
+        # two unnamed columns
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT pk as pk, pk * 2, geom as geometry, pk+3 FROM qgis_test.someData WHERE pk < 3"
+        ok, message = conn.validateSqlVectorLayer(options)
+        self.assertFalse(ok)
+        self.assertEqual(
+            message,
+            'Columns 2, 3 are unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an "AS column_name" argument for these columns.',
+        )
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        # invalid SQL
+        options.sql = "SELECT pk"
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.validateSqlVectorLayer(options)
 
 
 if __name__ == "__main__":

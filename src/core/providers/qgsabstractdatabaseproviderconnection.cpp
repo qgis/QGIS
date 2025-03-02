@@ -1188,6 +1188,12 @@ QgsVectorLayer *QgsAbstractDatabaseProviderConnection::createSqlVectorLayer( con
   return nullptr;
 }
 
+bool QgsAbstractDatabaseProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOptions &, QString & ) const
+{
+  checkCapability( Capability::SqlLayers );
+  return true;
+}
+
 void QgsAbstractDatabaseProviderConnection::deleteSpatialIndex( const QString &, const QString &, const QString & ) const
 {
   checkCapability( Capability::DeleteSpatialIndex );

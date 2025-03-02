@@ -592,11 +592,34 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
 
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const  /Factory/;
 %Docstring
-Creates and returns a (possibly invalid) vector layer based on the ``sql`` statement and optional ``options``.
+Creates and returns a (possibly invalid) vector layer based on a SQL statement and ``options``.
+
+The :py:func:`~QgsAbstractDatabaseProviderConnection.validateSqlVectorLayer` method can be used in advance to test whether the options are valid
+for the provider, and retrieve a user-friendly explanation if not.
 
 :raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
 
+.. seealso:: :py:func:`validateSqlVectorLayer`
+
 .. versionadded:: 3.22
+%End
+
+    virtual bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message /Out/ ) const;
+%Docstring
+Validates the SQL query ``options`` to determine if it is possible to create a vector layer based on a SQL statement and ``options``.
+
+The base class method returns ``True`` and does not do any checks.
+
+:param options: SQL statement and options
+
+:return: - ``True`` if the SQL is valid for the provider.
+         - message: a translated, user-friendly explanation if the SQL is not valid for the provider.
+
+:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
+
+.. seealso:: :py:func:`createSqlVectorLayer`
+
+.. versionadded:: 3.44
 %End
 
     virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource );
