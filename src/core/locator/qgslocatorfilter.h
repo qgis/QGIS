@@ -182,7 +182,6 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeAppLocatorFilters = QgsSettingsTree::sTreeApp->createNamedListNode( QStringLiteral( "locator-filters" ) );
 #endif
-
     //! Filter priority. Controls the order of results in the locator.
     enum Priority
     {
