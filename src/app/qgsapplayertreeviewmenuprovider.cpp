@@ -314,51 +314,79 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
           // SQL dialog
           if ( conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
-            menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Execute SQL…" ), menu, [layer, this] {
-              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { QgsMapLayerUtils::databaseConnection( layer ) };
-              if ( conn2 )
+          {
+            QAction *executeSqlAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Execute SQL…" ), menu );
+            menu->addAction( executeSqlAction );
+
+            const QString providerType = layer->providerType();
+            const QString layerSource = layer->source();
+            const QString layerName = layer->name();
+
+            connect( executeSqlAction, &QAction::triggered, executeSqlAction, [providerType, layerSource, layerName] {
+              try
               {
-                QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { conn2->sqlOptions( layer->source() ) };
+                QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( providerType );
+                if ( !providerMetadata )
+                {
+                  return;
+                }
 
-                QgsQueryResultDialog dialog( conn2.release() );
-                dialog.setObjectName( QStringLiteral( "SqlExecuteDialog" ) );
-                dialog.setStyleSheet( QgisApp::instance()->styleSheet() );
-                dialog.setWindowTitle( tr( "Execute SQL" ) );
-                QgsGui::enableAutoGeometryRestore( &dialog );
-                dialog.resultWidget()->setSqlVectorLayerOptions( options );
-                dialog.resultWidget()->executeQuery();
+                std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layerSource, {} ) ) };
+                if ( conn2 )
+                {
+                  QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { conn2->sqlOptions( layerSource ) };
 
-                connect( dialog.resultWidget(), &QgsQueryResultWidget::requestDialogTitleUpdate, &dialog, [&dialog]( const QString &fileName ) {
-                  if ( fileName.isEmpty() )
-                  {
-                    dialog.setWindowTitle( tr( "Execute SQL" ) );
-                  }
-                  else
-                  {
-                    dialog.setWindowTitle( tr( "%1 — Execute SQL" ).arg( fileName ) );
-                  }
-                } );
+                  QgsQueryResultMainWindow *dialog = new QgsQueryResultMainWindow( conn2.release(), layerName );
+                  dialog->setAttribute( Qt::WA_DeleteOnClose );
+                  dialog->setStyleSheet( QgisApp::instance()->styleSheet() );
+                  dialog->resultWidget()->setSqlVectorLayerOptions( options );
 
-                connect( dialog.resultWidget(), &QgsQueryResultWidget::createSqlVectorLayer, &dialog, [&dialog, layer, this]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
-                  ( void ) this;
-                  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3 { QgsMapLayerUtils::databaseConnection( layer ) };
-                  if ( conn3 )
-                  {
-                    try
+                  connect( dialog->resultWidget(), &QgsQueryResultWidget::requestDialogTitleUpdate, dialog, [dialog]( const QString &fileName ) {
+                    if ( fileName.isEmpty() )
                     {
-                      QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
-                      QgsProject::instance()->addMapLayers( { sqlLayer } );
+                      dialog->setWindowTitle( tr( "Execute SQL" ) );
                     }
-                    catch ( QgsProviderConnectionException &ex )
+                    else
                     {
-                      dialog.resultWidget()->notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating the SQL layer: %1" ).arg( ex.what() ), Qgis::MessageLevel::Critical );
+                      dialog->setWindowTitle( tr( "%1 — Execute SQL" ).arg( fileName ) );
                     }
-                  }
-                } );
+                  } );
 
-                dialog.exec();
+                  connect( dialog->resultWidget(), &QgsQueryResultWidget::createSqlVectorLayer, dialog, [dialog, layerSource, providerType]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
+                    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( providerType );
+                    if ( !providerMetadata )
+                    {
+                      return;
+                    }
+
+                    std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn3 { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layerSource, {} ) ) };
+                    if ( conn3 )
+                    {
+                      try
+                      {
+                        QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
+                        QgsProject::instance()->addMapLayers( { sqlLayer } );
+                      }
+                      catch ( QgsProviderConnectionException &ex )
+                      {
+                        dialog->resultWidget()->notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating the SQL layer: %1" ).arg( ex.what() ), Qgis::MessageLevel::Critical );
+                      }
+                    }
+                  } );
+
+                  dialog->show();
+                }
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                if ( !ex.what().contains( QLatin1String( "createConnection" ) ) )
+                {
+                  QgsDebugError( QStringLiteral( "Error retrieving database connection for layer %1: %2" ).arg( layerName, ex.what() ) );
+                }
+                return;
               }
             } );
+          }
         }
       }
 

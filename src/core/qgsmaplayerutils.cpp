@@ -91,14 +91,14 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
 
 QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
 {
-  if ( ! layer || ! layer->dataProvider() )
+  if ( !layer )
   {
     return nullptr;
   }
 
   try
   {
-    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( layer->dataProvider()->name() );
+    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( layer->providerType() );
     if ( ! providerMetadata )
     {
       return nullptr;
