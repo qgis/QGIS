@@ -428,12 +428,11 @@ if(QWT_VERSION_STR VERSION_GREATER_EQUAL 6.2 OR WITH_QWTPOLAR)
     )
 
     set(QWTPOLAR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1)
-
     set(QWTPOLAR_LIBRARY "")
   endif()
 else()
-  set(QWTPOLAR_LIBRARY "")
   set(QWTPOLAR_INCLUDE_DIR "")
+  set(QWTPOLAR_LIBRARY "")
 endif()
 
 # Test data dir for QgsAppScreenShots
@@ -584,7 +583,7 @@ if (WITH_3D)
   )
 endif()
 
-target_include_directories(qgis_app SYSTEM PUBLIC
+target_include_directories(qgis_app SYSTEM BEFORE PUBLIC
   ${QWTPOLAR_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )

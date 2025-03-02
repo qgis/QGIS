@@ -656,7 +656,15 @@ if(WITH_CORE)
   # search for QScintilla2 (C++ lib)
   if (WITH_GUI)
     find_package(QScintilla REQUIRED)
-    find_package(Qwt REQUIRED)
+
+    set (WITH_INTERNAL_QWT FALSE CACHE BOOL "Determines if the internal copy of qwt should be used.")
+    if(NOT WITH_INTERNAL_QWT)
+      find_package(Qwt REQUIRED)
+    else()
+      set(QWT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwt-6.2)
+      set(QWT_LIBRARY "")
+      set(QWT_VERSION_STR 6.2.0)
+    endif()
   endif()
 
   # Password helper

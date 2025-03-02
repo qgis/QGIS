@@ -1621,6 +1621,144 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
+if(WITH_INTERNAL_QWT)
+  set(QGIS_QWT_SRCS
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_abstract_legend.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_abstract_scale.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_abstract_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_abstract_slider.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_analog_clock.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_arrow_button.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_bezier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_clipper.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_color_map.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_column_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_compass.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_compass_rose.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_counter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_curve_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_date.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_date_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_date_scale_engine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_dial.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_dial_needle.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_dyngrid_layout.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_event_pattern.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_graphic.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_interval.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_interval_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_knob.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_legend.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_legend_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_legend_label.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_magnifier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_math.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_matrix_raster_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_null_paintdevice.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_painter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_painter_command.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_panner.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_picker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_picker_machine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_pixel_matrix.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_abstract_barchart.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_abstract_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_axis.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_barchart.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_curve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_dict.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_directpainter.cpp
+#    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_glcanvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_graphicitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_grid.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_histogram.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_intervalcurve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_item.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_layout.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_legenditem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_magnifier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_marker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_multi_barchart.cpp
+#    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_opengl_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_panner.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_picker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_rasteritem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_renderer.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_rescaler.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_scaleitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_seriesitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_shapeitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_spectrocurve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_spectrogram.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_svgitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_textlabel.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_tradingcurve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_vectorfield.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_zoneitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_plot_zoomer.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_point_3d.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_point_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_point_mapper.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_point_polar.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_curve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_grid.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_item.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_itemdict.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_layout.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_magnifier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_marker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_panner.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_picker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_plot.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_renderer.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_polar_spectrogram.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_raster_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_round_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_sampling_thread.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_scale_div.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_scale_engine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_scale_map.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_scale_widget.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_series_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_slider.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline_basis.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline_cubic.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline_curve_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline_local.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline_parametrization.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline_pleasing.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_spline_polynomial.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_system_clock.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_text.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_text_engine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_text_label.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_thermo.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_transform.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_vectorfield_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_weeding_curve_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_wheel.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.2/qwt_widget_overlay.cpp
+  )
+
+  set_source_files_properties(
+    ${QGIS_QWT_SRCS}
+    PROPERTIES COMPILE_DEFINITIONS "QWT_MOC_INCLUDE;QWT_DLL=Q_DECL_EXPORT"
+  )
+
+  set(QGIS_GUI_SRCS
+    ${QGIS_GUI_SRCS}
+    ${QGIS_QWT_SRCS}
+  )
+endif()
+
 find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml QuickWidgets UiTools REQUIRED)
 
 # for installing headers
@@ -1752,7 +1890,6 @@ if (WITH_COPC)
     ${CMAKE_SOURCE_DIR}/src/gui/providers/copc
   )
 endif()
-
 
 GENERATE_EXPORT_HEADER(
    qgis_gui
