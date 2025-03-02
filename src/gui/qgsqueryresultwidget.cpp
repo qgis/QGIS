@@ -105,7 +105,25 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( mLoadLayerPushButton, &QPushButton::pressed, this, [=] {
     if ( mConnection )
     {
-      emit createSqlVectorLayer( mConnection->providerKey(), mConnection->uri(), sqlVectorLayerOptions() );
+      const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options = sqlVectorLayerOptions();
+
+      try
+      {
+        QString message;
+        const bool res = mConnection->validateSqlVectorLayer( options, message );
+        if ( !res )
+        {
+          mMessageBar->pushCritical( QString(), message );
+        }
+        else
+        {
+          emit createSqlVectorLayer( mConnection->providerKey(), mConnection->uri(), options );
+        }
+      }
+      catch ( QgsProviderConnectionException &e )
+      {
+        mMessageBar->pushCritical( tr( "Error validating query" ), e.what() );
+      }
     }
   } );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
