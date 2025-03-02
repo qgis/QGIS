@@ -24,11 +24,9 @@
 #include "qgspointxy.h"
 
 #include <qwt_plot_curve.h>
-#ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
-#endif
 #include <QTextStream>
 #include <QPointer>
 
@@ -76,11 +74,9 @@ class APP_EXPORT QgsGpsInformationWidget : public QgsPanelWidget, private Ui::Qg
 
     QwtPlot *mPlot = nullptr;
     QwtPlotCurve *mCurve = nullptr;
-#ifdef WITH_QWTPOLAR
     QwtPolarPlot *mpSatellitesWidget = nullptr;
     QwtPolarGrid *mpSatellitesGrid = nullptr;
     QList<QwtPolarMarker *> mMarkerList;
-#endif
 
     QgsPointXY mLastGpsPosition;
 
