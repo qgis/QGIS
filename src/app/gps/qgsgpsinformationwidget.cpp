@@ -37,14 +37,12 @@
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
 
-#ifdef WITH_QWTPOLAR
 // QWT Polar plot add on
 #include <qwt_symbol.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_curve.h>
 #include <qwt_scale_engine.h>
 // #include <qwt_symbol.h>
-#endif
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -75,9 +73,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   mBtnPopupOptions->setPopupMode( QToolButton::InstantPopup );
 
   QWidget *mpHistogramWidget = mStackedWidget->widget( 1 );
-#ifndef WITH_QWTPOLAR
   mBtnSatellites->setVisible( false );
-#endif
   //
   // Set up the graph for signal strength
   //
@@ -112,7 +108,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   //
   // Set up the polar graph for satellite pos
   //
-#ifdef WITH_QWTPOLAR
   QWidget *mpPolarWidget = mStackedWidget->widget( 2 );
   mpSatellitesWidget = new QwtPolarPlot( /*QwtText( tr( "Satellite View" ), QwtText::PlainText ),*/ mpPolarWidget ); // possible title for graph removed for now as it is too large in small windows
   mpSatellitesWidget->setAutoReplot( false );                                                                        // plot on demand (after all data has been handled)
@@ -165,7 +160,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
 
   // replot on command
   mpSatellitesWidget->replot();
-#endif
   mPlot->replot();
 
   const QgsSettings mySettings;
@@ -221,9 +215,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
     gpsDisconnected();
   }
 
-#ifdef WITH_QWTPOLAR
   delete mpSatellitesGrid;
-#endif
 }
 
 void QgsGpsInformationWidget::mBtnPosition_clicked()
@@ -367,7 +359,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 {
   QVector<QPointF> data;
 
-#ifdef WITH_QWTPOLAR
   if ( mStackedWidget->currentIndex() == 2 && info.satInfoComplete ) // satellites
   {
     while ( !mMarkerList.isEmpty() )
@@ -375,7 +366,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       delete mMarkerList.takeFirst();
     }
   } // satellites
-#endif
+
   if ( mStackedWidget->currentIndex() == 3 ) // debug
   {
     mGPSPlainTextEdit->clear();
@@ -401,15 +392,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       // Add a marker to the polar plot
       if ( currentInfo.id > 0 ) // don't show satellite if id=0 (no satellite indication)
       {
-#ifdef WITH_QWTPOLAR
         QwtPolarMarker *mypMarker = new QwtPolarMarker();
-#if ( QWT_POLAR_VERSION < 0x010000 )
-        mypMarker->setPosition( QwtPolarPoint( currentInfo.azimuth, currentInfo.elevation ) );
-#else
         mypMarker->setPosition( QwtPointPolar( currentInfo.azimuth, currentInfo.elevation ) );
-#endif
-#endif
-#ifdef WITH_QWTPOLAR
+
         // QBrush symbolBrush( Qt::black );
         QSize markerSize( 10, 10 );
         QBrush textBgBrush( bg );
@@ -460,11 +445,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
           penColor = Qt::black; // black border
         }
 
-#if ( QWT_POLAR_VERSION < 0x010000 )
-        mypMarker->setSymbol( QwtSymbol( symbolStyle, symbolBrush, QPen( penColor ), markerSize ) );
-#else
         mypMarker->setSymbol( new QwtSymbol( symbolStyle, symbolBrush, QPen( penColor ), markerSize ) );
-#endif
 
         mypMarker->setLabelAlignment( Qt::AlignHCenter | Qt::AlignTop );
         QwtText text( QString::number( currentInfo.id ) );
@@ -473,7 +454,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         mypMarker->setLabel( text );
         mypMarker->attach( mpSatellitesWidget );
         mMarkerList << mypMarker;
-#endif
       } // currentInfo.id > 0
     } // satellites
   } // satellite processing loop
@@ -484,12 +464,11 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mCurve->setSamples( data );
     mPlot->replot();
   } // signal
-#ifdef WITH_QWTPOLAR
+
   if ( mStackedWidget->currentIndex() == 2 && info.satInfoComplete ) // satellites
   {
     mpSatellitesWidget->replot();
   } // satellites
-#endif
 
   const bool validFlag = info.isValid();
   QgsPointXY myNewCenter;
