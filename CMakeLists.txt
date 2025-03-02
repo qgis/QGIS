@@ -41,9 +41,9 @@ elseif(WITH_VCPKG)
   message(STATUS "Building local dependencies with VCPKG --")
   set(VCPKG_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/vcpkg_installed")
   include(VcpkgToolchain)
-else()
+else(NOT SDK_PATH STREQUAL "")
   message(STATUS "Building with system libraries --")
-endif()
+endif(NOT SDK_PATH STREQUAL "")
 
 
 if(WITH_VCPKG)
@@ -636,10 +636,24 @@ if(WITH_CORE)
     set(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
   endif()
 
-  # search for QScintilla2 (C++ lib)
+  # search for QScintilla2 (C++ lib) and Qwt
   if (WITH_GUI)
     find_package(QScintilla REQUIRED)
-    find_package(Qwt REQUIRED)
+
+    set (WITH_INTERNAL_QWT FALSE CACHE BOOL "Determines if the internal copy of qwt should be used.")
+    if(NOT WITH_INTERNAL_QWT)
+      find_package(Qwt 6.2)
+      if(NOT QWT_FOUND)
+        set(WITH_INTERNAL_QWT TRUE)
+        message(STATUS "Qwt >=6.2 not found - using internal Qwt")
+      endif()
+    endif()
+
+    if(WITH_INTERNAL_QWT)
+      set(QWT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0)
+      set(QWT_LIBRARY "")
+      set(QWT_VERSION_STR 6.3.0)
+    endif()
   endif()
 
   # Password helper

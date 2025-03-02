@@ -32,7 +32,7 @@ DoNotSort="(sqlite3.h)|(spatialite.h)"
 for file in $(find . \
  ! -path "./python/ext-libs/*" \
  ! -path "./external/astyle/*" \
- ! -path "./external/qwtpolar-*" \
+ ! -path "./external/qwt*" \
  ! -path "./external/qspatialite/*" \
  -regex "./src/\(.+/\)*.*\.\(h\|cpp\)" -type f \
  -or -regex "./tests/\(.+/\)*.*\.\(h\|cpp\)" -type f )
