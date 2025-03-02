@@ -717,11 +717,34 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Creates and returns a (possibly invalid) vector layer based on the \a sql statement and optional \a options.
+     * Creates and returns a (possibly invalid) vector layer based on a SQL statement and \a options.
+     *
+     * The validateSqlVectorLayer() method can be used in advance to test whether the options are valid
+     * for the provider, and retrieve a user-friendly explanation if not.
+     *
      * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
+     * \see validateSqlVectorLayer()
+     *
      * \since QGIS 3.22
      */
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
+
+    /**
+     * Validates the SQL query \a options to determine if it is possible to create a vector layer based on a SQL statement and \a options.
+     *
+     * The base class method returns TRUE and does not do any checks.
+     *
+     * \param options SQL statement and options
+     * \param message will be set to a translated, user-friendly explanation if the SQL is not valid for the provider.
+     *
+     * \returns TRUE if the SQL is valid for the provider.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
+     * \see createSqlVectorLayer()
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message SIP_OUT ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns the SQL layer options from a \a layerSource.

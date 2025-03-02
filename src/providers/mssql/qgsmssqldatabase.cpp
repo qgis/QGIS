@@ -389,19 +389,17 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
 
     QString name = dbQuery.value( 2 ).toString();
     if ( name.isEmpty() )
-      name = QStringLiteral( "col%1" ).arg( fieldIndex );
-
+      name = QStringLiteral( "__unnamed__%1" ).arg( fieldIndex );
     const bool isNullable = dbQuery.value( 3 ).toInt();
     const QString systemTypeName = dbQuery.value( 5 ).toString();
     const int maxLength = dbQuery.value( 6 ).toInt();
     const int precision = dbQuery.value( 7 ).toInt();
     const int scale = dbQuery.value( 8 ).toInt();
 
-
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
     if ( ( details.geometryColumnName.isEmpty() && ( systemTypeName == QLatin1String( "geometry" ) || systemTypeName == QLatin1String( "geography" ) ) )
-         || name == details.geometryColumnName )
+         || ( !name.isEmpty() && name == details.geometryColumnName ) )
     {
       details.geometryColumnName = name;
       details.geometryColumnType = systemTypeName;

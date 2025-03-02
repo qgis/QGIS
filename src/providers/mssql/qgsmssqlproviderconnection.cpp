@@ -742,6 +742,54 @@ QgsVectorLayer *QgsMssqlProviderConnection::createSqlVectorLayer( const SqlVecto
   return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
 }
 
+bool QgsMssqlProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message ) const
+{
+  const QgsDataSourceUri dsUri { uri() };
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
+  if ( !db->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
+                                            .arg( uri(), db->errorText() ) );
+  }
+
+  QgsMssqlDatabase::FieldDetails details;
+
+  // check that all query fields have explicit names -- if this is not done, we cannot run aggregates on the query such
+  // as count(*)
+  QString error;
+  const bool result = db->loadQueryFields( details, sanitizeSqlForQueryLayer( options.sql ), error );
+  if ( !result )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information: %1" ).arg( error ) );
+  }
+
+  QStringList emptyFieldIndexes;
+  int i = 1;
+  for ( const QgsField &f : details.attributeFields )
+  {
+    if ( f.name().isEmpty() || f.name().startsWith( QLatin1String( "__unnamed__" ) ) )
+    {
+      emptyFieldIndexes << QString::number( i );
+    }
+    i++;
+  }
+
+  if ( !emptyFieldIndexes.empty() )
+  {
+    if ( emptyFieldIndexes.length() == 1 )
+    {
+      message = QObject::tr( "Column %1 is unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an \"AS column_name\" argument for this column." ).arg( emptyFieldIndexes.at( 0 ) );
+    }
+    else
+    {
+      message = QObject::tr( "Columns %1 are unnamed. SQL Server requires that all columns computed in a query have an explicit name set. Please add an \"AS column_name\" argument for these columns." ).arg( emptyFieldIndexes.join( QObject::tr( ", " ) ) );
+    }
+    return false;
+  }
+
+  return true;
+}
+
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )
 {
   SqlVectorLayerOptions options;

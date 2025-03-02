@@ -69,6 +69,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsProviderSqlQueryBuilder *queryBuilder() const override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message ) const override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 
   private:
