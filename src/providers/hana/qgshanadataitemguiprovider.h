@@ -21,6 +21,7 @@
 
 class QgsHanaSchemaItem;
 class QgsHanaLayerItem;
+class QgsHanaConnectionItem;
 
 class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -46,6 +47,8 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void deleteSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void renameSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context );
+
+    bool handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema );
 };
 
 #endif // QGSHANADATAITEMGUIPROVIDER_H

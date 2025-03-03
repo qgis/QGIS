@@ -14,18 +14,21 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
-#include "qgshanaconnection.h"
 #include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
 #include "moc_qgshanadataitemguiprovider.cpp"
 #include "qgshananewconnection.h"
-#include "qgshanaprovider.h"
 #include "qgshanaproviderconnection.h"
 #include "qgshanasourceselect.h"
-#include "qgshanautils.h"
 #include "qgsnewnamedialog.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgssettings.h"
+#include "qgshanautils.h"
+#include "qgsapplication.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerexporter.h"
+#include "qgsmessageoutput.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -168,7 +171,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop(
 {
   if ( QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
   {
-    return connItem->handleDrop( data, QString() );
+    return handleDrop( connItem, data, QString() );
   }
   else if ( QgsHanaSchemaItem *schemaItem = qobject_cast<QgsHanaSchemaItem *>( item ) )
   {
@@ -176,7 +179,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop(
     if ( !connItem )
       return false;
 
-    return connItem->handleDrop( data, schemaItem->name() );
+    return handleDrop( connItem, data, schemaItem->name() );
   }
   return false;
 }
@@ -386,4 +389,103 @@ void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDa
   {
     notify( caption, tr( "Unable to rename '%1'\n%2" ).arg( layerInfo.tableName, errorMsg ), context, Qgis::MessageLevel::Warning );
   }
+}
+
+bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema )
+{
+  if ( !QgsMimeDataUtils::isUriList( data ) || !connectionItem )
+    return false;
+
+  QStringList importResults;
+  bool hasError = false;
+
+  QPointer< QgsHanaConnectionItem > connectionItemPointer( connectionItem );
+
+  QgsDataSourceUri uri = connectionItem->connectionUri();
+  QgsHanaConnectionRef conn( uri );
+
+  if ( !conn.isNull() )
+  {
+    const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+    for ( const QgsMimeDataUtils::Uri &u : lst )
+    {
+      if ( u.layerType != QLatin1String( "vector" ) )
+      {
+        importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
+        hasError = true; // only vectors can be imported
+        continue;
+      }
+
+      // open the source layer
+      bool owner;
+      QString error;
+      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+      if ( !srcLayer )
+      {
+        importResults.append( QStringLiteral( "%1: %2" ).arg( u.name, error ) );
+        hasError = true;
+        continue;
+      }
+
+      if ( srcLayer->isValid() )
+      {
+        QgsDataSourceUri dsUri( u.uri );
+        QString geomColumn = dsUri.geometryColumn();
+        if ( geomColumn.isEmpty() )
+        {
+          bool fieldsInUpperCase = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
+          geomColumn = ( srcLayer->geometryType() != Qgis::GeometryType::Null ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr;
+        }
+
+        uri.setDataSource( toSchema, u.name, geomColumn, QString(), dsUri.keyColumn() );
+        uri.setWkbType( srcLayer->wkbType() );
+
+        std::unique_ptr<QgsVectorLayerExporterTask> exportTask(
+          new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ), QStringLiteral( "hana" ), srcLayer->crs(), QVariantMap(), owner )
+        );
+
+        // when export is successful:
+        connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
+          QMessageBox::information( nullptr, tr( "Import to SAP HANA database" ), tr( "Import was successful." ) );
+          if ( connectionItemPointer )
+            connectionItemPointer->refreshSchema( toSchema );
+        } );
+
+        // when an error occurs:
+        connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+          if ( error != Qgis::VectorExportResult::UserCanceled )
+          {
+            QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+            output->setTitle( tr( "Import to SAP HANA database" ) );
+            output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+            output->showMessage();
+          }
+          if ( connectionItemPointer )
+            connectionItemPointer->refreshSchema( toSchema );
+        } );
+
+        QgsApplication::taskManager()->addTask( exportTask.release() );
+      }
+      else
+      {
+        importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
+        hasError = true;
+      }
+    }
+  }
+  else
+  {
+    importResults.append( tr( "Connection failed" ) );
+    hasError = true;
+  }
+
+  if ( hasError )
+  {
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to SAP HANA database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->showMessage();
+  }
+
+  return true;
 }

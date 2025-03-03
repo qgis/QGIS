@@ -43,7 +43,6 @@ class QgsMssqlDataItemGuiProvider : public QObject, public QgsDataItemGuiProvide
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
 
-
     bool handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema );
 };
 
