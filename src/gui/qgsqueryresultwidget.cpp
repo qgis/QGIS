@@ -768,14 +768,46 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
   const QList< QgsStoredQueryManager::QueryDetails > storedQueries = QgsGui::storedQueryManager()->allQueries();
   if ( !storedQueries.isEmpty() )
   {
-    mPresetQueryMenu->addSeparator();
-    for ( const QgsStoredQueryManager::QueryDetails &query : storedQueries )
+    QList< QgsStoredQueryManager::QueryDetails > userProfileQueries;
+    std::copy_if( storedQueries.begin(), storedQueries.end(), std::back_inserter( userProfileQueries ), []( const QgsStoredQueryManager::QueryDetails &details ) {
+      return details.backend == Qgis::QueryStorageBackend::LocalProfile;
+    } );
+
+    QList< QgsStoredQueryManager::QueryDetails > projectQueries;
+    std::copy_if( storedQueries.begin(), storedQueries.end(), std::back_inserter( projectQueries ), []( const QgsStoredQueryManager::QueryDetails &details ) {
+      return details.backend == Qgis::QueryStorageBackend::CurrentProject;
+    } );
+
+    mPresetQueryMenu->addSection( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ), tr( "User Profile" ) );
+    for ( const QgsStoredQueryManager::QueryDetails &query : std::as_const( userProfileQueries ) )
     {
       QAction *action = new QAction( query.name, mPresetQueryMenu );
       mPresetQueryMenu->addAction( action );
       connect( action, &QAction::triggered, this, [this, query] {
         mSqlEditor->insertText( query.definition );
       } );
+    }
+    if ( userProfileQueries.empty() )
+    {
+      QAction *action = new QAction( tr( "No Stored Queries Available" ), mPresetQueryMenu );
+      action->setEnabled( false );
+      mPresetQueryMenu->addAction( action );
+    }
+
+    mPresetQueryMenu->addSection( QgsApplication::getThemeIcon( QStringLiteral( "mIconStoredQueries.svg" ) ), tr( "Current Project" ) );
+    for ( const QgsStoredQueryManager::QueryDetails &query : std::as_const( projectQueries ) )
+    {
+      QAction *action = new QAction( query.name, mPresetQueryMenu );
+      mPresetQueryMenu->addAction( action );
+      connect( action, &QAction::triggered, this, [this, query] {
+        mSqlEditor->insertText( query.definition );
+      } );
+    }
+    if ( projectQueries.empty() )
+    {
+      QAction *action = new QAction( tr( "No Stored Queries Available" ), mPresetQueryMenu );
+      action->setEnabled( false );
+      mPresetQueryMenu->addAction( action );
     }
 
     mPresetQueryMenu->addSeparator();
