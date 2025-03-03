@@ -543,7 +543,11 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   double oldDist = ( mZoomPoint - mCameraBefore->position() ).length();
   // Each step of the scroll wheel decreases distance by 20%
   double newDist = std::pow( 0.8, mCumulatedWheelY ) * oldDist;
+  // Make sure we don't clip the thing we're zooming to.
+  newDist = std::max( newDist, 2.0 );
   double zoomFactor = newDist / oldDist;
+  // Don't change the distance too suddenly to hopefully prevent numerical instability
+  zoomFactor = std::clamp( zoomFactor, 0.01, 100.0 );
 
   zoomCameraAroundPivot( mCameraBefore->position(), zoomFactor, mZoomPoint );
 
