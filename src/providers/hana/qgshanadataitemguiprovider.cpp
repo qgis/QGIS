@@ -166,12 +166,12 @@ bool QgsHanaDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiCo
 }
 
 bool QgsHanaDataItemGuiProvider::handleDrop(
-  QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction
+  QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction
 )
 {
   if ( QgsHanaConnectionItem *connItem = qobject_cast<QgsHanaConnectionItem *>( item ) )
   {
-    return handleDrop( connItem, data, QString() );
+    return handleDrop( connItem, data, QString(), context );
   }
   else if ( QgsHanaSchemaItem *schemaItem = qobject_cast<QgsHanaSchemaItem *>( item ) )
   {
@@ -179,7 +179,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop(
     if ( !connItem )
       return false;
 
-    return handleDrop( connItem, data, schemaItem->name() );
+    return handleDrop( connItem, data, schemaItem->name(), context );
   }
   return false;
 }
@@ -391,7 +391,7 @@ void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDa
   }
 }
 
-bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema )
+bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) || !connectionItem )
     return false;
