@@ -10262,7 +10262,7 @@ void QgisApp::pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeomet
 
 void QgisApp::pasteAsNewVector()
 {
-  std::unique_ptr<QgsVectorLayer> layer = pasteToNewMemoryVector();
+  std::unique_ptr<QgsVectorLayer> layer = clipboard()->pasteToNewMemoryVector( visibleMessageBar() );
   if ( !layer )
     return;
 
@@ -10287,7 +10287,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString &layerName )
     }
   }
 
-  std::unique_ptr<QgsVectorLayer> layer = pasteToNewMemoryVector();
+  std::unique_ptr<QgsVectorLayer> layer = clipboard()->pasteToNewMemoryVector( visibleMessageBar() );
   if ( !layer )
     return nullptr;
 
@@ -10299,112 +10299,6 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString &layerName )
   QgsProject::instance()->addMapLayer( layer.release() );
 
   return result;
-}
-
-std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
-{
-  const QgsFields fields = clipboard()->fields();
-
-  // Decide geometry type from features, switch to multi type if at least one multi is found
-  QMap<Qgis::WkbType, int> typeCounts;
-  const QgsFeatureList features = clipboard()->copyOf( fields );
-  for ( const QgsFeature &feature : features )
-  {
-    if ( !feature.hasGeometry() )
-      continue;
-
-    const Qgis::WkbType type = feature.geometry().wkbType();
-
-    if ( type == Qgis::WkbType::Unknown || type == Qgis::WkbType::NoGeometry )
-      continue;
-
-    if ( QgsWkbTypes::isSingleType( type ) )
-    {
-      if ( typeCounts.contains( QgsWkbTypes::multiType( type ) ) )
-      {
-        typeCounts[QgsWkbTypes::multiType( type )] = typeCounts[QgsWkbTypes::multiType( type )] + 1;
-      }
-      else
-      {
-        typeCounts[type] = typeCounts[type] + 1;
-      }
-    }
-    else if ( QgsWkbTypes::isMultiType( type ) )
-    {
-      if ( typeCounts.contains( QgsWkbTypes::singleType( type ) ) )
-      {
-        // switch to multi type
-        typeCounts[type] = typeCounts[QgsWkbTypes::singleType( type )];
-        typeCounts.remove( QgsWkbTypes::singleType( type ) );
-      }
-      typeCounts[type] = typeCounts[type] + 1;
-    }
-  }
-
-  const Qgis::WkbType wkbType = !typeCounts.isEmpty() ? typeCounts.constBegin().key() : Qgis::WkbType::NoGeometry;
-
-  if ( features.isEmpty() )
-  {
-    // should not happen
-    visibleMessageBar()->pushMessage( tr( "Paste features" ), tr( "No features in clipboard." ), Qgis::MessageLevel::Info );
-    return nullptr;
-  }
-  else if ( typeCounts.size() > 1 )
-  {
-    QString typeName = wkbType != Qgis::WkbType::NoGeometry ? QgsWkbTypes::displayString( wkbType ) : QStringLiteral( "none" );
-    visibleMessageBar()->pushMessage( tr( "Paste features" ), tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName ), Qgis::MessageLevel::Info );
-  }
-
-  std::unique_ptr<QgsVectorLayer> layer( QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "pasted_features" ), QgsFields(), wkbType, clipboard()->crs() ) );
-
-  if ( !layer->isValid() || !layer->dataProvider() )
-  {
-    visibleMessageBar()->pushMessage( tr( "Paste features" ), tr( "Cannot create new layer." ), Qgis::MessageLevel::Warning );
-    return nullptr;
-  }
-
-  layer->startEditing();
-  for ( const QgsField &f : clipboard()->fields() )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ), 2 );
-    if ( !layer->addAttribute( f ) )
-    {
-      visibleMessageBar()->pushMessage( tr( "Paste features" ), tr( "Cannot create field %1 (%2,%3), falling back to string type" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ), Qgis::MessageLevel::Warning );
-
-      // Fallback to string
-      QgsField strField { f };
-      strField.setType( QMetaType::Type::QString );
-      if ( !layer->addAttribute( strField ) )
-      {
-        visibleMessageBar()->pushMessage( tr( "Paste features" ), tr( "Cannot create field %1 (%2,%3)" ).arg( strField.name(), strField.typeName(), QVariant::typeToName( strField.type() ) ), Qgis::MessageLevel::Critical );
-        return nullptr;
-      }
-    }
-  }
-
-  QgsFeatureList convertedFeatures { QgsVectorLayerUtils::makeFeaturesCompatible( features, layer.get() ) };
-
-  // Convert attributes
-  for ( auto it = convertedFeatures.begin(); it != convertedFeatures.end(); ++it )
-  {
-    for ( int idx = 0; idx < layer->fields().count() && idx < it->attributeCount(); ++idx )
-    {
-      QVariant attr = it->attribute( idx );
-      //if convertCompatible fails, it will replace attr with an appropriate null QVariant
-      //so we're calling setAttribute regardless, covering cases like 'Autogenerate' or 'nextVal()' on int fields.
-      layer->fields().at( idx ).convertCompatible( attr );
-      it->setAttribute( idx, attr );
-    }
-  }
-
-  if ( !layer->addFeatures( convertedFeatures ) || !layer->commitChanges() )
-  {
-    QgsDebugError( QStringLiteral( "Cannot add features or commit changes" ) );
-    return nullptr;
-  }
-
-  QgsDebugMsgLevel( QStringLiteral( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ), 2 );
-  return layer;
 }
 
 void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories categories )
