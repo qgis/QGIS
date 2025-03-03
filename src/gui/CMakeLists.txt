@@ -685,6 +685,7 @@ set(QGIS_GUI_SRCS
   qgsmaplayerloadstyledialog.cpp
   qgsmaplayerrefreshsettingswidget.cpp
   qgsmaplayersavestyledialog.cpp
+  qgsmaplayerserverpropertieswidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp

@@ -134,10 +134,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     //! \brief slot executed when user changes the layer's CRS
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
 
-    // Server properties
-    void addMetadataUrl();
-    void removeSelectedMetadataUrl();
-
     /**
      * updates gamma spinbox on slider changes
      * \since QGIS 3.16
@@ -182,8 +178,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
   private:
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
-
-    QStandardItemModel *mMetadataUrlModel = nullptr;
 
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
