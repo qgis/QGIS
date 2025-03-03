@@ -50,7 +50,7 @@ QString QgsRasterRankAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Performs a cell-by-cell analysis in which output values match the rank of a "
                       "sorted list of overlapping cell values from input layers. The output raster "
-                      "will be multi-band is multiple ranks are provided.\n"
+                      "will be multi-band if multiple ranks are provided.\n"
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
                       "perform the analysis on the first band of the rasters." );
 }
@@ -314,7 +314,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
     {
       if ( !provider->writeBlock( outputBlocks[i].get(), i + 1, iterLeft, iterTop ) )
       {
-        throw QgsProcessingException( QObject::tr( "Could not write output raster block" ) );
+        throw QgsProcessingException( QObject::tr( "Could not write output raster block: %1" ).arg( provider->error().summary() ) );
       }
     }
   }
