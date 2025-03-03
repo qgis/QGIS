@@ -59,6 +59,7 @@ class TestQgisAppClipboard : public QObject
     void retrieveFields();
     void clipboardLogic(); //test clipboard logic
     void testVectorTileLayer();
+    void copyPasteUnset();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -608,6 +609,65 @@ void TestQgisAppClipboard::testVectorTileLayer()
   QCOMPARE( maritimeFeature.attribute( QStringLiteral( "maritime" ) ).toString(), QStringLiteral( "0" ) );
   QCOMPARE( oceanFeature.fields(), mQgisApp->clipboard()->fields() );
   QCOMPARE( oceanFeature.attribute( QStringLiteral( "class" ) ).toString(), QStringLiteral( "ocean" ) );
+}
+
+void TestQgisAppClipboard::copyPasteUnset()
+{
+  QgsClipboard clipboard;
+  clipboard.clear();
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "int_field" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "double_field" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QMetaType::Type::QString ) );
+  QgsFeature feat( fields, 5 );
+  feat.setAttribute( QStringLiteral( "int_field" ), 9 );
+  feat.setAttribute( QStringLiteral( "double_field" ), 9.9 );
+  feat.setAttribute( QStringLiteral( "string_field" ), "val" );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
+  QgsFeature feat2( fields, 6 );
+  feat2.setAttribute( QStringLiteral( "int_field" ), 19 );
+  feat2.setAttribute( QStringLiteral( "double_field" ), 19.19 );
+  feat2.setAttribute( QStringLiteral( "string_field" ), "val2" );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
+  QgsFeature feat3( fields, 7 ); // NULL field values
+  feat3.setAttribute( QStringLiteral( "int_field" ), QVariant( QVariant::Int ) );
+  feat3.setAttribute( QStringLiteral( "double_field" ), QVariant( QVariant::Double ) );
+  feat3.setAttribute( QStringLiteral( "string_field" ), QVariant( QVariant::String ) );
+  feat3.setGeometry( QgsGeometry( new QgsPoint( 9, 10 ) ) );
+  QgsFeature feat4( fields, 8 ); // unset field values
+  feat4.setAttribute( QStringLiteral( "int_field" ), QVariant::fromValue( QgsUnsetAttributeValue( "Autonumber" ) ) );
+  feat4.setAttribute( QStringLiteral( "double_field" ), QVariant::fromValue( QgsUnsetAttributeValue( "Autonumber" ) ) );
+  feat4.setAttribute( QStringLiteral( "string_field" ), QVariant::fromValue( QgsUnsetAttributeValue( "Some series" ) ) );
+  feat4.setGeometry( QgsGeometry( new QgsPoint( 9, 10 ) ) );
+  QgsFeatureStore feats;
+  feats.addFeature( feat );
+  feats.addFeature( feat2 );
+  feats.addFeature( feat3 );
+  feats.addFeature( feat4 );
+  feats.setFields( fields );
+  clipboard.replaceWithCopyOf( feats );
+
+  std::unique_ptr< QgsVectorLayer > layer = clipboard.pasteToNewMemoryVector( nullptr );
+  QCOMPARE( layer->featureCount(), 4LL );
+  QgsFeatureIterator it = layer->getFeatures();
+  QgsFeature f;
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toInt(), 9 );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 9.9 );
+  QCOMPARE( f.attribute( 2 ).toString(), QStringLiteral( "val" ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attribute( 0 ).toInt(), 19 );
+  QCOMPARE( f.attribute( 1 ).toDouble(), 19.19 );
+  QCOMPARE( f.attribute( 2 ).toString(), QStringLiteral( "val2" ) );
+  QVERIFY( it.nextFeature( f ) );
+  QVERIFY( QgsVariantUtils::isNull( f.attribute( 0 ) ) );
+  QVERIFY( QgsVariantUtils::isNull( f.attribute( 1 ) ) );
+  QVERIFY( QgsVariantUtils::isNull( f.attribute( 2 ) ) );
+  QVERIFY( it.nextFeature( f ) );
+  QVERIFY( f.isUnsetValue( 0 ) );
+  QVERIFY( f.isUnsetValue( 1 ) );
+  QVERIFY( f.isUnsetValue( 2 ) );
 }
 
 QGSTEST_MAIN( TestQgisAppClipboard )
