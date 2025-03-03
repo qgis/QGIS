@@ -296,9 +296,10 @@ double QgsCameraController::sampleDepthBuffer( int px, int py )
 void QgsCameraController::updateCameraFromPose()
 {
   if ( mCamera )
+  {
     mCameraPose.updateCamera( mCamera );
-
-  mCameraChanged = true;
+    mCameraChanged = true;
+  }
 }
 
 void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
