@@ -28,6 +28,8 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsdbimportvectorlayerdialog.h"
+#include "qgsbrowsertreeview.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -379,4 +381,11 @@ bool QgsMssqlDataItemGuiProvider::handleDropUri( QgsMssqlConnectionItem *connect
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
   if ( !databaseConnection )
     return false;
+
+  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setDestinationSchema( toSchema );
+  dialog.setSourceUri( sourceUri );
+  dialog.exec();
+
+  return true;
 }

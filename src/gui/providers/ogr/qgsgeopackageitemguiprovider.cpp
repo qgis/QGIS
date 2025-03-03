@@ -43,6 +43,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsogrproviderutils.h"
 #include "qgsfileutils.h"
+#include "qgsdbimportvectorlayerdialog.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
@@ -595,6 +596,11 @@ bool QgsGeoPackageItemGuiProvider::handleDropUri( QgsGeoPackageCollectionItem *c
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
   if ( !databaseConnection )
     return false;
+
+  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setSourceUri( sourceUri );
+  dialog.exec();
+  return true;
 }
 
 ///@endcond
