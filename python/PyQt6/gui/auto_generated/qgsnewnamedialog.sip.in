@@ -71,6 +71,8 @@ then the dialog will not accept names which already exist.
 Returns whether users are permitted to overwrite existing names.
 
 .. seealso:: :py:func:`setOverwriteEnabled`
+
+.. seealso:: :py:func:`setShowExistingNamesCompleter`
 %End
 
     void setAllowEmptyName( bool allowed );
@@ -113,6 +115,19 @@ Returns the string used for warning users if a conflicting name exists.
 Sets a regular ``expression`` to use for validating user-entered names in the dialog.
 
 .. versionadded:: 3.22
+%End
+
+    void setShowExistingNamesCompleter( bool show );
+%Docstring
+Sets whether a completer for existing names should be used in the line edit.
+
+This is not shown by default. If the dialog is expected to be used in a context
+where overwriting is permitted, consider enabling this so that users can more
+easily enter an existing name.
+
+.. seealso:: :py:func:`overwriteEnabled`
+
+.. versionadded:: 3.44
 %End
 
     QString name() const;
