@@ -20,6 +20,8 @@
 
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
+class QgsPGConnectionItem;
+
 struct QgsPostgresLayerProperty;
 
 class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
@@ -51,6 +53,7 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void refreshMaterializedView( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
+    bool handleDrop( QgsPGConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H
