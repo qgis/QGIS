@@ -21,6 +21,7 @@
 #include "qgis_app.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsweakrelation.h"
+#include "qgsmimedatautils.h"
 #include <QObject>
 
 class QgsDirectoryItem;
@@ -252,7 +253,7 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
     bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
     bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
-
+    bool handleDropUri( QgsDataItem *item, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context );
 
     void openSqlDialog( const QString &connectionUri, const QString &provider, const QString &query, QgsDataItemGuiContext context, const QString &identifierName = QString() );
 

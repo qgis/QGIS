@@ -18,6 +18,7 @@
 #define QGSHANADATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
+#include "qgsmimedatautils.h"
 
 class QgsHanaSchemaItem;
 class QgsHanaLayerItem;
@@ -49,6 +50,7 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context );
 
     bool handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
+    bool handleDropUri( QgsHanaConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );
 };
 
 #endif // QGSHANADATAITEMGUIPROVIDER_H

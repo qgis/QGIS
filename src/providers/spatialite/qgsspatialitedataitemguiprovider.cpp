@@ -92,11 +92,11 @@ bool QgsSpatiaLiteDataItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataIte
   return false;
 }
 
-bool QgsSpatiaLiteDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction action )
+bool QgsSpatiaLiteDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action )
 {
   if ( QgsSLConnectionItem *connItem = qobject_cast<QgsSLConnectionItem *>( item ) )
   {
-    return handleDropConnectionItem( connItem, data, action );
+    return handleDropConnectionItem( connItem, data, action, context );
   }
   return false;
 }
@@ -140,12 +140,18 @@ void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
   }
 }
 
-bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction )
+bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction, QgsDataItemGuiContext context )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
-  // TODO: probably should show a GUI with settings etc
+  const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
+  if ( sourceUris.size() == 1 )
+  {
+    return handleDropUri( connItem, sourceUris.at( 0 ), context );
+  }
+
+  // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
 
   QgsDataSourceUri destUri;
   destUri.setDatabase( connItem->databasePath() );
@@ -153,9 +159,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
   QStringList importResults;
   bool hasError = false;
 
-  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  const auto constLst = lst;
-  for ( const QgsMimeDataUtils::Uri &u : constLst )
+  for ( const QgsMimeDataUtils::Uri &u : sourceUris )
   {
     // open the source layer
     bool owner;
@@ -212,4 +216,12 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
   }
 
   return true;
+}
+
+bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context )
+{
+  QPointer< QgsSLConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 }

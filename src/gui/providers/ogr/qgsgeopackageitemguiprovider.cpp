@@ -429,6 +429,12 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
+  const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
+  if ( sourceUris.size() == 1 )
+  {
+    return handleDropUri( item, sourceUris.at( 0 ), context );
+  }
+
   QString uri;
 
   QStringList importResults;
@@ -438,8 +444,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
   auto mainTask = std::make_unique<QgsTaskWithSerialSubTasks>( tr( "GeoPackage import" ) );
   bool hasSubTasks = false;
 
-  const auto lst = QgsMimeDataUtils::decodeUriList( data );
-  for ( const QgsMimeDataUtils::Uri &dropUri : lst )
+  for ( const QgsMimeDataUtils::Uri &dropUri : sourceUris )
   {
     // Check that we are not copying over self
     if ( dropUri.uri.startsWith( item->path() ) )
@@ -582,6 +587,14 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
     QgsApplication::taskManager()->addTask( mainTask.release() );
   }
   return true;
+}
+
+bool QgsGeoPackageItemGuiProvider::handleDropUri( QgsGeoPackageCollectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context )
+{
+  QPointer< QgsGeoPackageCollectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 }
 
 ///@endcond

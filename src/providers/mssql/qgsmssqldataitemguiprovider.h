@@ -17,6 +17,7 @@
 #define QGSMSSQLDATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
+#include "qgsmimedatautils.h"
 
 class QgsMssqlConnectionItem;
 class QgsMssqlLayerItem;
@@ -44,6 +45,7 @@ class QgsMssqlDataItemGuiProvider : public QObject, public QgsDataItemGuiProvide
     static void loadConnections( QgsDataItem *item );
 
     bool handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
+    bool handleDropUri( QgsMssqlConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );
 };
 
 #endif // QGSMSSQLDATAITEMGUIPROVIDER_H

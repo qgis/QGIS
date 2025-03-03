@@ -391,10 +391,16 @@ void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDa
   }
 }
 
-bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext )
+bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) || !connectionItem )
     return false;
+
+  const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
+  if ( sourceUris.size() == 1 )
+  {
+    return handleDropUri( connectionItem, sourceUris.at( 0 ), toSchema, context );
+  }
 
   QStringList importResults;
   bool hasError = false;
@@ -403,6 +409,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
 
   QgsDataSourceUri uri = connectionItem->connectionUri();
   QgsHanaConnectionRef conn( uri );
+  // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
 
   if ( !conn.isNull() )
   {
@@ -488,4 +495,12 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
   }
 
   return true;
+}
+
+bool QgsHanaDataItemGuiProvider::handleDropUri( QgsHanaConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context )
+{
+  QPointer< QgsHanaConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 }

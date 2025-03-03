@@ -27,6 +27,7 @@
 #include "qgstaskmanager.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -272,21 +273,25 @@ void QgsMssqlDataItemGuiProvider::loadConnections( QgsDataItem *item )
     item->refreshConnections();
 }
 
-bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext )
+bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) || !connectionItem )
     return false;
 
+  const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
+  if ( sourceUris.size() == 1 )
+  {
+    return handleDropUri( connectionItem, sourceUris.at( 0 ), toSchema, context );
+  }
+
   QPointer< QgsMssqlConnectionItem > connectionItemPointer( connectionItem );
   const QString connectionUri = connectionItem->connectionUri();
 
-  // TODO: probably should show a GUI with settings etc
+  // TODO: when dropping multiple layers, we need a dedicated "bulk import" dialog for settings which apply to ALL layers
   QStringList importResults;
   bool hasError = false;
 
-  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  const auto constLst = lst;
-  for ( const QgsMimeDataUtils::Uri &u : constLst )
+  for ( const QgsMimeDataUtils::Uri &u : sourceUris )
   {
     if ( u.layerType != QLatin1String( "vector" ) )
     {
@@ -366,4 +371,12 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
   }
 
   return true;
+}
+
+bool QgsMssqlDataItemGuiProvider::handleDropUri( QgsMssqlConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context )
+{
+  QPointer< QgsMssqlConnectionItem > connectionItemPointer( connectionItem );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 }
