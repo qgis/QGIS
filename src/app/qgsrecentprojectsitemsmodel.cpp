@@ -62,7 +62,16 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     case QgsProjectListItemDelegate::PathRole:
       return mRecentProjects.at( index.row() ).path;
     case QgsProjectListItemDelegate::NativePathRole:
-      return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
+    {
+      const QString path = mRecentProjects.at( index.row() ).path;
+      QString filePath;
+      QgsProjectStorage *projectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mRecentProjects.at( index.row() ).path );
+      if ( projectStorage )
+      {
+        filePath = projectStorage->filePath( path );
+      }
+      return QDir::toNativeSeparators( !filePath.isEmpty() ? filePath : path );
+    }
     case QgsProjectListItemDelegate::CrsRole:
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
@@ -91,13 +100,15 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     case Qt::ToolTipRole:
     case QgsProjectListItemDelegate::AnonymisedNativePathRole:
     {
-      QString name = mRecentProjects.at( index.row() ).path;
-      QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( name );
-      if ( storage )
+      QString path = mRecentProjects.at( index.row() ).path;
+      QString filePath;
+      QgsProjectStorage *projectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
+      if ( projectStorage )
       {
-        name = QgsDataSourceUri::removePassword( name, true );
+        path = QgsDataSourceUri::removePassword( path, true );
+        filePath = projectStorage->filePath( path );
       }
-      return name;
+      return !filePath.isEmpty() ? filePath : path;
     }
 
     default:
