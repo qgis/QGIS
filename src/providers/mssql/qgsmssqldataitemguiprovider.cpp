@@ -21,6 +21,12 @@
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlsourceselect.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsapplication.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayerexporter.h"
+#include "qgsmessageoutput.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -158,7 +164,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
 {
   if ( QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( item ) )
   {
-    return connItem->handleDrop( data, QString() );
+    return handleDrop( connItem, data, QString() );
   }
   else if ( QgsMssqlSchemaItem *schemaItem = qobject_cast<QgsMssqlSchemaItem *>( item ) )
   {
@@ -166,7 +172,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
     if ( !connItem )
       return false;
 
-    return connItem->handleDrop( data, schemaItem->name() );
+    return handleDrop( connItem, data, schemaItem->name() );
   }
   return false;
 }
@@ -214,7 +220,7 @@ void QgsMssqlDataItemGuiProvider::createSchema( QgsMssqlConnectionItem *connItem
   if ( schemaName.isEmpty() )
     return;
 
-  const QString uri = connItem->connInfo();
+  const QString uri = connItem->connectionUri();
   QString error;
   if ( !QgsMssqlConnection::createSchema( uri, schemaName, &error ) )
   {
@@ -264,4 +270,100 @@ void QgsMssqlDataItemGuiProvider::loadConnections( QgsDataItem *item )
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::MSSQL, fileName );
   if ( dlg.exec() == QDialog::Accepted )
     item->refreshConnections();
+}
+
+bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema )
+{
+  if ( !QgsMimeDataUtils::isUriList( data ) || !connectionItem )
+    return false;
+
+  QPointer< QgsMssqlConnectionItem > connectionItemPointer( connectionItem );
+  const QString connectionUri = connectionItem->connectionUri();
+
+  // TODO: probably should show a GUI with settings etc
+  QStringList importResults;
+  bool hasError = false;
+
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  const auto constLst = lst;
+  for ( const QgsMimeDataUtils::Uri &u : constLst )
+  {
+    if ( u.layerType != QLatin1String( "vector" ) )
+    {
+      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
+      hasError = true; // only vectors can be imported
+      continue;
+    }
+
+    // open the source layer
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey, options );
+
+    if ( srcLayer->isValid() )
+    {
+      QString tableName;
+      if ( !toSchema.isEmpty() )
+      {
+        tableName = QStringLiteral( "\"%1\".\"%2\"" ).arg( toSchema, u.name );
+      }
+      else
+      {
+        tableName = u.name;
+      }
+
+      QString uri = connectionUri + " table=" + tableName;
+      if ( srcLayer->geometryType() != Qgis::GeometryType::Null )
+        uri += QLatin1String( " (geom)" );
+
+      std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs() ) );
+
+      // when export is successful:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
+        // this is gross - TODO - find a way to get access to messageBar from data items
+        QMessageBox::information( nullptr, tr( "Import to MS SQL Server database" ), tr( "Import was successful." ) );
+        if ( connectionItemPointer )
+        {
+          if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )
+            connectionItemPointer->refresh();
+          else
+            connectionItemPointer->populate();
+        }
+      } );
+
+      // when an error occurs:
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+        if ( error != Qgis::VectorExportResult::UserCanceled )
+        {
+          QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+          output->setTitle( tr( "Import to MS SQL Server database" ) );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->showMessage();
+        }
+        if ( connectionItemPointer )
+        {
+          if ( connectionItemPointer->state() == Qgis::BrowserItemState::Populated )
+            connectionItemPointer->refresh();
+          else
+            connectionItemPointer->populate();
+        }
+      } );
+
+      QgsApplication::taskManager()->addTask( exportTask.release() );
+    }
+    else
+    {
+      importResults.append( tr( "%1: Not a valid layer!" ).arg( u.name ) );
+      hasError = true;
+    }
+  }
+
+  if ( hasError )
+  {
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to MS SQL Server database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->showMessage();
+  }
+
+  return true;
 }
