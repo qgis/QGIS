@@ -184,10 +184,11 @@ Returns the best link point to use for a link originating at a specified ``other
          - edge: item edge for calculated best link point
 %End
 
-    QgsModelDesignerSocketGraphicItem *outSocketAt( int index );
+    QgsModelDesignerSocketGraphicItem *outSocketAt( int index ) const;
 %Docstring
-Return the output socket graphics items associated with the model Keep in sync with 
-the underlying component
+Returns the output socket graphics items at the specified ``index``.
+
+May return ``None`` if no corresponding output socket exists.
 %End
 
 

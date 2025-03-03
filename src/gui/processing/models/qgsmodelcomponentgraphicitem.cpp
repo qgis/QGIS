@@ -739,6 +739,15 @@ QPointF QgsModelComponentGraphicItem::calculateAutomaticLinkPoint( const QPointF
   }
 }
 
+QgsModelDesignerSocketGraphicItem *QgsModelComponentGraphicItem::outSocketAt( int index ) const
+{
+  if ( index < 0 || index >= mOutSockets.size() )
+  {
+    return nullptr;
+  }
+  return mOutSockets.at( index );
+}
+
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )
 {
