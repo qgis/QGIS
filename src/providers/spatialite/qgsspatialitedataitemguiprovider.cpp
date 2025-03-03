@@ -29,6 +29,8 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsfileutils.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsdbimportvectorlayerdialog.h"
+#include "qgsmessagebar.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -224,4 +226,9 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropUri( QgsSLConnectionItem *conne
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
   if ( !databaseConnection )
     return false;
+
+  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setSourceUri( sourceUri );
+  dialog.exec();
+  return true;
 }

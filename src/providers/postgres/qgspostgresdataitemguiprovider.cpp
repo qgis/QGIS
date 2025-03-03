@@ -32,6 +32,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsdbimportvectorlayerdialog.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -673,4 +674,10 @@ bool QgsPostgresDataItemGuiProvider::handleDropUri( QgsPGConnectionItem *connect
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
   if ( !databaseConnection )
     return false;
+
+  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setDestinationSchema( toSchema );
+  dialog.setSourceUri( sourceUri );
+  dialog.exec();
+  return true;
 }

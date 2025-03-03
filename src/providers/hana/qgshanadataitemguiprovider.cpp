@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
+#include "qgsdbimportvectorlayerdialog.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -503,4 +504,10 @@ bool QgsHanaDataItemGuiProvider::handleDropUri( QgsHanaConnectionItem *connectio
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( connectionItem->databaseConnection() );
   if ( !databaseConnection )
     return false;
+
+  QgsDbImportVectorLayerDialog dialog( databaseConnection.release(), context.messageBar() ? context.messageBar()->parentWidget() : nullptr );
+  dialog.setSourceUri( sourceUri );
+  dialog.setDestinationSchema( toSchema );
+  dialog.exec();
+  return true;
 }
