@@ -17,6 +17,7 @@
 #define QGSSPATIALITEDATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
+#include "qgsmimedatautils.h"
 
 class QgsSLConnectionItem;
 
@@ -37,7 +38,8 @@ class QgsSpatiaLiteDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
   private:
     static void newConnection( QgsDataItem *item );
     static void createDatabase( QgsDataItem *item );
-    static bool handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction );
+    static bool handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction, QgsDataItemGuiContext context );
+    static bool handleDropUri( QgsSLConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context );
 };
 
 #endif // QGSSPATIALITEDATAITEMGUIPROVIDER_H

@@ -1894,6 +1894,12 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
+  const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
+  if ( sourceUris.size() == 1 )
+  {
+    return handleDropUri( item, sourceUris.at( 0 ), context );
+  }
+
   QString uri;
 
   QStringList importResults;
@@ -1903,8 +1909,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   auto mainTask = std::make_unique<QgsTaskWithSerialSubTasks>( tr( "Layer import" ) );
   bool hasSubTasks = false;
 
-  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  for ( const QgsMimeDataUtils::Uri &dropUri : lst )
+  for ( const QgsMimeDataUtils::Uri &dropUri : sourceUris )
   {
     // Check that we are not copying over self
     if ( dropUri.uri.startsWith( item->path() ) )
@@ -2000,6 +2005,14 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
     QgsApplication::taskManager()->addTask( mainTask.release() );
   }
   return true;
+}
+
+bool QgsDatabaseItemGuiProvider::handleDropUri( QgsDataItem *item, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context )
+{
+  QPointer< QgsDataItem > connectionItemPointer( item );
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> databaseConnection( item->databaseConnection() );
+  if ( !databaseConnection )
+    return false;
 }
 
 void QgsDatabaseItemGuiProvider::openSqlDialog( const QString &connectionUri, const QString &provider, const QString &query, QgsDataItemGuiContext context, const QString &identifierName )
