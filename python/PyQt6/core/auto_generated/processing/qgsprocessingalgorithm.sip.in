@@ -281,7 +281,7 @@ manner.
 
 .. seealso:: :py:func:`outputDefinitions`
 %End
-    
+
     bool hasHtmlOutputs() const /HoldGIL/;
 %Docstring
 Returns ``True`` if this algorithm generates HTML outputs.

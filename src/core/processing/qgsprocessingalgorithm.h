@@ -298,7 +298,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see outputDefinitions()
      */
     const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const SIP_HOLDGIL;
-    
+
     /**
      * Returns TRUE if this algorithm generates HTML outputs.
      */

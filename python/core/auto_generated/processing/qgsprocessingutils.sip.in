@@ -439,7 +439,7 @@ a specified ``algorithm``.
 
     static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) /HoldGIL/;
 %Docstring
-Returns the index of the output matching ``name`` for a specified ``algorithm``. 
+Returns the index of the output matching ``name`` for a specified ``algorithm``.
 Matching is done in a case-insensitive manner.
 %End
 
