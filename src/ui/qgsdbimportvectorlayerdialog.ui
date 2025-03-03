@@ -81,38 +81,5 @@
   <zorder>verticalSpacer</zorder>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsDbImportVectorLayerDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>343</x>
-     <y>617</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsDbImportVectorLayerDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>470</x>
-     <y>617</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>479</x>
-     <y>243</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

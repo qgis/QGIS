@@ -22,6 +22,7 @@
 #include "ui_qgsdbimportvectorlayerdialog.h"
 
 class QgsAbstractDatabaseProviderConnection;
+class QgsVectorLayerExporterTask;
 
 /**
  * \class QgsDbImportVectorLayerDialog
@@ -43,8 +44,15 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
 
     void setSourceUri( const QgsMimeDataUtils::Uri &uri );
 
+    std::unique_ptr<QgsVectorLayerExporterTask> createExporterTask();
+
+  private slots:
+
+    void doImport();
 
   private:
+    std::unique_ptr< QgsVectorLayer > mSourceLayer;
+
     std::unique_ptr< QgsAbstractDatabaseProviderConnection > mConnection;
 };
 

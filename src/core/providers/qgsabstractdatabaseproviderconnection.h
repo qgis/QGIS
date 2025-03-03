@@ -605,6 +605,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Creates a URI for use with QgsVectorLayerExporter corresponding to given destination table parameters for the backend.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     */
+    virtual QString createVectorLayerExporterDestinationUri( const QString &schema, const QString &name, Qgis::WkbType wkbType ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
      * Checks whether a table \a name exists in the given \a schema.
      *
      * \throws QgsProviderConnectionException if any errors are encountered.

@@ -56,6 +56,12 @@ Qgis::SqlLayerDefinitionCapabilities QgsAbstractDatabaseProviderConnection::sqlL
   return mSqlLayerDefinitionCapabilities;
 }
 
+QString QgsAbstractDatabaseProviderConnection::createVectorLayerExporterDestinationUri( const QString &schema, const QString &name, Qgis::WkbType ) const
+{
+  Q_UNUSED( schema )
+  Q_UNUSED( name )
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'createVectorLayerExporterDestinationUri' is not supported" ) );
+}
 
 QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
