@@ -31,6 +31,7 @@
 #include "qgsfileutils.h"
 #include "qgsstoredquerymanager.h"
 #include "qgsproject.h"
+#include "qgsnewnamedialog.h"
 
 #include <QClipboard>
 #include <QShortcut>
@@ -836,9 +837,23 @@ void QgsQueryResultWidget::populatePresetQueryMenu()
 
 void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend )
 {
-  bool ok;
-  const QString name = QInputDialog::getText( this, tr( "Query Name" ), tr( "Name for the stored query" ), QLineEdit::Normal, QString(), &ok );
-  if ( !ok || name.isEmpty() )
+  const QStringList existingQueryNames = QgsGui::storedQueryManager()->allQueryNames( backend );
+  QgsNewNameDialog dlg(
+    QString(),
+    QString(),
+    QStringList(),
+    existingQueryNames
+  );
+  dlg.setWindowTitle( tr( "Store Query" ) );
+  dlg.setHintString( tr( "Name for the stored query" ) );
+  dlg.setOverwriteEnabled( true );
+  dlg.setConflictingNameWarning( tr( "A stored query with this name already exists, it will be overwritten." ) );
+  dlg.setShowExistingNamesCompleter( true );
+  if ( dlg.exec() != QDialog::Accepted )
+    return;
+
+  const QString name = dlg.name();
+  if ( name.isEmpty() )
     return;
 
   QgsGui::storedQueryManager()->storeQuery( name, mSqlEditor->text(), backend );
