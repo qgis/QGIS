@@ -18,7 +18,6 @@
 #include "o2replyserver.h"
 #include "o0globals.h"
 #include "o0jsonresponse.h"
-#include "o0settingsstore.h"
 
 /// Add query parameters to a query
 static void addQueryParametersToUrl(QUrl &url,  QList<QPair<QString, QString> > parameters) {
@@ -148,7 +147,7 @@ QString O2::grantType()
     case GrantFlowPkce:
         return "pkce";
     case GrantFlowClientCredentials:
-      return "client_credentials"; // Where are O2_OAUTH2_GRANT_TYPE_DEVICE etc defined? O2_OAUTH2_GRANT_TYPE_CLIENT_CREDENTIALS;
+      return "client_credentials";
     }
 
     return QString();
@@ -279,8 +278,39 @@ void O2::link() {
 #else
         connect(tokenReply, &QNetworkReply::errorOccurred, this, &O2::onTokenReplyError, Qt::QueuedConnection);
 #endif
-    }
-    else if (grantFlow_ == GrantFlowDevice) {
+    } else if (grantFlow_ == GrantFlowClientCredentials) {
+      QList<O0RequestParameter> parameters;
+      parameters.append(O0RequestParameter(O2_OAUTH2_CLIENT_ID, clientId_.toUtf8()));
+      parameters.append(O0RequestParameter(O2_OAUTH2_CLIENT_SECRET, clientSecret_.toUtf8()));
+      parameters.append(O0RequestParameter(O2_OAUTH2_GRANT_TYPE, "client_credentials"));
+      if ( !scope_.isEmpty() )
+        parameters.append( O0RequestParameter(O2_OAUTH2_SCOPE, scope_.toUtf8() ) );
+      if ( !apiKey_.isEmpty() )
+        parameters.append(O0RequestParameter(O2_OAUTH2_API_KEY, apiKey_.toUtf8()));
+
+      const QVariantMap extraParams = extraRequestParams();
+      for (auto it = extraParams.constBegin(); it != extraParams.constEnd(); ++it) {
+        parameters.append(O0RequestParameter(it.key().toUtf8(), it.value().toByteArray()));
+      }
+      QByteArray payload = O0BaseAuth::createQueryParameters(parameters);
+
+      log( QStringLiteral( "O2::link: Sending token request for client credential flow" ) );
+      QUrl url(tokenUrl_);
+      QNetworkRequest tokenRequest(url);
+      tokenRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+      QNetworkReply *tokenReply = getManager()->post(tokenRequest, payload);
+
+      connect(tokenReply,
+               &QNetworkReply::finished,
+               this,
+               &O2::onTokenReplyFinished,
+               Qt::QueuedConnection);
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
+      connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+#else
+      connect(tokenReply, &QNetworkReply::errorOccurred, this, &O2::onTokenReplyError, Qt::QueuedConnection);
+#endif
+    } else if (grantFlow_ == GrantFlowDevice) {
         QList<O0RequestParameter> parameters;
         parameters.append(O0RequestParameter(O2_OAUTH2_CLIENT_ID, clientId_.toUtf8()));
         parameters.append(O0RequestParameter(O2_OAUTH2_SCOPE, scope_.toUtf8()));
