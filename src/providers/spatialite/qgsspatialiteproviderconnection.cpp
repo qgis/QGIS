@@ -146,6 +146,20 @@ QgsVectorLayer *QgsSpatiaLiteProviderConnection::createSqlVectorLayer( const Qgs
   return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
 }
 
+QString QgsSpatiaLiteProviderConnection::createVectorLayerExporterDestinationUri( const QString &schema, const QString &name, Qgis::WkbType wkbType ) const
+{
+  if ( !schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  QgsDataSourceUri destUri( uri() );
+  destUri.setTable( name );
+  destUri.setGeometryColumn( wkbType != Qgis::WkbType::NoGeometry ? QStringLiteral( "geom" ) : QString() );
+
+  return destUri.uri();
+}
+
 void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );

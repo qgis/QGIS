@@ -444,6 +444,13 @@ Creates an empty table with ``name`` in the given ``schema`` (schema is ignored 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
+    virtual QString createVectorLayerExporterDestinationUri( const QString &schema, const QString &name, Qgis::WkbType wkbType ) const;
+%Docstring
+Creates a URI for use with :py:class:`QgsVectorLayerExporter` corresponding to given destination table parameters for the backend.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+%End
+
     virtual bool tableExists( const QString &schema, const QString &name ) const;
 %Docstring
 Checks whether a table ``name`` exists in the given ``schema``.
